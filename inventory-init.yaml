@@ -1,0 +1,52 @@
+ansible:
+  hosts:
+    localhost:
+      ansible_host: 172.22.22.110
+k8s_master:
+  hosts:
+    dungeon_map_001:
+      ansible_host: 172.22.22.150
+    dungeon_map_002:
+      ansible_host: 172.22.22.151
+    dungeon_map_003:
+      ansible_host: 172.22.22.152
+    dungeon_map_004:
+      ansible_host: 172.22.22.153
+    dungeon_map_005:
+      ansible_host: 172.22.22.154
+k8s_worker:
+  hosts:
+    dungeon_worker_001:
+      ansible_host: 172.22.22.175
+    dungeon_worker_002:
+      ansible_host: 172.22.22.176
+    dungeon_worker_003:
+      ansible_host: 172.22.22.177
+    dungeon_worker_004:
+      ansible_host: 172.22.22.178
+    dungeon_worker_005:
+      ansible_host: 172.22.22.179
+ubuntu_24_04:
+  children:
+    ansible:
+    k8s_master:
+    k8s_worker:
+ubuntu:
+  children:
+    ubuntu_24_04:
+  vars:
+    ansible_user: kai
+    ansible_password: password
+    ansible_become_pass: password
+windows_10:
+  hosts:
+    LeafBlower:
+      ansible_host: 172.22.22.145
+windows_11:
+  hosts:
+    Glicynia:
+      ansible_host: 172.22.22.143
+    Wisteria:
+      ansible_host: 172.22.22.144
+    WaterLily:
+      ansible_host: 172.22.22.142
