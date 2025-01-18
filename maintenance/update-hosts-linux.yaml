@@ -1,4 +1,4 @@
-# To use this we run -> ansible-playbook --limit ubuntu -i inventory/complete.yaml maintenance/update-hosts-linux.yaml
+# To use this we run -> ansible-playbook --limit linux -i inventory/complete.yaml maintenance/update-hosts-linux.yaml
 ---
 - name: Linux OS Upgrade
   hosts: all
