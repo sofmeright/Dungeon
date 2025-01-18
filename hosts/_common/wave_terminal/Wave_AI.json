@@ -1,0 +1,51 @@
+{
+  "aai@ollama-llama2": {
+    "display:name": "Ollama - Llama2",
+    "display:order": 1,
+    "ai:*": true,
+    "ai:baseurl": "http://172.22.22.143:11434/v1",
+    "ai:name": "llama2",
+    "ai:model": "llama2",
+    "ai:apitoken": "ollama"
+  },
+  "ai@ollama-llama": {
+    "display:name": "Ollama - Llama2",
+    "display:order": 2,
+    "ai:*": true,
+    "ai:baseurl": "http://172.22.22.143:11434/v1",
+    "ai:name": "llama2",
+    "ai:model": "llama2",
+    "ai:apitoken": "ollama"
+  },
+  "aai@ollama-llama": {
+    "display:name": "Ollama - Llama2",
+    "display:order": 3,
+    "ai:*": true,
+    "ai:baseurl": "http://172.22.22.143:11434/v1",
+    "ai:name": "llama2",
+    "ai:model": "llama2",
+    "ai:apitoken": "ollama"
+  }
+}
+/*
+Contents:
+
+Wisteria
+--------------
+NAME                     ID              SIZE      MODIFIED       
+qwen:110b                7fed4b7787da    62 GB     27 minutes ago
+wizardlm2:7b             c9b1aff820f2    4.1 GB    6 months ago
+wizardlm2:8x22b          abda6e58fd1d    79 GB     6 months ago
+mixtral:8x7b             d39eb76ed9c5    26 GB     6 months ago
+llava:13b                0d0eb4d7f485    8.0 GB    6 months ago
+llama2:latest            78e26419b446    3.8 GB    6 months ago
+llama3:latest            365c0bd3c000    4.7 GB    6 months ago
+dolphin-llama3:latest    613f068e29f8    4.7 GB    6 months ago
+codellama:70b            e59b580dfce7    38 GB     6 months ago
+wizardlm2:latest         c9b1aff820f2    4.1 GB    6 months ago
+
+Glicynia
+--------------
+
+
+*/
