@@ -1,5 +1,5 @@
 # To use this we run -> ansible-playbook --limit ubuntu -i inventory/complete.yaml maintenance/update-hosts-linux.yaml
---
+---
 - name: Linux OS Upgrade
   hosts: all
   serial: 1
@@ -112,12 +112,6 @@
       when: ansible_os_family == "RedHat" and ansible_distribution_major_version == "7"
 
 
-  handlers:
-    - name : Reboot server
-      ansible.builtin.reboot:
-        msg: "Reboot initiated by Ansible after OS update"
-        reboot_timeout: 3600
-        test_command: uptime
   handlers:
     - name : Reboot server
       ansible.builtin.reboot:
