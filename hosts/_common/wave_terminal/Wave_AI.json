@@ -46,6 +46,18 @@ wizardlm2:latest         c9b1aff820f2    4.1 GB    6 months ago
 
 Glicynia
 --------------
-
+llama3.3:latest            a6eb4748fd29    42 GB     44 minutes ago
+gemma:latest               a72c7f4d0a15    5.0 GB    3 months ago
+deepseek-coder:instruct    3ddd2d3fc8d2    776 MB    5 months ago
+deepseek-coder:latest      3ddd2d3fc8d2    776 MB    5 months ago
+wizardlm2:8x22b            abda6e58fd1d    79 GB     6 months ago
+mixtral:8x7b               d39eb76ed9c5    26 GB     6 months ago
+wizardlm2:7b               c9b1aff820f2    4.1 GB    6 months ago
+llava:13b                  0d0eb4d7f485    8.0 GB    6 months ago
+llama3:latest              365c0bd3c000    4.7 GB    6 months ago
+llama2:latest              78e26419b446    3.8 GB    6 months ago
+dolphin-llama3:latest      613f068e29f8    4.7 GB    6 months ago
+codellama:70b              e59b580dfce7    38 GB     6 months ago
+wizardlm2:latest           c9b1aff820f2    4.1 GB    6 months ago
 
 */
