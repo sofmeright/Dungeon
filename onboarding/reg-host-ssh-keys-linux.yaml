@@ -1,4 +1,4 @@
-# To use this we run -> ansible-playbook --limit ubuntu -i /etc/ansible/init-inventory.yaml reg-host-ssh-keys-linux.yaml
+# To use this we run -> ansible-playbook --limit ubuntu -i inventory/onboarding.yaml onboarding/reg-host-ssh-keys-linux.yaml
 ---
 - name: Prepare localhost for Ansible usage
   hosts: localhost
