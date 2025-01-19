@@ -1,12 +1,9 @@
 proxmox:
   hosts:
     priscilla:
-      ansible_host: 172.22.22.51
+      ansible_host: 172.22.22.102
   vars:
     ansible_user: root
-    # These passwords should be removed after you enable ssh key based access!
-    ansible_password: password
-    ansible_become_pass: password
 ansible:
   hosts:
     localhost:
@@ -50,6 +47,7 @@ ubuntu_24_04:
 ubuntu:
   children:
     ubuntu_24_04:
+    proxmox:
   vars:
     ansible_user: kai
     # These passwords should be removed after you enable ssh key based access!
@@ -70,5 +68,3 @@ windows_11:
 linux:
   children:
     ubuntu:
-    proxmox:
-    ansible:
