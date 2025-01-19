@@ -1,9 +1,8 @@
 apiVersion: source.toolkit.fluxcd.io/v1beta2
 kind: HelmRepository
 metadata:
-  name: metallb-charts
+  name: metallb
   namespace: flux-system
 spec:
-  interval: 1h
+  interval: 15m
   url: https://metallb.github.io/metallb
-  timeout: 3m
