@@ -1,0 +1,25 @@
+apiVersion: metallb.io/v1beta1
+kind: IPAddressPool
+metadata:
+  name: first-pool
+  namespace: metallb-system
+spec:
+  addresses:
+  - 10.10.0.0/24
+  avoidBuggyIPs: true
+---
+apiVersion: metallb.io/v1beta2
+kind: BGPPeer
+metadata:
+  name: sample
+  namespace: metallb-system
+spec:
+  myASN: 64500
+  peerASN: 64501
+  peerAddress: 192.168.1.1
+---
+apiVersion: metallb.io/v1beta1
+kind: BGPAdvertisement
+metadata:
+  name: example
+  namespace: metallb-system
