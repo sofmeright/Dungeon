@@ -17,8 +17,8 @@
         name: cifs-utils
         state: present
 ---
-- name: mount module Playbook
-  hosts: all
+- name: mount NAS storage
+  hosts: cell-membrane
   become: true
   vars:
     uri: "//172.22.22.101/timecapsule"
