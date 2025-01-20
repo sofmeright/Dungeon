@@ -39,3 +39,7 @@
       fstype: cifs
       opts: 'username={{ username }},password={{ password }}'
       state: mounted
+  - name: Synchronization of src on the control machine to dest on the remote hosts
+    ansible.posix.synchronize:
+      src: /mnt/timecapsule/Server/Web-App/NGINX/conf.d
+      dest: /etc/nginx/conf.d
