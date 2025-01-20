@@ -43,3 +43,4 @@
     ansible.posix.synchronize:
       src: /mnt/timecapsule/Server/Web-App/NGINX/conf.d
       dest: /etc/nginx/conf.d
+      delegate_to: "{{ inventory_hostname }}"
