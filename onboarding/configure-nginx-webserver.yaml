@@ -16,8 +16,7 @@
       apt:
         name: cifs-utils
         state: present
----
- - name: mount NAS storage
+    - name: mount NAS storage
       hosts: cell-membrane
       become: true
       vars:
