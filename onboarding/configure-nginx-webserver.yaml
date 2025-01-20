@@ -3,29 +3,30 @@
   hosts: cell-membrane
   become: true
   tasks: 
-- name: Ansible apt install nginx
-  apt:
-    name: nginx
-    state: present
-    update_cache: yes # Simulate apt-update on the first run.
-- name: Ansible apt install nginx-extras
-  apt:
-    name: nginx-extras
-    state: present
-- name: Ansible apt install cifs-utils
-  apt:
-    name: cifs-utils
-    state: present
----
-- name: mount NAS storage
-  hosts: cell-membrane
-  become: true
-  vars:
-    uri: "//172.22.22.101/timecapsule"
-  username: "kai"
-  password: "843Beatles!"
-  mountpoint: "/mnt/timecapsule"
-  tasks:
+    - name: Ansible apt install nginx
+      apt:
+        name: nginx
+        state: present
+        update_cache: yes # Simulate apt-update on the first run.
+# ---------------------------------------------------------------
+    - name: Ansible apt install nginx-extras
+      apt:
+        name: nginx-extras
+        state: present
+    - name: Ansible apt install cifs-utils
+      apt:
+        name: cifs-utils
+        state: present
+# ---------------------------------------------------------------
+    - name: mount NAS storage
+      hosts: cell-membrane
+      become: true
+      vars:
+        uri: "//172.22.22.101/timecapsule"
+        username: "kai"
+        password: "843Beatles!"
+        mountpoint: "/mnt/timecapsule"
+      tasks:
     - name: utility present
       ansible.builtin.package:
         name: cifs-utils
