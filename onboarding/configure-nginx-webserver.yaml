@@ -7,6 +7,7 @@
       apt:
         name: nginx
         state: present
+        update_cache: yes # Simulate apt-update on the first run.
     - name: Ansible apt install nginx-extras
       apt:
         name: nginx-extras
