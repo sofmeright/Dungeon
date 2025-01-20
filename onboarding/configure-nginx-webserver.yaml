@@ -13,3 +13,8 @@
         name: nginx-extras
         state: present
         register: inst_packages
+    - name: Ansible apt install cifs-utils
+      apt:
+        name: cifs-utils
+        state: present
+        register: inst_packages
