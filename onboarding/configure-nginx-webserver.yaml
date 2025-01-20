@@ -1,9 +1,13 @@
 ---
-- hosts: cell-membrane
-  tasks:
-  - name: Package installation
-    apt:
-      name:
-        - nginx
-        - nginx-extras
-      state: latest
+ - name: Playbook to configure NGINX Websever ("Cell-Membrane").
+   hosts: cell-membrane
+   become: true
+   tasks: 
+    - name: Ansible apt install nginx
+      apt:
+        name: nginx
+        state: present
+    - name: Ansible apt install nginx-extras
+      apt:
+        name: nginx-extras
+        state: present
