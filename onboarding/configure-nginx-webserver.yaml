@@ -16,30 +16,3 @@
       apt:
         name: cifs-utils
         state: present
-    - name: mount NAS storage
-      hosts: cell-membrane
-      become: true
-      vars:
-        uri: "//172.22.22.101/timecapsule"
-        username: "kai"
-        password: "843Beatles!"
-        mountpoint: "/mnt/timecapsule"
-      tasks:
-    - name: utility present
-      ansible.builtin.package:
-        name: cifs-utils
-        state: present
-    - name: check mountpoint exist
-      ansible.builtin.file:
-        path: "{{ mountpoint }}"
-        state: directory
-        mode: '0755'
-        owner: root
-        group: root
-    - name: Mount network share
-      ansible.posix.mount:
-        src: "{{ uri }}"
-        path: "{{ mountpoint }}"
-        fstype: cifs
-        opts: 'username={{ username }},password={{ password }}'
-        state: mounted
