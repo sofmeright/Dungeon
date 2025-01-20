@@ -1,14 +1,13 @@
 ---
-- name: Playbook to configure NGINX Websever ("Cell-Membrane").
-  hosts: cell-membrane
-  become: true
-  tasks: 
+ - name: Playbook to configure NGINX Websever ("Cell-Membrane").
+   hosts: cell-membrane
+   become: true
+   tasks: 
     - name: Ansible apt install nginx
       apt:
         name: nginx
         state: present
         update_cache: yes # Simulate apt-update on the first run.
-# ---------------------------------------------------------------
     - name: Ansible apt install nginx-extras
       apt:
         name: nginx-extras
@@ -17,8 +16,8 @@
       apt:
         name: cifs-utils
         state: present
-# ---------------------------------------------------------------
-    - name: mount NAS storage
+---
+ - name: mount NAS storage
       hosts: cell-membrane
       become: true
       vars:
