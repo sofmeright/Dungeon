@@ -17,6 +17,9 @@
     apt:
       name: nginx-extras
       state: present
+  - name: Generate Diffie-Hellman parameters with the default size (4096 bits)
+    openssl_dhparam:
+      path: /etc/nginx/dhparam.pem
   - name: Ansible apt install cifs-utils
     apt:
       name: cifs-utils
