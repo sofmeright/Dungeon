@@ -1,5 +1,4 @@
 apiVersion: v1
-kind: Kustomization
+kind: Namespace
 metadata:
-  name: metallb-kustomization
-namespace: metallb-system
+  name: metallb-system
