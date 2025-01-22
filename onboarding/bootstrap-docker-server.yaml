@@ -81,7 +81,7 @@
             dest: /usr/share/keyrings/nvidia-container-toolkit-keyring.asc
             mode: ugo+rw
         - name: dearmor the downloaded signing key file
-          shell: gpg --batch --dearmor -o /usr/share/keyrings/nvidia-container-toolkit-keyring.asc /usr/share/keyrings/nvidia-container-toolkit-keyring.gpg
+          shell: gpg --batch --dearmor -o /usr/share/keyrings/nvidia-container-toolkit-keyring.gpg /usr/share/keyrings/nvidia-container-toolkit-keyring.asc
           args:
             creates: /usr/share/keyrings/nvidia-container-toolkit-keyring.gpg
         - name: Download Nvidia Container Toolkit Source list
