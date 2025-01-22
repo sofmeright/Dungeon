@@ -78,8 +78,12 @@
         - name: Add Nvidia Container Toolkit key...
           ansible.builtin.get_url:
             url: https://nvidia.github.io/libnvidia-container/gpgkey
-            dest: /usr/share/keyrings/nvidia-container-toolkit-keyring.gpg
+            dest: /usr/share/keyrings/nvidia-container-toolkit-keyring.asc
             mode: ugo+rw
+        - name: dearmor the downloaded signing key file
+          shell: gpg --batch --dearmor -o /usr/share/keyrings/nvidia-container-toolkit-keyring.asc /usr/share/keyrings/nvidia-container-toolkit-keyring.gpg
+          args:
+            creates: /usr/share/keyrings/nvidia-container-toolkit-keyring.gpg
         - name: Download Nvidia Container Toolkit Source list
           become: yes
           get_url:
