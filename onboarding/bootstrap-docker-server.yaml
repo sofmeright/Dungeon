@@ -110,11 +110,7 @@
         state: present
 
     - name: install Nvidia Drivers
-      ansible.builtin.apt:
-        name:
-          - nvidia-driver-535-server
-          - nvidia-utils-535-server
-        state: present
+      shell: ubuntu-drivers autoinstall
       register: nvidia_driver_install
 
     - name: Reboot the machine if new Nvidia Drivers installed.
