@@ -58,7 +58,7 @@ windows_11:
       ansible_host: 172.22.22.144
     WaterLily:
       ansible_host: 172.22.22.142
-ubuntu_24_04:
+ubuntu_24_04_unclustered:
   hosts:
     cell-membrane:
       ansible_host: 172.22.22.104
@@ -68,6 +68,9 @@ ubuntu_24_04:
       ansible_host: 172.22.22.102
   children:
     ansible:
+ubuntu_24_04:
+  children:
+    ubuntu_24_04_unclustered:
     k8s_master:
     k8s_worker:
   vars:
@@ -89,9 +92,7 @@ linux_unclustered:
   children:
     ansible:
     proxmox_bs:
-    cell-membrane:
-    moor:
-    vineyard:
+    ubuntu_24_04_unclustered:
 proxmox_vms:
   children:
     ansible:
