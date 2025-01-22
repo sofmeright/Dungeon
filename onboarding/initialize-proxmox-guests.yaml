@@ -1,6 +1,6 @@
 ---
 - name: Playbook to configure NGINX Websever ("Cell-Membrane").
-  hosts: proxmox-guest
+  hosts: proxmox-vms
   become: true
   tasks: 
   - name: Ansible apt install qemu-guest-agent
