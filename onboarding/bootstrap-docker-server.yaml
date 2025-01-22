@@ -103,7 +103,7 @@
       ansible.builtin.apt:
         update_cache: yes
         
-    - name: install Nvidia Container Toolkit
+    - name: install Nvidia Container Toolkit, Cuda Toolkit, and Nvidia GDS.
       ansible.builtin.apt:
         name:
           - nvidia-container-toolkit
