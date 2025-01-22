@@ -72,7 +72,7 @@ linux:
   children:
     proxmox:
     ubuntu_24_04:
-proxmox-vms:
+proxmox_vms:
   chilren:
     k8s_master:
     k8s_worker:
