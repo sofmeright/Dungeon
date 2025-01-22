@@ -75,15 +75,31 @@
             
     - name: Install the Keys and Source for Nvidia Container Toolkit.
       block:
-        - name: Add Docker's official GPG key...
+        - name: Add Nvidia Container Toolkit key...
           ansible.builtin.get_url:
             url: https://nvidia.github.io/libnvidia-container/gpgkey
             dest: /usr/share/keyrings/nvidia-container-toolkit-keyring.gpg
-        - name: Add Docker's | apt source
-          ansible.builtin.apt_repository:
-            repo: "deb [arch=amd64 /usr/share/keyrings/nvidia-container-toolkit-keyring.gpg] https://nvidia.github.io/libnvidia-container/stable/deb/nvidia-container-toolkit.list {{ ansible_distribution_release }} stable"
-            state: present
+        - name: Download Nvidia Container Toolkit Source list
+          become: yes
+          get_url:
+            url: https://nvidia.github.io/libnvidia-container/stable/deb/nvidia-container-toolkit.list
+            dest: /etc/apt/sources.list.d/nvidia-container-toolkit.list
+            mode: 0755
+        - name: Ansible- Fix the source list
+          replace:
+            path: /etc/apt/sources.list.d/nvidia-container-toolkit.list
+            regexp: 'deb https://'
+            replace: "deb [signed-by=/usr/share/keyrings/nvidia-container-toolkit-keyring.gpg"
 
+    - name: update apt cache
+      ansible.builtin.apt:
+        update_cache: yes
+        
+    - name: install Nvidia Container Toolkit
+      ansible.builtin.apt:
+        name:
+          - nvidia-container-toolkit
+        state: present
 
 
 
