@@ -89,7 +89,9 @@ linux_unclustered:
   children:
     ansible:
     proxmox_bs:
-    ubuntu_24_04:
+    cell-membrane:
+    moor:
+    vineyard:
 proxmox_vms:
   children:
     ansible:
