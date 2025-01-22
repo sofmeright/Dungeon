@@ -3,6 +3,15 @@
   hosts: moor
   become: true
   tasks: 
+    - name: Install ca-certificates
+      apt:
+        name: ca-certificates
+        state: present
+        update_cache: yes # Simulate apt-update on the first run.
+    - name: Install curl
+      apt:
+        name: curl
+        state: present
     - name: Install Docker
       block:
         - name: Add Docker's official GPG key...
