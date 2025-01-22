@@ -1,0 +1,10 @@
+---
+- name: Playbook to configure Docker Server ("moor").
+  hosts: moor
+  become: true
+  tasks: 
+  - name: Ansible apt install nvidia-smi
+    apt:
+      name: nvidia-smi
+      state: present
+      update_cache: yes # Simulate apt-update on the first run.
