@@ -79,12 +79,12 @@
           ansible.builtin.get_url:
             url: https://nvidia.github.io/libnvidia-container/gpgkey
             dest: /usr/share/keyrings/nvidia-container-toolkit-keyring.gpg
+            mode: ugo+rw
         - name: Download Nvidia Container Toolkit Source list
           become: yes
           get_url:
             url: https://nvidia.github.io/libnvidia-container/stable/deb/nvidia-container-toolkit.list
             dest: /etc/apt/sources.list.d/nvidia-container-toolkit.list
-            mode: ugo+rw
         - name: Ansible- Fix the source list
           replace:
             path: /etc/apt/sources.list.d/nvidia-container-toolkit.list
