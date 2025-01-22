@@ -16,6 +16,8 @@ proxmox_bs:
   hosts:
     priscilla:
       ansible_host: 172.22.22.51
+  vars:
+    ansible_user: root
 ansible:
   hosts:
     localhost:
