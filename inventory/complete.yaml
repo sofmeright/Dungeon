@@ -74,12 +74,16 @@ ubuntu_24_04:
     ansible_user: kai
 linux:
   children:
+    ansible:
+    k8s_master:
+    k8s_worker:
     proxmox:
+    proxmox_bs:
     ubuntu_24_04:
 proxmox_vms:
   children:
+    ansible:
     k8s_master:
     k8s_worker:
-    ansible:
-    ubuntu_24_04:
     proxmox_bs:
+    ubuntu_24_04:
