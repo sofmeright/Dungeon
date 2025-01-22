@@ -72,3 +72,10 @@ linux:
   children:
     proxmox:
     ubuntu_24_04:
+proxmox-vms:
+  chilren:
+    k8s_master:
+    k8s_worker:
+    ansible:
+    ubuntu_24_04:
+    priscilla:
