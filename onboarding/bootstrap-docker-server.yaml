@@ -5,7 +5,7 @@
   tasks: 
     - name: Install Docker
       block:
-        - name: Add Docker's official GPG key:
+        - name: Add Docker's official GPG key...
           ansible.builtin.get_url:
             url: https://download.docker.com/linux/ubuntu/gpg
             dest: /etc/apt/keyrings/docker.asc
