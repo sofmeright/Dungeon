@@ -10,10 +10,11 @@ proxmox:
       ansible_host: 172.22.22.6
     eggplant:
       ansible_host: 172.22.22.7
-    priscilla:
-      ansible_host: 172.22.22.51
   vars:
     ansible_user: root
+proxmox_bs:
+    priscilla:
+      ansible_host: 172.22.22.51
 ansible:
   hosts:
     localhost:
