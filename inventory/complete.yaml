@@ -80,6 +80,16 @@ linux:
     proxmox:
     proxmox_bs:
     ubuntu_24_04:
+linux_clustered:
+  children:
+    k8s_master:
+    k8s_worker:
+    proxmox:
+linux_unclustered:
+  children:
+    ansible:
+    proxmox_bs:
+    ubuntu_24_04:
 proxmox_vms:
   children:
     ansible:
