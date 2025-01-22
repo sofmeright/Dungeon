@@ -108,7 +108,6 @@
         name:
           - nvidia-container-toolkit
           - nvidia-cuda-toolkit
-          - nvidia-gds
         state: present
 
     - name: install Nvidia Drivers
