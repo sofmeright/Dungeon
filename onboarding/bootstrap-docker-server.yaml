@@ -107,7 +107,7 @@
       ansible.builtin.apt:
         name:
           - nvidia-container-toolkit
-          - cuda-toolkit
+          - nvidia-cuda-toolkit
           - nvidia-gds
         state: present
 
