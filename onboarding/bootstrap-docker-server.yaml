@@ -84,6 +84,10 @@
           shell: gpg --batch --dearmor -o /usr/share/keyrings/nvidia-container-toolkit-keyring.gpg /usr/share/keyrings/nvidia-container-toolkit-keyring.asc
           args:
             creates: /usr/share/keyrings/nvidia-container-toolkit-keyring.gpg
+        - name: Delete unneeded pre dearmor key.
+          ansible.builtin.file:
+            state: absent
+            path: /usr/share/keyrings/nvidia-container-toolkit-keyring.asc
         - name: Download Nvidia Container Toolkit Source list
           become: yes
           get_url:
