@@ -109,6 +109,12 @@
           - nvidia-container-toolkit
         state: present
 
+    - name: install Nvidia Drivers
+      ansible.builtin.apt:
+        name:
+          - nvidia-utils-550-server
+        state: present
+
 
 
 
