@@ -107,6 +107,8 @@
       ansible.builtin.apt:
         name:
           - nvidia-container-toolkit
+          - cuda-toolkit
+          - nvidia-gds
         state: present
 
     - name: install Nvidia Drivers
