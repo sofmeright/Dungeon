@@ -1,5 +1,5 @@
 ---
-- name: Playbook to configure NGINX Websever ("Cell-Membrane").
+- name: Playbook to prepare Proxmox VMs.
   hosts: proxmox-vms
   become: true
   tasks: 
