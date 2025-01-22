@@ -43,6 +43,8 @@ ubuntu_24_04:
   hosts:
     cell-membrane:
       ansible_host: 172.22.22.104
+    dock:
+      ansible_host: 172.22.22.236
     moor:
       ansible_host: 172.22.22.123
     vineyard:
