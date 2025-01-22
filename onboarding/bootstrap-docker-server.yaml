@@ -114,9 +114,9 @@
         name:
           - nvidia-utils-550-server
         state: present
-      register: nvidia-driver-install
+      register: nvidia_driver_install
 
     - name: Reboot the machine if new Nvidia Drivers installed.
       ansible.builtin.reboot:
-      when: nvidia-driver-install.changed
+      when: nvidia_driver_install.changed
 
