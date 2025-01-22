@@ -73,7 +73,7 @@ linux:
     proxmox:
     ubuntu_24_04:
 proxmox_vms:
-  chilren:
+  children:
     k8s_master:
     k8s_worker:
     ansible:
