@@ -20,7 +20,7 @@ proxmox_bs:
     ansible_user: root
 ansible:
   hosts:
-    localhost:
+    ant_parade:
       ansible_host: 172.22.22.110
 k8s_master:
   hosts:
