@@ -82,4 +82,4 @@ proxmox_vms:
     k8s_worker:
     ansible:
     ubuntu_24_04:
-    priscilla:
+    proxmox_bs:
