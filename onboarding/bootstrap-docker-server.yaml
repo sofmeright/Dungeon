@@ -84,7 +84,7 @@
           get_url:
             url: https://nvidia.github.io/libnvidia-container/stable/deb/nvidia-container-toolkit.list
             dest: /etc/apt/sources.list.d/nvidia-container-toolkit.list
-            mode: 0755
+            mode: ugo+rw
         - name: Ansible- Fix the source list
           replace:
             path: /etc/apt/sources.list.d/nvidia-container-toolkit.list
