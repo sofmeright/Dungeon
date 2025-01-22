@@ -89,7 +89,7 @@
           replace:
             path: /etc/apt/sources.list.d/nvidia-container-toolkit.list
             regexp: 'deb https://'
-            replace: "deb [signed-by=/usr/share/keyrings/nvidia-container-toolkit-keyring.gpg"
+            replace: "deb [signed-by=/usr/share/keyrings/nvidia-container-toolkit-keyring.gpg] https://"
 
     - name: update apt cache
       ansible.builtin.apt:
