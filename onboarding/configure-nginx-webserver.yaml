@@ -5,7 +5,7 @@
   vars:
     uri: "//172.22.22.101/timecapsule"
     username: "kai253"
-    password: "843Beatles!"
+    password: ""
     mountpoint: "/mnt/timecapsule"
   tasks: 
   - name: Ansible apt install nginx
