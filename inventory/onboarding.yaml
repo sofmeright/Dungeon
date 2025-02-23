@@ -41,6 +41,8 @@ ubuntu_24_04:
     k8s_master:
     k8s_worker:
   hosts:
+    dark:
+      ansible_host: 172.22.22.105
     cell-membrane:
       ansible_host: 172.22.22.104
     dock:
