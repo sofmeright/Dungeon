@@ -1,7 +1,8 @@
 echo Register the KMS Server.
 slmgr.vbs /skms 10.55.6.123:1688
-echo Register Windows KMS License Key
-slmgr.vbs /ipk W269N-WFGWX-YVC9B-4J6C9-T83GX
+echo Register Windows KMS License Key (Windows Server 2025 Standard   | TVRH6-WHNXV-R9WG3-9XRFY-MY832 | Windows Server 2025 Datacenter ...
+echo ... | D764K-2NDRG-47T6Q-P8T8W-YP6DF | Windows Server 2025 Datacenter: Azure Edition | XGN3F-F394H-FD2MY-PP6FD-8MCRC)
+slmgr.vbs /ipk XGN3F-F394H-FD2MY-PP6FD-8MCRC
 echo Activate Windows...
 Slmgr.vbs /ato
 echo Confirm Activation Status...
