@@ -4,7 +4,13 @@
   hosts: linux
   become: true
   tasks: 
-
+    - name: Copy file with owner and permissions
+      ansible.builtin.copy:
+        src: apps/pi-hole/docker-compose.yaml
+        dest: apps/pi-hole/docker-compose.yaml
+        owner: foo
+        group: foo
+        mode: '0644'
     - name: deploy Docker Compose stack
       community.docker.docker_compose_v2:
         project_src: apps/pi-hole
