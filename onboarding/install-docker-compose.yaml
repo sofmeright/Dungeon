@@ -71,4 +71,6 @@
         name: "{{ ansible_user_id }}"
         groups: docker
         append: yes
-
+    - name: Reboot machine and send a message
+      ansible.builtin.reboot:
+        msg: "Rebooting machine so that docker commands will work without sudo."
