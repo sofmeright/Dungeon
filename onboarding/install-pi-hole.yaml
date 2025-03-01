@@ -6,7 +6,7 @@
   tasks: 
     - name: Copy file with owner and permissions
       ansible.builtin.copy:
-        src: apps/pi-hole/docker-compose.yaml
+        src: ../apps/pi-hole/docker-compose.yaml
         dest: apps/pi-hole/docker-compose.yaml
         owner: foo
         group: foo
