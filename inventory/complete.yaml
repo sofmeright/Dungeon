@@ -62,12 +62,12 @@ windows_11:
       ansible_host: 10.13.37.142
 ubuntu_24_04_unclustered:
   hosts:
-    dark:
-      ansible_host: 10.1.1.2
     cell-membrane:
       ansible_host: 10.40.9.104
     dock:
       ansible_host: 10.55.6.136
+    homing-pidgeon:
+      ansible_host: 10.1.1.2
     jabu-jabu:
       ansible_host: 10.30.8.98
     jalapeno:
