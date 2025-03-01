@@ -72,8 +72,16 @@ ubuntu_24_04_unclustered:
       ansible_host: 10.30.8.98
     jalapeno:
       ansible_host: 10.13.37.25
+    marina:
+      ansible_host: 10.55.6.123
     moor:
       ansible_host: 10.30.1.123
+    pirates-wdda:
+      ansible_host: 10.161.80.33
+    phloem:
+      ansible_host: 10.4.20.69
+    the-usual-suspect:
+      ansible_host: 10.1.1.1
     vineyard:
       ansible_host: 10.30.1.102
     xylem: 
