@@ -69,11 +69,6 @@ ubuntu_24_04:
 ubuntu:
   children:
     ubuntu_24_04:
-  vars:
-    ansible_user: kai
-    # These passwords should be removed after you enable ssh key based access!
-    ansible_password: password
-    ansible_become_pass: password
 windows_10:
   hosts:
     LeafBlower:
