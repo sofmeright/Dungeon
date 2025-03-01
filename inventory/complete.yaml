@@ -100,7 +100,6 @@ linux_clustered:
     proxmox:
 linux_unclustered:
   children:
-    ansible:
     proxmox_bs:
     ubuntu_24_04_unclustered:
 proxmox_vms:
