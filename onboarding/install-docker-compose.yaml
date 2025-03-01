@@ -1,6 +1,6 @@
 ---
 - name: Playbook to configure Docker Server ("moor").
-  hosts: dock
+  hosts: linux
   become: true
   tasks: 
     - name: update apt cache
