@@ -7,12 +7,12 @@
     - name: Copy file with owner and permissions
       ansible.builtin.copy:
         src: ../apps/pi-hole/docker-compose.yaml
-        dest: ~/apps/pi-hole/docker-compose.yaml
+        dest: /root/apps/pi-hole/docker-compose.yaml
         owner: foo
         group: foo
         mode: '0644'
     - name: deploy Docker Compose stack
       community.docker.docker_compose_v2:
-        project_src: ~/apps/pi-hole
+        project_src: /root/apps/pi-hole/
         files:
         - docker-compose.yaml
