@@ -1,7 +1,7 @@
 # To use this we run -> ansible-playbook --limit linux -i inventory/complete.yaml maintenance/update-hosts-linux.yaml
 ---
 - name: Linux OS Upgrade
-  hosts: linux_unclustered:!ansible
+  hosts: linux_unclustered,!ansible
   gather_facts: yes
   become: yes
 
