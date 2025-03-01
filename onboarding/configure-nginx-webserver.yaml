@@ -1,6 +1,6 @@
 ---
 - name: Playbook to configure NGINX Websever ("Cell-Membrane").
-  hosts: cell-membrane
+  hosts: linux
   become: true
   vars:
     uri: "//172.22.22.101/timecapsule"
