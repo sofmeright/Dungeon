@@ -22,6 +22,8 @@ ansible:
   hosts:
     ant_parade:
       ansible_host: 10.30.1.111
+  vars:
+    ansible_user: kai
 k8s_master:
   hosts:
     dungeon_map_001:
