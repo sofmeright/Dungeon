@@ -1,5 +1,5 @@
 ---
-- name: Playbook to configure Docker Server ("moor").
+- name: Playbook to install docker compose.
   hosts: linux
   become: true
   tasks: 
