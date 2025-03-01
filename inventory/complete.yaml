@@ -15,13 +15,13 @@ proxmox:
 proxmox_bs:
   hosts:
     priscilla:
-      ansible_host: 172.22.22.51
+      ansible_host: 172.22.181.51
   vars:
     ansible_user: root
 ansible:
   hosts:
     ant_parade:
-      ansible_host: 172.22.22.110
+      ansible_host: 10.30.1.111
 k8s_master:
   hosts:
     dungeon_map_001:
@@ -49,15 +49,15 @@ k8s_worker:
 windows_10:
   hosts:
     LeafBlower:
-      ansible_host: 172.22.22.145
+      ansible_host: 10.13.37.145
 windows_11:
   hosts:
     Glicynia:
-      ansible_host: 172.22.22.143
+      ansible_host: 10.13.37.143
     Wisteria:
-      ansible_host: 172.22.22.144
+      ansible_host: 10.13.37.144
     WaterLily:
-      ansible_host: 172.22.22.142
+      ansible_host: 10.13.37.142
 ubuntu_24_04_unclustered:
   hosts:
     dark:
@@ -67,15 +67,15 @@ ubuntu_24_04_unclustered:
     dock:
       ansible_host: 172.22.22.136
     jabu-jabu:
-      ansible_host: 172.122.122.142
+      ansible_host: 10.30.8.98
     jalapeno:
       ansible_host: 10.13.37.25
     moor:
-      ansible_host: 172.22.22.123
+      ansible_host: 10.55.6.123
     vineyard:
       ansible_host: 172.22.22.102
     xylem: 
-      ansible_host: 172.122.122.104
+      ansible_host: 10.24.96.9
   children:
     ansible:
 ubuntu_24_04:
