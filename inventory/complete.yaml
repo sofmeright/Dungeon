@@ -61,19 +61,19 @@ windows_11:
 ubuntu_24_04_unclustered:
   hosts:
     dark:
-      ansible_host: 172.22.22.105
+      ansible_host: 10.1.1.2
     cell-membrane:
-      ansible_host: 172.22.22.104
+      ansible_host: 10.40.9.104
     dock:
-      ansible_host: 172.22.22.136
+      ansible_host: 10.55.6.136
     jabu-jabu:
       ansible_host: 10.30.8.98
     jalapeno:
       ansible_host: 10.13.37.25
     moor:
-      ansible_host: 10.55.6.123
+      ansible_host: 10.30.1.123
     vineyard:
-      ansible_host: 172.22.22.102
+      ansible_host: 10.30.1.102
     xylem: 
       ansible_host: 10.24.96.9
   children:
