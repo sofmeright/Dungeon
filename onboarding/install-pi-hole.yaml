@@ -1,0 +1,5 @@
+- name: deploy Docker Compose stack
+  community.docker.docker_compose_v2:
+    project_src: /apps/pi-hole
+    files:
+    - docker-compose.yml
