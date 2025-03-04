@@ -1,0 +1,31 @@
+server {
+    listen 80;
+    server_name	ls.sofmeright.com;
+    return 301 https://$server_name$request_uri;
+}
+server {
+    listen 443 ssl;
+    server_name ls.sofmeright.com;
+    ssl_certificate /etc/letsencrypt/live/sofmeright.com/fullchain.pem; # managed by Certbot
+    ssl_certificate_key /etc/letsencrypt/live/sofmeright.com/privkey.pem; # managed by Certbot
+    root /mnt/timecapsule/Server/Web-App/NGINX/_error_pages/back2thefuture;
+    location /_error_pages {
+        alias /mnt/timecapsule/Server/Web-App/NGINX/_error_pages/;
+        try_files $uri $uri/ =404;
+    } 
+
+  error_page 400 /403.html;
+  error_page 401 /403.html;
+  error_page 402 /403.html;
+  error_page 403 /403.html;
+  error_page 404 /404.html;
+  error_page 405 /404.html;
+  error_page 406 /404.html;
+  location = /400.html { root  /mnt/timecapsule/Server/Web-App/NGINX/_error_pages/back2thefuture; }
+  location = /401.html { root  /mnt/timecapsule/Server/Web-App/NGINX/_error_pages/back2thefuture; }
+  location = /402.html { root  /mnt/timecapsule/Server/Web-App/NGINX/_error_pages/back2thefuture; }
+  location = /403.html { root  /mnt/timecapsule/Server/Web-App/NGINX/_error_pages/back2thefuture; }
+  location = /404.html { root  /mnt/timecapsule/Server/Web-App/NGINX/_error_pages/back2thefuture; }
+  location = /405.html { root  /mnt/timecapsule/Server/Web-App/NGINX/_error_pages/back2thefuture; }
+  location = /406.html { root  /mnt/timecapsule/Server/Web-App/NGINX/_error_pages/back2thefuture; }
+}
