@@ -1,6 +1,7 @@
 services:
   # uncomment this section and comment out the mysql section to use postgres instead of mysql
-  postgres:
+  semaphore-ui-db:
+    container_name: semaphore-ui-db
     env_file: stack.env
     environment:
       POSTGRES_USER: $POSTGRES_USER_NAME
@@ -24,20 +25,10 @@ services:
       #MYSQL_DATABASE: semaphore
       #MYSQL_USER: semaphore
       #MYSQL_PASSWORD: REDACTED_MYSQL_PASSWORD
-  semaphore:
-    restart: unless-stopped
-    ports:
-      - 3000:3000
-    image: semaphoreui/semaphore:latest
-    user: "${UID}:${GID}"
-    volumes: 
-      - /opt/docker/semaphore/playbook:/tmp/semaphore/  
-      - /opt/docker/semaphore/config.json:/etc/semaphore/config.json:ro
-      - /opt/docker/semaphore/.ssh:/root/.ssh 
-      #- /mnt/app_data/Server/_docker_stack/semaphore/ansible.cfg:/etc/ansible/ansible.cfg:ro
-      #- /mnt/app_data/Server/Web-App/_docker-stack/semaphore/inventory/:/inventory:ro 
-      #- /mnt/app_data/Server/Web-App/_docker-stack/semaphore/authorized-keys/:/authorized-keys:ro
-      #- /mnt/app_data/Server/Web-App/_docker-stack/semaphore/config/:/etc/semaphore:rw
+  semaphore-ui-app:
+    container_name: semaphore-ui-app
+    depends_on:
+      - semaphore-ui-db # for postgres, change to: postgres
     env_file: stack.env
     environment:
       SEMAPHORE_WEB_ROOT: https://ansible.pcfae.com
@@ -64,5 +55,16 @@ services:
       SEMAPHORE_LDAP_DN_SEARCH: 'dc=local,dc=example,dc=com'
       SEMAPHORE_LDAP_SEARCH_FILTER: "(\u0026(uid=%s)(memberOf=cn=ipausers,cn=groups,cn=accounts,dc=local,dc=example,dc=com))"
       TZ: Etc/UTC
-    depends_on:
-      - postgres # for postgres, change to: postgres
+    image: semaphoreui/semaphore:latest
+    ports:
+      - 3000:3000
+    restart: unless-stopped
+    user: "${UID}:${GID}"
+    volumes: 
+      - /opt/docker/semaphore/playbook:/tmp/semaphore/  
+      - /opt/docker/semaphore/config.json:/etc/semaphore/config.json:ro
+      - /opt/docker/semaphore/.ssh:/root/.ssh 
+      #- /mnt/app_data/Server/_docker_stack/semaphore/ansible.cfg:/etc/ansible/ansible.cfg:ro
+      #- /mnt/app_data/Server/Web-App/_docker-stack/semaphore/inventory/:/inventory:ro 
+      #- /mnt/app_data/Server/Web-App/_docker-stack/semaphore/authorized-keys/:/authorized-keys:ro
+      #- /mnt/app_data/Server/Web-App/_docker-stack/semaphore/config/:/etc/semaphore:rw
