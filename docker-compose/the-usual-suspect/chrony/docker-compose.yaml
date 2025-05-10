@@ -1,0 +1,27 @@
+services:
+  chrony:
+    image: simonrupf/chronyd:latest
+    container_name: chrony
+    #devices:
+    #   - /dev/ptp0:/dev/ptp0
+    restart: always
+    ports:
+      - 123:123/udp
+    environment:
+      #- ENABLE_NTS=true
+      - ENABLE_SYSCLK=true
+      - LOG_LEVEL=0
+      #- NOCLIENTLOG=true
+      - NTP_SERVERS="0.us.pool.ntp.org,1.us.pool.ntp.org,2.us.pool.ntp.org,3.us.pool.ntp.org,2.debian.pool.ntp.org,the-usual-suspect,homing-pigeon,avocado,bamboo,cosmos,dragonfruit,eggplant"
+      - TZ=Etc/UTC
+    #volumes:
+      #- /opt/docker/chrony/chrony.conf:/etc/chrony/chrony.conf
+      #- /opt/docker/chrony/chrony.keys:/etc/chrony/chrony.keys
+    cap_add:
+      - SYS_TIME
+    network_mode: bridge
+    read_only: true
+    tmpfs:
+      - /etc/chrony:rw,mode=1750
+      - /run/chrony:rw,mode=1750
+      - /var/lib/chrony:rw,mode=1750
