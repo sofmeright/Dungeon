@@ -1,5 +1,6 @@
 services:
   vlmcsd:
+    env_file: stack.env
     #environment:
         #- TestingVar=
     image: mikolatero/vlmcsd
