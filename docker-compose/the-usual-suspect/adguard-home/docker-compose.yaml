@@ -3,7 +3,7 @@ services:
         container_name: adguardhome
         env_file: stack.env
         environment:
-            - TestingVar
+            - TestingVar=djhsklaghlkjga
         image: adguard/adguardhome
         ports:
             - '5443:5443/udp'
