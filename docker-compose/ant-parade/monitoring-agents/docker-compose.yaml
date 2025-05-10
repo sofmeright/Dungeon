@@ -1,23 +1,7 @@
 services:
 
   beszel-agent:
-    image: henrygd/beszel-agent:latest #customgpu  #latest
     container_name: beszel-agent
-    restart: unless-stopped
-    network_mode: host
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock:ro
-      - /opt/docker/beszel/agent/data/:/extra-filesystems/data:ro
-    env_file: beszel-agent_secret.env
-    environment:
-      PORT: 45876
-      # Do not remove quotes around the key
-      # KEY: 'UPDATE WITH YOUR PUBLIC KEY (copy from "Add system" dialog)'
-      KEY: '$BESZEL_KEY'
-    #  NVIDIA_VISIBLE_DEVICES: "all"
-    #  NVIDIA_DRIVER_CAPABILITIES: "all"
-    # Uncomment the lines below to use Nvidia GPUs for Hardware Transcoding
-    #runtime: nvidia
     #deploy:
     #  resources:
     #    reservations:
@@ -25,6 +9,15 @@ services:
     #        - driver: nvidia
     #          count: 1
     #          capabilities: [gpu]
+    env_file: beszel-agent_secret.env
+    environment:
+      # Do not remove quotes around the key
+      # KEY: 'UPDATE WITH YOUR PUBLIC KEY (copy from "Add system" dialog)'
+      KEY: '$BESZEL_KEY'
+    #  NVIDIA_DRIVER_CAPABILITIES: "all"
+    #  NVIDIA_VISIBLE_DEVICES: "all"
+      PORT: 45876
+    image: henrygd/beszel-agent:latest #customgpu  #latest
     #logging: &logging
     #  driver: "loki"
     #  options:
@@ -36,33 +29,40 @@ services:
     #    loki-retries: "2"
     #    loki-max-backoff: "800ms"
     #    loki-timeout: "1s"
+    network_mode: host
+    restart: unless-stopped
+    # Uncomment the lines below to use Nvidia GPUs for Hardware Transcoding
+    #runtime: nvidia
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /opt/docker/beszel/agent/data/:/extra-filesystems/data:ro
       
   cadvisor:
     #logging: *logging
-    image: gcr.io/cadvisor/cadvisor:v0.52.1
-    container_name: cadvisor
     command:
       - '-port=8098'
+    container_name: cadvisor
+    devices:
+      - /dev/kmsg
+    environment:
+      - 'CADVISOR_HEALTHCHECK_URL=http://localhost:8098/healthz'
+    image: gcr.io/cadvisor/cadvisor:v0.52.1
     ports:
       - 8098:8098
+    privileged: true
+    restart: always
     volumes:
       - /:/rootfs:ro
       - /var/run:/var/run:ro
       - /sys:/sys:ro
       - /var/lib/docker/:/var/lib/docker:ro
       - /dev/disk/:/dev/disk:ro
-    devices:
-      - /dev/kmsg
-    privileged: true
-    restart: always
-    environment:
-      - 'CADVISOR_HEALTHCHECK_URL=http://localhost:8098/healthz'
     
   node_exporter:
     #logging: *logging
-    image: quay.io/prometheus/node-exporter:v1.5.0
-    container_name: node_exporter
     command: '--path.rootfs=/host'
+    container_name: node_exporter
+    image: quay.io/prometheus/node-exporter:v1.5.0
     pid: host
     ports:
       - 9100:9100
