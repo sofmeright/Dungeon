@@ -8,7 +8,7 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - /opt/docker/beszel/agent/data/:/extra-filesystems/data:ro
-    env_file: stack.env
+    env_file: beszel-agent_secret.env
     environment:
       PORT: 45876
       # Do not remove quotes around the key
