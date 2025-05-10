@@ -1,6 +1,6 @@
 services:
   vlmcsd:
-    env_file: stack.env
+    env_file: /opt/docker/vlmcsd/special.env
     #environment:
         #- TestingVar=
     image: mikolatero/vlmcsd
