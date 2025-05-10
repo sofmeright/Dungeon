@@ -1,7 +1,7 @@
 services:
     adguardhome:
         container_name: adguardhome
-        env_file: stack.env
+        env_file: .env
         environment:
             - TestingVar=djhsklaghlkjga
         image: adguard/adguardhome
