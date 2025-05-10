@@ -1,6 +1,8 @@
 services:
     adguardhome:
         container_name: adguardhome
+        environment:
+            - TestingVar
         image: adguard/adguardhome
         ports:
             - '5443:5443/udp'
