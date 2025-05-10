@@ -1,5 +1,7 @@
 services:
   vlmcsd:
+    environment:
+        - TestingVar=
     image: mikolatero/vlmcsd
     container_name: vlmcsd
     ports:
