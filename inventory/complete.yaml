@@ -84,6 +84,8 @@ ubuntu_24_04_unclustered:
       ansible_host: 10.30.8.98
 #    jalapeno:
 #      ansible_host: 10.13.37.25
+    lighthouse:
+      ansible_host: 10.55.6.137
     marina:
       ansible_host: 10.55.6.123
     moor:
