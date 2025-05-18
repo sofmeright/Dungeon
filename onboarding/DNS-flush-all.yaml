@@ -6,9 +6,10 @@
   tasks: 
     - name: Restarting AdGuard Node 1.
       community.docker.docker_container:
+        image: adguard/adguardhome
         name: adguard
-        state: started
         restart: true
+        state: started
 
 - name: Flushing DNS - 2/3 - Restarting Adguard Node 2 to flush all DNS changes
   hosts: "homing-pigeon"
@@ -16,9 +17,10 @@
   tasks: 
     - name: Restarting AdGuard Node 2.
       community.docker.docker_container:
+        image: adguard/adguardhome
         name: adguard
-        state: started
         restart: true
+        state: started
 
 - name: Flushing DNS - 3/3 - Flushing DNS changes for all ubuntu machines.
   hosts: "ubuntu_24_04,!the-usual-suspect,!homing-pigeon"
