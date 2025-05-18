@@ -95,7 +95,7 @@ ubuntu_24_04_unclustered:
     phloem:
       ansible_host: phloem
     the-usual-suspect:
-      ansible_host: the-usual-suspect
+      ansible_host: the-usual-suspect.prplanit.internal
     vineyard:
       ansible_host: vineyard
     xylem: 
