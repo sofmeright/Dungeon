@@ -1,65 +1,65 @@
 proxmox:
   hosts:
     avocado:
-      ansible_host: 172.22.22.3
+      ansible_host: avocado
     bamboo:
-      ansible_host: 172.22.22.4
+      ansible_host: bamboo
     cosmos:
-      ansible_host: 172.22.22.5
+      ansible_host: cosmos
     dragonfruit:
-      ansible_host: 172.22.22.6
+      ansible_host: dragonfruit
     eggplant:
-      ansible_host: 172.22.22.7
+      ansible_host: eggplant
   vars:
     ansible_user: root
 proxmox_bs:
   hosts:
     priscilla:
-      ansible_host: 172.22.181.51
+      ansible_host: priscilla
   vars:
     ansible_user: root
 ansible:
   hosts:
     ant_parade:
-      ansible_host: 10.30.1.111
+      ansible_host: ant-parade
   vars:
     ansible_user: kai
 k8s_master:
   hosts:
     dungeon_map_001:
-      ansible_host: 172.22.22.150
+      ansible_host: dungeon-map-001
     dungeon_map_002:
-      ansible_host: 172.22.22.151
+      ansible_host: dungeon-map-002
     dungeon_map_003:
-      ansible_host: 172.22.22.152
+      ansible_host: dungeon-map-003
     dungeon_map_004:
-      ansible_host: 172.22.22.153
+      ansible_host: dungeon-map-004
     dungeon_map_005:
-      ansible_host: 172.22.22.154
+      ansible_host: dungeon-map-005
 k8s_worker:
   hosts:
     dungeon_worker_001:
-      ansible_host: 172.22.22.175
+      ansible_host: dungeon-worker-001
     dungeon_worker_002:
-      ansible_host: 172.22.22.176
+      ansible_host: dungeon-worker-002
     dungeon_worker_003:
-      ansible_host: 172.22.22.177
+      ansible_host: dungeon-worker-003
     dungeon_worker_004:
-      ansible_host: 172.22.22.178
+      ansible_host: dungeon-worker-004
     dungeon_worker_005:
-      ansible_host: 172.22.22.179
+      ansible_host: dungeon-worker-005
 windows_10:
   hosts:
     LeafBlower:
-      ansible_host: 10.13.37.145
+      ansible_host: LeafBlower
 windows_11:
   hosts:
     Glicynia:
-      ansible_host: 10.13.37.143
+      ansible_host: Glicynia
     Wisteria:
-      ansible_host: 10.13.37.144
+      ansible_host: Wisteria
     WaterLily:
-      ansible_host: 10.13.37.142
+      ansible_host: WaterLily
 ubuntu_24_04_unclustered:
   hosts:
 #    auger:
@@ -69,35 +69,37 @@ ubuntu_24_04_unclustered:
 #    caterpillarinc:
 #      ansible_host: 172.22.22.52
     cell-membrane:
-      ansible_host: 10.40.9.104
+      ansible_host: cell-membrane
 #    dibbler:
 #      ansible_host: 172.22.22.53
     dock:
-      ansible_host: 10.55.6.136
+      ansible_host: dock
 #    edgetrimmer:
 #      ansible_host: 172.22.22.54
     harbormaster:
-      ansible_host: 10.24.7.55
+      ansible_host: harbormaster
     homing-pigeon:
-      ansible_host: 10.0.0.2
+      ansible_host: homing-pigeon
     jabu-jabu:
-      ansible_host: 10.30.8.98
+      ansible_host: jabu-jabu
 #    jalapeno:
 #      ansible_host: 10.13.37.25
+    lighthouse:
+      ansible_host
     marina:
-      ansible_host: 10.55.6.123
+      ansible_host: marina
     moor:
-      ansible_host: 10.30.1.123
+      ansible_host: moor
     pirates-wdda:
-      ansible_host: 10.161.80.33
+      ansible_host: pirates-wdda
     phloem:
-      ansible_host: 10.4.20.69
+      ansible_host: phloem
     the-usual-suspect:
-      ansible_host: 10.0.0.1
+      ansible_host: the-usual-suspect
     vineyard:
-      ansible_host: 10.30.1.102
+      ansible_host: vineyard
     xylem: 
-      ansible_host: 10.24.96.9
+      ansible_host: xylem
 ubuntu_24_04:
   children:
     ubuntu_24_04_unclustered:
