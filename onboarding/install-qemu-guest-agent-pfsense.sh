@@ -1,5 +1,8 @@
 #!/bin/sh
 
+# To use: 
+# curl -LJO https://gitlab.prplanit.com/precisionplanit/ant_parade-public/-/raw/main/onboarding/install-qemu-guest-agent-pfsense.sh && chmod +x install-qemu-guest-agent.sh && ./install-qemu-guest-agent.sh
+
 pkg install -y qemu-guest-agent > /dev/null
 
 cat > /etc/rc.conf.local << EOF
