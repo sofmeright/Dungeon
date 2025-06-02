@@ -1,4 +1,4 @@
-# Ad Arbitorium (Datacenter): Private Repository
+# Ad Arbitorium (Datacenter): Public Repository
 
 This repository describes the active environment of Ad Arbitorium datacenter. Ideally all necessary configuration shall be maintained within this repo unless it would be better stored in a docker volume or within local resources.
 
@@ -136,20 +136,24 @@ This repository describes the active environment of Ad Arbitorium datacenter. Id
 > Ad Arbitorium Datacenter is comprised of *5 nodes clustered* with PVE, Proxmox Virualization Environment.
 
 1. Avocado
-    - CPU: (2 x Intel Xeon E5-2680 v3) | 24C/48T 2.5GHz/3.30GHz 240Watt
-    - RAM: 
+    - CPU: 2 x Intel Xeon E5-2680 v3 ```24C/48T | 2.5GHz/3.30GHz | 240Watt```
+    - RAM: 256 GB ```8/16 DIMMs x 32 GB ECC Mem```
 
 2. Bamboo
-    - CPU: (2 x Intel Xeon E5-2680 v4) | 28C/56T 2.4GHz/3.30GHz 240Watt
+    - CPU: 2 x Intel Xeon E5-2680 v4 ```28C/56T | 2.4GHz/3.30GHz | 240Watt```
+    - RAM: 96 GB ```6/16 DIMMs x 16 GB ECC Mem```
 
 3. Cosmos
-    - CPU: (2 x Intel Xeon E5-2667 v3) | 16C/32T 3.2GHz/3.60GHz 270Watt
+    - CPU: 2 x Intel Xeon E5-2667 v3 ```16C/32T 3.2GHz/3.60GHz 270Watt```
+    - RAM: 256 GB ```8/16 DIMMs x 32 GB ECC Mem```
 
 4. Dragonfruit
-    - CPU: AMD Ryzen 7 2700x | 8C/16T 3.7GHz/4.35GHz 105Watt
+    - CPU: AMD Ryzen 7 2700x ```8C/16T | 3.7GHz/4.35GHz | 105Watt```
+    - RAM: 64 GB ```2/4 DIMMs x 32 GB ECC Mem```
 
 5. Eggplant
-    - CPU: (2 x Intel Xeon E5-2683 v3) | 28C/56T 2.00GHz/3.00GHz 240Watt
+    - CPU: 2 x Intel Xeon E5-2683 v3 ```28C/56T | 2.00GHz/3.00GHz | 240Watt```
+    - RAM: 128 GB ```16/24 DIMMs x 8 GB ECC Mem```
 
 ### Observability/Monitoring Overview:
 
