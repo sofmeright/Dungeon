@@ -4,8 +4,8 @@
   become: yes  # Required if you need root privileges on the remote host
   
   tasks:
-    - name: Clone the Configuration.
-        ansible.builtin.git:
-            repo: 'https://github.com/ansible/ansible.git'
-            dest: /tmp/checkout
-            version: release-0.22
+    - name: Clone the Configurations.
+      ansible.builtin.git:
+        repo: 'https://gitlab.prplanit.com/SoFMeRight/ad-arbitorium-private.git'
+        dest: /tmp/fs/
+        version: main
