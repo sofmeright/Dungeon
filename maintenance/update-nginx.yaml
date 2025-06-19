@@ -1,6 +1,6 @@
 ---
 - name: Preparing to Update Nginx Configurations from the source of truth.
-  hosts: linux  # Replace with your target host
+  hosts: localhost  # Replace with your target host
   become: yes  # Required if you need root privileges on the remote host
   
   tasks:
