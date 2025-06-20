@@ -10,4 +10,4 @@
         repo: "ssh://git@10.30.1.123:2424/precisionplanit/ant_parade-public"
         dest: /tmp/fs/
         version: main
-        key_file: /tmp/semaphore/.ssh/id_rsa
+        key_file: /root/.ssh/id_rsa
