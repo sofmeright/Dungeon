@@ -7,6 +7,6 @@
     - name: Clone the Configurations.
       ansible.builtin.git:
         accept_newhostkey: true
-        repo: "ssh://git:{{ gitlab_token }}@10.30.1.123:2424/precisionplanit/ant_parade-public"
+        repo: "ssh://git:REDACTED_GITLAB_TOKEN@10.30.1.123:2424/precisionplanit/ant_parade-public"
         dest: /tmp/fs/
         version: main
