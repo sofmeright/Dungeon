@@ -1,6 +1,6 @@
 services:
   chrony:
-    image: simonrupf/chronyd:latest
+    image: simonrupf/chronyd:0.7.0
     container_name: chrony
     #devices:
     #   - /dev/ptp0:/dev/ptp0
