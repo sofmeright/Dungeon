@@ -1,0 +1,343 @@
+services:
+
+  ark-se-tmc-fjordur:
+    container_name: ark-se-tmc-fjordur
+    env_file: ark-se-tmc-active-secret.env
+    environment:
+      - am_ark_SessionName=MasterChiefers-Fjordur
+      - am_serverMap=Fjordur
+      - am_ark_GameModIds=1213429840,1232362083,1565015734,1609138312,1840761213,506506101,731604991,751991809,793605978,806480270,821530042,895711211,902616446,924933745
+      - am_ark_QueryPort=27018
+      - am_ark_Port=7783
+      - am_ark_RCONPort=27088
+      # - am_ark_ServerAdminPassword=$ARK_ADMIN_PASS
+      # - am_ark_ServerPassword=$ARK_USER_PASS
+      # - am_arkopt_clusterid=$ARK_CLUSTER_ID
+      - am_arkNoPortDecrement=true
+      - am_ark_MaxPlayers=10
+      #am_arkwarnminutes=15
+      - am_arkAutoUpdateOnStart=false # only do it on the first one?
+      - ARKCLUSTER=true
+      # this must be unique across all clusters on steam!
+      #- am_arkflag_NoTransferFromFiltering=
+      - am_arkflag_ForceAllowCaveFlyers=true
+      - am_arkflag_crossplay=true
+      - ARKSERVER_SHARED=/arkserver
+      #- VALIDATE_SAVE_EXISTS=false
+      #- BACKUP_ONSTART=false
+      #- LOG_RCONCHAT=0
+    image: drpsychick/arkserver:latest
+    ports:
+     - 7783:7783/udp
+     - 7783:7783
+     - 27018:27018/udp
+     - 27018:27018
+     - 27088:27088
+    restart: unless-stopped
+    stdin_open: true
+    tty: true
+    #ulimits:
+      #nofile:
+        #soft: 1000000
+        #hard: 1000000
+    volumes:
+      - /mnt/app_data/Server/_docker_stack/ark-se/TMC/fjordur:/ark
+      - /mnt/app_data/Server/_docker_stack/ark-se/TMC/fjordur/saved:/arkserver/ShooterGame/Saved
+      - /mnt/app_data/Server/_docker_stack/ark-se/arkclusters:/arkserver/ShooterGame/Saved/clusters
+      - /mnt/app_data/Server/_docker_stack/ark-se/arkserver:/arkserver
+      #- /ark/config/GameUserSettings.ini /ark/config/Game.ini
+    logging: &logging
+      driver: "loki"
+      options:
+        loki-batch-size: "400"
+        loki-url: "http://monitoring:3100/loki/api/v1/push"
+        max-size: "10m"
+        max-file: "3"
+        mode: "non-blocking"
+        loki-retries: "2"
+        loki-max-backoff: "800ms"
+        loki-timeout: "1s"
+
+  ark-se-tmc-theisland:
+    logging: *logging
+    container_name: ark-se-tmc-theisland
+    env_file: ark-se-tmc-active-secret.env
+    environment:
+      - am_ark_SessionName=MasterChiefers-TheIsland
+      - am_serverMap=TheIsland
+      - am_ark_GameModIds=1213429840,1232362083,1565015734,1609138312,1840761213,506506101,731604991,751991809,793605978,806480270,821530042,895711211,902616446,924933745
+      - am_ark_QueryPort=27057
+      - am_ark_Port=7797
+      - am_ark_RCONPort=27095
+      # - am_ark_ServerAdminPassword=$ARK_ADMIN_PASS
+      # - am_ark_ServerPassword=$ARK_USER_PASS
+      # this must be unique across all clusters on steam!
+      # - am_arkopt_clusterid=$ARK_CLUSTER_ID
+      - am_arkNoPortDecrement=true
+      - am_ark_MaxPlayers=10
+      #am_arkwarnminutes=15
+      - am_arkAutoUpdateOnStart=true # only do it on the first one?
+      - ARKCLUSTER=true
+      #- am_arkflag_NoTransferFromFiltering=
+      - am_arkflag_ForceAllowCaveFlyers=true
+      - am_arkflag_crossplay=true
+      - ARKSERVER_SHARED=/arkserver
+      #- VALIDATE_SAVE_EXISTS=false
+      #- BACKUP_ONSTART=false
+      #- LOG_RCONCHAT=0
+    image: drpsychick/arkserver:latest
+    network_mode: bridge
+    ports:
+     - 7797:7797/udp
+     - 7797:7797
+     - 27057:27057/udp
+     - 27057:27057
+     - 27095:27095
+    restart: unless-stopped
+    stdin_open: true
+    tty: true
+    #ulimits:
+      #nofile:
+        #soft: 1000000
+        #hard: 1000000
+    volumes:
+      - /mnt/app_data/Server/_docker_stack/ark-se/TMC/theisland:/ark
+      - /mnt/app_data/Server/_docker_stack/ark-se/TMC/theisland/saved:/arkserver/ShooterGame/Saved
+      - /mnt/app_data/Server/_docker_stack/ark-se/arkclusters:/arkserver/ShooterGame/Saved/clusters
+      - /mnt/app_data/Server/_docker_stack/ark-se/arkserver:/arkserver
+      #- /ark/config/GameUserSettings.ini /ark/config/Game.ini
+
+  ark-se-tmc-olympus:
+    logging: *logging
+    container_name: ark-se-tmc-olympus
+    depends_on:
+      zz-chown-vol-ark-se-olympus:
+        condition: service_completed_successfully
+    env_file: ark-se-tmc-active-secret.env
+    environment:
+      - am_ark_SessionName=MasterChiefers-Olympus
+      # Map Names: TheIsland, TheCenter, ScorchedEarth_P, Ragnarok, Aberration_P, Extinction, Valguero_P, Genesis, CrystalIsles, Gen2, LostIsland, Fjordur
+      - am_serverMap=Olympus
+      - am_ark_GameModIds=1213429840,1232362083,1565015734,1609138312,1840761213,506506101,731604991,751991809,793605978,806480270,821530042,895711211,902616446,924933745,2594067220,970855993
+      - am_ark_QueryPort=27062
+      - am_ark_Port=7784
+      - am_ark_RCONPort=27100
+      #- am_ark_ServerAdminPassword=$ARK_ADMIN_PASS
+      #- am_ark_ServerPassword=$ARK_USER_PASS
+      # this must be unique across all clusters on steam!
+      #- am_arkopt_clusterid=$ARK_CLUSTER_ID
+      - ARKCLUSTER=true
+      - am_arkNoPortDecrement=true
+      - am_ark_MaxPlayers=10
+      #am_arkwarnminutes=15
+      - am_arkAutoUpdateOnStart=false # only do it on the first one?
+      #- am_arkflag_NoTransferFromFiltering=
+      - am_arkflag_ForceAllowCaveFlyers=true
+      - am_arkflag_crossplay=true
+      - ARKSERVER_SHARED=/arkserver
+      #- VALIDATE_SAVE_EXISTS=false
+      #- BACKUP_ONSTART=false
+      #- LOG_RCONCHAT=0
+    image: drpsychick/arkserver:latest
+    ports:
+     - 7784:7784/udp
+     - 7784:7784
+     - 27062:27062/udp
+     - 27062:27062
+     - 27100:27100
+    restart: unless-stopped
+    stdin_open: true
+    tty: true
+    #ulimits:
+      #nofile:
+        #soft: 1000000
+        #hard: 1000000
+    volumes:
+      - /mnt/app_data/Server/_docker_stack/ark-se/TMC/olympus:/ark
+      - /mnt/app_data/Server/_docker_stack/ark-se/TMC/olympus/saved:/arkserver/ShooterGame/Saved
+      - /mnt/app_data/Server/_docker_stack/ark-se/arkclusters:/arkserver/ShooterGame/Saved/clusters
+      - /mnt/app_data/Server/_docker_stack/ark-se/arkserver:/arkserver
+      #- /ark/config/GameUserSettings.ini /ark/config/Game.ini
+  
+  ark-se-tmc-thevolcano:
+    logging: *logging
+    container_name: ark-se-tmc-thevolcano
+    depends_on:
+      zz-chown-vol-ark-se-thevolcano:
+        condition: service_completed_successfully
+    env_file: ark-se-tmc-active-secret.env
+    environment:
+      # Map Names: TheIsland, TheCenter, ScorchedEarth_P, Ragnarok, Aberration_P, Extinction, Valguero_P, Genesis, CrystalIsles, Gen2, LostIsland, Fjordur
+      - am_ark_SessionName=MasterChiefers-TheVolcano
+      - am_serverMap=TheVolcano
+      - am_ark_QueryPort=27064
+      - am_ark_Port=7788
+      - am_ark_RCONPort=27102
+      - am_ark_GameModIds=1213429840,1232362083,1565015734,1609138312,1840761213,506506101,731604991,751991809,793605978,806480270,821530042,895711211,902616446,924933745,2594067220,715028562
+      # - am_ark_ServerAdminPassword=$ARK_ADMIN_PASS
+      # - am_ark_ServerPassword=$ARK_USER_PASS
+      # This must be unique across all clusters on steam!
+      # - am_arkopt_clusterid=$ARK_CLUSTER_ID
+      - am_arkNoPortDecrement=true
+      - am_ark_MaxPlayers=10
+      # - am_arkwarnminutes=15
+      - am_arkAutoUpdateOnStart=false # only do it on the first one?
+      - ARKCLUSTER=true
+      #-  am_arkflag_NoTransferFromFiltering=
+      - am_arkflag_ForceAllowCaveFlyers=true
+      - am_arkflag_crossplay=true
+      - ARKSERVER_SHARED=/arkserver
+      #- VALIDATE_SAVE_EXISTS=false
+      #- BACKUP_ONSTART=false
+      #- LOG_RCONCHAT=0
+    image: drpsychick/arkserver:latest
+    ports:
+     - 7788:7788/udp
+     - 7788:7788
+     - 27064:27064/udp
+     - 27064:27064
+     - 27102:27102
+    restart: unless-stopped
+    stdin_open: true
+    tty: true
+    #ulimits:
+      #nofile:
+        #soft: 1000000
+        #hard: 1000000
+    volumes:
+      - /mnt/app_data/Server/_docker_stack/ark-se/TMC/thevolcano:/ark
+      - /mnt/app_data/Server/_docker_stack/ark-se/TMC/thevolcano/saved:/arkserver/ShooterGame/Saved
+      - /mnt/app_data/Server/_docker_stack/ark-se/arkclusters:/arkserver/ShooterGame/Saved/clusters
+      - /mnt/app_data/Server/_docker_stack/ark-se/arkserver:/arkserver
+      #- /ark/config/GameUserSettings.ini /ark/config/Game.ini
+
+  ark-se-tmc-valguero:
+    logging: *logging
+    container_name: ark-se-tmc-valguero
+    env_file: ark-se-tmc-active-secret.env
+    environment:
+      # Map Names: TheIsland, TheCenter, ScorchedEarth_P, Ragnarok, Aberration_P, Extinction, Valguero_P, Genesis, CrystalIsles, Gen2, LostIsland, Fjordur
+      - am_ark_SessionName=MasterChiefers-Valguero
+      - am_serverMap=Valguero_P
+      - am_ark_GameModIds=1213429840,1232362083,1565015734,1609138312,1840761213,506506101,731604991,751991809,793605978,806480270,821530042,895711211,902616446,924933745
+      - am_ark_QueryPort=27058
+      - am_ark_Port=7799
+      - am_ark_RCONPort=27096
+      # - am_ark_ServerAdminPassword=$ARK_ADMIN_PASS
+      # - am_ark_ServerPassword=$ARK_USER_PASS
+      # - am_arkopt_clusterid=$ARK_CLUSTER_ID
+      - am_arkNoPortDecrement=true
+      - am_ark_MaxPlayers=10
+      #am_arkwarnminutes=15
+      - am_arkAutoUpdateOnStart=false # only do it on the first one?
+      - ARKCLUSTER=true
+      # this must be unique across all clusters on steam!
+      #- am_arkflag_NoTransferFromFiltering=
+      - am_arkflag_ForceAllowCaveFlyers=true
+      - am_arkflag_crossplay=true
+      - ARKSERVER_SHARED=/arkserver
+      #- VALIDATE_SAVE_EXISTS=false
+      #- BACKUP_ONSTART=false
+      #- LOG_RCONCHAT=0
+    image: drpsychick/arkserver:latest
+    ports:
+     - 7799:7799/udp
+     - 7799:7799
+     - 27058:27058/udp
+     - 27058:27058
+     - 27096:27096
+    restart: unless-stopped
+    stdin_open: true
+    tty: true
+    #ulimits:
+      #nofile:
+        #soft: 1000000
+        #hard: 1000000
+    volumes:
+      - /mnt/app_data/Server/_docker_stack/ark-se/TMC/valguero:/ark
+      - /mnt/app_data/Server/_docker_stack/ark-se/TMC/valguero/saved:/arkserver/ShooterGame/Saved
+      - /mnt/app_data/Server/_docker_stack/ark-se/arkclusters:/arkserver/ShooterGame/Saved/clusters
+      - /mnt/app_data/Server/_docker_stack/ark-se/arkserver:/arkserver
+      #- /ark/config/GameUserSettings.ini /ark/config/Game.ini
+
+  ark-se-tmc-valhalla:
+    logging: *logging
+    container_name: ark-se-tmc-valhalla
+    depends_on:
+      zz-chown-vol-ark-se-valhalla:
+        condition: service_completed_successfully
+    env_file: ark-se-tmc-active-secret.env
+    environment:
+      # Map Names: TheIsland, TheCenter, ScorchedEarth_P, Ragnarok, Aberration_P, Extinction, Valguero_P, Genesis, CrystalIsles, Gen2, LostIsland, Fjordur
+      - am_ark_SessionName=MasterChiefers-Valhalla
+      - am_serverMap=Valhalla
+      - am_ark_GameModIds=1213429840,1232362083,1565015734,1609138312,1840761213,506506101,731604991,751991809,793605978,806480270,821530042,895711211,902616446,924933745,2594067220,504122600
+      - am_ark_QueryPort=27063
+      - am_ark_Port=7786
+      - am_ark_RCONPort=27101
+      # - am_ark_ServerAdminPassword=$ARK_ADMIN_PASS
+      # - am_ark_ServerPassword=$ARK_USER_PASS
+      # this must be unique across all clusters on steam!
+      # - am_arkopt_clusterid=$ARK_CLUSTER_ID
+      - am_arkNoPortDecrement=true
+      - am_ark_MaxPlayers=10
+      #am_arkwarnminutes=15
+      - am_arkAutoUpdateOnStart=false # only do it on the first one?
+      - ARKCLUSTER=true
+      #- am_arkflag_NoTransferFromFiltering=
+      - am_arkflag_ForceAllowCaveFlyers=true
+      - am_arkflag_crossplay=true
+      - ARKSERVER_SHARED=/arkserver
+      #- VALIDATE_SAVE_EXISTS=false
+      #- BACKUP_ONSTART=false
+      #- LOG_RCONCHAT=0
+    image: drpsychick/arkserver:latest
+    ports:
+     - 7786:7786/udp
+     - 7786:7786
+     - 27063:27063/udp
+     - 27063:27063
+     - 27101:27101
+    restart: unless-stopped
+    stdin_open: true
+    tty: true
+    #ulimits:
+      #nofile:
+        #soft: 1000000
+        #hard: 1000000
+    volumes:
+      - /mnt/app_data/Server/_docker_stack/ark-se/TMC/valhalla:/ark
+      - /mnt/app_data/Server/_docker_stack/ark-se/TMC/valhalla/saved:/arkserver/ShooterGame/Saved
+      - /mnt/app_data/Server/_docker_stack/ark-se/arkclusters:/arkserver/ShooterGame/Saved/clusters
+      - /mnt/app_data/Server/_docker_stack/ark-se/arkserver:/arkserver
+      #- /ark/config/GameUserSettings.ini /ark/config/Game.ini
+
+  zz-chown-vol-ark-se-olympus:
+    container_name: zz-chown-vol-ark-se-olympus
+    image: ubuntu
+    user: root
+    volumes:
+      - /mnt/app_data/Server/_docker_stack/ark-se:/ark-se
+    command: >
+      bash -c "
+      chown -R 1001:1001 /ark-se"
+
+  zz-chown-vol-ark-se-thevolcano:
+    container_name: zz-chown-vol-ark-se-thevolcano
+    image: ubuntu
+    user: root
+    volumes:
+      - /mnt/app_data/Server/_docker_stack/ark-se:/ark-se
+    command: >
+      bash -c "
+      chown -R 1001:1001 /ark-se"
+
+  zz-chown-vol-ark-se-valhalla:
+    container_name: zz-chown-vol-ark-se-valhalla
+    image: ubuntu
+    user: root
+    volumes:
+      - /mnt/app_data/Server/_docker_stack/ark-se:/ark-se
+    command: >
+      bash -c "
+      chown -R 1001:1001 /ark-se"

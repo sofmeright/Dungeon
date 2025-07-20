@@ -1,0 +1,31 @@
+services:
+  ollama:
+    container_name: ollama
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: ${OLLAMA_GPU_DRIVER-nvidia}
+              count: ${OLLAMA_GPU_COUNT-1}
+              capabilities:
+                - gpu
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=all
+    image: ollama/ollama:${OLLAMA_DOCKER_TAG-latest}
+    # Expose Ollama API outside the container stack
+    ports:
+      - ${OLLAMA_WEBAPI_PORT-11434}:11434
+    pull_policy: always
+    restart: unless-stopped
+    # GPU support
+    runtime: nvidia
+    tty: true
+    volumes:
+      - /opt/docker/ollama/data:/root/.ollama
+    logging: &logging
+      driver: loki
+      options:
+        loki-batch-size: "400"
+        loki-url: "http://monitoring:3100/loki/api/v1/push"
+        max-size: "10m"

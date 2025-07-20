@@ -1,0 +1,20 @@
+---
+- name: Ad Arbitorium 🔐 - GitOps - Infrastructure - Proxmox Networking
+  hosts: proxmox
+  become: true
+  tasks:
+    - name: Ensuring network interfaces config for PVE nodes match the state defined within the repository...
+      ansible.posix.synchronize:
+        src: "../../fs/{{ inventory_hostname }}/etc/network/interfaces"
+        dest: /etc/network/interfaces
+      delegate_to: "localhost"
+    - name: Ensuring /etc/network/interfaces permissions are set as expected...
+      ansible.builtin.file:
+        path: /etc/network/interfaces
+        owner: root
+        group: root
+        mode: '0644'
+    # - name: Restart the Promox Networking service to ensure the desired state can be assumed.
+      # ansible.builtin.service:
+        # name: networking
+        # state: restarted

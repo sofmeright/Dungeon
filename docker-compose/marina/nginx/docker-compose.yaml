@@ -1,0 +1,23 @@
+services:
+  nginx:
+    container_name: nginx-extras
+    image: byjg/nginx-extras
+    restart: unless-stopped
+    command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
+    ports:
+      - '80:80'
+      - '8580:8080'
+      - '443:443'
+    volumes:
+      - nas_nginx_html:/media/timecapsule/Server/Web-App/NGINX:ro  
+      - /home/kai/app_data/_docker/nginx_with_extras/conf:/etc/nginx/conf.d:ro  
+  certbot:
+    image: certbot/certbot:latest
+    volumes:
+      - ./certbot/www/:/var/www/certbot/:rw
+volumes:
+  nas_nginx_html:
+    driver_opts:
+      type: cifs
+      o: "iocharset=utf8,username=kai253,password=843Beatles!,rw"
+      device: "//gringotts/timecapsule/Server/Web-App/NGINX"

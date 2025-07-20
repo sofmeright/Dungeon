@@ -1,0 +1,37 @@
+services:
+  app:
+    image: monica
+    depends_on:
+      - db
+    ports:
+      - 8080:80
+    env_file: stack.env
+    environment:
+      - APP_URL=https://monica.pcfae.com
+      - APP_TRUSTED_PROXIES=*
+      - APP_KEY=$APP_KEY # Generate with `echo -n 'base64:'; openssl rand -base64 32`
+      - DB_HOST=db
+      - DB_USERNAME=$DB_USERNAME
+      - DB_PASSWORD=$DB_PASSWORD
+    volumes:
+      - data:/var/www/html/storage
+    restart: always
+
+  db:
+    image: mariadb:11
+    env_file: stack.env
+    environment:
+      #- MYSQL_RANDOM_ROOT_PASSWORD=true
+      - MYSQL_ROOT_PASSWORD=$MYSQL_ROOT_PASSWORD
+      - MYSQL_DATABASE=monica
+      - MYSQL_USER=$DB_USERNAME
+      - MYSQL_PASSWORD=$DB_PASSWORD
+    volumes:
+      - mysql:/var/lib/mysql
+    restart: always
+
+volumes:
+  data:
+    name: data
+  mysql:
+    name: mysql

@@ -1,0 +1,55 @@
+# ------- DNS Server Jobs -------
+- name: Ad Arbitorium 🔐 - GitOps - Infrastructure - Configure DNS Servers (Adguard)
+  become: true
+  hosts: "the-usual-suspect,homing-pigeon"
+  tasks:
+    - name: (DEBUG) In this job we will configure systemd-resolve for adguard/pihole
+      ansible.builtin.debug:
+        msg: "" # Configuring systemd-resolve to remove port 53 conflict with adguard/pihole containers
+      when: "'pigs' == 'fly'"
+    - name: Ensuring a systemd-resolved configuration directory exists
+      ansible.builtin.file:
+        path: /etc/systemd/resolved.conf.d/
+        state: directory
+    - name: Ensure the contents of adguardhome.conf
+      ansible.builtin.copy:
+        content: |
+          [Resolve]
+          DNS=127.0.0.1
+          DNSStubListener=no
+        dest: /etc/systemd/resolved.conf.d/adguardhome.conf
+      register: resolve_config
+    - name: Ensure backup of original resolv.conf
+      ansible.builtin.command: mv /etc/resolv.conf /etc/resolv.conf.backup
+      args:
+        removes: /etc/resolv.conf
+        creates: /etc/resolv.conf.backup
+      when: resolve_config.changed
+    - name: Update the symbolic link to the resolv configuration
+      ansible.builtin.command: ln -s /etc/systemd/resolved.conf.d/adguardhome.conf /etc/resolv.conf
+      when: resolve_config.changed
+      args:
+        creates: /etc/resolv.conf
+    - name: Reload systemd-resolved to ensure changes to its configuration take effect
+      ansible.builtin.service:
+        name: systemd-resolved
+        state: reloaded
+      when: resolve_config.changed
+    - name: Ensure systemd-resolved is started.
+      ansible.builtin.service:
+        name: systemd-resolved
+        state: started
+    - name: Restarting DNS Servers (Adguard) to forcibly flush the DNS caches.
+      community.docker.docker_container:
+        image: adguard/adguardhome
+        name: adguard
+        restart: true
+        state: started
+# ------- DNS Client Jobs -------
+- name: Ad Arbitorium 🔐 - GitOps - Infrastructure - Configure DNS Clients (Debian-based)
+  become: true
+  hosts: "ubuntu_24_04,!the-usual-suspect,!homing-pigeon"
+  ignore_unreachable: true
+  tasks:
+    - name: Flushing the DNS caches of debian hosts
+      ansible.builtin.command: resolvectl flush-caches

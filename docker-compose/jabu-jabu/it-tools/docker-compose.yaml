@@ -1,0 +1,12 @@
+services:
+  it-tools:
+    image: corentinth/it-tools:latest
+    ports:
+      - '9290:80'
+    restart: unless-stopped
+    logging: &logging
+      driver: loki
+      options:
+        loki-batch-size: "400"
+        loki-url: "http://monitoring:3100/loki/api/v1/push"
+        max-size: "10m"

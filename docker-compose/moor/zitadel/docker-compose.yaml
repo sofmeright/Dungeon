@@ -1,0 +1,62 @@
+services:
+  zitadel:
+    restart: 'always'
+    networks:
+      - 'zitadel'
+    image: 'ghcr.io/zitadel/zitadel:latest'
+    command: 'start-from-init --masterkey "$ZITADEL_MASTER_KEY" --tlsMode external --config /home/kai/app_data/_docker/zitadel/config/runtime.yaml --steps /home/kai/app_data/_docker/zitadel/config/init.yaml'
+    env_file: stack.env
+    environment:
+      ZITADEL_DATABASE_POSTGRES_HOST: db
+      ZITADEL_DATABASE_POSTGRES_PORT: 5432
+      ZITADEL_DATABASE_POSTGRES_DATABASE: zitadel
+      ZITADEL_DATABASE_POSTGRES_USER_USERNAME: zitadel
+      ZITADEL_DATABASE_POSTGRES_USER_PASSWORD: $POSTGRES_USER_PASSWORD
+      ZITADEL_DATABASE_POSTGRES_USER_SSL_MODE: disable
+      ZITADEL_DATABASE_POSTGRES_ADMIN_USERNAME: postgres
+      ZITADEL_DATABASE_POSTGRES_ADMIN_PASSWORD: $POSTGRES_ADMIN_PASSWORD
+      ZITADEL_DATABASE_POSTGRES_ADMIN_SSL_MODE: disable
+      ZITADEL_EXTERNALSECURE: false
+      ZITADEL_DEFAULTINSTANCE_SMTPCONFIGURATION_SMTP_HOST: "smtp.gmail.com:465"
+      ZITADEL_DEFAULTINSTANCE_SMTPCONFIGURATION_SMTP_USER: $SMTP_USER
+      ZITADEL_DEFAULTINSTANCE_SMTPCONFIGURATION_SMTP_PASSWORD: $SMTP_PASS
+      ZITADEL_DEFAULTINSTANCE_SMTPCONFIGURATION_TLS: true
+      ZITADEL_DEFAULTINSTANCE_SMTPCONFIGURATION_FROM: $SMTP_USER
+      ZITADEL_DEFAULTINSTANCE_SMTPCONFIGURATION_FROMNAME: Precision Plan IT Automated Support
+    depends_on:
+      db:
+        condition: 'service_healthy'
+    ports:
+      - '8174:8080'
+    volumes:
+      - /mnt/app_data/Server/_docker_stack/zitadel/config/:/home/kai/app_data/_docker/zitadel/config/
+    #labels: &logging
+      #labels-regex: "^.+"
+      #log_driver: "loki"
+      #log_opt:
+        #loki-batch-size:"400"
+        #loki-url:"http://localhost:3100/loki/api/v1/push"
+        #max-size:"10m"
+        #max-file:"3"
+
+  db:
+    #labels: *logging
+    restart: 'always'
+    image: postgres:16-alpine
+    env_file: stack.env
+    environment:
+      PGUSER: postgres
+      POSTGRES_PASSWORD: $POSTGRES_ADMIN_PASSWORD
+    networks:
+      - 'zitadel'
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready", "-d", "zitadel", "-U", "postgres"]
+      interval: '10s'
+      timeout: '30s'
+      retries: 5
+      start_period: '20s'
+    volumes:
+      - /mnt/app_data/Server/_docker_stack/zitadel/postgres:/var/lib/postgresql/data
+
+networks:
+  zitadel:

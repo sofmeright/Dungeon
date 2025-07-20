@@ -1,0 +1,95 @@
+services:
+  app:
+    #build:
+      #context: .
+    image: invoiceninja/invoiceninja-debian:${TAG:-latest}
+    restart: unless-stopped
+    env_file: stack.env
+    volumes:
+      #- stack.env:/var/www/html/.env
+      # - ./php/php.ini:/usr/local/etc/php/conf.d/invoiceninja.ini:ro
+      # - ./php/php-fpm.conf:/usr/local/etc/php-fpm.d/invoiceninja.conf:ro
+      # - ./supervisor/supervisord.conf:/etc/supervisor/conf.d/supervisord.conf:ro
+      - app_cache:/var/www/html/bootstrap/cache
+      - app_public:/var/www/html/public
+      - app_storage:/var/www/html/storage
+    networks:
+      - app-network
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    #labels: &logging
+      #labels-regex: "^.+"
+      #log_driver: "loki"
+      #log_opt:
+        #loki-batch-size:"400"
+        #loki-url:"http://localhost:3100/loki/api/v1/push"
+        #max-size:"10m"
+        #max-file:"3"
+
+  nginx:
+    #labels: *logging
+    image: nginx:alpine
+    restart: unless-stopped
+    ports:
+      - "9000:80"
+    volumes:
+      - /mnt/app_data/Server/_docker_stack/invoiceninja/nginx:/etc/nginx/conf.d:ro
+      - app_public:/var/www/html/public:ro
+      - app_storage:/var/www/html/storage:ro
+    networks:
+      - app-network
+    depends_on:
+      - app
+
+  mysql:
+    #labels: *logging
+    image: mysql:8
+    restart: unless-stopped
+    env_file: stack.env
+    environment:
+      MYSQL_DATABASE: ${DB_DATABASE}
+      MYSQL_USER: ${DB_USERNAME}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - app-network
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost", "-u${MYSQL_USER}", "-p${MYSQL_PASSWORD}" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    #labels: *logging
+    image: redis:alpine
+    restart: unless-stopped
+    volumes:
+      - redis_data:/data
+    networks:
+      - app-network
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  app_cache:
+    driver: local
+  app_public:
+    driver: local
+  app_storage:
+    driver: local  
+  mysql_data:
+    driver: local
+  redis_data:
+    driver: local

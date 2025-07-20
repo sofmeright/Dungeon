@@ -1,0 +1,36 @@
+services:
+  mariadb:
+    image: mariadb:latest
+    env_file: stack.env
+    environment:
+      MYSQL_ROOT_PASSWORD: $MYSQL_ROOT_PASSWORD
+      MYSQL_DATABASE: dolibarr
+      MYSQL_USER: dolibarr
+      MYSQL_PASSWORD: $MYSQL_PASSWORD
+    #labels: &logging
+      labels-regex: "^.+"
+      log_driver: "loki"
+      log_opt:
+        loki-batch-size:"400"
+        loki-url:"http://monitoring:3100/loki/api/v1/push"
+        max-size:"10m"
+        max-file:"3"
+
+  web:
+    #labels: *logging
+    image: tuxgasy/dolibarr
+    env_file: stack.env
+    environment:
+      DOLI_DB_HOST: mariadb
+      DOLI_DB_USER: dolibarr
+      DOLI_DB_PASSWORD: $MYSQL_PASSWORD
+      DOLI_DB_NAME: dolibarr
+      DOLI_URL_ROOT: 'http://0.0.0.0'
+      PHP_INI_DATE_TIMEZONE: 'UTC'
+      DOLI_ADMIN_LOGIN: $DOLI_ADMIN_LOGIN
+      DOLI_ADMIN_PASSWORD: $DOLI_ADMIN_PASSWORD
+      DOLI_COMPANY_NAME: Precision Plan IT
+    ports:
+      - "40118:80"
+    links:
+      - mariadb

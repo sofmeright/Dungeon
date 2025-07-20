@@ -1,0 +1,32 @@
+services:
+  echoip:
+    image: mpolden/echoip
+    command: "-C 0 -p -r -H X-Forwarded-For -a /data/GeoLite2-ASN.mmdb -c /data/GeoLite2-City.mmdb -f /data/GeoLite2-Country.mmdb -t html"
+    ports:
+      - 8019:8080
+    env_file: echoip.env
+    volumes:
+      - /opt/docker/echoip-ipleek/data:/data:ro
+      - /opt/docker/echoip-ipleek/html:/html
+    restart: unless-stopped
+    logging: &logging
+      driver: "loki"
+      options:
+        loki-batch-size: "400"
+        loki-url: "http://monitoring:3100/loki/api/v1/push"
+        max-size: "10m"
+        max-file: "3"
+        mode: "non-blocking"
+        loki-retries: "2"
+        loki-max-backoff: "800ms"
+        loki-timeout: "1s"
+  
+  # this container needs to runs only once or whan you want to update Geo databases
+  maxmind:
+    logging: *logging
+    image: maxmindinc/geoipupdate
+    env_file: 
+      - echoip.env
+      - echoip_secret.env
+    volumes:
+      - /opt/docker/echoip-ipleek/data:/usr/share/GeoIP

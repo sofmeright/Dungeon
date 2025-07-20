@@ -1,0 +1,19 @@
+---
+services:
+  endlessh:
+    container_name: endlessh
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Etc/UTC
+      - MSDELAY=10000 #optional
+      - MAXLINES=32 #optional
+      - MAXCLIENTS=4096 #optional
+      - LOGFILE=false #optional
+      - BINDFAMILY= #optional
+    image: lscr.io/linuxserver/endlessh:latest
+    ports:
+      - 8022:2222
+    restart: unless-stopped
+    volumes:
+      - /opt/docker/endlessh/appdata:/config #optional

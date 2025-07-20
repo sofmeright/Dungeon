@@ -1,0 +1,30 @@
+services:
+
+  openspeedtest:
+    container_name: openspeedtest
+    env_file: openspeedtest.env
+    image: openspeedtest/latest
+    ports:
+      - '80:3000'
+      - '443:3001'
+    restart: unless-stopped
+    logging: &logging
+      driver: "loki"
+      options:
+        loki-batch-size: "400"
+        loki-url: "http://monitoring:3100/loki/api/v1/push"
+        max-size: "10m"
+        max-file: "3"
+        mode: "non-blocking"
+        loki-retries: "2"
+        loki-max-backoff: "800ms"
+        loki-timeout: "1s"
+
+  librespeed-speedtest:
+    logging: *logging
+    container_name: librespeed-speedtest
+    env_file: librespeed-speedtest.env
+    image: ghcr.io/librespeed/speedtest:latest
+    ports:
+      - "11843:8080" # webport mapping (host:container)
+    restart: always

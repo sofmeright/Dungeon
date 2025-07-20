@@ -1,0 +1,27 @@
+services:
+    whisparr:
+        cap_add:
+            - NET_ADMIN
+        container_name: whisparr
+        environment:
+            - PUID=1000
+            - PGID=1000
+            - TZ=Etc/UTC
+            - UMASK=002
+        image: ghcr.io/hotio/whisparr
+        network_mode: "container:gluetun"
+        #ports:
+        #    - 6969:6969
+        volumes:
+            - /opt/docker/whisparr/config:/config
+            - /opt/docker/whisparr/data:/data
+            - /mnt/ceph_hdd/docker/qbittorrent/downloads/zz-whisparr:/downloads/zz-whisparr
+            - xxx_media:/media/Videos
+
+volumes:
+  xxx_media:
+    driver: local
+    driver_opts:
+      type: cifs
+      o: "iocharset=utf8,username=$SAMBA_XXX_USER,password=$SAMBA_XXX_PASS,rw,uid=2343,vers=2.1,gid=3007,file_mode=0777,dir_mode=0777"
+      device: "//gringotts/timecapsule/Media/systemadm/McAfee\ Antivirus/Studio/Movies"

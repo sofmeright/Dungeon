@@ -1,0 +1,242 @@
+services:
+
+  convertx:
+    container_name: convertx
+    env_file: convertx-secret.env
+    # environment:
+      # - JWT_SECRET= # will use randomUUID() if unset
+    image: ghcr.io/c4illin/convertx:main
+    ports:
+      - "3050:3000"
+    restart: unless-stopped
+    volumes:
+      - /opt/docker/convertx/data:/app/data
+      
+  drawio:
+    container_name: drawio
+    environment:
+      PUBLIC_DNS: draw.pcfae.com
+      # LETS_ENCRYPT_ENABLED: true
+      ORGANISATION_UNIT: Internal
+      ORGANISATION: PrecisionPlanIT
+      CITY: Seattle
+      STATE: WA
+      COUNTRY_CODE: US
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f https://draw.pcfae.com:443 || exit 1"]
+      interval: 1m30s
+      timeout: 10s
+      retries: 5
+      start_period: 10s
+    image: jgraph/drawio
+    ports:
+      - 4549:8080
+      - 4550:8443
+    restart: unless-stopped
+    stdin_open: true
+    tty: true
+    logging: &logging
+      driver: "loki"
+      options:
+        loki-batch-size: "400"
+        loki-url: "http://monitoring:3100/loki/api/v1/push"
+        max-size: "10m"
+        max-file: "3"
+        mode: "non-blocking"
+        loki-retries: "2"
+        loki-max-backoff: "800ms"
+        loki-timeout: "1s"
+
+  google-webfonts-helper:
+    logging: *logging
+    container_name: google-webfonts-helper
+    env_file: google-webfonts-helper-secret.env
+    # environment: 
+      # - GOOGLE_FONTS_API_KEY=$API_KEY
+    image: ghcr.io/majodev/google-webfonts-helper:${RELEASE:-latest}
+    ports:
+      - 8654:8080
+    restart: always
+
+  hrconvert2:
+    logging: *logging
+    container_name: hrconvert2
+    image: zelon88/hrconvert2:latest
+    ports:
+      - 8085:80
+    restart: always
+    volumes:
+      - /opt/docker/hrconvert2/config.php:/var/www/html/HRProprietary/HRConvert2/config.php
+# uncomment the below line to expose temporary upload folder as a volume
+#     - ./files:/home/converter:rw
+
+  it-tools:
+    logging: *logging
+    container_name: it-tools
+    image: corentinth/it-tools:latest
+    ports:
+      - '9290:80'
+    restart: unless-stopped
+
+# In this Docker Compose example, it assumes that you maintain a reverse proxy externally (or chose not to).
+# The only two exposed ports here are from minio (:9000) and the app itself (:3000).
+# If these ports are changed, ensure that the env vars passed to the app are also changed accordingly.
+  # Database (Postgres)
+  reactive-resume-app:
+    container_name: reactive-resume-app
+    depends_on:
+      - reactive-resume-postgres
+      - reactive-resume-minio
+      - reactive-resume-chrome
+    env_file: reactive-resume-secret.env
+    environment:
+      # -- Environment Variables --
+      PORT: 3000
+      NODE_ENV: production
+      # -- URLs --
+      PUBLIC_URL: http://localhost:3000
+      STORAGE_URL: http://localhost:9000/default
+      # -- Printer (Chrome) --
+      CHROME_TOKEN: chrome_token
+      CHROME_URL: ws://chrome:3000
+      # -- Database (Postgres) --
+      # DATABASE_URL: postgresql://$POSTGRES_USER:$POSTGRES_PASSWORD@reactive-resume-postgres:5432/$POSTGRES_DB
+      # -- Auth --
+      ACCESS_TOKEN_SECRET: access_token_secret
+      REFRESH_TOKEN_SECRET: refresh_token_secret
+      # -- Emails --
+      MAIL_FROM: noreply@localhost
+      # SMTP_URL: smtp://user:pass@smtp:587 # Optional
+      # -- Storage (Minio) --
+      STORAGE_ENDPOINT: reactive-resume-minio
+      STORAGE_PORT: 9000
+      STORAGE_REGION: us-east-1 # Optional
+      STORAGE_BUCKET: default
+      # STORAGE_ACCESS_KEY: minioadmin
+      # STORAGE_SECRET_KEY: minioadmin
+      STORAGE_USE_SSL: "false"
+      STORAGE_SKIP_BUCKET_CHECK: "false"
+      # -- Crowdin (Optional) --
+      # CROWDIN_PROJECT_ID:
+      # CROWDIN_PERSONAL_TOKEN:
+      # -- Email (Optional) --
+      # DISABLE_SIGNUPS: "false"
+      # DISABLE_EMAIL_AUTH: "false"
+      # -- GitHub (Optional) --
+      # GITHUB_CLIENT_ID: github_client_id
+      # GITHUB_CLIENT_SECRET: github_client_secret
+      # GITHUB_CALLBACK_URL: http://localhost:3000/api/auth/github/callback
+      # -- Google (Optional) --
+      # GOOGLE_CLIENT_ID: google_client_id
+      # GOOGLE_CLIENT_SECRET: google_client_secret
+      # GOOGLE_CALLBACK_URL: http://localhost:3000/api/auth/google/callback
+      # -- OpenID (Optional) --
+      # VITE_OPENID_NAME: OpenID
+      # OPENID_AUTHORIZATION_URL:
+      # OPENID_CALLBACK_URL: http://localhost:3000/api/auth/openid/callback
+      # OPENID_CLIENT_ID:
+      # OPENID_CLIENT_SECRET:
+      # OPENID_ISSUER:
+      # OPENID_SCOPE: openid profile email
+      # OPENID_TOKEN_URL:
+      # OPENID_USER_INFO_URL:
+    image: amruthpillai/reactive-resume:latest
+    ports:
+      - "3000:3000"
+    restart: unless-stopped
+
+  # Chrome Browser (for printing and previews)
+  reactive-resume-chrome:
+    container_name: reactive-resume-chrome
+    env_file: reactive-resume-secret.env
+    environment:
+      HEALTH: "true"
+      # TOKEN: chrome_token
+      PROXY_HOST: "chrome"
+      PROXY_PORT: 3000
+      PROXY_SSL: "false"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    image: ghcr.io/browserless/chromium:latest
+    restart: unless-stopped
+
+  # Storage (for image uploads)
+  reactive-resume-minio:
+    command: server /data
+    container_name: reactive-resume-minio
+    env_file: reactive-resume-secret.env
+    # environment:
+      # MINIO_ROOT_USER: minioadmin
+      # MINIO_ROOT_PASSWORD: minioadmin
+    image: minio/minio:latest
+    ports:
+      - "9000:9000"
+    restart: unless-stopped
+    volumes:
+      - /opt/docker/reactive-resume/minio:/data
+
+  reactive-resume-postgres:
+    container_name: reactive-resume-postgres
+    env_file: reactive-resume-secret.env
+    # environment:
+      # POSTGRES_DB: postgres
+      # POSTGRES_USER: postgres
+      # POSTGRES_PASSWORD: postgres
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $POSTGRES_USER -d $POSTGRES_DB"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    image: postgres:16-alpine
+    restart: unless-stopped
+    volumes:
+      - /opt/docker/reactive-resume/postgres:/var/lib/postgresql/data
+
+  searxng-app:
+    logging: *logging
+    cap_add:
+      - CHOWN
+      - SETGID
+      - SETUID
+    cap_drop:
+      - ALL
+    container_name: searxng-app
+    environment:
+      - SEARXNG_BASE_URL=https://search.pcfae.com/
+      - UWSGI_WORKERS=${SEARXNG_UWSGI_WORKERS:-4}
+      - UWSGI_THREADS=${SEARXNG_UWSGI_THREADS:-4}
+    image: docker.io/searxng/searxng:latest
+    networks:
+      - searxng
+    ports:
+      - "8986:8080"
+    restart: always
+    volumes:
+      - /opt/docker/searxng:/etc/searxng:rw
+
+  searxng-redis:
+    logging: *logging
+    cap_add:
+      - SETGID
+      - SETUID
+      - DAC_OVERRIDE
+    cap_drop:
+      - ALL
+    command: valkey-server --save 30 1 --loglevel warning
+    container_name: searxng-redis
+    image: docker.io/valkey/valkey:8-alpine
+    networks:
+      - searxng
+    restart: always
+    volumes:
+      - valkey-data2:/data
+
+networks:
+  searxng:
+
+volumes:
+  minio_data:
+  postgres_data:
+  valkey-data2:
+
+  

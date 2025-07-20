@@ -1,174 +1,232 @@
-# Ant_Parade-Public
-This repository is responsible for *deployment* of **Kubernetes** Environments and Workloads that are actively managed by SoFMeRight.
+# Ad Arbitorium (Datacenter): Private Repository
 
-This repository is public space, however it is not a product. As such you can depend on its availability on some level as this code is slotted to become essential to SoFMeRight's homelab. However the code contained within this repository is without warranty, you are welcome to raise issues if you wish; no guarantee of any outcome as result however. Having a lab without issues is ideal so it is likely for issues to be addressed. But the scope of this repo is from business to personal and as such it is very paricular the way in which an outside entity might influence the development of this repo. At the very least/especially in these early stages! That being said, if you the person reading this so happen not to be SoFMeRight or internal to PrPlanIT, we don't mean to scare you away! WELCOME to SoFMeRight's K8s lab ~ WIP! Hope you enjoy your stay! 👋🏽
+This repository describes the active environment of Ad Arbitorium datacenter. Ideally all necessary configuration shall be maintained within this repo unless it would be better stored in a docker volume or within local resources.
+
+### Automations:
+
+**Storage**: Our ansible playbooks and tasks are stored in [our gitlab in the Ad Arbitorium 🔐 repo](https://gitlab.prplanit.com/SoFMeRight/ad-arbitorium-private).
+
+**ansible-semaphore**: We use semaphore as an interface to execute some automation tasks from a web-ui.
+
+**ideas**: I am considering implementing olivetin, cronguru, or perhaps making a custom cli to select tasks that are desired to be ran.
+
+**Repository Backups**  
+
+- ant-parade & leaf-cutter - If something bad happens, we always cache a current copy of the repository. </br>
+    - If the cluster is dead we can still run ansible from leaf-cutter:    
+    ```docker run -v /srv/gitops/ad-arbitorium-private:/srv/gitops/ad-arbitorium-private -v ~/.ssh/id_rsa:/root/.ssh/id_rsa --rm cr.pcfae.com/prplanit/ansible:2.18.6 ansible-playbook --private-key /root/.ssh/id_rsa -i /srv/gitops/ad-arbitorium-private/ansible/inventory /srv/gitops/ad-arbitorium-private/ansible/infrastructure/qemu-guest-agent-debian.yaml```
+
+### Backup Schedule:
+> The industry we are in is usually active around 6:00AM-10:00PM PST tops. Other times might be business critical hours, but here we are considering the peak of the day.
+
+```mon,fri 22:00``` Proxmox backups of NAS & PBS to *local-zfs* 
+
+```tue,thu,fri 23:00``` Proxmox backups of all other core/essential VMs to *Flashy-Fuscia-SSD* 
+
+### Hardware Overview:
+
+> Ad Arbitorium Datacenter is comprised of *5 nodes clustered* with PVE, Proxmox Virualization Environment.
+
+1. Avocado
+    - CPU: 2 x Intel Xeon E5-2680 v3 ```24C/48T | 2.5GHz/3.30GHz | 240Watt```
+    - RAM: 256 GB ```8/16 DIMMs x 32 GB ECC Mem```
+
+2. Bamboo
+    - CPU: 2 x Intel Xeon E5-2680 v4 ```28C/56T | 2.4GHz/3.30GHz | 240Watt```
+    - RAM: 96 GB ```6/16 DIMMs x 16 GB ECC Mem```
+
+3. Cosmos
+    - CPU: 2 x Intel Xeon E5-2667 v3 ```16C/32T 3.2GHz/3.60GHz 270Watt```
+    - RAM: 256 GB ```8/16 DIMMs x 32 GB ECC Mem```
+
+4. Dragonfruit
+    - CPU: AMD Ryzen 7 2700x ```8C/16T | 3.7GHz/4.35GHz | 105Watt```
+    - RAM: 64 GB ```2/4 DIMMs x 32 GB ECC Mem```
+
+5. Eggplant
+    - CPU: 2 x Intel Xeon E5-2683 v3 ```28C/56T | 2.00GHz/3.00GHz | 240Watt```
+    - RAM: 128 GB ```16/24 DIMMs x 8 GB ECC Mem```
+
+6. (leaf-cutter) 
+    - CPU: Intel i7-4720HQ (8) @ 3.600GHz 
+    - RAM: 16 GB ```2/2 DIMMs x 8 GB DDR3? Mem
+    - Note: This is an unclustered automations machine which serves as a backup for if things ever get hairy. Hopefully as close to a replica of ant-parade as possible.
+
+### Observability/Monitoring Overview:
+
+*Grafana/Loki/Prometheus*
+
+*Beszel*
+
+*Portainer*
+
+### Networking Overview:
+
+1. *Firewalls / Routing*: 2 pfSense Firewalls are spun up on Avocado and Bamboo with HA/CARP for stable WAN.
+
+*Modem*
+
+*Switches*
+
+*OSPFv6 for Proxmox and Ceph Networking*
+
+*BGP Kubernetes Setup*
+
+*HA Proxy K8S API Load Balancing*
+
+2. *DNS*: AdguardHome and AdguardHome sync docker containers within 2 VMs provides highly available DNS.
+
+3. *Reverse Proxies*: Domains like sofmeright.com are exposed through 3 public IPs which are handled by NGINX reverse proxy services running on three distinct VMs cell-membrane, phloem, and xylem; the third has no port forwarding which creates an isolated internal web domain @ pcfae.com.
+
+### RDP / Remote Control:
+
+*rustdesk/moonlight/sunshine/tactical-rmm*
+
+### Workloads (main):
+
+*PVE* - The host OS on the main 5 nodes is PVE. Within PVE we have many guest VMs. 
+
+*Ubuntu 24.04LTS + Docker* - The majority of our workload is managed with docker containers within Ubuntu 24.04LTS VMs. One of these hosts, Dock does have discrete GPU access.
+
+*pfSense* - I would rather see opnSense in these 2 VMs that handle our networking needs, but the ipv4/6 dual stack networking portion of this config was not working under opnSense as of a test months before this commit.
+
+*3Cx* - VOIP phone system.
+
+*Home-Assistant OS*
+
+*Kubernetes* - Deployed a 5 master/worker kubeadm cluster utilizing Ubuntu 22.04LTS. Plan on removing 2 masters due to recommendations from many kubernetes users I am connected with sharing more than 3 masters at this scale is excessive.
+
+*Monitoring/Observability/IDS/IPS* - Lighthouse, a VM dedicated to these purposes runs Beszel, Crowdsec, Grafana, Loki, Prometheus, Wazuh. Agents pull data from most hosts. The pfsense instances have crowdsec bouncers configured to block malicious traffic upon detection.
+
+*PBS*
+
+*Portainer Management* - Harbormaster VM serves as a jump server for the portainer instances.
+
+*Shinobi* - Security Camera software.
+
+*TrueNAS*
+
+*Windows Server / Active Directory* - Deployed a 3 machine forest.
+
+### VPN:
+
+*Netbird* 
 
 
-# Quick Reference Commands & Info
+### Docker Containers Hosted (some may be out of use but remain in the list):
 
-## SSH Key Management
-To generate pub key: <br>
-```ssh-agent sh -c 'ssh-add; ssh-add -L'<br>```
-To generate priv key:<br>
-```ssh-agent sh -c 'ssh-add; ssh-add -l'<br>```
-
-# Bootstrapping a cephadm cluster.
-You will need a number of Linux based machines I used 5 with 2 VMs per each with a master and worker each.
-It is advised to transfer ssh keys for password-less authentication and to configure sudo without a prompt.
-First we run the script that installs dependencies on each node.
-```
-bash onboarding/bootstrap-k8s-install-dependencies.sh
-```
-This next script we run on the first node we intend to assign as a master ~ a control plane node.
-```
-bash onboarding/bootstrap-k8s-initialize-control-plane.sh
-```
-If all goes well we should see a message something like:
-```
-Your Kubernetes control-plane has initialized successfully!
-
-To start using your cluster, you need to run the following as a regular user:
-
-  mkdir -p $HOME/.kube
-  sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
-  sudo chown $(id -u):$(id -g) $HOME/.kube/config
-
-Alternatively, if you are the root user, you can run:
-
-  export KUBECONFIG=/etc/kubernetes/admin.conf
-
-You should now deploy a pod network to the cluster.
-Run "kubectl apply -f [podnetwork].yaml" with one of the options listed at:
-  https://kubernetes.io/docs/concepts/cluster-administration/addons/
-
-You can now join any number of control-plane nodes by copying certificate authorities
-and service account keys on each node and then running the following as root:
-
-You should now deploy a pod network to the cluster.
-Run "kubectl apply -f [podnetwork].yaml" with one of the options listed at:
-  https://kubernetes.io/docs/concepts/cluster-administration/addons/
-
-You can now join any number of control-plane nodes by copying certificate authorities
-and service account keys on each node and then running the following as root:
-
-  kubeadm join dungeon-map-001:6443 --token kxgj2w.ucvyopdyulxzdnw4 \
-        --discovery-token-ca-cert-hash sha256:6a85476457676767657676677676767677466776547567447d \
-        --control-plane 
-
-Then you can join any number of worker nodes by running the following on each as root:
-
-kubeadm join dungeon-map-001:6443 --token kxgj2w.ucvyopdyulxzdnw4 \
-        --discovery-token-ca-cert-hash sha25567474567567567567567767676767676767676776764576457fb47d
-```
-From here you simply use the commands supplied on the corresponding master and worker nodes, but  do prepend with a sudo!
-When attempting to add additional control plane nodes I had an issue with needing a single service address so I configured HAProxy within pfSense for this need and set the Virtual IP in the /home/<user>/.kuber/config i.e. "server: https://172.22.22.105:6443".
-I also used the following command to label each of my workers accordingly:
-```
-kubectl label node dungeon-worker-001 node-role.kubernetes.io/worker=worker
-```
-I had issues with kubernetes-sigs/metrics-server, they were resolved via a variation of these instructions: https://serverfault.com/questions/1153770/installed-metrics-server-in-kubernetes-cluster-but-getting-serviceunavailable
-```
-wget https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
-kubectl apply -f components.yaml
-kubectl patch deployment metrics-server -n kube-system --type='json' -p='[ \
-  { \
-    "op": "add", \
-    "path": "/spec/template/spec/hostNetwork", \
-    "value": true \
-  }, \
-  { \
-    "op": "replace", \
-    "path": "/spec/template/spec/containers/0/args", \
-    "value": [ \
-    "--cert-dir=/tmp", \
-    "--secure-port=4443", \
-    "--kubelet-preferred-address-types=InternalIP,ExternalIP,Hostname", \
-    "--kubelet-use-node-status-port", \
-    "--metric-resolution=15s", \
-    "--kubelet-insecure-tls" \
-    ] \
-  }, \
-  { \
-    "op": "replace", \
-    "path": "/spec/template/spec/containers/0/ports/0/containerPort", \
-    "value": 4443 \
-  } \
-]'
-```
-# Configuring the Ansible control node for K8s ~ Kustomize testing
-First we ssh to a k8s master node and check the running kustomize version.
-```
-kai@ant-parade:~$ ssh dungeon-map-001
-Welcome to Ubuntu 24.04.1 LTS (GNU/Linux 6.8.0-51-generic x86_64)
-... ... ...
-Last login: Sat Jan 18 10:10:14 2025 from 172.22.22.110
-kai@dungeon-map-001:~$ kubectl version
-Client Version: v1.31.4
-Kustomize Version: v5.4.2
-Server Version: v1.31.0
-```
-After pulling the git we ran the installer.sh we repackaged for convenience.
-```
-bash Ant_Parade/onboarding/install-kustomize.sh 5.4.2
-```
-# Bootstrapping fluxcd:
-```
-flux bootstrap git   --url=ssh://git@<localgitip>:1234/precisionplanit/ant_parade-public   --branch=main   --private-key-file=/root/.ssh/id_rsa   --password=   --path=clusters/overlays/production
-```
-# Pulling the repo to your local directory:
-```
-git clone ssh://git@172.22.22.123:2222/PrecisionPlanIT/Ant_Parade.git
-```
-# Updating the repo after making edits on a local clone:
-Check the source repo to compare against our changes.
-```
-git fetch --all
-```
-Either merge,
-```
-git merge origin/main
-```
-OR rebase (I hear rebase can help to preserve the history a little better perhaps?)
-```
-git rebase origin/main
-```
-Now add a commit:
-```
-git add .
-git commit -m "<An optimistic note about something that we promise to be better about.>"
-```
-On the first run it may ask you to provide info regarding your identity (then retry the previous command):
-```
-git config --global user.email "kai.hamil@gmail.com"
-git config --global user.name "kai"
-```
-# Push to the source repo
-```
-git push origin main
-```
-# Pulling any additional changes occurred after the initial pull.
-```
-git pull origin main
-```
-# Sudo does not run without password on target host
-Use the ``sudo visudo`` command to edit the permissions for usage of sudo command.
-Look for a line that looks like this in the config:
-```
-# Allow members of group sudo to execute any command
-%sudo   ALL=(ALL:ALL) ALL
-```
-Update the line to look like such:
-```
-# Allow members of group sudo to execute any command
-%sudo   ALL=(ALL:ALL) NOPASSWD: ALL
-```
-# Resolving Ansible "REMOTE HOST IDENTIFICATION HAS CHANGED" issue (Ansible Semaphore)
-Use the ``docker exec -it semaphore-semaphore-1 sh`` command to open a shell into the Semaphore docker container.
-
-Edit the ansible configuration file using ``nano /home/semaphore/ansible.cfg``, adapt your current config to contain the following:
-
-```
-[defaults]
-host_key_checking = False
-```
-At this point playbooks that fail due to this issue should succeed and we can use an ansible playbook to add this host properly to the known host list.
+- 2fauth
+- actualbudget
+- adguardhome
+- adguardhome-sync
+- anubis
+- appflowy
+- bagisto
+- bazarr
+- bezsel
+- bitwarden (config not in repo)
+- bookstack
+- byparr
+- calibre-web
+- chrony
+- code-server
+- cross-seed
+- crowdsec
+- dailyTxt
+- dolibarr
+- drawio
+- echoip
+- endlessh
+- emulatorjs
+- ferdium
+- filebrowser
+- flaresolverr (not using)
+- frappe-erpnext
+- frigate
+- ghost
+- gitea
+- gitlab
+- gluetun
+- gluetun-qbittorrent-port-manager
+- google-webfonts-helper
+- guacamole (struggling with config actually)
+- hashicorp-vault (deployed to use w/ K8s, yet to implement)
+- homarr
+- homebox
+- hrconvert2
+- immich
+- invoice-ninja
+- it-tools
+- jellyfin
+- jellyseer
+- joplin
+- kasm
+- lenpaste
+- librespeed-speedtest
+- libretransalate
+- lidarr
+- linkstack
+- linkwarden
+- lubelogger
+- mailcow (config not in repo)
+- matrix-synapse
+- mealie
+- monica
+- monitoring-servers: beszel/grafana/loki/prometheus
+- monitoring-agents: beszel-agent/cadvisor/nodeexporter
+- neko
+- netbird
+- netbird-client(s)
+- netbox
+- nextcloud-aio
+- nginx (experiment(ing) with docker containers, but prefer a native install in VM)
+- oauth2-proxy
+- ollama
+- openai-whisper/fasterwhisper
+- openspeedtest
+- open-webui
+- orangehrm
+- organizr
+- osticket
+- overseer
+- paperless-ngx
+- penpot
+- photoprism
+- pihole
+- pinchflat
+- plexmediaserver
+- portainer
+- portainer_agent
+- project-send
+- prowlarr
+- proxmox-backup-server
+- py-kms
+- pyload-ng
+- qbittorrent
+- radarr
+- reactive-resume
+- readarr
+- romm
+- roundcube
+- rustdesk-server
+- sabnzbd
+- searxng
+- semaphore_ui
+- shinobi
+- shlink
+- sonarr
+- speedtest-tracker
+- supermicro-ipmi-license-generator
+- tactical-rmm
+- thelounge
+- tikiwiki
+- trivy
+- twentycrm
+- unifi-network-application
+- urbackup-server
+- vlmcsd
+- wazuh
+- whisparr
+- wiki-js
+- xbackbone
+- zitadel

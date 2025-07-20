@@ -1,0 +1,25 @@
+services:
+  xbackbone:
+    container_name: xbackbone
+    environment:
+      - TZ=Etc/UTC
+      - PUID=1000
+      - PGID=1000
+    image: lscr.io/linuxserver/xbackbone:latest
+    ports:
+      - 8945:80
+      - 8946:443
+    restart: unless-stopped
+    volumes:
+      - /opt/docker/xbackbone/config:/config
+    logging: &logging
+      driver: "loki"
+      options:
+        loki-batch-size: "400"
+        loki-url: "http://monitoring:3100/loki/api/v1/push"
+        max-size: "10m"
+        max-file: "3"
+        mode: "non-blocking"
+        loki-retries: "2"
+        loki-max-backoff: "800ms"
+        loki-timeout: "1s"

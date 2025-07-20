@@ -1,0 +1,31 @@
+---
+services:
+  calibre-web:
+    image: lscr.io/linuxserver/calibre-web:latest
+    container_name: calibre-web
+    environment:
+      - TZ=Etc/UTC
+      - PUID=8083
+      - PGID=1000
+      #- DOCKER_MODS=linuxserver/mods:universal-calibre #optional
+      #- OAUTHLIB_RELAX_TOKEN_SCOPE=1 #optional
+    volumes:
+      - /mnt/app_data/Server/calibre_web/config:/config
+      - media_books:/books
+    ports:
+      - 8083:8083
+    restart: unless-stopped
+    logging: &logging
+      driver: loki
+      options:
+        loki-batch-size: "400"
+        loki-url: "http://monitoring:3100/loki/api/v1/push"
+        max-size: "10m"
+
+volumes:
+  media_books:
+    driver: local
+    driver_opts:
+      type: cifs
+      o: "iocharset=utf8,username=$SAMBA_BOOKS_USER,password=$SAMBA_BOOKS_PASS,uid=8083,nobrl,rw,vers=2.1,file_mode=0777,dir_mode=0777"
+      device: "//gringotts/media_books"

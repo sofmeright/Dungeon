@@ -1,0 +1,97 @@
+services:
+
+  beszel-agent:
+    container_name: beszel-agent
+    #deploy:
+    #  resources:
+    #    reservations:
+    #      devices:
+    #        - driver: nvidia
+    #          count: 1
+    #          capabilities: [gpu]
+    env_file: 
+      - beszel-agent.env
+      - beszel-agent_secret.env
+    image: henrygd/beszel-agent:0.11.1 #customgpu  #latest
+    logging: &logging
+      driver: "loki"
+      options:
+        loki-batch-size: "400"
+        loki-url: "http://monitoring:3100/loki/api/v1/push"
+        max-size: "10m"
+        max-file: "3"
+        mode: "non-blocking"
+        loki-retries: "2"
+        loki-max-backoff: "800ms"
+        loki-timeout: "1s"
+    network_mode: host
+    restart: unless-stopped
+    # Uncomment the lines below to use Nvidia GPUs for Hardware Transcoding
+    #runtime: nvidia
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /opt/docker/beszel/agent/data/:/extra-filesystems/data:ro
+      
+  cadvisor:
+    logging: *logging
+    command:
+      - '-port=8098'
+    container_name: cadvisor
+    devices:
+      - /dev/kmsg
+    env_file: cadvisor.env
+    image: gcr.io/cadvisor/cadvisor:v0.52.1
+    ports:
+      - 8098:8098
+    privileged: true
+    restart: always
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+      - /dev/disk/:/dev/disk:ro
+    
+  node_exporter:
+    logging: *logging
+    command: '--path.rootfs=/host'
+    container_name: node_exporter
+    image: quay.io/prometheus/node-exporter:v1.5.0
+    pid: host
+    ports:
+      - 9100:9100
+    restart: always
+    volumes:
+      - /:/host:ro,rslave
+
+  watchtower:
+    logging: *logging
+    container_name: watchtower
+    env_file: 
+      - hostname.env
+      - watchtower.env
+      - watchtower-secret.env
+    environment:
+      - TZ=Etc/UTC
+      - NO_COLOR=true
+      - WATCHTOWER_SCHEDULE=0 0 15 * * *
+      - WATCHTOWER_INCLUDE_STOPPED=true
+      - WATCHTOWER_INCLUDE_RESTARTING=true
+      - WATCHTOWER_MONITOR_ONLY=true
+      #- WATCHTOWER_NOTIFICATIONS=email
+      #- WATCHTOWER_NOTIFICATION_EMAIL_FROM=from-address@your-domain.com
+      #- WATCHTOWER_NOTIFICATION_EMAIL_TO=to-address@your-domain.com
+      # you have to use a network alias here, if you use your own certificate
+      #- WATCHTOWER_NOTIFICATION_EMAIL_SERVER=smtp.your-domain.com
+      #- WATCHTOWER_NOTIFICATION_EMAIL_SERVER_PORT-25
+      #- WATCHTOWER_NOTIFICATION_EMAIL_DELAY=2
+      #- WATCHTOWER_NOTIFICATION_EMAIL_SERVER_USER=fromaddress@gmail.com
+      #- WATCHTOWER_NOTIFICATION_EMAIL_SERVER_PASSWORD=app_password
+      #- WATCHTOWER_NOTIFICATION_GOTIFY_URL=http://192.168.1.197:8001/
+      #- WATCHTOWER_NOTIFICATION_GOTIFY_TOKEN=REDACTED_GOTIFY_TOKEN
+      #- WATCHTOWER_NOTIFICATION_GOTIFY_TLS_SKIP_VERIFY=true
+    # hostname: moor
+    image: containrrr/watchtower
+    restart: always
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock

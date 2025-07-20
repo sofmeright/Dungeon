@@ -1,0 +1,36 @@
+services:
+  rustdesk-server-hbbs:
+    command: hbbs
+    container_name: rustdesk-server-hbbs
+    depends_on:
+      - rustdesk-server-hbbr
+    environment:
+      - TZ=Etc/UTC
+    image: rustdesk/rustdesk-server:latest
+    network_mode: "host"
+    restart: unless-stopped
+    volumes:
+      - /opt/docker/rustdesk-server/data:/root
+    logging: &logging
+      driver: "loki"
+      options:
+        loki-batch-size: "400"
+        loki-url: "http://monitoring:3100/loki/api/v1/push"
+        max-size: "10m"
+        max-file: "3"
+        mode: "non-blocking"
+        loki-retries: "2"
+        loki-max-backoff: "800ms"
+        loki-timeout: "1s"
+
+  rustdesk-server-hbbr:
+    logging: *logging
+    command: hbbr
+    container_name: rustdesk-server-hbbr
+    environment:
+      - TZ=Etc/UTC
+    image: rustdesk/rustdesk-server:latest
+    network_mode: "host"
+    restart: unless-stopped
+    volumes:
+      - /opt/docker/rustdesk-server/data:/root

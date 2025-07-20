@@ -1,0 +1,29 @@
+services:
+  echoip:
+    image: mpolden/echoip
+    command: "-C 0 -p -r -H X-Forwarded-For -a /data/GeoLite2-ASN.mmdb -c /data/GeoLite2-City.mmdb -f /data/GeoLite2-Country.mmdb -t html"
+    ports:
+      - 8019:8080
+    volumes:
+      - /mnt/app_data/Server/Web-App/_docker-stack/echoip-ipleek/data:/data:ro
+      - /mnt/app_data/Server/Web-App/_docker-stack/echoip-ipleek/html:/html
+    restart: unless-stopped
+    #labels: &logging
+      #labels-regex: "^.+"
+      #log_driver: "loki"
+      #log_opt:
+        #loki-batch-size:"400"
+        #loki-url:"http://localhost:3100/loki/api/v1/push"
+        #max-size:"10m"
+        #max-file:"3"
+  
+  # this container needs to runs only once or whan you want to update Geo databases
+  maxmind:
+    #labels: *logging
+    image: maxmindinc/geoipupdate
+    environment:
+      - GEOIPUPDATE_ACCOUNT_ID=1034399 # get your own account from https://www.maxmind.com/
+      - GEOIPUPDATE_LICENSE_KEY=REDACTED_GEOIP_KEY # get your own key from https://www.maxmind.com/
+      - GEOIPUPDATE_EDITION_IDS=GeoLite2-ASN GeoLite2-City GeoLite2-Country
+    volumes:
+      - /mnt/app_data/Server/Web-App/_docker-stack/echoip-ipleek/data:/usr/share/GeoIP

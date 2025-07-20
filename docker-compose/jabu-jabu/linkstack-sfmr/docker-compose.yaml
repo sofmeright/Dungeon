@@ -1,0 +1,48 @@
+# version: '3'
+services:
+  linkstack:
+    image: linkstackorg/linkstack:latest
+    ports:
+      - 40323:443
+    depends_on:
+      - lnkstkdb
+    env_file: stack.env
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Etc/UTC
+      - SERVER_ADMIN=$ADMIN_EMAIL
+      - HTTP_SERVER_NAME=ls.sofmeright.com
+      - HTTPS_SERVER_NAME=ls.sofmeright.com
+      - LOG_LEVEL=info
+      - PHP_MEMORY_LIMIT=512M
+      - UPLOAD_MAX_FILESIZE=16M
+    volumes:
+      - /mnt/app_data/Server/_docker_stack/linkstack/htdocs:/htdocs
+      #- linkstack:/htdocs
+    restart: unless-stopped
+    logging: &logging
+      driver: loki
+      options:
+        loki-batch-size: "400"
+        loki-url: "http://monitoring:3100/loki/api/v1/push"
+        max-size: "10m"
+
+  lnkstkdb:
+    logging: *logging
+    image: mariadb
+    env_file: stack.env
+    environment:
+      - TZ=Etc/UTC
+      - MYSQL_USER=$MYSQL_USER_NAME
+      - MYSQL_PASSWORD=$MYSQL_USER_PASS
+      - MYSQL_DATABASE=$MYSQL_DATABASE
+      - MYSQL_ROOT_PASSWORD=$MYSQL_ROOT_PASS
+      - TERM=dumb
+    volumes:
+      #- /mnt/app_data/Server/Web-App/_docker-stack/linkstack/backups:/docker-entrypoint-initdb.d
+      - /mnt/app_data/Server/_docker_stack/linkstack/mysql:/var/lib/mysql
+    restart: unless-stopped
+  
+#volumes:
+#  linkstack:

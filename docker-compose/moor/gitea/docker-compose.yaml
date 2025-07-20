@@ -1,0 +1,44 @@
+services:
+  gitea-server:
+    depends_on:
+      - gitea-postgres
+    environment:
+      - GITEA__database__DB_TYPE=postgres
+      - GITEA__database__HOST=gitea-postgres:5432
+      - GITEA__database__NAME=gitea
+      - GITEA__database__USER=gitea
+      - GITEA__database__PASSWD=$POSTGRES_PASS
+    image: docker.io/gitea/gitea:1.23.1-rootless
+    ports:
+      - "7843:3000" # This is the Web-UI, change 7843 accordingly.
+      - "2222:2222" # This is the ssh port. Change it accordingly.
+    restart: always
+    userns_mode: keep-id:uid=1000,gid=1000
+    volumes:
+      - /opt/docker/gitea/data:/var/lib/gitea
+      - /opt/docker/gitea/config:/etc/gitea
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+    # logging: &logging
+      # driver: "loki"
+      # options:
+        # loki-batch-size: "400"
+        # loki-url: "http://monitoring:3100/loki/api/v1/push"
+        # max-size: "10m"
+        # max-file: "3"
+        # mode: "non-blocking"
+        # loki-retries: "2"
+        # loki-max-backoff: "800ms"
+        # loki-timeout: "1s"
+ 
+  gitea-postgres:
+    #labels: *logging
+    container_name: gitea-postgres
+    environment:
+      - POSTGRES_USER=gitea
+      - POSTGRES_PASSWORD=$POSTGRES_PASS
+      - POSTGRES_DB=gitea
+    image: docker.io/library/postgres:14
+    restart: always
+    volumes:
+      - /opt/docker/gitea/postgres:/var/lib/postgresql/data

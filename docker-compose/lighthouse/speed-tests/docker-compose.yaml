@@ -1,0 +1,65 @@
+services:
+
+  openspeedtest:
+    container_name: openspeedtest
+    env_file: openspeedtest.env
+    image: openspeedtest/latest
+    ports:
+      - '80:3000'
+      - '443:3001'
+    restart: unless-stopped
+    logging: &logging
+      driver: "loki"
+      options:
+        loki-batch-size: "400"
+        loki-url: "http://monitoring:3100/loki/api/v1/push"
+        max-size: "10m"
+        max-file: "3"
+        mode: "non-blocking"
+        loki-retries: "2"
+        loki-max-backoff: "800ms"
+        loki-timeout: "1s"
+
+  librespeed-speedtest:
+    logging: *logging
+    container_name: librespeed-speedtest
+    env_file: librespeed-speedtest.env
+    image: ghcr.io/librespeed/speedtest:latest
+    ports:
+      - "11843:8080" # webport mapping (host:container)
+    restart: always
+
+  speedtest-tracker:
+    logging: *logging
+    container_name: speedtest-tracker-app
+    depends_on:
+      speedtest-tracker-db:
+        condition: service_healthy
+    env_file: 
+      - speedtest-tracker-db_secret.env
+      - speedtest-tracker_secret.env
+      - speedtest-tracker.env
+    image: lscr.io/linuxserver/speedtest-tracker:latest
+    ports:
+      - 8080:80
+      - 8443:443
+    restart: unless-stopped
+    volumes:
+      - /opt/docker/speedtest_tracker/config:/config
+      - /opt/docker/speedtest_tracker/keys:/config/keys
+      
+  speedtest-tracker-db:
+    logging: *logging
+    container_name: speedtest-tracker-db
+    env_file: speedtest-tracker-db_secret.env
+    environment:
+      - TZ=Etc/UTC
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 5s
+      retries: 5
+      timeout: 5s
+    image: postgres:17
+    restart: always
+    volumes:
+      - /opt/docker/speedtest_tracker/postgres:/var/lib/postgresql/data

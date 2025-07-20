@@ -1,0 +1,38 @@
+services:
+  rustdesk-server:
+    command: hbbs
+    container_name: rustdesk-server
+    depends_on:
+      - rustdesk-relay
+    environment:
+      - ALWAYS_USE_RELAY=Y
+    image: rustdesk/rustdesk-server:latest
+    network_mode: "bridge"
+    ports:
+      - 21114-21116:21114-21116/tcp
+      - 21116:21116/udp
+      - 21118:21118/tcp # Optional WebClient Port
+    restart: always
+    volumes:
+      - /opt/docker/rustdesk-server/data:/root
+    #labels: &logging
+      #labels-regex: "^.+"
+      #log_driver: "loki"
+      #log_opt:
+        #loki-batch-size:"400"
+        #loki-url:"http://localhost:3100/loki/api/v1/push"
+        #max-size:"10m"
+        #max-file:"3"
+
+  rustdesk-relay:
+    #labels: *logging
+    command: hbbr
+    container_name: rustdesk-relay
+    image: rustdesk/rustdesk-server:latest
+    network_mode: "bridge"
+    ports:
+      - 21117:21117/tcp
+      - 21119:21119/tcp # Optional WebClient Port
+    restart: always
+    volumes:
+      - /opt/docker/rustdesk-server/data:/root

@@ -1,0 +1,15 @@
+- name: Ad Arbitorium 🔐 - GitOps - Misc - Use IPMI tool to Reduce Fan Speed of SuperMicro nodes.
+  become: true
+  hosts: "bamboo"
+
+  tasks:
+    # Note that in testing ```sleep 1``` was necessary in between changes.
+    - name: Set fan to max speed first (workaround, bug ~ custom fan speed does not work)
+      ansible.builtin.shell:
+        cmd: sudo ipmitool raw 0x30 0x45 0x01 0x01 && sleep 1
+    - name: Reducing Fan Speeds on fan controller 1/2
+      ansible.builtin.shell:
+        cmd: sudo ipmitool raw 0x30 0x70 0x66 0x01 0x00 0x38 && sleep 1
+    - name: Reducing Fan Speeds on fan controller 2/2
+      ansible.builtin.shell:
+        cmd: sudo ipmitool raw 0x30 0x70 0x66 0x01 0x01 0x38 && sleep 1

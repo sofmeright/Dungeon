@@ -1,0 +1,20 @@
+---
+- name: Ad Arbitorium 🔐 - GitOps - Infrastructure - FRR/OSPFv6 Networking (Ceph & Proxmox)
+  hosts: proxmox
+  become: true
+  tasks:
+    - name: Ensuring that the latest version of frr is installed...
+      ansible.builtin.apt:
+        name:
+          - frr
+        state: present
+        update_cache: true # Simulate apt-update on the first run.
+    - name: Syncing the state of frr/OSPFv6 with the configuration declared within the repository...
+      ansible.posix.synchronize:
+        src: "../../fs/{{ inventory_hostname }}/etc/frr/frr.conf"
+        dest: /etc/frr/frr.conf
+      delegate_to: "localhost"
+    # - name: Restart FRR/OSPFv6 service, to adopt the current configuration.
+      # ansible.builtin.service:
+        # name: frr
+        # state: restarted

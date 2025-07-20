@@ -1,0 +1,23 @@
+services:
+
+# 1st run: [URL: https://<host>:8007] [(user=admin) (pass=pbspbs). Change it!]
+
+  proxmox_bs:
+    container_name: proxmox_bs
+    image: ayufan/proxmox-backup-server:${TAG:-latest}
+    mem_limit: 2G
+    ports:
+      - '8007:8007'
+    restart: always
+    stop_signal: SIGHUP
+    tmpfs:
+      - /run
+    volumes:
+      - >-
+        /mnt/Flashy_Fuchsia/Ad_Arbitorium/Backup/Proxmox_BS/config:/etc/proxmox-backup
+      - >-
+        /mnt/Flashy_Fuchsia/Ad_Arbitorium/Backup/Proxmox_BS/logs:/var/log/proxmox-backup
+      - >-
+        /mnt/Flashy_Fuchsia/Ad_Arbitorium/Backup/Proxmox_BS/data:/var/lib/proxmox-backup
+      - >-
+        /mnt/Flashy_Fuchsia/Ad_Arbitorium/Backup/Proxmox_BS/backups:/mnt/Flashy_Fuchsia/Ad_Arbitorium/Backup/Proxmox_BS/backups

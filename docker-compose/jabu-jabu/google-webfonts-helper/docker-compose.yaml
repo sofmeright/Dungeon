@@ -1,0 +1,9 @@
+services:
+  google-webfonts-helper:
+    env_file: stack.env
+    environment: 
+      - GOOGLE_FONTS_API_KEY=$API_KEY
+    image: ghcr.io/majodev/google-webfonts-helper:${RELEASE:-latest}
+    ports:
+      - 8654:8080
+    restart: always

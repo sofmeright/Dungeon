@@ -1,0 +1,25 @@
+#---------------------------------------------------------------------#
+#     Homarr - A simple, yet powerful dashboard for your server.      #
+#---------------------------------------------------------------------#
+services:
+  homarr:
+    container_name: homarr
+    image: ghcr.io/homarr-labs/homarr:latest
+    restart: unless-stopped
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock # Optional, only if you want docker integration
+      - /mnt/app_data/Server/_docker_stack/homarr/appdata:/appdata
+    env_file: stack.env
+    environment:
+      - TZ=Etc/UTC
+      #- SECRET_ENCRYPTION_KEY= # <--- can be generated with `openssl rand -hex 32`
+    ports:
+      - '7575:7575'
+    #labels: &logging
+      #labels-regex: "^.+"
+      #log_driver: "loki"
+      #log_opt:
+        #loki-batch-size:"400"
+        #loki-url:"http://localhost:3100/loki/api/v1/push"
+        #max-size:"10m"
+        #max-file:"3"

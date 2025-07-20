@@ -1,0 +1,18 @@
+services:
+  vlmcsd:
+    image: mikolatero/vlmcsd
+    container_name: vlmcsd
+    ports:
+      - 1688:1688
+    restart: unless-stopped
+    logging: &logging
+      driver: "loki"
+      options:
+        loki-batch-size: "400"
+        loki-url: "http://monitoring:3100/loki/api/v1/push"
+        max-size: "10m"
+        max-file: "3"
+        mode: "non-blocking"
+        loki-retries: "2"
+        loki-max-backoff: "800ms"
+        loki-timeout: "1s"

@@ -1,5 +1,6 @@
 services:
   chrony:
+    image: simonrupf/chronyd:0.7.0
     # cap_add:
       # - SYS_TIME
     container_name: chrony
@@ -12,7 +13,6 @@ services:
       #- NOCLIENTLOG=true
       - NTP_SERVERS="0.us.pool.ntp.org,1.us.pool.ntp.org,2.us.pool.ntp.org,3.us.pool.ntp.org,2.debian.pool.ntp.org,the-usual-suspect,homing-pigeon,avocado,bamboo,cosmos,dragonfruit,eggplant"
       - TZ=Etc/UTC
-    image: simonrupf/chronyd:latest
     network_mode: bridge
     ports:
       - 123:123/udp
@@ -27,3 +27,4 @@ services:
     #volumes:
       #- /opt/docker/chrony/chrony.conf:/etc/chrony/chrony.conf
       #- /opt/docker/chrony/chrony.keys:/etc/chrony/chrony.keys
+

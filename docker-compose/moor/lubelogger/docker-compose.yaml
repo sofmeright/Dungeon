@@ -1,0 +1,35 @@
+services:
+  app:
+    image: ghcr.io/hargata/lubelogger:latest
+    #build: .
+    restart: unless-stopped
+    # volumes used to keep data persistent
+    volumes:
+      - /mnt/app_data/Server/Web-App/_docker-stack/lubelogger/config:/App/config
+      - /mnt/app_data/Server/Web-App/_docker-stack/lubelogger/data:/App/data
+      - translations:/App/wwwroot/translations
+      - documents:/App/wwwroot/documents
+      - images:/App/wwwroot/images
+      - temp:/App/wwwroot/temp
+      - log:/App/log
+      - /mnt/app_data/Server/Web-App/_docker-stack/keys:/root/.aspnet/DataProtection-Keys
+    # expose port and/or use serving via traefik
+    ports:
+      - 6452:8080
+    env_file:
+      - stack.env
+    #labels: &logging
+      #labels-regex: "^.+"
+      #log_driver: "loki"
+      #log_opt:
+        #loki-batch-size:"400"
+        #loki-url:"http://localhost:3100/loki/api/v1/push"
+        #max-size:"10m"
+        #max-file:"3"
+
+volumes:
+  translations:
+  documents:
+  images:
+  temp:
+  log:

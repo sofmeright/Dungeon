@@ -1,0 +1,46 @@
+#version: "3.3"
+
+services:
+      
+  orangehrm:
+    image: orangehrm/orangehrm:latest
+    restart: unless-stopped
+    ports:
+      - "8442:80"
+      - "8443:443"
+    env_file: stack.env
+    environment:
+      - ORANGEHRM_DATABASE_HOST=mariadb
+      - ORANGEHRM_DATABASE_USER=orangehrm
+      - ORANGEHRM_DATABASE_PASSWORD=$MYSQL_PASS
+      - ORANGEHRM_DATABASE_NAME=orangehrm
+      - PUID=998
+      - PGID=100
+    volumes:
+      - ./orange:/orangehrm
+    depends_on:
+      - mariadb
+    links:
+      - mariadb:mariadb
+    #labels: &logging
+      #labels-regex: "^.+"
+      #log_driver: "loki"
+      #log_opt:
+        #loki-batch-size:"400"
+        #loki-url:"http://localhost:3100/loki/api/v1/push"
+        #max-size:"10m"
+        #max-file:"3"
+
+  mariadb:
+    #labels: *logging
+    image: mariadb:10.2
+    restart: unless-stopped
+    volumes:
+      - ./db_orange:/var/lib/mysql
+    env_file: stack.env
+    environment:
+      - MYSQL_ROOT_PASSWORD=$MYSQL_ROOT_PASSWORD
+      - MYSQL_ROOT_USER=root
+      - MYSQL_DATABASE=orangehrm      
+      - MYSQL_USER=orangehrm
+      - MYSQL_PASS=$MYSQL_PASS

@@ -1,0 +1,32 @@
+---
+
+- name: Ad Arbitorium 🔐 - GitOps - Maintenance - Extend /dev/sda to span 100% available disc capacity.
+  hosts: "ubuntu_24_04"
+  ignore_errors: true
+  ignore_unreachable: true
+  become: true
+  tasks:
+
+    - name: Extend the partition to span the entire disk.
+      ansible.builtin.command: growpart /dev/sda 3
+      changed_when:
+        - '"CHANGE" in disk_op.stdout'
+        - '"NOCHANGE" not in disk_op.stdout'
+        - '"fudge=2048" not in disk_op.stdout'
+      failed_when:
+        - '"CHANGE" not in disk_op.stdout'
+        - '"NOCHANGE" not in disk_op.stdout'
+        - '"fudge=2048" not in disk_op.stdout'
+      register: disk_op
+
+    - name: Extend the PV to span the entire disk.
+      ansible.builtin.command: pvresize /dev/sda3
+      when: disk_op.changed
+
+    - name: Extend the LVM to span the entire disk.
+      ansible.builtin.command: lvextend -l +100%FREE /dev/ubuntu-vg/ubuntu-lv
+      when: disk_op.changed
+
+    - name: "Resize the filesystem without rebooting."
+      ansible.builtin.command: resize2fs /dev/ubuntu-vg/ubuntu-lv
+      when: disk_op.changed

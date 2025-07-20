@@ -1,0 +1,26 @@
+services:
+  organizr:
+    image: ghcr.io/organizr/organizr
+    container_name: organizr
+    environment:
+      - PGID=1000
+      - PUID=1000
+      - TZ=Etc/UTC
+      - branch=v2-master
+    volumes:
+      - /mnt/app_data/Server/_docker_stack/organizr/config:/config
+    ports:
+      - 82:80
+    restart: always
+    labels: &logging
+      labels-regex: "^.+"
+      log_driver: "loki"
+      log_opt:
+        loki-batch-size:"400"
+        loki-url:"http://monitoring:3100/loki/api/v1/push"
+        max-size:"10m"
+        max-file:"3"
+        mode:"non-blocking"
+        loki-retries:"2"
+        loki-max-backoff:"800ms"
+        loki-timeout:"1s"

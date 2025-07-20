@@ -1,4 +1,5 @@
 ---
+
 services:
   adguardhome-sync:
     image: lscr.io/linuxserver/adguardhome-sync:latest
@@ -13,3 +14,4 @@ services:
     ports:
       - 8080:8080
     restart: unless-stopped
+REDACTED_PRIVATE_KEY

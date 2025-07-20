@@ -1,0 +1,10 @@
+- name: Ad Arbitorium 🔐 - GitOps - Services - Enable apt-cacher-ng to locally cache application binaries
+  become: true
+  hosts: "linux"
+
+  tasks:
+    - name: Configure Debian/Ubuntu (apt managed) Hosts to use apt-cacher-ng
+      ansible.builtin.copy:
+        content: |
+          Acquire::http::Proxy "http://gringotts.prplanit.internal:3142";
+        dest: /etc/apt/apt.conf.d/00cacher

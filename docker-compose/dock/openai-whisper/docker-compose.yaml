@@ -1,0 +1,28 @@
+---
+services:
+  faster-whisper:
+    image: lscr.io/linuxserver/faster-whisper:gpu
+    container_name: faster-whisper
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Etc/UTC
+      - WHISPER_BEAM=1 #optional
+      - WHISPER_LANG=en #optional
+      - WHISPER_MODEL=turbo #tiny-int8
+    volumes:
+      - /opt/docker/faster-whisper/data:/config
+    ports:
+      - 10300:10300
+    restart: unless-stopped
+    runtime: nvidia
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities:
+                - gpu
+                - compute
+                - video

@@ -1,0 +1,11 @@
+services:
+  portainer:
+    env_file: 
+      - portainer_secret.env
+    image: portainer/portainer-ce:latest
+    ports:
+      - 9443:9443
+    restart: always
+    volumes:
+      - /opt/docker/portainer/data:/data
+      - /var/run/docker.sock:/var/run/docker.sock

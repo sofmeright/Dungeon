@@ -1,0 +1,67 @@
+version: "3.7"
+services:
+  netbox-postgres:
+    image: postgres:15-alpine
+    container_name: netbox_postgres
+    hostname: netbox-postgres
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "pg_isready", "-q", "-d", "netbox", "-U", "netbox"]
+      timeout: 45s
+      interval: 10s
+      retries: 10   
+    volumes:
+      - /mnt/app_data/Server/_docker_stack/netbox/postgres:/var/lib/postgresql/data
+    env_file: stack.env
+    environment:
+      - POSTGRES_DB=netbox
+      - POSTGRES_USER=netbox
+    #labels: &logging
+      #labels-regex: "^.+"
+      #log_driver: "loki"
+      #log_opt:
+        #loki-batch-size:"400"
+        #loki-url:"http://localhost:3100/loki/api/v1/push"
+        #max-size:"10m"
+        #max-file:"3"
+     
+  netbox-redis:
+    #labels: *logging
+    image: redis:7-alpine
+    user: 1026:100
+    command: redis-server
+    container_name: netbox_redis
+    hostname: netbox-redis
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli ping || exit 1"]
+    restart: always
+    volumes:
+      - /mnt/app_data/Server/_docker_stack/netbox/redis:/data
+      
+  netbox-server:
+    #labels: *logging
+    image: lscr.io/linuxserver/netbox:latest
+    container_name: netbox_server
+    hostname: netbox-server
+    env_file: stack.env
+    environment:
+      - PUID=1026
+      - PGID=100
+      - TZ=America/Los_Angeles
+      - ALLOWED_HOSTS=['netbox.prplanit.com', 'netbox.prplanit.internal', 'netbox.pcfae.com', '10.40.9.104', '10.30.1.123', '10.24.96.9', '127.0.0.1']
+      - DB_NAME=netbox
+      - DB_USER=netbox
+      - DB_HOST=netbox-postgres
+      - DB_PORT=5432
+      - REDIS_HOST=netbox-redis
+      - REDIS_PORT=6379
+      - REDIS_DB_TASK=0
+      - REDIS_DB_CACHE=1
+    volumes:
+      - /mnt/app_data/Server/_docker_stack/netbox/config:/config
+    ports:
+      - 13031:8000
+    depends_on:
+      - netbox-postgres
+      - netbox-redis
+    restart: unless-stopped   

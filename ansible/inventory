@@ -1,0 +1,242 @@
+all:
+  hosts:
+# ------- Automations ------- #
+    ant-parade:
+      ansible_host: 10.30.1.111
+    leaf-cutter:
+      ansible_host: 10.13.37.141
+# ------- Docker ------- #
+# DNS
+    the-usual-suspect:
+      ansible_host: 10.0.0.1
+    homing-pigeon:
+      ansible_host: 10.0.0.2
+# Gaming:
+    jabu-jabu:
+      ansible_host: 10.30.8.98
+# GPU Accelerated:
+    anchorage:
+      ansible_host: 10.30.1.122
+    dock:
+      ansible_host: 10.55.6.136
+# Management
+    harbormaster:
+      ansible_host: 10.24.7.55
+# Misc / Low-Risk:
+    the-lost-woods:
+      ansible_host: 10.30.8.131
+# Monitoring:
+    lighthouse:
+      ansible_host: 10.55.6.137
+# Nginx Hosts
+    cell-membrane:
+      ansible_host: 10.40.9.104
+    phloem:
+      ansible_host: 10.4.20.69
+    xylem: 
+      ansible_host: 10.24.96.9
+# Personal Sec.
+    marina:
+      ansible_host: 10.55.6.123
+# Prod
+    moor:
+      ansible_host: 10.30.1.123
+# Veggietales:
+    pirates-wdda:
+      ansible_host: 10.161.80.33
+# ------- Kubernetes ------- #
+# Kubernetes Masters:
+    dungeon_map_001:                # dungeon_map_00[1:5]:
+      ansible_host: 172.22.22.150
+    dungeon_map_002:
+      ansible_host: 172.22.22.151
+    dungeon_map_003:
+      ansible_host: 172.22.22.152
+    dungeon_map_004:
+      ansible_host: 172.22.22.153
+    dungeon_map_005:
+      ansible_host: 172.22.22.154
+# Kubenetes Workers:
+    dungeon_worker_001:             # dungeon_worker_00[1:5]:
+      ansible_host: 172.22.22.175
+    dungeon_worker_002:
+      ansible_host: 172.22.22.176
+    dungeon_worker_003:
+      ansible_host: 172.22.22.177
+    dungeon_worker_004:
+      ansible_host: 172.22.22.178
+    dungeon_worker_005:
+      ansible_host: 172.22.22.179
+# ------- PBX ------- #
+    bluebell:
+      ansible_host: 10.30.1.69
+# ------- Proxmox Cluster ------- #
+    avocado:
+      ansible_host: 172.22.22.3
+    bamboo:
+      ansible_host: 172.22.22.4
+    cosmos:
+      ansible_host: 172.22.22.5
+    dragonfruit:
+      ansible_host: 172.22.22.6
+    eggplant:
+      ansible_host: 172.22.22.7
+# ------- Proxmox Cluster Proxmox Backup Server ------- #
+    priscilla:
+      ansible_host: 172.22.181.51
+# ------- Windows ------- #
+# windows_10:
+    LeafBlower:
+      ansible_host: 10.13.37.145
+# windows_11:
+    Glicynia:
+      ansible_host: 10.13.37.143
+    Wisteria:
+      ansible_host: 10.13.37.144
+    WaterLily:
+      ansible_host: 10.13.37.142
+
+proxmox:
+  hosts:
+    avocado:
+    bamboo:
+    cosmos:
+    dragonfruit:
+    eggplant:
+  vars:
+    ansible_user: root
+    #ansible_python_interpreter: /usr/bin/python3.12 # 3.10 or the version the warning is saying
+proxmox_bs:
+  hosts:
+    priscilla:
+  vars:
+    ansible_user: root
+    #ansible_python_interpreter: /usr/bin/python3.12 # 3.10 or the version the warning is saying
+ansible:
+  hosts:
+    ant-parade:
+    leaf-cutter:
+  vars:
+    ansible_user: kai
+    #ansible_python_interpreter: /usr/bin/python3.12 # 3.10 or the version the warning is saying
+k8s_master:
+  hosts:
+    dungeon_map_001:
+    dungeon_map_002:
+    dungeon_map_003:
+    dungeon_map_004:
+    dungeon_map_005:
+k8s_worker:
+  hosts:
+    dungeon_worker_001:
+    dungeon_worker_002:
+    dungeon_worker_003:
+    dungeon_worker_004:
+    dungeon_worker_005:
+windows_10:
+  hosts:
+    LeafBlower:
+windows_11:
+  hosts:
+    Glicynia:
+    Wisteria:
+    WaterLily:
+  vars:
+    ansible_connection: winrm
+    ansible_user: gitops
+    ansible_password: '{{ ansible_windows_password }}'
+    anisble_port: 5986
+    ansible_winrm_transport: ntlm
+    ansible_winrm_server_cert_validation: ignore
+    
+vm_debian_12:
+  hosts:
+    bluebell:
+  vars:
+    ansible_user: kai
+ubuntu_24_04_unclustered:
+  hosts:
+    anchorage:
+    cell-membrane:
+    dock:
+    harbormaster:
+    homing-pigeon:
+    jabu-jabu:
+    lighthouse:
+    marina:
+    moor:
+    pirates-wdda:
+    phloem:
+    the-lost-woods:
+    the-usual-suspect:
+    xylem: 
+ubuntu_24_04:
+  children:
+    ubuntu_24_04_unclustered:
+    k8s_master:
+    k8s_worker:
+  vars:
+    ansible_user: kai
+    #ansible_python_interpreter: /usr/bin/python3.12 # 3.10 or the version the warning is saying
+linux:
+  children:
+    ansible:
+    k8s_master:
+    k8s_worker:
+    proxmox:
+    proxmox_bs:
+    ubuntu_24_04:
+linux_clustered:
+  children:
+    k8s_master:
+    k8s_worker:
+    proxmox:
+linux_unclustered:
+  children:
+    proxmox_bs:
+    ubuntu_24_04_unclustered:
+docker_reg:
+  hosts:
+    harbormaster:
+    homing-pigeon:
+    jabu-jabu:
+    lighthouse:
+    marina:
+    moor:
+    pirates-wdda:
+    the-lost-woods:
+    the-usual-suspect:
+    xylem:
+docker_gpu:
+  hosts:
+    anchorage:
+    dock:
+nginx:
+  hosts:
+    cell-membrane:
+    phloem:
+    xylem:
+proxmox_vms:
+  children:
+    ansible:
+    k8s_master:
+    k8s_worker:
+    proxmox_bs:
+    ubuntu_24_04:
+
+
+# Graveyard:
+#    auger:
+#      ansible_host: 172.22.22.50
+#    bowrake:
+#      ansible_host: 172.22.22.51
+#    caterpillarinc:
+#      ansible_host: 172.22.22.52
+#    dibbler:
+#      ansible_host: 172.22.22.53
+#    edgetrimmer:
+#      ansible_host: 172.22.22.54
+#    jalapeno:
+#      ansible_host: 10.13.37.25
+    # vineyard:
+      # ansible_host: 10.30.1.102

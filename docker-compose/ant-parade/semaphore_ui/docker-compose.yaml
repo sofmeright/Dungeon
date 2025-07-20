@@ -1,12 +1,7 @@
 services:
   # uncomment this section and comment out the mysql section to use postgres instead of mysql
-  semaphore-ui-db:
-    container_name: semaphore-ui-db
-    env_file: stack.env
-    environment:
-      POSTGRES_USER: $POSTGRES_USER_NAME
-      POSTGRES_PASSWORD: $POSTGRES_USER_PASS
-      POSTGRES_DB: $POSTGRES_DB_NAME
+  postgres:
+    env_file: .env
     hostname: postgres
     image: postgres:14
     restart: unless-stopped
@@ -25,36 +20,10 @@ services:
       #MYSQL_DATABASE: semaphore
       #MYSQL_USER: semaphore
       #MYSQL_PASSWORD: REDACTED_MYSQL_PASSWORD
-  semaphore-ui-app:
-    container_name: semaphore-ui-app
+  semaphore:
     depends_on:
-      - semaphore-ui-db # for postgres, change to: postgres
-    env_file: stack.env
-    environment:
-      SEMAPHORE_WEB_ROOT: https://ansible.pcfae.com
-      SEMAPHORE_DB_USER: $POSTGRES_USER_NAME
-      SEMAPHORE_DB_PASS: $POSTGRES_USER_PASS
-      SEMAPHORE_DB_HOST: postgres # for postgres, change to: postgres
-      SEMAPHORE_DB_PORT: 5432 # change to 5432 for postgres
-      SEMAPHORE_DB_DIALECT: postgres # for postgres, change to: postgres
-      SEMAPHORE_DB: $POSTGRES_DB_NAME
-      SEMAPHORE_PLAYBOOK_PATH: /tmp/semaphore/
-      SEMAPHORE_ADMIN_PASSWORD: $APP_ADMIN_PASS
-      SEMAPHORE_ADMIN_NAME: $APP_ADMIN_NAME
-      SEMAPHORE_ADMIN_EMAIL: $APP_ADMIN_MAIL
-      SEMAPHORE_ADMIN: $APP_ADMIN_USER
-      SEMAPHORE_ACCESS_KEY_ENCRYPTION: $SEMAPHORE_ACCESS_KEY_ENCRYPTION
-      ANSIBLE_REMOTE_USER: 'root'
-      ANSIBLE_HOST_KEY_CHECKING: "false"
-      SEMAPHORE_LDAP_ACTIVATED: 'no' # if you wish to use ldap, set to: 'yes' 
-      SEMAPHORE_LDAP_HOST: dc01.local.example.com
-      SEMAPHORE_LDAP_PORT: '636'
-      SEMAPHORE_LDAP_NEEDTLS: 'yes'
-      SEMAPHORE_LDAP_DN_BIND: 'uid=bind_user,cn=users,cn=accounts,dc=local,dc=shiftsystems,dc=net'
-      SEMAPHORE_LDAP_PASSWORD: 'ldap_bind_account_password'
-      SEMAPHORE_LDAP_DN_SEARCH: 'dc=local,dc=example,dc=com'
-      SEMAPHORE_LDAP_SEARCH_FILTER: "(\u0026(uid=%s)(memberOf=cn=ipausers,cn=groups,cn=accounts,dc=local,dc=example,dc=com))"
-      TZ: Etc/UTC
+      - postgres # for postgres, change to: postgres
+    env_file: .env
     image: semaphoreui/semaphore:latest
     ports:
       - 3000:3000

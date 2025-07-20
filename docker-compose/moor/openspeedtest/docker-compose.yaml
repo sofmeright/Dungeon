@@ -1,0 +1,20 @@
+services:
+    speedtest:
+        environment:
+            - ENABLE_LETSENCRYPT=True
+            - DOMAIN_NAME=10.55.6.123
+            - USER_EMAIL=kai.hamil@gmail.com
+        restart: unless-stopped
+        container_name: openspeedtest
+        ports:
+            - '80:3000'
+            - '443:3001'
+        image: openspeedtest/latest
+        #labels: &logging
+          #labels-regex: "^.+"
+          #log_driver: "loki"
+          #log_opt:
+            #loki-batch-size:"400"
+            #loki-url:"http://localhost:3100/loki/api/v1/push"
+            #max-size:"10m"
+            #max-file:"3"

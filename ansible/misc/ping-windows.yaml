@@ -1,0 +1,9 @@
+---
+
+- name: Ad Arbitorium 🔐 - GitOps - Misc - Test Management Connection of Windows Machines
+  hosts: "windows_11"
+  # ignore_errors: true
+  # become: true
+  tasks:
+    - name: Test Management Connection of Windows Machines
+      ansible.windows.win_ping:

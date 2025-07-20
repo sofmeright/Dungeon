@@ -1,0 +1,1 @@
+Proxmox_VE_Backup_on_Flashy_Fuchsia -fstype=cifs,uid=34,gid=34,credentials=/etc/samba/.smbcreds,iocharset=utf8,nobrl,rw,sec=ntlmv2,vers=3.0 ://gringotts/Proxmox_VE

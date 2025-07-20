@@ -1,0 +1,19 @@
+services:
+  open-webui:
+    #env_file: stack.env
+    image: ghcr.io/open-webui/open-webui:latest
+    container_name: open-webui
+    volumes:
+      - /opt/docker/open-webui/data:/app/backend/data
+    network_mode: bridge
+    ports:
+      - 3003:8080
+    restart: always
+    #labels: &logging
+      #labels-regex: "^.+"
+      #log_driver: "loki"
+      #log_opt:
+        #loki-batch-size:"400"
+        #loki-url:"http://localhost:3100/loki/api/v1/push"
+        #max-size:"10m"
+        #max-file:"3"

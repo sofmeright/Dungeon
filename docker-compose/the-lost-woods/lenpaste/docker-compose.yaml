@@ -1,0 +1,39 @@
+services:
+
+  lenpaste-app:
+    container_name: lenpaste-app
+    depends_on:
+      - lenpaste-postgres
+    environment:
+      - LENPASTE_DB_DRIVER=postgres
+      - LENPASTE_DB_SOURCE=postgres://$POSTGRES_USER:$POSTGRES_PASS@lenpaste-postgres/lenpaste?sslmode=disable
+    image: ghcr.io/lcomrade/lenpaste:1.3.1
+    ports:
+      - "13259:80"
+    restart: always
+    #restart: on-failure:10
+    volumes:
+      - /opt/docker/lenspaste/data:/data
+    logging: &logging
+      driver: "loki"
+      options:
+        loki-batch-size: "400"
+        loki-url: "http://monitoring:3100/loki/api/v1/push"
+        max-size: "10m"
+        max-file: "3"
+        mode: "non-blocking"
+        loki-retries: "2"
+        loki-max-backoff: "800ms"
+        loki-timeout: "1s"
+
+  lenpaste-postgres:
+    container_name: lenpaste-postgres
+    logging: *logging
+    environment:
+      - PGDATA=/var/lib/postgresql/data/pgdata
+      - POSTGRES_USER=$POSTGRES_USER
+      - POSTGRES_PASSWORD=$POSTGRES_PASS
+    image: docker.io/library/postgres:16.1
+    restart: always
+    volumes:
+      - /opt/docker/lenspaste/postgres:/var/lib/postgresql/data
