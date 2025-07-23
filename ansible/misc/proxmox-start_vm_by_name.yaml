@@ -1,0 +1,58 @@
+# Find on proxmox nodes
+- name: Get VM list on Proxmox node {{ inventory_hostname }}
+  shell: qm list | awk 'NR>1 {print $1 "|" $2}'
+  register: qemu_vms
+  changed_when: false
+  delegate_to: "{{ item }}"
+  with_items: "{{ groups['proxmox'] }}"
+  loop_control:
+    label: "{{ item }}"
+  run_once: true
+
+- name: Get LXC list on Proxmox nodes
+  shell: pct list | awk 'NR>1 {print $1 "|" $3}'
+  register: lxc_vms
+  changed_when: false
+  delegate_to: "{{ item }}"
+  with_items: "{{ groups['proxmox'] }}"
+  loop_control:
+    label: "{{ item }}"
+  run_once: true
+
+- name: Combine and parse all VMs from all hosts
+  set_fact:
+    all_vms: >-
+      {{
+        (qemu_vms.results + lxc_vms.results)
+        | map(attribute='stdout_lines') | list
+        | flatten | map('split', '|')
+        | list
+      }}
+
+- name: Find the VM match
+  set_fact:
+    matched_host: "{{ item.item }}"
+    matched_id: "{{ item.stdout_lines
+                   | select('search', target_vm_name)
+                   | map('regex_replace', '^(\\d+).*', '\\1')
+                   | list | first }}"
+  when: item.stdout_lines | select('search', target_vm_name) | list | length > 0
+  loop: "{{ qemu_vms.results + lxc_vms.results }}"
+  loop_control:
+    label: "{{ item.item }}"
+
+- name: Fail if no match found
+  fail:
+    msg: "Could not find VM {{ target_vm_name }} on any Proxmox node."
+  when: matched_host is not defined or matched_id is not defined
+
+- name: Start VM on matched node if it's not running
+  delegate_to: "{{ matched_host }}"
+  become: true
+  shell: |
+    status=$(qm status {{ matched_id }} | awk '{print $2}')
+    if [ "$status" != "running" ]; then
+      qm start {{ matched_id }}
+    fi
+  register: start_output
+  changed_when: "'start' in start_output.stdout or 'started' in start_output.stdout"

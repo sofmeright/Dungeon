@@ -1,26 +1,27 @@
 ---
 services:
-  shlink:
-    image: shlinkio/shlink:latest
-    container_name: shlink
+  shlink-app:
+    container_name: shlink-app
+    depends_on:
+      - shlink-db
+    env_file: shlink-app-secret.env
     environment:
       - TZ=America/Los_Angeles
       - DEFAULT_DOMAIN=sh.uni2.cc
       - IS_HTTPS_ENABLED=false
-      - GEOLITE_LICENSE_KEY=REDACTED_GEOIP_KEY
-      - INITIAL_API_KEY=REDACTED_API_KEY
+      # - GEOLITE_LICENSE_KEY=
+      # - INITIAL_API_KEY=
       - DB_DRIVER=maria
-      - DB_HOST=shlink_db
+      - DB_HOST=shlink-db
       - DB_PORT=3306
       - DB_USER=shlink
-      - DB_PASSWORD=31aCFhn!6fKY
+      # - DB_PASSWORD=
       - DB_NAME=shlinkapp
       - SHELL_VERBOSITY=3
+    image: shlinkio/shlink:latest
     ports:
       - 9145:8080
     restart: unless-stopped
-    depends_on:
-      - shlink_db
     #labels: &logging
       #labels-regex: "^.+"
       #log_driver: "loki"
@@ -30,27 +31,29 @@ services:
         #max-size:"10m"
         #max-file:"3"
 
-  shlink_db:
+  shlink-db:
     #labels: *logging
-    image: lscr.io/linuxserver/mariadb
-    container_name: shlink_db
+    container_name: shlink-db
+    env_file: shlink-db-secret.env
     environment:
       - PUID=1000
       - PGID=1000
       - TZ=America/Los_Angeles
-      - MYSQL_ROOT_PASSWORD=plwz5H462!N!
+      # - MYSQL_ROOT_PASSWORD=
       - MYSQL_DATABASE=shlinkapp
       - MYSQL_USER=shlink
-      - MYSQL_PASSWORD=31aCFhn!6fKY
-    volumes:
-      - /mnt/app_data/Server/_docker_stack/shlink/db_data:/config
+      # - MYSQL_PASSWORD=
+    image: lscr.io/linuxserver/mariadb
     restart: unless-stopped
+    volumes:
+      - /opt/docker/shlink/db_data:/config
 
   shlink-web-client:
     #labels: *logging
+    container_name: shlink-web-client
     image: shlinkio/shlink-web-client
     ports:
       - 9146:8080
-    volumes:
-      - /mnt/app_data/Server/_docker_stack/shlink/web-config/:/usr/share/nginx/html/conf.d/
     restart: unless-stopped
+    volumes:
+      - /opt/docker/shlink/web-config/:/usr/share/nginx/html/conf.d/

@@ -1,0 +1,119 @@
+---
+- name: Playbook to configure Docker Server ("moor").
+  hosts: dock
+  become: true
+  tasks: 
+    - name: update apt cache
+      ansible.builtin.apt:
+        update_cache: yes
+
+    - name: install ca-certificates and curl
+      ansible.builtin.apt:
+        name:
+          - ca-certificates
+          - curl
+        state: present
+   
+    - name: make sure keyrings directory exists
+      ansible.builtin.file:
+        path: /etc/apt/keyrings
+        state: directory
+        mode: '0775'
+  
+    - name: download docker gpg key
+      ansible.builtin.get_url:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        dest: /etc/apt/keyrings/docker.asc
+  
+    - name: set permissions on downloaded gpg key
+      ansible.builtin.file:
+        path: /etc/apt/keyrings/docker.asc
+        mode: '0644'
+   
+    - name: add docker repository into sources list
+      ansible.builtin.apt_repository:
+        repo: deb [arch=amd64 signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable
+        filename: docker.list
+   
+    - name: update apt cache
+      ansible.builtin.apt:
+        update_cache: yes
+
+    - name: install docker
+      ansible.builtin.apt:
+        name:
+          - docker-ce
+          - docker-ce-cli
+          - containerd.io
+          - docker-buildx-plugin
+          - docker-compose-plugin
+        state: present
+
+    - name: install docker-compose
+      ansible.builtin.get_url:
+        url: https://github.com/docker/compose/releases/latest/download/docker-compose-Linux-x86_64
+        dest: /usr/local/bin/docker-compose
+        mode: '0755'
+
+    - name: give docker-compose executable permission
+      ansible.builtin.file:
+        path: /usr/local/bin/docker-compose
+        mode: '0755'
+
+    # comment the two below tasks out if you want to use sudo with each docker command
+    - name: create docker group
+      ansible.builtin.group:
+        name: docker
+        state: present
+
+    - name: add user to docker group
+      ansible.builtin.user:
+        name: "{{ ansible_user_id }}"
+        groups: docker
+        append: yes
+
+            
+    - name: Install the Keys and Source for Nvidia Container Toolkit.
+      block:
+        - name: Add Nvidia Container Toolkit key...
+          ansible.builtin.get_url:
+            url: https://nvidia.github.io/libnvidia-container/gpgkey
+            dest: /usr/share/keyrings/nvidia-container-toolkit-keyring.asc
+            mode: ugo+rw
+        - name: dearmor the downloaded signing key file
+          shell: gpg --batch --dearmor -o /usr/share/keyrings/nvidia-container-toolkit-keyring.gpg /usr/share/keyrings/nvidia-container-toolkit-keyring.asc
+          args:
+            creates: /usr/share/keyrings/nvidia-container-toolkit-keyring.gpg
+        - name: Delete unneeded pre dearmor key.
+          ansible.builtin.file:
+            state: absent
+            path: /usr/share/keyrings/nvidia-container-toolkit-keyring.asc
+        - name: Download Nvidia Container Toolkit Source list
+          become: yes
+          get_url:
+            url: https://nvidia.github.io/libnvidia-container/stable/deb/nvidia-container-toolkit.list
+            dest: /etc/apt/sources.list.d/nvidia-container-toolkit.list
+        - name: Ansible- Fix the source list
+          replace:
+            path: /etc/apt/sources.list.d/nvidia-container-toolkit.list
+            regexp: 'deb https://'
+            replace: "deb [signed-by=/usr/share/keyrings/nvidia-container-toolkit-keyring.gpg] https://"
+
+    - name: update apt cache
+      ansible.builtin.apt:
+        update_cache: yes
+        
+    - name: install Nvidia Container Toolkit, Cuda Toolkit, and Nvidia GDS.
+      ansible.builtin.apt:
+        name:
+          - nvidia-container-toolkit
+          - nvidia-cuda-toolkit
+        state: present
+
+    - name: install Nvidia Drivers
+      shell: ubuntu-drivers autoinstall
+      register: nvidia_driver_install
+
+    - name: Reboot the machine if new Nvidia Drivers installed.
+      ansible.builtin.reboot:
+      when: nvidia_driver_install.changed

@@ -2,26 +2,31 @@ name: twenty
 
 services:
 
-  server:
+  app:
     image: twentycrm/twenty:${TAG:-latest}
-    volumes:
-      - /mnt/app_data/Server/_docker_stack/twenty/server-local-data:/app/packages/twenty-server/${STORAGE_LOCAL_PATH:-.local-storage}
-      - /mnt/app_data/Server/_docker_stack/twenty/docker-data:/app/docker-data
-    ports:
-      - "2020:3000"
-    env_file: stack.env
+    container_name: twentycrm-app
+    depends_on:
+      # change-vol-ownership:
+        # condition: service_completed_successfully
+      postgres:
+        condition: service_healthy
+    env_file:
+      - twentycrm-postgres-secret.env
+      - twentycrm-postgres.env
+      - twentycrm-app-secret.env
+      - twentycrm-app.env
     environment:
       NODE_PORT: 3000
-      PG_DATABASE_URL: postgres://${PG_DATABASE_USER:-postgres}:${PG_DATABASE_PASSWORD:-postgres}@${PG_DATABASE_HOST:-db}:${PG_DATABASE_PORT:-5432}/default
-      SERVER_URL: ${SERVER_URL}
-      REDIS_URL: ${REDIS_URL:-redis://redis:6379}
+      # PG_DATABASE_URL: postgres://${PG_DATABASE_USER:-postgres}:${PG_DATABASE_PASSWORD:-postgres}@${PG_DATABASE_HOST:-postgres}:${PG_DATABASE_PORT:-5432}/default
+      # SERVER_URL: ${SERVER_URL}
+      # REDIS_URL: ${REDIS_URL:-redis://redis:6379}
 
-      STORAGE_TYPE: ${STORAGE_TYPE}
-      STORAGE_S3_REGION: ${STORAGE_S3_REGION}
-      STORAGE_S3_NAME: ${STORAGE_S3_NAME}
-      STORAGE_S3_ENDPOINT: ${STORAGE_S3_ENDPOINT}
+      # STORAGE_TYPE: ${STORAGE_TYPE}
+      # STORAGE_S3_REGION: ${STORAGE_S3_REGION}
+      # STORAGE_S3_NAME: ${STORAGE_S3_NAME}
+      # STORAGE_S3_ENDPOINT: ${STORAGE_S3_ENDPOINT}
 
-      APP_SECRET: ${APP_SECRET:-replace_me_with_a_random_string}
+      # APP_SECRET: ${APP_SECRET:-replace_me_with_a_random_string}
 
       # MESSAGING_PROVIDER_GMAIL_ENABLED: ${MESSAGING_PROVIDER_GMAIL_ENABLED}
       # CALENDAR_PROVIDER_GOOGLE_ENABLED: ${CALENDAR_PROVIDER_GOOGLE_ENABLED}
@@ -46,18 +51,17 @@ services:
       # EMAIL_SMTP_PORT: ${EMAIL_SMTP_PORT:-465}
       # EMAIL_SMTP_USER: ${EMAIL_SMTP_USER:-}
       # EMAIL_SMTP_PASSWORD: ${EMAIL_SMTP_PASSWORD:-}
-
-    depends_on:
-      change-vol-ownership:
-        condition: service_completed_successfully
-      db:
-        condition: service_healthy
     healthcheck:
       test: curl --fail http://localhost:3000/healthz
       interval: 5s
       timeout: 5s
       retries: 10
+    ports:
+      - "2020:3000"
     restart: always
+    volumes:
+      - /opt/docker/twenty/server-local-data:/app/packages/twenty-server/${STORAGE_LOCAL_PATH:-.local-storage}
+      - /opt/docker/twenty/docker-data:/app/docker-data
     #labels: &logging
       #labels-regex: "^.+"
       #log_driver: "loki"
@@ -69,23 +73,30 @@ services:
 
   worker:
     #labels: *logging
-    image: twentycrm/twenty:${TAG:-latest}
-    volumes:
-      - /mnt/app_data/Server/_docker_stack/twenty/server-local-data:/app/packages/twenty-server/${STORAGE_LOCAL_PATH:-.local-storage}
     command: ["yarn", "worker:prod"]
-    env_file: stack.env
+    container_name: twentycrm-worker
+    depends_on:
+      postgres:
+        condition: service_healthy
+      app:
+        condition: service_healthy
+    env_file:
+      - twentycrm-postgres-secret.env
+      - twentycrm-postgres.env
+      - twentycrm-app-secret.env
+      - twentycrm-app.env
     environment:
-      PG_DATABASE_URL: postgres://${PG_DATABASE_USER:-postgres}:${PG_DATABASE_PASSWORD:-postgres}@${PG_DATABASE_HOST:-db}:${PG_DATABASE_PORT:-5432}/default
-      SERVER_URL: ${SERVER_URL}
-      REDIS_URL: ${REDIS_URL:-redis://redis:6379}
+      # PG_DATABASE_URL: postgres://${PG_DATABASE_USER:-postgres}:${PG_DATABASE_PASSWORD:-postgres}@${PG_DATABASE_HOST:-postgres}:${PG_DATABASE_PORT:-5432}/default
+      # SERVER_URL: ${SERVER_URL}
+      # REDIS_URL: ${REDIS_URL:-redis://redis:6379}
       DISABLE_DB_MIGRATIONS: "true" # it already runs on the server
 
-      STORAGE_TYPE: ${STORAGE_TYPE}
-      STORAGE_S3_REGION: ${STORAGE_S3_REGION}
-      STORAGE_S3_NAME: ${STORAGE_S3_NAME}
-      STORAGE_S3_ENDPOINT: ${STORAGE_S3_ENDPOINT}
+      # STORAGE_TYPE: ${STORAGE_TYPE}
+      # STORAGE_S3_REGION: ${STORAGE_S3_REGION}
+      # STORAGE_S3_NAME: ${STORAGE_S3_NAME}
+      # STORAGE_S3_ENDPOINT: ${STORAGE_S3_ENDPOINT}
 
-      APP_SECRET: ${APP_SECRET:-replace_me_with_a_random_string}
+      # APP_SECRET: ${APP_SECRET:-replace_me_with_a_random_string}
 
       # MESSAGING_PROVIDER_GMAIL_ENABLED: ${MESSAGING_PROVIDER_GMAIL_ENABLED}
       # CALENDAR_PROVIDER_GOOGLE_ENABLED: ${CALENDAR_PROVIDER_GOOGLE_ENABLED}
@@ -110,47 +121,48 @@ services:
       # EMAIL_SMTP_PORT: ${EMAIL_SMTP_PORT:-465}
       # EMAIL_SMTP_USER: ${EMAIL_SMTP_USER:-}
       # EMAIL_SMTP_PASSWORD: ${EMAIL_SMTP_PASSWORD:-}
-      
-    depends_on:
-      db:
-        condition: service_healthy
-      server:
-        condition: service_healthy
+    image: twentycrm/twenty:${TAG:-latest}
     restart: always
-
-  db:
-    #labels: *logging
-    image: postgres:16
     volumes:
-      - /mnt/app_data/Server/_docker_stack/twenty/db-data:/var/lib/postgresql/data
-    env_file: stack.env
-    environment:
-      POSTGRES_USER: ${PG_DATABASE_USER:-postgres}
-      POSTGRES_PASSWORD: ${PG_DATABASE_PASSWORD:-postgres}
+      - /opt/docker/twenty/server-local-data:/app/packages/twenty-server/${STORAGE_LOCAL_PATH:-.local-storage}
+
+  postgres:
+    #labels: *logging
+    container_name: twentycrm-postgres
+    env_file: 
+      - twentycrm-postgres-secret.env
+      - twentycrm-postgres.env
+    # environment:
+      # POSTGRES_USER: ${PG_DATABASE_USER:-postgres}
+      # POSTGRES_PASSWORD: ${PG_DATABASE_PASSWORD:-postgres}
     healthcheck:
       test: pg_isready -U ${PG_DATABASE_USER:-postgres} -h localhost -d postgres
       interval: 5s
       timeout: 5s
       retries: 10
+    image: postgres:16
     restart: always
+    volumes:
+      - /opt/docker/twenty/db-data:/var/lib/postgresql/data
 
   redis:
     #labels: *logging
+    container_name: twentycrm-redis
     image: redis
     restart: always
     
-  change-vol-ownership:
-    container_name: zz-change-vol-ownership
+  # change-vol-ownership:
+    # container_name: zz-change-vol-ownership
     #labels: *logging
-    image: ubuntu
-    user: root
-    volumes:
-      - /mnt/app_data/Server/_docker_stack/twenty/server-local-data:/tmp/server-local-data
-      - /mnt/app_data/Server/_docker_stack/twenty/docker-data:/tmp/docker-data
-    command: >
-      bash -c "
-      chown -R 1000:1000 /tmp/server-local-data
-      && chown -R 1000:1000 /tmp/docker-data"
+    # image: ubuntu
+    # user: root
+    # volumes:
+      # - /opt/docker/twenty/server-local-data:/tmp/server-local-data
+      # - /opt/docker/twenty/docker-data:/tmp/docker-data
+    # command: >
+      # bash -c "
+      # chown -R 1000:1000 /tmp/server-local-data
+      # && chown -R 1000:1000 /tmp/docker-data"
 
 volumes:
   docker-data:

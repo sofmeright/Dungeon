@@ -9,24 +9,25 @@
 ---
 services:
   code-server:
-    image: lscr.io/linuxserver/code-server:latest
     container_name: code-server
+    env_file: code-server-secret.env
     environment:
       - PUID=1000
       - PGID=1000
       - TZ=Etc/UTC
-      - PASSWORD=MY0FhXZGdWnn #optional
+      # - PASSWORD= #optional
       - HASHED_PASSWORD= #optional
-      - SUDO_PASSWORD=REDACTED_PASSWORD #optional
+      # - SUDO_PASSWORD= #optional
       - SUDO_PASSWORD_HASH= #optional
       - PROXY_DOMAIN=code-server.prplanit.internal #optional
       - DEFAULT_WORKSPACE=/config/workspace #optional
-    volumes:
-      - /mnt/app_data/Server/_docker_stack/code-server/config:/home/coder/.config
-      - /mnt/app_data/Server/_docker_stack/code-server/project:/home/coder/.local
+    image: lscr.io/linuxserver/code-server:latest
     ports:
       - 8088:8443
     restart: unless-stopped
+    volumes:
+      - /opt/docker/code-server/config:/home/coder/.config
+      - /opt/docker/code-server/project:/home/coder/.local
     #labels: &logging
       #labels-regex: "^.+"
       #log_driver: "loki"

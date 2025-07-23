@@ -1,0 +1,30 @@
+# In the current state of loki docker driver, the package installation will always display "latest".
+# As such in this playbook, there can be no validation; we must sadly ensure the proper plugin is installed by forcing upgrade if it already exists.
+---
+- name: Ad Arbitorium 🔐 - GitOps - Infrastructure - Monitoring Agents (Docker)
+  hosts: "docker_reg,docker_gpu"
+  ignore_errors: true
+  become: true
+  tasks:
+    
+    - name: Detecting if loki-docker-driver is installed and storing the version number when found...
+      ansible.builtin.shell: "docker plugin inspect -f '{{ '{{' }}.PluginReference {{ '}}' }}' loki | awk -F 'loki-docker-driver:' '{print $2}' | sed 's/-amd64//'"
+      register: loki_plugin_version
+
+    - name: Installing the loki docker driver...
+      ansible.builtin.command: docker plugin install grafana/loki-docker-driver:3.5.1-amd64 --alias loki --grant-all-permissions
+      when: loki_plugin_version.stdout == ''
+
+    - name: Disabling loki during loki-docker-driver upgrade...
+      ansible.builtin.command: docker plugin disable loki --force
+      when:  loki_plugin_version.stdout != '3.5.1' and loki_plugin_version.stdout != ''
+    - name: Upgrading loki-docker-driver to version tag 3.5.1-amd64...
+      ansible.builtin.command: docker plugin upgrade loki grafana/loki-docker-driver:3.5.1-amd64 --grant-all-permissions --skip-remote-check
+      when:  loki_plugin_version.stdout != '3.5.1' and loki_plugin_version.stdout != ''
+    - name: Re-enabling loki pending loki-docker-driver update...
+      ansible.builtin.command: docker plugin enable loki
+      when:  loki_plugin_version.stdout != '3.5.1' and loki_plugin_version.stdout != ''
+
+    - name: Restarting docker to finalize the upgrade.
+      ansible.builtin.command: systemctl restart docker
+      when:  loki_plugin_version.stdout != '3.5.1'

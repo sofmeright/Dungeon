@@ -1,0 +1,12 @@
+---
+
+- name: Playbook to update portainer.
+  hosts: linux
+  become: true
+  tasks: 
+    - name: deploy Docker Compose stack
+      community.docker.docker_compose_v2:
+        project_name: portainer
+        project_src: /mnt/app_data/Server/_docker_stack/portainer/
+        pull: always
+        recreate: always
