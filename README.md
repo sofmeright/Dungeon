@@ -1,7 +1,6 @@
-# Ad Arbitorium (Datacenter): Private Repository
 [![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/T6T41IT163)
 
-# 🏰 Ad Arbitorium Datacenter — Private GitOps Repository
+# 🏰 Ad Arbitorium (Datacenter) ~ Private GitOps Repository
 
 > _"When the cluster's down, and the world is on fire, at least you can still run Ansible."_ 🔥
 
