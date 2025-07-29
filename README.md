@@ -1,232 +1,137 @@
-# Ad Arbitorium (Datacenter): Private Repository
+# 🏰 Ad Arbitorium Datacenter — Private GitOps Repository
 
-This repository describes the active environment of Ad Arbitorium datacenter. Ideally all necessary configuration shall be maintained within this repo unless it would be better stored in a docker volume or within local resources.
+> _"When the cluster's down, and the world is on fire, at least you can still run Ansible."_ 🔥
 
-### Automations:
-
-**Storage**: Our ansible playbooks and tasks are stored in [our gitlab in the Ad Arbitorium 🔐 repo](https://gitlab.prplanit.com/SoFMeRight/ad-arbitorium-private).
-
-**ansible-semaphore**: We use semaphore as an interface to execute some automation tasks from a web-ui.
-
-**ideas**: I am considering implementing olivetin, cronguru, or perhaps making a custom cli to select tasks that are desired to be ran.
-
-**Repository Backups**  
-
-- ant-parade & leaf-cutter - If something bad happens, we always cache a current copy of the repository. </br>
-    - If the cluster is dead we can still run ansible from leaf-cutter:    
-    ```docker run -v /srv/gitops/ad-arbitorium-private:/srv/gitops/ad-arbitorium-private -v ~/.ssh/id_rsa:/root/.ssh/id_rsa --rm cr.pcfae.com/prplanit/ansible:2.18.6 ansible-playbook --private-key /root/.ssh/id_rsa -i /srv/gitops/ad-arbitorium-private/ansible/inventory /srv/gitops/ad-arbitorium-private/ansible/infrastructure/qemu-guest-agent-debian.yaml```
-
-### Backup Schedule:
-> The industry we are in is usually active around 6:00AM-10:00PM PST tops. Other times might be business critical hours, but here we are considering the peak of the day.
-
-```mon,fri 22:00``` Proxmox backups of NAS & PBS to *local-zfs* 
-
-```tue,thu,fri 23:00``` Proxmox backups of all other core/essential VMs to *Flashy-Fuscia-SSD* 
-
-### Hardware Overview:
-
-> Ad Arbitorium Datacenter is comprised of *5 nodes clustered* with PVE, Proxmox Virualization Environment.
-
-1. Avocado
-    - CPU: 2 x Intel Xeon E5-2680 v3 ```24C/48T | 2.5GHz/3.30GHz | 240Watt```
-    - RAM: 256 GB ```8/16 DIMMs x 32 GB ECC Mem```
-
-2. Bamboo
-    - CPU: 2 x Intel Xeon E5-2680 v4 ```28C/56T | 2.4GHz/3.30GHz | 240Watt```
-    - RAM: 96 GB ```6/16 DIMMs x 16 GB ECC Mem```
-
-3. Cosmos
-    - CPU: 2 x Intel Xeon E5-2667 v3 ```16C/32T 3.2GHz/3.60GHz 270Watt```
-    - RAM: 256 GB ```8/16 DIMMs x 32 GB ECC Mem```
-
-4. Dragonfruit
-    - CPU: AMD Ryzen 7 2700x ```8C/16T | 3.7GHz/4.35GHz | 105Watt```
-    - RAM: 64 GB ```2/4 DIMMs x 32 GB ECC Mem```
-
-5. Eggplant
-    - CPU: 2 x Intel Xeon E5-2683 v3 ```28C/56T | 2.00GHz/3.00GHz | 240Watt```
-    - RAM: 128 GB ```16/24 DIMMs x 8 GB ECC Mem```
-
-6. (leaf-cutter) 
-    - CPU: Intel i7-4720HQ (8) @ 3.600GHz 
-    - RAM: 16 GB ```2/2 DIMMs x 8 GB DDR3? Mem
-    - Note: This is an unclustered automations machine which serves as a backup for if things ever get hairy. Hopefully as close to a replica of ant-parade as possible.
-
-### Observability/Monitoring Overview:
-
-*Grafana/Loki/Prometheus*
-
-*Beszel*
-
-*Portainer*
-
-### Networking Overview:
-
-1. *Firewalls / Routing*: 2 pfSense Firewalls are spun up on Avocado and Bamboo with HA/CARP for stable WAN.
-
-*Modem*
-
-*Switches*
-
-*OSPFv6 for Proxmox and Ceph Networking*
-
-*BGP Kubernetes Setup*
-
-*HA Proxy K8S API Load Balancing*
-
-2. *DNS*: AdguardHome and AdguardHome sync docker containers within 2 VMs provides highly available DNS.
-
-3. *Reverse Proxies*: Domains like sofmeright.com are exposed through 3 public IPs which are handled by NGINX reverse proxy services running on three distinct VMs cell-membrane, phloem, and xylem; the third has no port forwarding which creates an isolated internal web domain @ pcfae.com.
-
-### RDP / Remote Control:
-
-*rustdesk/moonlight/sunshine/tactical-rmm*
-
-### Workloads (main):
-
-*PVE* - The host OS on the main 5 nodes is PVE. Within PVE we have many guest VMs. 
-
-*Ubuntu 24.04LTS + Docker* - The majority of our workload is managed with docker containers within Ubuntu 24.04LTS VMs. One of these hosts, Dock does have discrete GPU access.
-
-*pfSense* - I would rather see opnSense in these 2 VMs that handle our networking needs, but the ipv4/6 dual stack networking portion of this config was not working under opnSense as of a test months before this commit.
-
-*3Cx* - VOIP phone system.
-
-*Home-Assistant OS*
-
-*Kubernetes* - Deployed a 5 master/worker kubeadm cluster utilizing Ubuntu 22.04LTS. Plan on removing 2 masters due to recommendations from many kubernetes users I am connected with sharing more than 3 masters at this scale is excessive.
-
-*Monitoring/Observability/IDS/IPS* - Lighthouse, a VM dedicated to these purposes runs Beszel, Crowdsec, Grafana, Loki, Prometheus, Wazuh. Agents pull data from most hosts. The pfsense instances have crowdsec bouncers configured to block malicious traffic upon detection.
-
-*PBS*
-
-*Portainer Management* - Harbormaster VM serves as a jump server for the portainer instances.
-
-*Shinobi* - Security Camera software.
-
-*TrueNAS*
-
-*Windows Server / Active Directory* - Deployed a 3 machine forest.
-
-### VPN:
-
-*Netbird* 
+Welcome to the heart of Ad Arbitorium; a GitOps repository describing the active configuration of our homelab/datacenter. This repo aims to be the source of truth for system state, automation routines, and backup strategies.
 
 
-### Docker Containers Hosted (some may be out of use but remain in the list):
+---
 
-- 2fauth
-- actualbudget
-- adguardhome
-- adguardhome-sync
-- anubis
-- appflowy
-- bagisto
-- bazarr
-- bezsel
-- bitwarden (config not in repo)
-- bookstack
-- byparr
-- calibre-web
-- chrony
-- code-server
-- cross-seed
-- crowdsec
-- dailyTxt
-- dolibarr
-- drawio
-- echoip
-- endlessh
-- emulatorjs
-- ferdium
-- filebrowser
-- flaresolverr (not using)
-- frappe-erpnext
-- frigate
-- ghost
-- gitea
-- gitlab
-- gluetun
-- gluetun-qbittorrent-port-manager
-- google-webfonts-helper
-- guacamole (struggling with config actually)
-- hashicorp-vault (deployed to use w/ K8s, yet to implement)
-- homarr
-- homebox
-- hrconvert2
-- immich
-- invoice-ninja
-- it-tools
-- jellyfin
-- jellyseer
-- joplin
-- kasm
-- lenpaste
-- librespeed-speedtest
-- libretransalate
-- lidarr
-- linkstack
-- linkwarden
-- lubelogger
-- mailcow (config not in repo)
-- matrix-synapse
-- mealie
-- monica
-- monitoring-servers: beszel/grafana/loki/prometheus
-- monitoring-agents: beszel-agent/cadvisor/nodeexporter
-- neko
+> Maintained by [SoFMeRight](https://github.com/sofmeright) for [PrPlanIT](https://prplanit.com) — Real world results for your real world expectations.
+
+---
+
+## 📂 Repository Layout
+
+This repository contains:
+
+- 🧪 **Ansible Playbooks**: Stored in the `ansible/*/` directory
+- 🐧 **Inventory Definitions**: Locate at `ansible/inventory`
+- 📦 **Docker Compose Deployments** Stored in the `docker-compose` directory
+- 💾 **Backup Automation & Recovery Scripts**
+
+Where possible, configuration is version-controlled. In some cases (e.g., Docker volumes or secrets), data resides in protected resources or local mounts.
+
+---
+
+## ⚙️ Automations & Tooling
+
+### 🛠️ Primary Automation: Ansible
+
+We use [Ansible](https://www.ansible.com/) with playbooks stored in this repo and executed via:
+
+- 🔐 [Ansible Semaphore](https://ansible-semaphore.com/) — for web-based job triggering
+- 🐳 GitLab CI/CD Components — for automated GitOps-style deployments
+- 💡 *Ideas in progress*: OliveTin, or Cronguru for task selection.
+
+### 🗄️ Repository Recovery
+
+> **ant-parade & leaf-cutter** to the rescue! 🐜
+
+If the cluster fails, we can recover from a local repo clone on `leaf-cutter`:
+
+```bash
+docker run --rm \
+  -v /srv/gitops/ad-arbitorium-private:/srv/gitops/ad-arbitorium-private \
+  -v ~/.ssh/id_rsa:/root/.ssh/id_rsa \
+  cr.pcfae.com/prplanit/ansible:2.18.6 \
+  ansible-playbook --private-key /root/.ssh/id_rsa \
+  -i /srv/gitops/ad-arbitorium-private/ansible/inventory \
+  /srv/gitops/ad-arbitorium-private/ansible/infrastructure/qemu-guest-agent-debian.yaml
+```
+## 📅 Backup Schedule
+
+Our peak hours are typically 6:00AM – 10:00PM PST. Backups are scheduled to minimize risk during these times.
+
+| Day           | Time  | Task                                             |
+| ------------- | ----- | ------------------------------------------------ |
+| Mon, Fri      | 22:00 | NAS & PBS → local-zfs backup                     |
+| Tue, Thu, Fri | 23:00 | All other core/essential VMs → Flashy-Fuscia-SSD |
+
+## 🖥️ Hardware Overview
+
+The datacenter is powered by Proxmox VE and consists of five clustered nodes:
+
+| Host           | CPU                                     | RAM                |
+| -------------- | --------------------------------------- | ------------------ |
+| 🥑 Avocado     | 2× Xeon E5-2680 v3 (24C/48T) 2.5–3.3GHz | 256GB (8×32GB ECC) |
+| 🎍 Bamboo      | 2× Xeon E5-2680 v4 (28C/56T) 2.4–3.3GHz | 96GB (6×16GB ECC)  |
+| 🌌 Cosmos      | 2× Xeon E5-2667 v3 (16C/32T) 3.2–3.6GHz | 256GB (8×32GB ECC) |
+| 🐉 Dragonfruit | AMD Ryzen 7 2700X (8C/16T) 3.7–4.35GHz  | 64GB (2×32GB ECC)  |
+| 🍆 Eggplant    | 2× Xeon E5-2683 v3 (28C/56T) 2.0–3.0GHz | 128GB (16×8GB ECC) |
+
+#### 🪲 leaf-cutter (Unclustered automation node)
+- CPU: Intel i7-4720HQ (8 threads @ 3.6GHz)
+- RAM: 16GB (2×8GB DDR3)
+- This node runs critical automation if the cluster fails. Think of it as "ant-parade's stunt double."
+
+## 🧠 Observability & Monitoring
+- Grafana + Loki + Prometheus for metrics & logs
+- Crowdsec for IDS/IPS and pfsense integration
+- Beszel alternative option for metrics
+- Wazuh
+- Portainer for container management dashboards
+
+## 🌐 Networking Overview
+
+##### Firewall / Routing: 
+- Dual HA/CARP pfSense VMs on Avocado & Bamboo
+
+##### Networking:
+
+- OSPFv6 for internal Proxmox/Ceph
+- BGP for Kubernetes w/ metallb
+- HAProxy load balancing for K8s API
+- DNS: Highly available AdGuardHome DNS pair with sync
+
+##### Reverse Proxies:
+
+- cell-membrane, phloem, and xylem handle NGINX proxy duties
+> Internal domains like *.pcfae.com live inside xylem (no external exposure)
+
+## 📞 Remote Access Tools
+- rustdesk, moonlight, sunshine, tactical-rmm
+
+## 🧱 Core Workloads
+- PVE – Bare metal Proxmox hosts
+- Ubuntu 24.04 + Docker – Most VMs run containers (including GPU workloads)
+- pfSense – Dual-stack IPv4/6 (future: evaluate opnSense again)
+- FusionPBX – VOIP System
+- Home Assistant OS
+- Kubernetes – 5-node cluster, likely reducing to 3 masters soon
+- PBS (Proxmox Backup Server)
+- Portainer – Jump node: harbormaster
+- Shinobi – CCTV & surveillance
+- TrueNAS
+- Windows Server – Active Directory 3-node forest
+
+## 🔒 VPN / Remote Access
+
 - netbird
-- netbird-client(s)
-- netbox
-- nextcloud-aio
-- nginx (experiment(ing) with docker containers, but prefer a native install in VM)
-- oauth2-proxy
-- ollama
-- openai-whisper/fasterwhisper
-- openspeedtest
-- open-webui
-- orangehrm
-- organizr
-- osticket
-- overseer
-- paperless-ngx
-- penpot
-- photoprism
-- pihole
-- pinchflat
-- plexmediaserver
-- portainer
-- portainer_agent
-- project-send
-- prowlarr
-- proxmox-backup-server
-- py-kms
-- pyload-ng
-- qbittorrent
-- radarr
-- reactive-resume
-- readarr
-- romm
-- roundcube
-- rustdesk-server
-- sabnzbd
-- searxng
-- semaphore_ui
-- shinobi
-- shlink
-- sonarr
-- speedtest-tracker
-- supermicro-ipmi-license-generator
-- tactical-rmm
-- thelounge
-- tikiwiki
-- trivy
-- twentycrm
-- unifi-network-application
-- urbackup-server
-- vlmcsd
-- wazuh
-- whisparr
-- wiki-js
-- xbackbone
-- zitadel
+
+## 🤓 Want to contribute or improve the stack?
+This is a private lab, but feedback, discussion, and memes are always welcome. ✉️
+
+## ⚠️ Disclaimer
+
+> The code, images, and infrastructure templates herein (the "Software") are provided as-is and as-absurd—without warranties, guarantees, or even friendly nudges. The authors accept no liability if this repo makes your cluster self-aware, breaks your ankle (metaphorically or otherwise), or causes irreversible YAML-induced burnout.
+
+We take no responsibility if running this setup somehow:
+
+- launches a container into orbit,
+
+- bricks your homelab,
+
+- or awakens a long-dormant AI from /dev/null.
+
+> Use at your own risk. If it works, thank the open-source gods. If it doesn't, well... you probably learned something.
