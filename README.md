@@ -1,6 +1,6 @@
 [![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/T6T41IT163)
 
-# 🏰 Ad Arbitorium (Datacenter) ~ Private GitOps Repository
+# 🏰 Ad Arbitorium (Datacenter) — Private GitOps Repository
 
 > _"When the cluster's down, and the world is on fire, at least you can still run Ansible."_ 🔥
 
@@ -54,6 +54,11 @@ docker run --rm \
   -i /srv/gitops/ad-arbitorium-private/ansible/inventory \
   /srv/gitops/ad-arbitorium-private/ansible/infrastructure/qemu-guest-agent-debian.yaml
 ```
+##### WinRM Example:
+```
+docker run -v ./playbook.yaml:/root/playbook.yaml -v /srv/gitops/ad-arbitorium-private:/srv/gitops/ad-arbitorium-private -v ~/.ssh/id_rsa:/root/.ssh/id_rsa --rm cr.pcfae.com/prplanit/ansible:2.18.6 ansible-playbook --private-key /root/.ssh/id_rsa -i /srv/gitops/ad-arbitorium-private/ansible/inventory /root/playbook.yaml -e ansible_windows_password=$WINDOWS_ANSIBLE_PASSWORD
+```
+
 ## 📅 Backup Schedule
 
 Our peak hours are typically 6:00AM – 10:00PM PST. Backups are scheduled to minimize risk during these times.
@@ -124,7 +129,7 @@ The datacenter is powered by Proxmox VE and consists of five clustered nodes:
 
 - netbird
 
-## Docker Stacks:
+## 📦 Docker Stacks:
 
 > A full table should be populated with deployments when the pipeline runs and it will be linked to this segment in the near, near future. 
 
