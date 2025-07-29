@@ -1,3 +1,4 @@
+# Ad Arbitorium (Datacenter): Private Repository
 [![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/T6T41IT163)
 
 # 🏰 Ad Arbitorium Datacenter — Private GitOps Repository
@@ -123,6 +124,12 @@ The datacenter is powered by Proxmox VE and consists of five clustered nodes:
 ## 🔒 VPN / Remote Access
 
 - netbird
+
+## Docker Stacks:
+
+> A full table should be populated with deployments when the pipeline runs and it will be linked to this segment in the near, near future. 
+
+> In the meantime all deployments can be reviewed within the repository.
 
 ## 🤓 Want to contribute or improve the stack?
 This is a private lab, but feedback, discussion, and memes are always welcome. ✉️
