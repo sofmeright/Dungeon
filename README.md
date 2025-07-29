@@ -14,10 +14,13 @@ Welcome to the heart of Ad Arbitorium; a GitOps repository describing the active
 ## 📂 Repository Layout
 
 This repository contains:
-
+> (a simple directory structure)
 - 🧪 **Ansible Playbooks**: Stored in the `ansible/*/` directory
 - 🐧 **Inventory Definitions**: Locate at `ansible/inventory`
 - 📦 **Docker Compose Deployments** Stored in the `docker-compose` directory
+- 🕸️ **NGINX Proxy Configurations** Stored in the `nginx-extras` directory
+- ⚙️ **General Configuration Files** Stored in the `fs` directory
+- 💫 **FluxCD Configuration** Located at the `fluxcd` directory
 - 💾 **Backup Automation & Recovery Scripts**
 
 Where possible, configuration is version-controlled. In some cases (e.g., Docker volumes or secrets), data resides in protected resources or local mounts.
