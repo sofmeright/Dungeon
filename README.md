@@ -77,17 +77,17 @@ Our peak hours are typically 6:00AM – 10:00PM PST. Backups are scheduled to mi
 | Mon, Fri      | 22:00 | NAS & PBS → local-zfs backup                     |
 | Tue, Thu, Fri | 23:00 | All other core/essential VMs → Flashy-Fuscia-SSD |
 
-## 🖥️ Hardware Overview
+## 🖥️ Hardware Overview 20 x Intel(R) Xeon(R) CPU E5-2618L v4 @ 2.20GHz (2 Sockets
 
 The datacenter is powered by Proxmox VE and consists of five clustered nodes:
 
-| Host           | CPU                                     | RAM                |
-| -------------- | --------------------------------------- | ------------------ |
-| 🥑 Avocado     | 2× Xeon E5-2680 v3 (24C/48T) 2.5–3.3GHz | 256GB (8×32GB ECC) |
-| 🎍 Bamboo      | 2× Xeon E5-2680 v4 (28C/56T) 2.4–3.3GHz | 96GB (6×16GB ECC)  |
-| 🌌 Cosmos      | 2× Xeon E5-2667 v3 (16C/32T) 3.2–3.6GHz | 256GB (8×32GB ECC) |
-| 🐉 Dragonfruit | AMD Ryzen 7 2700X (8C/16T) 3.7–4.35GHz  | 64GB (2×32GB ECC)  |
-| 🍆 Eggplant    | 2× Xeon E5-2683 v3 (28C/56T) 2.0–3.0GHz | 128GB (16×8GB ECC) |
+| Host           | CPU                                         | RAM                |
+| -------------- | ------------------------------------------- | ------------------ |
+| 🥑 Avocado     | 2× Xeon E5-2618L v4 (20C/40T) 2.20–3.20 GHz | 256GB (8×32GB ECC) |
+| 🎍 Bamboo      | 2× Xeon E5-2618L v4 (20C/40T) 2.20–3.20 GHz | 96GB (6×16GB ECC)  |
+| 🌌 Cosmos      | 2× Xeon E5-2618L v4 (20C/40T) 2.20–3.20 GHz | 256GB (8×32GB ECC) |
+| 🐉 Dragonfruit | AMD Ryzen 7 2700X (8C/16T) 3.7–4.35GHz      | 64GB (2×32GB ECC)  |
+| 🍆 Eggplant    | 2× Xeon E5-2618L v4 (20C/40T) 2.20–3.20 GHz | 128GB (16×8GB ECC) |
 
 #### 🪲 leaf-cutter (Unclustered automation node)
 - CPU: Intel i7-4720HQ (8 threads @ 3.6GHz)
