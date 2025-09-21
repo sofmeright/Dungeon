@@ -6,10 +6,6 @@ metadata:
 spec:
   selector:
     app: searxng
-  ports:
-  - port: 8080
-    targetPort: 8080
-    name: http
   type: ClusterIP
 ---
 apiVersion: v1
