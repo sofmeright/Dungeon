@@ -29,3 +29,7 @@ spec:
     name: flux-system
   path: ./fluxcd/infrastructure/configs/overlays/production
   prune: true
+  decryption:
+    provider: sops
+    secretRef:
+      name: sops-age
