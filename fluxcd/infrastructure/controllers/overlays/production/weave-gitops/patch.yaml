@@ -6,5 +6,5 @@ metadata:
 spec:
   valuesFrom:
     - kind: ConfigMap
-name: weave-gitops-values
-valuesKey: values.yaml 
+      name: weave-gitops-values
+      valuesKey: values.yaml 
