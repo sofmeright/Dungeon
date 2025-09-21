@@ -3,13 +3,14 @@ kind: Kustomization
 resources:
   - ../../../base/weave-gitops/
 patches:
-  - target:
+  - patch: |
+      apiVersion: helm.toolkit.fluxcd.io/v2
       kind: HelmRelease
-      name: ww-gitops
-    patch: |
-      - op: add
-        path: /spec/valuesFrom
-        value:
+      metadata:
+        name: ww-gitops
+        namespace: flux-system
+      spec:
+        valuesFrom:
           - kind: ConfigMap
             name: weave-gitops-values
             valuesKey: values.yaml
