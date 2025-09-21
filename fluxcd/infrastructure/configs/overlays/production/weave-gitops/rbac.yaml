@@ -1,0 +1,48 @@
+# RBAC resources for Weave GitOps to read cluster resources
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: ww-gitops-read-only
+  namespace: flux-system
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: ww-gitops-read-only
+rules:
+- apiGroups: [""]
+  resources: ["*"]
+  verbs: ["get", "list", "watch"]
+- apiGroups: ["apps", "batch", "autoscaling", "extensions", "networking.k8s.io", "policy", "rbac.authorization.k8s.io"]
+  resources: ["*"]
+  verbs: ["get", "list", "watch"]
+- apiGroups: ["source.toolkit.fluxcd.io", "kustomize.toolkit.fluxcd.io", "helm.toolkit.fluxcd.io", "notification.toolkit.fluxcd.io", "image.toolkit.fluxcd.io"]
+  resources: ["*"]
+  verbs: ["get", "list", "watch", "patch"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: ww-gitops-read-only
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: ww-gitops-read-only
+subjects:
+- kind: ServiceAccount
+  name: ww-gitops-read-only
+  namespace: flux-system
+---
+# Additional binding to give the main Weave GitOps ServiceAccount read permissions
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: ww-gitops-weave-gitops-read
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: ww-gitops-read-only
+subjects:
+- kind: ServiceAccount
+  name: ww-gitops-weave-gitops
+  namespace: flux-system

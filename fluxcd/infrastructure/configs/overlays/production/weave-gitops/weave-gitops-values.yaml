@@ -14,32 +14,11 @@ data:
     additionalArgs:
       - --auth-methods=user-account
     
-    # RBAC configuration - use impersonation with a service account
+    # RBAC configuration - simplified since we handle permissions in rbac.yaml
     rbac:
       create: true
       viewSecretsResourceNames: ["cluster-user-auth", "oidc-auth"]
-      # Allow impersonation of a service account that has read permissions
-      impersonationResourceNames: ["ww-gitops-read-only"]
-      impersonationResources: ["serviceaccounts"]
-      additionalRules:
-        - apiGroups: [""]
-          resources: ["namespaces", "pods", "services", "configmaps", "secrets"]
-          verbs: ["get", "list", "watch"]
-        - apiGroups: ["apps"]
-          resources: ["deployments", "replicasets", "statefulsets", "daemonsets"]
-          verbs: ["get", "list", "watch"]
-        - apiGroups: ["source.toolkit.fluxcd.io"]
-          resources: ["*"]
-          verbs: ["get", "list", "watch"]
-        - apiGroups: ["kustomize.toolkit.fluxcd.io"]
-          resources: ["*"]
-          verbs: ["get", "list", "watch"]
-        - apiGroups: ["helm.toolkit.fluxcd.io"]
-          resources: ["*"]
-          verbs: ["get", "list", "watch"]
-        - apiGroups: ["notification.toolkit.fluxcd.io"]
-          resources: ["*"]
-          verbs: ["get", "list", "watch"]
+      # No impersonation needed - ServiceAccount has direct permissions via rbac.yaml
     
     # Additional security settings
     metrics:
