@@ -1,0 +1,29 @@
+# Configuration values for Weave GitOps HelmRelease
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: weave-gitops-values
+  namespace: flux-system
+data:
+  values.yaml: |
+    # Admin user configuration
+    adminUser:
+      create: true
+      # Username will come from the encrypted secret
+      secretRef: weave-gitops-admin-user
+    
+    # Additional security settings
+    metrics:
+      enabled: true
+    
+    # Service configuration - use LoadBalancer with MetalLB
+    service:
+      type: LoadBalancer
+      annotations:
+        metallb.universe.tf/loadBalancerIPs: "172.22.30.100"
+        metallb.universe.tf/allow-shared-ip: "weave-gitops"
+      port: 9001
+    
+    # Disable ingress since we're using LoadBalancer
+    ingress:
+      enabled: false
