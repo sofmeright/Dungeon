@@ -8,7 +8,16 @@ data:
   values.yaml: |
     # Admin user configuration
     adminUser:
-      create: false  # Use our existing encrypted cluster-user-auth secret
+      create: false  # Disable admin user completely
+    
+    # Use user-account auth method with external secret
+    additionalArgs:
+      - --auth-methods=user-account
+    
+    # RBAC configuration to read our secret
+    rbac:
+      create: true
+      viewSecretsResourceNames: ["cluster-user-auth", "oidc-auth"]
     
     # Additional security settings
     metrics:
