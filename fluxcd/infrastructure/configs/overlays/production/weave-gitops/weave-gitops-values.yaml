@@ -14,10 +14,12 @@ data:
     additionalArgs:
       - --auth-methods=user-account
     
-    # RBAC configuration to read our secret
+    # RBAC configuration to read our secret and impersonate users
     rbac:
       create: true
       viewSecretsResourceNames: ["cluster-user-auth", "oidc-auth"]
+      impersonationResourceNames: ["kai"]  # Allow impersonation of user kai
+      impersonationResources: ["users", "groups"]
     
     # Additional security settings
     metrics:
