@@ -1,0 +1,61 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: searxng
+  namespace: the-lost-woods
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: searxng
+  template:
+    metadata:
+      labels:
+        app: searxng
+    spec:
+      securityContext:
+        fsGroup: 977
+        runAsUser: 977
+        runAsGroup: 977
+      containers:
+      - name: searxng
+        image: docker.io/searxng/searxng:latest
+        ports:
+        - containerPort: 8080
+          name: http
+        env:
+        - name: SEARXNG_BASE_URL
+          value: "https://searxng.localdev.me/"
+        - name: SEARXNG_REDIS_URL
+          value: "redis://searxng-redis:6379/0"
+        volumeMounts:
+        - name: searxng-config
+          mountPath: /etc/searxng
+        - name: searxng-data
+          mountPath: /var/log/uwsgi
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "200m"
+          limits:
+            memory: "1Gi"
+            cpu: "500m"
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 8080
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /healthz
+            port: 8080
+          initialDelaySeconds: 10
+          periodSeconds: 5
+      volumes:
+      - name: searxng-config
+        configMap:
+          name: searxng-settings
+      - name: searxng-data
+        persistentVolumeClaim:
+          claimName: searxng-data
