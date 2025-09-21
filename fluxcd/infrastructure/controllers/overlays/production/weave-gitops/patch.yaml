@@ -1,0 +1,10 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: ww-gitops
+  namespace: flux-system
+spec:
+  valuesFrom:
+    - kind: ConfigMap
+name: weave-gitops-values
+valuesKey: values.yaml 
