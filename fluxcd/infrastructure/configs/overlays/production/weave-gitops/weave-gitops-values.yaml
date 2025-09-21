@@ -8,11 +8,7 @@ data:
   values.yaml: |
     # Admin user configuration
     adminUser:
-      create: true
-      createSecret: false  # Use existing cluster-user-auth secret
-      username: kai
-      passwordHash: "placeholder"  # Dummy value to pass validation 
-      createClusterRole: true
+      create: false  # Use our existing encrypted cluster-user-auth secret
     
     # Additional security settings
     metrics:
