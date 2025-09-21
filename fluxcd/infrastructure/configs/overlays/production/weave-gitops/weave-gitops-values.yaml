@@ -14,11 +14,13 @@ data:
     additionalArgs:
       - --auth-methods=user-account
     
-    # RBAC configuration - give ServiceAccount permissions to view resources
+    # RBAC configuration - use impersonation with a service account
     rbac:
       create: true
       viewSecretsResourceNames: ["cluster-user-auth", "oidc-auth"]
-      # Add permissions to view Flux and Kubernetes resources
+      # Allow impersonation of a service account that has read permissions
+      impersonationResourceNames: ["ww-gitops-read-only"]
+      impersonationResources: ["serviceaccounts"]
       additionalRules:
         - apiGroups: [""]
           resources: ["namespaces", "pods", "services", "configmaps", "secrets"]
