@@ -14,12 +14,30 @@ data:
     additionalArgs:
       - --auth-methods=user-account
     
-    # RBAC configuration to read our secret and impersonate users
+    # RBAC configuration - give ServiceAccount permissions to view resources
     rbac:
       create: true
       viewSecretsResourceNames: ["cluster-user-auth", "oidc-auth"]
-      impersonationResourceNames: ["kai"]  # Allow impersonation of user kai
-      impersonationResources: ["users", "groups"]
+      # Add permissions to view Flux and Kubernetes resources
+      additionalRules:
+        - apiGroups: [""]
+          resources: ["namespaces", "pods", "services", "configmaps", "secrets"]
+          verbs: ["get", "list", "watch"]
+        - apiGroups: ["apps"]
+          resources: ["deployments", "replicasets", "statefulsets", "daemonsets"]
+          verbs: ["get", "list", "watch"]
+        - apiGroups: ["source.toolkit.fluxcd.io"]
+          resources: ["*"]
+          verbs: ["get", "list", "watch"]
+        - apiGroups: ["kustomize.toolkit.fluxcd.io"]
+          resources: ["*"]
+          verbs: ["get", "list", "watch"]
+        - apiGroups: ["helm.toolkit.fluxcd.io"]
+          resources: ["*"]
+          verbs: ["get", "list", "watch"]
+        - apiGroups: ["notification.toolkit.fluxcd.io"]
+          resources: ["*"]
+          verbs: ["get", "list", "watch"]
     
     # Additional security settings
     metrics:
