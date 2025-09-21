@@ -9,8 +9,9 @@ data:
     # Admin user configuration
     adminUser:
       create: true
-      # Username will come from the encrypted secret
-      secretRef: weave-gitops-admin-user
+      createSecret: false  # Use existing cluster-user-auth secret
+      username: kai
+      createClusterRole: true
     
     # Additional security settings
     metrics:
