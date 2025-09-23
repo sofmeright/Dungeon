@@ -13,12 +13,11 @@ spec:
           - "[fc00:f1:ada:104e:1ace::3]:6789"
           - "[fc00:f1:ada:104e:1ace::4]:6789"
           - "[fc00:f1:ada:104e:1ace::5]:6789"
-    # Try different field name that the chart might expect
-    configMapData:
-      ceph.conf: |
-        [global]
-        fsid = 0985467c-d8f3-4483-b27f-f0a512397ec2
-        mon_host = fc00:f1:ada:104e:1ace::1 fc00:f1:ada:104e:1ace::2 fc00:f1:ada:104e:1ace::3 fc00:f1:ada:104e:1ace::4 fc00:f1:ada:104e:1ace::5
-        auth_cluster_required = cephx
-        auth_service_required = cephx
-        auth_client_required = cephx
+    # Use the correct field name from v3.15.0 documentation
+    cephconf: |
+      [global]
+      fsid = 0985467c-d8f3-4483-b27f-f0a512397ec2
+      mon_host = fc00:f1:ada:104e:1ace::1 fc00:f1:ada:104e:1ace::2 fc00:f1:ada:104e:1ace::3 fc00:f1:ada:104e:1ace::4 fc00:f1:ada:104e:1ace::5
+      auth_cluster_required = cephx
+      auth_service_required = cephx
+      auth_client_required = cephx
