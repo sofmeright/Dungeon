@@ -27,6 +27,7 @@ data:
       max_page: 0
       ban_time_on_fail: 5
       max_ban_time_on_fail: 120
+      default_doi_resolver: "https://doi.org/"
       suspended_times:
         SearxEngineAccessDenied: 86400
         SearxEngineCaptcha: 86400
