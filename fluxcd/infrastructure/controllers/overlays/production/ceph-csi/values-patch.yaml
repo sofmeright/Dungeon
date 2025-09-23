@@ -7,6 +7,9 @@ spec:
   values:
     provisioner:
       enableHostNetwork: true
+      httpMetrics:
+        enabled: true
+        containerPort: 8081
     csiConfig:
       - clusterID: "0985467c-d8f3-4483-b27f-f0a512397ec2"
         monitors:
