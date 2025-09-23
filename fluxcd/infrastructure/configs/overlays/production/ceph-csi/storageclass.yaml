@@ -7,7 +7,7 @@ metadata:
 provisioner: rbd.csi.ceph.com
 parameters:
   clusterID: "0985467c-d8f3-4483-b27f-f0a512397ec2"  # Same as in config.json
-  pool: "kubernetes"  # Create this pool in Ceph: ceph osd pool create kubernetes
+  pool: "dungeon"  # Create this pool in Ceph: ceph osd pool create dungeon
   imageFeatures: layering
   csi.storage.k8s.io/provisioner-secret-name: ceph-secret
   csi.storage.k8s.io/provisioner-secret-namespace: ceph-csi
