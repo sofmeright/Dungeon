@@ -2,8 +2,9 @@ apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: ceph-csi-rbd
-  namespace: ceph-csi
+  namespace: flux-system
 spec:
+  targetNamespace: ceph-csi
   interval: 30m
   chart:
     spec:
