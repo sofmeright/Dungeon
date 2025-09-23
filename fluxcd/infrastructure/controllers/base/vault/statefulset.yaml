@@ -45,7 +45,7 @@ spec:
         - containerPort: 8201
           name: https-internal
         - containerPort: 8202
-          name: http-replication
+          name: replication
         volumeMounts:
         - name: config
           mountPath: /vault/config
