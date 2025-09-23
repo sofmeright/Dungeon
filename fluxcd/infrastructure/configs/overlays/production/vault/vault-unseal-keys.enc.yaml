@@ -1,0 +1,23 @@
+# Vault unseal keys and root token - will be populated after initialization
+# To encrypt this file after initialization:
+# sops --encrypt --in-place vault-unseal-keys.enc.yaml
+#
+# To decrypt for viewing:
+# sops --decrypt vault-unseal-keys.enc.yaml
+#
+# To edit encrypted file:
+# sops vault-unseal-keys.enc.yaml
+apiVersion: v1
+kind: Secret
+metadata:
+  name: vault-unseal-keys
+  namespace: vault
+type: Opaque
+stringData:
+  # These will be populated after running: vault operator init
+  unseal-key-1: "PLACEHOLDER"
+  unseal-key-2: "PLACEHOLDER"
+  unseal-key-3: "PLACEHOLDER"
+  unseal-key-4: "PLACEHOLDER"
+  unseal-key-5: "PLACEHOLDER"
+  root-token: "PLACEHOLDER"

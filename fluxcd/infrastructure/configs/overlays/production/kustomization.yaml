@@ -5,3 +5,4 @@ resources:
   - metallb
   - weave-gitops
   - ceph-csi
+  - vault
