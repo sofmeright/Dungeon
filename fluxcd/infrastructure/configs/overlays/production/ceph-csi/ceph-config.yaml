@@ -17,9 +17,7 @@ spec:
       enabled: true
       content: |
         [global]
-        auth_client_required = cephx
         auth_cluster_required = cephx
         auth_service_required = cephx
-        cluster_network = fc00:f1:def0:deca:de00::1/64
-        fsid = 0985467c-d8f3-4483-b27f-f0a512397ec2 
+        auth_client_required = cephx
         mon_host = fc00:f1:ada:104e:1ace::1 fc00:f1:ada:104e:1ace::2 fc00:f1:ada:104e:1ace::3 fc00:f1:ada:104e:1ace::4 fc00:f1:ada:104e:1ace::5
