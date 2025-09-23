@@ -3,7 +3,7 @@ kind: Kustomization
 resources:
   - ../../../namespaces
   - cilium
-  - metallb
+  # - metallb  # Disabled - replaced by Cilium LoadBalancer IPAM
   - weave-gitops
   - ceph-csi
   - vault

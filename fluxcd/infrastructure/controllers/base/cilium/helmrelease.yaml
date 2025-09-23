@@ -22,20 +22,26 @@ spec:
       mode: kubernetes
     
     ipv4NativeRoutingCIDR: "192.168.22.0/16"
-    
+
     k8sServiceHost: "172.22.22.105"
     k8sServicePort: 6443
-    
-    kubeProxyReplacement: false
+
+    kubeProxyReplacement: true
     routingMode: native
-    
+
     bgpControlPlane:
       enabled: true
       secretsNamespace:
         create: false
         name: kube-system
-      
+
+    loadBalancer:
+      mode: bgp
+      serviceTopology: true
+
     defaultLBServiceIPAM: lbipam
+
+    enableLoadBalancerIPAM: true
     
     externalIPs:
       enabled: true
