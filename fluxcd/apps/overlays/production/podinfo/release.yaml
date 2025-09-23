@@ -17,5 +17,7 @@ spec:
     # Kubernetes Service settings
     service:
       enabled: true
-      annotations: {}
+      annotations:
+        io.cilium/lb-ipam-ips: "172.22.30.0"
+        io.cilium/lb-ipam-sharing-key: "podinfo"
       type: LoadBalancer

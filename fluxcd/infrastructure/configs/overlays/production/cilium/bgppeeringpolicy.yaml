@@ -1,0 +1,27 @@
+apiVersion: cilium.io/v2alpha1
+kind: CiliumBGPPeeringPolicy
+metadata:
+  name: bgp-peering-policy
+  namespace: kube-system
+spec:
+  nodeSelector:
+    matchLabels: {}
+  virtualRouters:
+    - localASN: 64538
+      exportPodCIDR: false
+      serviceAdvertisements:
+        - service:
+            matchExpressions:
+              - key: io.cilium/lb-ipam-ips
+                operator: Exists
+          advertisementConfiguration:
+            aggregationLength: 32
+            localPreference: 100
+            communities:
+              standard:
+                - "65535:65282"
+      neighbors:
+        - peerAddress: 172.22.22.21/32
+          peerASN: 64521
+        - peerAddress: 172.22.22.23/32
+          peerASN: 64523
