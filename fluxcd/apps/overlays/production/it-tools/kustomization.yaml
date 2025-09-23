@@ -3,6 +3,6 @@ kind: Kustomization
 namespace: the-lost-woods
 resources:
   - ../../../base/it-tools
-patches:
+patchesStrategicMerge:
   - service-patch.yaml
   - metallb-patch.yaml
