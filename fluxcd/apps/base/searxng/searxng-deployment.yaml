@@ -25,7 +25,7 @@ spec:
           name: http
         env:
         - name: SEARXNG_BASE_URL
-          value: "https://searxng.localdev.me/"
+          value: "http://172.22.30.101:8986/"
         - name: SEARXNG_REDIS_URL
           value: "redis://searxng-redis:6379/0"
         volumeMounts:
