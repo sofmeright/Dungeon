@@ -14,11 +14,18 @@ data:
     additionalArgs:
       - --auth-methods=user-account
     
-    # RBAC configuration - simplified since we handle permissions in rbac.yaml
+    # RBAC configuration with impersonation for multi-namespace visibility
     rbac:
       create: true
       viewSecretsResourceNames: ["cluster-user-auth", "oidc-auth"]
-      # No impersonation needed - ServiceAccount has direct permissions via rbac.yaml
+      # Allow impersonation of the user "kai"
+      impersonationResourceNames: ["kai"]
+      impersonationResources: ["users", "groups"]
+      additionalRules:
+        - apiGroups: [""]
+          resources: ["users"]
+          verbs: ["impersonate"]
+          resourceNames: ["kai"]
     
     # Additional security settings
     metrics:
@@ -29,7 +36,7 @@ data:
       type: LoadBalancer
       annotations:
         metallb.universe.tf/loadBalancerIPs: "172.22.30.100"
-        metallb.universe.tf/allow-shared-ip: "weave-gitops"
+        metallb.universe.tf/allow-shared-ip: "precisionplanit-prod"
       port: 9001
     
     # Disable ingress since we're using LoadBalancer
