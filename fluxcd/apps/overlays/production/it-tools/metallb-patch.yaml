@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: it-tools
+  namespace: the-lost-woods
+  annotations:
+    metallb.universe.tf/loadBalancerIPs: "172.22.30.101"
+    metallb.universe.tf/allow-shared-ip: "the-lost-woods"
