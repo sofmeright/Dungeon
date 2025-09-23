@@ -6,6 +6,3 @@ metadata:
 spec:
   selector:
     app: it-tools
-  ports:
-  - port: 80
-    targetPort: 80
