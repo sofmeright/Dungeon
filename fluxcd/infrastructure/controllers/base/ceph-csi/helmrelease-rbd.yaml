@@ -5,6 +5,8 @@ metadata:
   namespace: flux-system
 spec:
   targetNamespace: ceph-csi
+  install:
+    createNamespace: true
   interval: 30m
   chart:
     spec:
