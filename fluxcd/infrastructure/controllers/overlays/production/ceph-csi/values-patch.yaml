@@ -6,9 +6,7 @@ metadata:
 spec:
   values:
     provisioner:
-      hostNetwork: true
-    nodeplugin:
-      hostNetwork: true
+      enableHostNetwork: true
     csiConfig:
       - clusterID: "0985467c-d8f3-4483-b27f-f0a512397ec2"
         monitors:
