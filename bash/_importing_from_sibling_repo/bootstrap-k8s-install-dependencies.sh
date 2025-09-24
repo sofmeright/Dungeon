@@ -3,7 +3,7 @@ set -euxo pipefail
 
 # Kubernetes Variables - Matching versions
 KUBERNETES_VERSION="v1.34"     # Use v1.34 for apt repos (not v1.34.1)
-CRIO_VERSION="1.34"            # CRI-O version without 'v' prefix
+CRIO_VERSION="1.33"            # CRI-O v1.33 (latest available, compatible with K8s 1.34)
 OS="xUbuntu_24.04"            # Ubuntu 24.04 for OpenSUSE repos
 
 # Disable swap
@@ -34,8 +34,8 @@ sudo sysctl --system
 sudo apt-get update -y
 sudo apt-get install -y apt-transport-https ca-certificates curl gpg software-properties-common jq
 
-# Install CRI-O Runtime v1.34
-# Using the OpenSUSE Build Service repository which has v1.34
+# Install CRI-O Runtime v1.33
+# Using the OpenSUSE Build Service repository (v1.33 is latest available, compatible with K8s v1.34)
 curl -fsSL "https://download.opensuse.org/repositories/isv:/kubernetes:/addons:/cri-o:/stable:/v${CRIO_VERSION}/${OS}/Release.key" |
     sudo gpg --dearmor -o /etc/apt/keyrings/cri-o-apt-keyring.gpg
 
