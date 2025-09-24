@@ -33,11 +33,11 @@ sudo sysctl --system
 sudo apt-get update -y
 sudo apt-get install -y apt-transport-https ca-certificates curl gpg software-properties-common jq
 
-# Install CRI-O Runtime
-curl -fsSL https://pkgs.k8s.io/addons:/cri-o:/stable:/$CRIO_VERSION/deb/Release.key |
+# Install CRI-O Runtime (using new repository location)
+curl -fsSL https://download.opensuse.org/repositories/isv:/cri-o:/stable:/$CRIO_VERSION/deb/Release.key |
     sudo gpg --dearmor -o /etc/apt/keyrings/cri-o-apt-keyring.gpg
 
-echo "deb [signed-by=/etc/apt/keyrings/cri-o-apt-keyring.gpg] https://pkgs.k8s.io/addons:/cri-o:/stable:/$CRIO_VERSION/deb/ /" |
+echo "deb [signed-by=/etc/apt/keyrings/cri-o-apt-keyring.gpg] https://download.opensuse.org/repositories/isv:/cri-o:/stable:/$CRIO_VERSION/deb/ /" |
     sudo tee /etc/apt/sources.list.d/cri-o.list
 
 sudo apt-get update -y
