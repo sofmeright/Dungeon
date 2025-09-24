@@ -52,5 +52,5 @@ spec:
       matchLabels: {}
     attributes:
       communities:
-        standard: ["65535:65282"]
+        standard: []
       localPreference: 100
