@@ -12,11 +12,15 @@ echo "Master IP: $MASTER_PUBLIC_IP"
 echo "Kubernetes Version: $KUBERNETES_VERSION"
 echo "Cilium Version: $CILIUM_VERSION"
 
-# Pull required images
-sudo kubeadm config images pull --kubernetes-version="$KUBERNETES_VERSION"
+# Configure kubeadm to use CRI-O instead of containerd
+export CONTAINER_RUNTIME_ENDPOINT="unix:///var/run/crio/crio.sock"
 
-# Initialize kubeadm
+# Pull required images using CRI-O
+sudo kubeadm config images pull --kubernetes-version="$KUBERNETES_VERSION" --cri-socket="unix:///var/run/crio/crio.sock"
+
+# Initialize kubeadm with CRI-O
 sudo kubeadm init \
+  --cri-socket="unix:///var/run/crio/crio.sock" \
   --control-plane-endpoint="$MASTER_PUBLIC_IP" \
   --apiserver-cert-extra-sans="$MASTER_PUBLIC_IP" \
   --pod-network-cidr="$POD_CIDR" \
