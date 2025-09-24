@@ -1,10 +1,9 @@
 #!/bin/bash
 set -euxo pipefail
 
-# Kubernetes Variables - Matching versions
-KUBERNETES_VERSION="v1.34"     # Use v1.34 for apt repos (not v1.34.1)
-CRIO_VERSION="1.33"            # CRI-O v1.33 (latest available, compatible with K8s 1.34)
-OS="xUbuntu_24.04"            # Ubuntu 24.04 for OpenSUSE repos
+# Kubernetes Variables
+KUBERNETES_VERSION="v1.34"
+CRIO_VERSION="v1.34"
 
 # Disable swap
 sudo swapoff -a
@@ -34,12 +33,11 @@ sudo sysctl --system
 sudo apt-get update -y
 sudo apt-get install -y apt-transport-https ca-certificates curl gpg software-properties-common jq
 
-# Install CRI-O Runtime v1.33
-# Using the OpenSUSE Build Service repository (v1.33 is latest available, compatible with K8s v1.34)
-curl -fsSL "https://download.opensuse.org/repositories/isv:/kubernetes:/addons:/cri-o:/stable:/v${CRIO_VERSION}/${OS}/Release.key" |
+# Install CRI-O Runtime
+curl -fsSL https://pkgs.k8s.io/addons:/cri-o:/stable:/$CRIO_VERSION/deb/Release.key |
     sudo gpg --dearmor -o /etc/apt/keyrings/cri-o-apt-keyring.gpg
 
-echo "deb [signed-by=/etc/apt/keyrings/cri-o-apt-keyring.gpg] https://download.opensuse.org/repositories/isv:/kubernetes:/addons:/cri-o:/stable:/v${CRIO_VERSION}/${OS}/ /" |
+echo "deb [signed-by=/etc/apt/keyrings/cri-o-apt-keyring.gpg] https://pkgs.k8s.io/addons:/cri-o:/stable:/$CRIO_VERSION/deb/ /" |
     sudo tee /etc/apt/sources.list.d/cri-o.list
 
 sudo apt-get update -y
@@ -59,11 +57,10 @@ sudo systemctl enable crio --now
 echo "CRI-O runtime installed successfully"
 
 # Install Kubernetes components
-K8S_REPO_URL="https://pkgs.k8s.io/core:/stable:/${KUBERNETES_VERSION}/deb/"
-curl -fsSL "${K8S_REPO_URL}Release.key" |
+curl -fsSL https://pkgs.k8s.io/core:/stable:/$KUBERNETES_VERSION/deb/Release.key |
     sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
 
-echo "deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] ${K8S_REPO_URL} /" |
+echo "deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/$KUBERNETES_VERSION/deb/ /" |
     sudo tee /etc/apt/sources.list.d/kubernetes.list
 
 sudo apt-get update -y
