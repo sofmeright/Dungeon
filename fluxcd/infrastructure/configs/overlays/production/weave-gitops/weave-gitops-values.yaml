@@ -31,12 +31,12 @@ data:
     metrics:
       enabled: true
     
-    # Service configuration - use LoadBalancer with MetalLB
+    # Service configuration - use LoadBalancer with Cilium LB IPAM
     service:
       type: LoadBalancer
       annotations:
-        metallb.universe.tf/loadBalancerIPs: "172.22.30.100"
-        metallb.universe.tf/allow-shared-ip: "precisionplanit-prod"
+        io.cilium/lb-ipam-ips: "172.22.30.100"
+        io.cilium/lb-ipam-sharing-key: "precisionplanit-prod"
       port: 9001
     
     # Disable ingress since we're using LoadBalancer

@@ -5,4 +5,4 @@ resources:
   - ../../../base/it-tools
 patchesStrategicMerge:
   - service-patch.yaml
-  - metallb-patch.yaml
+  - cilium-lb-patch.yaml

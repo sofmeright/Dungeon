@@ -4,8 +4,8 @@ metadata:
   name: vault
   namespace: vault
   annotations:
-    metallb.universe.tf/loadBalancerIPs: "172.22.30.102"
-    metallb.universe.tf/allow-shared-ip: "vault"
+    io.cilium/lb-ipam-ips: "172.22.30.102"
+    io.cilium/lb-ipam-sharing-key: "vault"
 spec:
   type: LoadBalancer
   ports:

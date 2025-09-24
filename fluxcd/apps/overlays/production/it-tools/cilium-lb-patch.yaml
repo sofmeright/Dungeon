@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: it-tools
+  namespace: the-lost-woods
+  annotations:
+    io.cilium/lb-ipam-ips: "172.22.30.103"
+    io.cilium/lb-ipam-sharing-key: "the-lost-woods"
