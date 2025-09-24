@@ -36,7 +36,7 @@ spec:
         name: kube-system
 
     loadBalancer:
-      mode: bgp
+      mode: snat
       serviceTopology: true
 
     defaultLBServiceIPAM: lbipam
