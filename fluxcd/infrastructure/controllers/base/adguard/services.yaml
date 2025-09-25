@@ -4,10 +4,10 @@ metadata:
   name: adguard-dns
   namespace: prplanit-dns
   annotations:
-    io.cilium/lb-ipam-ips: "172.22.30.103"
+    io.cilium/lb-ipam-ips: "172.22.30.22"
 spec:
   type: LoadBalancer
-  loadBalancerIP: 172.22.30.103
+  loadBalancerIP: 172.22.30.22
   ports:
   - port: 53
     targetPort: 53
@@ -26,10 +26,10 @@ metadata:
   name: adguard-web
   namespace: prplanit-dns
   annotations:
-    io.cilium/lb-ipam-ips: "172.22.30.104"
+    io.cilium/lb-ipam-ips: "172.22.30.122"
 spec:
   type: LoadBalancer
-  loadBalancerIP: 172.22.30.104
+  loadBalancerIP: 172.22.30.122
   ports:
   - port: 80
     targetPort: 80
