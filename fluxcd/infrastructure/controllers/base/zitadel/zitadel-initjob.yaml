@@ -12,7 +12,7 @@ spec:
       initContainers:
       - name: wait-for-postgres
         image: docker.io/postgres:16-alpine
-        command: ['sh', '-c', 'until pg_isready -h zitadel-postgres.zitadel.svc.cluster.local -p 5432 -U postgres; do echo waiting for postgres; sleep 2; done']
+        command: ['sh', '-c', 'until pg_isready -h zitadel-postgres.prplanit-atlas.svc.cluster.local -p 5432 -U postgres; do echo waiting for postgres; sleep 2; done']
       containers:
       - name: zitadel-init
         image: ghcr.io/zitadel/zitadel:v4.2.2
