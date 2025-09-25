@@ -15,7 +15,7 @@ data:
 
     Database:
       Postgres:
-        Host: postgres.zitadel.svc.cluster.local
+        Host: zitadel-postgres.zitadel.svc.cluster.local
         Port: 5432
         Database: zitadel
         User:

@@ -1,21 +1,21 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: postgres
+  name: zitadel-postgres
   namespace: zitadel
 spec:
-  serviceName: postgres
+  serviceName: zitadel-postgres
   replicas: 1
   selector:
     matchLabels:
-      app: postgres
+      app: zitadel-postgres
   template:
     metadata:
       labels:
-        app: postgres
+        app: zitadel-postgres
     spec:
       containers:
-      - name: postgres
+      - name: zitadel-postgres
         image: docker.io/postgres:16-alpine
         ports:
         - containerPort: 5432
@@ -33,7 +33,7 @@ spec:
         - name: PGDATA
           value: /var/lib/postgresql/data/pgdata
         volumeMounts:
-        - name: postgres-storage
+        - name: zitadel-postgres-storage
           mountPath: /var/lib/postgresql/data
         resources:
           requests:
@@ -59,6 +59,6 @@ spec:
           initialDelaySeconds: 5
           periodSeconds: 5
       volumes:
-      - name: postgres-storage
+      - name: zitadel-postgres-storage
         persistentVolumeClaim:
-          claimName: postgres-data
+          claimName: zitadel-postgres-data

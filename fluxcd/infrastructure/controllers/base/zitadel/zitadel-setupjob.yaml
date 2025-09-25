@@ -35,17 +35,17 @@ spec:
         - name: ZITADEL_FIRSTINSTANCE_ORG_NAME
           value: "PrecisionPlanIT"
         - name: ZITADEL_FIRSTINSTANCE_ORG_HUMAN_USERNAME
-          value: "admin"
+          value: "kai"
         - name: ZITADEL_FIRSTINSTANCE_ORG_HUMAN_FIRSTNAME
-          value: "PrecisionPlanIT"
+          value: "Kai"
         - name: ZITADEL_FIRSTINSTANCE_ORG_HUMAN_LASTNAME
-          value: "Admin"
+          value: "H."
         - name: ZITADEL_FIRSTINSTANCE_ORG_HUMAN_EMAIL_ADDRESS
-          value: "precisionplanit@gmail.com"
+          value: "kai.hamil@gmail.com"
         - name: ZITADEL_FIRSTINSTANCE_ORG_HUMAN_EMAIL_VERIFIED
           value: "true"
         - name: ZITADEL_FIRSTINSTANCE_ORG_HUMAN_PASSWORD
-          value: "ChangeMeOnFirstLogin123!"  # Change this!
+          value: "i7cTuvs79uKQ!"  # Change this!
         - name: ZITADEL_FIRSTINSTANCE_ORG_HUMAN_PASSWORDCHANGEREQUIRED
           value: "true"
         command:

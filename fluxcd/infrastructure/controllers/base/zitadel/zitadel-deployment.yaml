@@ -51,6 +51,10 @@ spec:
           value: "kubernetes.default.svc"
         - name: KUBERNETES_SERVICE_PORT
           value: "443"
+        - name: ZITADEL_PORT
+          value: "8080"
+        - name: ZITADEL_EXTERNALPORT
+          value: "443"
         - name: POD_IP
           valueFrom:
             fieldRef:
