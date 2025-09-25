@@ -48,8 +48,12 @@ spec:
         cpu: "500m"
 
   # Service configuration
-  serviceType: ClusterIP
+  serviceType: LoadBalancer
   serviceRegistrationEnabled: true
+
+  # LoadBalancer configuration
+  serviceAnnotations:
+    io.cilium/lb-ipam-ips: "172.22.144.130"
 
   # Use the vault service account
   serviceAccount: vault
