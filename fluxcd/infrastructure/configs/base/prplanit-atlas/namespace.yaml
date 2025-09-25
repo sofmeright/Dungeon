@@ -1,7 +1,0 @@
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: prplanit-atlas
-  labels:
-    name: prplanit-atlas
-    pod-security.kubernetes.io/enforce: privileged
