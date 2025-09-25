@@ -11,10 +11,8 @@ data:
     echo "Starting Vault auto-unseal sidecar..."
 
     while true; do
-      # Check if Vault is sealed
-      SEALED=$(vault status -format=json 2>/dev/null | jq -r '.sealed' || echo "true")
-
-      if [ "$SEALED" = "true" ]; then
+      # Check if Vault is sealed (using grep instead of jq)
+      if vault status 2>/dev/null | grep -q "Sealed.*true"; then
         echo "Vault is sealed, attempting to unseal..."
 
         # Try each unseal key
@@ -25,8 +23,7 @@ data:
         vault operator unseal "$VAULT_UNSEAL_2" || true
 
         # Check if unsealed now
-        SEALED=$(vault status -format=json 2>/dev/null | jq -r '.sealed' || echo "true")
-        if [ "$SEALED" = "false" ]; then
+        if vault status 2>/dev/null | grep -q "Sealed.*false"; then
           echo "Vault successfully unsealed!"
         else
           echo "Failed to unseal Vault, will retry..."
