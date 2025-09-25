@@ -8,7 +8,8 @@ metadata:
 spec:
   type: LoadBalancer
   selector:
-    app: vault
+    app.kubernetes.io/name: vault
+    vault_cr: vault
   ports:
     - port: 8200
       targetPort: 8200
