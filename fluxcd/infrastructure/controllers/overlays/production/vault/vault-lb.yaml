@@ -5,6 +5,7 @@ metadata:
   namespace: vault
   annotations:
     io.cilium/lb-ipam-ips: "172.22.30.102"
+    io.cilium/lb-ipam-sharing-key: "prplanit-system"  # Enable IP sharing
 spec:
   type: LoadBalancer
   selector:

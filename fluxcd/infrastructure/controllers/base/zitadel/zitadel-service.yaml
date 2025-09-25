@@ -4,13 +4,14 @@ metadata:
   name: zitadel
   namespace: zitadel
   annotations:
-    io.cilium/lb-ipam-ips: "172.22.30.140"  # Pick an available IP
+    io.cilium/lb-ipam-ips: "172.22.30.102"  # Shared with Vault
+    io.cilium/lb-ipam-sharing-key: "prplanit-system"  # Enable IP sharing
 spec:
   type: LoadBalancer
   selector:
     app: zitadel
   ports:
-    - port: 8080
+    - port: 8174  # Same as Docker setup
       targetPort: 8080
       protocol: TCP
       name: http
