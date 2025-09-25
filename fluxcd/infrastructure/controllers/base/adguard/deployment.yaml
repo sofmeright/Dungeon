@@ -1,0 +1,107 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: adguard
+  namespace: prplanit-dns
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: adguard
+  template:
+    metadata:
+      labels:
+        app: adguard
+    spec:
+      initContainers:
+      - name: copy-config
+        image: busybox:1.36
+        command:
+        - sh
+        - -c
+        - |
+          if [ ! -f /opt/adguardhome/conf/AdGuardHome.yaml ]; then
+            echo "Copying initial config..."
+            cp /tmp/config/AdGuardHome.yaml /opt/adguardhome/conf/
+          else
+            echo "Config already exists, skipping..."
+          fi
+        volumeMounts:
+        - name: config-template
+          mountPath: /tmp/config
+        - name: adguard-conf
+          mountPath: /opt/adguardhome/conf
+      containers:
+      - name: adguard
+        image: adguard/adguardhome:v0.107.43
+        ports:
+        - containerPort: 53
+          protocol: TCP
+          name: dns-tcp
+        - containerPort: 53
+          protocol: UDP
+          name: dns-udp
+        - containerPort: 67
+          protocol: UDP
+          name: dhcp-server
+        - containerPort: 68
+          protocol: UDP
+          name: dhcp-client
+        - containerPort: 80
+          protocol: TCP
+          name: http
+        - containerPort: 443
+          protocol: TCP
+          name: https
+        - containerPort: 853
+          protocol: TCP
+          name: dot
+        - containerPort: 784
+          protocol: UDP
+          name: doq
+        - containerPort: 3000
+          protocol: TCP
+          name: web
+        - containerPort: 5443
+          protocol: TCP
+          name: dnscrypt-tcp
+        - containerPort: 5443
+          protocol: UDP
+          name: dnscrypt-udp
+        env:
+        - name: TZ
+          value: "UTC"
+        volumeMounts:
+        - name: adguard-data
+          mountPath: /opt/adguardhome/work
+        - name: adguard-conf
+          mountPath: /opt/adguardhome/conf
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "100m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 3000
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 3000
+          initialDelaySeconds: 5
+          periodSeconds: 5
+      volumes:
+      - name: config-template
+        configMap:
+          name: adguard-config
+      - name: adguard-data
+        persistentVolumeClaim:
+          claimName: adguard-data
+      - name: adguard-conf
+        persistentVolumeClaim:
+          claimName: adguard-conf
