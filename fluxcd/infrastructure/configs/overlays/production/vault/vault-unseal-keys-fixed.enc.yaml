@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: Secret
+metadata:
+    name: vault-unseal-keys
+    namespace: vault
+type: Opaque
+stringData:
+    vault-unseal-0: ENC[AES256_GCM,data:fxs4hSbmGlYaARdqXzZ+ToS3+jqiVe+SFTncA9T6bEZaPCOhGNXQ5pSBktE=,iv:u/uQSJEfoAUEBtXAUGd1FBeg2MNw3gEpAJyPFdBZ54k=,tag:T42Udqm1KSoPWrkVrVb9Aw==,type:str]
+    vault-unseal-1: ENC[AES256_GCM,data:7jZ0eyk8sn4BYTB1mYoQXyIkJQ5jknXA+UkSa7k4OL+05OwR0R9ZQDk/Sm0=,iv:/+gZYcRyR2qrLkvJx74Bp7rXLGYZPcsZqHjZA7sAlcQ=,tag:q9cywan6vZ9/+fQGHxUSVA==,type:str]
+    vault-unseal-2: ENC[AES256_GCM,data:g5OVTXA7Um+0bxix8A/I7CEwatqNdiNaiOijJpAr0kL9M1gaBYwLtC16tCM=,iv:HgATSJnzGBQ8nD7HEPSdFGONEXWtwXtI4FHYJeW+rDE=,tag:w18WxDAUIn+wTLhPWRWTYg==,type:str]
+sops:
+    age:
+        - recipient: age1y8vegwlhcdgerrtn5947j5lcsswcu0zz6ukhs0hvvhsp79sa99nsn82dkr
+          enc: |
+            -----BEGIN AGE ENCRYPTED FILE-----
+            YWdlLWVuY3J5cHRpb24ub3JnL3YxCi0+IFgyNTUxOSBuSkh5ampXaW4rL0pVNVpy
+            RldsK0hBMnZ6YlVESkdYQi9EdHFjYTQ5Q0RVCjcyelZDR1dQYXBPdUVTQ1lvRmw4
+            QXVJZ0lHMVRreExJbmdja0g2VVJNYm8KLS0tIGVCcHRieE1wUXFIdjlOMVUxTjZU
+            M0V4SWNtQlRFYzkzajlOVFNqZUJUNWsKGFQfYZUsQkI+0wACbOQocaSIP5eQHdIj
+            kqmx/zS+F6vi8H0QaWJXNW2zmT/U7MwkCyBuP6IvM/BsLv6IeU/brg==
+            -----END AGE ENCRYPTED FILE-----
+    lastmodified: "2025-09-25T07:18:33Z"
+    mac: ENC[AES256_GCM,data:l6sSJ8xLPX+o42VSeKPICF2jz7X5WWHWnPdG/X96k5+X5CEq5TMi3rZFMthOWeqlze7aOl1/sg9O+OS4Bbcm5N8VARAvFxxhuzXZS94yyxx04OtrkKCGiosXZfN9dN64gmHEW5F3ks9r7B4jbV6H2xa/x5Oseo9M4MQ/c34dbs0=,iv:HQQLuQSHBCqgmnNf+A68Bhlr5d83ZfrvHeALbA41vn8=,tag:SOl3Z3Cm7mnwUXckCbVGLA==,type:str]
+    encrypted_regex: ^(data|stringData)$
+    version: 3.10.2

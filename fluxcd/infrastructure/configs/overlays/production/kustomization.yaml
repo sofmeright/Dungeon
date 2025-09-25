@@ -6,4 +6,4 @@ resources:
   # - metallb  # Disabled - replaced by Cilium LoadBalancer IPAM
   - weave-gitops
   - ceph-csi
-  - vault  # Testing SOPS decryption
+  - vault  # Bank-Vaults with SOPS-encrypted keys
