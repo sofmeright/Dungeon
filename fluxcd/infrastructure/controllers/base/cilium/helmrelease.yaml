@@ -21,7 +21,7 @@ spec:
     ipam:
       mode: kubernetes
     
-    ipv4NativeRoutingCIDR: "192.168.144.0/20"
+    ipv4NativeRoutingCIDR: "192.168.144.0/20,172.22.144.21/32,172.22.144.23/32"
 
     k8sServiceHost: "172.22.144.105"
     k8sServicePort: 6443
