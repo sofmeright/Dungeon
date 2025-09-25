@@ -51,6 +51,9 @@ spec:
   serviceType: ClusterIP
   serviceRegistrationEnabled: true
 
+  # Use the vault service account
+  serviceAccount: vault
+
   # Make sure it runs on worker nodes
   affinity:
     nodeAffinity:

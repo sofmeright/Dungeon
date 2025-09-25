@@ -3,5 +3,6 @@ kind: Kustomization
 namespace: vault
 resources:
   - namespace.yaml
+  - rbac.yaml
   - pvc.yaml
   - vault-cr.yaml
