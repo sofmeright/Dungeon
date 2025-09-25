@@ -33,7 +33,7 @@ spec:
           mountPath: /opt/adguardhome/conf
       containers:
       - name: adguard
-        image: docker.io/adguard/adguardhome:v0.107.43
+        image: docker.io/adguard/adguardhome:v0.107.66
         ports:
         - containerPort: 53
           protocol: TCP
