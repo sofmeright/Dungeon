@@ -6,7 +6,7 @@ metadata:
 spec:
   size: 1
   image: docker.io/hashicorp/vault:1.15.2
-  bankVaultsImage: ghcr.io/bank-vaults/bank-vaults:v1.23.0
+  bankVaultsImage: ghcr.io/bank-vaults/bank-vaults:v1.32.0
 
   # Use Kubernetes secrets for unseal keys (SOPS encrypted in source)
   unsealConfig:
