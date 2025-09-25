@@ -16,7 +16,7 @@ spec:
       serviceAccountName: zitadel
       containers:
       - name: zitadel
-        image: ghcr.io/zitadel/zitadel:v2.48.3  # Latest stable
+        image: ghcr.io/zitadel/zitadel:v4.2.2  # Latest stable
         ports:
         - containerPort: 8080
           name: http
@@ -56,7 +56,7 @@ spec:
             fieldRef:
               fieldPath: status.podIP
         command:
-        - zitadel
+        - /app/zitadel
         - start
         - --config
         - /config/zitadel-config.yaml

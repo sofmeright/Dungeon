@@ -10,7 +10,7 @@ spec:
       serviceAccountName: zitadel
       containers:
       - name: zitadel-setup
-        image: ghcr.io/zitadel/zitadel:v2.48.3
+        image: ghcr.io/zitadel/zitadel:v4.2.2
         env:
         - name: ZITADEL_MASTERKEY
           valueFrom:
@@ -49,7 +49,7 @@ spec:
         - name: ZITADEL_FIRSTINSTANCE_ORG_HUMAN_PASSWORDCHANGEREQUIRED
           value: "true"
         command:
-        - zitadel
+        - /app/zitadel
         - setup
         - --config
         - /config/zitadel-config.yaml

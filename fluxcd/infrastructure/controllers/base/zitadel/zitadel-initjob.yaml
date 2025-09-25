@@ -10,7 +10,7 @@ spec:
       serviceAccountName: zitadel
       containers:
       - name: zitadel-init
-        image: ghcr.io/zitadel/zitadel:v2.48.3
+        image: ghcr.io/zitadel/zitadel:v4.2.2
         env:
         - name: ZITADEL_MASTERKEY
           valueFrom:
@@ -28,7 +28,7 @@ spec:
               name: zitadel-secrets
               key: ZITADEL_DATABASE_POSTGRES_USER_PASSWORD
         command:
-        - zitadel
+        - /app/zitadel
         - init
         - database
         - --config
