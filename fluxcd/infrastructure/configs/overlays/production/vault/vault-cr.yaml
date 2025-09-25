@@ -1,0 +1,76 @@
+apiVersion: vault.banzaicloud.com/v1alpha1
+kind: Vault
+metadata:
+  name: vault
+  namespace: vault
+spec:
+  size: 1
+  image: docker.io/hashicorp/vault:1.15.2
+
+  # Use existing PVC
+  volumeClaimTemplates:
+    - metadata:
+        name: vault-data
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 10Gi
+        storageClassName: ceph-rbd
+
+  # Use existing service
+  serviceType: LoadBalancer
+  loadBalancerIP: 172.22.30.102
+
+  # Vault configuration
+  config:
+    storage:
+      file:
+        path: /vault/data
+    listener:
+      tcp:
+        address: "0.0.0.0:8200"
+        tls_disable: true
+    ui: true
+
+  # Unseal configuration using existing keys
+  unsealConfig:
+    options:
+      preFlightChecks: true
+      storeRootToken: true
+    kubernetes:
+      secretNamespace: vault
+      secretName: vault-unseal-keys
+
+  # External configuration - use existing initialized vault
+  externalConfig:
+    policies:
+      - name: allow_secrets
+        rules: |
+          path "secret/data/*" {
+            capabilities = ["create", "read", "update", "delete", "list"]
+          }
+
+    auth:
+      - type: kubernetes
+        config:
+          issuer: https://kubernetes.default.svc.cluster.local
+        roles:
+          - name: external-secrets
+            bound_service_account_names:
+              - external-secrets-external-secrets
+            bound_service_account_namespaces:
+              - external-secrets
+            policies:
+              - allow_secrets
+            ttl: 1h
+
+    secrets:
+      - type: kv-v2
+        path: secret
+        description: General secrets storage
+
+  # Bank-Vaults configuration
+  vaultAnnotations:
+    vault.banzaicloud.com/vault-skip-init: "true"  # Skip init since vault is already initialized

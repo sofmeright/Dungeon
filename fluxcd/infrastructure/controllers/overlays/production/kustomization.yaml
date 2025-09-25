@@ -7,4 +7,5 @@ resources:
   - weave-gitops
   - ceph-csi
   - vault
+  - bank-vaults
   - external-secrets
