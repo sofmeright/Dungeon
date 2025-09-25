@@ -47,9 +47,8 @@ spec:
         memory: "512Mi"
         cpu: "500m"
 
-  # Service configuration
-  serviceType: LoadBalancer
-  serviceRegistrationEnabled: true
+  # Service configuration - disabled, we manage our own
+  serviceRegistrationEnabled: false
 
   # Use the vault service account
   serviceAccount: vault
