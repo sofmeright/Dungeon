@@ -59,9 +59,6 @@ spec:
         - containerPort: 784
           protocol: UDP
           name: doq
-        - containerPort: 80
-          protocol: TCP
-          name: web
         - containerPort: 5443
           protocol: TCP
           name: dnscrypt-tcp
