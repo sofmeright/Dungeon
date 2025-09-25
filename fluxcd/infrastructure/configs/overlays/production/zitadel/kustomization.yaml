@@ -1,0 +1,7 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - ../../../base/zitadel  # Get the base config
+  - postgres-secrets.enc.yaml  # Production secrets (to be encrypted)
+  - zitadel-masterkey.enc.yaml
+  - zitadel-secrets.enc.yaml

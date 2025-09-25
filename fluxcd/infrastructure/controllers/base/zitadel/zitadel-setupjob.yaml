@@ -1,0 +1,71 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: zitadel-setup
+  namespace: zitadel
+spec:
+  template:
+    spec:
+      restartPolicy: OnFailure
+      serviceAccountName: zitadel
+      containers:
+      - name: zitadel-setup
+        image: ghcr.io/zitadel/zitadel:v2.48.3
+        env:
+        - name: ZITADEL_MASTERKEY
+          valueFrom:
+            secretKeyRef:
+              name: zitadel-masterkey
+              key: masterkey
+        - name: ZITADEL_DATABASE_POSTGRES_USER_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: zitadel-secrets
+              key: ZITADEL_DATABASE_POSTGRES_USER_PASSWORD
+        - name: ZITADEL_DATABASE_POSTGRES_ADMIN_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: postgres-secrets
+              key: POSTGRES_PASSWORD
+        # First instance configuration from your Docker setup
+        - name: ZITADEL_FIRSTINSTANCE_INSTANCENAME
+          value: "PrecisionPlanIT"
+        - name: ZITADEL_FIRSTINSTANCE_DEFAULTLANGUAGE
+          value: "en"
+        - name: ZITADEL_FIRSTINSTANCE_ORG_NAME
+          value: "PrecisionPlanIT"
+        - name: ZITADEL_FIRSTINSTANCE_ORG_HUMAN_USERNAME
+          value: "admin"
+        - name: ZITADEL_FIRSTINSTANCE_ORG_HUMAN_FIRSTNAME
+          value: "PrecisionPlanIT"
+        - name: ZITADEL_FIRSTINSTANCE_ORG_HUMAN_LASTNAME
+          value: "Admin"
+        - name: ZITADEL_FIRSTINSTANCE_ORG_HUMAN_EMAIL_ADDRESS
+          value: "precisionplanit@gmail.com"
+        - name: ZITADEL_FIRSTINSTANCE_ORG_HUMAN_EMAIL_VERIFIED
+          value: "true"
+        - name: ZITADEL_FIRSTINSTANCE_ORG_HUMAN_PASSWORD
+          value: "ChangeMeOnFirstLogin123!"  # Change this!
+        - name: ZITADEL_FIRSTINSTANCE_ORG_HUMAN_PASSWORDCHANGEREQUIRED
+          value: "true"
+        command:
+        - zitadel
+        - setup
+        - --config
+        - /config/zitadel-config.yaml
+        - --masterkeyFromEnv
+        volumeMounts:
+        - name: zitadel-config
+          mountPath: /config
+          readOnly: true
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "100m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+      volumes:
+      - name: zitadel-config
+        configMap:
+          name: zitadel-config

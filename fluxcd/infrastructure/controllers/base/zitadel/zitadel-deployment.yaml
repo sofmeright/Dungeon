@@ -1,0 +1,81 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: zitadel
+  namespace: zitadel
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: zitadel
+  template:
+    metadata:
+      labels:
+        app: zitadel
+    spec:
+      serviceAccountName: zitadel
+      containers:
+      - name: zitadel
+        image: ghcr.io/zitadel/zitadel:v2.48.3  # Latest stable
+        ports:
+        - containerPort: 8080
+          name: http
+        env:
+        - name: ZITADEL_MASTERKEY
+          valueFrom:
+            secretKeyRef:
+              name: zitadel-masterkey
+              key: masterkey
+        - name: ZITADEL_DATABASE_POSTGRES_USER_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: zitadel-secrets
+              key: ZITADEL_DATABASE_POSTGRES_USER_PASSWORD
+        - name: ZITADEL_DATABASE_POSTGRES_ADMIN_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: postgres-secrets
+              key: POSTGRES_PASSWORD
+        - name: ZITADEL_DEFAULTINSTANCE_SMTPCONFIGURATION_SMTP_USER
+          valueFrom:
+            secretKeyRef:
+              name: zitadel-secrets
+              key: SMTP_USER
+        - name: ZITADEL_DEFAULTINSTANCE_SMTPCONFIGURATION_SMTP_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: zitadel-secrets
+              key: SMTP_PASSWORD
+        command:
+        - zitadel
+        - start
+        - --config
+        - /config/zitadel-config.yaml
+        - --masterkeyFromEnv
+        volumeMounts:
+        - name: zitadel-config
+          mountPath: /config
+          readOnly: true
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "250m"
+          limits:
+            memory: "1Gi"
+            cpu: "1000m"
+        livenessProbe:
+          httpGet:
+            path: /debug/healthz
+            port: 8080
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /debug/ready
+            port: 8080
+          initialDelaySeconds: 10
+          periodSeconds: 5
+      volumes:
+      - name: zitadel-config
+        configMap:
+          name: zitadel-config
