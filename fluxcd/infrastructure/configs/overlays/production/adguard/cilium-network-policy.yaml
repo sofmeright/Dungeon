@@ -1,0 +1,46 @@
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: adguard-dns-egress
+  namespace: prplanit-dns
+spec:
+  endpointSelector:
+    matchLabels:
+      app: adguard
+  egress:
+  # Allow DNS to external DNS servers
+  - toCIDR:
+    - 172.22.144.0/24
+    toPorts:
+    - ports:
+      - port: "53"
+        protocol: UDP
+      - port: "53"
+        protocol: TCP
+  # Allow HTTPS for DoH
+  - toCIDR:
+    - 0.0.0.0/0
+    toPorts:
+    - ports:
+      - port: "443"
+        protocol: TCP
+  # Allow all cluster-internal traffic
+  - toEntities:
+    - cluster
+  # Allow DNS queries from anywhere
+  ingress:
+  - fromEntities:
+    - all
+    toPorts:
+    - ports:
+      - port: "53"
+        protocol: UDP
+      - port: "53"
+        protocol: TCP
+  # Allow web UI access
+  - fromEntities:
+    - all
+    toPorts:
+    - ports:
+      - port: "80"
+        protocol: TCP

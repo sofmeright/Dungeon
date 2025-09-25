@@ -3,6 +3,7 @@ kind: Kustomization
 resources:
   - ../../../../controllers/base/adguard
   - adguard-secret.enc.yaml
+  - cilium-network-policy.yaml
 patches:
   - path: adguard-config-patch.yaml
   - path: deployment-patch.yaml
