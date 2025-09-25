@@ -8,39 +8,26 @@ spec:
     matchLabels:
       app: adguard
   egress:
-  # Allow DNS to external DNS servers
-  - toCIDR:
-    - 172.22.144.0/24
-    toPorts:
-    - ports:
-      - port: "53"
-        protocol: UDP
-      - port: "53"
-        protocol: TCP
-  # Allow HTTPS for DoH
+  # Allow ALL egress traffic - completely unrestricted
+  - toEntities:
+    - all
   - toCIDR:
     - 0.0.0.0/0
-    toPorts:
-    - ports:
-      - port: "443"
-        protocol: TCP
+  - toCIDRSet:
+    - cidr: 0.0.0.0/0
+  # Also explicitly allow the local network
+  - toCIDR:
+    - 172.22.144.0/24
+  - toCIDR:
+    - 172.22.0.0/16
   # Allow all cluster-internal traffic
   - toEntities:
     - cluster
-  # Allow DNS queries from anywhere
+    - host
+    - remote-node
   ingress:
+  # Allow all ingress traffic
   - fromEntities:
     - all
-    toPorts:
-    - ports:
-      - port: "53"
-        protocol: UDP
-      - port: "53"
-        protocol: TCP
-  # Allow web UI access
-  - fromEntities:
-    - all
-    toPorts:
-    - ports:
-      - port: "80"
-        protocol: TCP
+  - fromCIDR:
+    - 0.0.0.0/0
