@@ -5,7 +5,7 @@ metadata:
   namespace: vault
 spec:
   size: 1
-  image: docker.io/hashicorp/vault:1.15.2
+  image: docker.io/hashicorp/vault:1.20.4
   bankVaultsImage: ghcr.io/bank-vaults/bank-vaults:v1.32.0
 
   # Use Kubernetes secrets for unseal keys (SOPS encrypted in source)
