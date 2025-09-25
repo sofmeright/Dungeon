@@ -12,8 +12,8 @@ data:
       address: 0.0.0.0:80
       session_ttl: 720h
     users:
-      - name: admin
-        password: WILL_BE_REPLACED_BY_SECRET
+      - name: kai
+        password: ADGUARD_PASSWORD_PLACEHOLDER
     auth_attempts: 5
     block_auth_min: 15
     http_proxy: ""
