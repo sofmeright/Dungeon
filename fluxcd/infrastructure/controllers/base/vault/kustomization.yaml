@@ -3,10 +3,5 @@ kind: Kustomization
 namespace: vault
 resources:
   - namespace.yaml
-  - configmap.yaml
   - pvc.yaml
-  - statefulset.yaml
-  - service.yaml
-  - vault-unseal-sidecar.yaml
-patchesStrategicMerge:
-  - statefulset-patch.yaml
+  - vault-cr.yaml

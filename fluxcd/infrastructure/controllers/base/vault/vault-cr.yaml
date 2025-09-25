@@ -1,0 +1,62 @@
+apiVersion: vault.banzaicloud.com/v1alpha1
+kind: Vault
+metadata:
+  name: vault
+  namespace: vault
+spec:
+  size: 1
+  image: docker.io/hashicorp/vault:1.15.2
+  bankVaultsImage: ghcr.io/bank-vaults/bank-vaults:v1.23.0
+
+  # Use Kubernetes secrets for unseal keys (SOPS encrypted in source)
+  unsealConfig:
+    kubernetes:
+      secretNamespace: vault
+      secretName: vault-unseal-keys
+
+  # Volume configuration for persistent storage
+  volumes:
+    - name: vault-data
+      persistentVolumeClaim:
+        claimName: vault-data
+
+  volumeMounts:
+    - name: vault-data
+      mountPath: /vault/data
+
+  # Vault configuration
+  config:
+    storage:
+      file:
+        path: /vault/data
+    listener:
+      tcp:
+        address: "0.0.0.0:8200"
+        tls_disable: true
+    api_addr: "http://vault.vault:8200"
+    cluster_addr: "https://vault.vault:8201"
+    ui: true
+
+  # Resources
+  resources:
+    vault:
+      requests:
+        memory: "256Mi"
+        cpu: "250m"
+      limits:
+        memory: "512Mi"
+        cpu: "500m"
+
+  # Service configuration
+  serviceType: ClusterIP
+  serviceRegistrationEnabled: true
+
+  # Make sure it runs on worker nodes
+  affinity:
+    nodeAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+        - weight: 100
+          preference:
+            matchExpressions:
+              - key: node-role.kubernetes.io/worker
+                operator: Exists
