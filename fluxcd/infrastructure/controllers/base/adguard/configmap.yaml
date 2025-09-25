@@ -30,8 +30,8 @@ data:
       ratelimit_whitelist: []
       refuse_any: true
       upstream_dns:
-        - '[/prplanit.internal/]172.22.22.22'
-        - 172.22.22.22
+        - '[/prplanit.internal/]172.22.144.22'
+        - 172.22.144.22
         - https://cloudflare-dns.com/dns-query
         - https://dns.google/dns-query
       upstream_dns_file: ""
@@ -72,7 +72,7 @@ data:
       private_networks: []
       use_private_ptr_resolvers: true
       local_ptr_upstreams:
-        - 172.22.22.22
+        - 172.22.144.22
       use_dns64: false
       dns64_prefixes: []
       serve_http3: false
