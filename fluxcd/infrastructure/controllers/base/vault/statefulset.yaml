@@ -23,7 +23,7 @@ spec:
               topologyKey: kubernetes.io/hostname
       containers:
       - name: vault
-        image: hashicorp/vault:1.15.2
+        image: docker.io/hashicorp/vault:1.15.2
         command:
           - vault
           - server
