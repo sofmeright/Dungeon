@@ -59,7 +59,7 @@ spec:
         - containerPort: 784
           protocol: UDP
           name: doq
-        - containerPort: 3000
+        - containerPort: 80
           protocol: TCP
           name: web
         - containerPort: 5443
@@ -86,13 +86,13 @@ spec:
         livenessProbe:
           httpGet:
             path: /
-            port: 3000
+            port: 80
           initialDelaySeconds: 30
           periodSeconds: 10
         readinessProbe:
           httpGet:
             path: /
-            port: 3000
+            port: 80
           initialDelaySeconds: 5
           periodSeconds: 5
       volumes:

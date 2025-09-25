@@ -31,8 +31,8 @@ spec:
   type: LoadBalancer
   loadBalancerIP: 172.22.30.104
   ports:
-  - port: 3000
-    targetPort: 3000
+  - port: 80
+    targetPort: 80
     protocol: TCP
     name: web
   selector:
