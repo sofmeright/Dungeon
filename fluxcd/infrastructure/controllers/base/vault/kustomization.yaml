@@ -7,3 +7,6 @@ resources:
   - pvc.yaml
   - statefulset.yaml
   - service.yaml
+  - vault-unseal-sidecar.yaml
+patchesStrategicMerge:
+  - statefulset-patch.yaml

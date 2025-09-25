@@ -3,5 +3,4 @@ kind: Kustomization
 namespace: vault
 resources:
   - vault-unseal-keys-fixed.enc.yaml  # SOPS-encrypted unseal keys (fixed)
-  - vault-cr.yaml                      # Bank-Vaults Vault Custom Resource
   # - clustersecretstore.yaml     # Uncomment after External Secrets is ready
