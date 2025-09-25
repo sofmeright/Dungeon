@@ -46,6 +46,15 @@ spec:
             secretKeyRef:
               name: zitadel-secrets
               key: SMTP_PASSWORD
+        # Kubernetes integration
+        - name: KUBERNETES_SERVICE_HOST
+          value: "kubernetes.default.svc"
+        - name: KUBERNETES_SERVICE_PORT
+          value: "443"
+        - name: POD_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
         command:
         - zitadel
         - start

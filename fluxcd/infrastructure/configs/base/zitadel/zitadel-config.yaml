@@ -49,3 +49,16 @@ data:
       ZitadelDocs:
         Enabled: true
         ExternalDomain: docs.zitadel.com
+
+    # Kubernetes Integration
+    Machine:
+      Identification:
+        Hostname:
+          Enabled: true
+        Webhook:
+          Enabled: false
+
+    # Enable Actions for K8s webhook integration
+    Actions:
+      HTTP:
+        DenyList: []  # Allow all for internal K8s calls

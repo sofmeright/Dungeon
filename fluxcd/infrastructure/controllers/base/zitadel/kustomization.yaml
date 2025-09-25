@@ -7,6 +7,8 @@ resources:
   - postgres-statefulset.yaml
   - postgres-service.yaml
   - zitadel-serviceaccount.yaml
+  - zitadel-rbac.yaml
+  - zitadel-clusterrole.yaml
   - zitadel-deployment.yaml
   - zitadel-service.yaml
   - zitadel-initjob.yaml

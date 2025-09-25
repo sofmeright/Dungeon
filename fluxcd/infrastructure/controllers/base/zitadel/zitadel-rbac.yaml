@@ -1,0 +1,32 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: zitadel
+  namespace: zitadel
+rules:
+  # For storing generated secrets (machine keys, PATs)
+  - apiGroups: [""]
+    resources: ["secrets"]
+    verbs: ["get", "create", "update", "patch"]
+  # For pod information/discovery
+  - apiGroups: [""]
+    resources: ["pods"]
+    verbs: ["get", "list"]
+  # For service account token creation (K8s auth)
+  - apiGroups: [""]
+    resources: ["serviceaccounts/token"]
+    verbs: ["create"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: zitadel
+  namespace: zitadel
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: zitadel
+subjects:
+  - kind: ServiceAccount
+    name: zitadel
+    namespace: zitadel
