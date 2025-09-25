@@ -65,6 +65,8 @@ spec:
         - --config
         - /config/zitadel-config.yaml
         - --masterkeyFromEnv
+        - --tlsMode
+        - external
         volumeMounts:
         - name: zitadel-config
           mountPath: /config
