@@ -4,10 +4,15 @@ metadata:
   name: zitadel-init
   namespace: zitadel
 spec:
+  backoffLimit: 5
   template:
     spec:
       restartPolicy: OnFailure
       serviceAccountName: zitadel
+      initContainers:
+      - name: wait-for-postgres
+        image: docker.io/postgres:16-alpine
+        command: ['sh', '-c', 'until pg_isready -h zitadel-postgres.zitadel.svc.cluster.local -p 5432 -U postgres; do echo waiting for postgres; sleep 2; done']
       containers:
       - name: zitadel-init
         image: ghcr.io/zitadel/zitadel:v4.2.2
@@ -30,9 +35,9 @@ spec:
         command:
         - /app/zitadel
         - init
-        - database
         - --config
         - /config/zitadel-config.yaml
+        - --masterkeyFromEnv
         volumeMounts:
         - name: zitadel-config
           mountPath: /config

@@ -21,8 +21,6 @@ spec:
         - containerPort: 5432
           name: postgres
         env:
-        - name: POSTGRES_DB
-          value: zitadel
         - name: POSTGRES_USER
           value: postgres
         - name: POSTGRES_PASSWORD
