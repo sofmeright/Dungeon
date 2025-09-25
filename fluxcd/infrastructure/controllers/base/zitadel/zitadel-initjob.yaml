@@ -37,7 +37,6 @@ spec:
         - init
         - --config
         - /config/zitadel-config.yaml
-        - --masterkeyFromEnv
         volumeMounts:
         - name: zitadel-config
           mountPath: /config
