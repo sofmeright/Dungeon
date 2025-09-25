@@ -43,13 +43,69 @@ echo "deb [signed-by=/etc/apt/keyrings/cri-o-apt-keyring.gpg] https://download.o
 sudo apt-get update -y
 sudo apt-get install -y cri-o
 
-# Configure CRI-O for the correct CNI
+# Install required CRI-O dependencies
+# DO NOT install crun - CRI-O comes with its own bundled compatible version
+sudo apt-get install -y conmon containernetworking-plugins
+
+# Create containers policy.json (required for pulling images)
+sudo mkdir -p /etc/containers
+cat <<EOF | sudo tee /etc/containers/policy.json
+{
+    "default": [
+        {
+            "type": "insecureAcceptAnything"
+        }
+    ],
+    "transports": {
+        "docker": {
+            "registry.k8s.io": [
+                {
+                    "type": "insecureAcceptAnything"
+                }
+            ],
+            "docker.io": [
+                {
+                    "type": "insecureAcceptAnything"
+                }
+            ]
+        }
+    }
+}
+EOF
+
+# Create temporary CNI configuration for CRI-O to start
+# This will be replaced by Cilium when the control plane is initialized
+sudo mkdir -p /etc/cni/net.d
+cat <<EOF | sudo tee /etc/cni/net.d/10-crio-bridge.conf
+{
+    "cniVersion": "1.0.0",
+    "name": "crio",
+    "type": "bridge",
+    "bridge": "cni0",
+    "isGateway": true,
+    "ipMasq": true,
+    "hairpinMode": true,
+    "ipam": {
+        "type": "host-local",
+        "routes": [
+            { "dst": "0.0.0.0/0" }
+        ],
+        "ranges": [
+            [{ "subnet": "192.168.144.0/20" }]
+        ]
+    }
+}
+EOF
+
+# Configure CRI-O to use its bundled crun runtime
 sudo mkdir -p /etc/crio/crio.conf.d/
-cat <<EOF | sudo tee /etc/crio/crio.conf.d/10-crun.conf
+cat <<EOF | sudo tee /etc/crio/crio.conf.d/10-runtime.conf
 [crio.runtime]
 default_runtime = "crun"
+
 [crio.runtime.runtimes.crun]
-runtime_path = "/usr/bin/crun"
+runtime_path = "/usr/libexec/crio/crun"
+runtime_type = "oci"
 EOF
 
 sudo systemctl daemon-reload

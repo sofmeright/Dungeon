@@ -1,0 +1,1 @@
+- Cluster initialization is handled by bash\_importing_from_sibling_repo\bootstrap-k8s-install-dependencies.sh bootstrap-k8s-initialize-control-plane.sh and a reset script. No other manipulation should be needed for initial cluster setup.

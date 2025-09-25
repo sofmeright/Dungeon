@@ -15,6 +15,17 @@ echo "Cilium Version: $CILIUM_VERSION"
 # Configure kubeadm to use CRI-O instead of containerd
 export CONTAINER_RUNTIME_ENDPOINT="unix:///var/run/crio/crio.sock"
 
+# Setup VIP for HA control plane (before kubeadm init)
+echo "Setting up VIP: $MASTER_PUBLIC_IP"
+INTERFACE=$(ip route | grep default | awk '{print $5}')
+
+# Manually assign the VIP for bootstrap
+# This ensures the VIP is available immediately during kubeadm init
+# FluxCD will deploy kube-vip DaemonSet later for proper HA management
+sudo ip addr add $MASTER_PUBLIC_IP/32 dev $INTERFACE || true
+echo "VIP $MASTER_PUBLIC_IP temporarily assigned to $INTERFACE for bootstrap"
+echo "Note: FluxCD will deploy kube-vip DaemonSet for proper HA VIP management"
+
 # Pull required images using CRI-O
 sudo kubeadm config images pull --kubernetes-version="$KUBERNETES_VERSION" --cri-socket="unix:///var/run/crio/crio.sock"
 
@@ -30,9 +41,22 @@ sudo kubeadm init \
   --ignore-preflight-errors=Swap \
   --upload-certs
 
-mkdir -p "$HOME"/.kube
-sudo cp -i /etc/kubernetes/admin.conf "$HOME"/.kube/config
-sudo chown "$(id -u)":"$(id -g)" "$HOME"/.kube/config
+# Configure kubectl for both root and the actual user
+# Always configure for root since we're running with sudo
+mkdir -p /root/.kube
+sudo cp -f /etc/kubernetes/admin.conf /root/.kube/config
+
+# Also configure for the actual user if running with sudo
+if [ "$SUDO_USER" ]; then
+    USER_HOME=$(eval echo ~$SUDO_USER)
+    mkdir -p "$USER_HOME/.kube"
+    sudo cp -f /etc/kubernetes/admin.conf "$USER_HOME/.kube/config"
+    sudo chown "$SUDO_USER:$SUDO_USER" "$USER_HOME/.kube/config"
+    echo "kubectl configured for user: $SUDO_USER"
+fi
+
+# Export KUBECONFIG for this script session (running as root)
+export KUBECONFIG=/root/.kube/config
 
 # Add Cilium Helm repo first
 helm repo add cilium https://helm.cilium.io/
@@ -56,7 +80,16 @@ helm install cilium cilium/cilium --version "$CILIUM_VERSION" \
 
 # Wait for Cilium to be ready
 echo "Waiting for Cilium to be ready..."
-kubectl wait --for=condition=ready --timeout=300s -n kube-system pod -l k8s-app=cilium
+# First wait for Cilium pods to be created
+until kubectl get pods -n kube-system -l k8s-app=cilium 2>/dev/null | grep -q cilium; do
+  echo "Waiting for Cilium pods to be created..."
+  sleep 5
+done
+# Now wait for them to be ready
+kubectl wait --for=condition=ready --timeout=300s -n kube-system pod -l k8s-app=cilium || true
+
+# Also wait for Cilium operator
+kubectl wait --for=condition=ready --timeout=300s -n kube-system pod -l name=cilium-operator || true
 
 # Wait for nodes to be ready
 kubectl wait --for=condition=Ready node --all --timeout=300s
