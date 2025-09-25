@@ -11,7 +11,7 @@ spec:
   # Use Kubernetes secrets for unseal keys (SOPS encrypted in source)
   unsealConfig:
     kubernetes:
-      secretNamespace: vault
+      secretNamespace: prplanit-atlas
       secretName: vault-unseal-keys
 
   # Volume configuration for persistent storage
