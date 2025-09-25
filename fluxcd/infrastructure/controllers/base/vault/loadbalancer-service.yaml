@@ -4,7 +4,7 @@ metadata:
   name: vault-lb
   namespace: vault
   annotations:
-    io.cilium/lb-ipam-ips: "172.22.144.130"
+    io.cilium/lb-ipam-ips: "172.22.30.130"
 spec:
   type: LoadBalancer
   selector:
