@@ -6,4 +6,4 @@ resources:
   # - metallb  # Disabled - replaced by Cilium LoadBalancer IPAM
   - weave-gitops
   - ceph-csi
-  - vault
+  # - vault  # Temporarily disabled - SOPS decryption issue
