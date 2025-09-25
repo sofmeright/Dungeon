@@ -33,7 +33,7 @@ spec:
   type: LoadBalancer
   loadBalancerIP: 172.22.30.122
   ports:
-  - port: 80
+  - port: 8080
     targetPort: 80
     protocol: TCP
     name: web
