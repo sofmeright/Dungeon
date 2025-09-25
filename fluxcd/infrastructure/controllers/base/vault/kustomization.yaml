@@ -6,4 +6,3 @@ resources:
   - rbac.yaml
   - pvc.yaml
   - vault-cr.yaml
-  - loadbalancer-service.yaml
