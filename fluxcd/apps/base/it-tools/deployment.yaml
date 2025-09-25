@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: it-tools
-        image: corentinth/it-tools:latest
+        image: docker.io/corentinth/it-tools:latest
         ports:
         - containerPort: 80
           name: http
