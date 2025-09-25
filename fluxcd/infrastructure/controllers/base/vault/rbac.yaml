@@ -2,13 +2,13 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: vault
-  namespace: vault
+  namespace: prplanit-atlas
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
   name: vault-secrets-reader
-  namespace: vault
+  namespace: prplanit-atlas
 rules:
 - apiGroups: [""]
   resources: ["secrets"]
@@ -19,7 +19,7 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
   name: vault-secrets-reader
-  namespace: vault
+  namespace: prplanit-atlas
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
@@ -27,7 +27,7 @@ roleRef:
 subjects:
 - kind: ServiceAccount
   name: default
-  namespace: vault
+  namespace: prplanit-atlas
 - kind: ServiceAccount
   name: vault
-  namespace: vault
+  namespace: prplanit-atlas

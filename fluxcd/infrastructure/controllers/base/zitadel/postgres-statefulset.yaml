@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: zitadel-postgres
-  namespace: zitadel
+  namespace: prplanit-atlas
 spec:
   serviceName: zitadel-postgres
   replicas: 1

@@ -24,4 +24,4 @@ roleRef:
 subjects:
   - kind: ServiceAccount
     name: zitadel
-    namespace: zitadel
+    namespace: prplanit-atlas

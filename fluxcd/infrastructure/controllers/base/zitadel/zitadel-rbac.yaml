@@ -2,7 +2,7 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
   name: zitadel
-  namespace: zitadel
+  namespace: prplanit-atlas
 rules:
   # For storing generated secrets (machine keys, PATs)
   - apiGroups: [""]
@@ -21,7 +21,7 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
   name: zitadel
-  namespace: zitadel
+  namespace: prplanit-atlas
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: Role
@@ -29,4 +29,4 @@ roleRef:
 subjects:
   - kind: ServiceAccount
     name: zitadel
-    namespace: zitadel
+    namespace: prplanit-atlas

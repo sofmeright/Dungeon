@@ -2,7 +2,7 @@ apiVersion: v1
 kind: Secret
 metadata:
     name: zitadel-masterkey
-    namespace: zitadel
+    namespace: prplanit-atlas
 type: Opaque
 stringData:
     #ENC[AES256_GCM,data:mHinPeNPJKWREgay0/19TLGjYjmdYMVeFJ8g3+zw,iv:DUQ8gziE4qV33bbFkIIyZlUr2L20PxbMLmmUa5khmQ8=,tag:R1nnlhejnZU+a/mLaBIytw==,type:comment]

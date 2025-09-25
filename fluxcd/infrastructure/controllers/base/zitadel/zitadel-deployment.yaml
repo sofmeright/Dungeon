@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: zitadel
-  namespace: zitadel
+  namespace: prplanit-atlas
 spec:
   replicas: 1
   selector:

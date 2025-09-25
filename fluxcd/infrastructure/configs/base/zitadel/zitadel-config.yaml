@@ -2,7 +2,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: zitadel-config
-  namespace: zitadel
+  namespace: prplanit-atlas
 data:
   zitadel-config.yaml: |
     Log:
@@ -15,7 +15,7 @@ data:
 
     Database:
       Postgres:
-        Host: zitadel-postgres.zitadel.svc.cluster.local
+        Host: zitadel-postgres.prplanit-atlas.svc.cluster.local
         Port: 5432
         Database: zitadel
         User:

@@ -2,7 +2,7 @@ apiVersion: v1
 kind: Secret
 metadata:
     name: vault-unseal-keys
-    namespace: vault
+    namespace: prplanit-atlas
 type: Opaque
 stringData:
     vault-unseal-0: ENC[AES256_GCM,data:fxs4hSbmGlYaARdqXzZ+ToS3+jqiVe+SFTncA9T6bEZaPCOhGNXQ5pSBktE=,iv:u/uQSJEfoAUEBtXAUGd1FBeg2MNw3gEpAJyPFdBZ54k=,tag:T42Udqm1KSoPWrkVrVb9Aw==,type:str]
