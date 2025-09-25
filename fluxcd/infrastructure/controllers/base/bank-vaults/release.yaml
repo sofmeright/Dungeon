@@ -25,4 +25,4 @@ spec:
       enabled: true
       image:
         repository: ghcr.io/bank-vaults/vault-secrets-webhook
-        tag: v1.23.0
+        tag: v1.22.1

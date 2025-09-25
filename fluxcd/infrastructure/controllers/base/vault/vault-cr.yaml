@@ -51,10 +51,6 @@ spec:
   serviceType: LoadBalancer
   serviceRegistrationEnabled: true
 
-  # LoadBalancer configuration
-  serviceAnnotations:
-    io.cilium/lb-ipam-ips: "172.22.144.130"
-
   # Use the vault service account
   serviceAccount: vault
 
