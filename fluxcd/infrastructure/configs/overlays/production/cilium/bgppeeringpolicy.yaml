@@ -11,12 +11,12 @@ spec:
     peers:
     - name: peer-64521
       peerASN: 64521
-      peerAddress: 172.22.22.21
+      peerAddress: 172.22.144.21
       peerConfigRef:
         name: peer-config
     - name: peer-64523
       peerASN: 64523
-      peerAddress: 172.22.22.23
+      peerAddress: 172.22.144.23
       peerConfigRef:
         name: peer-config
 ---
