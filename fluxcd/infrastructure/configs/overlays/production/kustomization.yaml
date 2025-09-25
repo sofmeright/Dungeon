@@ -7,3 +7,4 @@ resources:
   - weave-gitops
   - ceph-csi
   - vault  # Bank-Vaults with SOPS-encrypted keys
+  - zitadel  # Identity and Access Management
