@@ -12,9 +12,16 @@ sudo swapoff -a
 sudo sed -i '/ swap / s/^/#/' /etc/fstab
 echo "✓ Swap disabled"
 
-# 2. Complete iptables cleanup (runs on all nodes)
+# 2. Delete kube-proxy if it exists
 echo ""
-echo "Step 2: Cleaning ALL kube-proxy iptables rules..."
+echo "Step 2: Removing kube-proxy..."
+kubectl delete ds -n kube-system kube-proxy 2>/dev/null || echo "  kube-proxy DaemonSet not found (already deleted)"
+kubectl delete cm -n kube-system kube-proxy 2>/dev/null || echo "  kube-proxy ConfigMap not found (already deleted)"
+echo "✓ kube-proxy removed"
+
+# 3. Complete iptables cleanup
+echo ""
+echo "Step 3: Cleaning ALL kube-proxy iptables rules..."
 
 # Clean specific chains first
 sudo iptables -t nat -F KUBE-SERVICES 2>/dev/null || true
@@ -22,8 +29,6 @@ sudo iptables -t nat -F KUBE-POSTROUTING 2>/dev/null || true
 sudo iptables -t nat -F KUBE-NODEPORTS 2>/dev/null || true
 sudo iptables -t filter -F KUBE-FORWARD 2>/dev/null || true
 sudo iptables -t filter -F KUBE-SERVICES 2>/dev/null || true
-sudo iptables -t filter -F KUBE-EXTERNAL-SERVICES 2>/dev/null || true
-sudo iptables -t filter -F KUBE-PROXY-FIREWALL 2>/dev/null || true
 
 # Remove all KUBE-* rules from all tables
 for table in nat filter mangle raw; do
@@ -44,12 +49,6 @@ done
 
 echo "✓ iptables rules cleaned"
 
-# 3. Kill any remaining kube-proxy processes
-echo ""
-echo "Step 3: Killing any kube-proxy processes..."
-sudo pkill -f kube-proxy || true
-echo "✓ kube-proxy processes killed"
-
 # 4. Restart kubelet
 echo ""
 echo "Step 4: Restarting kubelet..."
@@ -58,57 +57,54 @@ sleep 5
 sudo systemctl status kubelet --no-pager | head -5
 echo "✓ kubelet restarted"
 
-# 5. Verify cleanup
+# 5. Restart Cilium
 echo ""
-echo "Step 5: Verification..."
+echo "Step 5: Restarting Cilium DaemonSet..."
+kubectl rollout restart -n kube-system ds/cilium
+kubectl rollout status -n kube-system ds/cilium --timeout=120s
+echo "✓ Cilium restarted"
+
+# 6. Restart Cilium operator
+echo ""
+echo "Step 6: Restarting Cilium Operator..."
+kubectl rollout restart -n kube-system deployment/cilium-operator
+sleep 10
+echo "✓ Cilium operator restarted"
+
+# 7. Verify cleanup
+echo ""
+echo "Step 7: Verification..."
 echo -n "  Checking for remaining KUBE iptables rules: "
 remaining=$(sudo iptables-save | grep -c KUBE || echo "0")
 if [ "$remaining" -eq "0" ]; then
     echo "CLEAN ✓"
 else
     echo "WARNING: $remaining KUBE rules still found"
-    echo "  Note: Some KUBE-IPTABLES-HINT and KUBE-KUBELET-CANARY rules may persist (these are OK)"
-fi
-
-# 6. Check if this is a control-plane node
-echo ""
-echo "Step 6: Checking node role..."
-if [ -f /etc/kubernetes/admin.conf ]; then
-    echo "  This is a control-plane node"
-
-    # Set kubeconfig for kubectl commands
-    export KUBECONFIG=/etc/kubernetes/admin.conf
-
-    # Only run kubectl commands on control plane nodes
-    echo ""
-    echo "Step 7: Kubernetes operations (control-plane only)..."
-
-    # Delete kube-proxy if exists (only needs to run once)
-    kubectl delete ds -n kube-system kube-proxy 2>/dev/null || echo "  kube-proxy DaemonSet not found (OK)"
-    kubectl delete cm -n kube-system kube-proxy 2>/dev/null || echo "  kube-proxy ConfigMap not found (OK)"
-
-    # Restart Cilium (only needs to run once from any control plane)
-    echo "  Restarting Cilium DaemonSet..."
-    kubectl rollout restart -n kube-system ds/cilium 2>/dev/null || echo "  Could not restart Cilium (may need to run from different node)"
-
-    # Show status
-    echo ""
-    echo "Cluster status:"
-    kubectl get nodes 2>/dev/null || echo "  Could not get nodes"
-else
-    echo "  This is a worker node (skipping kubectl operations)"
+    echo "  Showing first 5:"
+    sudo iptables-save | grep KUBE | head -5
 fi
 
 echo ""
-echo "==================================="
-echo "Fix completed on node: $(hostname)"
-echo "==================================="
+echo "Step 8: Checking Cilium status..."
+kubectl -n kube-system exec ds/cilium -- cilium status --brief || true
+
 echo ""
-echo "IMPORTANT: This script must be run on ALL nodes!"
-echo "The iptables cleanup and kubelet restart are per-node operations."
+echo "==================================="
+echo "Fix script completed!"
 echo ""
-echo "To check if the fix worked:"
-echo "  1. All nodes should show 'Ready'"
-echo "  2. Pods should stop crashing"
-echo "  3. From a control-plane node: kubectl get pods -A | grep -v Running"
+echo "Now checking cluster health..."
+echo ""
+
+# Show current status
+kubectl get nodes
+echo ""
+echo "Pods in error state:"
+kubectl get pods -A | grep -v Running | grep -v Completed | grep -v NAMESPACE | wc -l
+
+echo ""
+echo "To run this on other nodes:"
+echo "  1. Copy this script to each node"
+echo "  2. Run: bash /tmp/fix-cluster-networking.sh"
+echo ""
+echo "Note: The iptables cleanup and kubelet restart need to run on EACH node"
 echo "==================================="
