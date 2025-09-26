@@ -22,6 +22,10 @@ spec:
         - 172.22.144.0/24   # Node network
         - 192.168.144.0/20  # Pod network
         - 10.144.0.0/12     # Service network
+        # RFC1918 private networks for broader access
+        - 192.168.0.0/16    # RFC1918 private network
+        - 172.16.0.0/12     # RFC1918 private network
+        - 10.0.0.0/8        # RFC1918 private network
       toPorts:
         - ports:
             - port: "80"
