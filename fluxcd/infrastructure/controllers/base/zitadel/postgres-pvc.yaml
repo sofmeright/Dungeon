@@ -6,7 +6,7 @@ metadata:
 spec:
   accessModes:
     - ReadWriteOnce
-  storageClassName: ceph-rbd
+  storageClassName: ceph-rbd-retain  # Use Retain policy to prevent data loss
   resources:
     requests:
       storage: 20Gi
