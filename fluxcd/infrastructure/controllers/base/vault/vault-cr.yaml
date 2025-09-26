@@ -10,6 +10,7 @@ spec:
 
   # Use Kubernetes secrets for unseal keys (SOPS encrypted in source)
   unsealConfig:
+    options: {}  # Empty options object required by CRD
     kubernetes:
       secretNamespace: prplanit-atlas
       secretName: vault-unseal-keys
