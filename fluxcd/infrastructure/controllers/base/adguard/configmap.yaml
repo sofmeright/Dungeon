@@ -52,6 +52,7 @@ data:
       trusted_proxies:
         - 127.0.0.0/8
         - ::1/128
+      cache_enabled: true
       cache_size: 4194304
       cache_ttl_min: 0
       cache_ttl_max: 0
@@ -79,6 +80,8 @@ data:
       use_http3_upstreams: false
       serve_plain_dns: true
       hostsfile_enabled: true
+      pending_requests:
+        enabled: true
     tls:
       enabled: false
       server_name: ""
@@ -97,7 +100,7 @@ data:
     querylog:
       dir_path: ""
       ignored: []
-      interval: 2160h
+      interval: 720h
       size_memory: 1000
       enabled: true
       file_enabled: true
@@ -116,7 +119,15 @@ data:
         name: AdAway Default Blocklist
         id: 2
     whitelist_filters: []
-    user_rules: []
+    user_rules:
+      - '||_VLMCS._tcp.ad.prplanit.com^$dnsrewrite=NOERROR;SRV;0 0 1688 pirates-wdda'
+      - '||_VLMCS._tcp^$dnsrewrite=NOERROR;SRV;0 0 1688 pirates-wdda'
+      - '||_ceph-mon._tcp.prplanit.internal^$dnsrewrite=NOERROR;SRV; 10 60 6789 Avocado'
+      - '||_ceph-mon._tcp.prplanit.internal^$dnsrewrite=NOERROR;SRV; 10 60 6789 Bamboo'
+      - '||_ceph-mon._tcp.prplanit.internal^$dnsrewrite=NOERROR;SRV; 10 60 6789 Cosmos'
+      - '||v10.events.data.microsoft.com^$important'
+      - '||settings-win.data.microsoft.com^$important'
+      - ""
     dhcp:
       enabled: false
       interface_name: ""
@@ -154,7 +165,71 @@ data:
       blocking_mode: default
       parental_block_host: family-block.dns.adguard.com
       safebrowsing_block_host: standard-block.dns.adguard.com
-      rewrites: []
+      rewrites:
+        - domain: avocado.prplanit.internal
+          answer: 172.22.22.3
+        - domain: bamboo.prplanit.internal
+          answer: 172.22.22.4
+        - domain: cosmos.prplanit.internal
+          answer: 172.22.22.5
+        - domain: dragonfruit.prplanit.internal
+          answer: 172.22.22.6
+        - domain: eggplant.prplanit.internal
+          answer: 172.22.22.7
+        - domain: priscilla.prplanit.internal
+          answer: 172.22.181.51
+        - domain: helden.prplanit.internal
+          answer: helden.dana.chus.tech
+        - domain: helden
+          answer: helden.dana.chus.tech
+        - domain: shield_regenerator.prplanit.internal
+          answer: 10.24.7.23
+        - domain: shield_generator.prplanit.internal
+          answer: 10.24.7.21
+        - domain: pcfae.com
+          answer: 10.24.96.9
+        - domain: '*.pcfae.com'
+          answer: 10.24.96.9
+        - domain: mail.ntfy.prplanit.com
+          answer: moor.prplanit.internal
+        - domain: ad.prplanit.com
+          answer: 10.13.37.1
+        - domain: monitoring.prplanit.internal
+          answer: lighthouse.prplanit.internal
+        - domain: monitoring
+          answer: lighthouse.prplanit.internal
+        - domain: ntp.prplanit.internal
+          answer: the-usual-suspect.prplanit.internal
+        - domain: ntp
+          answer: the-usual-suspect.prplanit.internal
+        - domain: dns.prplanit.internal
+          answer: The-Usual-Suspect.prplanit.internal
+        - domain: dns2.prplanit.internal
+          answer: homing-pigeon.prplanit.internal
+        - domain: dns1.prplanit.internal
+          answer: the-usual-suspect.prplanit.internal
+        - domain: shields.prplanit.internal
+          answer: 10.24.7.22
+        - domain: gitlab.prplanit.com
+          answer: 10.40.9.104
+        - domain: sso.prplanit.com
+          answer: 10.40.9.104
+        - domain: ncloud.optcp.com
+          answer: 10.40.9.104
+        - domain: '*.optcp.com'
+          answer: 10.40.9.104
+        - domain: bw.prplanit.com
+          answer: 10.40.9.104
+        - domain: hass.arbitorium.com
+          answer: 10.4.20.69
+        - domain: lwd.optcp.com
+          answer: 10.40.9.104
+        - domain: ntfy.prplanit.com
+          answer: 10.40.9.104
+        - domain: netbird.prplanit.com
+          answer: 10.40.9.104
+        - domain: ipleek.com
+          answer: 10.40.9.104
       safe_fs_patterns:
         - /opt/adguardhome/work/userfilters/*
       safebrowsing_cache_size: 1048576
@@ -188,4 +263,4 @@ data:
       group: ""
       user: ""
       rlimit_nofile: 0
-    schema_version: 29
+    schema_version: 30
