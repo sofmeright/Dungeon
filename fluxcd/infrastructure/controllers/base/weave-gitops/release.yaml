@@ -6,7 +6,7 @@ metadata:
       This is the Weave GitOps Dashboard.  It provides
       a simple way to get insights into your GitOps workloads.
   name: ww-gitops
-  namespace: flux-system
+  namespace: prplanit-atlas
 spec:
   chart:
     spec:
