@@ -4,7 +4,7 @@
 This document outlines the process to recover or bootstrap HashiCorp Vault in the Kubernetes cluster when data is lost or Vault needs to be reinitialized.
 
 ## Background
-On 2025-09-26, Vault data was lost due to a PVC being deleted during cluster networking issues. The PVC was using `Delete` reclaim policy, which destroyed all data when the PVC was removed. This led to a complete reinitialization of Vault.
+Vault data can be lost if the PVC is deleted while using `Delete` reclaim policy. Always use `Retain` policy for stateful services.
 
 ## Prerequisites
 - Access to the Kubernetes cluster
