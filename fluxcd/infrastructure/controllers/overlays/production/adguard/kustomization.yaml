@@ -3,6 +3,10 @@ kind: Kustomization
 namespace: prplanit-dns
 resources:
   - ../../../base/adguard
+  - cilium-network-policy.yaml
+patchesStrategicMerge:
+  - configmap-patch.yaml
+  - deployment-patch.yaml
 patches:
   - path: services-patch.yaml
     target:

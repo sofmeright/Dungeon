@@ -1,2 +1,4 @@
 - Cluster initialization is handled by bash\_importing_from_sibling_repo\bootstrap-k8s-install-dependencies.sh bootstrap-k8s-initialize-control-plane.sh and a reset script. No other manipulation should be needed for initial cluster setup.
 - Pfsense is managing BGP it is available at 172.22.144.21 and 172.22.144.23 carp vip 172.22.144.22 and setup to advertise to 172.22.144.150-154 172.22.144.170-74. THIS IS HOW THIS CLUSTER IS SETUP.
+- Controllers should deploy the actual resources (Deployment, ConfigMap, Services, PVCs) Configs should only provide secrets and configuration values. base should be used for base config, overlays/production should be used for actual  deployment.
+- When working with files in source control, make clean moves that dont create a headache of files!!!!
