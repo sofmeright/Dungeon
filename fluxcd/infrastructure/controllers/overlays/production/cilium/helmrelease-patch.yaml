@@ -7,14 +7,19 @@ spec:
   values:
     # eBPF native datapath configuration
     bpf:
-      masquerade: false  # Don't use BPF masquerade (use iptables for compatibility)
+      masquerade: true  # Enable BPF masquerade for external traffic
       # Enable additional BPF features for better performance
       lbExternalClusterIP: true
 
-    # Use hybrid mode for load balancers (DSR with L2)
+    # Use DSR mode for load balancers (preserves source IPs)
     loadBalancer:
-      mode: hybrid
+      mode: dsr
       acceleration: native
+
+    # NodePort configuration for eBPF
+    nodePort:
+      enabled: true
+      mode: dsr
 
     # Enable auto-direct routes between nodes (eBPF native)
     autoDirectNodeRoutes: true
