@@ -12,3 +12,11 @@ patches:
     target:
       kind: Service
       name: adguard-web
+  - path: pvc-patch.yaml
+    target:
+      kind: PersistentVolumeClaim
+      name: adguard-data
+  - path: pvc-patch.yaml
+    target:
+      kind: PersistentVolumeClaim
+      name: adguard-conf
