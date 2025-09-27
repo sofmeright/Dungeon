@@ -4,4 +4,5 @@ namespace: prplanit-atlas
 resources:
   - vault-unseal-keys.enc.yaml  # SOPS-encrypted unseal keys (reinitialized 2025-09-26)
   - external-secrets-sa.yaml    # ServiceAccount for External Secrets Kubernetes auth
+  - external-secrets-token.yaml # Token secret for ServiceAccount
   - clustersecretstore.yaml     # External Secrets with Kubernetes auth
