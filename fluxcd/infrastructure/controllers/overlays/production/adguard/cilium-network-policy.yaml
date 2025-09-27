@@ -8,9 +8,19 @@ spec:
     matchLabels:
       app: adguard
   ingress:
-    # Allow DNS queries from RFC1918 networks and cluster
+    # Allow DNS queries from all pods in cluster
     - fromEndpoints:
         - {}
+      toPorts:
+        - ports:
+            - port: "53"
+              protocol: UDP
+            - port: "53"
+              protocol: TCP
+    # Allow DNS queries from host network (needed for DSR mode)
+    - fromEntities:
+        - host
+        - remote-node
       toPorts:
         - ports:
             - port: "53"
