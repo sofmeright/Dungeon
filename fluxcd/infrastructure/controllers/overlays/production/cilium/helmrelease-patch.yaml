@@ -11,9 +11,6 @@ spec:
       # Enable additional BPF features for better performance
       lbExternalClusterIP: true
 
-    # Disable tunneling for native routing
-    tunnel: disabled
-
     # Use DSR mode for load balancers (preserves source IPs)
     loadBalancer:
       mode: dsr

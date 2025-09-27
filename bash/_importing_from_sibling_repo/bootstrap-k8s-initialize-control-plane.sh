@@ -77,7 +77,6 @@ helm install cilium cilium/cilium --version "$CILIUM_VERSION" \
   --set bpf.masquerade=false \
   --set bgpControlPlane.enabled=true \
   --set loadBalancer.mode=dsr \
-  --set tunnel=disabled \
   --set routingMode=native \
   --set autoDirectNodeRoutes=true \
   --set enableIPv4Masquerade=false \
