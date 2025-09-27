@@ -1,6 +1,3 @@
 - op: replace
   path: /metadata/annotations/lbipam.cilium.io~1sharing-key
   value: "prplanit-dns"
-- op: add
-  path: /metadata/annotations/service.cilium.io~1loadbalancer-mode
-  value: "dsr"
