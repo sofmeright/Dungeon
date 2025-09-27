@@ -10,4 +10,4 @@ resources:
   - bank-vaults
   - external-secrets
   - zitadel
-  - ../../base/adguard  # DNS server with network policy for proper routing
+  - adguard  # DNS server with network policy for proper routing
