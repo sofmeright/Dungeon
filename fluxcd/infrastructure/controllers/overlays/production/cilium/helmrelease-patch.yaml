@@ -5,9 +5,9 @@ metadata:
   namespace: flux-system
 spec:
   values:
-    # Enable BPF masquerade for internet traffic only
+    # eBPF native datapath configuration
     bpf:
-      masquerade: true  # Enable masquerade for non-cluster traffic
+      masquerade: false  # Don't use BPF masquerade (use iptables for compatibility)
       # Enable additional BPF features for better performance
       lbExternalClusterIP: true
 
@@ -16,21 +16,21 @@ spec:
       mode: dsr
       acceleration: native
 
-    # Enable auto-direct routes between nodes
+    # Enable auto-direct routes between nodes (eBPF native)
     autoDirectNodeRoutes: true
 
-    # Enable IPv4 masquerading for external traffic
+    # Enable masquerading ONLY for traffic going outside the cluster
     enableIPv4Masquerade: true
 
-    # Configure masquerading to exclude cluster and local traffic
-    ipv4NativeRoutingCIDR: "192.168.144.0/20"  # Pod CIDR - no masquerade
-    ipMasqAgent:
-      enabled: true
-      config:
-        nonMasqueradeCIDRs:
-          - 192.168.144.0/20  # Pod CIDR
-          - 10.144.0.0/12     # Service CIDR
-          - 172.22.0.0/16     # Node network
+    # Native routing (no masquerade) for pod network - this is the key!
+    # Traffic within this CIDR uses eBPF native routing without any NAT
+    ipv4NativeRoutingCIDR: "192.168.144.0/20"
+
+    # Also configure routing mode explicitly
+    routingMode: native
+
+    # Disable tunnel (we're using native routing)
+    tunnelProtocol: ""
 
     # Additional performance optimizations
     bpfClockProbe: true
