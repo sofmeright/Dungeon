@@ -7,6 +7,9 @@
 - op: add
   path: /metadata/annotations/lbipam.cilium.io~1sharing-cross-namespace
   value: "*"
+- op: add
+  path: /metadata/annotations/service.cilium.io~1loadbalancer-mode
+  value: "dsr"
 - op: replace
   path: /spec/loadBalancerIP
   value: "172.22.30.102"
