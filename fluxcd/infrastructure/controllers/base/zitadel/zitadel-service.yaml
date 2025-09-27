@@ -3,11 +3,8 @@ kind: Service
 metadata:
   name: zitadel
   namespace: prplanit-atlas
-  annotations:
-    io.cilium/lb-ipam-ips: "172.22.30.102"  # Shared with Vault
-    io.cilium/lb-ipam-sharing-key: "prplanit-system"  # Enable IP sharing
 spec:
-  type: LoadBalancer
+  type: ClusterIP
   selector:
     app: zitadel
   ports:
