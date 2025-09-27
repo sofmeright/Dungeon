@@ -1,0 +1,12 @@
+apiVersion: cilium.io/v2alpha1
+kind: CiliumL2AnnouncementPolicy
+metadata:
+  name: loadbalancer-l2
+  namespace: kube-system
+spec:
+  interfaces:
+  - ^enp6s18$  # Match the main interface on all nodes
+  externalIPs: true
+  loadBalancerIPs: true
+  nodeSelector:
+    matchLabels: {}  # Apply to all nodes
