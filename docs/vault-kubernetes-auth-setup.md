@@ -164,6 +164,46 @@ vault write auth/kubernetes/login role=external-secrets jwt="${SA_TOKEN}"
 - **Vault configuration**: CA cert and issuer must be properly configured
 - **Network connectivity**: Ensure External Secrets can reach the Vault service
 
+### External Secrets Configuration Issues
+
+- **Incorrect ClusterSecretStore path**: The `path` field in ClusterSecretStore must match the Vault mount name
+  - Correct: `path: "operationtimecapsule"`
+  - Wrong: `path: "secret"`
+- **Wrong External Secret key paths**: Key paths should NOT include the mount prefix
+  - Correct: `key: smb/general-media-r`
+  - Wrong: `key: operationtimecapsule/smb/general-media-r`
+- **Vault policy permissions**: Ensure the policy includes both `data/*` and `metadata/*` paths:
+  ```bash
+  path "operationtimecapsule/data/*" {
+    capabilities = ["read", "list"]
+  }
+  path "operationtimecapsule/metadata/*" {
+    capabilities = ["read", "list"]
+  }
+  ```
+
+### Pod and Container Issues
+
+- **ImagePullBackOff with short names**: Container images must use fully qualified registry paths
+  - Correct: `docker.io/plexinc/pms-docker:latest`
+  - Wrong: `plexinc/pms-docker:latest`
+- **Expired Plex claim tokens**: Plex claim tokens expire in ~4 minutes. To refresh:
+  1. Update token in Vault
+  2. Delete External Secret: `kubectl delete externalsecret plex-claim -n namespace`
+  3. Delete existing secret: `kubectl delete secret plex-claim -n namespace`
+  4. Reconcile: `flux reconcile kustomization apps`
+  5. Restart pod: `kubectl delete pod plex-0 -n namespace`
+
+### Storage and PVC Issues
+
+- **Namespace migration for Ceph storage**: When moving from one namespace to another, existing PVs may reference old namespace secrets
+  - Solution: Delete PVCs to force recreation with correct namespace references
+  - Check PV details: `kubectl get pv pv-name -o yaml | grep nodeStageSecretRef -A5`
+- **SMB mount permission denied**: Usually indicates incorrect credentials or credential order
+  - Verify credentials: `kubectl get secret smb-secret -o yaml`
+  - Check if username/password are swapped in Vault
+  - Restart pods after credential fixes
+
 ## Verification
 
 Check that the ClusterSecretStore is ready:
@@ -198,3 +238,46 @@ When everything is working correctly, you should see:
 2. `kubectl get clustersecretstore vault-backend` shows `Ready: True`
 3. `kubectl get externalsecrets -A` shows all External Secrets as `SecretSynced: True`
 4. Applications can successfully mount and use the secrets
+
+## Quick Reference Commands
+
+### Force External Secret Refresh
+```bash
+# Delete and recreate External Secret
+kubectl delete externalsecret secret-name -n namespace
+kubectl delete secret secret-name -n namespace  # if it exists
+flux reconcile kustomization apps
+```
+
+### Check External Secrets Status
+```bash
+# Check all External Secrets
+kubectl get externalsecrets -A
+
+# Check specific External Secret details
+kubectl describe externalsecret secret-name -n namespace
+
+# Check ClusterSecretStore status
+kubectl get clustersecretstore vault-backend
+```
+
+### Vault Authentication Testing
+```bash
+# Get ServiceAccount token
+SA_TOKEN=$(kubectl get secret external-secrets-vault-token -n prplanit-atlas -o jsonpath='{.data.token}' | base64 -d)
+
+# Test Kubernetes auth
+kubectl exec -n prplanit-atlas vault-0 -- sh -c \
+  "VAULT_TOKEN=\$(VAULT_TOKEN=root-token vault write -address=http://127.0.0.1:8200 -field=token auth/kubernetes/login role=external-secrets jwt=\"$SA_TOKEN\") && \
+   vault kv get -address=http://127.0.0.1:8200 operationtimecapsule/path/to/secret"
+```
+
+### Force PVC Recreation
+```bash
+# Delete PVC (will also delete associated PV if using Delete reclaim policy)
+kubectl delete pvc pvc-name -n namespace
+
+# Check PV details for namespace references
+kubectl get pv | grep pvc-name
+kubectl get pv pv-name -o yaml | grep -A5 nodeStageSecretRef
+```
