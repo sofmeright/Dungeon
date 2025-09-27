@@ -132,11 +132,15 @@ spec:
 
 If you get "permission denied" errors:
 
-1. Verify the ServiceAccount exists and has the token secret
-2. Check that the ClusterRole binding exists
-3. Ensure the Vault role name matches exactly
-4. Verify the bound ServiceAccount names and namespaces in the Vault role
-5. Check that the Kubernetes auth method is properly configured with CA cert and issuer
+1. **Check token_reviewer_jwt_set**: Run `vault read auth/kubernetes/config` and verify `token_reviewer_jwt_set` is `true`
+   - If false, this is the most common cause of 403 errors
+   - Follow the configuration step above to set the `token_reviewer_jwt`
+2. Verify the ServiceAccount exists and has the token secret
+3. Check that the ClusterRole binding exists for `system:auth-delegator`
+4. Ensure the Vault role name matches exactly
+5. Verify the bound ServiceAccount names and namespaces in the Vault role
+6. Check that the Kubernetes auth method is properly configured with CA cert and issuer
+7. Verify External Secrets ClusterRole has `serviceaccounts/token` create permission
 
 ### Testing Authentication
 
@@ -152,8 +156,11 @@ vault write auth/kubernetes/login role=external-secrets jwt="${SA_TOKEN}"
 
 ### Common Issues
 
+- **Missing token_reviewer_jwt**: The #1 cause of 403 errors - Vault needs a ServiceAccount token to validate other tokens
 - **Wrong ServiceAccount**: Ensure the serviceAccountRef in the ClusterSecretStore matches the actual ServiceAccount
 - **Missing ClusterRole binding**: The `system:auth-delegator` ClusterRole is required
+- **Corrupted ServiceAccount token**: Delete and recreate the ServiceAccount token secret if it appears empty
+- **Wrong secret paths**: For KV v2, use paths like `operationtimecapsule/smb/secret` not `operationtimecapsule/data/smb/secret`
 - **Vault configuration**: CA cert and issuer must be properly configured
 - **Network connectivity**: Ensure External Secrets can reach the Vault service
 
@@ -166,3 +173,28 @@ kubectl get clustersecretstore vault-backend
 ```
 
 The status should show "Ready: True" when properly configured.
+
+Verify that ExternalSecrets are working:
+
+```bash
+kubectl get externalsecrets -n operationtimecapsule
+```
+
+Both should show "STATUS: SecretSynced" and "READY: True".
+
+Check that secrets were created:
+
+```bash
+kubectl get secrets -n operationtimecapsule
+```
+
+You should see `plex-claim` and `plex-smb-secret` secrets with proper data.
+
+## Success Criteria
+
+When everything is working correctly, you should see:
+
+1. `vault read auth/kubernetes/config` shows `token_reviewer_jwt_set: true`
+2. `kubectl get clustersecretstore vault-backend` shows `Ready: True`
+3. `kubectl get externalsecrets -A` shows all External Secrets as `SecretSynced: True`
+4. Applications can successfully mount and use the secrets
