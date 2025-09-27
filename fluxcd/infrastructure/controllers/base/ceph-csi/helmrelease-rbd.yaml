@@ -4,7 +4,7 @@ metadata:
   name: ceph-csi-rbd
   namespace: flux-system
 spec:
-  targetNamespace: prplanit-system
+  targetNamespace: prplanit-atlas
   install:
     createNamespace: true
   interval: 30m

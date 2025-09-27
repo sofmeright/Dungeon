@@ -4,7 +4,7 @@ metadata:
   name: external-secrets
   namespace: flux-system
 spec:
-  targetNamespace: prplanit-system
+  targetNamespace: prplanit-atlas
   install:
     createNamespace: false
   interval: 30m
