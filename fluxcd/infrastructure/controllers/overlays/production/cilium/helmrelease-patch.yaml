@@ -11,9 +11,9 @@ spec:
       # Enable additional BPF features for better performance
       lbExternalClusterIP: true
 
-    # Use DSR mode for load balancers (preserves source IPs)
+    # Use hybrid mode for load balancers (DSR with L2)
     loadBalancer:
-      mode: dsr
+      mode: hybrid
       acceleration: native
 
     # Enable auto-direct routes between nodes (eBPF native)
