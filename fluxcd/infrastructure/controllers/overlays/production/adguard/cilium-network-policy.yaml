@@ -1,33 +1,114 @@
 apiVersion: cilium.io/v2
 kind: CiliumNetworkPolicy
 metadata:
-  name: adguard-dns-egress
+  name: adguard-dns-policy
   namespace: prplanit-dns
 spec:
   endpointSelector:
     matchLabels:
       app: adguard
-  egress:
-  # Allow ALL egress traffic - completely unrestricted
-  - toEntities:
-    - all
-  - toCIDR:
-    - 0.0.0.0/0
-  - toCIDRSet:
-    - cidr: 0.0.0.0/0
-  # Also explicitly allow the local network
-  - toCIDR:
-    - 172.22.144.0/24
-  - toCIDR:
-    - 172.22.0.0/16
-  # Allow all cluster-internal traffic
-  - toEntities:
-    - cluster
-    - host
-    - remote-node
   ingress:
-  # Allow all ingress traffic
-  - fromEntities:
-    - all
-  - fromCIDR:
-    - 0.0.0.0/0
+    # Allow DNS queries from anywhere in the cluster
+    - fromEndpoints:
+        - {}
+      toPorts:
+        - ports:
+            - port: "53"
+              protocol: UDP
+            - port: "53"
+              protocol: TCP
+    # Allow web UI access from internal networks
+    - fromCIDR:
+        - 172.22.144.0/24   # Node network
+        - 192.168.144.0/20  # Pod network
+        - 10.144.0.0/12     # Service network
+        # RFC1918 private networks for broader access
+        - 192.168.0.0/16    # RFC1918 private network
+        - 172.16.0.0/12     # RFC1918 private network
+        - 10.0.0.0/8        # RFC1918 private network
+      toPorts:
+        - ports:
+            - port: "80"
+              protocol: TCP
+            - port: "8080"
+              protocol: TCP
+  egress:
+    # Allow DNS queries to internal routers for reverse lookups
+    - toCIDR:
+        - 172.22.144.20/30  # Internal routers (.20, .21, .22, .23)
+      toPorts:
+        - ports:
+            - port: "53"
+              protocol: UDP
+            - port: "53"
+              protocol: TCP
+    # Allow Cloudflare DNS
+    - toFQDNs:
+        - matchName: "cloudflare-dns.com"
+      toPorts:
+        - ports:
+            - port: "443"
+              protocol: TCP
+    - toCIDR:
+        - 1.1.1.1/32
+        - 1.0.0.1/32
+        - 2606:4700:4700::1111/128
+        - 2606:4700:4700::1001/128
+      toPorts:
+        - ports:
+            - port: "53"
+              protocol: UDP
+            - port: "53"
+              protocol: TCP
+            - port: "853"
+              protocol: TCP
+    # Allow Google DNS
+    - toFQDNs:
+        - matchName: "dns.google"
+      toPorts:
+        - ports:
+            - port: "443"
+              protocol: TCP
+    - toCIDR:
+        - 8.8.8.8/32
+        - 8.8.4.4/32
+        - 2001:4860:4860::8888/128
+        - 2001:4860:4860::8844/128
+      toPorts:
+        - ports:
+            - port: "53"
+              protocol: UDP
+            - port: "53"
+              protocol: TCP
+            - port: "853"
+              protocol: TCP
+    # Allow Quad9 bootstrap DNS
+    - toCIDR:
+        - 9.9.9.10/32
+        - 149.112.112.10/32
+        - 2620:fe::10/128
+        - 2620:fe::fe:10/128
+      toPorts:
+        - ports:
+            - port: "53"
+              protocol: UDP
+            - port: "53"
+              protocol: TCP
+    # Allow fetching AdGuard blocklists from GitHub
+    - toFQDNs:
+        - matchName: "adguardteam.github.io"
+        - matchName: "raw.githubusercontent.com"
+        - matchName: "github.com"
+      toPorts:
+        - ports:
+            - port: "443"
+              protocol: TCP
+    # Allow internal cluster communication
+    - toEndpoints:
+        - {}
+      toPorts:
+        - ports:
+            - port: "443"
+              protocol: TCP  # For Kubernetes API
+            - port: "6443"
+              protocol: TCP  # For Kubernetes API
