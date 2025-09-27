@@ -8,7 +8,7 @@ metadata:
     io.cilium/lb-ipam-sharing-key: "prplanit-system"
 spec:
   type: LoadBalancer
-  externalTrafficPolicy: Cluster
+  externalTrafficPolicy: Local
   ports:
   - name: http
     port: 8174

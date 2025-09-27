@@ -8,6 +8,7 @@ metadata:
     io.cilium/lb-ipam-sharing-key: "prplanit-system"  # Enable IP sharing
 spec:
   type: LoadBalancer
+  externalTrafficPolicy: Local
   selector:
     app.kubernetes.io/name: vault
     vault_cr: vault
