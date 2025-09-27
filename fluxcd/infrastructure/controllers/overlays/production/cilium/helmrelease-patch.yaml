@@ -17,6 +17,8 @@ spec:
       acceleration: native
       algorithm: maglev
       serviceTopology: true
+      # DSR dispatch mode - 'opt' uses IP options, 'geneve' uses encapsulation
+      dsrDispatch: opt
 
     # NodePort configuration for eBPF
     nodePort:
