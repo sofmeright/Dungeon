@@ -17,7 +17,7 @@ spec:
       acceleration: native
       algorithm: maglev
       serviceTopology: true
-      # DSR dispatch mode - 'geneve' uses encapsulation (more compatible)
+      # DSR dispatch mode - 'geneve' for better compatibility
       dsrDispatch: geneve
 
     # NodePort configuration for eBPF
