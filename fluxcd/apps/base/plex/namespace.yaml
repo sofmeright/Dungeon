@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: plex
+  name: operationtimecapsule
   labels:
-    app.kubernetes.io/name: plex
+    app.kubernetes.io/name: operationtimecapsule
     app.kubernetes.io/part-of: media-server

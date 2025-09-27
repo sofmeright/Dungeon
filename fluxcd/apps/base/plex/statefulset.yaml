@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: plex
-  namespace: plex
+  namespace: operationtimecapsule
 spec:
   serviceName: plex
   replicas: 1
@@ -87,34 +87,14 @@ spec:
         persistentVolumeClaim:
           claimName: plex-transcode
       - name: media-movies
-        flexVolume:
-          driver: "fstab/cifs"
-          secretRef:
-            name: plex-samba-creds
-          options:
-            networkPath: "//gringotts/media_movies"
-            mountOptions: "vers=2.1,uid=1000,gid=1000,file_mode=0777,dir_mode=0777"
+        persistentVolumeClaim:
+          claimName: plex-media-movies
       - name: media-tv
-        flexVolume:
-          driver: "fstab/cifs"
-          secretRef:
-            name: plex-samba-creds
-          options:
-            networkPath: "//gringotts/media_tv_shows"
-            mountOptions: "vers=2.1,uid=1000,gid=1000,file_mode=0777,dir_mode=0777"
+        persistentVolumeClaim:
+          claimName: plex-media-tv
       - name: media-music
-        flexVolume:
-          driver: "fstab/cifs"
-          secretRef:
-            name: plex-samba-creds
-          options:
-            networkPath: "//gringotts/media_music"
-            mountOptions: "vers=2.1,uid=1000,gid=1000,file_mode=0777,dir_mode=0777"
+        persistentVolumeClaim:
+          claimName: plex-media-music
       - name: media-photos
-        flexVolume:
-          driver: "fstab/cifs"
-          secretRef:
-            name: plex-samba-creds
-          options:
-            networkPath: "//gringotts/media_photos"
-            mountOptions: "vers=2.1,uid=1000,gid=1000,file_mode=0777,dir_mode=0777"
+        persistentVolumeClaim:
+          claimName: plex-media-photos

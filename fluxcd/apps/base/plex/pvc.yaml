@@ -2,7 +2,7 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: plex-config
-  namespace: plex
+  namespace: operationtimecapsule
 spec:
   accessModes:
     - ReadWriteOnce
@@ -15,7 +15,7 @@ apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: plex-transcode
-  namespace: plex
+  namespace: operationtimecapsule
 spec:
   accessModes:
     - ReadWriteOnce
