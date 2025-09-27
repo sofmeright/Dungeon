@@ -1,3 +1,6 @@
 - op: replace
   path: /metadata/annotations/io.cilium~1lb-ipam-sharing-key
   value: "prplanit-dns"
+- op: add
+  path: /spec/externalTrafficPolicy
+  value: "Local"
