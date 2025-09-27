@@ -126,6 +126,16 @@ spec:
         - ports:
             - port: "443"
               protocol: TCP
+    # Allow web UI responses to clients
+    - toEntities:
+        - world
+        - cluster
+      toPorts:
+        - ports:
+            - port: "80"
+              protocol: TCP
+            - port: "8080"
+              protocol: TCP
     # Allow DNS queries within cluster
     - toEndpoints:
         - {}
