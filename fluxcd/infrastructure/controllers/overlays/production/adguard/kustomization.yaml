@@ -7,4 +7,8 @@ patches:
   - path: services-patch.yaml
     target:
       kind: Service
-      name: adguard-(dns|web)
+      name: adguard-dns
+  - path: services-patch.yaml
+    target:
+      kind: Service
+      name: adguard-web
