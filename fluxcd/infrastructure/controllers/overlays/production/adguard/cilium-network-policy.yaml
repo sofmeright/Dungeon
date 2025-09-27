@@ -8,7 +8,7 @@ spec:
     matchLabels:
       app: adguard
   ingress:
-    # Allow DNS queries from anywhere in the cluster
+    # Allow DNS queries from RFC1918 networks and cluster
     - fromEndpoints:
         - {}
       toPorts:
@@ -16,6 +16,18 @@ spec:
             - port: "53"
               protocol: UDP
             - port: "53"
+              protocol: TCP
+    - fromCIDR:
+        - 192.168.0.0/16    # RFC1918 private network
+        - 172.16.0.0/12     # RFC1918 private network
+        - 10.0.0.0/8        # RFC1918 private network
+      toPorts:
+        - ports:
+            - port: "53"
+              protocol: UDP
+            - port: "53"
+              protocol: TCP
+            - port: "853"
               protocol: TCP
     # Allow web UI access from internal networks
     - fromCIDR:
