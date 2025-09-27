@@ -16,6 +16,10 @@ patches:
     target:
       kind: Service
       name: adguard-web
+  - path: service-web-patch.yaml
+    target:
+      kind: Service
+      name: adguard-web
   - path: pvc-patch.yaml
     target:
       kind: PersistentVolumeClaim
