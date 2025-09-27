@@ -31,6 +31,7 @@ metadata:
   name: plex-media-movies
   namespace: operationtimecapsule
 spec:
+  storageClassName: ""
   accessModes:
     - ReadWriteMany
   resources:
@@ -70,6 +71,7 @@ metadata:
   name: plex-media-tv
   namespace: operationtimecapsule
 spec:
+  storageClassName: ""
   accessModes:
     - ReadWriteMany
   resources:
@@ -109,6 +111,7 @@ metadata:
   name: plex-media-music
   namespace: operationtimecapsule
 spec:
+  storageClassName: ""
   accessModes:
     - ReadWriteMany
   resources:
@@ -148,6 +151,7 @@ metadata:
   name: plex-media-photos
   namespace: operationtimecapsule
 spec:
+  storageClassName: ""
   accessModes:
     - ReadWriteMany
   resources:

@@ -3,6 +3,7 @@ kind: Kustomization
 resources:
   - namespace.yaml
   - vault-secret.yaml
+  - smb-secret.yaml
   - pvc.yaml
   - smb-volumes.yaml
   - statefulset.yaml
