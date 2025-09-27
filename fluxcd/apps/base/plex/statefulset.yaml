@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: plex
-        image: plexinc/pms-docker:latest
+        image: docker.io/plexinc/pms-docker:latest
         env:
         - name: ADVERTISE_IP
           value: "http://172.22.30.200:32400/,https://plex.operationtimecapsule.com/"
