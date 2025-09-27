@@ -42,7 +42,7 @@ spec:
     service:
       type: LoadBalancer
       port: 3000
-      loadBalancerIP: "172.22.144.137"
+      loadBalancerIP: "172.22.30.137"
 
     resources:
       requests:
