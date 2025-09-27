@@ -1,0 +1,34 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: cilium
+  namespace: flux-system
+spec:
+  values:
+    # Native eBPF routing without masquerade
+    bpf:
+      masquerade: false
+      # Enable additional BPF features for better performance
+      lbExternalClusterIP: true
+
+    # Disable tunneling for native routing
+    tunnel: disabled
+
+    # Use DSR mode for load balancers (preserves source IPs)
+    loadBalancer:
+      mode: dsr
+      acceleration: native
+
+    # Enable auto-direct routes between nodes
+    autoDirectNodeRoutes: true
+
+    # Disable IPv4 masquerading completely
+    enableIPv4Masquerade: false
+
+    # Additional performance optimizations
+    bpfClockProbe: true
+    bpfLBSockHostnsOnly: false
+
+    # Enable endpoint routes for better performance
+    endpointRoutes:
+      enabled: true

@@ -74,9 +74,14 @@ helm install cilium cilium/cilium --version "$CILIUM_VERSION" \
   --set hubble.ui.enabled=true \
   --set prometheus.enabled=true \
   --set operator.replicas=1 \
-  --set bpf.masquerade=true \
+  --set bpf.masquerade=false \
   --set bgpControlPlane.enabled=true \
-  --set loadBalancer.mode=snat
+  --set loadBalancer.mode=dsr \
+  --set tunnel=disabled \
+  --set routingMode=native \
+  --set autoDirectNodeRoutes=true \
+  --set enableIPv4Masquerade=false \
+  --set bpf.lbExternalClusterIP=true
 
 # Wait for Cilium to be ready
 echo "Waiting for Cilium to be ready..."
