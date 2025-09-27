@@ -39,13 +39,9 @@ spec:
     # Disable tunnel (we're using native routing)
     tunnelProtocol: ""
 
-    # Enable L2 announcements for LoadBalancer IPs
+    # L2 announcements disabled - using BGP instead
     l2announcements:
-      enabled: true
-      # Enable leaseDuration for proper IP handling
-      leaseDuration: 120s
-      leaseRenewDeadline: 60s
-      leaseRetryPeriod: 1s
+      enabled: false
 
     # Additional performance optimizations
     bpfClockProbe: true

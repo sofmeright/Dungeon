@@ -16,6 +16,14 @@ patches:
     target:
       kind: Service
       name: adguard-web
+  - path: service-external-traffic-policy-local.yaml
+    target:
+      kind: Service
+      name: adguard-dns
+  - path: service-external-traffic-policy-local.yaml
+    target:
+      kind: Service
+      name: adguard-web
   - path: pvc-patch.yaml
     target:
       kind: PersistentVolumeClaim
