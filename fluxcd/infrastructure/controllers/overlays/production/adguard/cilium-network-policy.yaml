@@ -126,21 +126,23 @@ spec:
         - ports:
             - port: "443"
               protocol: TCP
-    # Allow internal cluster communication
+    # Allow DNS queries within cluster
     - toEndpoints:
         - {}
       toPorts:
         - ports:
-            - port: "443"
-              protocol: TCP  # For Kubernetes API
-            - port: "6443"
-              protocol: TCP  # For Kubernetes API
-    # Allow general HTTPS for updates and other services
+            - port: "53"
+              protocol: UDP
+            - port: "53"
+              protocol: TCP
+            - port: "853"
+              protocol: TCP  # DNS over TLS
+    # Allow HTTPS to external world for blocklist updates ONLY
     - toEntities:
         - world
       toPorts:
         - ports:
             - port: "443"
-              protocol: TCP
+              protocol: TCP  # HTTPS for blocklist updates
             - port: "80"
-              protocol: TCP
+              protocol: TCP   # HTTP for some blocklist sources
