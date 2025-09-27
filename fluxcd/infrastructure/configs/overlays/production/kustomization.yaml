@@ -8,4 +8,4 @@ resources:
   - ceph-csi
   - vault  # Bank-Vaults with SOPS-encrypted keys
   - zitadel  # Identity and Access Management
-  # - adguard  # DNS filtering and ad blocking - DISABLED: causing cluster issues
+  - adguard  # DNS filtering and ad blocking
