@@ -1,0 +1,120 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: plex
+  namespace: plex
+spec:
+  serviceName: plex
+  replicas: 1
+  selector:
+    matchLabels:
+      app: plex
+  template:
+    metadata:
+      labels:
+        app: plex
+    spec:
+      containers:
+      - name: plex
+        image: plexinc/pms-docker:latest
+        env:
+        - name: ADVERTISE_IP
+          value: "http://172.22.30.200:32400/,https://plex.operationtimecapsule.com/"
+        - name: CHANGE_CONFIG_DIR_OWNERSHIP
+          value: "false"
+        - name: PUID
+          value: "1000"
+        - name: PGID
+          value: "1000"
+        - name: TZ
+          value: "America/Los_Angeles"
+        - name: PLEX_CLAIM
+          valueFrom:
+            secretKeyRef:
+              name: plex-claim
+              key: claim
+              optional: true
+        ports:
+        - containerPort: 32400
+          name: plex
+          protocol: TCP
+        - containerPort: 8324
+          name: roku-companion
+          protocol: TCP
+        - containerPort: 32469
+          name: dlna
+          protocol: TCP
+        - containerPort: 1900
+          name: dlna-udp
+          protocol: UDP
+        - containerPort: 32410
+          name: gdm1
+          protocol: UDP
+        - containerPort: 32412
+          name: gdm2
+          protocol: UDP
+        - containerPort: 32413
+          name: gdm3
+          protocol: UDP
+        - containerPort: 32414
+          name: gdm4
+          protocol: UDP
+        volumeMounts:
+        - name: config
+          mountPath: /config
+        - name: transcode
+          mountPath: /transcode
+        - name: media-movies
+          mountPath: /media/Movies
+        - name: media-tv
+          mountPath: /media/TV_Shows
+        - name: media-music
+          mountPath: /media/Music
+        - name: media-photos
+          mountPath: /media/Photos
+        resources:
+          requests:
+            memory: 2Gi
+            cpu: 1000m
+          limits:
+            memory: 8Gi
+            cpu: 4000m
+      volumes:
+      - name: config
+        persistentVolumeClaim:
+          claimName: plex-config
+      - name: transcode
+        persistentVolumeClaim:
+          claimName: plex-transcode
+      - name: media-movies
+        flexVolume:
+          driver: "fstab/cifs"
+          secretRef:
+            name: plex-samba-creds
+          options:
+            networkPath: "//gringotts/media_movies"
+            mountOptions: "vers=2.1,uid=1000,gid=1000,file_mode=0777,dir_mode=0777"
+      - name: media-tv
+        flexVolume:
+          driver: "fstab/cifs"
+          secretRef:
+            name: plex-samba-creds
+          options:
+            networkPath: "//gringotts/media_tv_shows"
+            mountOptions: "vers=2.1,uid=1000,gid=1000,file_mode=0777,dir_mode=0777"
+      - name: media-music
+        flexVolume:
+          driver: "fstab/cifs"
+          secretRef:
+            name: plex-samba-creds
+          options:
+            networkPath: "//gringotts/media_music"
+            mountOptions: "vers=2.1,uid=1000,gid=1000,file_mode=0777,dir_mode=0777"
+      - name: media-photos
+        flexVolume:
+          driver: "fstab/cifs"
+          secretRef:
+            name: plex-samba-creds
+          options:
+            networkPath: "//gringotts/media_photos"
+            mountOptions: "vers=2.1,uid=1000,gid=1000,file_mode=0777,dir_mode=0777"

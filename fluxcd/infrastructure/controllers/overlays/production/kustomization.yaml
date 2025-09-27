@@ -11,3 +11,4 @@ resources:
   - external-secrets
   - zitadel
   - adguard  # DNS server with network policy for proper routing
+  - ../../base/cifs-csi  # CIFS/SMB CSI driver for network shares

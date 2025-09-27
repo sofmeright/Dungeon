@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: plex
+  labels:
+    app.kubernetes.io/name: plex
+    app.kubernetes.io/part-of: media-server
