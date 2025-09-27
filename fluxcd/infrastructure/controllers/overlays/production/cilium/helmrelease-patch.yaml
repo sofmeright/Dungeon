@@ -38,8 +38,8 @@ spec:
     # Also configure routing mode explicitly
     routingMode: native
 
-    # Disable tunnel (we're using native routing)
-    tunnelProtocol: ""
+    # Enable geneve tunnel protocol (required for geneve DSR dispatch)
+    tunnelProtocol: "geneve"
 
     # L2 announcements disabled - using BGP instead
     l2announcements:
