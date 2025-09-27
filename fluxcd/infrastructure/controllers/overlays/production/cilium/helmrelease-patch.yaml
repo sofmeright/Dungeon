@@ -32,6 +32,10 @@ spec:
     # Disable tunnel (we're using native routing)
     tunnelProtocol: ""
 
+    # Enable L2 announcements for LoadBalancer IPs
+    l2announcements:
+      enabled: true
+
     # Additional performance optimizations
     bpfClockProbe: true
     bpfLBSockHostnsOnly: false
