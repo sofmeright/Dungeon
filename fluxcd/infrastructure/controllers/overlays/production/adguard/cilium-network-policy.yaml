@@ -45,9 +45,20 @@ spec:
             - port: "8080"
               protocol: TCP
   egress:
+    # Allow DNS queries to cluster DNS (CoreDNS/kube-dns)
+    - toEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: kube-system
+      toPorts:
+        - ports:
+            - port: "53"
+              protocol: UDP
+            - port: "53"
+              protocol: TCP
     # Allow DNS queries to internal routers for reverse lookups
     - toCIDR:
-        - 172.22.144.20/30  # Internal routers (.20, .21, .22, .23)
+        - 172.22.144.0/24   # Node network for local DNS
+        - 10.0.0.0/8        # Service network for CoreDNS
       toPorts:
         - ports:
             - port: "53"
@@ -124,3 +135,12 @@ spec:
               protocol: TCP  # For Kubernetes API
             - port: "6443"
               protocol: TCP  # For Kubernetes API
+    # Allow general HTTPS for updates and other services
+    - toEntities:
+        - world
+      toPorts:
+        - ports:
+            - port: "443"
+              protocol: TCP
+            - port: "80"
+              protocol: TCP
