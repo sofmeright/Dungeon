@@ -15,6 +15,8 @@ spec:
     loadBalancer:
       mode: dsr
       acceleration: native
+      algorithm: maglev
+      serviceTopology: true
 
     # NodePort configuration for eBPF
     nodePort:
@@ -40,6 +42,10 @@ spec:
     # Enable L2 announcements for LoadBalancer IPs
     l2announcements:
       enabled: true
+      # Enable leaseDuration for proper IP handling
+      leaseDuration: 120s
+      leaseRenewDeadline: 60s
+      leaseRetryPeriod: 1s
 
     # Additional performance optimizations
     bpfClockProbe: true
@@ -48,3 +54,6 @@ spec:
     # Enable endpoint routes for better performance
     endpointRoutes:
       enabled: true
+
+    # Enable host routing - REQUIRED for LoadBalancer with native routing
+    hostRouting: true
