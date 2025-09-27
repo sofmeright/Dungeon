@@ -2,7 +2,6 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
   - namespace.yaml
-  - vault-auth.yaml
   - vault-secret.yaml
   - pvc.yaml
   - smb-volumes.yaml
