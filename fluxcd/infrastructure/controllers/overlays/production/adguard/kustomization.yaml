@@ -8,11 +8,11 @@ patchesStrategicMerge:
   - configmap-patch.yaml
   - deployment-patch.yaml
 patches:
-  - path: services-patch.yaml
+  - path: service-dns-patch.yaml
     target:
       kind: Service
       name: adguard-dns
-  - path: services-patch.yaml
+  - path: service-web-patch.yaml
     target:
       kind: Service
       name: adguard-web

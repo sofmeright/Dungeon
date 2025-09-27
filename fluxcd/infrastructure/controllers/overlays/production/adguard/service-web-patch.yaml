@@ -1,0 +1,12 @@
+- op: replace
+  path: /metadata/annotations/io.cilium~1lb-ipam-ips
+  value: "172.22.30.102"
+- op: replace
+  path: /metadata/annotations/io.cilium~1lb-ipam-sharing-key
+  value: "prplanit-system"
+- op: replace
+  path: /spec/loadBalancerIP
+  value: "172.22.30.102"
+- op: add
+  path: /spec/externalTrafficPolicy
+  value: "Local"
