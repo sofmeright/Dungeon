@@ -2,7 +2,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: ceph-csi-config
-  namespace: ceph-csi
+  namespace: prplanit-system
 data:
   config.json: |-
     [

@@ -4,7 +4,7 @@ metadata:
   name: ceph-csi-rbd
   namespace: flux-system
 spec:
-  targetNamespace: ceph-csi
+  targetNamespace: prplanit-system
   install:
     createNamespace: true
   interval: 30m
