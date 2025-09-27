@@ -1,6 +1,7 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
+  - ../../base/prplanit-system  # Namespace for infrastructure components
   - cilium
   - kube-vip
   # - metallb  # Removed - using Cilium LoadBalancer IPAM with BGP instead
