@@ -27,6 +27,16 @@ spec:
               protocol: UDP
             - port: "53"
               protocol: TCP
+    # Allow web UI access from host network (needed for DSR mode)
+    - fromEntities:
+        - host
+        - remote-node
+      toPorts:
+        - ports:
+            - port: "80"
+              protocol: TCP
+            - port: "8080"
+              protocol: TCP
     - fromCIDR:
         - 192.168.0.0/16    # RFC1918 private network
         - 172.16.0.0/12     # RFC1918 private network
