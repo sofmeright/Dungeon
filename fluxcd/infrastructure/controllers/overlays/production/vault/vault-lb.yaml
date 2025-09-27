@@ -10,6 +10,7 @@ metadata:
     service.cilium.io/loadbalancer-mode: "dsr"
 spec:
   type: LoadBalancer
+  externalTrafficPolicy: Local
   selector:
     app.kubernetes.io/name: vault
     vault_cr: vault

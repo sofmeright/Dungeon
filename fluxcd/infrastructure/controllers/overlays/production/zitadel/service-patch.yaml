@@ -9,3 +9,4 @@ metadata:
     lbipam.cilium.io/sharing-cross-namespace: "*"
 spec:
   type: LoadBalancer
+  externalTrafficPolicy: Local
