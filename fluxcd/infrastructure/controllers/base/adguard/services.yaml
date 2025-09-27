@@ -18,6 +18,10 @@ spec:
     targetPort: 53
     protocol: UDP
     name: dns-udp
+  - port: 853
+    targetPort: 853
+    protocol: TCP
+    name: dns-tls
   selector:
     app: adguard
 ---
