@@ -4,8 +4,8 @@ metadata:
   name: adguard-dns
   namespace: prplanit-dns
   annotations:
-    io.cilium/lb-ipam-ips: "172.22.30.122"
-    io.cilium/lb-ipam-sharing-key: "infrastructure-services"
+    lbipam.cilium.io/ips: "172.22.30.122"
+    lbipam.cilium.io/sharing-key: "infrastructure-services"
 spec:
   type: LoadBalancer
   loadBalancerIP: 172.22.30.122
@@ -31,8 +31,8 @@ metadata:
   name: adguard-web
   namespace: prplanit-dns
   annotations:
-    io.cilium/lb-ipam-ips: "172.22.30.122"
-    io.cilium/lb-ipam-sharing-key: "infrastructure-services"
+    lbipam.cilium.io/ips: "172.22.30.122"
+    lbipam.cilium.io/sharing-key: "infrastructure-services"
 spec:
   type: LoadBalancer
   loadBalancerIP: 172.22.30.122

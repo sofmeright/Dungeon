@@ -4,8 +4,9 @@ metadata:
   name: zitadel
   namespace: prplanit-atlas
   annotations:
-    io.cilium/lb-ipam-ips: "172.22.30.102"
-    io.cilium/lb-ipam-sharing-key: "prplanit-system"
+    lbipam.cilium.io/ips: "172.22.30.102"
+    lbipam.cilium.io/sharing-key: "prplanit-system"
+    lbipam.cilium.io/sharing-cross-namespace: "*"
 spec:
   type: LoadBalancer
   externalTrafficPolicy: Local
