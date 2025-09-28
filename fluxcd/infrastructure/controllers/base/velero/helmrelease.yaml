@@ -15,6 +15,10 @@ spec:
         namespace: flux-system
       interval: 12h
   values:
+    image:
+      repository: docker.io/velero/velero
+      tag: v1.14.1
+
     initContainers:
       - name: velero-plugin-for-aws
         image: docker.io/velero/velero-plugin-for-aws:v1.13.0
