@@ -31,6 +31,9 @@ spec:
     deployNodeAgent: true
     upgradeCRDs: false
 
+    # Disable problematic server args for v1.17.0
+    serverArgs: []
+
     rbac:
       create: true
 
