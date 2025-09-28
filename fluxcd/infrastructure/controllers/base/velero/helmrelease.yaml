@@ -32,7 +32,15 @@ spec:
     upgradeCRDs: false
 
     # Disable problematic server args for v1.17.0
-    serverArgs: []
+    configuration:
+      extraEnvVars: {}
+      features: ""
+      logLevel: info
+      logFormat: text
+      defaultBackupTTL: 720h
+      defaultSnapshotMoveData: false
+      defaultVolumesToFsBackup: false
+      keepLatestMaintenanceJobs: 0
 
     rbac:
       create: true
