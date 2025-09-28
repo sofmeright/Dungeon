@@ -24,7 +24,6 @@ spec:
             name: plugins
 
     # Base configuration - override in production overlay
-    deployRestic: false
     deployNodeAgent: true
 
     rbac:
