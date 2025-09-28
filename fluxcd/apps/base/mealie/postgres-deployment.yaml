@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: postgres
-        image: postgres:15
+        image: docker.io/library/postgres:15
         env:
         - name: POSTGRES_USER
           valueFrom:
