@@ -5,12 +5,15 @@ metadata:
   namespace: operationtimecapsule
   labels:
     app: calibre-web
+  annotations:
+    lbipam.cilium.io/ips: "172.22.30.200"
 spec:
   type: LoadBalancer
-  loadBalancerIP: "172.22.30.138"
+  externalTrafficPolicy: Cluster
   selector:
     app: calibre-web
   ports:
   - name: web
     port: 8083
     targetPort: 8083
+    protocol: TCP
