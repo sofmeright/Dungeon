@@ -40,7 +40,10 @@ spec:
       defaultBackupTTL: 720h
       defaultSnapshotMoveData: false
       defaultVolumesToFsBackup: false
-      keepLatestMaintenanceJobs: 0
+      repositoryMaintenanceJob:
+        repositoryConfigData:
+          global:
+            keepLatestMaintenanceJobs: 0
 
     rbac:
       create: true
