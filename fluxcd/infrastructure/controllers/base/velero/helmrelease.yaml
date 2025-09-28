@@ -25,6 +25,7 @@ spec:
 
     # Base configuration - override in production overlay
     deployNodeAgent: true
+    upgradeCRDs: false
 
     rbac:
       create: true
