@@ -40,10 +40,9 @@ spec:
       defaultBackupTTL: 720h
       defaultSnapshotMoveData: false
       defaultVolumesToFsBackup: false
+      # Disable repository maintenance job entirely to avoid incompatible flag
       repositoryMaintenanceJob:
-        repositoryConfigData:
-          global:
-            keepLatestMaintenanceJobs: 0
+        repositoryConfigData: null
 
     rbac:
       create: true
