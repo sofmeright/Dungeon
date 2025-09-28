@@ -59,16 +59,5 @@ spec:
         persistentVolumeClaim:
           claimName: calibre-web-config-pvc
       - name: books
-        csi:
-          driver: smb.csi.k8s.io
-          nodeStageSecretRef:
-            name: calibre-web-samba-secret
-            namespace: operationtimecapsule
-          volumeHandle: calibre-web-books-volume
-          volumeAttributes:
-            source: //gringotts/media_books
-            uid: "8083"
-            gid: "1000"
-            file_mode: "0777"
-            dir_mode: "0777"
-            vers: "2.1"
+        persistentVolumeClaim:
+          claimName: calibre-web-books-pvc
