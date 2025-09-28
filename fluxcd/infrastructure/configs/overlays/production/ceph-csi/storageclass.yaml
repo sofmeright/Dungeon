@@ -16,7 +16,7 @@ parameters:
   csi.storage.k8s.io/node-stage-secret-name: ceph-secret-user
   csi.storage.k8s.io/node-stage-secret-namespace: prplanit-atlas
   csi.storage.k8s.io/fstype: ext4
-reclaimPolicy: Delete
+reclaimPolicy: Retain
 allowVolumeExpansion: true
 mountOptions:
   - discard

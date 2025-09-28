@@ -1,0 +1,74 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: calibre-web
+  namespace: operationtimecapsule
+  labels:
+    app: calibre-web
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: calibre-web
+  template:
+    metadata:
+      labels:
+        app: calibre-web
+    spec:
+      securityContext:
+        fsGroup: 1000
+      containers:
+      - name: calibre-web
+        image: lscr.io/linuxserver/calibre-web:latest
+        ports:
+        - containerPort: 8083
+          name: web
+        env:
+        - name: TZ
+          value: "Etc/UTC"
+        - name: PUID
+          value: "8083"
+        - name: PGID
+          value: "1000"
+        volumeMounts:
+        - name: config
+          mountPath: /config
+        - name: books
+          mountPath: /books
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "100m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 8083
+          initialDelaySeconds: 60
+          periodSeconds: 30
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 8083
+          initialDelaySeconds: 30
+          periodSeconds: 10
+      volumes:
+      - name: config
+        persistentVolumeClaim:
+          claimName: calibre-web-config-pvc
+      - name: books
+        csi:
+          driver: smb.csi.k8s.io
+          nodeStageSecretRef:
+            name: calibre-web-samba-secret
+            namespace: operationtimecapsule
+          volumeHandle: calibre-web-books-volume
+          volumeAttributes:
+            source: //gringotts/media_books
+            uid: "8083"
+            gid: "1000"
+            file_mode: "0777"
+            dir_mode: "0777"
+            vers: "2.1"

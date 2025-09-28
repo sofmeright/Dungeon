@@ -5,3 +5,4 @@ resources:
   - podinfo
   - searxng
   - plex
+  - calibre-web

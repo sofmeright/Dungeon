@@ -1,7 +1,7 @@
 apiVersion: storage.k8s.io/v1
 kind: StorageClass
 metadata:
-  name: ceph-rbd-retain
+  name: ceph-rbd-delete
   annotations:
     storageclass.kubernetes.io/is-default-class: "false"
 parameters:
@@ -18,9 +18,9 @@ parameters:
   pool: dungeon
 provisioner: rbd.csi.ceph.com
 allowVolumeExpansion: true
-# CRITICAL: Retain policy prevents data loss when PVC is deleted
-# The PV will remain after PVC deletion and must be manually cleaned up
-reclaimPolicy: Retain
+# Delete policy removes PV when PVC is deleted
+# Use only when you want temporary/ephemeral storage
+reclaimPolicy: Delete
 volumeBindingMode: Immediate
 mountOptions:
   - discard
