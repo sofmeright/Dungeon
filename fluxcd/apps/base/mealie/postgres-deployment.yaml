@@ -20,12 +20,12 @@ spec:
         - name: POSTGRES_USER
           valueFrom:
             secretKeyRef:
-              name: mealie-secrets
+              name: mealie-app-secrets
               key: postgres_user
         - name: POSTGRES_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: mealie-secrets
+              name: mealie-app-secrets
               key: postgres_password
         - name: POSTGRES_DB
           value: mealie

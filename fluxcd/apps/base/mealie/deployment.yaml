@@ -40,36 +40,36 @@ spec:
         - name: SMTP_FROM_NAME
           valueFrom:
             secretKeyRef:
-              name: mealie-secrets
+              name: mealie-smtp-secrets
               key: smtp_name
         - name: SMTP_AUTH_STRATEGY
           value: "TLS"
         - name: SMTP_FROM_EMAIL
           valueFrom:
             secretKeyRef:
-              name: mealie-secrets
+              name: mealie-smtp-secrets
               key: smtp_email
         - name: SMTP_USER
           valueFrom:
             secretKeyRef:
-              name: mealie-secrets
+              name: mealie-smtp-secrets
               key: smtp_email
         - name: SMTP_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: mealie-secrets
+              name: mealie-smtp-secrets
               key: smtp_password
         - name: DB_ENGINE
           value: "postgres"
         - name: POSTGRES_USER
           valueFrom:
             secretKeyRef:
-              name: mealie-secrets
+              name: mealie-app-secrets
               key: postgres_user
         - name: POSTGRES_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: mealie-secrets
+              name: mealie-app-secrets
               key: postgres_password
         - name: POSTGRES_SERVER
           value: "mealie-postgres"
@@ -124,12 +124,12 @@ spec:
         - name: OIDC_CLIENT_ID
           valueFrom:
             secretKeyRef:
-              name: mealie-secrets
+              name: mealie-app-secrets
               key: oidc_client_id
         - name: OIDC_CLIENT_SECRET
           valueFrom:
             secretKeyRef:
-              name: mealie-secrets
+              name: mealie-app-secrets
               key: oidc_client_secret
         volumeMounts:
         - name: mealie-data

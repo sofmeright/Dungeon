@@ -2,3 +2,4 @@
 - Pfsense is managing BGP it is available at 172.22.144.21 and 172.22.144.23 carp vip 172.22.144.22 and setup to advertise to 172.22.144.150-154 172.22.144.170-74. THIS IS HOW THIS CLUSTER IS SETUP.
 - Controllers should deploy the actual resources (Deployment, ConfigMap, Services, PVCs) Configs should only provide secrets and configuration values. base should be used for base config, overlays/production should be used for actual  deployment.
 - When working with files in source control, make clean moves that dont create a headache of files!!!!
+- NO BAND AID, NO FUCKING WORK AROUNDS. STAY THE FUCK ON TASK. IF YOU THINK WE NEED TO GIVE UP. ASK. DONT MAKE THE CALL ON YOUR OWN EVER TO GO OFF TASK OR FIND A FUCKING SHORTCUT. I CAN FIND MY OWN WAYS TO BASTARDIZE THINGS DONT NEED YOUR FUCKING HELP.
