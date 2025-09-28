@@ -12,4 +12,5 @@ resources:
   - zitadel
   - adguard  # DNS server with network policy for proper routing
   - ../../base/cifs-csi  # CIFS/SMB CSI driver for network shares
+  - velero  # Backup and disaster recovery
   - grafana  # Grafana monitoring
