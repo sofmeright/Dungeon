@@ -3,10 +3,14 @@ kind: Service
 metadata:
   name: mealie
   namespace: the-lost-woods
+  annotations:
+    lbipam.cilium.io/ips: 172.22.30.200
+    lbipam.cilium.io/sharing-key: media-services
 spec:
   selector:
     app: mealie
   ports:
   - port: 9000
     targetPort: 9000
-  type: ClusterIP
+  type: LoadBalancer
+  externalTrafficPolicy: Cluster
