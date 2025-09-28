@@ -1,0 +1,147 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mealie
+  namespace: the-lost-woods
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mealie
+  template:
+    metadata:
+      labels:
+        app: mealie
+    spec:
+      containers:
+      - name: mealie
+        image: ghcr.io/mealie-recipes/mealie:nightly
+        ports:
+        - containerPort: 9000
+        env:
+        - name: ALLOW_SIGNUP
+          value: "true"
+        - name: PUID
+          value: "1000"
+        - name: PGID
+          value: "1000"
+        - name: TZ
+          value: "Etc/UTC"
+        - name: MAX_WORKERS
+          value: "1"
+        - name: WEB_CONCURRENCY
+          value: "1"
+        - name: BASE_URL
+          value: "https://mealie.yesimvegan.com"
+        - name: SMTP_HOST
+          value: "smtp.gmail.com"
+        - name: SMTP_PORT
+          value: "587"
+        - name: SMTP_FROM_NAME
+          valueFrom:
+            secretKeyRef:
+              name: mealie-secrets
+              key: smtp_name
+        - name: SMTP_AUTH_STRATEGY
+          value: "TLS"
+        - name: SMTP_FROM_EMAIL
+          valueFrom:
+            secretKeyRef:
+              name: mealie-secrets
+              key: smtp_email
+        - name: SMTP_USER
+          valueFrom:
+            secretKeyRef:
+              name: mealie-secrets
+              key: smtp_email
+        - name: SMTP_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mealie-secrets
+              key: smtp_password
+        - name: DB_ENGINE
+          value: "postgres"
+        - name: POSTGRES_USER
+          valueFrom:
+            secretKeyRef:
+              name: mealie-secrets
+              key: postgres_user
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mealie-secrets
+              key: postgres_password
+        - name: POSTGRES_SERVER
+          value: "mealie-postgres"
+        - name: POSTGRES_PORT
+          value: "5432"
+        - name: POSTGRES_DB
+          value: "mealie"
+        - name: THEME_DARK_PRIMARY
+          value: "#349722"
+        - name: THEME_LIGHT_PRIMARY
+          value: "#349722"
+        - name: THEME_DARK_ACCENT
+          value: "#ad9f11"
+        - name: THEME_LIGHT_ACCENT
+          value: "#ad9f11"
+        - name: THEME_DARK_SECONDARY
+          value: "#852297"
+        - name: THEME_LIGHT_SECONDARY
+          value: "#852297"
+        - name: THEME_DARK_SUCCESS
+          value: "#006838"
+        - name: THEME_LIGHT_SUCCESS
+          value: "#006838"
+        - name: THEME_DARK_INFO
+          value: "#24cc89"
+        - name: THEME_LIGHT_INFO
+          value: "#24cc89"
+        - name: THEME_DARK_WARNING
+          value: "#ef7d50"
+        - name: THEME_LIGHT_WARNING
+          value: "#ef7d50"
+        - name: THEME_DARK_ERROR
+          value: "#310937"
+        - name: THEME_LIGHT_ERROR
+          value: "#310937"
+        - name: OIDC_AUTH_ENABLED
+          value: "True"
+        - name: OIDC_SIGNUP_ENABLED
+          value: "False"
+        - name: OIDC_AUTO_REDIRECT
+          value: "False"
+        - name: OIDC_REMEMBER_ME
+          value: "False"
+        - name: OIDC_USER_CLAIM
+          value: "email"
+        - name: OIDC_NAME_CLAIM
+          value: "name"
+        - name: OIDC_PROVIDER_NAME
+          value: "PrPlanIT.com"
+        - name: OIDC_CONFIGURATION_URL
+          value: "https://sso.prplanit.com/.well-known/openid-configuration"
+        - name: OIDC_CLIENT_ID
+          valueFrom:
+            secretKeyRef:
+              name: mealie-secrets
+              key: oidc_client_id
+        - name: OIDC_CLIENT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: mealie-secrets
+              key: oidc_client_secret
+        volumeMounts:
+        - name: mealie-data
+          mountPath: /app/data
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "100m"
+          limits:
+            memory: "1Gi"
+            cpu: "1000m"
+      volumes:
+      - name: mealie-data
+        persistentVolumeClaim:
+          claimName: mealie-config
