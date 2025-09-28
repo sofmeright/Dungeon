@@ -5,10 +5,12 @@ set -euxo pipefail
 KUBERNETES_VERSION="v1.34"
 CRIO_VERSION="v1.34"
 
-# Disable swap
+# Disable swap permanently
 sudo swapoff -a
 # Remove swap from /etc/fstab
 sudo sed -i '/ swap / s/^/#/' /etc/fstab
+# Remove any swap files that may exist
+sudo rm -f /swap.img /swapfile
 
 # Load required kernel modules
 cat <<EOF | sudo tee /etc/modules-load.d/k8s.conf

@@ -6,11 +6,13 @@ echo "Kubernetes Cluster Networking Fix"
 echo "==================================="
 echo ""
 
-# 1. Disable swap
-echo "Step 1: Disabling swap..."
+# 1. Disable swap permanently
+echo "Step 1: Disabling swap permanently..."
 sudo swapoff -a
 sudo sed -i '/ swap / s/^/#/' /etc/fstab
-echo "✓ Swap disabled"
+# Remove any swap files that may exist
+sudo rm -f /swap.img /swapfile
+echo "✓ Swap disabled permanently"
 
 # 2. Delete kube-proxy if it exists
 echo ""
