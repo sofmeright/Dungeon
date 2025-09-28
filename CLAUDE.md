@@ -3,3 +3,4 @@
 - Controllers should deploy the actual resources (Deployment, ConfigMap, Services, PVCs) Configs should only provide secrets and configuration values. base should be used for base config, overlays/production should be used for actual  deployment.
 - When working with files in source control, make clean moves that dont create a headache of files!!!!
 - NO BAND AID, NO FUCKING WORK AROUNDS. STAY THE FUCK ON TASK. IF YOU THINK WE NEED TO GIVE UP. ASK. DONT MAKE THE CALL ON YOUR OWN EVER TO GO OFF TASK OR FIND A FUCKING SHORTCUT. I CAN FIND MY OWN WAYS TO BASTARDIZE THINGS DONT NEED YOUR FUCKING HELP.
+- prefer tp force flux to reconcile resources via git over kubectl commands to adjust state!!!!!
