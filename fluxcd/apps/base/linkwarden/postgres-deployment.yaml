@@ -2,7 +2,6 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: linkwarden-postgres
-  namespace: operationtimecapsule
 spec:
   replicas: 1
   selector:
@@ -62,7 +61,6 @@ spec:
       name: postgres-data
     spec:
       accessModes: [ "ReadWriteOnce" ]
-      storageClassName: ceph-rbd-retain
       resources:
         requests:
           storage: 10Gi

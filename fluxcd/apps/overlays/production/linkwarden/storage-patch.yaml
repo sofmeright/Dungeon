@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: linkwarden
+spec:
+  volumeClaimTemplates:
+  - metadata:
+      name: linkwarden-data
+    spec:
+      storageClassName: ceph-rbd-retain
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: linkwarden-postgres
+spec:
+  volumeClaimTemplates:
+  - metadata:
+      name: postgres-data
+    spec:
+      storageClassName: ceph-rbd-retain
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: linkwarden-meilisearch
+spec:
+  volumeClaimTemplates:
+  - metadata:
+      name: meilisearch-data
+    spec:
+      storageClassName: ceph-rbd-retain

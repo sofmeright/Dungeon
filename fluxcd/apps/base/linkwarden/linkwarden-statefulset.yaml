@@ -2,7 +2,6 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: linkwarden
-  namespace: operationtimecapsule
 spec:
   replicas: 1
   serviceName: linkwarden
@@ -45,7 +44,7 @@ spec:
           echo "Meilisearch is ready!"
       containers:
       - name: linkwarden
-        image: ghcr.io/linkwarden/linkwarden:latest
+        image: ghcr.io/linkwarden/linkwarden
         ports:
         - containerPort: 3000
           name: http
@@ -173,7 +172,6 @@ spec:
     spec:
       accessModes:
         - ReadWriteOnce
-      storageClassName: ceph-rbd-retain
       resources:
         requests:
           storage: 5Gi

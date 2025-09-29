@@ -3,3 +3,10 @@ kind: Kustomization
 namespace: operationtimecapsule
 resources:
   - ../../../base/linkwarden
+patches:
+  - path: configmap-patch.yaml
+    target:
+      kind: ConfigMap
+      name: linkwarden-config
+  - path: storage-patch.yaml
+  - path: image-patch.yaml
