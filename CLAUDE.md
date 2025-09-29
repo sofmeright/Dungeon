@@ -8,6 +8,13 @@
   - `fluxcd/infrastructure/controllers/overlays/production` should contain ALL environment-specific infrastructure configurations and patches for the production cluster: LoadBalancer IPs, cluster-specific annotations, domain names, storage classes, etc.
   - `fluxcd/infrastructure/configs` should only provide secrets and configuration values
   - `fluxcd/infrastructure/namespaces` manages all Kubernetes namespaces - ALL namespaces MUST be deployed via this path only
+    - Namespaces (Ocarina of Time theme):
+      - tingle-tuner: Tools and utilities (quirky helper character)
+      - zeldas-lullaby: Administrative services (vault, weave, zitadel)
+      - compass: DNS & NTP services (navigation/direction)
+      - gossip-stone: Monitoring services (tells you secrets/info)
+      - lost-woods: Discovery & Dashboards (exploration/finding things)
+      - song-of-time: Archival/Content Management (time/history)
   - Base should NEVER contain deployment-ready configs - only generic templates that overlays patch with real values
   - Always use overlays/production for actual deployment to the production cluster, never deploy from base
 
@@ -46,13 +53,6 @@
     - dungeon-map-005    172.22.144.154
   - BGP LOAD BALANCERS:
     - General CIDR: 172.22.30.0/24.
-    - Namespaces (Ocarina of Time theme):
-      - tingle-tuner: Tools and utilities (quirky helper character)
-      - zeldas-lullaby: Administrative services (vault, weave, zitadel)
-      - compass: DNS & NTP services (navigation/direction)
-      - gossip-stone: Monitoring services (tells you secrets/info)
-      - lost-woods: Discovery & Dashboards (exploration/finding things)
-      - song-of-time: Archival/Content Management (time/history)
     - Shared IPs (Ocarina of Time naming theme):
       - Administrative (e.g. vault,weave,zitadel): 172.22.30.86 (sharing-key: zeldas-lullaby)
       - General MediaServers: 172.22.30.123 (sharing-key: song-of-storms)
