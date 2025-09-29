@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: postgres
-        image: postgres:16-alpine
+        image: docker.io/library/postgres:16-alpine
         env:
         - name: POSTGRES_DB
           value: "postgres"
