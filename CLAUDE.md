@@ -4,13 +4,25 @@
   - STAY ON TASK when following directions. NO BAND AID, NO FUCKING WORK AROUNDS. IF YOU THINK WE NEED TO GIVE UP or regroup and re-evaluate. ASK. DONT MAKE THE CALL ON YOUR OWN to find alternative solutions or FIND A SHORTCUT. I CAN FIND MY OWN WAYS TO BASTARDIZE THINGS I DONT NEED YOUR FUCKING HELP. I want things done exactly how I ask. If I am to be offered an alternative conversation should stop till I tell you if I agree/disagree with the alternative proposed.
 
 - FluxCD Infrastructure Structure:
-  - `fluxcd/infrastructure/controllers` should deploy the actual resources (Deployment, ConfigMap, Services, PVCs)
+  - `fluxcd/infrastructure/controllers/base` should contain TEMPLATED infrastructure resources WITHOUT environment-specific values (no hardcoded namespaces, image tags, replicas, etc.)
+  - `fluxcd/infrastructure/controllers/overlays/production` should contain ALL environment-specific infrastructure configurations and patches for the production cluster
   - `fluxcd/infrastructure/configs` should only provide secrets and configuration values
-  - `fluxcd/infrastructure/namespaces` manages all Kubernetes namespaces
-  - base should be used for base config, overlays/production should be used for actual deployment to the production cluster
+  - `fluxcd/infrastructure/namespaces` manages all Kubernetes namespaces - ALL namespaces MUST be deployed via this path only
+  - Base should NEVER contain deployment-ready configs - only generic templates that overlays patch with real values
+  - Always use overlays/production for actual deployment to the production cluster, never deploy from base
+
+- Secret Management Strategy:
+  - Critical infrastructure apps (vault, zitadel, etc.) use SOPS for secret management so they can run with local auth without dependencies during cluster issues
+  - Most other applications use Vault External Secrets Operator to manage secrets from Vault at http://172.22.30.102:8200/ui/vault/secrets/operationtimecapsule/kv/list
+  - Vault secret path structure in operationtimecapsule namespace:
+    - `apps/<app-name>` - bundled comprehensive secrets specific to that application (e.g., apps/linkwarden)
+    - `smtp/<service-name>` - SMTP-related secrets that may be shared between applications (e.g., smtp/ofcourseimvegan)
+    - `smb/<share-name>` - SMB/storage secrets that may be shared between applications (e.g., smb/media-books-rw)
+    - Shared paths (smtp/, smb/) are for secrets used by multiple applications, app-specific paths (apps/) are for single application use
 - FluxCD App Structure:
-  - `fluxcd/apps/base/<app>/` contains all core Kubernetes resources (StatefulSets, Deployments, ConfigMaps, Services, PVCs) that define the application template. This is reusable across environments.
-  - `fluxcd/apps/overlays/production/<app>/` references the base (`../../../base/<app>`) and contains environment-specific patches and configurations for the production cluster.
+  - `fluxcd/apps/base/<app>/` contains TEMPLATED Kubernetes resources WITHOUT environment-specific values (no hardcoded namespaces, image tags, replicas, etc.). These are reusable templates across environments.
+  - `fluxcd/apps/overlays/production/<app>/` references the base (`../../../base/<app>`) and contains ALL environment-specific configurations (namespace patches, image tags, replica counts, storage classes, ingress configs, etc.) for the production cluster.
+  - Base should NEVER contain deployment-ready configs - only generic templates that overlays patch with real values.
   - Other environments (staging, dev) can inherit the same base with different overlays.
   - Never deploy directly from base - always use overlays for actual deployments.
 - Cluster initialization is handled by bash\_importing_from_sibling_repo\bootstrap-k8s-install-dependencies.sh bootstrap-k8s-initialize-control-plane.sh and a reset script. No other manipulation should be needed for initial cluster setup.
