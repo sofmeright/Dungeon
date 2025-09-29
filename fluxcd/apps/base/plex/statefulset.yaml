@@ -97,7 +97,7 @@ spec:
       name: config
     spec:
       accessModes: [ "ReadWriteOnce" ]
-      storageClassName: ceph-rbd
+      storageClassName: ceph-rbd-retain
       resources:
         requests:
           storage: 200Gi
@@ -105,7 +105,7 @@ spec:
       name: transcode
     spec:
       accessModes: [ "ReadWriteOnce" ]
-      storageClassName: ceph-rbd
+      storageClassName: ceph-rbd-retain
       resources:
         requests:
           storage: 100Gi
