@@ -21,11 +21,19 @@ spec:
         - -c
         - |
           if [ ! -f /opt/adguardhome/conf/AdGuardHome.yaml ]; then
-            echo "Copying initial config..."
+            echo "Copying initial config and replacing placeholders..."
             cp /tmp/config/AdGuardHome.yaml /opt/adguardhome/conf/
+            sed -i "s/ADGUARD_PASSWORD_PLACEHOLDER/$ADMIN_PASSWORD/g" /opt/adguardhome/conf/AdGuardHome.yaml
+            echo "New config generated with secret values."
           else
             echo "Config already exists, skipping..."
           fi
+        env:
+        - name: ADMIN_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: adguard-secret
+              key: admin-password
         volumeMounts:
         - name: config-template
           mountPath: /tmp/config
