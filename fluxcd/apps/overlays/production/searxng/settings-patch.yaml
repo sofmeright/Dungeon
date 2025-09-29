@@ -2,7 +2,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: searxng-settings
-  namespace: the-lost-woods
+  namespace: tingle-tuner
 data:
   settings.yml: |
     general:

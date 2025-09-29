@@ -12,7 +12,7 @@ metadata:
         app.kubernetes.io/name: vault
         vault_cr: vault
     name: vault-unseal-keys
-    namespace: prplanit-atlas
+    namespace: zeldas-lullaby
 type: Opaque
 sops:
     age:

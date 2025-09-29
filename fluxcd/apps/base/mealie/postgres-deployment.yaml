@@ -2,7 +2,6 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: mealie-postgres
-  namespace: operationtimecapsule
 spec:
   serviceName: mealie-postgres
   replicas: 1

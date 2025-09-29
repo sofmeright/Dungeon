@@ -23,13 +23,12 @@ spec:
       source: "//gringotts/media_movies"
     nodeStageSecretRef:
       name: plex-smb-secret
-      namespace: operationtimecapsule
+      namespace: song-of-time
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: plex-media-movies
-  namespace: operationtimecapsule
 spec:
   storageClassName: ""
   accessModes:
@@ -63,13 +62,12 @@ spec:
       source: "//gringotts/media_tv_shows"
     nodeStageSecretRef:
       name: plex-smb-secret
-      namespace: operationtimecapsule
+      namespace: song-of-time
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: plex-media-tv
-  namespace: operationtimecapsule
 spec:
   storageClassName: ""
   accessModes:
@@ -103,13 +101,12 @@ spec:
       source: "//gringotts/media_music"
     nodeStageSecretRef:
       name: plex-smb-secret
-      namespace: operationtimecapsule
+      namespace: song-of-time
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: plex-media-music
-  namespace: operationtimecapsule
 spec:
   storageClassName: ""
   accessModes:
@@ -143,13 +140,12 @@ spec:
       source: "//gringotts/media_photos"
     nodeStageSecretRef:
       name: plex-smb-secret
-      namespace: operationtimecapsule
+      namespace: song-of-time
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: plex-media-photos
-  namespace: operationtimecapsule
 spec:
   storageClassName: ""
   accessModes:

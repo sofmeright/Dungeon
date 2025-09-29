@@ -2,7 +2,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: it-tools
-  namespace: the-lost-woods
 spec:
   replicas: 1
   selector:

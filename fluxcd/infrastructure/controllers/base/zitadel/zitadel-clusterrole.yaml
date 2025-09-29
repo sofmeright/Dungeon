@@ -24,4 +24,4 @@ roleRef:
 subjects:
   - kind: ServiceAccount
     name: zitadel
-    namespace: prplanit-atlas
+    namespace: zeldas-lullaby

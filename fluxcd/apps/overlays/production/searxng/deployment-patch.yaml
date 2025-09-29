@@ -1,0 +1,12 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: searxng
+spec:
+  template:
+    spec:
+      containers:
+      - name: searxng
+        env:
+        - name: SEARXNG_BASE_URL
+          value: "http://172.22.30.107:8986/"

@@ -2,7 +2,6 @@ apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
   name: grafana
-  namespace: lighthouse
 spec:
   interval: 30m
   chart:
@@ -42,7 +41,6 @@ spec:
     service:
       type: LoadBalancer
       port: 3000
-      loadBalancerIP: "172.22.30.137"
 
     resources:
       requests:

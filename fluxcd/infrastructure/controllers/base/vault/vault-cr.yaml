@@ -2,7 +2,6 @@ apiVersion: vault.banzaicloud.com/v1alpha1
 kind: Vault
 metadata:
   name: vault
-  namespace: prplanit-atlas
 spec:
   size: 1
   image: docker.io/hashicorp/vault:1.20.4

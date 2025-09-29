@@ -2,7 +2,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: searxng
-  namespace: the-lost-woods
 spec:
   replicas: 1
   selector:
@@ -25,7 +24,7 @@ spec:
           name: http
         env:
         - name: SEARXNG_BASE_URL
-          value: "http://172.22.30.101:8986/"
+          value: "http://SEARXNG_BASE_URL_PLACEHOLDER/"
         - name: SEARXNG_REDIS_URL
           value: "redis://searxng-redis:6379/0"
         volumeMounts:

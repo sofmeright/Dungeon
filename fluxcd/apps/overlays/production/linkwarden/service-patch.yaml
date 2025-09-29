@@ -4,5 +4,5 @@ metadata:
   name: linkwarden
   annotations:
     lbipam.cilium.io/ips: 172.22.30.222
-    lbipam.cilium.io/sharing-key: optcp-archives
+    lbipam.cilium.io/sharing-key: song-of-time
     lbipam.cilium.io/sharing-cross-namespace: "*"

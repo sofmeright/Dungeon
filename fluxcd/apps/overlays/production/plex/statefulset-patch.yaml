@@ -1,0 +1,12 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: plex
+spec:
+  template:
+    spec:
+      containers:
+      - name: plex
+        env:
+        - name: ADVERTISE_IP
+          value: "http://172.22.30.123:32400/,https://plex.song-of-time.com/"

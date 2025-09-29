@@ -2,7 +2,7 @@ apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: ww-gitops
-  namespace: prplanit-atlas
+  namespace: zeldas-lullaby
 spec:
   valuesFrom:
     - kind: ConfigMap

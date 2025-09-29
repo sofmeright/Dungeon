@@ -23,13 +23,12 @@ spec:
       source: "//gringotts/media_books"
     nodeStageSecretRef:
       name: calibre-web-samba-secret
-      namespace: operationtimecapsule
+      namespace: song-of-time
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: calibre-web-books-pvc
-  namespace: operationtimecapsule
 spec:
   storageClassName: ""
   accessModes:
