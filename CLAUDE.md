@@ -1,3 +1,7 @@
+- Repository Information:
+  - Git repository: ssh://git@10.30.1.123:2424/precisionplanit/dungeon
+  - Repository name: dungeon (formerly ant_parade-public)
+
 - CRITICAL RULES:
   - Prefer using flux to reconcile resources from source. We are GitOps native, we use kubectl commands to adjust state only when it is otherwise impossible!!!!!
   - When working with files in source control, make clean moves that dont create a headache of files!!!!
