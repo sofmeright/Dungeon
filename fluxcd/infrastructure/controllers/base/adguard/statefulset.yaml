@@ -2,7 +2,6 @@ apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: adguard
-  namespace: prplanit-dns
 spec:
   replicas: 1
   serviceName: adguard
