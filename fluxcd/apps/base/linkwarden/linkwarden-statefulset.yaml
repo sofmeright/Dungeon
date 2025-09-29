@@ -148,7 +148,7 @@ spec:
           value: "postgresql://postgres:$(POSTGRES_PASSWORD)@linkwarden-postgres:5432/postgres"
         volumeMounts:
         - name: linkwarden-data
-          mountPath: /data
+          mountPath: /data/data
         resources:
           requests:
             memory: "512Mi"

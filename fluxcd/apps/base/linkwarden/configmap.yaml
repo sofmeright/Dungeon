@@ -8,7 +8,7 @@ data:
   NEXTAUTH_URL: "https://bookmarks.prplanit.com/api/v1/auth"
   DATABASE_URL: "postgresql://postgres:${POSTGRES_PASSWORD}@linkwarden-postgres:5432/postgres"
   MEILI_HOST: "http://linkwarden-meilisearch:7700"
-  STORAGE_FOLDER: "/data"
+  STORAGE_FOLDER: "/data/data"
 
   # Performance Settings
   PAGINATION_TAKE_COUNT: "50"
