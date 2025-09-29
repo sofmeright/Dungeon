@@ -1,5 +1,5 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: linkwarden-meilisearch
   namespace: operationtimecapsule
@@ -49,7 +49,12 @@ spec:
             port: 7700
           initialDelaySeconds: 5
           periodSeconds: 5
-      volumes:
-      - name: meilisearch-data
-        persistentVolumeClaim:
-          claimName: linkwarden-meilisearch-data
+  volumeClaimTemplates:
+  - metadata:
+      name: meilisearch-data
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      storageClassName: ceph-rbd-retain
+      resources:
+        requests:
+          storage: 2Gi

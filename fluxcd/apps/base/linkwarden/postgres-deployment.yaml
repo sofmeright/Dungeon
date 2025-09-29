@@ -1,5 +1,5 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: linkwarden-postgres
   namespace: operationtimecapsule
@@ -57,7 +57,12 @@ spec:
             - postgres
           initialDelaySeconds: 5
           periodSeconds: 5
-      volumes:
-      - name: postgres-data
-        persistentVolumeClaim:
-          claimName: linkwarden-postgres-data
+  volumeClaimTemplates:
+  - metadata:
+      name: postgres-data
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      storageClassName: ceph-rbd-retain
+      resources:
+        requests:
+          storage: 10Gi
