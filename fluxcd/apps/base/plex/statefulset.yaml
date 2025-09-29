@@ -80,12 +80,6 @@ spec:
             memory: 8Gi
             cpu: 4000m
       volumes:
-      - name: config
-        persistentVolumeClaim:
-          claimName: plex-config
-      - name: transcode
-        persistentVolumeClaim:
-          claimName: plex-transcode
       - name: media-movies
         persistentVolumeClaim:
           claimName: plex-media-movies
@@ -98,3 +92,20 @@ spec:
       - name: media-photos
         persistentVolumeClaim:
           claimName: plex-media-photos
+  volumeClaimTemplates:
+  - metadata:
+      name: config
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      storageClassName: ceph-rbd
+      resources:
+        requests:
+          storage: 200Gi
+  - metadata:
+      name: transcode
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      storageClassName: ceph-rbd
+      resources:
+        requests:
+          storage: 100Gi
