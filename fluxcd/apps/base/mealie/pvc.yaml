@@ -1,25 +1,2 @@
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: mealie-config
-  namespace: operationtimecapsule
-spec:
-  accessModes:
-    - ReadWriteOnce
-  storageClassName: ceph-rbd
-  resources:
-    requests:
-      storage: 5Gi
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: mealie-postgres-data
-  namespace: operationtimecapsule
-spec:
-  accessModes:
-    - ReadWriteOnce
-  storageClassName: ceph-rbd
-  resources:
-    requests:
-      storage: 10Gi
+# Mealie PVCs now managed by StatefulSet volumeClaimTemplates
+# This prevents PVC multiplication on updates

@@ -1,9 +1,10 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: mealie-postgres
   namespace: operationtimecapsule
 spec:
+  serviceName: mealie-postgres
   replicas: 1
   selector:
     matchLabels:
@@ -43,7 +44,12 @@ spec:
           limits:
             memory: "512Mi"
             cpu: "500m"
-      volumes:
-      - name: postgres-data
-        persistentVolumeClaim:
-          claimName: mealie-postgres-data
+  volumeClaimTemplates:
+  - metadata:
+      name: postgres-data
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      storageClassName: ceph-rbd-retain
+      resources:
+        requests:
+          storage: 10Gi

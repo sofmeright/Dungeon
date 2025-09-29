@@ -1,9 +1,10 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: mealie
   namespace: operationtimecapsule
 spec:
+  serviceName: mealie
   replicas: 1
   selector:
     matchLabels:
@@ -141,7 +142,12 @@ spec:
           limits:
             memory: "1Gi"
             cpu: "1000m"
-      volumes:
-      - name: mealie-data
-        persistentVolumeClaim:
-          claimName: mealie-config
+  volumeClaimTemplates:
+  - metadata:
+      name: mealie-data
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      storageClassName: ceph-rbd-retain
+      resources:
+        requests:
+          storage: 5Gi
