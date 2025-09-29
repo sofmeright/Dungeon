@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: mealie-postgres
-  namespace: the-lost-woods
+  namespace: operationtimecapsule
 spec:
   replicas: 1
   selector:
