@@ -7,7 +7,11 @@ spec:
   - metadata:
       name: linkwarden-data
     spec:
+      accessModes: [ "ReadWriteOnce" ]
       storageClassName: ceph-rbd-retain
+      resources:
+        requests:
+          storage: 5Gi
 ---
 apiVersion: apps/v1
 kind: StatefulSet
@@ -18,7 +22,11 @@ spec:
   - metadata:
       name: postgres-data
     spec:
+      accessModes: [ "ReadWriteOnce" ]
       storageClassName: ceph-rbd-retain
+      resources:
+        requests:
+          storage: 10Gi
 ---
 apiVersion: apps/v1
 kind: StatefulSet
@@ -29,4 +37,8 @@ spec:
   - metadata:
       name: meilisearch-data
     spec:
+      accessModes: [ "ReadWriteOnce" ]
       storageClassName: ceph-rbd-retain
+      resources:
+        requests:
+          storage: 2Gi
