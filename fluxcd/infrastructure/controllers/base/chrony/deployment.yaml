@@ -1,0 +1,74 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: chrony
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: chrony
+  template:
+    metadata:
+      labels:
+        app: chrony
+    spec:
+      securityContext:
+        runAsUser: 100
+        runAsGroup: 101
+        runAsNonRoot: true
+        fsGroup: 101
+      containers:
+      - name: chrony
+        image: simonrupf/chronyd:0.7.0
+        ports:
+        - containerPort: 123
+          protocol: UDP
+          name: ntp
+        envFrom:
+        - configMapRef:
+            name: chrony-config
+        securityContext:
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: true
+          capabilities:
+            drop:
+            - ALL
+            # Add SYS_TIME only if ENABLE_SYSCLK is true in production overlay
+            # add:
+            # - SYS_TIME
+        volumeMounts:
+        - name: chrony-etc
+          mountPath: /etc/chrony
+        - name: chrony-run
+          mountPath: /run/chrony
+        - name: chrony-var
+          mountPath: /var/lib/chrony
+        # Uncomment if PTP hardware support is needed
+        # - name: ptp-device
+        #   mountPath: /dev/ptp0
+        resources:
+          requests:
+            memory: "16Mi"
+            cpu: "10m"
+          limits:
+            memory: "64Mi"
+            cpu: "100m"
+      volumes:
+      - name: chrony-etc
+        emptyDir:
+          medium: Memory
+          sizeLimit: 1Mi
+      - name: chrony-run
+        emptyDir:
+          medium: Memory
+          sizeLimit: 1Mi
+      - name: chrony-var
+        emptyDir:
+          medium: Memory
+          sizeLimit: 4Mi
+      # Uncomment if PTP hardware support is needed
+      # - name: ptp-device
+      #   hostPath:
+      #     path: /dev/ptp0
+      #     type: CharDevice
+      restartPolicy: Always

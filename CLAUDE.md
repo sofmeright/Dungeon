@@ -49,7 +49,7 @@
     - Shared IPs:
       - Administrative (e.g. vault,weave,zitadel): 172.22.30.86 (sharing-key: administrative-services)
       - General MediaServers: 172.22.30.123 (sharing-key: optcp-media)
-      - DNS & NTP, similar publicly needed core services: 172.22.30.122 (sharing-key: core-services)
+      - DNS & NTP, similar publicly needed core services: 172.22.30.122 (sharing-key: compass)
       - Monitoring: 172.22.30.137 (sharing-key: monitoring-services)
       - Tools w/o userdata (it-tools, podinfo, searxng): 172.22.30.107 (sharing-key: utility-tools)
       - Archival/Content Management (linkwarden, calibre-web, mealie): 172.22.30.222 (sharing-key: optcp-archives)

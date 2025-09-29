@@ -3,6 +3,6 @@ kind: Kustomization
 resources:
   - the-lost-woods.yaml
   - prplanit-atlas.yaml
-  - prplanit-dns.yaml
+  - compass.yaml
   - lighthouse.yaml
   - operationtimecapsule.yaml
