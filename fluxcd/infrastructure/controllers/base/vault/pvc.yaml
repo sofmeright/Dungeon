@@ -7,6 +7,7 @@ spec:
   accessModes:
     - ReadWriteOnce
   storageClassName: ceph-rbd-retain  # Use Retain policy to prevent data loss
+  volumeName: pvc-cf3effb3-a539-4961-88b6-c6f6f676e62a  # Bind to migrated PV with correct namespace refs
   resources:
     requests:
       storage: 10Gi
