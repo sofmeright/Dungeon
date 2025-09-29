@@ -4,8 +4,8 @@
   - STAY ON TASK when following directions. NO BAND AID, NO FUCKING WORK AROUNDS. IF YOU THINK WE NEED TO GIVE UP or regroup and re-evaluate. ASK. DONT MAKE THE CALL ON YOUR OWN to find alternative solutions or FIND A SHORTCUT. I CAN FIND MY OWN WAYS TO BASTARDIZE THINGS I DONT NEED YOUR FUCKING HELP. I want things done exactly how I ask. If I am to be offered an alternative conversation should stop till I tell you if I agree/disagree with the alternative proposed.
 
 - FluxCD Infrastructure Structure:
-  - `fluxcd/infrastructure/controllers/base` should contain TEMPLATED infrastructure resources WITHOUT environment-specific values (no hardcoded namespaces, image tags, replicas, etc.)
-  - `fluxcd/infrastructure/controllers/overlays/production` should contain ALL environment-specific infrastructure configurations and patches for the production cluster
+  - `fluxcd/infrastructure/controllers/base` should contain TEMPLATED infrastructure resources WITHOUT any environment-specific values including: no hardcoded namespaces, image tags, replicas, storage classes, LoadBalancer IPs, cluster-specific annotations (lbipam.cilium.io/*), domain names, URLs, etc.
+  - `fluxcd/infrastructure/controllers/overlays/production` should contain ALL environment-specific infrastructure configurations and patches for the production cluster: LoadBalancer IPs, cluster-specific annotations, domain names, storage classes, etc.
   - `fluxcd/infrastructure/configs` should only provide secrets and configuration values
   - `fluxcd/infrastructure/namespaces` manages all Kubernetes namespaces - ALL namespaces MUST be deployed via this path only
   - Base should NEVER contain deployment-ready configs - only generic templates that overlays patch with real values
@@ -20,9 +20,9 @@
     - `smb/<share-name>` - SMB/storage secrets that may be shared between applications (e.g., smb/media-books-rw)
     - Shared paths (smtp/, smb/) are for secrets used by multiple applications, app-specific paths (apps/) are for single application use
 - FluxCD App Structure:
-  - `fluxcd/apps/base/<app>/` contains TEMPLATED Kubernetes resources WITHOUT environment-specific values (no hardcoded namespaces, image tags, replicas, etc.). These are reusable templates across environments.
-  - `fluxcd/apps/overlays/production/<app>/` references the base (`../../../base/<app>`) and contains ALL environment-specific configurations (namespace patches, image tags, replica counts, storage classes, ingress configs, etc.) for the production cluster.
-  - Base should NEVER contain deployment-ready configs - only generic templates that overlays patch with real values.
+  - `fluxcd/apps/base/<app>/` contains TEMPLATED Kubernetes resources WITHOUT any environment-specific values including: no hardcoded namespaces, image tags, replicas, storage classes, LoadBalancer IPs, cluster-specific annotations (lbipam.cilium.io/*), domain names, URLs, etc. These are reusable templates across environments.
+  - `fluxcd/apps/overlays/production/<app>/` references the base (`../../../base/<app>`) and contains ALL environment-specific configurations via patches: namespace, image tags, replica counts, storage classes, LoadBalancer configurations, ingress configs, domain names, URLs, cluster-specific annotations, etc. for the production cluster.
+  - Base should NEVER contain deployment-ready configs - only generic templates that overlays patch with real values. If you see cluster-specific IPs, domains, or annotations in base, they must be moved to overlay patches.
   - Other environments (staging, dev) can inherit the same base with different overlays.
   - Never deploy directly from base - always use overlays for actual deployments.
 - Cluster initialization is handled by bash\_importing_from_sibling_repo\bootstrap-k8s-install-dependencies.sh bootstrap-k8s-initialize-control-plane.sh and a reset script. No other manipulation should be needed for initial cluster setup.
@@ -44,11 +44,12 @@
     - dungeon-map-003    172.22.144.152
     - dungeon-map-004    172.22.144.153
     - dungeon-map-005    172.22.144.154
-  - BGP LOAD BALANCERS: 
+  - BGP LOAD BALANCERS:
     - General CIDR: 172.22.30.0/24.
     - Shared IPs:
-      - Administrative (e.g. vault,weave,zitadel): 172.22.30.86
-      - General MediaServers: 172.22.30.123
-      - DNS & NTP, similar publicly needed core services: 172.22.30.122
-      - Monitoring: 172.22.30.137
-      - Tools w/o userdata (it-tools, podinfo, searxng): 172.22.30.107
+      - Administrative (e.g. vault,weave,zitadel): 172.22.30.86 (sharing-key: administrative-services)
+      - General MediaServers: 172.22.30.123 (sharing-key: media-servers)
+      - DNS & NTP, similar publicly needed core services: 172.22.30.122 (sharing-key: core-services)
+      - Monitoring: 172.22.30.137 (sharing-key: monitoring-services)
+      - Tools w/o userdata (it-tools, podinfo, searxng): 172.22.30.107 (sharing-key: utility-tools)
+      - Archival/Content Management (linkwarden, calibre-web, mealie): 172.22.30.222 (sharing-key: archival-content)

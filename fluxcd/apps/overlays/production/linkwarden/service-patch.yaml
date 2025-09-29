@@ -3,6 +3,6 @@ kind: Service
 metadata:
   name: linkwarden
   annotations:
-    lbipam.cilium.io/ips: 172.22.30.200
-    lbipam.cilium.io/sharing-key: operationtimecapsule-services
+    lbipam.cilium.io/ips: 172.22.30.222
+    lbipam.cilium.io/sharing-key: archival-content
     lbipam.cilium.io/sharing-cross-namespace: "*"
