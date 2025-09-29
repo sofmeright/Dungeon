@@ -1,9 +1,9 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
+namespace: flux-system
 
 resources:
   - ../../../base/cilium
 
 patchesStrategicMerge:
-  - namespace-patch.yaml
   - helmrelease-patch.yaml
