@@ -1,10 +1,11 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: linkwarden
   namespace: operationtimecapsule
 spec:
   replicas: 1
+  serviceName: linkwarden
   selector:
     matchLabels:
       app: linkwarden
@@ -166,7 +167,13 @@ spec:
             port: 3000
           initialDelaySeconds: 30
           periodSeconds: 10
-      volumes:
-      - name: linkwarden-data
-        persistentVolumeClaim:
-          claimName: linkwarden-data
+  volumeClaimTemplates:
+  - metadata:
+      name: linkwarden-data
+    spec:
+      accessModes:
+        - ReadWriteOnce
+      storageClassName: ceph-rbd-retain
+      resources:
+        requests:
+          storage: 5Gi
