@@ -46,10 +46,19 @@
     - dungeon-map-005    172.22.144.154
   - BGP LOAD BALANCERS:
     - General CIDR: 172.22.30.0/24.
-    - Shared IPs:
-      - Administrative (e.g. vault,weave,zitadel): 172.22.30.86 (sharing-key: administrative-services)
-      - General MediaServers: 172.22.30.123 (sharing-key: optcp-media)
+    - Namespaces (Ocarina of Time theme):
+      - tingle-tuner: Tools and utilities (quirky helper character)
+      - zeldas-lullaby: Administrative services (vault, weave, zitadel)
+      - compass: DNS & NTP services (navigation/direction)
+      - gossip-stone: Monitoring services (tells you secrets/info)
+      - lost-woods: Discovery & Dashboards (exploration/finding things)
+      - song-of-time: Archival/Content Management (time/history)
+    - Shared IPs (Ocarina of Time naming theme):
+      - Administrative (e.g. vault,weave,zitadel): 172.22.30.86 (sharing-key: zeldas-lullaby)
+      - General MediaServers: 172.22.30.123 (sharing-key: song-of-storms)
       - DNS & NTP, similar publicly needed core services: 172.22.30.122 (sharing-key: compass)
-      - Monitoring: 172.22.30.137 (sharing-key: monitoring-services)
-      - Tools w/o userdata (it-tools, podinfo, searxng): 172.22.30.107 (sharing-key: utility-tools)
-      - Archival/Content Management (linkwarden, calibre-web, mealie): 172.22.30.222 (sharing-key: optcp-archives)
+      - Monitoring: 172.22.30.137 (sharing-key: gossip-stone)
+      - Alerting: 172.22.30.138 (sharing-key: navi)
+      - Discovery & Dashboards: 172.22.30.223 (sharing-key: lost-woods)
+      - Tools w/o userdata (it-tools, podinfo, searxng): 172.22.30.107 (sharing-key: tingle-tuner)
+      - Archival/Content Management (linkwarden, calibre-web, mealie): 172.22.30.222 (sharing-key: song-of-time)

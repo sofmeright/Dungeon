@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: lighthouse
+  name: gossip-stone
   labels:
     name: lighthouse
     purpose: monitoring
