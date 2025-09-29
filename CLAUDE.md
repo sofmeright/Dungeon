@@ -1,5 +1,8 @@
-- Cluster initialization is handled by bash\_importing_from_sibling_repo\bootstrap-k8s-install-dependencies.sh bootstrap-k8s-initialize-control-plane.sh and a reset script. No other manipulation should be needed for initial cluster setup.
-- Pfsense is managing BGP it is available at 172.22.144.21 and 172.22.144.23 carp vip 172.22.144.22 and setup to advertise to 172.22.144.150-154 172.22.144.170-74. THIS IS HOW THIS CLUSTER IS SETUP.
+- CRITICAL RULES:
+  - Prefer using flux to reconcile resources from source. We are GitOps native, we use kubectl commands to adjust state only when it is otherwise impossible!!!!!
+  - When working with files in source control, make clean moves that dont create a headache of files!!!!
+  - STAY ON TASK when following directions. NO BAND AID, NO FUCKING WORK AROUNDS. IF YOU THINK WE NEED TO GIVE UP or regroup and re-evaluate. ASK. DONT MAKE THE CALL ON YOUR OWN to find alternative solutions or FIND A SHORTCUT. I CAN FIND MY OWN WAYS TO BASTARDIZE THINGS I DONT NEED YOUR FUCKING HELP. I want things done exactly how I ask. If I am to be offered an alternative conversation should stop till I tell you if I agree/disagree with the alternative proposed.
+
 - FluxCD Infrastructure Structure:
   - `fluxcd/infrastructure/controllers` should deploy the actual resources (Deployment, ConfigMap, Services, PVCs)
   - `fluxcd/infrastructure/configs` should only provide secrets and configuration values
@@ -10,6 +13,30 @@
   - `fluxcd/apps/overlays/production/<app>/` references the base (`../../../base/<app>`) and contains environment-specific patches and configurations for the production cluster.
   - Other environments (staging, dev) can inherit the same base with different overlays.
   - Never deploy directly from base - always use overlays for actual deployments.
-- When working with files in source control, make clean moves that dont create a headache of files!!!!
-- NO BAND AID, NO FUCKING WORK AROUNDS. STAY THE FUCK ON TASK. IF YOU THINK WE NEED TO GIVE UP. ASK. DONT MAKE THE CALL ON YOUR OWN EVER TO GO OFF TASK OR FIND A FUCKING SHORTCUT. I CAN FIND MY OWN WAYS TO BASTARDIZE THINGS DONT NEED YOUR FUCKING HELP.
-- prefer tp force flux to reconcile resources via git over kubectl commands to adjust state!!!!!
+- Cluster initialization is handled by bash\_importing_from_sibling_repo\bootstrap-k8s-install-dependencies.sh bootstrap-k8s-initialize-control-plane.sh and a reset script. No other manipulation should be needed for initial cluster setup.
+
+- Stateful sets should be used for PVCs that are for stateful applications! Deployments should only be used when the applications state doesnt need to be kept!
+
+- Cluster Networking:
+  - Pfsense router IPs are 172.22.144.21 & 172.22.144.23; the carp vip is 172.22.144.22. They provide BGP by peering with 172.22.144.150-154 172.22.144.170-74 and advertising routes for 172.22.30.0/24.
+  - Cluster Pod CIDR 192.168.144.0/20
+  - DNS CLuserIP 10.144.0.10
+  - Node Network: 
+    - dungeon-chest-001  172.22.144.170
+    - dungeon-chest-002  172.22.144.171
+    - dungeon-chest-003  172.22.144.172
+    - dungeon-chest-004  172.22.144.173
+    - dungeon-chest-005  172.22.144.174
+    - dungeon-map-001    172.22.144.150
+    - dungeon-map-002    172.22.144.151
+    - dungeon-map-003    172.22.144.152
+    - dungeon-map-004    172.22.144.153
+    - dungeon-map-005    172.22.144.154
+  - BGP LOAD BALANCERS: 
+    - General CIDR: 172.22.30.0/24.
+    - Shared IPs:
+      - Administrative (e.g. vault,weave,zitadel): 172.22.30.86
+      - General MediaServers: 172.22.30.123
+      - DNS & NTP, similar publicly needed core services: 172.22.30.122
+      - Monitoring: 172.22.30.137
+      - Tools w/o userdata (it-tools, podinfo, searxng): 172.22.30.107
