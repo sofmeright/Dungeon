@@ -6,7 +6,7 @@ resources:
   - cilium-network-policy.yaml
 patchesStrategicMerge:
   - configmap-patch.yaml
-  - deployment-patch.yaml
+  - statefulset-patch.yaml
 patches:
   - path: service-dns-patch.yaml
     target:
@@ -27,8 +27,8 @@ patches:
   - path: pvc-patch.yaml
     target:
       kind: PersistentVolumeClaim
-      name: adguard-data
+      name: adguard-data-adguard-0
   - path: pvc-patch.yaml
     target:
       kind: PersistentVolumeClaim
-      name: adguard-conf
+      name: adguard-conf-adguard-0

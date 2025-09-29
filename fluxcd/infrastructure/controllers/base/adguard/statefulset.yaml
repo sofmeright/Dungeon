@@ -1,10 +1,11 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: adguard
   namespace: prplanit-dns
 spec:
   replicas: 1
+  serviceName: adguard
   selector:
     matchLabels:
       app: adguard
@@ -104,9 +105,22 @@ spec:
       - name: config-template
         configMap:
           name: adguard-config
-      - name: adguard-data
-        persistentVolumeClaim:
-          claimName: adguard-data
-      - name: adguard-conf
-        persistentVolumeClaim:
-          claimName: adguard-conf
+  volumeClaimTemplates:
+  - metadata:
+      name: adguard-data
+    spec:
+      accessModes:
+        - ReadWriteOnce
+      storageClassName: ceph-rbd
+      resources:
+        requests:
+          storage: 5Gi
+  - metadata:
+      name: adguard-conf
+    spec:
+      accessModes:
+        - ReadWriteOnce
+      storageClassName: ceph-rbd
+      resources:
+        requests:
+          storage: 1Gi
