@@ -1,10 +1,11 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: zitadel
   namespace: prplanit-atlas
 spec:
   replicas: 1
+  serviceName: zitadel
   selector:
     matchLabels:
       app: zitadel
