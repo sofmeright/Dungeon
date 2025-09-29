@@ -5,3 +5,4 @@ resources:
   - prplanit-atlas.yaml
   - prplanit-dns.yaml
   - lighthouse.yaml
+  - operationtimecapsule.yaml
