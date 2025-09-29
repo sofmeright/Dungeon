@@ -10,3 +10,7 @@ patches:
       name: linkwarden-config
   - path: storage-patch.yaml
   - path: image-patch.yaml
+  - path: service-patch.yaml
+    target:
+      kind: Service
+      name: linkwarden
