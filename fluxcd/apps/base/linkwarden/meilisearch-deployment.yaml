@@ -22,8 +22,6 @@ spec:
             secretKeyRef:
               name: linkwarden-app-secrets
               key: meili-master-key
-        - name: MEILI_DB_PATH
-          value: "/meili_data"
         - name: MEILI_ENV
           value: "production"
         ports:
