@@ -1,6 +1,15 @@
 - Cluster initialization is handled by bash\_importing_from_sibling_repo\bootstrap-k8s-install-dependencies.sh bootstrap-k8s-initialize-control-plane.sh and a reset script. No other manipulation should be needed for initial cluster setup.
 - Pfsense is managing BGP it is available at 172.22.144.21 and 172.22.144.23 carp vip 172.22.144.22 and setup to advertise to 172.22.144.150-154 172.22.144.170-74. THIS IS HOW THIS CLUSTER IS SETUP.
-- Controllers should deploy the actual resources (Deployment, ConfigMap, Services, PVCs) Configs should only provide secrets and configuration values. base should be used for base config, overlays/production should be used for actual  deployment.
+- FluxCD Infrastructure Structure:
+  - `fluxcd/infrastructure/controllers` should deploy the actual resources (Deployment, ConfigMap, Services, PVCs)
+  - `fluxcd/infrastructure/configs` should only provide secrets and configuration values
+  - `fluxcd/infrastructure/namespaces` manages all Kubernetes namespaces
+  - base should be used for base config, overlays/production should be used for actual deployment to the production cluster
+- FluxCD App Structure:
+  - `fluxcd/apps/base/<app>/` contains all core Kubernetes resources (StatefulSets, Deployments, ConfigMaps, Services, PVCs) that define the application template. This is reusable across environments.
+  - `fluxcd/apps/overlays/production/<app>/` references the base (`../../../base/<app>`) and contains environment-specific patches and configurations for the production cluster.
+  - Other environments (staging, dev) can inherit the same base with different overlays.
+  - Never deploy directly from base - always use overlays for actual deployments.
 - When working with files in source control, make clean moves that dont create a headache of files!!!!
 - NO BAND AID, NO FUCKING WORK AROUNDS. STAY THE FUCK ON TASK. IF YOU THINK WE NEED TO GIVE UP. ASK. DONT MAKE THE CALL ON YOUR OWN EVER TO GO OFF TASK OR FIND A FUCKING SHORTCUT. I CAN FIND MY OWN WAYS TO BASTARDIZE THINGS DONT NEED YOUR FUCKING HELP.
 - prefer tp force flux to reconcile resources via git over kubectl commands to adjust state!!!!!
