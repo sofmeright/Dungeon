@@ -53,5 +53,4 @@ spec:
           periodSeconds: 5
       volumes:
       - name: meilisearch-data
-        persistentVolumeClaim:
-          claimName: linkwarden-meilisearch-data
+        emptyDir: {}
