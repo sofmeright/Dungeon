@@ -3,7 +3,7 @@ kind: HelmRelease
 metadata:
   name: external-secrets
 spec:
-  targetNamespace: prplanit-atlas
+  targetNamespace: PLACEHOLDER_TARGET_NAMESPACE
   install:
     createNamespace: false
   interval: 30m

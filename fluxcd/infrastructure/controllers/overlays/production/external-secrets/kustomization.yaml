@@ -5,3 +5,9 @@ namespace: flux-system
 
 resources:
   - ../../../base/external-secrets
+
+patches:
+  - path: helmrelease-patch.yaml
+    target:
+      kind: HelmRelease
+      name: external-secrets
