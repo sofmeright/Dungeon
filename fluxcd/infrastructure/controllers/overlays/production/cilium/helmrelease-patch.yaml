@@ -4,6 +4,10 @@ metadata:
   name: cilium
 spec:
   values:
+    # Cluster-specific network configuration
+    ipv4NativeRoutingCIDR: "192.168.144.0/20"
+    k8sServiceHost: "172.22.144.105"
+
     operator:
       replicas: 1
     # eBPF native datapath configuration

@@ -46,17 +46,3 @@ subjects:
   name: weave-gitops-weave-gitops
   namespace: PLACEHOLDER_NAMESPACE
 ---
-# Give the user "kai" permissions to view resources
-# This user doesn't need to exist - Kubernetes will check permissions when impersonated
-apiVersion: rbac.authorization.k8s.io/v1
-kind: ClusterRoleBinding
-metadata:
-  name: weave-gitops-user-kai-read
-roleRef:
-  apiGroup: rbac.authorization.k8s.io
-  kind: ClusterRole
-  name: weave-gitops-read-only
-subjects:
-- kind: User
-  name: kai
-  apiGroup: rbac.authorization.k8s.io

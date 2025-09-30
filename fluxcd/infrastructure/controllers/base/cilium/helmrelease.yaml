@@ -20,9 +20,9 @@ spec:
     ipam:
       mode: kubernetes
     
-    ipv4NativeRoutingCIDR: "192.168.144.0/20"
+    ipv4NativeRoutingCIDR: "PLACEHOLDER_POD_CIDR"
 
-    k8sServiceHost: "172.22.144.105"
+    k8sServiceHost: "PLACEHOLDER_API_VIP"
     k8sServicePort: 6443
 
     kubeProxyReplacement: true

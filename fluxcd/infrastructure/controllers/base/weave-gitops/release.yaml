@@ -7,10 +7,12 @@ metadata:
       a simple way to get insights into your GitOps workloads.
   name: weave-gitops
 spec:
+  targetNamespace: gossip-stone
   chart:
     spec:
       chart: weave-gitops
       sourceRef:
         kind: HelmRepository
         name: weave-gitops
+        namespace: flux-system
   interval: 1h0m0s

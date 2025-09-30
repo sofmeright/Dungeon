@@ -1,26 +1,13 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
-
-namespace: flux-system
+namespace: gossip-stone
 
 resources:
   - ../../../base/weave-gitops
+  - rbac-patch.yaml
 
 patches:
   - path: patch.yaml
     target:
       kind: HelmRelease
       name: weave-gitops
-  - target:
-      kind: ServiceAccount
-      name: weave-gitops-read-only
-    patch: |-
-      - op: add
-        path: /metadata/namespace
-        value: gossip-stone
-  - target:
-      kind: ClusterRoleBinding
-    patch: |-
-      - op: replace
-        path: /subjects/0/namespace
-        value: gossip-stone

@@ -3,6 +3,7 @@ kind: HelmRelease
 metadata:
   name: bank-vaults-operator
 spec:
+  targetNamespace: zeldas-lullaby
   interval: 30m
   chart:
     spec:
