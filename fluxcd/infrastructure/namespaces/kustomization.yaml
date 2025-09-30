@@ -7,3 +7,4 @@ resources:
   - gossip-stone.yaml
   - lost-woods.yaml
   - song-of-time.yaml
+  - velero.yaml
