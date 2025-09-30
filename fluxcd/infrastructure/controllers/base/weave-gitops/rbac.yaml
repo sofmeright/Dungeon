@@ -2,13 +2,12 @@
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: ww-gitops-read-only
-  namespace: flux-system
+  name: weave-gitops-read-only
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
-  name: ww-gitops-read-only
+  name: weave-gitops-read-only
 rules:
 - apiGroups: [""]
   resources: ["*"]
@@ -23,29 +22,29 @@ rules:
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
-  name: ww-gitops-read-only
+  name: weave-gitops-read-only
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
-  name: ww-gitops-read-only
+  name: weave-gitops-read-only
 subjects:
 - kind: ServiceAccount
-  name: ww-gitops-read-only
-  namespace: flux-system
+  name: weave-gitops-read-only
+  namespace: PLACEHOLDER_NAMESPACE
 ---
 # Additional binding to give the main Weave GitOps ServiceAccount read permissions
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
-  name: ww-gitops-weave-gitops-read
+  name: weave-gitops-main-read
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
-  name: ww-gitops-read-only
+  name: weave-gitops-read-only
 subjects:
 - kind: ServiceAccount
-  name: ww-gitops-weave-gitops
-  namespace: flux-system
+  name: weave-gitops-weave-gitops
+  namespace: PLACEHOLDER_NAMESPACE
 ---
 # Give the user "kai" permissions to view resources
 # This user doesn't need to exist - Kubernetes will check permissions when impersonated
@@ -56,7 +55,7 @@ metadata:
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
-  name: ww-gitops-read-only
+  name: weave-gitops-read-only
 subjects:
 - kind: User
   name: kai

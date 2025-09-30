@@ -35,8 +35,8 @@ data:
     service:
       type: LoadBalancer
       annotations:
-        io.cilium/lb-ipam-ips: "172.22.30.86"
-        io.cilium/lb-ipam-sharing-key: "zeldas-lullaby"
+        io.cilium/lb-ipam-ips: "172.22.30.137"
+        io.cilium/lb-ipam-sharing-key: "gossip-stone"
       port: 9001
     
     # Disable ingress since we're using LoadBalancer

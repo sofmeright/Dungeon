@@ -14,18 +14,3 @@ spec:
         kind: HelmRepository
         name: weave-gitops
   interval: 1h0m0s
-  values:
-    resources:
-      requests:
-        cpu: 100m
-        memory: 64Mi
-      limits:
-        cpu: 1
-        memory: 512Mi
-    securityContext:
-      capabilities:
-        drop:
-          - ALL
-      readOnlyRootFilesystem: true
-      runAsNonRoot: true
-      runAsUser: 1000

@@ -4,7 +4,6 @@ kind: Kustomization
 resources:
   - weave-gitops-secret.enc.yaml
   - weave-gitops-values.yaml
-  - rbac.yaml
 
 patches:
   - target:
@@ -20,11 +19,4 @@ patches:
     patch: |-
       - op: replace
         path: /metadata/namespace
-        value: zeldas-lullaby
-  - target:
-      kind: ClusterRoleBinding
-      name: weave-gitops-readonly
-    patch: |-
-      - op: replace
-        path: /subjects/0/namespace
-        value: zeldas-lullaby
+        value: gossip-stone

@@ -25,7 +25,7 @@
       - lost-woods: Discovery & Dashboards (exploration/finding things)
       - song-of-time: Archival/Content Management & Media Servers (linkwarden, calibre-web, mealie, plex)
       - fairy-bottle: Backup services (velero, urbackup - restores/saves state)
-  - Base should NEVER contain deployment-ready configs - only generic templates that overlays patch with real values
+  - Base should NEVER contain deployment-ready configs - only generic templates that overlays patch with real values. Base should document application defaults from upstream/vendor documentation, not production-specific configurations.
   - Always use overlays/production for actual deployment to the production cluster, never deploy from base
 
 - Secret Management Strategy:
@@ -46,7 +46,7 @@
     - Kustomize automatically adds namespace to all resources
     - **CRITICAL**: Use `patches:` field ONLY - `patchesStrategicMerge` is deprecated by FluxCD
     - Benefits: Standard kustomize behavior, clean and simple, no complex patches needed
-  - Base should NEVER contain deployment-ready configs - only generic templates that overlays patch with real values. If you see cluster-specific IPs, domains, or annotations in base, they must be moved to overlay patches.
+  - Base should NEVER contain deployment-ready configs - only generic templates that overlays patch with real values. Base should document application defaults from upstream/vendor documentation, not production-specific configurations. If you see cluster-specific IPs, domains, or annotations in base, they must be moved to overlay patches.
   - Other environments (staging, dev) can inherit the same base with different overlays.
   - Never deploy directly from base - always use overlays for actual deployments.
 - Cluster initialization is handled by bash\_importing_from_sibling_repo\bootstrap-k8s-install-dependencies.sh bootstrap-k8s-initialize-control-plane.sh and a reset script. No other manipulation should be needed for initial cluster setup.

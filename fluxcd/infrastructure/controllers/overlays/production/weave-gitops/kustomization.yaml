@@ -11,3 +11,16 @@ patches:
     target:
       kind: HelmRelease
       name: weave-gitops
+  - target:
+      kind: ServiceAccount
+      name: weave-gitops-read-only
+    patch: |-
+      - op: add
+        path: /metadata/namespace
+        value: gossip-stone
+  - target:
+      kind: ClusterRoleBinding
+    patch: |-
+      - op: replace
+        path: /subjects/0/namespace
+        value: gossip-stone
