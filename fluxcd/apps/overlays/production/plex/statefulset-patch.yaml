@@ -16,8 +16,18 @@ spec:
   - metadata:
       name: config
     spec:
+      accessModes:
+        - ReadWriteOnce
       storageClassName: ceph-rbd-retain
+      resources:
+        requests:
+          storage: 50Gi
   - metadata:
       name: transcode
     spec:
+      accessModes:
+        - ReadWriteOnce
       storageClassName: ceph-rbd-retain
+      resources:
+        requests:
+          storage: 100Gi
