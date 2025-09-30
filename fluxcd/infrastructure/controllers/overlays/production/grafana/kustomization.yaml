@@ -11,3 +11,10 @@ patches:
     target:
       kind: HelmRelease
       name: grafana
+  - target:
+      kind: HelmRepository
+      name: grafana
+    patch: |-
+      - op: replace
+        path: /metadata/namespace
+        value: flux-system
