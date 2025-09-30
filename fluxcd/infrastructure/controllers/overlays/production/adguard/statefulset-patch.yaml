@@ -39,8 +39,18 @@ spec:
   - metadata:
       name: adguard-data
     spec:
+      accessModes:
+        - ReadWriteOnce
       storageClassName: ceph-rbd
+      resources:
+        requests:
+          storage: 5Gi
   - metadata:
       name: adguard-conf
     spec:
+      accessModes:
+        - ReadWriteOnce
       storageClassName: ceph-rbd
+      resources:
+        requests:
+          storage: 1Gi
