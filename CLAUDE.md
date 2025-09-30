@@ -23,7 +23,7 @@
       - compass: DNS & NTP services (navigation/direction)
       - gossip-stone: Monitoring services (tells you secrets/info)
       - lost-woods: Discovery & Dashboards (exploration/finding things)
-      - song-of-time: Archival/Content Management (time/history)
+      - song-of-time: Archival/Content Management & Media Servers (linkwarden, calibre-web, mealie, plex)
       - fairy-bottle: Backup services (velero, urbackup - restores/saves state)
   - Base should NEVER contain deployment-ready configs - only generic templates that overlays patch with real values
   - Always use overlays/production for actual deployment to the production cluster, never deploy from base
