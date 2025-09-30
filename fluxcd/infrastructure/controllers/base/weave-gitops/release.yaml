@@ -5,14 +5,14 @@ metadata:
     metadata.weave.works/description:
       This is the Weave GitOps Dashboard.  It provides
       a simple way to get insights into your GitOps workloads.
-  name: ww-gitops
+  name: weave-gitops
 spec:
   chart:
     spec:
       chart: weave-gitops
       sourceRef:
         kind: HelmRepository
-        name: ww-gitops
+        name: weave-gitops
   interval: 1h0m0s
   values:
     resources:
