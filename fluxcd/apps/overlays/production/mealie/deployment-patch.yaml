@@ -21,7 +21,12 @@ spec:
   - metadata:
       name: mealie-data
     spec:
+      accessModes:
+        - ReadWriteOnce
       storageClassName: ceph-rbd-retain
+      resources:
+        requests:
+          storage: 10Gi
 ---
 apiVersion: apps/v1
 kind: StatefulSet
@@ -38,4 +43,9 @@ spec:
   - metadata:
       name: postgres-data
     spec:
+      accessModes:
+        - ReadWriteOnce
       storageClassName: ceph-rbd-retain
+      resources:
+        requests:
+          storage: 20Gi
