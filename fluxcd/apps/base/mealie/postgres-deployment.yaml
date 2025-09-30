@@ -4,7 +4,7 @@ metadata:
   name: mealie-postgres
 spec:
   serviceName: mealie-postgres
-  replicas: 1
+  replicas: PLACEHOLDER_REPLICAS
   selector:
     matchLabels:
       app: mealie-postgres
@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: postgres
-        image: docker.io/library/postgres:15
+        image: PLACEHOLDER_IMAGE
         env:
         - name: POSTGRES_USER
           valueFrom:
@@ -48,7 +48,7 @@ spec:
       name: postgres-data
     spec:
       accessModes: [ "ReadWriteOnce" ]
-      storageClassName: ceph-rbd-retain
+      storageClassName: PLACEHOLDER_STORAGE_CLASS
       resources:
         requests:
           storage: 10Gi

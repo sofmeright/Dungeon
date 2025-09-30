@@ -23,14 +23,13 @@ spec:
       source: "//gringotts/media_books"
     nodeStageSecretRef:
       name: calibre-web-samba-secret
-      namespace: song-of-time
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: calibre-web-books-pvc
 spec:
-  storageClassName: ""
+  storageClassName: PLACEHOLDER_STORAGE_CLASS
   accessModes:
     - ReadWriteMany
   resources:

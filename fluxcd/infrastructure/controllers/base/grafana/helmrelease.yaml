@@ -31,11 +31,11 @@ spec:
     persistence:
       enabled: true
       size: 10Gi
-      storageClassName: ceph-rbd
+      storageClassName: PLACEHOLDER_STORAGE_CLASS
 
     grafana.ini:
       server:
-        root_url: "https://grafana.pcfae.com"
+        root_url: "PLACEHOLDER_ROOT_URL"
         serve_from_sub_path: false
 
     service:

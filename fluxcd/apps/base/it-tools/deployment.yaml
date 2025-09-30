@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: it-tools
 spec:
-  replicas: 1
+  replicas: PLACEHOLDER_REPLICAS
   selector:
     matchLabels:
       app: it-tools
@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: it-tools
-        image: docker.io/corentinth/it-tools:latest
+        image: PLACEHOLDER_IMAGE
         ports:
         - containerPort: 80
           name: http

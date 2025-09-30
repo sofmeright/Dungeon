@@ -10,13 +10,13 @@ spec:
       serviceAccountName: zitadel
       initContainers:
       - name: wait-for-db
-        image: docker.io/postgres:16-alpine
+        image: PLACEHOLDER_POSTGRES_IMAGE
         command:
         - sh
         - -c
         - |
           echo "Waiting for PostgreSQL to be ready..."
-          until pg_isready -h zitadel-postgres.prplanit-atlas.svc.cluster.local -p 5432 -U postgres; do
+          until pg_isready -h PLACEHOLDER_POSTGRES_HOST -p 5432 -U postgres; do
             echo "Waiting for postgres..."
             sleep 2
           done
@@ -24,7 +24,7 @@ spec:
           sleep 10
       containers:
       - name: zitadel-setup
-        image: ghcr.io/zitadel/zitadel:v4.2.2
+        image: PLACEHOLDER_IMAGE
         env:
         - name: ZITADEL_MASTERKEY
           valueFrom:
@@ -41,27 +41,27 @@ spec:
             secretKeyRef:
               name: postgres-secrets
               key: POSTGRES_PASSWORD
-        # First instance configuration from your Docker setup
+        # First instance configuration
         - name: ZITADEL_FIRSTINSTANCE_INSTANCENAME
-          value: "PrecisionPlanIT"
+          value: "PLACEHOLDER_INSTANCE_NAME"
         - name: ZITADEL_FIRSTINSTANCE_DEFAULTLANGUAGE
-          value: "en"
+          value: "PLACEHOLDER_DEFAULT_LANGUAGE"
         - name: ZITADEL_FIRSTINSTANCE_ORG_NAME
-          value: "PrecisionPlanIT"
+          value: "PLACEHOLDER_ORG_NAME"
         - name: ZITADEL_FIRSTINSTANCE_ORG_HUMAN_USERNAME
-          value: "kai"
+          value: "PLACEHOLDER_ADMIN_USERNAME"
         - name: ZITADEL_FIRSTINSTANCE_ORG_HUMAN_FIRSTNAME
-          value: "Kai"
+          value: "PLACEHOLDER_ADMIN_FIRSTNAME"
         - name: ZITADEL_FIRSTINSTANCE_ORG_HUMAN_LASTNAME
-          value: "H."
+          value: "PLACEHOLDER_ADMIN_LASTNAME"
         - name: ZITADEL_FIRSTINSTANCE_ORG_HUMAN_EMAIL_ADDRESS
-          value: "kai.hamil@gmail.com"
+          value: "PLACEHOLDER_ADMIN_EMAIL"
         - name: ZITADEL_FIRSTINSTANCE_ORG_HUMAN_EMAIL_VERIFIED
-          value: "true"
+          value: "PLACEHOLDER_EMAIL_VERIFIED"
         - name: ZITADEL_FIRSTINSTANCE_ORG_HUMAN_PASSWORD
-          value: "i7cTuvs79uKQ!"  # Change this!
+          value: "PLACEHOLDER_ADMIN_PASSWORD"
         - name: ZITADEL_FIRSTINSTANCE_ORG_HUMAN_PASSWORDCHANGEREQUIRED
-          value: "true"
+          value: "PLACEHOLDER_PASSWORD_CHANGE_REQUIRED"
         command:
         - /app/zitadel
         - setup

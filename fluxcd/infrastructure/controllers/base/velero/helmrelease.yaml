@@ -21,7 +21,7 @@ spec:
 
     initContainers:
       - name: velero-plugin-for-aws
-        image: docker.io/velero/velero-plugin-for-aws:v1.13.0
+        image: PLACEHOLDER_PLUGIN_IMAGE
         imagePullPolicy: IfNotPresent
         volumeMounts:
           - mountPath: /target

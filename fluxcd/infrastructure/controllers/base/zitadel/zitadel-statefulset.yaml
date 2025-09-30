@@ -3,7 +3,7 @@ kind: StatefulSet
 metadata:
   name: zitadel
 spec:
-  replicas: 1
+  replicas: PLACEHOLDER_REPLICAS
   serviceName: zitadel
   selector:
     matchLabels:
@@ -16,7 +16,7 @@ spec:
       serviceAccountName: zitadel
       containers:
       - name: zitadel
-        image: ghcr.io/zitadel/zitadel:v4.2.2  # Latest stable
+        image: PLACEHOLDER_IMAGE
         ports:
         - containerPort: 8080
           name: http

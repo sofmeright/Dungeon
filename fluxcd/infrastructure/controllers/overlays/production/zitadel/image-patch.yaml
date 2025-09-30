@@ -1,0 +1,50 @@
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: zitadel
+spec:
+  template:
+    spec:
+      containers:
+      - name: zitadel
+        image: ghcr.io/zitadel/zitadel:v4.2.2
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: zitadel-postgres
+spec:
+  template:
+    spec:
+      containers:
+      - name: zitadel-postgres
+        image: docker.io/postgres:16-alpine
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: zitadel-init
+spec:
+  template:
+    spec:
+      initContainers:
+      - name: wait-for-postgres
+        image: docker.io/postgres:16-alpine
+      containers:
+      - name: zitadel-init
+        image: ghcr.io/zitadel/zitadel:v4.2.2
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: zitadel-setup
+spec:
+  template:
+    spec:
+      initContainers:
+      - name: wait-for-db
+        image: docker.io/postgres:16-alpine
+      containers:
+      - name: zitadel-setup
+        image: ghcr.io/zitadel/zitadel:v4.2.2

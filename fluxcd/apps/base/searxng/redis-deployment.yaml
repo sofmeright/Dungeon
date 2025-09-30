@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: searxng-redis
 spec:
-  replicas: 1
+  replicas: PLACEHOLDER_REPLICAS
   selector:
     matchLabels:
       app: searxng-redis
@@ -18,7 +18,7 @@ spec:
         fsGroup: 999
       containers:
       - name: redis
-        image: docker.io/valkey/valkey:7-alpine
+        image: PLACEHOLDER_IMAGE
         ports:
         - containerPort: 6379
           name: redis

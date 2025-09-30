@@ -1,0 +1,8 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: cifs-csi-driver
+spec:
+  values:
+    controller:
+      replicas: 2

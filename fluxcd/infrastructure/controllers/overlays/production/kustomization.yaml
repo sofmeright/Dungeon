@@ -6,11 +6,11 @@ resources:
   # - metallb  # Removed - using Cilium LoadBalancer IPAM with BGP instead
   - weave-gitops
   - ceph-csi
+  - cifs-csi
   - vault
   - bank-vaults
   - external-secrets
   - zitadel
   - adguard  # DNS server with network policy for proper routing
-  - ../../base/SMB CSI driver for network shares
   - velero  # Backup and disaster recovery
   - grafana  # Grafana monitoring

@@ -1,3 +1,4 @@
+---
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
@@ -5,6 +6,33 @@ metadata:
 spec:
   template:
     spec:
+      initContainers:
+      - name: wait-for-postgres
+        image: docker.io/library/postgres:16-alpine
+      - name: wait-for-meilisearch
+        image: docker.io/curlimages/curl:8.5.0
       containers:
       - name: linkwarden
         image: ghcr.io/linkwarden/linkwarden:latest
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: linkwarden-postgres
+spec:
+  template:
+    spec:
+      containers:
+      - name: postgres
+        image: docker.io/library/postgres:16-alpine
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: linkwarden-meilisearch
+spec:
+  template:
+    spec:
+      containers:
+      - name: meilisearch
+        image: docker.io/getmeili/meilisearch:v1.6

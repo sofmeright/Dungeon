@@ -1,0 +1,41 @@
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mealie
+spec:
+  replicas: 1
+  template:
+    spec:
+      containers:
+      - name: mealie
+        image: ghcr.io/mealie-recipes/mealie:nightly
+        env:
+        - name: BASE_URL
+          value: "https://mealie.yesimvegan.com"
+        - name: OIDC_PROVIDER_NAME
+          value: "PrPlanIT.com"
+        - name: OIDC_CONFIGURATION_URL
+          value: "https://sso.prplanit.com/.well-known/openid-configuration"
+  volumeClaimTemplates:
+  - metadata:
+      name: mealie-data
+    spec:
+      storageClassName: ceph-rbd-retain
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mealie-postgres
+spec:
+  replicas: 1
+  template:
+    spec:
+      containers:
+      - name: postgres
+        image: docker.io/library/postgres:15
+  volumeClaimTemplates:
+  - metadata:
+      name: postgres-data
+    spec:
+      storageClassName: ceph-rbd-retain

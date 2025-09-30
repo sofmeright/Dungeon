@@ -3,6 +3,7 @@ kind: StatefulSet
 metadata:
   name: adguard
 spec:
+  replicas: 1
   template:
     spec:
       initContainers:
@@ -31,3 +32,15 @@ spec:
           mountPath: /tmp/config
         - name: adguard-conf
           mountPath: /opt/adguardhome/conf
+      containers:
+      - name: adguard
+        image: docker.io/adguard/adguardhome:v0.107.66
+  volumeClaimTemplates:
+  - metadata:
+      name: adguard-data
+    spec:
+      storageClassName: ceph-rbd
+  - metadata:
+      name: adguard-conf
+    spec:
+      storageClassName: ceph-rbd

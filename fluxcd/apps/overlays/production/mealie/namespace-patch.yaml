@@ -1,0 +1,30 @@
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mealie
+  namespace: song-of-time
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mealie
+  namespace: song-of-time
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mealie-postgres
+  namespace: song-of-time
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mealie-postgres
+  namespace: song-of-time
+---
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: mealie-secrets
+  namespace: song-of-time

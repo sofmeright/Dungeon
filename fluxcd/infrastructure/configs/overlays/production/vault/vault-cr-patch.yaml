@@ -1,0 +1,9 @@
+apiVersion: vault.banzaicloud.com/v1alpha1
+kind: Vault
+metadata:
+  name: vault
+spec:
+  image: docker.io/hashicorp/vault:1.20.4
+  unsealConfig:
+    kubernetes:
+      secretNamespace: zeldas-lullaby

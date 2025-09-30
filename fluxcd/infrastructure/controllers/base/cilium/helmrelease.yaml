@@ -15,7 +15,7 @@ spec:
         namespace: flux-system
   values:
     operator:
-      replicas: 1
+      replicas: PLACEHOLDER_REPLICAS
     
     ipam:
       mode: kubernetes

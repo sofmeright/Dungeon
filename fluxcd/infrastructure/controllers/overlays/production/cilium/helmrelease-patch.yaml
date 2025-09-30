@@ -4,6 +4,8 @@ metadata:
   name: cilium
 spec:
   values:
+    operator:
+      replicas: 1
     # eBPF native datapath configuration
     bpf:
       masquerade: true  # Enable BPF masquerade for external traffic

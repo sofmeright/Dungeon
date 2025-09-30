@@ -9,12 +9,12 @@ data:
 
     Port: 8080
     ExternalPort: 443
-    ExternalDomain: zitadel.precisionplan.it  # Change to your domain
+    ExternalDomain: PLACEHOLDER_DOMAIN
     ExternalSecure: true
 
     Database:
       Postgres:
-        Host: zitadel-postgres.prplanit-atlas.svc.cluster.local
+        Host: PLACEHOLDER_POSTGRES_HOST
         Port: 5432
         Database: zitadel
         User:
@@ -38,13 +38,13 @@ data:
         SMTP:
           Host: smtp.gmail.com:465
           TLS: true
-        From: noreply@precisionplan.it
-        FromName: PrecisionPlan IT
+        From: PLACEHOLDER_SMTP_FROM
+        FromName: PLACEHOLDER_SMTP_FROM_NAME
 
     SystemDefaults:
       SecretGenerators:
         PasswordSaltCost: 14
-      Domain: zitadel.precisionplan.it
+      Domain: PLACEHOLDER_DOMAIN
       ZitadelDocs:
         Enabled: true
         ExternalDomain: docs.zitadel.com

@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: chrony
 spec:
-  replicas: 1
+  replicas: PLACEHOLDER_REPLICAS
   selector:
     matchLabels:
       app: chrony
@@ -19,7 +19,7 @@ spec:
         fsGroup: 101
       containers:
       - name: chrony
-        image: simonrupf/chronyd:0.7.0
+        image: PLACEHOLDER_IMAGE
         ports:
         - containerPort: 123
           protocol: UDP

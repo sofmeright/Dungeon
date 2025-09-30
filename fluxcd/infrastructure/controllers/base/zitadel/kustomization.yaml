@@ -1,6 +1,6 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
-namespace: zeldas-lullaby
+
 resources:
   - postgres-pvc.yaml
   - postgres-statefulset.yaml

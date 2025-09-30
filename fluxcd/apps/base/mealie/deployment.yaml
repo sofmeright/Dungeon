@@ -4,7 +4,7 @@ metadata:
   name: mealie
 spec:
   serviceName: mealie
-  replicas: 1
+  replicas: PLACEHOLDER_REPLICAS
   selector:
     matchLabels:
       app: mealie
@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: mealie
-        image: ghcr.io/mealie-recipes/mealie:nightly
+        image: PLACEHOLDER_IMAGE
         ports:
         - containerPort: 9000
         env:
@@ -32,7 +32,7 @@ spec:
         - name: WEB_CONCURRENCY
           value: "1"
         - name: BASE_URL
-          value: "https://mealie.yesimvegan.com"
+          value: "PLACEHOLDER_BASE_URL"
         - name: SMTP_HOST
           value: "smtp.gmail.com"
         - name: SMTP_PORT
@@ -118,9 +118,9 @@ spec:
         - name: OIDC_NAME_CLAIM
           value: "name"
         - name: OIDC_PROVIDER_NAME
-          value: "PrPlanIT.com"
+          value: "PLACEHOLDER_OIDC_PROVIDER"
         - name: OIDC_CONFIGURATION_URL
-          value: "https://sso.prplanit.com/.well-known/openid-configuration"
+          value: "PLACEHOLDER_OIDC_CONFIG_URL"
         - name: OIDC_CLIENT_ID
           valueFrom:
             secretKeyRef:
@@ -146,7 +146,7 @@ spec:
       name: mealie-data
     spec:
       accessModes: [ "ReadWriteOnce" ]
-      storageClassName: ceph-rbd-retain
+      storageClassName: PLACEHOLDER_STORAGE_CLASS
       resources:
         requests:
           storage: 5Gi

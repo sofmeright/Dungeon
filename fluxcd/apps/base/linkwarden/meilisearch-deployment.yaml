@@ -3,7 +3,7 @@ kind: StatefulSet
 metadata:
   name: linkwarden-meilisearch
 spec:
-  replicas: 1
+  replicas: PLACEHOLDER_REPLICAS
   selector:
     matchLabels:
       app: linkwarden-meilisearch
@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: meilisearch
-        image: docker.io/getmeili/meilisearch:v1.6
+        image: PLACEHOLDER_IMAGE
         env:
         - name: MEILI_MASTER_KEY
           valueFrom:

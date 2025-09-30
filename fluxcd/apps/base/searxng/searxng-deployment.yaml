@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: searxng
 spec:
-  replicas: 1
+  replicas: PLACEHOLDER_REPLICAS
   selector:
     matchLabels:
       app: searxng
@@ -18,13 +18,13 @@ spec:
         runAsGroup: 977
       containers:
       - name: searxng
-        image: docker.io/searxng/searxng:latest
+        image: PLACEHOLDER_IMAGE
         ports:
         - containerPort: 8080
           name: http
         env:
         - name: SEARXNG_BASE_URL
-          value: "http://SEARXNG_BASE_URL_PLACEHOLDER/"
+          value: "PLACEHOLDER_BASE_URL"
         - name: SEARXNG_REDIS_URL
           value: "redis://searxng-redis:6379/0"
         volumeMounts:

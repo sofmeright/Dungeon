@@ -23,14 +23,13 @@ spec:
       source: "//gringotts/media_movies"
     nodeStageSecretRef:
       name: plex-smb-secret
-      namespace: song-of-time
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: plex-media-movies
 spec:
-  storageClassName: ""
+  storageClassName: PLACEHOLDER_STORAGE_CLASS
   accessModes:
     - ReadWriteMany
   resources:
@@ -62,14 +61,13 @@ spec:
       source: "//gringotts/media_tv_shows"
     nodeStageSecretRef:
       name: plex-smb-secret
-      namespace: song-of-time
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: plex-media-tv
 spec:
-  storageClassName: ""
+  storageClassName: PLACEHOLDER_STORAGE_CLASS
   accessModes:
     - ReadWriteMany
   resources:
@@ -101,14 +99,13 @@ spec:
       source: "//gringotts/media_music"
     nodeStageSecretRef:
       name: plex-smb-secret
-      namespace: song-of-time
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: plex-media-music
 spec:
-  storageClassName: ""
+  storageClassName: PLACEHOLDER_STORAGE_CLASS
   accessModes:
     - ReadWriteMany
   resources:
@@ -140,14 +137,13 @@ spec:
       source: "//gringotts/media_photos"
     nodeStageSecretRef:
       name: plex-smb-secret
-      namespace: song-of-time
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
   name: plex-media-photos
 spec:
-  storageClassName: ""
+  storageClassName: PLACEHOLDER_STORAGE_CLASS
   accessModes:
     - ReadWriteMany
   resources:

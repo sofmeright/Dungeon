@@ -1,0 +1,84 @@
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: plex-media-movies
+spec:
+  csi:
+    nodeStageSecretRef:
+      namespace: song-of-time
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: plex-media-movies
+  namespace: song-of-time
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: plex-media-tv
+spec:
+  csi:
+    nodeStageSecretRef:
+      namespace: song-of-time
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: plex-media-tv
+  namespace: song-of-time
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: plex-media-music
+spec:
+  csi:
+    nodeStageSecretRef:
+      namespace: song-of-time
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: plex-media-music
+  namespace: song-of-time
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: plex-media-photos
+spec:
+  csi:
+    nodeStageSecretRef:
+      namespace: song-of-time
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: plex-media-photos
+  namespace: song-of-time
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: plex-config-pvc
+  namespace: song-of-time
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: plex
+  namespace: song-of-time
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: plex
+  namespace: song-of-time
+---
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: plex-smb-secret
+  namespace: song-of-time

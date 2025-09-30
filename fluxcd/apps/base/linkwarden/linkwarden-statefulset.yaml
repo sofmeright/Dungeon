@@ -3,7 +3,7 @@ kind: StatefulSet
 metadata:
   name: linkwarden
 spec:
-  replicas: 1
+  replicas: PLACEHOLDER_REPLICAS
   serviceName: linkwarden
   selector:
     matchLabels:
@@ -15,7 +15,7 @@ spec:
     spec:
       initContainers:
       - name: wait-for-postgres
-        image: docker.io/library/postgres:16-alpine
+        image: PLACEHOLDER_POSTGRES_IMAGE
         command:
         - sh
         - -c
@@ -32,7 +32,7 @@ spec:
               name: linkwarden-app-secrets
               key: postgres-password
       - name: wait-for-meilisearch
-        image: docker.io/curlimages/curl:8.5.0
+        image: PLACEHOLDER_CURL_IMAGE
         command:
         - sh
         - -c
@@ -44,7 +44,7 @@ spec:
           echo "Meilisearch is ready!"
       containers:
       - name: linkwarden
-        image: ghcr.io/linkwarden/linkwarden
+        image: PLACEHOLDER_IMAGE
         ports:
         - containerPort: 3000
           name: http

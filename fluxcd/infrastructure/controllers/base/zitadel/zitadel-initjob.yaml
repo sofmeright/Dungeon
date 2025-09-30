@@ -10,11 +10,11 @@ spec:
       serviceAccountName: zitadel
       initContainers:
       - name: wait-for-postgres
-        image: docker.io/postgres:16-alpine
-        command: ['sh', '-c', 'until pg_isready -h zitadel-postgres.prplanit-atlas.svc.cluster.local -p 5432 -U postgres; do echo waiting for postgres; sleep 2; done']
+        image: PLACEHOLDER_POSTGRES_IMAGE
+        command: ['sh', '-c', 'until pg_isready -h PLACEHOLDER_POSTGRES_HOST -p 5432 -U postgres; do echo waiting for postgres; sleep 2; done']
       containers:
       - name: zitadel-init
-        image: ghcr.io/zitadel/zitadel:v4.2.2
+        image: PLACEHOLDER_IMAGE
         env:
         - name: ZITADEL_MASTERKEY
           valueFrom:

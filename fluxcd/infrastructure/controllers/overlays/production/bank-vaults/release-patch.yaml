@@ -1,0 +1,17 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: bank-vaults-operator
+spec:
+  chart:
+    spec:
+      version: "1.23.0"
+  values:
+    image:
+      tag: v1.23.0
+    bankVaults:
+      image:
+        tag: v1.32.0
+    webhook:
+      image:
+        tag: v1.22.1

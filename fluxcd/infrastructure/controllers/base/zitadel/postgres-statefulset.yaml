@@ -4,7 +4,7 @@ metadata:
   name: zitadel-postgres
 spec:
   serviceName: zitadel-postgres
-  replicas: 1
+  replicas: PLACEHOLDER_REPLICAS
   selector:
     matchLabels:
       app: zitadel-postgres
@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: zitadel-postgres
-        image: docker.io/postgres:16-alpine
+        image: PLACEHOLDER_IMAGE
         ports:
         - containerPort: 5432
           name: postgres

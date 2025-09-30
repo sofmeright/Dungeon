@@ -4,6 +4,14 @@ metadata:
   name: grafana
 spec:
   values:
+    persistence:
+      storageClassName: ceph-rbd
+
+    grafana.ini:
+      server:
+        root_url: "https://grafana.pcfae.com"
+        serve_from_sub_path: false
+
     service:
       annotations:
         lbipam.cilium.io/ips: "172.22.30.137"

@@ -1,0 +1,11 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: chrony
+spec:
+  replicas: 1
+  template:
+    spec:
+      containers:
+      - name: chrony
+        image: simonrupf/chronyd:0.7.0

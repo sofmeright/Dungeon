@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: zitadel-config
+data:
+  zitadel-config.yaml: |
+    ExternalDomain: zitadel.precisionplan.it
+
+    Database:
+      Postgres:
+        Host: zitadel-postgres.zeldas-lullaby.svc.cluster.local
+
+    DefaultInstance:
+      SMTPConfiguration:
+        From: noreply@precisionplan.it
+        FromName: PrecisionPlan IT
+
+    SystemDefaults:
+      Domain: zitadel.precisionplan.it

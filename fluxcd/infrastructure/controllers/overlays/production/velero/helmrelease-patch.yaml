@@ -5,6 +5,9 @@ metadata:
   namespace: flux-system
 spec:
   values:
+    initContainers:
+      - name: velero-plugin-for-aws
+        image: docker.io/velero/velero-plugin-for-aws:v1.13.0
     configuration:
       backupStorageLocation:
         - name: default

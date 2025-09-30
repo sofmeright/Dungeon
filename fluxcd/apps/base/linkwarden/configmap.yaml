@@ -4,7 +4,7 @@ metadata:
   name: linkwarden-config
 data:
   # Core App Settings
-  NEXTAUTH_URL: "https://PLACEHOLDER_HOST/api/v1/auth"
+  NEXTAUTH_URL: "PLACEHOLDER_NEXTAUTH_URL"
   DATABASE_URL: "postgresql://postgres:${POSTGRES_PASSWORD}@linkwarden-postgres:5432/postgres"
   MEILI_HOST: "http://linkwarden-meilisearch:7700"
   STORAGE_FOLDER: "/data/data"
@@ -24,8 +24,8 @@ data:
 
   # Zitadel SSO
   NEXT_PUBLIC_ZITADEL_ENABLED: "true"
-  ZITADEL_CUSTOM_NAME: "PrecisionPlanIT.com SSO"
-  ZITADEL_ISSUER: "https://PLACEHOLDER_SSO"
+  ZITADEL_CUSTOM_NAME: "PLACEHOLDER_SSO_NAME"
+  ZITADEL_ISSUER: "PLACEHOLDER_ZITADEL_ISSUER"
 
   # Cloud Storage (Disabled by default)
   SPACES_KEY: "-"

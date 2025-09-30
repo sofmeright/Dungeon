@@ -4,14 +4,14 @@ metadata:
   name: vault
 spec:
   size: 1
-  image: docker.io/hashicorp/vault:1.20.4
+  image: PLACEHOLDER_VAULT_IMAGE
   bankVaultsImage: ghcr.io/bank-vaults/bank-vaults:v1.32.0
 
   # Use Kubernetes secrets for unseal keys (SOPS encrypted in source)
   unsealConfig:
     options: {}  # Empty options object required by CRD
     kubernetes:
-      secretNamespace: prplanit-atlas
+      secretNamespace: PLACEHOLDER_NAMESPACE
       secretName: vault-unseal-keys
 
   # Volume configuration for persistent storage

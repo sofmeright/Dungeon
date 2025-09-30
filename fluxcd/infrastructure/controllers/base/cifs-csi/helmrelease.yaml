@@ -23,7 +23,7 @@ spec:
       retries: 5
   values:
     controller:
-      replicas: 2
+      replicas: PLACEHOLDER_REPLICAS
       tolerations:
         - key: "node-role.kubernetes.io/control-plane"
           operator: "Exists"

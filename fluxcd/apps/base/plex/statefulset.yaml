@@ -4,7 +4,7 @@ metadata:
   name: plex
 spec:
   serviceName: plex
-  replicas: 1
+  replicas: PLACEHOLDER_REPLICAS
   selector:
     matchLabels:
       app: plex
@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: plex
-        image: docker.io/plexinc/pms-docker:latest
+        image: PLACEHOLDER_IMAGE
         env:
         - name: ADVERTISE_IP
           value: "PLEX_ADVERTISE_IP_PLACEHOLDER"
@@ -96,7 +96,7 @@ spec:
       name: config
     spec:
       accessModes: [ "ReadWriteOnce" ]
-      storageClassName: ceph-rbd-retain
+      storageClassName: PLACEHOLDER_STORAGE_CLASS
       resources:
         requests:
           storage: 200Gi
@@ -104,7 +104,7 @@ spec:
       name: transcode
     spec:
       accessModes: [ "ReadWriteOnce" ]
-      storageClassName: ceph-rbd-retain
+      storageClassName: PLACEHOLDER_STORAGE_CLASS
       resources:
         requests:
           storage: 100Gi

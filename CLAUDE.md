@@ -10,10 +10,10 @@
 - FluxCD Infrastructure Structure:
   - `fluxcd/infrastructure/controllers/base` should contain TEMPLATED infrastructure resources WITHOUT any environment-specific values including: no hardcoded namespaces, image tags, replicas, storage classes, LoadBalancer IPs, cluster-specific annotations (lbipam.cilium.io/*), domain names, URLs, etc.
   - `fluxcd/infrastructure/controllers/overlays/production` should contain ALL environment-specific infrastructure configurations and patches for the production cluster: LoadBalancer IPs, cluster-specific annotations, domain names, storage classes, etc.
-  - **NAMESPACE MANAGEMENT STANDARD**: All infrastructure overlays MUST use `namespace-patch.yaml` pattern (same as apps):
+  - **NAMESPACE MANAGEMENT STANDARD**: All infrastructure overlays MUST use kustomization-level `namespace:` field (standard kustomize pattern):
     - Base resources: NO namespace metadata anywhere
-    - Overlay kustomization.yaml: NO namespace field
-    - Overlay namespace-patch.yaml: Explicitly patches namespace for each resource type (HelmRelease, Deployment, Service, etc.)
+    - Overlay kustomization.yaml: `namespace: <target-namespace>` field at kustomization level
+    - Kustomize automatically adds namespace to all resources
     - Critical for infrastructure: Avoids conflicts between FluxCD namespace (flux-system) and target deployment namespace (kube-system, etc.)
   - `fluxcd/infrastructure/configs` should only provide secrets and configuration values
   - `fluxcd/infrastructure/namespaces` manages all Kubernetes namespaces - ALL namespaces MUST be deployed via this path only
@@ -39,12 +39,12 @@
 - FluxCD App Structure:
   - `fluxcd/apps/base/<app>/` contains TEMPLATED Kubernetes resources WITHOUT any environment-specific values including: no hardcoded namespaces, image tags, replicas, storage classes, LoadBalancer IPs, cluster-specific annotations (lbipam.cilium.io/*), domain names, URLs, etc. These are reusable templates across environments.
   - `fluxcd/apps/overlays/production/<app>/` references the base (`../../../base/<app>`) and contains ALL environment-specific configurations via patches: namespace, image tags, replica counts, storage classes, LoadBalancer configurations, ingress configs, domain names, URLs, cluster-specific annotations, etc. for the production cluster.
-  - **NAMESPACE MANAGEMENT STANDARD**: All overlays MUST use `namespace-patch.yaml` pattern instead of kustomization-level namespace setting:
+  - **NAMESPACE MANAGEMENT STANDARD**: All overlays MUST use kustomization-level `namespace:` field (standard kustomize pattern):
     - Base resources: NO namespace metadata anywhere
-    - Overlay kustomization.yaml: NO namespace field
-    - Overlay namespace-patch.yaml: Explicitly patches namespace for each resource type (Deployment, Service, ConfigMap, etc.)
-    - Benefits: Single source of truth, explicit control, avoids kustomization conflicts, supports mixed namespaces
-    - Example: See `fluxcd/infrastructure/controllers/overlays/production/chrony/namespace-patch.yaml`
+    - Overlay kustomization.yaml: `namespace: <target-namespace>` field at kustomization level
+    - Kustomize automatically adds namespace to all resources
+    - **CRITICAL**: Use `patches:` field ONLY - `patchesStrategicMerge` is deprecated by FluxCD
+    - Benefits: Standard kustomize behavior, clean and simple, no complex patches needed
   - Base should NEVER contain deployment-ready configs - only generic templates that overlays patch with real values. If you see cluster-specific IPs, domains, or annotations in base, they must be moved to overlay patches.
   - Other environments (staging, dev) can inherit the same base with different overlays.
   - Never deploy directly from base - always use overlays for actual deployments.
