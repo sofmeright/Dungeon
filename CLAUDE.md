@@ -24,6 +24,7 @@
       - gossip-stone: Monitoring services (tells you secrets/info)
       - lost-woods: Discovery & Dashboards (exploration/finding things)
       - song-of-time: Archival/Content Management (time/history)
+      - fairy-bottle: Backup services (velero, urbackup - restores/saves state)
   - Base should NEVER contain deployment-ready configs - only generic templates that overlays patch with real values
   - Always use overlays/production for actual deployment to the production cluster, never deploy from base
 
@@ -78,3 +79,4 @@
       - Discovery & Dashboards: 172.22.30.223 (sharing-key: lost-woods)
       - Tools w/o userdata (it-tools, podinfo, searxng): 172.22.30.107 (sharing-key: tingle-tuner)
       - Archival/Content Management (linkwarden, calibre-web, mealie): 172.22.30.222 (sharing-key: song-of-time)
+      - Backup services (velero, urbackup): 172.22.30.119 (sharing-key: fairy-bottle)

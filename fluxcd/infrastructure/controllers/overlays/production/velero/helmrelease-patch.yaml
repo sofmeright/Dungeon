@@ -4,6 +4,7 @@ metadata:
   name: velero
   namespace: flux-system
 spec:
+  targetNamespace: fairy-bottle
   values:
     initContainers:
       - name: velero-plugin-for-aws
