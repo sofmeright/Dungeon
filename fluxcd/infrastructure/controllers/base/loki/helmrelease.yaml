@@ -12,6 +12,7 @@ spec:
       sourceRef:
         kind: HelmRepository
         name: grafana
+        namespace: flux-system
       interval: 12h
   values:
     loki:
