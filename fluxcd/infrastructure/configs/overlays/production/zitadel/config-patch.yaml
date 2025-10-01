@@ -64,16 +64,19 @@ data:
 
     # Notifications Configuration (required for v4.3.0+)
     Notifications:
-      LegacyEnabled:
-        Email: true
-        SMS: false
-      Workers:
-        Email:
-          BulkLimit: 10
-          Limit: 5
-        SMS:
-          BulkLimit: 10
-          Limit: 5
+      LegacyEnabled: true
+      Workers: 1
+      BulkLimit: 10
+      RequeueEvery: 5s
+      RetryWorkers: 1
+      RetryRequeueEvery: 5s
+      HandleActiveInstances: 0s
+      TransactionDuration: 10s
+      MaxAttempts: 3
+      MaxTtl: 5m
+      MinRetryDelay: 5s
+      MaxRetryDelay: 1m
+      RetryDelayFactor: 1.5
 
     # Projections Configuration
     Projections:
