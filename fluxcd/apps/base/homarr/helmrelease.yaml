@@ -15,66 +15,29 @@ spec:
         namespace: flux-system
       interval: 12h
   values:
-    image:
-      repository: ghcr.io/homarr-labs/homarr
-      tag: latest
-      pullPolicy: Always
-
     env:
-      - name: DATABASE_URL
-        value: "file:/data/homarr.db"
-      - name: NEXTAUTH_URL
-        value: PLACEHOLDER_NEXTAUTH_URL
-      - name: AUTH_PROVIDER
-        value: "oidc"
-      - name: AUTH_OIDC_URI
-        value: PLACEHOLDER_OIDC_URI
-      - name: AUTH_OIDC_CLIENT_NAME
-        value: "Zitadel"
-      - name: AUTH_OIDC_AUTO_LOGIN
-        value: "true"
+      DATABASE_URL: "file:/data/homarr.db"
+      NEXTAUTH_URL: PLACEHOLDER_NEXTAUTH_URL
+      AUTH_PROVIDERS: "oidc"
+      AUTH_OIDC_URI: PLACEHOLDER_OIDC_URI
+      AUTH_OIDC_CLIENT_NAME: "Zitadel"
+      AUTH_OIDC_AUTO_LOGIN: "true"
 
-    envFrom:
-      - secretRef:
-          name: homarr-secrets
+    secretEnv:
+      AUTH_SECRET: PLACEHOLDER_SECRET_KEY
+      AUTH_OIDC_CLIENT_ID: PLACEHOLDER_CLIENT_ID
+      AUTH_OIDC_CLIENT_SECRET: PLACEHOLDER_CLIENT_SECRET
 
     persistence:
       data:
         enabled: true
         size: PLACEHOLDER_STORAGE_SIZE
         storageClass: PLACEHOLDER_STORAGE_CLASS
-        accessMode: ReadWriteOnce
       config:
         enabled: true
         size: PLACEHOLDER_CONFIG_SIZE
         storageClass: PLACEHOLDER_STORAGE_CLASS
-        accessMode: ReadWriteOnce
 
     service:
       type: PLACEHOLDER_SERVICE_TYPE
-      port: 3000
-
-    serviceAccount:
-      create: true
-      name: homarr
-
-    rbac:
-      create: true
-      rules:
-        - apiGroups: [""]
-          resources: ["pods", "services", "nodes", "namespaces"]
-          verbs: ["get", "list", "watch"]
-        - apiGroups: ["apps"]
-          resources: ["deployments", "statefulsets", "daemonsets"]
-          verbs: ["get", "list", "watch"]
-        - apiGroups: ["networking.k8s.io"]
-          resources: ["ingresses"]
-          verbs: ["get", "list", "watch"]
-
-    resources:
-      requests:
-        memory: 256Mi
-        cpu: 100m
-      limits:
-        memory: 1Gi
-        cpu: 1000m
+      port: 7575

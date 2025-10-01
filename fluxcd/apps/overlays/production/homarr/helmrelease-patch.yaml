@@ -6,18 +6,29 @@ spec:
   targetNamespace: lost-woods
   values:
     env:
-      - name: DATABASE_URL
-        value: "file:/data/homarr.db"
-      - name: NEXTAUTH_URL
-        value: "https://apptray.pcfae.com"
-      - name: AUTH_PROVIDER
-        value: "oidc"
-      - name: AUTH_OIDC_URI
-        value: "https://sso.prplanit.com"
-      - name: AUTH_OIDC_CLIENT_NAME
-        value: "Zitadel"
-      - name: AUTH_OIDC_AUTO_LOGIN
-        value: "true"
+      DATABASE_URL: "file:/data/homarr.db"
+      NEXTAUTH_URL: "https://apptray.pcfae.com"
+      AUTH_PROVIDERS: "oidc"
+      AUTH_OIDC_URI: "https://sso.prplanit.com"
+      AUTH_OIDC_CLIENT_NAME: "Zitadel"
+      AUTH_OIDC_AUTO_LOGIN: "true"
+
+    secretEnv:
+      AUTH_SECRET:
+        valueFrom:
+          secretKeyRef:
+            name: homarr-secrets
+            key: SECRET_ENCRYPTION_KEY
+      AUTH_OIDC_CLIENT_ID:
+        valueFrom:
+          secretKeyRef:
+            name: homarr-secrets
+            key: AUTH_OIDC_CLIENT_ID
+      AUTH_OIDC_CLIENT_SECRET:
+        valueFrom:
+          secretKeyRef:
+            name: homarr-secrets
+            key: AUTH_OIDC_CLIENT_SECRET
 
     persistence:
       data:
@@ -29,7 +40,7 @@ spec:
 
     service:
       type: LoadBalancer
-      port: 3000
+      port: 7575
       annotations:
         lbipam.cilium.io/ips: "172.22.30.223"
         lbipam.cilium.io/sharing-key: "lost-woods"
