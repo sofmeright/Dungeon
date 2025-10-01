@@ -25,6 +25,7 @@
       - lost-woods: Discovery & Dashboards (exploration/finding things)
       - temple-of-time: Archival/Content Management & Media Servers (linkwarden, calibre-web, mealie, plex)
       - fairy-bottle: Backup services (velero, urbackup - restores/saves state)
+      - gorons-bracelet: Storage services (minio, longhorn, rook-ceph - provides strength/lifting power)
       - arylls-lookout: Gateway for internal-only services (xylem replacement)
       - kokiri-forest: Gateway for personal/public services (phloem replacement)
       - hyrule-castle: Gateway for business/work services (cell-membrane replacement)
@@ -100,6 +101,7 @@
       - Tools w/o userdata (it-tools, podinfo, searxng): 172.22.30.107 (sharing-key: tingle-tuner)
       - Archival/Content Management (linkwarden, calibre-web, mealie): 172.22.30.222 (sharing-key: song-of-time)
       - Backup services (velero, urbackup): 172.22.30.119 (sharing-key: fairy-bottle)
+      - Storage services (minio, longhorn, rook-ceph): 172.22.30.101 (sharing-key: gorons-bracelet)
 
 - Traefik & Gateway API Routing Strategy:
   - **IP-based Domain Isolation**: Use separate Gateway resources with unique LoadBalancer IPs to enable firewall-based internet exposure control (pfSense NAT rules per IP)
