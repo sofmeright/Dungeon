@@ -7,15 +7,15 @@ spec:
   valuesFrom:
     - kind: Secret
       name: homarr-secrets
-      valuesKey: secret_encryption_key
+      valuesKey: SECRET_ENCRYPTION_KEY
       targetPath: env.AUTH_SECRET
     - kind: Secret
       name: homarr-secrets
-      valuesKey: oidc_client_id
+      valuesKey: AUTH_OIDC_CLIENT_ID
       targetPath: env.AUTH_OIDC_CLIENT_ID
     - kind: Secret
       name: homarr-secrets
-      valuesKey: oidc_client_secret
+      valuesKey: AUTH_OIDC_CLIENT_SECRET
       targetPath: env.AUTH_OIDC_CLIENT_SECRET
   values:
     env:
