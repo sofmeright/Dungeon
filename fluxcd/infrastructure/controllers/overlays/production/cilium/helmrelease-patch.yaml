@@ -6,6 +6,7 @@ spec:
   values:
     # Cluster-specific network configuration
     ipv4NativeRoutingCIDR: "192.168.144.0/20"
+    ipv6NativeRoutingCIDR: "fc00:f1:d759:3053:a573::/64"
     k8sServiceHost: "172.22.144.105"
 
     # Enable IPv6 for external connectivity
