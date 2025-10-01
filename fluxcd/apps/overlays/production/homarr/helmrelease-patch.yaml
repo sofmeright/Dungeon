@@ -30,8 +30,13 @@ spec:
         storageClass: ceph-rbd-retain
 
     service:
+      enabled: true
       type: LoadBalancer
-      port: 7575
       annotations:
         lbipam.cilium.io/ips: "172.22.30.223"
         lbipam.cilium.io/sharing-key: "lost-woods"
+      ports:
+        app:
+          port: 7575
+          targetPort: http
+          protocol: TCP

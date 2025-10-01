@@ -34,5 +34,10 @@ spec:
         storageClass: PLACEHOLDER_STORAGE_CLASS
 
     service:
+      enabled: true
       type: PLACEHOLDER_SERVICE_TYPE
-      port: 7575
+      ports:
+        app:
+          port: 7575
+          targetPort: http
+          protocol: TCP
