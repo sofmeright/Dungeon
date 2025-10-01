@@ -4,6 +4,19 @@ metadata:
   name: homarr
 spec:
   targetNamespace: lost-woods
+  postRenderers:
+    - kustomize:
+        patches:
+          - target:
+              kind: Service
+              name: lost-woods-homarr
+            patch: |-
+              - op: add
+                path: /metadata/annotations/lbipam.cilium.io~1ips
+                value: 172.22.30.223
+              - op: add
+                path: /metadata/annotations/lbipam.cilium.io~1sharing-key
+                value: lost-woods
   values:
     envSecrets:
       authOidcCredentials:
