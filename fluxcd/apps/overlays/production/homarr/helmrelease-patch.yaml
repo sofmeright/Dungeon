@@ -28,7 +28,7 @@ spec:
         dbEncryptionKey: "SECRET_ENCRYPTION_KEY"
     env:
       DATABASE_URL: "file:/data/homarr.db"
-      NEXTAUTH_URL: "https://apptray.pcfae.com"
+      NEXTAUTH_URL: "http://172.22.30.223:7575"
       AUTH_PROVIDERS: "oidc"
       AUTH_OIDC_URI: "https://sso.prplanit.com"
       AUTH_OIDC_CLIENT_NAME: "Zitadel"
