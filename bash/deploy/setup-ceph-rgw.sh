@@ -78,29 +78,29 @@ fi
 
 REALM_ID=$(radosgw-admin realm get --rgw-realm=$REALM | grep '"id"' | head -1 | awk -F'"' '{print $4}')
 
-# Create zone configuration with custom pool names
+# Create zone configuration - use ONLY 2 pools: dungeon-rgw and dungeon-rgw-data
 cat > /tmp/rgw-zone-config.json <<EOF
 {
     "id": "$ZONE_ID",
     "name": "$ZONE",
-    "domain_root": "$METADATA_POOL.root",
-    "control_pool": "$METADATA_POOL.control",
-    "gc_pool": "$METADATA_POOL.gc",
-    "lc_pool": "$METADATA_POOL.lc",
-    "log_pool": "$METADATA_POOL.log",
-    "intent_log_pool": "$METADATA_POOL.intent",
-    "usage_log_pool": "$METADATA_POOL.usage",
-    "roles_pool": "$METADATA_POOL.roles",
-    "reshard_pool": "$METADATA_POOL.reshard",
-    "user_keys_pool": "$METADATA_POOL.users.keys",
-    "user_email_pool": "$METADATA_POOL.users.email",
-    "user_swift_pool": "$METADATA_POOL.users.swift",
-    "user_uid_pool": "$METADATA_POOL.users.uid",
-    "otp_pool": "$METADATA_POOL.otp",
-    "notif_pool": "$METADATA_POOL.notif",
-    "topics_pool": "$METADATA_POOL.topics",
-    "account_pool": "$METADATA_POOL.accounts",
-    "group_pool": "$METADATA_POOL.groups",
+    "domain_root": "$METADATA_POOL",
+    "control_pool": "$METADATA_POOL",
+    "gc_pool": "$METADATA_POOL",
+    "lc_pool": "$METADATA_POOL",
+    "log_pool": "$METADATA_POOL",
+    "intent_log_pool": "$METADATA_POOL",
+    "usage_log_pool": "$METADATA_POOL",
+    "roles_pool": "$METADATA_POOL",
+    "reshard_pool": "$METADATA_POOL",
+    "user_keys_pool": "$METADATA_POOL",
+    "user_email_pool": "$METADATA_POOL",
+    "user_swift_pool": "$METADATA_POOL",
+    "user_uid_pool": "$METADATA_POOL",
+    "otp_pool": "$METADATA_POOL",
+    "notif_pool": "$METADATA_POOL",
+    "topics_pool": "$METADATA_POOL",
+    "account_pool": "$METADATA_POOL",
+    "group_pool": "$METADATA_POOL",
     "system_key": {
         "access_key": "",
         "secret_key": ""
@@ -109,13 +109,13 @@ cat > /tmp/rgw-zone-config.json <<EOF
         {
             "key": "default-placement",
             "val": {
-                "index_pool": "$METADATA_POOL.buckets.index",
+                "index_pool": "$METADATA_POOL",
                 "storage_classes": {
                     "STANDARD": {
                         "data_pool": "$DATA_POOL"
                     }
                 },
-                "data_extra_pool": "$METADATA_POOL.buckets.non-ec",
+                "data_extra_pool": "$METADATA_POOL",
                 "index_type": 0,
                 "inline_data": true
             }
