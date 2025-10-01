@@ -9,16 +9,10 @@ spec:
       image:
         repository: docker.io/kiwigrid/k8s-sidecar
         tag: 1.28.0
-    memcached:
-      image:
-        registry: docker.io
-        repository: memcached
-        tag: 1.6.33-alpine
-    memcachedExporter:
-      image:
-        registry: docker.io
-        repository: prom/memcached-exporter
-        tag: v0.15.0
+    chunksCache:
+      enabled: false
+    resultsCache:
+      enabled: false
     singleBinary:
       replicas: 1
       persistence:
