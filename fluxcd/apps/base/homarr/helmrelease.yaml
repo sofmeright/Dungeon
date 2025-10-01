@@ -1,0 +1,80 @@
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: homarr
+spec:
+  targetNamespace: PLACEHOLDER_NAMESPACE
+  interval: 30m
+  chart:
+    spec:
+      chart: homarr
+      version: "0.1.2"
+      sourceRef:
+        kind: HelmRepository
+        name: homarr-labs
+        namespace: flux-system
+      interval: 12h
+  values:
+    image:
+      repository: ghcr.io/homarr-labs/homarr
+      tag: latest
+      pullPolicy: Always
+
+    env:
+      - name: DATABASE_URL
+        value: "file:/data/homarr.db"
+      - name: NEXTAUTH_URL
+        value: PLACEHOLDER_NEXTAUTH_URL
+      - name: AUTH_PROVIDER
+        value: "oidc"
+      - name: AUTH_OIDC_URI
+        value: PLACEHOLDER_OIDC_URI
+      - name: AUTH_OIDC_CLIENT_NAME
+        value: "Zitadel"
+      - name: AUTH_OIDC_AUTO_LOGIN
+        value: "true"
+
+    envFrom:
+      - secretRef:
+          name: homarr-secrets
+
+    persistence:
+      data:
+        enabled: true
+        size: PLACEHOLDER_STORAGE_SIZE
+        storageClass: PLACEHOLDER_STORAGE_CLASS
+        accessMode: ReadWriteOnce
+      config:
+        enabled: true
+        size: PLACEHOLDER_CONFIG_SIZE
+        storageClass: PLACEHOLDER_STORAGE_CLASS
+        accessMode: ReadWriteOnce
+
+    service:
+      type: PLACEHOLDER_SERVICE_TYPE
+      port: 3000
+
+    serviceAccount:
+      create: true
+      name: homarr
+
+    rbac:
+      create: true
+      rules:
+        - apiGroups: [""]
+          resources: ["pods", "services", "nodes", "namespaces"]
+          verbs: ["get", "list", "watch"]
+        - apiGroups: ["apps"]
+          resources: ["deployments", "statefulsets", "daemonsets"]
+          verbs: ["get", "list", "watch"]
+        - apiGroups: ["networking.k8s.io"]
+          resources: ["ingresses"]
+          verbs: ["get", "list", "watch"]
+
+    resources:
+      requests:
+        memory: 256Mi
+        cpu: 100m
+      limits:
+        memory: 1Gi
+        cpu: 1000m

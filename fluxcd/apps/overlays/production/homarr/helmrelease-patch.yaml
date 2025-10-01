@@ -1,0 +1,35 @@
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: homarr
+spec:
+  targetNamespace: lost-woods
+  values:
+    env:
+      - name: DATABASE_URL
+        value: "file:/data/homarr.db"
+      - name: NEXTAUTH_URL
+        value: "https://apptray.pcfae.com"
+      - name: AUTH_PROVIDER
+        value: "oidc"
+      - name: AUTH_OIDC_URI
+        value: "https://sso.prplanit.com"
+      - name: AUTH_OIDC_CLIENT_NAME
+        value: "Zitadel"
+      - name: AUTH_OIDC_AUTO_LOGIN
+        value: "true"
+
+    persistence:
+      data:
+        size: 5Gi
+        storageClass: ceph-rbd-retain
+      config:
+        size: 1Gi
+        storageClass: ceph-rbd-retain
+
+    service:
+      type: LoadBalancer
+      port: 3000
+      annotations:
+        lbipam.cilium.io/ips: "172.22.30.223"
+        lbipam.cilium.io/sharing-key: "lost-woods"
