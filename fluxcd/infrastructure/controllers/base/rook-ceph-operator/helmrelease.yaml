@@ -16,13 +16,6 @@ spec:
         namespace: flux-system
       interval: 12h
   values:
+    fullnameOverride: "rook-ceph-operator"
     crds:
       enabled: true
-    csi:
-      enableCSIHostNetwork: true
-    resources:
-      limits:
-        memory: 512Mi
-      requests:
-        cpu: 100m
-        memory: 128Mi
