@@ -1,0 +1,83 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: homarr
+spec:
+  serviceName: homarr
+  replicas: 1
+  selector:
+    matchLabels:
+      app: homarr
+  template:
+    metadata:
+      labels:
+        app: homarr
+    spec:
+      containers:
+      - name: homarr
+        image: ghcr.io/homarr-labs/homarr:v1.39.0
+        ports:
+        - name: http
+          containerPort: 7575
+          protocol: TCP
+        env:
+        - name: DATABASE_URL
+          value: PLACEHOLDER_DATABASE_URL
+        - name: NEXTAUTH_URL
+          value: PLACEHOLDER_NEXTAUTH_URL
+        - name: AUTH_PROVIDERS
+          value: PLACEHOLDER_AUTH_PROVIDERS
+        - name: AUTH_OIDC_URI
+          value: PLACEHOLDER_AUTH_OIDC_URI
+        - name: AUTH_OIDC_ISSUER
+          value: PLACEHOLDER_AUTH_OIDC_ISSUER
+        - name: AUTH_OIDC_CLIENT_NAME
+          value: PLACEHOLDER_AUTH_OIDC_CLIENT_NAME
+        - name: AUTH_OIDC_AUTO_LOGIN
+          value: PLACEHOLDER_AUTH_OIDC_AUTO_LOGIN
+        envFrom:
+        - secretRef:
+            name: homarr-secrets
+        volumeMounts:
+        - name: database
+          mountPath: /appdata/db
+        - name: images
+          mountPath: /images
+        livenessProbe:
+          httpGet:
+            path: /api/health/live
+            port: http
+          initialDelaySeconds: 10
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /api/health/ready
+            port: http
+          initialDelaySeconds: 5
+          periodSeconds: 5
+        resources:
+          requests:
+            memory: 256Mi
+            cpu: 100m
+          limits:
+            memory: 1Gi
+            cpu: 1000m
+  volumeClaimTemplates:
+  - metadata:
+      name: database
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      storageClassName: PLACEHOLDER_STORAGE_CLASS
+      resources:
+        requests:
+          storage: PLACEHOLDER_DATABASE_SIZE
+  - metadata:
+      name: images
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      storageClassName: PLACEHOLDER_STORAGE_CLASS
+      resources:
+        requests:
+          storage: PLACEHOLDER_IMAGES_SIZE

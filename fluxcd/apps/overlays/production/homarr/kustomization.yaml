@@ -1,26 +1,18 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
+namespace: lost-woods
+
 resources:
   - ../../../base/homarr
   - externalsecret.yaml
 
 patches:
-  - path: helmrelease-patch.yaml
+  - path: statefulset-patch.yaml
     target:
-      kind: HelmRelease
+      kind: StatefulSet
       name: homarr
-  - target:
-      kind: HelmRelease
+  - path: service-patch.yaml
+    target:
+      kind: Service
       name: homarr
-    patch: |-
-      - op: add
-        path: /metadata/namespace
-        value: lost-woods
-  - target:
-      kind: ExternalSecret
-      name: homarr-secrets
-    patch: |-
-      - op: add
-        path: /metadata/namespace
-        value: lost-woods
