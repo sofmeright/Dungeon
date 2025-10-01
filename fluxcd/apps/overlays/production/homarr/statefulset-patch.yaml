@@ -7,6 +7,11 @@ spec:
     spec:
       containers:
       - name: homarr
+        volumeMounts:
+        - name: lost-woods-homarr-sqlite
+          mountPath: /appdata/db
+        - name: lost-woods-homarr-images
+          mountPath: /images
         env:
         - name: DATABASE_URL
           value: "file:/appdata/db/homarr.db"
