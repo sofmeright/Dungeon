@@ -6,6 +6,7 @@ resources:
   # - metallb  # Removed - using Cilium LoadBalancer IPAM with BGP instead
   - weave-gitops
   - ceph-csi
+  - ceph-rgw  # Ceph S3 object storage gateway
   - cifs-csi
   - vault
   - bank-vaults

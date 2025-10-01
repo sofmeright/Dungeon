@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: ceph-rgw
+spec:
+  replicas: 2
+  template:
+    spec:
+      containers:
+      - name: rgw
+        image: quay.io/ceph/ceph:v18
+        args:
+        - --foreground
+        - --rgw-frontends=beast port=8080
+        - --name=client.dungeon-rgw
+        - --rgw-data=/var/lib/ceph/radosgw
+        resources:
+          requests:
+            memory: 512Mi
+            cpu: 250m
+          limits:
+            memory: 2Gi
+            cpu: 1000m
+  volumeClaimTemplates:
+  - metadata:
+      name: rgw-data
+    spec:
+      storageClassName: ceph-rbd-retain
+      resources:
+        requests:
+          storage: 10Gi
