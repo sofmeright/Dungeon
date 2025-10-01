@@ -5,6 +5,10 @@ metadata:
 spec:
   targetNamespace: gossip-stone
   values:
+    sidecar:
+      image:
+        repository: docker.io/kiwigrid/k8s-sidecar
+        tag: 1.28.0
     singleBinary:
       replicas: 1
       persistence:
