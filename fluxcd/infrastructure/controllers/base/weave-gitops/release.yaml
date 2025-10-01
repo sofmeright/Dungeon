@@ -7,6 +7,7 @@ metadata:
       a simple way to get insights into your GitOps workloads.
   name: weave-gitops
 spec:
+  releaseName: weave-gitops
   targetNamespace: gossip-stone
   chart:
     spec:
@@ -16,3 +17,5 @@ spec:
         name: weave-gitops
         namespace: flux-system
   interval: 1h0m0s
+  values:
+    fullnameOverride: "weave-gitops"

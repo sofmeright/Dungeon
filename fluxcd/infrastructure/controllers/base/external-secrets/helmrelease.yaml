@@ -3,6 +3,7 @@ kind: HelmRelease
 metadata:
   name: external-secrets
 spec:
+  releaseName: external-secrets
   targetNamespace: PLACEHOLDER_TARGET_NAMESPACE
   install:
     createNamespace: false
@@ -16,6 +17,7 @@ spec:
         name: external-secrets
         namespace: flux-system
   values:
+    fullnameOverride: "external-secrets"
     installCRDs: true
     replicaCount: 2
     leaderElection: true
