@@ -4,16 +4,81 @@ metadata:
   name: zitadel-config
 data:
   zitadel-config.yaml: |
+    Log:
+      Level: info
+
+    Port: 8080
+    ExternalPort: 443
     ExternalDomain: zitadel.precisionplan.it
+    ExternalSecure: true
 
     Database:
       Postgres:
         Host: zitadel-postgres.zeldas-lullaby.svc.cluster.local
+        Port: 5432
+        Database: zitadel
+        User:
+          Username: zitadel
+          SSL:
+            Mode: disable
+        Admin:
+          Username: postgres
+          SSL:
+            Mode: disable
+        MaxOpenConns: 25
+        MaxIdleConns: 10
+        MaxConnLifetime: 1h
+        MaxConnIdleTime: 5m
+
+    Telemetry:
+      Enabled: false
 
     DefaultInstance:
       SMTPConfiguration:
+        SMTP:
+          Host: smtp.gmail.com:465
+          TLS: true
         From: noreply@precisionplan.it
         FromName: PrecisionPlan IT
 
     SystemDefaults:
+      SecretGenerators:
+        PasswordSaltCost: 14
       Domain: zitadel.precisionplan.it
+      ZitadelDocs:
+        Enabled: true
+        ExternalDomain: docs.zitadel.com
+
+    # Kubernetes Integration
+    Machine:
+      Identification:
+        Hostname:
+          Enabled: true
+        Webhook:
+          Enabled: false
+
+    # Enable Actions for K8s webhook integration
+    Actions:
+      HTTP:
+        DenyList: []
+
+    # Notifications Configuration (required for v4.3.0+)
+    Notifications:
+      LegacyEnabled:
+        Email: true
+        SMS: false
+      Workers:
+        Email:
+          BulkLimit: 10
+          Limit: 5
+        SMS:
+          BulkLimit: 10
+          Limit: 5
+
+    # Projections Configuration
+    Projections:
+      RequeueEvery: 60s
+      RetryFailedAfter: 1s
+      MaxFailureCount: 5
+      BulkLimit: 200
+      Customizations: {}

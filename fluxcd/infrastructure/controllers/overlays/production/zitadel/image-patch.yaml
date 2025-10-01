@@ -8,7 +8,7 @@ spec:
     spec:
       containers:
       - name: zitadel
-        image: ghcr.io/zitadel/zitadel:v4.2.2
+        image: ghcr.io/zitadel/zitadel:v4.3.0
 ---
 apiVersion: apps/v1
 kind: StatefulSet
@@ -33,7 +33,7 @@ spec:
         image: docker.io/postgres:16-alpine
       containers:
       - name: zitadel-init
-        image: ghcr.io/zitadel/zitadel:v4.2.2
+        image: ghcr.io/zitadel/zitadel:v4.3.0
 ---
 apiVersion: batch/v1
 kind: Job
@@ -47,4 +47,4 @@ spec:
         image: docker.io/postgres:16-alpine
       containers:
       - name: zitadel-setup
-        image: ghcr.io/zitadel/zitadel:v4.2.2
+        image: ghcr.io/zitadel/zitadel:v4.3.0
