@@ -6,6 +6,13 @@ spec:
   targetNamespace: gossip-stone
   values:
     singleBinary:
+      replicas: 1
       persistence:
         size: 50Gi
         storageClass: ceph-rbd-retain
+    write:
+      replicas: 0
+    read:
+      replicas: 0
+    backend:
+      replicas: 0
