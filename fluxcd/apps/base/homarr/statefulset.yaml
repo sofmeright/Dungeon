@@ -39,9 +39,9 @@ spec:
         - secretRef:
             name: homarr-secrets
         volumeMounts:
-        - name: database
+        - name: PLACEHOLDER_NAMESPACE-homarr-sqlite
           mountPath: /appdata/db
-        - name: images
+        - name: PLACEHOLDER_NAMESPACE-homarr-images
           mountPath: /images
         livenessProbe:
           httpGet:
@@ -64,7 +64,7 @@ spec:
             cpu: 1000m
   volumeClaimTemplates:
   - metadata:
-      name: database
+      name: PLACEHOLDER_NAMESPACE-homarr-sqlite
     spec:
       accessModes:
       - ReadWriteOnce
@@ -73,7 +73,7 @@ spec:
         requests:
           storage: PLACEHOLDER_DATABASE_SIZE
   - metadata:
-      name: images
+      name: PLACEHOLDER_NAMESPACE-homarr-images
     spec:
       accessModes:
       - ReadWriteOnce

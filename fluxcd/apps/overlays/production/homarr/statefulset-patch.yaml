@@ -24,7 +24,7 @@ spec:
           value: "true"
   volumeClaimTemplates:
   - metadata:
-      name: database
+      name: lost-woods-homarr-sqlite
     spec:
       accessModes:
       - ReadWriteOnce
@@ -33,7 +33,7 @@ spec:
         requests:
           storage: 100Mi
   - metadata:
-      name: images
+      name: lost-woods-homarr-images
     spec:
       accessModes:
       - ReadWriteOnce

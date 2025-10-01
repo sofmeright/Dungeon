@@ -25,6 +25,9 @@
       - lost-woods: Discovery & Dashboards (exploration/finding things)
       - temple-of-time: Archival/Content Management & Media Servers (linkwarden, calibre-web, mealie, plex)
       - fairy-bottle: Backup services (velero, urbackup - restores/saves state)
+      - arylls-lookout: Gateway for internal-only services (xylem replacement)
+      - kokiri-forest: Gateway for personal/public services (phloem replacement)
+      - hyrule-castle: Gateway for business/work services (cell-membrane replacement)
   - Base should NEVER contain deployment-ready configs - only generic templates that overlays patch with real values. Base should document application defaults from upstream/vendor documentation, not production-specific configurations.
   - Always use overlays/production for actual deployment to the production cluster, never deploy from base
 
@@ -53,6 +56,23 @@
 
 - Stateful sets should be used for PVCs that are for stateful applications! Deployments should only be used when the applications state doesnt need to be kept!
 
+- PersistentVolume Naming Standard:
+  - PVC names created via StatefulSet volumeClaimTemplates MUST follow this pattern: `<namespace>-<app>-<purpose>-<replica-number>`
+  - Components:
+    - `<namespace>`: The Kubernetes namespace (e.g., temple-of-time, lost-woods, gossip-stone)
+    - `<app>`: The application name (e.g., plex, homarr, linkwarden, mealie)
+    - `<purpose>`: Descriptive purpose/type identifying what the volume stores
+      - For databases: Use specific DB type (postgres, mysql, sqlite, redis) NOT generic "database" or "data"
+      - For storage: Use descriptive purpose (config, images, media, transcode, cache, storage)
+    - `<replica-number>`: StatefulSet replica index (0, 1, 2, etc.)
+  - Examples:
+    - `temple-of-time-plex-config-0` - Plex configuration
+    - `temple-of-time-plex-transcode-0` - Plex transcoding cache
+    - `temple-of-time-mealie-postgres-0` - Mealie's PostgreSQL database
+    - `lost-woods-homarr-sqlite-0` - Homarr's SQLite database
+    - `lost-woods-homarr-images-0` - Homarr image storage
+    - `gossip-stone-loki-storage-0` - Loki log storage
+
 - Cluster Networking:
   - Pfsense router IPs are 172.22.144.21 & 172.22.144.23; the carp vip is 172.22.144.22. They provide BGP by peering with 172.22.144.150-154 172.22.144.170-74 and advertising routes for 172.22.30.0/24.
   - Cluster Pod CIDR 192.168.144.0/20
@@ -80,3 +100,17 @@
       - Tools w/o userdata (it-tools, podinfo, searxng): 172.22.30.107 (sharing-key: tingle-tuner)
       - Archival/Content Management (linkwarden, calibre-web, mealie): 172.22.30.222 (sharing-key: song-of-time)
       - Backup services (velero, urbackup): 172.22.30.119 (sharing-key: fairy-bottle)
+
+- Traefik & Gateway API Routing Strategy:
+  - **IP-based Domain Isolation**: Use separate Gateway resources with unique LoadBalancer IPs to enable firewall-based internet exposure control (pfSense NAT rules per IP)
+  - **Gateway Architecture**:
+    - **xylem-gateway** (172.22.30.69, sharing-key: arylls-lookout): Internal-only services (*.pcfae.com) - NO pfSense port forward = internal only, can be enabled on-demand
+    - **phloem-gateway** (172.22.30.70, sharing-key: kokiri-forest): Personal/public services (*.sofmeright.com, *.arbitorium.com, *.yesimvegan.com) - pfSense forwards port 443
+    - **cell-membrane-gateway** (172.22.30.71, sharing-key: hyrule-castle): Business/work services (*.precisionplanit.com, *.prplanit.com, *.optcp.com, *.ipleek.com, *.uni2.cc) - pfSense forwards port 443
+  - Each Gateway has its own:
+    - Unique LoadBalancer IP via `lbipam.cilium.io/ips` annotation
+    - Dedicated TLS certificate (cert-manager + Let's Encrypt)
+    - Wildcard hostname listener for its domain(s)
+  - HTTPRoutes reference the appropriate Gateway via `parentRefs` and hostname matching
+  - Firewall (pfSense) controls public/private exposure via port forward rules per Gateway IP
+  - Benefits: Same nginx-extras isolation model, firewall-controlled exposure, k8s-native routing
