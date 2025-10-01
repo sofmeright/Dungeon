@@ -1,0 +1,92 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: alloy-config
+data:
+  config.alloy: |
+    // Kubernetes Service Discovery
+    discovery.kubernetes "pods" {
+      role = "pod"
+    }
+
+    discovery.kubernetes "services" {
+      role = "service"
+    }
+
+    discovery.kubernetes "endpoints" {
+      role = "endpoints"
+    }
+
+    // Prometheus Remote Write - Local K8s Prometheus
+    prometheus.remote_write "default" {
+      endpoint {
+        url = "http://prometheus-server.gossip-stone.svc.cluster.local:9090/api/v1/write"
+      }
+    }
+
+    // Scrape Kubernetes Pods with prometheus.io annotations
+    prometheus.scrape "kubernetes_pods" {
+      targets = discovery.kubernetes.pods.targets
+      forward_to = [prometheus.remote_write.default.receiver]
+
+      clustering {
+        enabled = false
+      }
+    }
+
+    // Scrape Kubernetes Services with prometheus.io/scrape annotation
+    prometheus.scrape "kubernetes_services" {
+      targets = discovery.kubernetes.services.targets
+      forward_to = [prometheus.remote_write.default.receiver]
+
+      clustering {
+        enabled = false
+      }
+    }
+
+    // Loki Log Collection - Local K8s Loki
+    loki.write "default" {
+      endpoint {
+        url = "http://loki-gateway.gossip-stone.svc.cluster.local/loki/api/v1/push"
+      }
+    }
+
+    // Collect logs from Kubernetes pods
+    loki.source.kubernetes "pods" {
+      targets    = discovery.kubernetes.pods.targets
+      forward_to = [loki.write.default.receiver]
+    }
+
+    // Remote scrape targets (lighthouse Docker host @ 10.55.6.137)
+    discovery.relabel "lighthouse_exporters" {
+      targets = [
+        {
+          __address__ = "10.55.6.137:9100",
+          job = "node-exporter-lighthouse",
+          instance = "lighthouse",
+        },
+        {
+          __address__ = "10.55.6.137:8098",
+          job = "cadvisor-lighthouse",
+          instance = "lighthouse",
+        },
+        {
+          __address__ = "10.55.6.137:9795",
+          job = "eaton-ups-exporter",
+          instance = "lighthouse",
+        },
+        {
+          __address__ = "10.55.6.137:9221",
+          job = "proxmox-pve-exporter",
+          instance = "lighthouse",
+        },
+      ]
+    }
+
+    prometheus.scrape "lighthouse_exporters" {
+      targets    = discovery.relabel.lighthouse_exporters.output
+      forward_to = [prometheus.remote_write.default.receiver]
+
+      scrape_interval = "30s"
+      scrape_timeout  = "10s"
+    }

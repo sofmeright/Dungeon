@@ -13,4 +13,7 @@ resources:
   - zitadel
   - adguard  # DNS server with network policy for proper routing
   - velero  # Backup and disaster recovery
-  - grafana  # Grafana monitoring
+  - grafana  # Grafana visualization dashboard
+  - prometheus  # Metrics storage and query engine
+  - loki  # Log aggregation and storage
+  - alloy  # Unified observability collector (scrapes K8s + Docker)
