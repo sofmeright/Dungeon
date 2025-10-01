@@ -25,6 +25,7 @@ spec:
   - metadata:
       name: rgw-data
     spec:
+      accessModes: ["ReadWriteMany"]
       storageClassName: ceph-rbd-retain
       resources:
         requests:
