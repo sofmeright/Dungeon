@@ -14,28 +14,32 @@ spec:
         - |
           set -ex
 
-          # Wait for RGW to be ready
-          until radosgw-admin realm list 2>/dev/null; do
-            echo "Waiting for RGW to be accessible..."
-            sleep 5
-          done
-
           # Create realm if it doesn't exist
           if ! radosgw-admin realm get --rgw-realm=dungeon 2>/dev/null; then
+            echo "Creating realm dungeon..."
             radosgw-admin realm create --rgw-realm=dungeon --default
+          else
+            echo "Realm dungeon already exists"
           fi
 
           # Create zonegroup if it doesn't exist
           if ! radosgw-admin zonegroup get --rgw-zonegroup=default 2>/dev/null; then
+            echo "Creating zonegroup default..."
             radosgw-admin zonegroup create --rgw-zonegroup=default --endpoints=http://ceph-rgw.gorons-bracelet.svc.cluster.local --master --default
+          else
+            echo "Zonegroup default already exists"
           fi
 
           # Create zone if it doesn't exist
           if ! radosgw-admin zone get --rgw-zone=default 2>/dev/null; then
+            echo "Creating zone default..."
             radosgw-admin zone create --rgw-zonegroup=default --rgw-zone=default --endpoints=http://ceph-rgw.gorons-bracelet.svc.cluster.local --master --default
+          else
+            echo "Zone default already exists"
           fi
 
           # Commit period
+          echo "Committing period..."
           radosgw-admin period update --commit
 
           echo "RGW initialization complete"
