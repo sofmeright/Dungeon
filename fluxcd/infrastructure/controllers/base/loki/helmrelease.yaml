@@ -55,6 +55,15 @@ spec:
           memory: 1Gi
           cpu: 500m
 
+    write:
+      replicas: 0
+
+    read:
+      replicas: 0
+
+    backend:
+      replicas: 0
+
     gateway:
       enabled: true
       replicas: 1
