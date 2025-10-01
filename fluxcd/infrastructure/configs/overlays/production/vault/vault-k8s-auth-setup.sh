@@ -32,6 +32,12 @@ path \"operationtimecapsule/data/*\" {
 path \"operationtimecapsule/metadata/*\" {
   capabilities = [\"read\", \"list\"]
 }
+path \"precisionplanit/data/*\" {
+  capabilities = [\"read\", \"list\"]
+}
+path \"precisionplanit/metadata/*\" {
+  capabilities = [\"read\", \"list\"]
+}
 EOF"
 
 # Create role for external-secrets
