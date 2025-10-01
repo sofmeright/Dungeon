@@ -4,3 +4,4 @@ resources:
   - statefulset.yaml
   - service.yaml
   - init-job.yaml
+  - zone-config-template.yaml

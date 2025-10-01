@@ -7,3 +7,4 @@ patches:
   - path: statefulset-patch.yaml
   - path: service-patch.yaml
   - path: init-job-patch.yaml
+  - path: zone-config-patch.yaml

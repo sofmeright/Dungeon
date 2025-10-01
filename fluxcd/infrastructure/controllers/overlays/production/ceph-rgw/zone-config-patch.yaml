@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ceph-rgw-zone-config
+data:
+  zonegroup.json: |
+    {
+        "name": "default",
+        "api_name": "default",
+        "is_master": true,
+        "endpoints": ["http://ceph-rgw.gorons-bracelet.svc.cluster.local"],
+        "hostnames": [],
+        "hostnames_s3website": [],
+        "master_zone": "default",
+        "placement_targets": [
+            {
+                "name": "default-placement",
+                "tags": [],
+                "storage_classes": ["STANDARD"]
+            }
+        ],
+        "default_placement": "default-placement"
+    }
