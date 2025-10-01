@@ -9,7 +9,8 @@ spec:
     k8sServiceHost: "172.22.144.105"
 
     # Enable IPv6 for external connectivity
-    enableIPv6: true
+    ipv6:
+      enabled: true
 
     operator:
       replicas: 1
