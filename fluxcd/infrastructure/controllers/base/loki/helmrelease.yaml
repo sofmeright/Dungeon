@@ -17,7 +17,7 @@ spec:
       interval: 12h
   values:
     fullnameOverride: "loki"
-    deploymentMode: SingleBinary
+    deploymentMode: SimpleScalable
 
     loki:
       image:
@@ -27,7 +27,7 @@ spec:
       auth_enabled: false
 
       commonConfig:
-        replication_factor: 1
+        replication_factor: 3
 
       storage:
         type: 'filesystem'
@@ -43,31 +43,56 @@ spec:
               period: 24h
 
     singleBinary:
-      replicas: 1
-      persistence:
-        enabled: true
-        size: PLACEHOLDER_STORAGE_SIZE
-        storageClass: PLACEHOLDER_STORAGE_CLASS
-
-      resources:
-        requests:
-          memory: 256Mi
-          cpu: 100m
-        limits:
-          memory: 1Gi
-          cpu: 500m
+      replicas: 0
 
     write:
-      replicas: 0
+      replicas: 3
+      persistence:
+        enabled: true
+        size: PLACEHOLDER_WRITE_STORAGE_SIZE
+        storageClass: PLACEHOLDER_STORAGE_CLASS
+      resources:
+        requests:
+          memory: 512Mi
+          cpu: 200m
+        limits:
+          memory: 2Gi
+          cpu: 1000m
+
     read:
-      replicas: 0
+      replicas: 3
+      persistence:
+        enabled: true
+        size: PLACEHOLDER_READ_STORAGE_SIZE
+        storageClass: PLACEHOLDER_STORAGE_CLASS
+      resources:
+        requests:
+          memory: 512Mi
+          cpu: 200m
+        limits:
+          memory: 2Gi
+          cpu: 1000m
+
     backend:
-      replicas: 0
+      replicas: 3
+      persistence:
+        enabled: true
+        size: PLACEHOLDER_BACKEND_STORAGE_SIZE
+        storageClass: PLACEHOLDER_STORAGE_CLASS
+      resources:
+        requests:
+          memory: 512Mi
+          cpu: 200m
+        limits:
+          memory: 2Gi
+          cpu: 1000m
 
     chunksCache:
-      enabled: false
+      enabled: true
+      allocatedMemory: 512
     resultsCache:
-      enabled: false
+      enabled: true
+      allocatedMemory: 256
 
     gateway:
       enabled: true

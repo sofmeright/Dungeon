@@ -5,7 +5,15 @@ metadata:
 spec:
   targetNamespace: gossip-stone
   values:
-    singleBinary:
+    write:
+      persistence:
+        size: 20Gi
+        storageClass: ceph-rbd-retain
+    read:
+      persistence:
+        size: 20Gi
+        storageClass: ceph-rbd-retain
+    backend:
       persistence:
         size: 30Gi
         storageClass: ceph-rbd-retain
