@@ -6,7 +6,8 @@ resources:
   # - metallb  # Removed - using Cilium LoadBalancer IPAM with BGP instead
   - weave-gitops
   - ceph-csi
-  - ceph-rgw  # Ceph S3 object storage gateway
+  - rook-ceph-operator  # Rook operator for Ceph orchestration
+  # - ceph-rgw  # Disabled - using Rook CephObjectStore with external RGW instead
   - cifs-csi
   - vault
   - bank-vaults
