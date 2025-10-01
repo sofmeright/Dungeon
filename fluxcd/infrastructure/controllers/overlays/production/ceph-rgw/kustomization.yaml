@@ -6,3 +6,4 @@ resources:
 patches:
   - path: statefulset-patch.yaml
   - path: service-patch.yaml
+  - path: init-job-patch.yaml
