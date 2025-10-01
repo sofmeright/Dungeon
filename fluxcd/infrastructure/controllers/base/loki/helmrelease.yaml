@@ -15,6 +15,8 @@ spec:
         namespace: flux-system
       interval: 12h
   values:
+    deploymentMode: SingleBinary
+
     loki:
       image:
         repository: "grafana/loki"
