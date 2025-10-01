@@ -14,10 +14,13 @@ spec:
         - |
           set -ex
 
+          echo "Testing Ceph connectivity..."
+          timeout 10 ceph -s || echo "Ceph command timed out"
+
           # Create realm if it doesn't exist
-          if ! radosgw-admin realm get --rgw-realm=dungeon 2>/dev/null; then
+          if ! timeout 30 radosgw-admin realm get --rgw-realm=dungeon 2>/dev/null; then
             echo "Creating realm dungeon..."
-            radosgw-admin realm create --rgw-realm=dungeon --default
+            timeout 30 radosgw-admin realm create --rgw-realm=dungeon --default
           else
             echo "Realm dungeon already exists"
           fi

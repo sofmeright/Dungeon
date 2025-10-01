@@ -85,6 +85,38 @@
     - `lost-woods-homarr-images-0` - Homarr image storage
     - `gossip-stone-loki-storage-0` - Loki log storage
 
+- Ceph Storage Configuration:
+  - External Ceph cluster managed via Proxmox
+  - Cluster FSID: `0985467c-d8f3-4483-b27f-f0a512397ec2`
+  - MON hosts: `fc00:f1:ada:104e:1ace::1-5` (IPv6)
+  - **Ceph Pool Structure**:
+    - `dungeon` - Primary pool for RBD (block storage for PVCs) and general Ceph usage
+    - `dungeon-rgw` - RGW metadata pool (realm/zone/control/meta/log/index)
+    - `dungeon-rgw-data` - RGW object data pool (actual S3 bucket objects)
+  - **Ceph Users**:
+    - `client.dungeon-provisioner` - RBD volume provisioner (caps: mon 'allow r, allow command "osd blacklist"', osd 'allow rwx pool=kubernetes', mgr 'allow rw')
+    - `client.dungeon` - RBD volume mounter (caps: mon 'allow r', osd 'allow class-read object_prefix rbd_children, allow rwx pool=kubernetes')
+    - `client.dungeon-rgw` - RADOS Gateway user (caps: mon 'allow rw', osd 'allow rwx', mgr 'allow rw')
+  - **RGW (S3) Configuration**:
+    - Deployed in `gorons-bracelet` namespace as StatefulSet
+    - LoadBalancer IP: 172.22.30.101 (shared with storage services)
+    - Endpoint: `http://ceph-rgw.gorons-bracelet.svc.cluster.local` (internal) or `http://172.22.30.101` (external)
+    - Uses Ceph RBD for local cache/WAL (ReadWriteOnce PVCs)
+    - Object data stored in `dungeon-rgw-data` pool via RADOS
+  - **Setting up RGW pools on Proxmox Ceph cluster**:
+    ```bash
+    # Enable RGW on main dungeon pool (allows sharing with RBD)
+    ceph osd pool application enable dungeon rgw --yes-i-really-mean-it
+
+    # Create dedicated RGW pools with sensible naming
+    ceph osd pool create dungeon-rgw 8 8           # Metadata pool
+    ceph osd pool create dungeon-rgw-data 32 32    # Object data pool
+
+    # Enable RGW application on pools
+    ceph osd pool application enable dungeon-rgw rgw
+    ceph osd pool application enable dungeon-rgw-data rgw
+    ```
+
 - Cluster Networking:
   - Pfsense router IPs are 172.22.144.21 & 172.22.144.23; the carp vip is 172.22.144.22. They provide BGP by peering with 172.22.144.150-154 172.22.144.170-74 and advertising routes for 172.22.30.0/24.
   - Cluster Pod CIDR 192.168.144.0/20
