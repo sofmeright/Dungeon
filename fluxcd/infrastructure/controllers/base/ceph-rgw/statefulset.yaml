@@ -22,6 +22,7 @@ spec:
         - --foreground
         - --rgw-frontends=beast port=8080
         - --name=client.PLACEHOLDER_RGW_CLIENT_NAME
+        - --keyring=/etc/ceph/ceph.keyring
         - --rgw-data=/var/lib/ceph/radosgw
         ports:
         - name: http
