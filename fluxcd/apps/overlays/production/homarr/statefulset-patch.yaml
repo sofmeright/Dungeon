@@ -26,6 +26,8 @@ spec:
   - metadata:
       name: database
     spec:
+      accessModes:
+      - ReadWriteOnce
       storageClassName: ceph-rbd-retain
       resources:
         requests:
@@ -33,6 +35,8 @@ spec:
   - metadata:
       name: images
     spec:
+      accessModes:
+      - ReadWriteOnce
       storageClassName: ceph-rbd-retain
       resources:
         requests:
