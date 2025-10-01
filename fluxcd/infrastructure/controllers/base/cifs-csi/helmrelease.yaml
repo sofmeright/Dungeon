@@ -4,7 +4,7 @@ metadata:
   name: cifs-csi-driver
 spec:
   releaseName: cifs-csi-driver
-  targetNamespace: kube-system
+  targetNamespace: gorons-bracelet
   chart:
     spec:
       chart: csi-driver-smb

@@ -3,7 +3,7 @@ kind: HelmRelease
 metadata:
   name: ceph-csi-rbd
 spec:
-  targetNamespace: kube-system
+  targetNamespace: gorons-bracelet
   install:
     createNamespace: true
   interval: 30m
