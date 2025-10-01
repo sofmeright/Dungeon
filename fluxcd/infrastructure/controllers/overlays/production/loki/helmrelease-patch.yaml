@@ -5,43 +5,7 @@ metadata:
 spec:
   targetNamespace: gossip-stone
   values:
-    write:
+    singleBinary:
       persistence:
-        size: 20Gi
-        storageClass: ceph-rbd-retain
-      extraInitContainers:
-      - name: init-s3-user
-        image: curlimages/curl:latest
-        command:
-        - /bin/sh
-        - -c
-        - |
-          set -e
-
-          RGW_ENDPOINT="http://ceph-rgw.gorons-bracelet.svc.cluster.local"
-          S3_USER="dungeon-gossip-stone-loki"
-          ADMIN_ACCESS_KEY="$(cat /rgw-admin/access_key)"
-          ADMIN_SECRET_KEY="$(cat /rgw-admin/secret_key)"
-
-          echo "Creating S3 user: $S3_USER"
-
-          # Use RGW Admin API to create user
-          curl -v -X PUT "${RGW_ENDPOINT}/admin/user?uid=${S3_USER}&display-name=Loki+Log+Storage&format=json" \
-            --aws-sigv4 "aws:amz:us-east-1:s3" \
-            --user "${ADMIN_ACCESS_KEY}:${ADMIN_SECRET_KEY}"
-        volumeMounts:
-        - name: rgw-admin-creds
-          mountPath: /rgw-admin
-          readOnly: true
-      extraVolumes:
-      - name: rgw-admin-creds
-        secret:
-          secretName: ceph-rgw-admin
-    read:
-      persistence:
-        size: 20Gi
-        storageClass: ceph-rbd-retain
-    backend:
-      persistence:
-        size: 30Gi
+        size: 50Gi
         storageClass: ceph-rbd-retain
