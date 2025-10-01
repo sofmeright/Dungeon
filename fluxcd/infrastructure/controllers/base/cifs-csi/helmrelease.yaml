@@ -22,6 +22,7 @@ spec:
     remediation:
       retries: 5
   values:
+    fullnameOverride: "csi-smb"
     controller:
       replicas: PLACEHOLDER_REPLICAS
       tolerations:

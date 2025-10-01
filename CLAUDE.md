@@ -55,6 +55,17 @@
   - Never deploy directly from base - always use overlays for actual deployments.
 - Cluster initialization is handled by bash\_importing_from_sibling_repo\bootstrap-k8s-install-dependencies.sh bootstrap-k8s-initialize-control-plane.sh and a reset script. No other manipulation should be needed for initial cluster setup.
 
+- Helm Release Naming Standard:
+  - HelmRelease metadata name should be the application name ONLY, without namespace prefix (e.g., `name: external-secrets` NOT `name: zeldas-lullaby-external-secrets`)
+  - Always set `spec.releaseName` to match the application name for consistency
+  - Always set `fullnameOverride` in Helm values to the application name to prevent namespace-prefixed pod names
+  - Pod names should follow pattern: `<app-name>-<component>-<hash/index>` NOT `<namespace>-<app-name>-<component>-<hash/index>`
+  - Examples:
+    - HelmRelease name: `external-secrets`, releaseName: `external-secrets`, fullnameOverride: `external-secrets`
+    - Results in pods: `external-secrets-xxxxx`, `external-secrets-webhook-xxxxx`, `external-secrets-cert-controller-xxxxx`
+    - NOT: `zeldas-lullaby-external-secrets-xxxxx`
+  - Benefits: Cleaner pod names, easier identification, consistent with custom StatefulSet naming
+
 - Stateful sets should be used for PVCs that are for stateful applications! Deployments should only be used when the applications state doesnt need to be kept!
 
 - PersistentVolume Naming Standard:

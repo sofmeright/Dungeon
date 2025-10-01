@@ -3,6 +3,7 @@ kind: HelmRelease
 metadata:
   name: ceph-csi-rbd
 spec:
+  releaseName: ceph-csi-rbd
   targetNamespace: gorons-bracelet
   install:
     createNamespace: true
@@ -16,6 +17,7 @@ spec:
         name: ceph-csi
         namespace: flux-system
   values:
+    fullnameOverride: "ceph-csi-rbd"
     csiConfig:
       - clusterID: "CLUSTER_ID_PLACEHOLDER"  # Will be replaced in production overlay
         monitors:
