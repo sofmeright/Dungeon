@@ -4,6 +4,19 @@ metadata:
   name: homarr
 spec:
   targetNamespace: lost-woods
+  valuesFrom:
+    - kind: Secret
+      name: homarr-secrets
+      valuesKey: secret_encryption_key
+      targetPath: env.AUTH_SECRET
+    - kind: Secret
+      name: homarr-secrets
+      valuesKey: oidc_client_id
+      targetPath: env.AUTH_OIDC_CLIENT_ID
+    - kind: Secret
+      name: homarr-secrets
+      valuesKey: oidc_client_secret
+      targetPath: env.AUTH_OIDC_CLIENT_SECRET
   values:
     env:
       DATABASE_URL: "file:/data/homarr.db"
@@ -12,23 +25,6 @@ spec:
       AUTH_OIDC_URI: "https://sso.prplanit.com"
       AUTH_OIDC_CLIENT_NAME: "Zitadel"
       AUTH_OIDC_AUTO_LOGIN: "true"
-
-    secretEnv:
-      AUTH_SECRET:
-        valueFrom:
-          secretKeyRef:
-            name: homarr-secrets
-            key: SECRET_ENCRYPTION_KEY
-      AUTH_OIDC_CLIENT_ID:
-        valueFrom:
-          secretKeyRef:
-            name: homarr-secrets
-            key: AUTH_OIDC_CLIENT_ID
-      AUTH_OIDC_CLIENT_SECRET:
-        valueFrom:
-          secretKeyRef:
-            name: homarr-secrets
-            key: AUTH_OIDC_CLIENT_SECRET
 
     persistence:
       data:
