@@ -15,8 +15,9 @@ spec:
         - --name=client.dungeon-rgw
         - --keyring=/etc/ceph/ceph.keyring
         - --rgw-data=/var/lib/ceph/radosgw
-        - --rgw-zone=default
+        - --rgw-realm=dungeon
         - --rgw-zonegroup=default
+        - --rgw-zone=default
         resources:
           requests:
             memory: 512Mi

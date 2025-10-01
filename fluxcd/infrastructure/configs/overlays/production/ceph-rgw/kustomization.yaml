@@ -3,3 +3,4 @@ kind: Kustomization
 namespace: gorons-bracelet
 resources:
   - ceph-rgw-keyring.enc.yaml
+  - ceph-rgw-admin.enc.yaml
