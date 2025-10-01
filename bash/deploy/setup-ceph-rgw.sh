@@ -30,7 +30,25 @@ else
 fi
 echo ""
 
-echo "Step 1: Create realm"
+echo "Step 1: Create Ceph pools BEFORE realm/zone creation"
+if ceph osd pool ls | grep -q "^${METADATA_POOL}$"; then
+    echo "  Pool $METADATA_POOL already exists"
+else
+    ceph osd pool create $METADATA_POOL 32 32
+    ceph osd pool application enable $METADATA_POOL rgw
+    echo "  Created pool: $METADATA_POOL"
+fi
+
+if ceph osd pool ls | grep -q "^${DATA_POOL}$"; then
+    echo "  Pool $DATA_POOL already exists"
+else
+    ceph osd pool create $DATA_POOL 64 64
+    ceph osd pool application enable $DATA_POOL rgw
+    echo "  Created pool: $DATA_POOL"
+fi
+echo ""
+
+echo "Step 2: Create realm"
 if radosgw-admin realm get --rgw-realm=$REALM 2>/dev/null; then
     echo "  Realm $REALM already exists"
 else
@@ -39,7 +57,7 @@ else
 fi
 
 echo ""
-echo "Step 2: Create zonegroup"
+echo "Step 3: Create zonegroup"
 if radosgw-admin zonegroup get --rgw-zonegroup=$ZONEGROUP 2>/dev/null; then
     echo "  Zonegroup $ZONEGROUP already exists"
 else
@@ -48,19 +66,16 @@ else
 fi
 
 echo ""
-echo "Step 3: Create zone with custom pool configuration"
+echo "Step 4: Create zone with inline pool configuration"
 if radosgw-admin zone get --rgw-zone=$ZONE 2>/dev/null; then
-    echo "  Zone $ZONE already exists, updating configuration..."
+    echo "  Zone $ZONE already exists"
+    ZONE_ID=$(radosgw-admin zone get --rgw-zone=$ZONE | grep '"id"' | head -1 | awk -F'"' '{print $4}')
 else
-    radosgw-admin zone create --rgw-zonegroup=$ZONEGROUP --rgw-zone=$ZONE --master --default --endpoints=$ENDPOINT
-    echo "  Created zone: $ZONE"
+    # Generate a zone ID
+    ZONE_ID=$(uuidgen)
+    echo "  Creating zone with ID: $ZONE_ID"
 fi
 
-echo ""
-echo "Step 4: Configure zone to use custom pools"
-
-# Get existing zone config and extract IDs
-ZONE_ID=$(radosgw-admin zone get --rgw-zone=$ZONE | grep '"id"' | head -1 | awk -F'"' '{print $4}')
 REALM_ID=$(radosgw-admin realm get --rgw-realm=$REALM | grep '"id"' | head -1 | awk -F'"' '{print $4}')
 
 # Create zone configuration with custom pool names
@@ -106,15 +121,21 @@ cat > /tmp/rgw-zone-config.json <<EOF
             }
         }
     ],
-    "realm_id": "$REALM_ID"
+    "realm_id": "$REALM_ID",
+    "tier_config": []
 }
 EOF
 
-radosgw-admin zone set --rgw-zone=$ZONE --infile=/tmp/rgw-zone-config.json
+radosgw-admin zone set --rgw-zone=$ZONE --infile=/tmp/rgw-zone-config.json --default
 echo "  Applied zone configuration with custom pools"
 
 echo ""
-echo "Step 5: Update zonegroup to link zone"
+echo "Step 5: Set zone as master and default"
+radosgw-admin zone modify --rgw-zone=$ZONE --master --default
+radosgw-admin zone modify --rgw-zone=$ZONE --endpoints=$ENDPOINT
+
+echo ""
+echo "Step 6: Update zonegroup to link zone"
 ZONEGROUP_ID=$(radosgw-admin zonegroup get --rgw-zonegroup=$ZONEGROUP | grep '"id"' | head -1 | awk -F'"' '{print $4}')
 
 cat > /tmp/rgw-zonegroup-config.json <<EOF
@@ -150,7 +171,7 @@ radosgw-admin zonegroup set --rgw-zonegroup=$ZONEGROUP --infile=/tmp/rgw-zonegro
 echo "  Updated zonegroup configuration"
 
 echo ""
-echo "Step 6: Commit period"
+echo "Step 7: Commit period"
 radosgw-admin period update --commit
 echo "  Period committed"
 
