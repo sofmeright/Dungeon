@@ -7,6 +7,7 @@ resources:
   - weave-gitops
   - ceph-csi
   - ceph-rgw  # Ceph RGW keyring for S3 object storage
+  - rook-ceph-external  # Rook external Ceph cluster connection secrets
   - vault  # Bank-Vaults with SOPS-encrypted keys
   - velero  # Backup and disaster recovery credentials
   - zitadel  # Identity and Access Management

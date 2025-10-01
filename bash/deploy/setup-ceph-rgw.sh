@@ -3,19 +3,32 @@ set -e
 
 echo "=== Ceph RGW Setup for dungeon cluster ==="
 echo ""
-echo "This script configures Ceph RGW to use dungeon-rgw pools"
-echo "Run this script ONCE on a Proxmox node with Ceph access"
+echo "This script installs and configures Ceph RGW on Proxmox"
+echo "Run this script on a Proxmox node with Ceph access"
 echo ""
 
 # Configuration
 REALM="dungeon"
 ZONEGROUP="default"
 ZONE="default"
-ENDPOINT="http://ceph-rgw.gorons-bracelet.svc.cluster.local"
+RGW_HOST=$(hostname)
+RGW_PORT="7480"
+ENDPOINT="http://${RGW_HOST}:${RGW_PORT}"
 
 # Pool names
 METADATA_POOL="dungeon-rgw"
 DATA_POOL="dungeon-rgw-data"
+
+echo "Step 0: Install radosgw package"
+if dpkg -l | grep -q radosgw; then
+    echo "  radosgw package already installed"
+else
+    echo "  Installing radosgw package..."
+    apt update
+    apt install -y radosgw
+    echo "  radosgw package installed"
+fi
+echo ""
 
 echo "Step 1: Create realm"
 if radosgw-admin realm get --rgw-realm=$REALM 2>/dev/null; then
@@ -148,10 +161,37 @@ echo "Configured pools:"
 echo "  - $METADATA_POOL (metadata)"
 echo "  - $DATA_POOL (object data)"
 echo ""
-echo "Next steps:"
-echo "  1. Restart RGW pods in Kubernetes: kubectl delete pod -n gorons-bracelet ceph-rgw-0 ceph-rgw-1"
-echo "  2. Verify no new pools were created: ceph osd pool ls"
+echo "RGW Endpoint: $ENDPOINT"
 echo ""
+echo "Next steps:"
+echo "  1. Start RGW service on this Proxmox node:"
+echo "     systemctl enable ceph-radosgw@radosgw.${RGW_HOST}.service"
+echo "     systemctl start ceph-radosgw@radosgw.${RGW_HOST}.service"
+echo ""
+echo "  2. Verify RGW is running:"
+echo "     systemctl status ceph-radosgw@radosgw.${RGW_HOST}.service"
+echo "     curl http://localhost:${RGW_PORT}"
+echo ""
+echo "  3. Create admin ops user for Rook:"
+echo "     radosgw-admin user create --uid=rgw-admin-ops-user --display-name='RGW Admin Ops User' --caps='users=*;buckets=*;usage=read;metadata=read;zone=read'"
+echo ""
+
+# Actually start RGW service
+echo "Starting RGW service..."
+systemctl enable ceph-radosgw@radosgw.${RGW_HOST}.service
+systemctl restart ceph-radosgw@radosgw.${RGW_HOST}.service
+sleep 5
+echo "RGW service started"
+echo ""
+
+# Actually create the admin ops user
+echo "Creating admin ops user..."
+if radosgw-admin user info --uid=rgw-admin-ops-user 2>/dev/null; then
+    echo "Admin ops user already exists"
+else
+    radosgw-admin user create --uid=rgw-admin-ops-user --display-name="RGW Admin Ops User" --caps="users=*;buckets=*;usage=read;metadata=read;zone=read"
+    echo "Admin ops user created"
+fi
 
 # Cleanup temp files
 rm -f /tmp/rgw-zone-config.json /tmp/rgw-zonegroup-config.json
