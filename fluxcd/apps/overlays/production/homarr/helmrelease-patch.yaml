@@ -31,6 +31,7 @@ spec:
       NEXTAUTH_URL: "http://172.22.30.223:7575"
       AUTH_PROVIDERS: "oidc"
       AUTH_OIDC_URI: "https://sso.prplanit.com"
+      AUTH_OIDC_ISSUER: "https://sso.prplanit.com"
       AUTH_OIDC_CLIENT_NAME: "Zitadel"
       AUTH_OIDC_AUTO_LOGIN: "true"
 
