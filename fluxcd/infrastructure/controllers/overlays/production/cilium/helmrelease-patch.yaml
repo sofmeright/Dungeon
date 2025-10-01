@@ -8,6 +8,10 @@ spec:
     ipv4NativeRoutingCIDR: "192.168.144.0/20"
     k8sServiceHost: "172.22.144.105"
 
+    # Enable IPv6 for external connectivity
+    ipv6:
+      enabled: true
+
     operator:
       replicas: 1
     # eBPF native datapath configuration
