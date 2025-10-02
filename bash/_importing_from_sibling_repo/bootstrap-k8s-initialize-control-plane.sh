@@ -5,10 +5,10 @@ NODENAME=$(hostname -s)
 CILIUM_VERSION="1.18.2"          # Added quotes for consistency
 KUBERNETES_VERSION="v1.34.1"     # v prefix is correct
 POD_CIDR_IPV4="192.168.144.0/20"
-POD_CIDR_IPV6="fc00:f1:0ca4:15a0:713e::/64"
+POD_CIDR_IPV6="fc00:f1:0ca4:15a0::/56"
 POD_CIDR="$POD_CIDR_IPV4,$POD_CIDR_IPV6"
 SERVICE_CIDR_IPV4="10.144.0.0/12"
-SERVICE_CIDR_IPV6="fc00:f1:7105:5e1d:a007::/108"
+SERVICE_CIDR_IPV6="fc00:f1:5e1d:a007::/112"
 SERVICE_CIDR="$SERVICE_CIDR_IPV4,$SERVICE_CIDR_IPV6"
 # Get PUBLIC IP (This is for subnet 172.22.144.0/24)
 MASTER_PUBLIC_IP="172.22.144.105"
@@ -69,6 +69,7 @@ helm repo add cilium https://helm.cilium.io/
 helm repo update
 
 # Install Cilium Network Plugin with production settings (dual-stack)
+# These settings match fluxcd/infrastructure/controllers/overlays/production/cilium/helmrelease-patch.yaml
 helm install cilium cilium/cilium --version "$CILIUM_VERSION" \
   --namespace kube-system \
   --set ipam.mode=kubernetes \
@@ -82,13 +83,25 @@ helm install cilium cilium/cilium --version "$CILIUM_VERSION" \
   --set hubble.ui.enabled=true \
   --set prometheus.enabled=true \
   --set operator.replicas=1 \
-  --set bpf.masquerade=false \
+  --set bpf.masquerade=true \
   --set bgpControlPlane.enabled=true \
   --set loadBalancer.mode=dsr \
+  --set loadBalancer.acceleration=native \
+  --set loadBalancer.algorithm=maglev \
+  --set loadBalancer.serviceTopology=true \
+  --set loadBalancer.dsrDispatch=geneve \
+  --set nodePort.enabled=true \
+  --set nodePort.mode=dsr \
   --set routingMode=native \
   --set autoDirectNodeRoutes=true \
-  --set enableIPv4Masquerade=false \
-  --set bpf.lbExternalClusterIP=true
+  --set enableIPv4Masquerade=true \
+  --set bpf.lbExternalClusterIP=true \
+  --set tunnelProtocol=geneve \
+  --set l2announcements.enabled=false \
+  --set bpfClockProbe=true \
+  --set bpfLBSockHostnsOnly=false \
+  --set endpointRoutes.enabled=true \
+  --set hostRouting=true
 
 # Wait for Cilium to be ready
 echo "Waiting for Cilium to be ready..."
