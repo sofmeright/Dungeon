@@ -12,10 +12,3 @@ patches:
       kind: Deployment
       name: snapshot-controller
   - path: rbac-patch.yaml
-    target:
-      kind: ClusterRoleBinding
-      name: snapshot-controller-role
-  - path: rbac-patch.yaml
-    target:
-      kind: RoleBinding
-      name: snapshot-controller-leaderelection
