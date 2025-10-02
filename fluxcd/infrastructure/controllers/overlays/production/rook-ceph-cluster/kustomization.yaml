@@ -3,6 +3,5 @@ kind: Kustomization
 namespace: gorons-bracelet
 resources:
   - ../../../base/rook-ceph-cluster
-  - ../../../../configs/overlays/production/rook-ceph-external
 patches:
   - path: cephcluster-patch.yaml
