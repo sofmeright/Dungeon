@@ -9,6 +9,7 @@ resources:
   - rook-ceph-operator  # Rook operator for Ceph orchestration
   - rook-ceph-cluster  # External Ceph cluster connection
   # - ceph-rgw  # Disabled - using Rook CephObjectStore with external RGW instead
+  - snapshot-controller  # CSI snapshot controller for volume snapshots
   - cifs-csi
   - vault
   - bank-vaults

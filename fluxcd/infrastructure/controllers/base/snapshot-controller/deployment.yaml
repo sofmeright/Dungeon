@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: snapshot-controller
+spec:
+  replicas: PLACEHOLDER_REPLICAS
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: snapshot-controller
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: snapshot-controller
+    spec:
+      serviceAccountName: snapshot-controller
+      containers:
+      - name: snapshot-controller
+        image: registry.k8s.io/sig-storage/snapshot-controller:PLACEHOLDER_VERSION
+        args:
+          - "--leader-election=PLACEHOLDER_LEADER_ELECTION"
+          - "--leader-election-namespace=PLACEHOLDER_NAMESPACE"
