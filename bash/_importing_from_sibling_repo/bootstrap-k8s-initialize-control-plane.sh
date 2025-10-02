@@ -4,8 +4,12 @@ set -euxo pipefail
 NODENAME=$(hostname -s)
 CILIUM_VERSION="1.18.2"          # Added quotes for consistency
 KUBERNETES_VERSION="v1.34.1"     # v prefix is correct
-POD_CIDR="192.168.144.0/20"
-SERVICE_CIDR="10.144.0.0/12"
+POD_CIDR_IPV4="192.168.144.0/20"
+POD_CIDR_IPV6="fc00:f1:0ca4:15a0:7i3e::/64"
+POD_CIDR="$POD_CIDR_IPV4,$POD_CIDR_IPV6"
+SERVICE_CIDR_IPV4="10.144.0.0/12"
+SERVICE_CIDR_IPV6="fc00:f1:7105:5e1d:a007::/108"
+SERVICE_CIDR="$SERVICE_CIDR_IPV4,$SERVICE_CIDR_IPV6"
 # Get PUBLIC IP (This is for subnet 172.22.144.0/24)
 MASTER_PUBLIC_IP="172.22.144.105"
 echo "Master IP: $MASTER_PUBLIC_IP"
@@ -62,11 +66,13 @@ export KUBECONFIG=/root/.kube/config
 helm repo add cilium https://helm.cilium.io/
 helm repo update
 
-# Install Cilium Network Plugin with production settings
+# Install Cilium Network Plugin with production settings (dual-stack)
 helm install cilium cilium/cilium --version "$CILIUM_VERSION" \
   --namespace kube-system \
   --set ipam.mode=kubernetes \
-  --set ipv4NativeRoutingCIDR="$POD_CIDR" \
+  --set ipv4NativeRoutingCIDR="$POD_CIDR_IPV4" \
+  --set ipv6NativeRoutingCIDR="$POD_CIDR_IPV6" \
+  --set ipv6.enabled=true \
   --set kubeProxyReplacement=true \
   --set k8sServiceHost="$MASTER_PUBLIC_IP" \
   --set k8sServicePort=6443 \

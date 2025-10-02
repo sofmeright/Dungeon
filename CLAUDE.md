@@ -119,19 +119,24 @@
 
 - Cluster Networking:
   - Pfsense router IPs are 172.22.144.21 & 172.22.144.23; the carp vip is 172.22.144.22. They provide BGP by peering with 172.22.144.150-154 172.22.144.170-74 and advertising routes for 172.22.30.0/24.
-  - Cluster Pod CIDR 192.168.144.0/20
-  - DNS CLuserIP 10.144.0.10
-  - Node Network: 
-    - dungeon-chest-001  172.22.144.170
-    - dungeon-chest-002  172.22.144.171
-    - dungeon-chest-003  172.22.144.172
-    - dungeon-chest-004  172.22.144.173
-    - dungeon-chest-005  172.22.144.174
-    - dungeon-map-001    172.22.144.150
-    - dungeon-map-002    172.22.144.151
-    - dungeon-map-003    172.22.144.152
-    - dungeon-map-004    172.22.144.153
-    - dungeon-map-005    172.22.144.154
+  - **Dual-Stack Configuration**:
+    - Cluster Pod CIDR IPv4: 192.168.144.0/20
+    - Cluster Pod CIDR IPv6: fc00:f1:0ca4:15a0:7i3e::/64
+    - Service CIDR IPv4: 10.144.0.0/12
+    - Service CIDR IPv6: fc00:f1:7105:5e1d:a007::/108
+    - DNS ClusterIP: 10.144.0.10
+  - **Node Network (Dual-Stack)**:
+    - dungeon-chest-001  172.22.144.170  /  fc00:f1:ada:1043:1ac3::170
+    - dungeon-chest-002  172.22.144.171  /  fc00:f1:ada:1043:1ac3::171
+    - dungeon-chest-003  172.22.144.172  /  fc00:f1:ada:1043:1ac3::172
+    - dungeon-chest-004  172.22.144.173  /  fc00:f1:ada:1043:1ac3::173
+    - dungeon-chest-005  172.22.144.174  /  fc00:f1:ada:1043:1ac3::174
+    - dungeon-map-001    172.22.144.150  /  fc00:f1:ada:1043:1ac3::150
+    - dungeon-map-002    172.22.144.151  /  fc00:f1:ada:1043:1ac3::151
+    - dungeon-map-003    172.22.144.152  /  fc00:f1:ada:1043:1ac3::152
+    - dungeon-map-004    172.22.144.153  /  fc00:f1:ada:1043:1ac3::153
+    - dungeon-map-005    172.22.144.154  /  fc00:f1:ada:1043:1ac3::154
+    - Control Plane VIP  172.22.144.105  /  fc00:f1:ada:1043:1ac3::105
   - BGP LOAD BALANCERS:
     - General CIDR: 172.22.30.0/24.
     - Shared IPs (Ocarina of Time naming theme):
