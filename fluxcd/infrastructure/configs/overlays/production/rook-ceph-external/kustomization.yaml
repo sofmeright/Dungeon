@@ -3,3 +3,4 @@ kind: Kustomization
 namespace: gorons-bracelet
 resources:
   - secrets.enc.yaml
+  - ../../../../controllers/overlays/production/rook-ceph-cluster
