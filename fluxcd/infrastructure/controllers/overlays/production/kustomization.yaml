@@ -9,7 +9,7 @@ resources:
   - rook-ceph-operator  # Rook operator for Ceph orchestration
   # - ceph-rgw  # Disabled - using Rook CephObjectStore with external RGW instead
   - snapshot-controller  # CSI snapshot controller for volume snapshots
-  - ../../configs/overlays/production/volume-snapshot-class  # VolumeSnapshotClass (needs snapshot-controller CRDs)
+  - ../../../configs/overlays/production/volume-snapshot-class  # VolumeSnapshotClass (needs snapshot-controller CRDs)
   - cifs-csi
   - vault
   - bank-vaults
