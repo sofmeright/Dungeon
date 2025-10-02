@@ -2,5 +2,6 @@ apiVersion: snapshot.storage.k8s.io/v1
 kind: VolumeSnapshotClass
 metadata:
   name: csi-rbdplugin-snapclass
-driver: rbd.csi.ceph.com
-deletionPolicy: Delete
+spec:
+  driver: rbd.csi.ceph.com
+  deletionPolicy: Delete
