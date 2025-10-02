@@ -17,5 +17,3 @@ patches:
       name: plex
   - path: storage-patch.yaml
   - path: pv-secretref-patch.yaml
-    target:
-      kind: PersistentVolume
