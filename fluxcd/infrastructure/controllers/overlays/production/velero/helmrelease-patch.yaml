@@ -14,9 +14,6 @@ spec:
           - mountPath: /target
             name: plugins
     configuration:
-      uploaderType: kopia
-      defaultVolumesToFsBackup: true
-
       backupStorageLocation:
         - name: default
           provider: aws
@@ -29,9 +26,7 @@ spec:
 
       volumeSnapshotLocation:
         - name: default
-          provider: aws
-          config:
-            region: us-east-1
+          provider: csi
 
     credentials:
       existingSecret: velero-minio-credentials
