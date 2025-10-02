@@ -14,6 +14,9 @@ spec:
           - mountPath: /target
             name: plugins
     configuration:
+      # Enable CSI snapshots feature
+      features: EnableCSI
+
       backupStorageLocation:
         - name: default
           provider: aws
