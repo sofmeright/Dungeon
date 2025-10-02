@@ -14,6 +14,9 @@ spec:
           - mountPath: /target
             name: plugins
     configuration:
+      uploaderType: kopia
+      defaultVolumesToFsBackup: true
+
       backupStorageLocation:
         - name: default
           provider: aws
