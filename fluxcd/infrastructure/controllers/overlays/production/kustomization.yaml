@@ -7,7 +7,7 @@ resources:
   - weave-gitops
   - ceph-csi
   - rook-ceph-operator  # Rook operator for Ceph orchestration
-  - rook-ceph-cluster  # External Ceph cluster connection
+  # - rook-ceph-cluster  # External Ceph cluster connection - TEMPORARILY DISABLED until operator CRDs are installed
   # - ceph-rgw  # Disabled - using Rook CephObjectStore with external RGW instead
   - snapshot-controller  # CSI snapshot controller for volume snapshots
   - cifs-csi
