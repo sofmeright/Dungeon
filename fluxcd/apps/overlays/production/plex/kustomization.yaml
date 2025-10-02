@@ -16,34 +16,6 @@ patches:
       kind: StatefulSet
       name: plex
   - path: storage-patch.yaml
+  - path: pv-secretref-patch.yaml
     target:
-      kind: PersistentVolumeClaim
-      name: plex-media-.*
-  - target:
       kind: PersistentVolume
-      name: plex-media-movies
-    patch: |-
-      - op: add
-        path: /spec/csi/nodeStageSecretRef/namespace
-        value: temple-of-time
-  - target:
-      kind: PersistentVolume
-      name: plex-media-tv
-    patch: |-
-      - op: add
-        path: /spec/csi/nodeStageSecretRef/namespace
-        value: temple-of-time
-  - target:
-      kind: PersistentVolume
-      name: plex-media-music
-    patch: |-
-      - op: add
-        path: /spec/csi/nodeStageSecretRef/namespace
-        value: temple-of-time
-  - target:
-      kind: PersistentVolume
-      name: plex-media-photos
-    patch: |-
-      - op: add
-        path: /spec/csi/nodeStageSecretRef/namespace
-        value: temple-of-time

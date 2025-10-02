@@ -1,4 +1,28 @@
 ---
-- op: replace
-  path: /spec/storageClassName
-  value: ""
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: plex-media-movies
+spec:
+  storageClassName: ""
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: plex-media-tv
+spec:
+  storageClassName: ""
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: plex-media-music
+spec:
+  storageClassName: ""
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: plex-media-photos
+spec:
+  storageClassName: ""
