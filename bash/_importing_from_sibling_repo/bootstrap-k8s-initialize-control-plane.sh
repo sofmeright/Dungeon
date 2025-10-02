@@ -5,7 +5,7 @@ NODENAME=$(hostname -s)
 CILIUM_VERSION="1.18.2"          # Added quotes for consistency
 KUBERNETES_VERSION="v1.34.1"     # v prefix is correct
 POD_CIDR_IPV4="192.168.144.0/20"
-POD_CIDR_IPV6="fc00:f1:0ca4:15a0:7i3e::/64"
+POD_CIDR_IPV6="fc00:f1:0ca4:15a0:713e::/64"
 POD_CIDR="$POD_CIDR_IPV4,$POD_CIDR_IPV6"
 SERVICE_CIDR_IPV4="10.144.0.0/12"
 SERVICE_CIDR_IPV6="fc00:f1:7105:5e1d:a007::/108"
@@ -33,7 +33,8 @@ echo "Note: FluxCD will deploy kube-vip DaemonSet for proper HA VIP management"
 # Pull required images using CRI-O
 sudo kubeadm config images pull --kubernetes-version="$KUBERNETES_VERSION" --cri-socket="unix:///var/run/crio/crio.sock"
 
-# Initialize kubeadm with CRI-O
+# Initialize kubeadm with CRI-O and SKIP kube-proxy (Cilium replaces it)
+# This prevents the need for fix scripts to remove kube-proxy later
 sudo kubeadm init \
   --cri-socket="unix:///var/run/crio/crio.sock" \
   --control-plane-endpoint="$MASTER_PUBLIC_IP" \
@@ -43,7 +44,8 @@ sudo kubeadm init \
   --kubernetes-version="$KUBERNETES_VERSION" \
   --node-name "$NODENAME" \
   --ignore-preflight-errors=Swap \
-  --upload-certs
+  --upload-certs \
+  --skip-phases=addon/kube-proxy
 
 # Configure kubectl for both root and the actual user
 # Always configure for root since we're running with sudo

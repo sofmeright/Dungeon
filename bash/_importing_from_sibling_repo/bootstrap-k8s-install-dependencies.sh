@@ -5,14 +5,43 @@ set -euxo pipefail
 KUBERNETES_VERSION="v1.34"
 CRIO_VERSION="v1.34"
 
-# Disable swap permanently
+echo "==================================="
+echo "Kubernetes Dependencies Installation"
+echo "Node: $(hostname)"
+echo "==================================="
+
+# ===================================================================
+# COMPREHENSIVE SWAP DISABLE (prevents all swap-related issues)
+# ===================================================================
+echo ""
+echo "Step 1: Disabling swap completely and permanently..."
+
+# Disable swap immediately
 sudo swapoff -a
-# Remove swap from /etc/fstab
-sudo sed -i '/ swap / s/^/#/' /etc/fstab
-# Remove any swap files that may exist
+
+# Comment out ALL swap entries in /etc/fstab (not just lines with " swap ")
+sudo sed -i '/swap/s/^/#/' /etc/fstab
+
+# Remove swap files that commonly cause issues
 sudo rm -f /swap.img /swapfile
 
-# Load required kernel modules
+# Also disable any systemd swap targets
+sudo systemctl mask swap.target 2>/dev/null || true
+
+# Verify swap is off
+if [ "$(swapon -s | wc -l)" -gt 1 ]; then
+    echo "ERROR: Swap is still enabled!"
+    swapon -s
+    exit 1
+fi
+echo "✓ Swap disabled permanently"
+
+# ===================================================================
+# KERNEL MODULES
+# ===================================================================
+echo ""
+echo "Step 2: Loading required kernel modules..."
+
 cat <<EOF | sudo tee /etc/modules-load.d/k8s.conf
 overlay
 br_netfilter
@@ -20,20 +49,43 @@ EOF
 
 sudo modprobe overlay
 sudo modprobe br_netfilter
+echo "✓ Kernel modules loaded"
 
-# Sysctl params required by setup
+# ===================================================================
+# SYSCTL CONFIGURATION (includes IPv6 for dual-stack)
+# ===================================================================
+echo ""
+echo "Step 3: Configuring sysctl params (IPv4 + IPv6 dual-stack)..."
+
 cat <<EOF | sudo tee /etc/sysctl.d/k8s.conf
+# IPv4 settings
 net.bridge.bridge-nf-call-iptables  = 1
 net.bridge.bridge-nf-call-ip6tables = 1
 net.ipv4.ip_forward                 = 1
+
+# IPv6 settings for dual-stack
+net.ipv6.conf.all.forwarding        = 1
+net.ipv6.conf.default.forwarding    = 1
 EOF
 
 # Apply sysctl params without reboot
 sudo sysctl --system
+echo "✓ Sysctl params configured"
 
-# Install prerequisites
+# ===================================================================
+# INSTALL PREREQUISITES
+# ===================================================================
+echo ""
+echo "Step 4: Installing prerequisites..."
 sudo apt-get update -y
 sudo apt-get install -y apt-transport-https ca-certificates curl gpg software-properties-common jq
+echo "✓ Prerequisites installed"
+
+# ===================================================================
+# INSTALL CRI-O RUNTIME
+# ===================================================================
+echo ""
+echo "Step 5: Installing CRI-O runtime..."
 
 # Install CRI-O Runtime (using new repository location)
 curl -fsSL https://download.opensuse.org/repositories/isv:/cri-o:/stable:/$CRIO_VERSION/deb/Release.key |
@@ -114,6 +166,12 @@ sudo systemctl daemon-reload
 sudo systemctl enable crio --now
 echo "CRI-O runtime installed successfully"
 
+# ===================================================================
+# INSTALL KUBERNETES COMPONENTS
+# ===================================================================
+echo ""
+echo "Step 6: Installing Kubernetes components (kubelet, kubeadm, kubectl)..."
+
 # Install Kubernetes components
 curl -fsSL https://pkgs.k8s.io/core:/stable:/$KUBERNETES_VERSION/deb/Release.key |
     sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg
@@ -127,29 +185,68 @@ sudo apt-get install -y kubelet kubeadm kubectl
 # Prevent automatic updates
 sudo apt-mark hold kubelet kubeadm kubectl cri-o
 
+# ===================================================================
+# KUBELET CONFIGURATION (with CRI-O socket)
+# ===================================================================
+echo ""
+echo "Step 7: Configuring kubelet..."
+
 # Get the local IP (first non-loopback IP)
 local_ip=$(hostname -I | awk '{print $1}')
-echo "Local IP: $local_ip"
+echo "  Node IP: $local_ip"
 
-# Configure kubelet with local IP
+# Configure kubelet with local IP AND CRI-O socket
+# This prevents issues where kubelet can't find the container runtime
 cat <<EOF | sudo tee /etc/default/kubelet
-KUBELET_EXTRA_ARGS=--node-ip=$local_ip
+KUBELET_EXTRA_ARGS=--node-ip=$local_ip --container-runtime-endpoint=unix:///var/run/crio/crio.sock
 EOF
+
+# Ensure kubelet service is enabled
+sudo systemctl enable kubelet
 
 # Restart kubelet to apply configuration
 sudo systemctl daemon-reload
 sudo systemctl restart kubelet
+echo "✓ Kubelet configured with CRI-O socket"
 
-# Install Helm (needed for Cilium installation)
-curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+# ===================================================================
+# INSTALL HELM
+# ===================================================================
+echo ""
+echo "Step 8: Installing Helm..."
+curl -fsSL https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+echo "✓ Helm installed"
 
-# Pre-pull some images to speed up cluster init (optional)
+# ===================================================================
+# PRE-PULL IMAGES
+# ===================================================================
+echo ""
+echo "Step 9: Pre-pulling common images..."
 sudo crictl pull registry.k8s.io/pause:3.10
+echo "✓ Images pre-pulled"
 
+# ===================================================================
+# FINAL VERIFICATION
+# ===================================================================
+echo ""
 echo "==================================="
-echo "K8's dependency installation completed!"
+echo "Installation Complete!"
+echo "==================================="
+echo "Node: $(hostname)"
 echo "Node IP: $local_ip"
-echo "CRI-O Version: $(crio --version | head -1)"
-echo "Kubelet Version: $(kubelet --version)"
-echo "Kubeadm Version: $(kubeadm version -o short)"
+echo ""
+echo "Versions:"
+echo "  CRI-O: $(crio --version | head -1)"
+echo "  Kubelet: $(kubelet --version)"
+echo "  Kubeadm: $(kubeadm version -o short)"
+echo "  Helm: $(helm version --short)"
+echo ""
+echo "Status:"
+echo "  ✓ Swap disabled permanently"
+echo "  ✓ IPv6 forwarding enabled"
+echo "  ✓ Kernel modules loaded"
+echo "  ✓ CRI-O runtime configured"
+echo "  ✓ Kubelet configured with CRI-O socket"
+echo ""
+echo "Ready for cluster initialization!"
 echo "==================================="

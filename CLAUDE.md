@@ -121,7 +121,7 @@
   - Pfsense router IPs are 172.22.144.21 & 172.22.144.23; the carp vip is 172.22.144.22. They provide BGP by peering with 172.22.144.150-154 172.22.144.170-74 and advertising routes for 172.22.30.0/24.
   - **Dual-Stack Configuration**:
     - Cluster Pod CIDR IPv4: 192.168.144.0/20
-    - Cluster Pod CIDR IPv6: fc00:f1:0ca4:15a0:7i3e::/64
+    - Cluster Pod CIDR IPv6: fc00:f1:0ca4:15a0:713e::/64
     - Service CIDR IPv4: 10.144.0.0/12
     - Service CIDR IPv6: fc00:f1:7105:5e1d:a007::/108
     - DNS ClusterIP: 10.144.0.10
