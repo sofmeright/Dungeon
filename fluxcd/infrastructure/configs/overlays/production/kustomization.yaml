@@ -2,7 +2,6 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
   - ../../base/storage  # Storage classes with proper reclaim policies
-  - volume-snapshot-class  # CSI VolumeSnapshotClass for Ceph RBD snapshots
   - cilium
   # - metallb  # Disabled - replaced by Cilium LoadBalancer IPAM
   - weave-gitops
