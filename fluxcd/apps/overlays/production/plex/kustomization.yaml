@@ -16,6 +16,9 @@ patches:
       kind: StatefulSet
       name: plex
   - path: storage-patch.yaml
+    target:
+      kind: PersistentVolumeClaim
+      name: plex-media-.*
   - target:
       kind: PersistentVolume
       name: plex-media-movies
