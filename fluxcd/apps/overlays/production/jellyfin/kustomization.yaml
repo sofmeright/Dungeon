@@ -9,5 +9,5 @@ patches:
       name: jellyfin
     patch: |-
       - op: replace
-        path: /spec/template/spec/containers/0/env/6/value
+        path: /spec/template/spec/containers/0/env/3/value
         value: "https://jfish.optcp.com"
