@@ -9,7 +9,11 @@ patches:
       kind: Service
       name: jellyfin
   - path: pv-secretref-patch.yaml
+    target:
+      kind: PersistentVolume
   - path: storage-patch.yaml
+    target:
+      kind: PersistentVolumeClaim
   - target:
       kind: StatefulSet
       name: jellyfin
