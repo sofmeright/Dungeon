@@ -13,7 +13,6 @@ spec:
       labels:
         app: jellyfin
     spec:
-      runtimeClassName: nvidia
       containers:
       - name: jellyfin
         image: jellyfin/jellyfin:latest
@@ -37,8 +36,6 @@ spec:
           value: "1000"
         - name: TZ
           value: America/Los_Angeles
-        - name: NVIDIA_VISIBLE_DEVICES
-          value: all
         - name: JELLYFIN_PublishedServerUrl
           value: https://jellyfin.example.com
         volumeMounts:
@@ -54,9 +51,6 @@ spec:
           mountPath: /media/Music
         - name: media-photos
           mountPath: /media/Photos
-        resources:
-          limits:
-            nvidia.com/gpu: "1"
       volumes:
       - name: media-movies
         persistentVolumeClaim:
