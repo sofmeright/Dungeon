@@ -4,7 +4,7 @@
 
 VAULT_NAMESPACE="zeldas-lullaby"
 VAULT_POD=$(kubectl get pod -n ${VAULT_NAMESPACE} -l app.kubernetes.io/name=vault -o jsonpath='{.items[0].metadata.name}')
-VAULT_SA_NAME="${VAULT_NAMESPACE}-external-secrets"
+VAULT_SA_NAME="external-secrets-vault"
 
 # Get the Vault root token
 VAULT_ROOT_TOKEN=$(kubectl get secret vault-unseal-keys -n ${VAULT_NAMESPACE} -o jsonpath='{.data.vault-root}' | base64 -d)
