@@ -20,10 +20,6 @@ spec:
     targetPort: 32469
     protocol: TCP
     name: dlna-tcp
-  - port: 1900
-    targetPort: 1900
-    protocol: UDP
-    name: dlna-udp
   - port: 32410
     targetPort: 32410
     protocol: UDP
