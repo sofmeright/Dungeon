@@ -34,7 +34,7 @@ spec:
     requests:
       storage: 1Ti
   volumeName: jellyfin-media-movies
-  storageClassName: ""
+  storageClassName: PLACEHOLDER_STORAGE_CLASS
 ---
 apiVersion: v1
 kind: PersistentVolume
@@ -72,7 +72,7 @@ spec:
     requests:
       storage: 1Ti
   volumeName: jellyfin-media-tv
-  storageClassName: ""
+  storageClassName: PLACEHOLDER_STORAGE_CLASS
 ---
 apiVersion: v1
 kind: PersistentVolume
@@ -110,7 +110,7 @@ spec:
     requests:
       storage: 500Gi
   volumeName: jellyfin-media-music
-  storageClassName: ""
+  storageClassName: PLACEHOLDER_STORAGE_CLASS
 ---
 apiVersion: v1
 kind: PersistentVolume
@@ -148,4 +148,4 @@ spec:
     requests:
       storage: 500Gi
   volumeName: jellyfin-media-photos
-  storageClassName: ""
+  storageClassName: PLACEHOLDER_STORAGE_CLASS
