@@ -1,0 +1,89 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: jellyfin
+spec:
+  serviceName: jellyfin
+  replicas: 1
+  selector:
+    matchLabels:
+      app: jellyfin
+  template:
+    metadata:
+      labels:
+        app: jellyfin
+    spec:
+      runtimeClassName: nvidia
+      containers:
+      - name: jellyfin
+        image: jellyfin/jellyfin:latest
+        ports:
+        - containerPort: 8096
+          name: http
+          protocol: TCP
+        - containerPort: 8920
+          name: https
+          protocol: TCP
+        - containerPort: 7359
+          name: discovery
+          protocol: UDP
+        - containerPort: 1900
+          name: dlna
+          protocol: UDP
+        env:
+        - name: PUID
+          value: "1000"
+        - name: PGID
+          value: "1000"
+        - name: TZ
+          value: America/Los_Angeles
+        - name: NVIDIA_VISIBLE_DEVICES
+          value: all
+        - name: JELLYFIN_PublishedServerUrl
+          value: https://jellyfin.example.com
+        volumeMounts:
+        - name: config
+          mountPath: /config
+        - name: cache
+          mountPath: /cache
+        - name: media-movies
+          mountPath: /media/Movies
+        - name: media-tv
+          mountPath: /media/TV_Shows
+        - name: media-music
+          mountPath: /media/Music
+        - name: media-photos
+          mountPath: /media/Photos
+        resources:
+          limits:
+            nvidia.com/gpu: "1"
+      volumes:
+      - name: media-movies
+        persistentVolumeClaim:
+          claimName: jellyfin-media-movies
+      - name: media-tv
+        persistentVolumeClaim:
+          claimName: jellyfin-media-tv
+      - name: media-music
+        persistentVolumeClaim:
+          claimName: jellyfin-media-music
+      - name: media-photos
+        persistentVolumeClaim:
+          claimName: jellyfin-media-photos
+  volumeClaimTemplates:
+  - metadata:
+      name: config
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      storageClassName: ceph-rbd-retain
+      resources:
+        requests:
+          storage: 10Gi
+  - metadata:
+      name: cache
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      storageClassName: ceph-rbd-retain
+      resources:
+        requests:
+          storage: 10Gi

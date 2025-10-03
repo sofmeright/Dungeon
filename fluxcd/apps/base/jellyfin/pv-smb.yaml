@@ -1,0 +1,151 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: jellyfin-media-movies
+spec:
+  capacity:
+    storage: 1Ti
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  mountOptions:
+    - vers=2.1
+    - rw
+    - uid=1000
+    - gid=1000
+    - file_mode=0777
+    - dir_mode=0777
+  csi:
+    driver: smb.csi.k8s.io
+    volumeHandle: jellyfin-media-movies
+    volumeAttributes:
+      source: //gringotts/media_movies
+    nodeStageSecretRef:
+      name: jellyfin-smb-secret
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: jellyfin-media-movies
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Ti
+  volumeName: jellyfin-media-movies
+  storageClassName: ""
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: jellyfin-media-tv
+spec:
+  capacity:
+    storage: 1Ti
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  mountOptions:
+    - vers=2.1
+    - rw
+    - uid=1000
+    - gid=1000
+    - file_mode=0777
+    - dir_mode=0777
+  csi:
+    driver: smb.csi.k8s.io
+    volumeHandle: jellyfin-media-tv
+    volumeAttributes:
+      source: //gringotts/media_tv_shows
+    nodeStageSecretRef:
+      name: jellyfin-smb-secret
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: jellyfin-media-tv
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Ti
+  volumeName: jellyfin-media-tv
+  storageClassName: ""
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: jellyfin-media-music
+spec:
+  capacity:
+    storage: 500Gi
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  mountOptions:
+    - vers=2.1
+    - rw
+    - uid=1000
+    - gid=1000
+    - file_mode=0777
+    - dir_mode=0777
+  csi:
+    driver: smb.csi.k8s.io
+    volumeHandle: jellyfin-media-music
+    volumeAttributes:
+      source: //gringotts/media_music
+    nodeStageSecretRef:
+      name: jellyfin-smb-secret
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: jellyfin-media-music
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 500Gi
+  volumeName: jellyfin-media-music
+  storageClassName: ""
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: jellyfin-media-photos
+spec:
+  capacity:
+    storage: 500Gi
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  mountOptions:
+    - vers=2.1
+    - rw
+    - uid=1000
+    - gid=1000
+    - file_mode=0777
+    - dir_mode=0777
+  csi:
+    driver: smb.csi.k8s.io
+    volumeHandle: jellyfin-media-photos
+    volumeAttributes:
+      source: //gringotts/media_photos
+    nodeStageSecretRef:
+      name: jellyfin-smb-secret
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: jellyfin-media-photos
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 500Gi
+  volumeName: jellyfin-media-photos
+  storageClassName: ""
