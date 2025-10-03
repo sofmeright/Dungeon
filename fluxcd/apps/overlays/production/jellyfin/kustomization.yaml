@@ -4,6 +4,10 @@ namespace: temple-of-time
 resources:
   - ../../../base/jellyfin
 patches:
+  - path: service-patch.yaml
+    target:
+      kind: Service
+      name: jellyfin
   - path: pv-secretref-patch.yaml
   - path: storage-patch.yaml
   - target:
