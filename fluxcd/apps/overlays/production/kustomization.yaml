@@ -6,6 +6,7 @@ resources:
   - searxng
   - plex
   - jellyfin
+  - photoprism
   - calibre-web
   - mealie
   - linkwarden
