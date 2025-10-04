@@ -14,3 +14,4 @@ resources:
   - adguard  # DNS filtering and ad blocking
   - grafana  # Grafana admin credentials
   - loki  # Loki S3 credentials for log storage
+  - prometheus  # Prometheus S3 credentials for metric storage

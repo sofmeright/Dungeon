@@ -7,8 +7,43 @@ spec:
   values:
     server:
       persistentVolume:
-        size: 50Gi
+        size: 10Gi
         storageClass: ceph-rbd-retain
 
       service:
         type: ClusterIP
+
+      # Thanos sidecar for S3 uploads
+      sidecarContainers:
+        - name: thanos-sidecar
+          image: quay.io/thanos/thanos:v0.36.1
+          args:
+            - sidecar
+            - --tsdb.path=/data
+            - --prometheus.url=http://localhost:9090
+            - --objstore.config=$(OBJSTORE_CONFIG)
+            - --grpc-address=0.0.0.0:10901
+            - --http-address=0.0.0.0:10902
+          env:
+            - name: OBJSTORE_CONFIG
+              valueFrom:
+                secretKeyRef:
+                  name: thanos-objstore
+                  key: objstore.yml
+          ports:
+            - name: grpc
+              containerPort: 10901
+            - name: http
+              containerPort: 10902
+          volumeMounts:
+            - name: storage-volume
+              mountPath: /data
+
+      # Add service for Thanos sidecar GRPC
+      extraPorts:
+        - name: grpc
+          containerPort: 10901
+          protocol: TCP
+        - name: sidecar-http
+          containerPort: 10902
+          protocol: TCP
