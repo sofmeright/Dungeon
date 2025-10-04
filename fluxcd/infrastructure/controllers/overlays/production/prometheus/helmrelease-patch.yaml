@@ -5,45 +5,41 @@ metadata:
 spec:
   targetNamespace: gossip-stone
   values:
-    server:
-      persistentVolume:
-        size: 10Gi
-        storageClass: ceph-rbd-retain
+    prometheus:
+      prometheusSpec:
+        storageSpec:
+          volumeClaimTemplate:
+            spec:
+              storageClassName: ceph-rbd-retain
+              resources:
+                requests:
+                  storage: 10Gi
 
-      service:
-        type: ClusterIP
-
-      # Thanos sidecar for S3 uploads
-      sidecarContainers:
-        - name: thanos-sidecar
+        # Enable Thanos sidecar
+        thanos:
           image: quay.io/thanos/thanos:v0.36.1
-          args:
-            - sidecar
-            - --tsdb.path=/data
-            - --prometheus.url=http://localhost:9090
-            - --objstore.config=$(OBJSTORE_CONFIG)
-            - --grpc-address=0.0.0.0:10901
-            - --http-address=0.0.0.0:10902
-          env:
-            - name: OBJSTORE_CONFIG
-              valueFrom:
-                secretKeyRef:
-                  name: thanos-objstore
-                  key: objstore.yml
-          ports:
-            - name: grpc
-              containerPort: 10901
-            - name: http
-              containerPort: 10902
-          volumeMounts:
-            - name: storage-volume
-              mountPath: /data
+          version: v0.36.1
+          objectStorageConfig:
+            secret:
+              type: S3
+              config:
+                bucket: prometheus
+                endpoint: ceph-rgw.gorons-bracelet.svc.cluster.local:80
+                insecure: true
+                access_key: ${S3_ACCESS_KEY}
+                secret_key: ${S3_SECRET_KEY}
 
-      # Add service for Thanos sidecar GRPC
-      extraPorts:
-        - name: grpc
-          containerPort: 10901
-          protocol: TCP
-        - name: sidecar-http
-          containerPort: 10902
-          protocol: TCP
+      # Enable Thanos service for querying
+      thanosService:
+        enabled: true
+        port: 10901
+
+  valuesFrom:
+    - kind: Secret
+      name: prometheus-s3
+      valuesKey: s3_access_key
+      targetPath: prometheus.prometheusSpec.thanos.objectStorageConfig.secret.config.access_key
+    - kind: Secret
+      name: prometheus-s3
+      valuesKey: s3_secret_key
+      targetPath: prometheus.prometheusSpec.thanos.objectStorageConfig.secret.config.secret_key
