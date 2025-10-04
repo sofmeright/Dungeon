@@ -8,4 +8,4 @@ spec:
     spec:
       containers:
       - name: chrony
-        image: simonrupf/chronyd:0.7.0
+        image: docker.io/simonrupf/chronyd:0.7.0
