@@ -8,7 +8,7 @@ data:
 
   # Production logging settings
   LOG_LEVEL: "0"
-  NOCLIENTLOG: "true"
+  NOCLIENTLOG: "false"
 
   # Security features (commented options from your docker-compose)
   # ENABLE_NTS: "true"
