@@ -14,6 +14,17 @@ spec:
     spec:
       securityContext:
         fsGroup: 101
+      initContainers:
+      - name: fix-permissions
+        image: docker.io/library/alpine:latest
+        command: ['sh', '-c', 'chown -R 100:101 /run/chrony /var/lib/chrony /etc/chrony']
+        volumeMounts:
+        - name: chrony-etc
+          mountPath: /etc/chrony
+        - name: chrony-run
+          mountPath: /run/chrony
+        - name: chrony-var
+          mountPath: /var/lib/chrony
       containers:
       - name: chrony
         image: PLACEHOLDER_IMAGE
