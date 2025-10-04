@@ -13,3 +13,4 @@ resources:
   - zitadel  # Identity and Access Management
   - adguard  # DNS filtering and ad blocking
   - grafana  # Grafana admin credentials
+  - loki  # Loki S3 credentials for log storage

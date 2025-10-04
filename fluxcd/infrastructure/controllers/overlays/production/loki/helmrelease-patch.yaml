@@ -5,6 +5,13 @@ metadata:
 spec:
   targetNamespace: gossip-stone
   values:
+    loki:
+      storage:
+        s3:
+          endpoint: ceph-rgw.gorons-bracelet.svc.cluster.local:80
+          region: default
+          accessKeyId: ${S3_ACCESS_KEY}
+          secretAccessKey: ${S3_SECRET_KEY}
     sidecar:
       image:
         repository: docker.io/kiwigrid/k8s-sidecar
@@ -14,13 +21,21 @@ spec:
     resultsCache:
       enabled: false
     singleBinary:
-      replicas: 1
+      replicas: 3
       persistence:
-        size: 50Gi
-        storageClass: ceph-rbd-retain
+        enabled: false
     write:
       replicas: 0
     read:
       replicas: 0
     backend:
       replicas: 0
+  valuesFrom:
+    - kind: Secret
+      name: loki-s3
+      valuesKey: s3_access_key
+      targetPath: loki.storage.s3.accessKeyId
+    - kind: Secret
+      name: loki-s3
+      valuesKey: s3_secret_key
+      targetPath: loki.storage.s3.secretAccessKey

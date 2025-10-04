@@ -26,14 +26,28 @@ spec:
 
       auth_enabled: false
 
+      commonConfig:
+        replication_factor: 3
+
       storage:
-        type: 'filesystem'
+        type: 's3'
+        bucketNames:
+          chunks: loki
+          ruler: loki
+          admin: loki
+        s3:
+          endpoint: PLACEHOLDER_S3_ENDPOINT
+          region: PLACEHOLDER_S3_REGION
+          accessKeyId: PLACEHOLDER_ACCESS_KEY
+          secretAccessKey: PLACEHOLDER_SECRET_KEY
+          s3ForcePathStyle: true
+          insecure: false
 
       schemaConfig:
         configs:
           - from: "2024-01-01"
             store: tsdb
-            object_store: filesystem
+            object_store: s3
             schema: v13
             index:
               prefix: index_
