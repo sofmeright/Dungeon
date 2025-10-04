@@ -15,14 +15,15 @@ spec:
                 requests:
                   storage: 10Gi
 
+        # Mount the Thanos objstore config secret
+        volumes:
+          - name: thanos-objstore-config
+            secret:
+              secretName: thanos-objstore
+
         # Enable Thanos sidecar
         thanos:
           image: quay.io/thanos/thanos:v0.36.1
-          # Mount the objstore config secret
-          volumes:
-            - name: thanos-objstore-config
-              secret:
-                secretName: thanos-objstore
           volumeMounts:
             - name: thanos-objstore-config
               mountPath: /etc/thanos/objstore
