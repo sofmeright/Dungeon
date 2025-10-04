@@ -10,7 +10,7 @@ resources:
   - external-secrets-token.yaml   # Token secret for ServiceAccount
   - clustersecretstore-operationtimecapsule.yaml  # External Secrets for operationtimecapsule (media/archives stuff like in song-of-storms, song-of-time)
   - clustersecretstore-precisionplanit.yaml  # External Secrets for PrecisionPlanIt secrets
-  - clustersecretstore-zeldas-letter.yaml  # External Secrets for Zelda's Letter (system/core apps)
+  - clustersecretstore-zeldas-letter.yaml  # External Secrets for the Hyrule family (system/core apps)
 
 patches:
   - path: vault-cr-patch.yaml
