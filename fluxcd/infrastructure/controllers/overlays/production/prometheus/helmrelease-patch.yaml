@@ -18,10 +18,19 @@ spec:
         # Enable Thanos sidecar
         thanos:
           image: quay.io/thanos/thanos:v0.36.1
-          objectStorageConfig:
-            # Reference the thanos-objstore secret created by External Secrets
-            name: thanos-objstore
-            key: objstore.yml
+          # Mount the objstore config secret
+          volumes:
+            - name: thanos-objstore-config
+              secret:
+                secretName: thanos-objstore
+          volumeMounts:
+            - name: thanos-objstore-config
+              mountPath: /etc/thanos/objstore
+              readOnly: true
+          # Reference the config file
+          additionalArgs:
+            - name: objstore.config-file
+              value: /etc/thanos/objstore/objstore.yml
 
       # Enable Thanos service for querying
       thanosService:
