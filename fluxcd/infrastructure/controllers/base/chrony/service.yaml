@@ -11,3 +11,4 @@ spec:
     targetPort: 123
     protocol: UDP
   type: LoadBalancer
+  externalTrafficPolicy: Local
