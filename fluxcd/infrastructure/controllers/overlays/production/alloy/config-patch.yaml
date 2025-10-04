@@ -17,10 +17,10 @@ data:
       role = "endpoints"
     }
 
-    // Prometheus Remote Write - Local K8s Prometheus
+    // Prometheus Remote Write - Thanos Query (unified HA endpoint)
     prometheus.remote_write "default" {
       endpoint {
-        url = "http://prometheus-server.gossip-stone.svc.cluster.local:9090/api/v1/write"
+        url = "http://thanos-query.gossip-stone.svc.cluster.local:9090/api/v1/write"
       }
     }
 
