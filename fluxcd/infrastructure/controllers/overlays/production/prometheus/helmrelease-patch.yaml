@@ -18,7 +18,6 @@ spec:
         # Enable Thanos sidecar
         thanos:
           image: quay.io/thanos/thanos:v0.36.1
-          version: v0.36.1
           objectStorageConfig:
             # Reference the thanos-objstore secret created by External Secrets
             name: thanos-objstore
