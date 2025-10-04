@@ -7,6 +7,8 @@ spec:
   values:
     prometheus:
       prometheusSpec:
+        # Enable HA with 3 replicas
+        replicas: 3
         storageSpec:
           volumeClaimTemplate:
             spec:
