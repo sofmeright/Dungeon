@@ -15,5 +15,5 @@ patches:
       name: photoprism
     patch: |-
       - op: replace
-        path: /spec/template/spec/containers/0/env/6/value
+        path: /spec/template/spec/containers/0/env/8/value
         value: "https://photos.optcp.com"
