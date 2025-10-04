@@ -17,4 +17,4 @@ spec:
             - --query.replica-label=prometheus_replica
             - --query.replica-label=rule_replica
             # Connect to all Prometheus Thanos sidecars
-            - --store=dnssrv+_grpc._tcp.prometheus-prometheus-thanos.gossip-stone.svc.cluster.local
+            - --store=dnssrv+_grpc._tcp.prometheus-thanos-discovery.gossip-stone.svc.cluster.local
