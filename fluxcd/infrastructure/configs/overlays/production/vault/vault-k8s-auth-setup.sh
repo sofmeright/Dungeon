@@ -38,6 +38,12 @@ path \"precisionplanit/data/*\" {
 path \"precisionplanit/metadata/*\" {
   capabilities = [\"read\", \"list\"]
 }
+path \"zeldas-letter/data/*\" {
+  capabilities = [\"read\", \"list\"]
+}
+path \"zeldas-letter/metadata/*\" {
+  capabilities = [\"read\", \"list\"]
+}
 EOF"
 
 # Create role for external-secrets

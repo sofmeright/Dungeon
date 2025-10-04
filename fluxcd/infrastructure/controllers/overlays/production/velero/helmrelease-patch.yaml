@@ -61,7 +61,7 @@ spec:
           ttl: "720h0m0s"
           includedNamespaces:
             - operationtimecapsule
-            - prplanit-atlas
+            - zeldas-lullaby
             - lighthouse
           excludedResources:
             - events

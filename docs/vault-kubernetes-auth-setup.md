@@ -180,6 +180,18 @@ vault write auth/kubernetes/login role=external-secrets jwt="${SA_TOKEN}"
   path "operationtimecapsule/metadata/*" {
     capabilities = ["read", "list"]
   }
+  path "zeldas-letter/data/*" {
+    capabilities = ["read", "list"]
+  }
+  path "zeldas-letter/metadata/*" {
+    capabilities = ["read", "list"]
+  }
+  path "precisionplanit/data/*" {
+    capabilities = ["read", "list"]
+  }
+  path "precisionplanit/metadata/*" {
+    capabilities = ["read", "list"]
+  }
   ```
 
 ### Pod and Container Issues
