@@ -7,7 +7,7 @@ resources:
   - weave-gitops
   - ceph-csi
   - rook-ceph-operator  # Rook operator for Ceph orchestration
-  # - ceph-rgw  # Disabled - using Rook CephObjectStore with external RGW instead
+  - ceph-rgw  # Ceph RGW S3 gateway for object storage
   - snapshot-controller  # CSI snapshot controller for volume snapshots
   - ../../../configs/overlays/production/volume-snapshot-class  # VolumeSnapshotClass (needs snapshot-controller CRDs)
   - cifs-csi
