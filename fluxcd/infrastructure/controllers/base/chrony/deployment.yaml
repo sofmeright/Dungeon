@@ -57,7 +57,6 @@ spec:
           sizeLimit: 1Mi
       - name: chrony-run
         emptyDir:
-          medium: Memory
           sizeLimit: 1Mi
       - name: chrony-var
         emptyDir:
