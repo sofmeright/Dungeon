@@ -15,6 +15,9 @@ spec:
                 requests:
                   storage: 10Gi
 
+        # Disable Prometheus compaction for Thanos compatibility
+        disableCompaction: true
+
         # Mount the Thanos objstore config secret
         volumes:
           - name: thanos-objstore-config
