@@ -7,7 +7,11 @@ spec:
   - metadata:
       name: storage
     spec:
+      accessModes: ["ReadWriteOnce"]
       storageClassName: ceph-rbd-retain
+      resources:
+        requests:
+          storage: 50Gi
 ---
 apiVersion: apps/v1
 kind: StatefulSet
@@ -18,4 +22,8 @@ spec:
   - metadata:
       name: database
     spec:
+      accessModes: ["ReadWriteOnce"]
       storageClassName: ceph-rbd-retain
+      resources:
+        requests:
+          storage: 10Gi
