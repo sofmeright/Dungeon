@@ -13,9 +13,6 @@ spec:
         app: chrony
     spec:
       securityContext:
-        runAsUser: 100
-        runAsGroup: 101
-        runAsNonRoot: true
         fsGroup: 101
       containers:
       - name: chrony
