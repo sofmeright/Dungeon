@@ -21,5 +21,6 @@ resources:
   - velero  # Backup and disaster recovery
   - grafana  # Grafana visualization dashboard
   - prometheus  # Metrics storage and query engine
+  - thanos-query  # Unified querying across Prometheus replicas with deduplication
   - loki  # Log aggregation and storage
   - alloy  # Unified observability collector (scrapes K8s + Docker)

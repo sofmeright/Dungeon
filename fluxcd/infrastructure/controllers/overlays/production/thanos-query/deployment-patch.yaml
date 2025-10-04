@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: thanos-query
+spec:
+  replicas: 2
+  template:
+    spec:
+      containers:
+        - name: thanos-query
+          args:
+            - query
+            - --log.level=info
+            - --log.format=logfmt
+            - --grpc-address=0.0.0.0:10901
+            - --http-address=0.0.0.0:10902
+            - --query.replica-label=prometheus_replica
+            - --query.replica-label=rule_replica
+            # Connect to all Prometheus Thanos sidecars
+            - --store=dnssrv+_grpc._tcp.prometheus-prometheus-thanos.gossip-stone.svc.cluster.local
