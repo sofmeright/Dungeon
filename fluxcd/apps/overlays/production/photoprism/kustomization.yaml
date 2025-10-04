@@ -16,4 +16,4 @@ patches:
     patch: |-
       - op: replace
         path: /spec/template/spec/containers/0/env/8/value
-        value: "http://172.22.30.123:2342"
+        value: "https://photos.optcp.com"
