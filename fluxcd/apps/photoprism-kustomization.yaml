@@ -1,0 +1,14 @@
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: photoprism
+  namespace: flux-system
+spec:
+  interval: 5m
+  path: ./fluxcd/apps/overlays/production/photoprism
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  dependsOn:
+    - name: external-secrets

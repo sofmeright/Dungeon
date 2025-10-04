@@ -1,0 +1,170 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: photoprism
+spec:
+  serviceName: photoprism
+  replicas: 1
+  selector:
+    matchLabels:
+      app: photoprism
+  template:
+    metadata:
+      labels:
+        app: photoprism
+    spec:
+      containers:
+      - name: photoprism
+        image: docker.io/photoprism/photoprism:latest
+        ports:
+        - containerPort: 2342
+          name: http
+          protocol: TCP
+        env:
+        - name: PHOTOPRISM_ADMIN_USER
+          valueFrom:
+            secretKeyRef:
+              name: photoprism-secret
+              key: admin-user
+        - name: PHOTOPRISM_ADMIN_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: photoprism-secret
+              key: admin-password
+        - name: PHOTOPRISM_DATABASE_DRIVER
+          value: mysql
+        - name: PHOTOPRISM_DATABASE_SERVER
+          value: photoprism-mariadb:3306
+        - name: PHOTOPRISM_DATABASE_NAME
+          valueFrom:
+            secretKeyRef:
+              name: photoprism-secret
+              key: database-name
+        - name: PHOTOPRISM_DATABASE_USER
+          valueFrom:
+            secretKeyRef:
+              name: photoprism-secret
+              key: database-user
+        - name: PHOTOPRISM_DATABASE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: photoprism-secret
+              key: database-password
+        - name: PHOTOPRISM_AUTH_MODE
+          value: password
+        - name: PHOTOPRISM_SITE_URL
+          value: https://photoprism.example.com
+        - name: PHOTOPRISM_SITE_CAPTION
+          value: AI-Powered Photos App
+        - name: PHOTOPRISM_SITE_DESCRIPTION
+          value: ""
+        - name: PHOTOPRISM_SITE_AUTHOR
+          value: ""
+        - name: PHOTOPRISM_ORIGINALS_LIMIT
+          value: "-1"
+        - name: PHOTOPRISM_HTTP_COMPRESSION
+          value: gzip
+        - name: PHOTOPRISM_LOG_LEVEL
+          value: info
+        - name: PHOTOPRISM_READONLY
+          value: "false"
+        - name: PHOTOPRISM_EXPERIMENTAL
+          value: "false"
+        - name: PHOTOPRISM_DISABLE_CHOWN
+          value: "false"
+        - name: PHOTOPRISM_DISABLE_WEBDAV
+          value: "false"
+        - name: PHOTOPRISM_DISABLE_SETTINGS
+          value: "false"
+        - name: PHOTOPRISM_DISABLE_TENSORFLOW
+          value: "false"
+        - name: PHOTOPRISM_DISABLE_FACES
+          value: "false"
+        - name: PHOTOPRISM_DISABLE_CLASSIFICATION
+          value: "false"
+        - name: PHOTOPRISM_DISABLE_RAW
+          value: "false"
+        - name: PHOTOPRISM_RAW_PRESETS
+          value: "false"
+        - name: PHOTOPRISM_JPEG_QUALITY
+          value: "85"
+        - name: PHOTOPRISM_DETECT_NSFW
+          value: "false"
+        - name: PHOTOPRISM_UPLOAD_NSFW
+          value: "true"
+        - name: PHOTOPRISM_DISABLE_VECTORS
+          value: "false"
+        - name: PHOTOPRISM_DISABLE_TLS
+          value: "false"
+        - name: PHOTOPRISM_DEFAULT_TLS
+          value: "true"
+        - name: PHOTOPRISM_OIDC_URI
+          valueFrom:
+            secretKeyRef:
+              name: photoprism-secret
+              key: oidc-uri
+        - name: PHOTOPRISM_OIDC_CLIENT
+          valueFrom:
+            secretKeyRef:
+              name: photoprism-secret
+              key: oidc-client
+        - name: PHOTOPRISM_OIDC_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: photoprism-secret
+              key: oidc-secret
+        - name: PHOTOPRISM_OIDC_PROVIDER
+          value: zitadel
+        - name: PHOTOPRISM_OIDC_ICON
+          value: ""
+        - name: PHOTOPRISM_OIDC_SCOPES
+          value: openid email profile address
+        - name: PHOTOPRISM_OIDC_USERNAME
+          value: email
+        - name: PHOTOPRISM_DISABLE_OIDC
+          value: "false"
+        - name: PHOTOPRISM_OIDC_REDIRECT
+          value: "false"
+        - name: PHOTOPRISM_OIDC_REGISTER
+          value: "true"
+        - name: PHOTOPRISM_OIDC_WEBDAV
+          value: "false"
+        - name: PHOTOPRISM_FFMPEG_ENCODER
+          value: software
+        - name: PHOTOPRISM_INIT
+          value: https tensorflow
+        - name: PHOTOPRISM_UID
+          value: "2432"
+        - name: PHOTOPRISM_GID
+          value: "1000"
+        - name: PHOTOPRISM_UMASK
+          value: "0000"
+        - name: PHOTOPRISM_CORS_ORIGIN
+          value: "*"
+        - name: PHOTOPRISM_HTTP_FRAME_OPTIONS
+          value: ALLOW
+        volumeMounts:
+        - name: storage
+          mountPath: /photoprism/storage
+        - name: originals
+          mountPath: /photoprism/originals
+        - name: import
+          mountPath: /photoprism/import
+        securityContext:
+          privileged: false
+      volumes:
+      - name: originals
+        persistentVolumeClaim:
+          claimName: photoprism-originals
+      - name: import
+        persistentVolumeClaim:
+          claimName: photoprism-import
+  volumeClaimTemplates:
+  - metadata:
+      name: storage
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      storageClassName: PLACEHOLDER_STORAGE_CLASS
+      resources:
+        requests:
+          storage: 50Gi
