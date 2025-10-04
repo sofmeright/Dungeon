@@ -41,8 +41,9 @@ spec:
           capabilities:
             drop:
             - ALL
+            add:
+            - NET_BIND_SERVICE
             # Add SYS_TIME only if ENABLE_SYSCLK is true in production overlay
-            # add:
             # - SYS_TIME
         volumeMounts:
         - name: chrony-etc
