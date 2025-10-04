@@ -24,6 +24,12 @@ spec:
       replicas: 3
       persistence:
         enabled: false
+      extraVolumes:
+        - name: loki-tmp
+          emptyDir: {}
+      extraVolumeMounts:
+        - name: loki-tmp
+          mountPath: /var/loki
     write:
       replicas: 0
     read:
