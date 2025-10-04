@@ -29,6 +29,7 @@
       - arylls-lookout: Gateway for internal-only services (xylem replacement)
       - kokiri-forest: Gateway for personal/public services (phloem replacement)
       - hyrule-castle: Gateway for business/work services (cell-membrane replacement)
+      - jabu-jabu: Game servers (minecraft, etc - inside the whale/belly of the beast)
   - Base should NEVER contain deployment-ready configs - only generic templates that overlays patch with real values. Base should document application defaults from upstream/vendor documentation, not production-specific configurations.
   - Always use overlays/production for actual deployment to the production cluster, never deploy from base
 
@@ -150,6 +151,7 @@
       - Archival/Content Management (linkwarden, calibre-web, mealie): 172.22.30.222 (sharing-key: song-of-time)
       - Backup services (velero, urbackup): 172.22.30.119 (sharing-key: fairy-bottle)
       - Storage services (minio, longhorn, rook-ceph): 172.22.30.101 (sharing-key: gorons-bracelet)
+      - Game servers (minecraft, etc): 172.22.30.231 (sharing-key: jabu-jabu)
 
 - Traefik & Gateway API Routing Strategy:
   - **IP-based Domain Isolation**: Use separate Gateway resources with unique LoadBalancer IPs to enable firewall-based internet exposure control (pfSense NAT rules per IP)
