@@ -1,0 +1,70 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: netalertx
+  labels:
+    app.kubernetes.io/name: netalertx
+spec:
+  serviceName: netalertx
+  replicas: PLACEHOLDER_REPLICAS
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: netalertx
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: netalertx
+    spec:
+      hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet
+      containers:
+      - name: netalertx
+        image: PLACEHOLDER_IMAGE
+        ports:
+        - containerPort: PLACEHOLDER_PORT
+          name: http
+          hostPort: PLACEHOLDER_PORT
+        env:
+        - name: PUID
+          value: "PLACEHOLDER_PUID"
+        - name: PGID
+          value: "PLACEHOLDER_PGID"
+        - name: PORT
+          value: "PLACEHOLDER_PORT"
+        - name: TZ
+          value: "PLACEHOLDER_TZ"
+        volumeMounts:
+        - name: config
+          mountPath: /app/config
+        - name: db
+          mountPath: /app/db
+        - name: api-tmpfs
+          mountPath: /app/api
+        resources:
+          requests:
+            cpu: PLACEHOLDER_CPU_REQUEST
+            memory: PLACEHOLDER_MEMORY_REQUEST
+          limits:
+            cpu: PLACEHOLDER_CPU_LIMIT
+            memory: PLACEHOLDER_MEMORY_LIMIT
+      volumes:
+      - name: api-tmpfs
+        emptyDir:
+          medium: Memory
+  volumeClaimTemplates:
+  - metadata:
+      name: config
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      storageClassName: PLACEHOLDER_STORAGE_CLASS
+      resources:
+        requests:
+          storage: PLACEHOLDER_CONFIG_STORAGE_SIZE
+  - metadata:
+      name: db
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      storageClassName: PLACEHOLDER_STORAGE_CLASS
+      resources:
+        requests:
+          storage: PLACEHOLDER_DB_STORAGE_SIZE

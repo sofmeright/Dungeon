@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: netalertx
+spec:
+  replicas: 1
+  template:
+    spec:
+      containers:
+      - name: netalertx
+        image: ghcr.io/jokob-sk/netalertx:latest
+        ports:
+        - containerPort: 20211
+          name: http
+          hostPort: 20211
+        env:
+        - name: PUID
+          value: "200"
+        - name: PGID
+          value: "300"
+        - name: PORT
+          value: "20211"
+        - name: TZ
+          value: "America/Los_Angeles"
+        volumeMounts:
+        - name: gossip-stone-netalertx-config
+          mountPath: /app/config
+        - name: gossip-stone-netalertx-db
+          mountPath: /app/db
+        - name: api-tmpfs
+          mountPath: /app/api
+        resources:
+          requests:
+            cpu: 100m
+            memory: 256Mi
+          limits:
+            cpu: 1000m
+            memory: 1Gi
+  volumeClaimTemplates:
+  - metadata:
+      name: gossip-stone-netalertx-config
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      storageClassName: ceph-rbd-retain
+      resources:
+        requests:
+          storage: 1Gi
+  - metadata:
+      name: gossip-stone-netalertx-db
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      storageClassName: ceph-rbd-retain
+      resources:
+        requests:
+          storage: 5Gi

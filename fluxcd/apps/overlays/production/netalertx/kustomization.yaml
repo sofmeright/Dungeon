@@ -1,0 +1,24 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: gossip-stone
+resources:
+  - ../../../base/netalertx
+patches:
+  - path: statefulset-patch.yaml
+  - path: httproute-patch.yaml
+  - path: service-patch.yaml
+    target:
+      kind: Service
+      name: netalertx
+  - target:
+      version: v1
+      kind: Service
+      name: netalertx
+    patch: |-
+      - op: replace
+        path: /spec/ports
+        value:
+          - name: http
+            port: 20211
+            protocol: TCP
+            targetPort: 20211
