@@ -43,6 +43,8 @@ spec:
               value: "true"
             - name: NTFY_ENABLE_RESERVATIONS
               value: "true"
+            - name: NTFY_WEB_PUSH_FILE
+              value: "/var/lib/ntfy/webpush.db"
             - name: NTFY_WEB_PUSH_PUBLIC_KEY
               valueFrom:
                 secretKeyRef:
