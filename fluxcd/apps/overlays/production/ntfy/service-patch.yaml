@@ -11,8 +11,8 @@ spec:
     - port: 1638
       targetPort: 80
       protocol: TCP
-      name: ntfy-http
+      name: http
     - port: 25
       targetPort: 25
       protocol: TCP
-      name: ntfy-smtp
+      name: smtp
