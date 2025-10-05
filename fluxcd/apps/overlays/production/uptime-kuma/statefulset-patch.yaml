@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: uptime-kuma
+spec:
+  replicas: 1
+  template:
+    spec:
+      containers:
+        - name: uptime-kuma
+          image: docker.io/louislam/uptime-kuma:1
+          volumeMounts:
+            - name: gossip-stone-uptime-kuma-data
+              mountPath: /app/data
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: 1000m
+              memory: 1Gi
+  volumeClaimTemplates:
+    - metadata:
+        name: gossip-stone-uptime-kuma-data
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        storageClassName: ceph-rbd-retain
+        resources:
+          requests:
+            storage: 5Gi
