@@ -8,6 +8,7 @@ metadata:
 spec:
   type: LoadBalancer
   ports:
+    $patch: replace
     - port: 1638
       targetPort: 80
       protocol: TCP
