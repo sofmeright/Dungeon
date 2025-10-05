@@ -18,6 +18,8 @@ spec:
       containers:
         - name: ntfy
           image: binwiederhier/ntfy:PLACEHOLDER_VERSION
+          command: ["ntfy"]
+          args: ["serve"]
           ports:
             - name: http
               containerPort: 80
