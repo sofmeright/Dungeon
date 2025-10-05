@@ -24,3 +24,5 @@ resources:
   - thanos-query  # Unified querying across Prometheus replicas with deduplication
   - loki  # Log aggregation and storage
   - alloy  # Unified observability collector (scrapes K8s + Docker)
+  - traefik  # Gateway API controller for ingress routing
+  - cert-manager  # TLS certificate management with Let's Encrypt

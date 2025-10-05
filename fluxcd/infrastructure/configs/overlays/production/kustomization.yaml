@@ -15,3 +15,5 @@ resources:
   - grafana  # Grafana admin credentials
   - loki  # Loki S3 credentials for log storage
   - prometheus  # Prometheus S3 credentials for metric storage
+  - gateways  # Gateway resources for Traefik routing
+  - cert-manager  # TLS certificates and Cloudflare credentials

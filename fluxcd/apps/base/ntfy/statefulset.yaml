@@ -1,0 +1,77 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: ntfy
+  labels:
+    app.kubernetes.io/name: ntfy
+spec:
+  serviceName: ntfy
+  replicas: PLACEHOLDER_REPLICAS
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: ntfy
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: ntfy
+    spec:
+      containers:
+        - name: ntfy
+          image: binwiederhier/ntfy:PLACEHOLDER_VERSION
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
+          env:
+            - name: NTFY_BASE_URL
+              value: PLACEHOLDER_BASE_URL
+            - name: NTFY_UPSTREAM_BASE_URL
+              value: "https://ntfy.sh"
+            - name: NTFY_CACHE_FILE
+              value: "/var/lib/ntfy/cache.db"
+            - name: NTFY_AUTH_FILE
+              value: "/var/lib/ntfy/auth.db"
+            - name: NTFY_AUTH_DEFAULT_ACCESS
+              value: "deny-all"
+            - name: NTFY_ATTACHMENT_CACHE_DIR
+              value: "/var/lib/ntfy/attachments"
+            - name: NTFY_ENABLE_SIGNUP
+              value: "false"
+            - name: NTFY_ENABLE_LOGIN
+              value: "true"
+            - name: NTFY_ENABLE_RESERVATIONS
+              value: "true"
+            - name: NTFY_WEB_PUSH_PUBLIC_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: ntfy-secrets
+                  key: web_push_public_key
+            - name: NTFY_WEB_PUSH_PRIVATE_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: ntfy-secrets
+                  key: web_push_private_key
+            - name: NTFY_WEB_PUSH_EMAIL_ADDRESS
+              valueFrom:
+                secretKeyRef:
+                  name: ntfy-secrets
+                  key: web_push_email_address
+          volumeMounts:
+            - name: data
+              mountPath: /var/lib/ntfy
+          resources:
+            requests:
+              cpu: PLACEHOLDER_CPU_REQUEST
+              memory: PLACEHOLDER_MEMORY_REQUEST
+            limits:
+              cpu: PLACEHOLDER_CPU_LIMIT
+              memory: PLACEHOLDER_MEMORY_LIMIT
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        storageClassName: PLACEHOLDER_STORAGE_CLASS
+        resources:
+          requests:
+            storage: PLACEHOLDER_STORAGE_SIZE
