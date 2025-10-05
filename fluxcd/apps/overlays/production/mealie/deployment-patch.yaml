@@ -17,9 +17,12 @@ spec:
           value: "PrPlanIT.com"
         - name: OIDC_CONFIGURATION_URL
           value: "https://sso.prplanit.com/.well-known/openid-configuration"
+        volumeMounts:
+        - name: temple-of-time-mealie-data
+          mountPath: /app/data
   volumeClaimTemplates:
   - metadata:
-      name: mealie-data
+      name: temple-of-time-mealie-data
     spec:
       accessModes:
         - ReadWriteOnce
@@ -39,9 +42,12 @@ spec:
       containers:
       - name: postgres
         image: docker.io/library/postgres:15
+        volumeMounts:
+        - name: temple-of-time-mealie-postgres
+          mountPath: /var/lib/postgresql/data
   volumeClaimTemplates:
   - metadata:
-      name: postgres-data
+      name: temple-of-time-mealie-postgres
     spec:
       accessModes:
         - ReadWriteOnce

@@ -3,9 +3,16 @@ kind: StatefulSet
 metadata:
   name: linkwarden
 spec:
+  template:
+    spec:
+      containers:
+        - name: linkwarden
+          volumeMounts:
+            - name: temple-of-time-linkwarden-data
+              mountPath: /data/data
   volumeClaimTemplates:
   - metadata:
-      name: linkwarden-data
+      name: temple-of-time-linkwarden-data
     spec:
       accessModes: [ "ReadWriteOnce" ]
       storageClassName: ceph-rbd-retain
@@ -18,9 +25,16 @@ kind: StatefulSet
 metadata:
   name: linkwarden-postgres
 spec:
+  template:
+    spec:
+      containers:
+        - name: postgres
+          volumeMounts:
+            - name: temple-of-time-linkwarden-postgres
+              mountPath: /var/lib/postgresql/data
   volumeClaimTemplates:
   - metadata:
-      name: postgres-data
+      name: temple-of-time-linkwarden-postgres
     spec:
       accessModes: [ "ReadWriteOnce" ]
       storageClassName: ceph-rbd-retain
@@ -33,9 +47,16 @@ kind: StatefulSet
 metadata:
   name: linkwarden-meilisearch
 spec:
+  template:
+    spec:
+      containers:
+        - name: meilisearch
+          volumeMounts:
+            - name: temple-of-time-linkwarden-meilisearch
+              mountPath: /meili_data
   volumeClaimTemplates:
   - metadata:
-      name: meilisearch-data
+      name: temple-of-time-linkwarden-meilisearch
     spec:
       accessModes: [ "ReadWriteOnce" ]
       storageClassName: ceph-rbd-retain

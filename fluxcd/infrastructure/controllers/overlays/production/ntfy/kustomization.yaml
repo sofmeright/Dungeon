@@ -10,7 +10,6 @@ patches:
     target:
       kind: Service
       name: ntfy
-patchesJson6902:
   - target:
       version: v1
       kind: Service

@@ -25,6 +25,9 @@ spec:
               value: "ntfy.prplanit.com"
             - name: NTFY_SMTP_SERVER_ADDR_PREFIX
               value: "ntfy-"
+          volumeMounts:
+            - name: hyrule-castle-ntfy-data
+              mountPath: /var/lib/ntfy
           resources:
             requests:
               cpu: 50m
@@ -34,7 +37,7 @@ spec:
               memory: 512Mi
   volumeClaimTemplates:
     - metadata:
-        name: data
+        name: hyrule-castle-ntfy-data
       spec:
         accessModes: ["ReadWriteOnce"]
         storageClassName: ceph-rbd-retain

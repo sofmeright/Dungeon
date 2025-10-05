@@ -26,3 +26,5 @@ resources:
   - alloy  # Unified observability collector (scrapes K8s + Docker)
   - traefik  # Gateway API controller for ingress routing
   - cert-manager  # TLS certificate management with Let's Encrypt
+  - uptime-kuma  # Service uptime monitoring
+  - ntfy  # Notification delivery service
