@@ -9,9 +9,22 @@ spec:
       containers:
         - name: ntfy
           image: docker.io/binwiederhier/ntfy:v2.11.0
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
+            - name: smtp
+              containerPort: 25
+              protocol: TCP
           env:
             - name: NTFY_BASE_URL
               value: "https://ntfy.prplanit.com"
+            - name: NTFY_SMTP_SERVER_LISTEN
+              value: ":25"
+            - name: NTFY_SMTP_SERVER_DOMAIN
+              value: "ntfy.prplanit.com"
+            - name: NTFY_SMTP_SERVER_ADDR_PREFIX
+              value: "ntfy-"
           resources:
             requests:
               cpu: 50m
