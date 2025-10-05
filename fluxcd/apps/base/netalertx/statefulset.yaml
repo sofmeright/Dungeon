@@ -21,9 +21,9 @@ spec:
       - name: netalertx
         image: PLACEHOLDER_IMAGE
         ports:
-        - containerPort: PLACEHOLDER_PORT
+        - containerPort: 20211
           name: http
-          hostPort: PLACEHOLDER_PORT
+          hostPort: 20211
         env:
         - name: PUID
           value: "PLACEHOLDER_PUID"
