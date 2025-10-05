@@ -2,5 +2,6 @@ apiVersion: helm.toolkit.fluxcd.io/v2beta1
 kind: HelmRelease
 metadata:
   name: cert-manager
+  namespace: king-of-red-lions
 spec:
   targetNamespace: king-of-red-lions
