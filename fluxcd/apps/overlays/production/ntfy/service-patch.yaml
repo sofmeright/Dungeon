@@ -9,10 +9,10 @@ spec:
   type: LoadBalancer
   ports:
     - port: 1638
-      targetPort: http
+      targetPort: 80
       protocol: TCP
       name: http
     - port: 25
-      targetPort: smtp
+      targetPort: 25
       protocol: TCP
       name: smtp
