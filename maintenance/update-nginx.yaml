@@ -1,0 +1,13 @@
+---
+- name: Preparing to Update Nginx Configurations from the source of truth.
+  hosts: ansible  # Replace with your target host
+  become: yes  # Required if you need root privileges on the remote host
+  
+  tasks:
+    - name: Clone the Configurations.
+      ansible.builtin.git:
+        accept_newhostkey: true
+        repo: "ssh://git@10.30.1.123:2424/precisionplanit/ant_parade-public"
+        dest: /tmp/fs/
+        version: main
+        key_file: /root/.ssh/id_rsa

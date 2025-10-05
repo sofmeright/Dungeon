@@ -1,0 +1,119 @@
+proxmox:
+  hosts:
+    avocado:
+      ansible_host: 172.22.22.3
+    bamboo:
+      ansible_host: 172.22.22.4
+    cosmos:
+      ansible_host: 172.22.22.5
+    dragonfruit:
+      ansible_host: 172.22.22.6
+    eggplant:
+      ansible_host: 172.22.22.7
+  vars:
+    ansible_user: root
+proxmox_bs:
+  hosts:
+    priscilla:
+      ansible_host: 172.22.181.51
+  vars:
+    ansible_user: root
+ansible:
+  hosts:
+    ant_parade:
+      ansible_host: 10.30.1.111
+  vars:
+    ansible_user: kai
+k8s_master:
+  hosts:
+    dungeon_map_001:
+      ansible_host: 172.22.22.150
+    dungeon_map_002:
+      ansible_host: 172.22.22.151
+    dungeon_map_003:
+      ansible_host: 172.22.22.152
+    dungeon_map_004:
+      ansible_host: 172.22.22.153
+    dungeon_map_005:
+      ansible_host: 172.22.22.154
+k8s_worker:
+  hosts:
+    dungeon_worker_001:
+      ansible_host: 172.22.22.175
+    dungeon_worker_002:
+      ansible_host: 172.22.22.176
+    dungeon_worker_003:
+      ansible_host: 172.22.22.177
+    dungeon_worker_004:
+      ansible_host: 172.22.22.178
+    dungeon_worker_005:
+      ansible_host: 172.22.22.179
+windows_10:
+  hosts:
+    LeafBlower:
+      ansible_host: 10.13.37.145
+windows_11:
+  hosts:
+    Glicynia:
+      ansible_host: 10.13.37.143
+    Wisteria:
+      ansible_host: 10.13.37.144
+    WaterLily:
+      ansible_host: 10.13.37.142
+ubuntu_24_04_unclustered:
+  hosts:
+    cell-membrane:
+      ansible_host: 10.40.9.104
+    dock:
+      ansible_host: 10.55.6.136
+    homing-pidgeon:
+      ansible_host: 10.1.1.2
+    jabu-jabu:
+      ansible_host: 10.30.8.98
+    jalapeno:
+      ansible_host: 10.13.37.25
+    marina:
+      ansible_host: 10.55.6.123
+    moor:
+      ansible_host: 10.30.1.123
+    pirates-wdda:
+      ansible_host: 10.161.80.33
+    phloem:
+      ansible_host: 10.4.20.69
+    the-usual-suspect:
+      ansible_host: 10.1.1.1
+    vineyard:
+      ansible_host: 10.30.1.102
+    xylem: 
+      ansible_host: 10.24.96.9
+ubuntu_24_04:
+  children:
+    ubuntu_24_04_unclustered:
+    k8s_master:
+    k8s_worker:
+  vars:
+    ansible_user: kai
+linux:
+  children:
+    ansible:
+    k8s_master:
+    k8s_worker:
+    proxmox:
+    proxmox_bs:
+    ubuntu_24_04:
+linux_clustered:
+  children:
+    k8s_master:
+    k8s_worker:
+    proxmox:
+linux_unclustered:
+  children:
+    proxmox_bs:
+    ubuntu_24_04_unclustered:
+proxmox_vms:
+  children:
+    ansible:
+    k8s_master:
+    k8s_worker:
+    proxmox_bs:
+    ubuntu_24_04:

@@ -1,0 +1,119 @@
+# To use this we run -> ansible-playbook --limit linux -i inventory/complete.yaml maintenance/update-hosts-linux.yaml
+---
+- name: Linux OS Upgrade
+  hosts: linux_unclustered
+  gather_facts: yes
+  become: yes
+
+  tasks:
+    - name: Upgrade Debian and Ubuntu systems with apt
+      block: 
+        - name: dist-upgrade
+          ansible.builtin.apt:
+            upgrade: dist
+            update_cache: yes 
+          register: upgrade_result
+
+        - name: Debain check if reboot is required
+          shell: "[ -f /var/run/reboot-required ]"
+          failed_when: False
+          register: debian_reboot_required
+          changed_when: debian_reboot_required.rc == 0
+          notify:
+            - Reboot server 
+
+        - name: Debian remove unneeded dependencies
+          ansible.builtin.apt:
+            autoremove: yes
+          register: autoremove_result 
+
+        - name: Debian print errors if upgrade failed
+          ansible.builtin.debug:
+            msg: | 
+              Upgrade Result: {{ upgrade_result }}
+              Autoremove Result: {{ autoremove_result }}
+      when: ansible_os_family == "Debian"
+    
+    - name: Upgrade RHEL systems with DNF
+      block:
+        - name: Get packages that can be upgraded with DNF
+          ansible.builtin.dnf:
+            list: upgrades
+            state: latest
+            update_cache: yes 
+          register: reg_dnf_output_all
+
+        - name: List packages that can be upgraded with DNF
+          ansible.builtin.debug: 
+            msg: "{{ reg_dnf_output_all.results | map(attribute='name') | list }}"
+
+        - name: Upgrade packages with DNF
+          become: yes
+          ansible.builtin.dnf:
+            name: '*'
+            state: latest
+            update_cache: yes
+            update_only: no
+          register: reg_upgrade_ok
+
+        - name: Print DNF errors if upgrade failed
+          ansible.builtin.debug:
+            msg: "Packages upgrade failed"
+          when: reg_upgrade_ok is not defined
+
+        - name: Install dnf-utils
+          become: yes
+          ansible.builtin.dnf:
+            name: 'dnf-utils'
+            state: latest
+            update_cache: yes
+          when: reg_dnf_output_all is defined
+
+      when: ansible_os_family == "RedHat" and not (ansible_distribution_major_version == "7")
+
+    - name: Upgrade legacy RHEL systems with YUM
+      block:
+        - name: Get packages that can be upgraded with YUM
+          ansible.builtin.yum:
+            list: upgrades
+            state: latest
+            update_cache: yes 
+          register: reg_yum_output_all
+            
+
+        - name: List packages that can be upgraded with YUM
+          ansible.builtin.debug: 
+            msg: "{{ reg_yum_output_all.results | map(attribute='name') | list }}"
+
+        - name: Upgrade packages with YUM
+          become: yes
+          ansible.builtin.yum:
+            name: '*'
+            state: latest
+            update_cache: yes
+            update_only: no
+          register: reg_yum_upgrade_ok
+
+        - name: Print YUM errors if upgrade failed
+          ansible.builtin.debug:
+            msg: "Packages upgrade failed"
+          when: reg_yum_upgrade_ok is not defined
+            
+        - name: Check legacy RHEL system if a reboot is required
+          become: yes
+          command: needs-restarting -r
+          register: reg_reboot_required
+          ignore_errors: yes
+          failed_when: false
+          changed_when: reg_reboot_required.rc != 0
+          notify:
+            - Reboot server 
+      when: ansible_os_family == "RedHat" and ansible_distribution_major_version == "7"
+
+
+  handlers:
+    - name : Reboot server
+      ansible.builtin.reboot:
+        msg: "Reboot initiated by Ansible after OS update"
+        reboot_timeout: 3600
+        test_command: uptime

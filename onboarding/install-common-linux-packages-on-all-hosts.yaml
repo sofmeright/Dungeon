@@ -1,0 +1,10 @@
+---
+- name: Playbook to ensure base software is installed.
+  hosts: linux
+  become: true
+  tasks: 
+  - name: Ansible apt install neofetch
+    apt:
+      name: neofetch
+      state: present
+      update_cache: yes # Simulate apt-update on the first run.

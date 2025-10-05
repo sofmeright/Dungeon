@@ -1,0 +1,210 @@
+{
+  "ai@g-ollama-codellama-70b": {
+    "display:name": "g.Ollama ~ codellama:70b (!)",
+    "display:order": 1,
+    "ai:*": true,
+    "ai:baseurl": "http://172.22.22.143:11434/v1",
+    "ai:name": "codellama:70b",
+    "ai:model": "codellama:70b",
+    "ai:apitoken": "ollama"
+  },
+  "ai@g-ollama-deepseek-coder-instruct": {
+    "display:name": "g.Ollama ~ deepseek-coder:instruct",
+    "display:order": 2,
+    "ai:*": true,
+    "ai:baseurl": "http://172.22.22.143:11434/v1",
+    "ai:name": "deepseek-coder:instruct",
+    "ai:model": "deepseek-coder:instruct",
+    "ai:apitoken": "ollama"
+  },
+  "ai@g-ollama-deepseek-coder-latest": {
+    "display:name": "g.Ollama ~ deepseek-coder:latest",
+    "display:order": 3,
+    "ai:*": true,
+    "ai:baseurl": "http://172.22.22.143:11434/v1",
+    "ai:name": "deepseek-coder:latest",
+    "ai:model": "deepseek-coder:latest",
+    "ai:apitoken": "ollama"
+  },
+  "ai@g-ollama-dolphin-llama3-latest": {
+    "display:name": "g.Ollama ~ dolphin-llama3:latest",
+    "display:order": 4,
+    "ai:*": true,
+    "ai:baseurl": "http://172.22.22.143:11434/v1",
+    "ai:name": "dolphin-llama3:latest",
+    "ai:model": "dolphin-llama3:latest",
+    "ai:apitoken": "ollama"
+  },
+  "ai@g-ollama-gemma-latest": {
+    "display:name": "g.Ollama ~ gemma:latest",
+    "display:order": 5,
+    "ai:*": true,
+    "ai:baseurl": "http://172.22.22.143:11434/v1",
+    "ai:name": "gemma:latest",
+    "ai:model": "gemma:latest",
+    "ai:apitoken": "ollama"
+  },
+  "ai@g-ollama-llama2-latest": {
+    "display:name": "g.Ollama ~ llama2:latest",
+    "display:order": 6,
+    "ai:*": true,
+    "ai:baseurl": "http://172.22.22.143:11434/v1",
+    "ai:name": "llama2:latest",
+    "ai:model": "llama2:latest",
+    "ai:apitoken": "ollama"
+  },
+  "ai@g-ollama-llama3-latest": {
+    "display:name": "g.Ollama ~ llama3:latest",
+    "display:order": 7,
+    "ai:*": true,
+    "ai:baseurl": "http://172.22.22.143:11434/v1",
+    "ai:name": "llama3:latest",
+    "ai:model": "llama3:latest",
+    "ai:apitoken": "ollama"
+  },
+  "ai@g-ollama-llama3.3-latest": {
+    "display:name": "g.Ollama ~ llama3.3:latest (!)",
+    "display:order": 8,
+    "ai:*": true,
+    "ai:baseurl": "http://172.22.22.143:11434/v1",
+    "ai:name": "llama3.3:latest",
+    "ai:model": "llama3.3:latest",
+    "ai:apitoken": "ollama"
+  },
+  "ai@g-ollama-llava-13b": {
+    "display:name": "g.Ollama ~ llava:13b",
+    "display:order": 9,
+    "ai:*": true,
+    "ai:baseurl": "http://172.22.22.143:11434/v1",
+    "ai:name": "llava:13b",
+    "ai:model": "llava:13b",
+    "ai:apitoken": "ollama"
+  },
+  "ai@g-ollama-mixtral-8x7b": {
+    "display:name": "g.Ollama ~ mixtral:8x7b",
+    "display:order": 10,
+    "ai:*": true,
+    "ai:baseurl": "http://172.22.22.143:11434/v1",
+    "ai:name": "mixtral:8x7b",
+    "ai:model": "mixtral:8x7b",
+    "ai:apitoken": "ollama"
+  },
+  "ai@g-ollama-wizardlm2-7b": {
+    "display:name": "g.Ollama ~ dolphin-llama3:latest",
+    "display:order": 11,
+    "ai:*": true,
+    "ai:baseurl": "http://172.22.22.143:11434/v1",
+    "ai:name": "wizardlm2:7b",
+    "ai:model": "wizardlm2:7b",
+    "ai:apitoken": "ollama"
+  },
+  "ai@g-ollama-wizardlm2-8x22b": {
+    "display:name": "g.Ollama ~ wizardlm2:8x22b (!)",
+    "display:order": 12,
+    "ai:*": true,
+    "ai:baseurl": "http://172.22.22.143:11434/v1",
+    "ai:name": "wizardlm2:8x22b",
+    "ai:model": "wizardlm2:8x22b",
+    "ai:apitoken": "ollama"
+  },
+  "ai@g-ollama-wizardlm2-latest": {
+    "display:name": "g.Ollama ~ wizardlm2:latest",
+    "display:order": 13,
+    "ai:*": true,
+    "ai:baseurl": "http://172.22.22.143:11434/v1",
+    "ai:name": "wizardlm2:latest",
+    "ai:model": "wizardlm2:latest",
+    "ai:apitoken": "ollama"
+  },
+   "ai@w-ollama-codellama-70b": {
+    "display:name": "w.Ollama ~ codellama:70b",
+    "display:order": 14,
+    "ai:*": true,
+    "ai:baseurl": "http://172.22.22.144:11434/v1",
+    "ai:name": "codellama:70b",
+    "ai:model": "codellama:70b",
+    "ai:apitoken": "ollama"
+  },
+  "ai@w-ollama-dolphin-llama3-latest": {
+    "display:name": "w.Ollama ~ dolphin-llama3:latest",
+    "display:order": 15,
+    "ai:*": true,
+    "ai:baseurl": "http://172.22.22.144:11434/v1",
+    "ai:name": "dolphin-llama3:latest",
+    "ai:model": "dolphin-llama3:latest",
+    "ai:apitoken": "ollama"
+  },
+  "ai@w-ollama-llama2-latest": {
+    "display:name": "w.Ollama ~ llama2:latest",
+    "display:order": 16,
+    "ai:*": true,
+    "ai:baseurl": "http://172.22.22.144:11434/v1",
+    "ai:name": "llama2:latest",
+    "ai:model": "llama2:latest",
+    "ai:apitoken": "ollama"
+  },
+  "ai@w-ollama-llama3:latest": {
+    "display:name": "w.Ollama ~ llama3:latest",
+    "display:order": 17,
+    "ai:*": true,
+    "ai:baseurl": "http://172.22.22.144:11434/v1",
+    "ai:name": "llama3:latest",
+    "ai:model": "llama3:latest",
+    "ai:apitoken": "ollama"
+  },
+  "ai@w-ollama-llava-13b": {
+    "display:name": "w.Ollama ~ llava:13b",
+    "display:order": 18,
+    "ai:*": true,
+    "ai:baseurl": "http://172.22.22.144:11434/v1",
+    "ai:name": "llava:13b",
+    "ai:model": "llava:13b",
+    "ai:apitoken": "ollama"
+  },
+  "ai@w-ollama-mixtral-8x7b": {
+    "display:name": "w.Ollama ~ mixtral:8x7b (!)",
+    "display:order": 19,
+    "ai:*": true,
+    "ai:baseurl": "http://172.22.22.144:11434/v1",
+    "ai:name": "mixtral:8x7b",
+    "ai:model": "mixtral:8x7b",
+    "ai:apitoken": "ollama"
+  },
+  "ai@w-ollama-qwen-110b": {
+    "display:name": "w.Ollama ~ qwen:110b",
+    "display:order": 20,
+    "ai:*": true,
+    "ai:baseurl": "http://172.22.22.144:11434/v1",
+    "ai:name": "qwen:110b",
+    "ai:model": "qwen:110b",
+    "ai:apitoken": "ollama"
+  },
+  "ai@w-ollama-wizardlm2-7b": {
+    "display:name": "w.Ollama ~ wizardlm2:7b",
+    "display:order": 21,
+    "ai:*": true,
+    "ai:baseurl": "http://172.22.22.144:11434/v1",
+    "ai:name": "wizardlm2:7b",
+    "ai:model": "wizardlm2:7b",
+    "ai:apitoken": "ollama"
+  },
+  "ai@w-ollama-wizardlm2-8x22b": {
+    "display:name": "w.Ollama ~ dolphin-llama3:latest",
+    "display:order": 22,
+    "ai:*": true,
+    "ai:baseurl": "http://172.22.22.144:11434/v1",
+    "ai:name": "wizardlm2:8x22b",
+    "ai:model": "wizardlm2:8x22b",
+    "ai:apitoken": "ollama"
+  },
+  "ai@w-ollama-wizardlm2-latest": {
+    "display:name": "w.Ollama ~ wizardlm2:latest",
+    "display:order": 23,
+    "ai:*": true,
+    "ai:baseurl": "http://172.22.22.144:11434/v1",
+    "ai:name": "wizardlm2:latest",
+    "ai:model": "wizardlm2:latest",
+    "ai:apitoken": "ollama"
+  }
+ 
+}

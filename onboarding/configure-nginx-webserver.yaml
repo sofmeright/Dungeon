@@ -1,0 +1,49 @@
+---
+- name: Playbook to configure NGINX Websever ("Cell-Membrane").
+  hosts: linux
+  become: true
+  vars:
+    uri: "//172.22.22.101/timecapsule"
+    username: "kai253"
+    password: ""
+    mountpoint: "/mnt/timecapsule"
+  tasks: 
+  - name: Ansible apt install nginx
+    apt:
+      name: nginx
+      state: present
+      update_cache: yes # Simulate apt-update on the first run.
+  - name: Ansible apt install nginx-extras
+    apt:
+      name: nginx-extras
+      state: present
+  - name: Generate Diffie-Hellman parameters with the default size (4096 bits)
+    openssl_dhparam:
+      path: /etc/nginx/dhparam.pem
+  - name: Ansible apt install cifs-utils
+    apt:
+      name: cifs-utils
+      state: present
+  - name: utility present
+    ansible.builtin.package:
+      name: cifs-utils
+      state: present
+  - name: check mountpoint exist
+    ansible.builtin.file:
+      path: "{{ mountpoint }}"
+      state: directory
+      mode: '0755'
+      owner: root
+      group: root
+  - name: Mount network share
+    ansible.posix.mount:
+      src: "{{ uri }}"
+      path: "{{ mountpoint }}"
+      fstype: cifs
+      opts: 'username={{ username }},password={{ password }}'
+      state: mounted
+  - name: Synchronization of src on the control machine to dest on the remote hosts
+    ansible.posix.synchronize:
+      src: /mnt/timecapsule/Server/Web-App/NGINX/conf.d/
+      dest: /etc/nginx/conf.d/
+    delegate_to: "{{ inventory_hostname }}"
