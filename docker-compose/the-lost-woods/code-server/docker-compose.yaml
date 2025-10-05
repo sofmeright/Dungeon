@@ -1,0 +1,40 @@
+# This will start a code-server container and expose it at http://127.0.0.1:8080.
+# It will also mount your current directory into the container as `/home/coder/project`
+# and forward your UID/GID so that all file system operations occur as your user outside
+# the container.
+#
+# Your $HOME/.config is mounted at $HOME/.config within the container to ensure you can
+# easily access/modify your code-server config in $HOME/.config/code-server/config.json
+# outside the container.
+---
+services:
+  code-server:
+    image: lscr.io/linuxserver/code-server:latest
+    container_name: code-server
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Etc/UTC
+      - PASSWORD=$USER_PASS #optional
+      - HASHED_PASSWORD= #optional
+      - SUDO_PASSWORD=$SUDO_PASS #optional
+      - SUDO_PASSWORD_HASH= #optional
+      - PROXY_DOMAIN=code-server.prplanit.internal #optional
+      - DEFAULT_WORKSPACE=/config/workspace #optional
+    volumes:
+      - /opt/docker/code-server/config:/home/coder/.config
+      - /opt/docker/code-server/project:/home/coder/.local
+    ports:
+      - 8088:8443
+    restart: unless-stopped
+    logging: &logging
+      driver: "loki"
+      options:
+        loki-batch-size: "400"
+        loki-url: "http://monitoring:3100/loki/api/v1/push"
+        max-size: "10m"
+        max-file: "3"
+        mode: "non-blocking"
+        loki-retries: "2"
+        loki-max-backoff: "800ms"
+        loki-timeout: "1s"

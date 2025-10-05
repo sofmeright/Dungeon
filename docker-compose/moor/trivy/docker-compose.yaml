@@ -1,0 +1,20 @@
+#Installation
+#Download latest vulnerabilities
+#Run the following commands :
+
+#mkdir trivy-data
+#docker run --rm -v "$(pwd)/trivy-data:/root/.cache" aquasec/trivy:0.29.2 image --download-db-only
+#Run Trivy server
+
+version: '3'
+
+services:
+
+  trivy:
+    container_name: trivy
+    image: aquasec/trivy:0.61.0
+    entrypoint: trivy server --listen "0.0.0.0:4030"
+    volumes:
+      - /mnt/app_data/Server/_docker_stack/trivy/db:/root/.cache/trivy/db
+    ports:
+      - 4030:4030

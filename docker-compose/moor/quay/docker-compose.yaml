@@ -1,0 +1,93 @@
+services:
+
+# Init:
+# sudo mkdir /opt/docker/quay/tmp/nginx
+
+  quay-app:
+    # The command should be commented out after configuration changes are complete.
+    # command: config $DEFAULT_PASS
+    container_name: quay-app
+    depends_on:
+      quay-minio:
+        condition: service_started
+      quay-postgres:
+        condition: service_healthy
+      quay-redis:
+        condition: service_started
+    environment:
+      IGNORE_VALIDATION: "true"
+    image: quay.io/projectquay/quay:latest
+    ports:
+      - 8043:8080
+      - 8143:8443
+    restart: always
+    volumes:
+      - /opt/docker/quay/config:/quay-registry/conf/stack
+      - /opt/docker/quay/storage:/datastorage
+      - /opt/docker/quay/log:/var/log
+      - /opt/docker/quay/tmp:/tmp
+
+# Since the devs of Quay discourage using local storage for production use,
+# in this deployment of Quay we will use minio as a S3 compatible storage.
+  quay-minio:
+    container_name: quay-minio
+    command: server /data --address ":$MINIO_PORT" --console-address ":$MINIO_CONSOLE_PORT"
+    env_file:
+      - quay-dependencies-secret.env
+      - quay-dependencies.env
+    # environment:
+      # MINIO_ACCESS_KEY: optcp
+      # MINIO_SECRET_KEY: $MINIO_SECRET_KEY
+    image: minio/minio:latest
+    networks:
+      default:
+        aliases:
+          - quay.quay-minio
+    ports:
+      - $MINIO_PORT:$MINIO_PORT
+      - $MINIO_CONSOLE_PORT:$MINIO_CONSOLE_PORT
+    restart: always
+    volumes:
+      - /opt/docker/quay/minio/data:/data
+
+  quay-postgres:
+    # logging: *logging
+    # Init:
+    # psql "postgresql://$POSTGRES_USER:$POSTGRES_PASSWORD@$POSTGRES_HOST/$POSTGRES_DB"
+    # CREATE EXTENSION pg_trgm;
+    container_name: quay-postgres
+    env_file:
+      - quay-dependencies-secret.env
+      - quay-dependencies.env
+    # environment: # (Set database values in env files! ^)
+      # POSTGRES_PASSWORD: ${DB_PASSWORD}
+      # POSTGRES_USER: ${DB_USERNAME}
+      # POSTGRES_DB: ${DB_DATABASE_NAME}
+    healthcheck:
+      test: >-
+        pg_isready --dbname="$${POSTGRES_DB}" --username="$${POSTGRES_USER}" || exit 1; Chksum="$$(psql --dbname="$${POSTGRES_DB}" --username="$${POSTGRES_USER}" --tuples-only --no-align --command='SELECT COALESCE(SUM(checksum_failures), 0) FROM pg_stat_database')"; echo "checksum failure count is $$Chksum"; [ "$$Chksum" = '0' ] || exit 1
+      interval: 5m
+      start_interval: 30s
+      start_period: 5m
+    image: postgres:latest
+    # ports:
+      # - 5432:5432
+    restart: always
+    volumes:
+      - /opt/docker/quay/postgres/data:/var/lib/postgresql/data
+
+  quay-redis:
+    #labels: *logging
+    # warning, notice, verbose, and debug
+    command: redis-server --bind 0.0.0.0 --loglevel verbose --port 6379 --requirepass "$REDIS_PASSWORD"
+    container_name: quay-redis
+    env_file:
+      - quay-dependencies-secret.env
+      - quay-dependencies.env
+    image: redis:latest
+    ports:
+      - 6379:6379
+    restart: always
+    volumes:
+     - /opt/docker/quay/redis/data:/data
+    

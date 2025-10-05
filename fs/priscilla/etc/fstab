@@ -1,0 +1,7 @@
+# <file system> <mount point> <type> <options> <dump> <pass>
+/dev/pbs/root / ext4 errors=remount-ro 0 1
+UUID=7DE4-DF4B /boot/efi vfat defaults 0 1
+/dev/pbs/swap none swap sw 0 0
+proc /proc proc defaults 0 0
+
+//172.22.150.101/Proxmox_VE /mnt/Proxmox_VE_Backup_on_Flashy_Fuchsia cifs credentials=/etc/samba/.smbcreds,uid=34,gid=34,iocharset=utf8,sec=ntlmv2,vers=3.0 0 0

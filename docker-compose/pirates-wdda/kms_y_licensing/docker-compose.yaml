@@ -1,0 +1,16 @@
+services:
+
+  nginx:
+    image: nginx:latest
+    ports:
+      - 4545:80
+    volumes:
+      - /opt/docker/supermicro-ipmi-license-generator/nginx/conf.d:/etc/nginx/conf.d
+      - /opt/docker/supermicro-ipmi-license-generator/www-data:/var/www
+    restart: always
+    logging: &logging
+      driver: loki
+      options:
+        loki-batch-size: "400"
+        loki-url: "http://monitoring:3100/loki/api/v1/push"
+        max-size: "10m"

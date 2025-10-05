@@ -1,0 +1,38 @@
+---
+services:
+  projectsend:
+    image: lscr.io/linuxserver/projectsend:latest
+    container_name: projectsend
+    depends_on:
+      projectsend_db:
+        condition: service_started
+    env_file: project-send_secret.env
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Etc/UTC
+    volumes:
+      - /mnt/Flashy_Fuchsia/PrecisionPlanIT/Servers/Gringotts/docker/projectsend/config:/config
+      - /mnt/Flashy_Fuchsia/PrecisionPlanIT/Servers/Gringotts/docker/projectsend/data:/data
+    ports:
+      - 8044:80
+    restart: unless-stopped
+
+  projectsend_db:
+    #logging: *logging
+    image: lscr.io/linuxserver/mariadb
+    container_name: projectsend_db
+    env_file: project-send_secret.env
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/Los_Angeles
+      # Edit environmental variables in project-send_secret.env:
+      #- MYSQL_ROOT_PASSWORD=$MYSQL_ROOT_PASS
+      #- MYSQL_DATABASE=$MYSQL_DB_NAME
+      #- MYSQL_USER=$MYSQL_USER_NAME
+      #- MYSQL_PASSWORD=$MYSQL_USER_PASS
+    volumes:
+      - /mnt/Flashy_Fuchsia/PrecisionPlanIT/Servers/Gringotts/docker/projectsend/db_data:/config
+    restart: always
+    

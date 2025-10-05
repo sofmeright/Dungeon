@@ -1,0 +1,152 @@
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: plex-media-movies
+spec:
+  capacity:
+    storage: 1Ti
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  mountOptions:
+    - vers=2.1
+    - uid=1000
+    - gid=1000
+    - file_mode=0777
+    - dir_mode=0777
+  csi:
+    driver: smb.csi.k8s.io
+    readOnly: false
+    volumeHandle: plex-media-movies
+    volumeAttributes:
+      source: "//gringotts/media_movies"
+    nodeStageSecretRef:
+      name: plex-smb-secret
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: plex-media-movies
+spec:
+  storageClassName: PLACEHOLDER_STORAGE_CLASS
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Ti
+  volumeName: plex-media-movies
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: plex-media-tv
+spec:
+  capacity:
+    storage: 1Ti
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  mountOptions:
+    - vers=2.1
+    - uid=1000
+    - gid=1000
+    - file_mode=0777
+    - dir_mode=0777
+  csi:
+    driver: smb.csi.k8s.io
+    readOnly: false
+    volumeHandle: plex-media-tv
+    volumeAttributes:
+      source: "//gringotts/media_tv_shows"
+    nodeStageSecretRef:
+      name: plex-smb-secret
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: plex-media-tv
+spec:
+  storageClassName: PLACEHOLDER_STORAGE_CLASS
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Ti
+  volumeName: plex-media-tv
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: plex-media-music
+spec:
+  capacity:
+    storage: 500Gi
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  mountOptions:
+    - vers=2.1
+    - uid=1000
+    - gid=1000
+    - file_mode=0777
+    - dir_mode=0777
+  csi:
+    driver: smb.csi.k8s.io
+    readOnly: false
+    volumeHandle: plex-media-music
+    volumeAttributes:
+      source: "//gringotts/media_music"
+    nodeStageSecretRef:
+      name: plex-smb-secret
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: plex-media-music
+spec:
+  storageClassName: PLACEHOLDER_STORAGE_CLASS
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 500Gi
+  volumeName: plex-media-music
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: plex-media-photos
+spec:
+  capacity:
+    storage: 500Gi
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  mountOptions:
+    - vers=2.1
+    - uid=1000
+    - gid=1000
+    - file_mode=0777
+    - dir_mode=0777
+  csi:
+    driver: smb.csi.k8s.io
+    readOnly: false
+    volumeHandle: plex-media-photos
+    volumeAttributes:
+      source: "//gringotts/media_photos"
+    nodeStageSecretRef:
+      name: plex-smb-secret
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: plex-media-photos
+spec:
+  storageClassName: PLACEHOLDER_STORAGE_CLASS
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 500Gi
+  volumeName: plex-media-photos

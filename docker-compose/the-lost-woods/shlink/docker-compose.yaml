@@ -1,0 +1,60 @@
+---
+services:
+  shlink-app:
+    container_name: shlink-app
+    depends_on:
+      - shlink-mariadb
+    environment:
+      - TZ=America/Los_Angeles
+      - DEFAULT_DOMAIN=sh.uni2.cc
+      - DB_DRIVER=maria
+      - DB_HOST=shlink-mariadb
+      - DB_PORT=3306
+      - DB_NAME=$MYSQL_DB_NAME
+      - DB_USER=$MYSQL_USER_NAME
+      - DB_PASSWORD=$MYSQL_USER_PASS
+      - INITIAL_API_KEY=$INITIAL_API_KEY
+      - GEOLITE_LICENSE_KEY=$GEOLITE_LICENSE_KEY
+      - IS_HTTPS_ENABLED=false
+      - SHELL_VERBOSITY=3
+    image: shlinkio/shlink:latest
+    ports:
+      - 9145:8080
+    restart: always
+    logging: &logging
+      driver: "loki"
+      options:
+        loki-batch-size: "400"
+        loki-url: "http://monitoring:3100/loki/api/v1/push"
+        max-size: "10m"
+        max-file: "3"
+        mode: "non-blocking"
+        loki-retries: "2"
+        loki-max-backoff: "800ms"
+        loki-timeout: "1s"
+
+  shlink-mariadb:
+    logging: *logging
+    container_name: shlink-mariadb
+    environment:
+      - MYSQL_DATABASE=$MYSQL_DB_NAME
+      - MYSQL_ROOT_PASSWORD=$MYSQL_ROOT_PASS
+      - MYSQL_USER=$MYSQL_USER_NAME
+      - MYSQL_PASSWORD=$MYSQL_USER_PASS
+      - TZ=America/Los_Angeles
+      - PUID=1000
+      - PGID=1000
+    image: lscr.io/linuxserver/mariadb
+    restart: always
+    volumes:
+      - /opt/docker/shlink/mariadb:/config
+
+  shlink-web-client:
+    logging: *logging
+    container_name: shlink-web-client
+    image: shlinkio/shlink-web-client
+    ports:
+      - 9146:8080
+    restart: always
+    volumes:
+      - /opt/docker/shlink/web-config/:/usr/share/nginx/html/conf.d/

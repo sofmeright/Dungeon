@@ -1,0 +1,51 @@
+services:
+
+  web_server:
+    image: webkul/apache-php:latest
+    container_name: apache2
+    restart: always
+    volumes:
+      - /mnt/app_data/Server/_docker_stack/bagisto-demo/app:/var/www/html
+    working_dir: /var/www/html/
+    environment:
+      USER_UID: '1000'
+    networks:
+      - bagisto-network
+    ports:
+      - '324:80'
+    expose:
+      - '324'
+    depends_on:
+      - database_server
+    links:
+      - database_server
+    logging: &logging
+      driver: loki
+      options:
+        loki-batch-size: "400"
+        loki-url: "http://monitoring:3100/loki/api/v1/push"
+        max-size: "10m"
+
+  database_server:
+    logging: *logging
+    image: mysql:5.7
+    container_name: mysql
+    restart: always
+    env_file: stack.env
+    environment:
+      MYSQL_DATABASE: '$MYSQL_DATABASE'
+      MYSQL_USER: '$MYSQL_USER_NAME'
+      MYSQL_PASSWORD: '$MYSQL_USER_PASS'
+      MYSQL_ROOT_PASSWORD: '$MYSQL_ROOT_PASS'
+      MYSQL_ROOT_HOST: '%'
+    networks:
+      - bagisto-network
+    volumes:
+      - /mnt/app_data/Server/_docker_stack/bagisto-demo/dbvolume:/var/lib/mysql
+
+volumes:
+  dbvolume:
+  app:
+
+networks:
+  bagisto-network:

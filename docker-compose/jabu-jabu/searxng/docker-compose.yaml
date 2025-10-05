@@ -1,0 +1,50 @@
+services:
+  redis:
+    container_name: redis
+    image: docker.io/valkey/valkey:8-alpine
+    command: valkey-server --save 30 1 --loglevel warning
+    restart: unless-stopped
+    networks:
+      - searxng
+    volumes:
+      - valkey-data2:/data
+    cap_drop:
+      - ALL
+    cap_add:
+      - SETGID
+      - SETUID
+      - DAC_OVERRIDE
+    logging: &logging
+      driver: loki
+      options:
+        loki-batch-size: "400"
+        loki-url: "http://monitoring:3100/loki/api/v1/push"
+        max-size: "10m"
+
+  searxng:
+    logging: *logging
+    container_name: searxng
+    image: docker.io/searxng/searxng:latest
+    restart: unless-stopped
+    networks:
+      - searxng
+    ports:
+      - "8986:8080"
+    volumes:
+      - /mnt/app_data/Server/_docker_stack/searxng:/etc/searxng:rw
+    environment:
+      - SEARXNG_BASE_URL=https://search.pcfae.com/
+      - UWSGI_WORKERS=${SEARXNG_UWSGI_WORKERS:-4}
+      - UWSGI_THREADS=${SEARXNG_UWSGI_THREADS:-4}
+    cap_drop:
+      - ALL
+    cap_add:
+      - CHOWN
+      - SETGID
+      - SETUID
+
+networks:
+  searxng:
+
+volumes:
+  valkey-data2:

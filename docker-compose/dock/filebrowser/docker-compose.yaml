@@ -1,0 +1,11 @@
+services:
+  filebrowser:
+    image: filebrowser/filebrowser
+    user: '1000:1000'
+    ports:
+      - 8754:80
+    volumes:
+      # Target path:
+      - /mnt/Seed_Bank:/srv
+      - /opt/docker/filebrowser/database:/database
+      - /opt/docker/filebrowser/.filebrowser.json:/.filebrowser.json

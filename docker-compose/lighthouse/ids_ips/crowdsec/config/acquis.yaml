@@ -1,0 +1,28 @@
+#filenames:
+#  - /var/log/nginx/*.log
+#  - ./tests/nginx/nginx.log
+##this is not a syslog log, indicate which kind of logs it is
+#labels:
+#  type: nginx
+#---
+#filenames:
+# - /var/log/auth.log
+# - /var/log/syslog
+#labels:
+#  type: syslog
+#---
+#filename: /var/log/apache2/*.log
+#labels:
+#  type: apache2
+#---
+source: loki
+log_level: info
+url: http://monitoring:3100/
+limit: 2000
+query: |
+  {job="varlogs"}
+#auth:
+#  username: something
+#  password: secret
+labels:
+ type: apache2

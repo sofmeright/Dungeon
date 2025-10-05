@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: linkwarden
+spec:
+  selector:
+    app: linkwarden
+  ports:
+    - name: http
+      port: 3000
+      targetPort: 3000
+      protocol: TCP
+  type: LoadBalancer

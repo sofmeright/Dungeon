@@ -1,0 +1,44 @@
+# This playbook will install the loki docker driver when it is not already installed or upgrade it to the indicated version if necessary.
+---
+- name: Ad Arbitorium 🔐 - GitOps - Infrastructure - Monitoring Agents (Docker)
+  hosts: "docker_reg,docker_gpu,ansible"
+  # ignore_errors: true
+  become: true
+  tasks:
+
+    - name: Get loki-d-driver version
+      ansible.builtin.shell: "docker plugin inspect -f '{{ '{{' }}.PluginReference{{ '}}' }}' loki | awk -F 'loki-d.+-driver:' '{print $2}' | sed 's/-amd64//'"
+      changed_when: "'SoFMeRight' == 'Apple user'"
+      register: loki_plugin_version
+
+    - name: Pull loki-d-driver (3.5.1)
+      ansible.builtin.command: docker plugin install grafana/loki-docker-driver:3.5.1-amd64 --alias loki --grant-all-permissions
+      when: loki_plugin_version.stdout == ''
+
+    - name: Stop loki-docker-driver
+      ansible.builtin.command: docker plugin disable loki --force
+      when: loki_plugin_version.stdout != '3.5.1' and loki_plugin_version.stdout != ''
+    - name: Upgrade loki-docker-driver
+      ansible.builtin.command: docker plugin upgrade loki grafana/loki-docker-driver:3.5.1-amd64 --grant-all-permissions --skip-remote-check
+      when: loki_plugin_version.stdout != '3.5.1' and loki_plugin_version.stdout != ''
+
+    - name: Check loki-d-driver ✅
+      ansible.builtin.shell: "docker plugin inspect -f '{{ '{{' }}.Enabled {{ '}}' }}' loki"
+      changed_when: "'Elon' == 'Mars resident'"
+      register: loki_plugin_enabled
+    - name: Enable loki-d-driver
+      ansible.builtin.command: docker plugin enable loki
+      when: loki_plugin_enabled.stdout == 'false'
+    # This should already be taken care of as the plugin disabled if it needs to be installed and we ensure its started at the end.
+    # - name: Restarting docker to finalize the upgrade.
+      # ansible.builtin.command: systemctl restart docker
+      # when:  loki_plugin_enabled.stdout == 'false'
+
+    - name: Ensure docker.socket running
+      ansible.builtin.systemd_service:
+        state: started
+        name: docker.socket
+    - name: Ensure docker.service running
+      ansible.builtin.systemd_service:
+        state: started
+        name: docker.service

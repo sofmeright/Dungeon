@@ -1,0 +1,81 @@
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: velero
+  namespace: flux-system
+spec:
+  targetNamespace: fairy-bottle
+  values:
+    initContainers:
+      - name: velero-plugin-for-aws
+        image: docker.io/velero/velero-plugin-for-aws:v1.13.0
+        imagePullPolicy: IfNotPresent
+        volumeMounts:
+          - mountPath: /target
+            name: plugins
+    configuration:
+      # Enable CSI snapshots feature
+      features: EnableCSI
+
+      backupStorageLocation:
+        - name: default
+          provider: aws
+          bucket: velero-backups
+          config:
+            region: us-east-1
+            s3ForcePathStyle: "true"
+            s3Url: http://172.22.150.101:9002
+            insecureSkipTLSVerify: "true"
+
+      volumeSnapshotLocation:
+        - name: default
+          provider: csi
+
+    credentials:
+      existingSecret: velero-minio-credentials
+
+    nodeAgent:
+      podVolumePath: /var/lib/kubelet/pods
+      privileged: false
+      resources:
+        requests:
+          memory: 200Mi
+          cpu: 100m
+        limits:
+          memory: 1Gi
+          cpu: 500m
+
+    resources:
+      requests:
+        memory: 128Mi
+        cpu: 100m
+      limits:
+        memory: 512Mi
+        cpu: 500m
+
+    schedules:
+      daily-backup:
+        disabled: false
+        schedule: "0 2 * * *"
+        template:
+          ttl: "720h0m0s"
+          includedNamespaces:
+            - operationtimecapsule
+            - zeldas-lullaby
+            - lighthouse
+          excludedResources:
+            - events
+            - events.events.k8s.io
+            - persistentvolumes/plex-media-movies
+            - persistentvolumes/plex-media-tv
+            - persistentvolumes/plex-media-music
+            - persistentvolumes/plex-media-photos
+            - persistentvolumes/calibre-web-books
+            - persistentvolumeclaims/plex-media-movies
+            - persistentvolumeclaims/plex-media-tv
+            - persistentvolumeclaims/plex-media-music
+            - persistentvolumeclaims/plex-media-photos
+            - persistentvolumeclaims/calibre-web-books-pvc
+          storageLocation: default
+          volumeSnapshotLocations:
+            - default

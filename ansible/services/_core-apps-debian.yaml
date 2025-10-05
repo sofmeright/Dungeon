@@ -1,0 +1,13 @@
+---
+- name: Ad Arbitorium 🔐 - GitOps - Services - Core Applications
+  hosts: linux
+  become: true
+  tasks:
+    - name: Ensuring that the latest versions of core apps (nano, neofetch, tree, etc.) are installed...
+      ansible.builtin.apt:
+        name:
+          - nano
+          - neofetch
+          - tree
+        state: present
+        update_cache: true # Simulate apt-update on the first run.

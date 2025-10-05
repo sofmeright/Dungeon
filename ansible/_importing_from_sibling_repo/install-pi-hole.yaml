@@ -1,0 +1,17 @@
+---
+- name: Playbook to install docker compose.
+  hosts: linux
+  become: true
+  tasks: 
+    - name: Copy file with owner and permissions
+      ansible.builtin.copy:
+        src: ../apps/pi-hole/docker-compose.yaml
+        dest: docker-compose.yaml
+        owner: foo
+        group: foo
+        mode: '0644'
+    - name: deploy Docker Compose stack
+      community.docker.docker_compose_v2:
+        project_src: /root
+        files:
+        - docker-compose.yaml

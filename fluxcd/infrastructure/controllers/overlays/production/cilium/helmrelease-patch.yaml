@@ -1,0 +1,67 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: cilium
+spec:
+  values:
+    # Cluster-specific network configuration
+    ipv4NativeRoutingCIDR: "192.168.144.0/20"
+    ipv6NativeRoutingCIDR: "fc00:f1:d759:3053:a573::/64"
+    k8sServiceHost: "172.22.144.105"
+
+    # Enable IPv6 for external connectivity
+    ipv6:
+      enabled: true
+
+    operator:
+      replicas: 1
+    # eBPF native datapath configuration
+    bpf:
+      masquerade: true  # Enable BPF masquerade for external traffic
+      # Enable additional BPF features for better performance
+      lbExternalClusterIP: true
+
+    # Use DSR mode for load balancers (preserves source IPs)
+    loadBalancer:
+      mode: dsr
+      acceleration: native
+      algorithm: maglev
+      serviceTopology: true
+      # DSR dispatch mode - 'geneve' for better compatibility
+      dsrDispatch: geneve
+
+    # NodePort configuration for eBPF
+    nodePort:
+      enabled: true
+      mode: dsr
+
+    # Enable auto-direct routes between nodes (eBPF native)
+    autoDirectNodeRoutes: true
+
+    # Enable masquerading ONLY for traffic going outside the cluster
+    enableIPv4Masquerade: true
+
+    # Native routing (no masquerade) for pod network - this is the key!
+    # Traffic within this CIDR uses eBPF native routing without any NAT
+    ipv4NativeRoutingCIDR: "192.168.144.0/20"
+
+    # Also configure routing mode explicitly
+    routingMode: native
+
+    # Enable geneve tunnel protocol (required for geneve DSR dispatch)
+    tunnelProtocol: "geneve"
+
+    # L2 announcements disabled - using BGP instead
+    l2announcements:
+      enabled: false
+
+    # Additional performance optimizations
+    bpfClockProbe: true
+    bpfLBSockHostnsOnly: false
+
+    # Enable endpoint routes for better performance
+    endpointRoutes:
+      enabled: true
+
+    # Enable host routing - REQUIRED for LoadBalancer with native routing
+    hostRouting: true

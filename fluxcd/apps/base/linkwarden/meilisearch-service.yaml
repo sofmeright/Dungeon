@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: linkwarden-meilisearch
+spec:
+  selector:
+    app: linkwarden-meilisearch
+  ports:
+    - name: meilisearch
+      port: 7700
+      targetPort: 7700
+      protocol: TCP
+  type: ClusterIP

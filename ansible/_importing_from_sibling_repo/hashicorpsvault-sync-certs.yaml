@@ -1,0 +1,31 @@
+---
+- hosts: xylem,moor
+  name: Playbook to transfer certificates for *.pcfae.com from xylem to moor for hashicorps-vault.
+  user: "{{ ansible_ssh_user }}"
+  become: true
+  become_method: sudo
+  become_user: root
+  tasks:
+    - name: Creates directory
+      when: inventory_hostname == "moor"
+      ansible.builtin.file:
+        path: /mnt/app_data/Server/_docker_stack/hashicorps-vault/certs
+        state: directory
+
+    - name: Transfer fullchain.pem from from xylem to master
+      run_once: yes
+      fetch: src=/etc/letsencrypt/live/pcfae.com/fullchain.pem dest=~/ flat=yes
+      when: inventory_hostname == "xylem"
+
+    - name: Transfer fullchain.pem from master to moor
+      copy: src=~/fullchain.pem dest=/mnt/app_data/Server/_docker_stack/hashicorps-vault/certs/
+      when: inventory_hostname == "moor"
+        
+    - name: Transfer privkey.pem from from xylem to master
+      run_once: yes
+      fetch: src=/etc/letsencrypt/live/pcfae.com/privkey.pem dest=~/ flat=yes
+      when: inventory_hostname == "xylem"
+
+    - name: Transfer privkey.pem from master to moor
+      copy: src=~/privkey.pem dest=/mnt/app_data/Server/_docker_stack/hashicorps-vault/certs/
+      when: inventory_hostname == "moor"

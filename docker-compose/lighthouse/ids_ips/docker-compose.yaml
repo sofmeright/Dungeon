@@ -1,0 +1,61 @@
+services:
+
+    # CrowdSec - Open-source & collaborative security IPS
+    crowdsec:
+        #<<: *common-keys-core # See EXTENSION FIELDS at the top
+        container_name: crowdsec
+        environment:
+            COLLECTIONS: "crowdsecurity/traefik crowdsecurity/http-cve crowdsecurity/whitelist-good-actors crowdsecurity/iptables crowdsecurity/linux crowdsecurity/nginx crowdsecurity/sshd"
+            GID: "${GID-1000}"
+            CUSTOM_HOSTNAME: Lighthouse
+            CROWDSEC_API_PORT: 3403
+        healthcheck:
+            test: ["CMD-SHELL", "wget --spider --quiet --tries=1 --timeout=5 http://localhost:8080/health > /dev/null 2>&1 || exit 1"]
+            interval: 30s
+            timeout: 10s
+            retries: 3
+            start_period: 30s
+        image: crowdsecurity/crowdsec:v1.6.9
+        ports:
+            - "$CROWDSEC_API_PORT:8080"
+            # - "$CROWDSEC_PROMETHEUS_EXPORT:6060" # For metrics export to Prometheus database.
+            # - "$ZEROTIER_IP_WEBSERVER:$CROWDSEC_PROMETHEUS_EXPORT:6060" # If you don't use ZeroTier remove use just $CROWDSEC_PROMETHEUS_EXPORT:6060
+        restart: always
+        volumes:
+            - $PPIT_App_Data/crowdsec/logs/web:/logs/web:ro
+            - /var/log:/var/log:ro
+            - $PPIT_App_Data/crowdsec/data:/var/lib/crowdsec/data
+            - $PPIT_App_Data/crowdsec/config:/etc/crowdsec
+
+    # CrowdSec Bouncer - Cloudflare
+    # Set max ip number right the first time (max 10000). Recreating the container deletes all ips and reads them causing cloudflare 429 rate limiting.
+    cloudflare-bouncer:
+        #<<: *common-keys-core # See EXTENSION FIELDS at the top
+        container_name: cloudflare-bouncer
+        depends_on:
+            crowdsec:
+                condition: service_healthy
+        env_file: cloudflare_bouncer_secret.env
+        image: crowdsecurity/cloudflare-bouncer
+        ports:
+            - 2112:2112
+        restart: always
+        volumes:
+            - $PPIT_App_Data/crowdsec/bouncers/crowdsec-cloudflare-bouncer.yaml:/etc/crowdsec/bouncers/crowdsec-cloudflare-bouncer.yaml
+
+    dashboard:
+        container_name: crowdsec-dashboard
+        depends_on:
+            - crowdsec
+        environment:
+            #UID: "${UID-2000}"
+            MB_DB_FILE: /data/metabase.db
+            MGID: 1000
+        #we're using a custom Dockerfile so that metabase pops with pre-configured dashboards
+        image: crowdsec-dashboard:latest
+        ports:
+            - 8911:3000
+        restart: always
+        volumes:
+            - $PPIT_App_Data/crowdsec/data:/metabase-data
+            - $PPIT_App_Data/crowdsec/dashboard:/data

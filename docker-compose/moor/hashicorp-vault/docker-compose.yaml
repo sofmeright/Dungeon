@@ -1,0 +1,32 @@
+#version: '3.3'
+services:
+  vault:
+    image: hashicorp/vault
+    container_name: hashicorp-vault
+    environment:
+      VAULT_ADDR: "https://hvault.prplanit.com"
+      VAULT_API_ADDR: "https://127.0.0.1:8200"
+      VAULT_ADDRESS: "https://hvault.prplanit.com"
+      VAULT_UI: true
+      # VAULT_TOKEN:
+    ports:
+      - "8200:8200"
+      - "8201:8201"
+    restart: always
+    volumes:
+      - /mnt/app_data/Server/_docker_stack/hashicorp_vault/logs:/vault/logs/:rw
+      - /mnt/app_data/Server/_docker_stack/hashicorp_vault/data:/vault/data/:rw
+      - /mnt/app_data/Server/_docker_stack/hashicorp_vault/config:/vault/config/:rw
+      - /mnt/app_data/Server/_docker_stack/hashicorp_vault/certs:/certs/:rw
+      - /mnt/app_data/Server/_docker_stack/hashicorp_vault/file:/vault/file/:rw
+    cap_add:
+      - IPC_LOCK
+    entrypoint: vault server -config /vault/config/config.hcl
+    #labels:
+      #labels-regex: "^.+"
+      #log_driver: "loki"
+      #log_opt:
+        #loki-batch-size:"400"
+        #loki-url:"http://localhost:3100/loki/api/v1/push"
+        #max-size:"10m"
+        #max-file:"3"

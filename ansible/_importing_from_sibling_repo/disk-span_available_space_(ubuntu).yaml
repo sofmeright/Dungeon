@@ -1,0 +1,19 @@
+---
+- name: Preparing to extend {{ sfmr_target_host }}'s disk to span available space.
+  hosts: "{{ sfmr_target_host }}"
+  become: true
+  tasks: 
+
+    - name: Extend the partition to span the entire disk.
+      command: growpart /dev/sda 3
+      ignore_errors: true
+
+    - name: Extend the PV to span the entire disk.
+      command: pvresize /dev/sda3
+
+    - name: Extend the LVM to span the entire disk.
+      command: lvextend -l +100%FREE /dev/ubuntu-vg/ubuntu-lv
+      ignore_errors: true
+
+    - name: Resize the filesystem without rebooting {{ sfmr_target_host }}.
+      command: resize2fs /dev/ubuntu-vg/ubuntu-lv

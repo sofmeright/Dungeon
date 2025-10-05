@@ -1,0 +1,45 @@
+/* Blur header and add padding */
+.mantine-AppShell-header {
+border-bottom: #77dced !important;
+background-color: #310937 !important;
+backdrop-filter: blur(1rem);
+  * {
+    color: #24cc89 !important
+  }
+/* padding: 1rem 4rem; */
+}
+
+.dashboard-header-search-root {
+   backbround color: #fefff9cc !important;
+}
+
+/* Blur background image and add padding */
+.mantine-AppShell-main {
+background-color: #310937 !important;
+backdrop-filter: blur(1rem);
+padding: 4rem;
+}
+
+.mantine-Paper-root, .mantine-Input-input, .mantine-TextInput-input, blockquote  {
+  background-color: #2f1c35 !important;
+  border-color: #77dced !important;
+  * {
+    color: #24cc89 !important
+  }
+}
+
+/* Change Button Background Colors */
+.grid-stack-item-content,  .mantine-RichTextEditor-root  {
+  background-color: #24cc89 !important;
+  border-color: #77dced !important;
+  * {
+    color: #2f1c35 !important
+  }
+}
+
+.mantine-Badge-root  {
+  background-color: #2f1c35 !important;
+  border-color: #77dced !important;
+  * {
+    color: #90a83b !important
+}

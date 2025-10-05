@@ -1,0 +1,10 @@
+---
+- name: Ad Arbitorium 🔐 - GitOps - Infrastructure - qemu-guest-agent (Proxmox Debian VMs)
+  become: true
+  hosts: proxmox_vms
+  tasks:
+    - name: Ensuring that the latest version of the qemu-guest-agent is installed...
+      ansible.builtin.apt:
+        name: qemu-guest-agent
+        state: present
+        update_cache: true # equivalent to apt update.

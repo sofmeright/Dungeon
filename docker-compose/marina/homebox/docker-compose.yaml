@@ -1,0 +1,21 @@
+services:
+  homebox:
+    image: ghcr.io/hay-kot/homebox:latest
+#   image: ghcr.io/hay-kot/homebox:latest-rootless
+    container_name: homebox
+    restart: always
+    environment:
+    - HBOX_LOG_LEVEL=info
+    - HBOX_LOG_FORMAT=text
+    - HBOX_WEB_MAX_UPLOAD_SIZE=10
+    - HBOX_OPTIONS_ALLOW_REGISTRATION=true
+    volumes:
+      - /mnt/app_data/Server/_docker_stack/homebox/data/:/data/
+    ports:
+      - 3100:7745
+    logging: &logging
+      driver: loki
+      options:
+        loki-batch-size: "400"
+        loki-url: "http://monitoring:3100/loki/api/v1/push"
+        max-size: "10m"

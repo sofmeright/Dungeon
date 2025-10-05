@@ -1,0 +1,82 @@
+services:
+
+  beszel-agent:
+    container_name: beszel-agent
+    env_file: 
+      - beszel-agent.env
+      - beszel-agent_secret.env
+    image: henrygd/beszel-agent:0.11.1 #customgpu  #latest
+    # No loki-docker-driver on TrueNAS.
+    # logging: &logging
+      # driver: "loki"
+      # options:
+        # loki-batch-size: "400"
+        # loki-url: "http://monitoring:3100/loki/api/v1/push"
+        # max-size: "10m"
+        # max-file: "3"
+        # mode: "non-blocking"
+        # loki-retries: "2"
+        # loki-max-backoff: "800ms"
+        # loki-timeout: "1s"
+    network_mode: host
+    restart: always
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      # This is where you add a extra disk:
+      # - /opt/docker/beszel/agent/data/:/extra-filesystems/data:ro
+      # - /mnt/Flashy_Fuchsia:/extra-filesystems/Flashy_Fuchsia:ro
+      # - /mnt/JunkerBunker:/extra-filesystems/JunkerBunker:ro
+      # - /mnt/operation/timecapsule:/extra-filesystems/operation-timecapsule:ro
+      
+  cadvisor:
+    # logging: *logging
+    command:
+      - '-port=8098'
+    container_name: cadvisor
+    devices:
+      - /dev/kmsg
+    env_file: cadvisor.env
+    image: gcr.io/cadvisor/cadvisor:v0.52.1
+    ports:
+      - 8098:8098
+    privileged: true
+    restart: always
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+      - /dev/disk/:/dev/disk:ro
+    
+  node_exporter:
+    # logging: *logging
+    command: '--path.rootfs=/host'
+    container_name: node_exporter
+    image: quay.io/prometheus/node-exporter:v1.5.0
+    pid: host
+    ports:
+      - 9100:9100
+    restart: always
+    volumes:
+      - /:/host:ro,rslave
+
+  watchtower:
+    # logging: *logging
+    container_name: watchtower
+    env_file: 
+      - _hostname.env
+      - watchtower.env
+      - watchtower-secret.env
+    environment:
+      - TZ=Etc/UTC
+      - NO_COLOR=true
+      # Notifies Us Daily @ 7:30 AM PST
+      - WATCHTOWER_SCHEDULE=0 30 14 * * *
+      - WATCHTOWER_INCLUDE_STOPPED=true
+      - WATCHTOWER_INCLUDE_RESTARTING=true
+      - WATCHTOWER_MONITOR_ONLY=true
+    # hostname: moor
+    image: containrrr/watchtower
+    restart: always
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock

@@ -1,0 +1,125 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: adguard
+spec:
+  replicas: PLACEHOLDER_REPLICAS
+  serviceName: adguard
+  selector:
+    matchLabels:
+      app: adguard
+  template:
+    metadata:
+      labels:
+        app: adguard
+    spec:
+      initContainers:
+      - name: copy-config
+        image: PLACEHOLDER_BUSYBOX_IMAGE
+        command:
+        - sh
+        - -c
+        - |
+          if [ ! -f /opt/adguardhome/conf/AdGuardHome.yaml ]; then
+            echo "Copying initial config and replacing placeholders..."
+            cp /tmp/config/AdGuardHome.yaml /opt/adguardhome/conf/
+            sed -i "s/ADGUARD_PASSWORD_PLACEHOLDER/$ADMIN_PASSWORD/g" /opt/adguardhome/conf/AdGuardHome.yaml
+            echo "New config generated with secret values."
+          else
+            echo "Config already exists, skipping..."
+          fi
+        env:
+        - name: ADMIN_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: adguard-secret
+              key: admin-password
+        volumeMounts:
+        - name: config-template
+          mountPath: /tmp/config
+        - name: adguard-conf
+          mountPath: /opt/adguardhome/conf
+      containers:
+      - name: adguard
+        image: PLACEHOLDER_IMAGE
+        ports:
+        - containerPort: 53
+          protocol: TCP
+          name: dns-tcp
+        - containerPort: 53
+          protocol: UDP
+          name: dns-udp
+        - containerPort: 67
+          protocol: UDP
+          name: dhcp-server
+        - containerPort: 68
+          protocol: UDP
+          name: dhcp-client
+        - containerPort: 80
+          protocol: TCP
+          name: http
+        - containerPort: 443
+          protocol: TCP
+          name: https
+        - containerPort: 853
+          protocol: TCP
+          name: dot
+        - containerPort: 784
+          protocol: UDP
+          name: doq
+        - containerPort: 5443
+          protocol: TCP
+          name: dnscrypt-tcp
+        - containerPort: 5443
+          protocol: UDP
+          name: dnscrypt-udp
+        env:
+        - name: TZ
+          value: "UTC"
+        volumeMounts:
+        - name: adguard-data
+          mountPath: /opt/adguardhome/work
+        - name: adguard-conf
+          mountPath: /opt/adguardhome/conf
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "100m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 80
+          initialDelaySeconds: 5
+          periodSeconds: 5
+      volumes:
+      - name: config-template
+        configMap:
+          name: adguard-config
+  volumeClaimTemplates:
+  - metadata:
+      name: adguard-data
+    spec:
+      accessModes:
+        - ReadWriteOnce
+      storageClassName: PLACEHOLDER_STORAGE_CLASS
+      resources:
+        requests:
+          storage: 5Gi
+  - metadata:
+      name: adguard-conf
+    spec:
+      accessModes:
+        - ReadWriteOnce
+      storageClassName: PLACEHOLDER_STORAGE_CLASS
+      resources:
+        requests:
+          storage: 1Gi

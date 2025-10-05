@@ -1,0 +1,21 @@
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: rook-ceph-operator
+spec:
+  releaseName: rook-ceph-operator
+  targetNamespace: PLACEHOLDER_NAMESPACE
+  interval: 30m
+  chart:
+    spec:
+      chart: rook-ceph
+      version: "PLACEHOLDER_VERSION"
+      sourceRef:
+        kind: HelmRepository
+        name: rook-release
+        namespace: flux-system
+      interval: 12h
+  values:
+    fullnameOverride: "rook-ceph-operator"
+    crds:
+      enabled: true

@@ -1,0 +1,35 @@
+#version: '2'
+services:
+  tiki:
+    image: tikiwiki/tikiwiki:25.x
+    ports:
+    - "1668:80"
+    depends_on:
+      - db
+    environment:
+      - TIKI_DB_USER=veganwiki
+      - TIKI_DB_PASS=Uor.Tjg19v1
+      - TIKI_DB_NAME=tikidb
+    restart: unless-stopped
+    #labels: &logging
+      #labels-regex: "^.+"
+      #log_driver: "loki"
+      #log_opt:
+        #loki-batch-size:"400"
+        #loki-url:"http://localhost:3100/loki/api/v1/push"
+        #max-size:"10m"
+        #max-file:"3"
+    
+  db:
+    #labels: *logging
+    image: mariadb
+    environment:
+      - MYSQL_USER=veganwiki
+      - MYSQL_PASSWORD=Uor.Tjg19v1
+      - MYSQL_DATABASE=tikidb
+      - MYSQL_ROOT_PASSWORD=8dJ875YcSz!x
+      - TERM=dumb
+    volumes:
+      - /mnt/app_data/Server/Web-App/_docker-stack/tikiwiki-vegan/backups:/docker-entrypoint-initdb.d
+      - /mnt/app_data/Server/Web-App/_docker-stack/tikiwiki-vegan/mysql:/var/lib/mysql
+    restart: unless-stopped

@@ -1,0 +1,82 @@
+services:  # This script is from https://www.thesmarthomebook.com/2022/01/18/set-up-plex-server-with-docker-compose/
+  plex-ms-old:
+    image: plexinc/pms-docker:latest # Set specific: plexinc/pms-docker:1.40.2.8395-c67dce28e
+    container_name: plex-ms-old
+    #network_mode: bridge # Change this to 'bridge' to define ports, example ports below
+    ports:
+      - 32402:32400/tcp
+      - 8326:8324/tcp
+      - 32471:32469/tcp
+      - 1903:1900/udp
+      - 32420:32410/udp
+      - 32421:32412/udp
+      - 32422:32413/udp
+      - 32423:32414/udp
+    # Uncomment the devices section for tv tuners and intel gpus
+    #devices:
+      #- /dev/dvb:/dev/dvb # Uncomment this device for typical USB TV Tuner cards
+      #- /dev/dri:/dev/dri # Uncomment this to use intel GPUs for Hardware Transcoding
+    #env_file:
+      #- .env
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/Los_Angeles # Change this to match your server's timezone
+      - ADVERTISE_IP=http://10.55.6.136:32402/,https://plexo.operationtimecapsule.com
+      - CHANGE_CONFIG_DIR_OWNERSHIP=false
+      # Uncomment the lines below to use Nvidia GPUs for Hardware Transcoding
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=all
+    hostname: plexo.local.lan
+    volumes:
+      - /etc/localtime:/etc/localtime:ro # Sync the container's time to the host's time
+      - /opt/docker/plex-ms-old/config:/config # Plex server application data is stored in a folder called 'plexmediaserver' in the same directory as the docker-compose.yaml file
+      - /opt/docker/plex-ms-old/transcode:/transcode
+      # Uncomment the lines below for each library,
+      # make sure the path on the left of the colon (:) exists on the host! `/mnt/tv`
+      - movies:/media/Movies
+      - tv_shows:/media/TV_Shows
+      - music:/media/Music
+      - photos:/media/Photos
+    restart: unless-stopped
+    runtime: nvidia
+    # Uncomment the lines below to use Nvidia GPUs for Hardware Transcoding
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    logging: &logging
+      driver: loki
+      options:
+        loki-batch-size: "400"
+        loki-url: "http://monitoring:3100/loki/api/v1/push"
+        max-size: "10m"
+
+volumes:
+  movies:
+    driver: local
+    driver_opts:
+      type: cifs
+      o: "iocharset=utf8,username=$SAMBA_PLEX_USER,password=$SAMBA_PLEX_PASS,rw,vers=2.1,uid=32400,file_mode=0777,dir_mode=0777"
+      device: "//gringotts/media_movies"
+  tv_shows:
+    driver: local
+    driver_opts:
+      type: cifs
+      o: "iocharset=utf8,username=$SAMBA_PLEX_USER,password=$SAMBA_PLEX_PASS,rw,vers=2.1,uid=32400,file_mode=0777,dir_mode=0777"
+      device: "//gringotts/media_tv_shows"
+  music:
+    driver: local
+    driver_opts:
+      type: cifs
+      o: "iocharset=utf8,username=$SAMBA_PLEX_USER,password=$SAMBA_PLEX_PASS,rw,vers=2.1,uid=32400,file_mode=0777,dir_mode=0777"
+      device: "//gringotts/media_music"
+  photos:
+    driver: local
+    driver_opts:
+      type: cifs
+      o: "iocharset=utf8,username=$SAMBA_PLEX_USER,password=$SAMBA_PLEX_PASS,rw,vers=2.1,uid=32400,file_mode=0777,dir_mode=0777"
+      device: "//gringotts/media_photos"

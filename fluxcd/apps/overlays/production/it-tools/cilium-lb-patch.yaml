@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: it-tools
+  namespace: tingle-tuner
+  annotations:
+    io.cilium/lb-ipam-ips: "172.22.30.107"
+    io.cilium/lb-ipam-sharing-key: "tingle-tuner"

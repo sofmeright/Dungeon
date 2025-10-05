@@ -1,0 +1,18 @@
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: rook-ceph-operator
+spec:
+  targetNamespace: gorons-bracelet
+  chart:
+    spec:
+      version: "v1.18.2"
+  values:
+    csi:
+      enableCSIHostNetwork: true
+    resources:
+      limits:
+        memory: 512Mi
+      requests:
+        cpu: 100m
+        memory: 128Mi

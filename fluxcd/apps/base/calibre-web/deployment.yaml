@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: calibre-web
+  labels:
+    app: calibre-web
+spec:
+  replicas: PLACEHOLDER_REPLICAS
+  selector:
+    matchLabels:
+      app: calibre-web
+  template:
+    metadata:
+      labels:
+        app: calibre-web
+    spec:
+      securityContext:
+        fsGroup: 1000
+      containers:
+      - name: calibre-web
+        image: PLACEHOLDER_IMAGE
+        ports:
+        - containerPort: 8083
+          name: web
+        env:
+        - name: TZ
+          value: "Etc/UTC"
+        - name: PUID
+          value: "8083"
+        - name: PGID
+          value: "1000"
+        volumeMounts:
+        - name: config
+          mountPath: /config
+        - name: books
+          mountPath: /books
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "100m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 8083
+          initialDelaySeconds: 60
+          periodSeconds: 30
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 8083
+          initialDelaySeconds: 30
+          periodSeconds: 10
+      volumes:
+      - name: config
+        persistentVolumeClaim:
+          claimName: calibre-web-config-pvc
+      - name: books
+        persistentVolumeClaim:
+          claimName: calibre-web-books-pvc

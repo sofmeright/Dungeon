@@ -1,0 +1,298 @@
+networks:
+  monitoring:
+    driver: bridge
+    
+services:
+
+  beszel:
+    container_name: beszel
+    extra_hosts:
+      - host.docker.internal:host-gateway
+    image: henrygd/beszel
+    network_mode: bridge
+    ports:
+      - 8353:8090
+    restart: unless-stopped
+    volumes:
+      - /opt/docker/beszel/data:/beszel_data
+    logging: &logging
+      driver: "loki"
+      options:
+        loki-batch-size: "400"
+        loki-url: "http://monitoring:3100/loki/api/v1/push"
+        max-size: "10m"
+        max-file: "3"
+        mode: "non-blocking"
+        loki-retries: "2"
+        loki-max-backoff: "800ms"
+        loki-timeout: "1s"
+      
+  grafana:
+    logging: *logging
+    container_name: grafana
+    env_file: grafana.env
+    image: grafana/grafana-oss:12.0.2
+    #password: root123
+    ports:
+      - '3849:3000'
+    restart: always
+    user: "1000:1000"
+    volumes:
+      - /opt/docker/grafana/data:/var/lib/grafana
+
+  graphite_exporter:
+    logging: *logging
+    command:
+      - '--graphite.mapping-config=/etc/graphite_mappings.yaml'
+      - '--graphite.listen-address=:2003'
+    container_name: graphite_exporter
+    image: prom/graphite-exporter:v0.16.0
+    ports:
+      - '2003:2003'
+      # - '9108:9108' # If this address is exposed can reference this port without using container name in place of hostname.
+    restart: always
+    volumes:
+      - /opt/docker/graphite-exporter/config/pgraphite_mappings.yaml:/etc/graphite_mappings.yaml:ro
+        
+  loki:
+    logging: *logging
+    command: -config.file=/mnt/config/loki-config.yaml
+    container_name: loki
+    #depends_on:
+      #change-vol-ownership:
+        #condition: service_completed_successfully
+    #deploy:
+      #mode: replicated
+      #replicas: 1
+    image: grafana/loki:3.5.1
+    ports:
+      - 3100:3100
+    restart: always
+    user: "10001:10001"
+    volumes:
+      - /opt/docker/loki/loki-config.yaml:/mnt/config/loki-config.yaml
+      - /opt/docker/loki/data:/var/lib/loki
+
+  netalertx:
+    container_name: netalertx
+    environment:
+      - PUID=200
+      - PGID=300
+      - PORT=20211
+      - TZ=America/Los_Angeles
+    image: ghcr.io/jokob-sk/netalertx:latest
+    network_mode: host
+    ports:
+      - 20211:20211
+    restart: always
+    tmpfs:
+    - /app/api # Syntax: /test:mode=755,uid=568,gid=568
+    volumes:
+      - /opt/docker/netalertx/config:/app/config
+      - /opt/docker/netalertx/db:/app/db
+  
+
+  ntfy:
+    logging: *logging
+    container_name: ntfy
+    command: serve
+    env_file: 
+      - ntfy.env
+      - ntfy_secret.env
+    healthcheck: # optional: remember to adapt the host:port to your environment
+        test: ["CMD-SHELL", "wget -q --tries=1 http://localhost:80/v1/health -O - | grep -Eo '\"healthy\"\\s*:\\s*true' || exit 1"]
+        interval: 60s
+        timeout: 10s
+        retries: 3
+        start_period: 40s
+    image: binwiederhier/ntfy:v2.12
+    ports:
+      - 1638:80
+      - 25:25
+    restart: always
+    volumes:
+      - /opt/docker/ntfy/var/cache/ntfy:/var/cache/ntfy
+      - /opt/docker/ntfy/etc/netfy:/etc/ntfy
+      - /opt/docker/ntfy/var/lib/ntfy/:/var/lib/ntfy/
+
+  prometheus:
+    logging: *logging
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yaml'
+    container_name: prometheus
+    image: prom/prometheus:v2.37.9
+    ports:
+      - 9090:9090
+    restart: always
+    user: "1000:1000"
+    volumes:
+      - /opt/docker/prometheus/config/prometheus.yaml:/etc/prometheus/prometheus.yaml:ro
+      - /opt/docker/prometheus/data:/prometheus
+
+  prometheus_eaton_ups_exporter:
+    logging: *logging
+    container_name: prometheus_eaton_ups_exporter
+    env_file: prometheus_eaton_ups_exporter.env
+    image: cr.pcfae.com/sofmeright/prometheus-eaton-ups-exporter:latest	
+    ports:
+      - 9795:9795
+    restart: always
+    user: 1000:1000
+    volumes:
+      - /opt/docker/prometheus-eaton-ups-exporter/config.json:/usr/src/app/etc/config.json
+
+  prometheus-pve-exporter:
+    logging: *logging
+    container_name: prometheus-pve-exporter 
+    image: prompve/prometheus-pve-exporter:3
+    ports:
+      - 9221:9221 
+    restart: always
+    volumes:
+    - /opt/docker/prometheus-pve-exporter/pve.yml:/etc/prometheus/pve.yml
+
+  promtail:
+    logging: *logging
+    command: -config.file=/mnt/config/promtail-config.yaml
+    container_name: promtail
+    depends_on:
+      - loki
+    #deploy:
+      #mode: global
+    #environment:
+      #- HOSTNAME=promtail
+    image: grafana/promtail:3.0.0
+    restart: always
+    volumes:
+      - /opt/docker/promtail/promtail-config.yaml:/mnt/config/promtail-config.yaml
+      - /var/log:/var/log
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+      - /var/run/docker.sock:/var/run/docker.sock
+      
+  uptime-kuma:
+    logging: *logging
+    container_name: uptime-kuma
+    image: louislam/uptime-kuma:1
+    network_mode: bridge
+    ports:
+      # <Host Port>:<Container Port>
+      - 3001:3001
+    restart: always
+    volumes:
+      - /opt/docker/uptime-kuma/data:/app/data
+      - /var/run/docker.sock:/var/run/docker.sock
+    #labels:
+      #labels-regex: "^.+"
+      #log_driver: "loki"
+      #log_opt:
+         #loki-batch-size:"400"
+         #loki-url:"http://localhost:3100/loki/api/v1/push"
+         #max-size:"10m"
+         #max-file:"3"
+         
+  wazuh.manager:
+    logging: *logging
+    container_name: wazuh-manager
+    env_file: 
+      - wazuh-manager.env
+      - wazuh-manager_secret.env
+    hostname: wazuh.manager
+    image: wazuh/wazuh-manager:4.4.4
+    ports:
+      - "1514:1514"
+      - "1515:1515"
+      - "514:514/udp"
+      - "55000:55000"
+    restart: always
+    volumes:
+      - wazuh_api_configuration:/var/ossec/api/configuration
+      - wazuh_etc:/var/ossec/etc
+      - wazuh_logs:/var/ossec/logs
+      - wazuh_queue:/var/ossec/queue
+      - wazuh_var_multigroups:/var/ossec/var/multigroups
+      - wazuh_integrations:/var/ossec/integrations
+      - wazuh_active_response:/var/ossec/active-response/bin
+      - wazuh_agentless:/var/ossec/agentless
+      - wazuh_wodles:/var/ossec/wodles
+      - filebeat_etc:/etc/filebeat
+      - filebeat_var:/var/lib/filebeat
+      - /opt/docker/wazuh/config/wazuh_indexer_ssl_certs/root-ca-manager.pem:/etc/ssl/root-ca.pem
+      - /opt/docker/wazuh/config/wazuh_indexer_ssl_certs/wazuh.manager.pem:/etc/ssl/filebeat.pem
+      - /opt/docker/wazuh/config/wazuh_indexer_ssl_certs/wazuh.manager-key.pem:/etc/ssl/filebeat.key
+      - /opt/docker/wazuh/config/wazuh_cluster/wazuh_manager.conf:/wazuh-config-mount/etc/ossec.conf
+
+  wazuh.indexer:
+    logging: *logging
+    container_name: wazuh-indexer
+    env_file: wazuh-indexer.env
+    hostname: wazuh.indexer
+    image: wazuh/wazuh-indexer:4.4.4
+    ports:
+      - "9200:9200"
+    restart: always
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+      nofile:
+        soft: 65536
+        hard: 65536
+    volumes:
+      - wazuh-indexer-data:/var/lib/wazuh-indexer
+      - /opt/docker/wazuh/config/wazuh_indexer_ssl_certs/root-ca.pem:/usr/share/wazuh-indexer/certs/root-ca.pem
+      - /opt/docker/wazuh/config/wazuh_indexer_ssl_certs/wazuh.indexer-key.pem:/usr/share/wazuh-indexer/certs/wazuh.indexer.key
+      - /opt/docker/wazuh/config/wazuh_indexer_ssl_certs/wazuh.indexer.pem:/usr/share/wazuh-indexer/certs/wazuh.indexer.pem
+      - /opt/docker/wazuh/config/wazuh_indexer_ssl_certs/admin.pem:/usr/share/wazuh-indexer/certs/admin.pem
+      - /opt/docker/wazuh/config/wazuh_indexer_ssl_certs/admin-key.pem:/usr/share/wazuh-indexer/certs/admin-key.pem
+      - /opt/docker/wazuh/config/wazuh_indexer/wazuh.indexer.yml:/usr/share/wazuh-indexer/opensearch.yml
+      - /opt/docker/wazuh/config/wazuh_indexer/internal_users.yml:/usr/share/wazuh-indexer/opensearch-security/internal_users.yml
+      - /opt/docker/wazuh/config/wazuh_indexer/opensearch-security/config.yml:/etc/wazuh-indexer/opensearch-security/config.yml
+
+  wazuh.dashboard:
+    logging: *logging
+    container_name: wazuh-dashboard
+    depends_on:
+      - wazuh.indexer
+    env_file:
+      - wazuh-dashboard.env
+      - wazuh-dashboard_secret.env
+    hostname: wazuh.dashboard
+    image: wazuh/wazuh-dashboard:4.4.4
+    links:
+      - wazuh.indexer:wazuh.indexer
+      - wazuh.manager:wazuh.manager
+    ports:
+      - 6443:5601
+    restart: always
+    volumes:
+      - /opt/docker/wazuh/config/wazuh_indexer_ssl_certs/wazuh.dashboard.pem:/usr/share/wazuh-dashboard/certs/wazuh-dashboard.pem
+      - /opt/docker/wazuh/config/wazuh_indexer_ssl_certs/wazuh.dashboard-key.pem:/usr/share/wazuh-dashboard/certs/wazuh-dashboard-key.pem
+      - /opt/docker/wazuh/config/wazuh_indexer_ssl_certs/root-ca.pem:/usr/share/wazuh-dashboard/certs/root-ca.pem
+      - /opt/docker/wazuh/config/wazuh_dashboard/opensearch_dashboards.yml:/usr/share/wazuh-dashboard/config/opensearch_dashboards.yml
+      - /opt/docker/wazuh/config/wazuh_dashboard/wazuh.yml:/usr/share/wazuh-dashboard/data/wazuh/config/wazuh.yml
+
+volumes:
+  wazuh_api_configuration:
+  wazuh_etc:
+  wazuh_logs:
+  wazuh_queue:
+  wazuh_var_multigroups:
+  wazuh_integrations:
+  wazuh_active_response:
+  wazuh_agentless:
+  wazuh_wodles:
+  filebeat_etc:
+  filebeat_var:
+  wazuh-indexer-data:
+
+  #change-vol-ownership:
+    #container_name: zz-change-vol-ownership
+    #image: ubuntu
+    #user: root
+    #volumes:
+      #- /opt/docker/loki/data:/var/lib/loki
+    #command: >
+      #bash -c "
+      #mkdir -p /var/lib/loki/chunks && mkdir -p /var/lib/loki/rules && chown -R 10001:10001 /var/lib/loki"
+
+      

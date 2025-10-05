@@ -1,0 +1,96 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: zitadel
+spec:
+  replicas: PLACEHOLDER_REPLICAS
+  serviceName: zitadel
+  selector:
+    matchLabels:
+      app: zitadel
+  template:
+    metadata:
+      labels:
+        app: zitadel
+    spec:
+      serviceAccountName: zitadel
+      containers:
+      - name: zitadel
+        image: PLACEHOLDER_IMAGE
+        ports:
+        - containerPort: 8080
+          name: http
+        env:
+        - name: ZITADEL_MASTERKEY
+          valueFrom:
+            secretKeyRef:
+              name: zitadel-masterkey
+              key: masterkey
+        - name: ZITADEL_DATABASE_POSTGRES_USER_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: zitadel-secrets
+              key: ZITADEL_DATABASE_POSTGRES_USER_PASSWORD
+        - name: ZITADEL_DATABASE_POSTGRES_ADMIN_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: postgres-secrets
+              key: POSTGRES_PASSWORD
+        - name: ZITADEL_DEFAULTINSTANCE_SMTPCONFIGURATION_SMTP_USER
+          valueFrom:
+            secretKeyRef:
+              name: zitadel-secrets
+              key: SMTP_USER
+        - name: ZITADEL_DEFAULTINSTANCE_SMTPCONFIGURATION_SMTP_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: zitadel-secrets
+              key: SMTP_PASSWORD
+        # Kubernetes integration
+        - name: KUBERNETES_SERVICE_HOST
+          value: "kubernetes.default.svc"
+        - name: KUBERNETES_SERVICE_PORT
+          value: "443"
+        - name: ZITADEL_PORT
+          value: "8080"
+        - name: ZITADEL_EXTERNALPORT
+          value: "443"
+        - name: POD_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
+        command:
+        - /app/zitadel
+        - start
+        - --config
+        - /config/zitadel-config.yaml
+        - --masterkeyFromEnv
+        - --tlsMode
+        - external
+        volumeMounts:
+        - name: zitadel-config
+          mountPath: /config
+          readOnly: true
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "250m"
+          limits:
+            memory: "1Gi"
+            cpu: "1000m"
+        livenessProbe:
+          httpGet:
+            path: /debug/healthz
+            port: 8080
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /debug/ready
+            port: 8080
+          initialDelaySeconds: 10
+          periodSeconds: 5
+      volumes:
+      - name: zitadel-config
+        configMap:
+          name: zitadel-config

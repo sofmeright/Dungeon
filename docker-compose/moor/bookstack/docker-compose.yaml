@@ -1,0 +1,72 @@
+---
+services:
+  bookstack:
+    image: lscr.io/linuxserver/bookstack
+    container_name: bookstack
+    env_file: stack.env
+    environment:
+      - APP_URL=https://kb.precisionplanit.com # https://kb.precisionplanit.com # http://192.168.1.99:6875
+      # Set OIDC to be the authentication method
+      #- AUTH_METHOD=oidc
+      # Control if BookStack automatically initiates login via your OIDC system
+      # if it's the only authentication method. Prevents the need for the
+      # user to click the "Login with x" button on the login page.
+      # Setting this to true enables auto-initiation.
+      #- AUTH_AUTO_INITIATE=true
+      # Set the display name to be shown on the login button.
+      # (Login with <name>)
+      #- OIDC_NAME="SSO"
+
+      # Name of the claims(s) to use for the user's display name.
+      # Can have multiple attributes listed, separated with a '|' in which
+      # case those values will be joined with a space.
+      # Example: OIDC_DISPLAY_NAME_CLAIMS=given_name|family_name
+      #- OIDC_DISPLAY_NAME_CLAIMS=name
+
+      # OAuth Client ID to access the identity provider
+      #- OIDC_CLIENT_ID=ClientId
+
+      # OAuth Client Secret to access the identity provider
+      #- OIDC_CLIENT_SECRET=ClientSecret
+
+      # Issuer URL
+      # Must start with 'https://'
+      #- OIDC_ISSUER=https://your-zitadel-instance.example.com
+
+      # Enable auto-discovery of endpoints and token keys.
+      # As per the standard, expects the service to serve a
+      # `<issuer>/.well-known/openid-configuration` endpoint.
+      #- OIDC_ISSUER_DISCOVER=true
+
+      # Load custom functions from custom template
+      #- APP_THEME=custom
+    volumes:
+      - /mnt/app_data/Server/_docker_stack/bookstack/app_data:/config
+      - /mnt/app_data/Server/_docker_stack/bookstack/uploads:/app/www/public/uploads/
+      - /mnt/app_data/Server/_docker_stack/bookstack/functions.php:/app/www/themes/custom/functions.php:rw
+    ports:
+      - 6875:443
+    restart: always
+    depends_on:
+      - bookstack_db
+    #labels: &logging
+      #labels-regex: "^.+"
+      #log_driver: "loki"
+      #log_opt:
+        #loki-batch-size:"400"
+        #loki-url:"http://localhost:3100/loki/api/v1/push"
+        #max-size:"10m"
+        #max-file:"3"
+        #mode:"non-blocking"
+        #loki-retries:"2"
+        #loki-max-backoff:"800ms"
+        #loki-timeout:"1s"
+
+  bookstack_db:
+    #labels: *logging
+    image: lscr.io/linuxserver/mariadb
+    container_name: bookstack_db
+    env_file: stack.env
+    volumes:
+      - /mnt/app_data/Server/_docker_stack/bookstack/db_data:/config
+    restart: always

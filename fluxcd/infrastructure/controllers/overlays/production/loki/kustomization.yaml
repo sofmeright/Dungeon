@@ -1,0 +1,14 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: gossip-stone
+
+resources:
+  - ../../../../configs/overlays/production/loki  # Loki S3 credentials ExternalSecret
+  - ../../../base/loki
+
+patches:
+  - path: helmrelease-patch.yaml
+    target:
+      kind: HelmRelease
+      name: loki

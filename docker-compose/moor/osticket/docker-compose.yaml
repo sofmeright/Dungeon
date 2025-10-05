@@ -1,0 +1,29 @@
+services:
+  osticket:
+    image: docker.io/tiredofit/osticket
+    ports:
+      - 8184:80
+    depends_on:
+      - osticket_db
+    env_file: stack.env
+    restart: unless-stopped
+    #labels: &logging
+      #labels-regex: "^.+"
+      #log_driver: "loki"
+      #log_opt:
+        #loki-batch-size:"400"
+        #loki-url:"http://localhost:3100/loki/api/v1/push"
+        #max-size:"10m"
+        #max-file:"3"
+    
+  osticket_db:
+    image: mariadb
+    env_file: stack.env
+    environment:
+      - TZ=Etc/UTC
+      - TERM=dumb
+    volumes:
+      #- /mnt/app_data/Server/_docker_stack/osticket/backups:/docker-entrypoint-initdb.d
+      - /mnt/app_data/Server/_docker_stack/osticket/mysql:/var/lib/mysql
+    restart: unless-stopped
+    #labels: *logging

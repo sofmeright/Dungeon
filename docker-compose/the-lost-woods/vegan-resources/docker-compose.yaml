@@ -1,0 +1,128 @@
+services:
+
+  mealie-app:
+    container_name: mealie-app
+    depends_on:
+      - mealie-postgres
+    deploy:
+      resources:
+        limits:
+          memory: 1000M # 
+    env_file: mealie-app-secret.env
+    environment:
+      # ----- Set Backend ENV Variables Here -----
+      - ALLOW_SIGNUP=true
+      - PUID=1000
+      - PGID=1000
+      - TZ=Etc/UTC
+      - MAX_WORKERS=1
+      - WEB_CONCURRENCY=1
+      - BASE_URL=https://mealie.yesimvegan.com
+      # ----- Email Settings -----
+      - SMTP_AUTH_STRATEGY=TLS
+      - SMTP_HOST=smtp.gmail.com
+      - SMTP_PORT=587
+      # - SMTP_FROM_NAME=$SMTP_NAME
+      # - SMTP_FROM_EMAIL=$SMTP_EMAIL
+      # - SMTP_USER=$SMTP_EMAIL
+      # - SMTP_PASSWORD=$SMTP_PASS
+      # ----- Database Settings -----
+      - DB_ENGINE=postgres
+      # - POSTGRES_USER=$POSTGRES_USER
+      # - POSTGRES_PASSWORD=$POSTGRES_PASS
+      - POSTGRES_SERVER=mealie-postgres
+      - POSTGRES_PORT=5432
+      - POSTGRES_DB=mealie
+      # ----- Theming -----
+      - THEME_DARK_PRIMARY=#349722        # Top Bar, (Navigation Side Bar) "+", (Meal Planner Section) ["Meal Planner"/"Edit"] Selection Highlight
+      - THEME_LIGHT_PRIMARY=#349722       # ^ See Above
+      - THEME_DARK_ACCENT=#ad9f11         # (Search Section) Filter Toggles, *Most* Recipe Tags, *Most* Recipe View Buttons, Invite Link "Copy" Button
+      - THEME_LIGHT_ACCENT=#ad9f11        # ^ See Above
+      - THEME_DARK_SECONDARY=#852297      # Heart/Favorites Buttons, Recipe Image Hover, Serving
+      - THEME_LIGHT_SECONDARY=#852297     # ^ See Above
+      - THEME_DARK_SUCCESS=#006838        # ([*] Section) "Create" Button | (Recipe Section) "I Made This" Button, (User Section) *Most* Buttons, Save Button
+      - THEME_LIGHT_SUCCESS=#006838       # ^ See Above
+      - THEME_DARK_INFO=#24cc89           # Calendar Filter Button, Recipe View Circle Buttons
+      - THEME_LIGHT_INFO=#24cc89          # ^ See Above
+      - THEME_DARK_WARNING=#ef7d50        # Experimental Features Warning Material Card Highlight
+      - THEME_LIGHT_WARNING=#ef7d50       # ^ See Above
+      - THEME_DARK_ERROR=#310937          # Delete Button
+      - THEME_LIGHT_ERROR=#310937         # ^ See Above
+      # ----- OIDC/SSO ~ Zitadel Configuration -----
+      - OIDC_AUTH_ENABLED=True
+      - OIDC_CONFIGURATION_URL=https://sso.prplanit.com/.well-known/openid-configuration
+      # - OIDC_CLIENT_ID=$OIDC_CLIENT_ID
+      # - OIDC_CLIENT_SECRET=$OIDC_CLIENT_SECRET
+      - OIDC_SIGNUP_ENABLED=False			    # Enables new users to be created when signing in for the first time with OIDC
+      #- OIDC_USER_GROUP=					        # If specified, only users belonging to this group will be able to successfully authenticate. For more information see this page
+      #- OIDC_ADMIN_GROUP=					      # If specified, users belonging to this group will be able to successfully authenticate and be made an admin. For more information see this page
+      - OIDC_AUTO_REDIRECT=False			    # If True, then the login page will be bypassed and you will be sent directly to your Identity Provider. You can still get to the login page by adding ?direct=1 to the login URL
+      - OIDC_REMEMBER_ME=False			      # Because redirects bypass the login screen, you cant extend your session by clicking the "Remember Me" checkbox. By setting this value to true, a session will be extended as if "Remember Me" was checked
+      - OIDC_USER_CLAIM=email				      # This is the claim which Mealie will use to look up an existing user by (e.g. "email", "preferred_username")
+      - OIDC_NAME_CLAIM=name				      # This is the claim which Mealie will use for the users Full Name
+      #- OIDC_GROUPS_CLAIM=groups			    # Optional if not using OIDC_USER_GROUP or OIDC_ADMIN_GROUP. This is the claim Mealie will request from your IdP and will use to compare to OIDC_USER_GROUP or OIDC_ADMIN_GROUP to allow the user to log in to Mealie or is set as an admin. Your IdP must be configured to grant this claim
+      #- OIDC_SCOPES_OVERRIDE=				    # Advanced configuration used to override the scopes requested from the IdP. Most users won't need to change this. At a minimum, 'openid profile email' are required.
+      #- OIDC_TLS_CACERTFILE=				      # File path to Certificate Authority used to verify server certificate (e.g. /path/to/ca.crt)
+      - OIDC_PROVIDER_NAME=PrPlanIT.com	  # The provider name is shown in SSO login button. "Login with <OIDC_PROVIDER_NAME>"
+    image: ghcr.io/mealie-recipes/mealie:nightly
+    ports:
+      - "9926:9000"
+    restart: always
+    volumes:
+      - /opt/docker/mealie/data:/app/data/ #/mealiedatassd/
+    logging: &logging
+      driver: "loki"
+      options:
+        loki-batch-size: "400"
+        loki-url: "http://monitoring:3100/loki/api/v1/push"
+        max-size: "10m"
+        max-file: "3"
+        mode: "non-blocking"
+        loki-retries: "2"
+        loki-max-backoff: "800ms"
+        loki-timeout: "1s"
+
+  mealie-postgres:
+    logging: *logging
+    container_name: mealie-postgres
+    env_file: mealie-postgres-secret.env
+    #environment:
+      # POSTGRES_USER: $POSTGRES_USER
+      # POSTGRES_PASSWORD: $POSTGRES_PASS
+    image: postgres:15
+    restart: always
+    volumes:
+      - /opt/docker/mealie/postgres:/var/lib/postgresql/data #/pgdatassd
+
+  wikijs-vegan-app:
+    logging: *logging
+    container_name: wikijs-vegan-app
+    depends_on:
+      - wikijs-vegan-postgres
+    env_file: wikijs-postgres-secret.env
+    environment:
+      - DB_TYPE=postgres
+      - DB_HOST=wikijs-vegan-postgres
+      - DB_PORT=5432
+      # - DB_NAME=$POSTGRES_DB_NAME
+      # - DB_USER=$POSTGRES_DB_USER
+      # - DB_PASS=$POSTGRES_DB_PASS
+    image: ghcr.io/requarks/wiki:2
+    ports: 
+      - 3364:3000
+    restart: always
+
+  wikijs-vegan-postgres:
+    logging: *logging
+    container_name: wikijs-vegan-postgres
+    image: postgres:15-alpine
+    env_file: wikijs-postgres-secret.env
+    #environment:
+      # POSTGRES_DB: $POSTGRES_DB_NAME
+      # POSTGRES_USER: $POSTGRES_DB_USER
+      # POSTGRES_PASSWORD: $POSTGRES_DB_PASS
+    #logging:
+      #driver: none
+    restart: always
+    volumes:
+      - /opt/docker/wikijs-vegan/postgres:/var/lib/postgresql/data

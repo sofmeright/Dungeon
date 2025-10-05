@@ -1,0 +1,25 @@
+{
+    "default-address-pools" : [
+        {
+            "base" : "172.16.0.0/14",
+            "size" : 24
+        },
+        {
+            "base" : "192.168.0.0/16",
+            "size" : 24
+        }
+    ],
+    "dns": ["10.0.0.1", "10.0.0.2", "1.1.1.1", "8.8.8.8"],
+    "log-driver": "loki",
+    "log-opts": {
+        "loki-url": "http://monitoring:3100/loki/api/v1/push",
+        "loki-batch-size": "400",
+        "max-size": "30m",
+        "max-file": "10" ,
+        "mode": "non-blocking",
+        "loki-retries": "2",
+        "loki-max-backoff": "800ms",
+        "loki-timeout": "1s"
+        },
+    "registry-mirrors": ["https://docker.jcr.pcfae.com"]
+}

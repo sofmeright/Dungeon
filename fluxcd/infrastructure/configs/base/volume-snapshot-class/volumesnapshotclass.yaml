@@ -1,0 +1,6 @@
+apiVersion: snapshot.storage.k8s.io/v1
+kind: VolumeSnapshotClass
+metadata:
+  name: PLACEHOLDER_SNAPSHOT_CLASS_NAME
+driver: PLACEHOLDER_CSI_DRIVER
+deletionPolicy: Delete

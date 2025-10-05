@@ -1,0 +1,44 @@
+# Configuration values for Weave GitOps HelmRelease
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: weave-gitops-values
+  namespace: flux-system
+data:
+  values.yaml: |
+    # Admin user configuration
+    adminUser:
+      create: false  # Disable admin user completely
+    
+    # Use user-account auth method with external secret
+    additionalArgs:
+      - --auth-methods=user-account
+    
+    # RBAC configuration with impersonation for multi-namespace visibility
+    rbac:
+      create: true
+      viewSecretsResourceNames: ["cluster-user-auth", "oidc-auth"]
+      # Allow impersonation of the user "kai"
+      impersonationResourceNames: ["kai"]
+      impersonationResources: ["users", "groups"]
+      additionalRules:
+        - apiGroups: [""]
+          resources: ["users"]
+          verbs: ["impersonate"]
+          resourceNames: ["kai"]
+    
+    # Additional security settings
+    metrics:
+      enabled: true
+    
+    # Service configuration - use LoadBalancer with Cilium LB IPAM
+    service:
+      type: LoadBalancer
+      annotations:
+        io.cilium/lb-ipam-ips: "172.22.30.137"
+        io.cilium/lb-ipam-sharing-key: "gossip-stone"
+      port: 9001
+    
+    # Disable ingress since we're using LoadBalancer
+    ingress:
+      enabled: false

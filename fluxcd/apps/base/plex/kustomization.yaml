@@ -1,0 +1,8 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - vault-secret.yaml
+  - pvc.yaml
+  - smb-volumes.yaml
+  - statefulset.yaml
+  - service.yaml

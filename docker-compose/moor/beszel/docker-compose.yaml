@@ -1,0 +1,21 @@
+services:
+
+  beszel:
+    image: henrygd/beszel
+    container_name: beszel
+    restart: unless-stopped
+    network_mode: bridge
+    extra_hosts:
+      - host.docker.internal:host-gateway
+    ports:
+      - 8353:8090
+    volumes:
+      - /mnt/app_data/Server/_docker_stack/beszel/data:/beszel_data
+    #labels: &logging
+     #labels-regex: "^.+"
+      #log_driver: "loki"
+      #log_opt:
+        #loki-batch-size:"400"
+        #loki-url:"http://localhost:3100/loki/api/v1/push"
+        #max-size:"10m"
+        #max-file:"3"

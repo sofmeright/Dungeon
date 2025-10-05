@@ -1,0 +1,26 @@
+---
+- name: Ad Arbitorium 🔐 - GitOps - Services - FusionPBX
+  hosts: "bluebell"
+  # ignore_errors: true
+  become: true
+  tasks:
+
+    - name: Detecting if there is an active installation of fusionpbx.
+      ansible.builtin.stat:
+        path: /var/www/fusionpbx/core
+      register: fusionpbx_dir
+      # this contains version info. We may need to revisit and parse this.
+      # ansible.builtin.shell: '[ -d /var/www/fusionpbx/core/software/resources/classes/software.php ] && echo 1 || echo 0'
+
+    - name: Downloading the latest fusionpbx install script and adding it to the working directory...
+      ansible.builtin.shell: "wget -O - https://raw.githubusercontent.com/fusionpbx/fusionpbx-install.sh/master/debian/pre-install.sh | sudo sh{{ ';' }}"
+      when: fusionpbx_dir.stat.exists == 0
+
+    - name: Entering the install script path and executing the FusionPBX installer...
+      ansible.builtin.shell: cd /usr/src/fusionpbx-install.sh/debian && sudo sh ./install.sh
+      when: fusionpbx_dir.stat.exists == 0
+      register: fusionpbx_install
+    - name: FusionPBX Post-Installation Info
+      ansible.builtin.debug:
+        msg: "{{ fusionpbx_install.stdout }}"
+      when: fusionpbx_dir.stat.exists == 0

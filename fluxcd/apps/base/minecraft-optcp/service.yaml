@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: minecraft
+spec:
+  type: LoadBalancer
+  selector:
+    app: minecraft
+  ports:
+  - name: minecraft
+    port: 35566
+    targetPort: 35566
+    protocol: TCP

@@ -1,0 +1,19 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - ../../base/storage  # Storage classes with proper reclaim policies
+  - cilium
+  # - metallb  # Disabled - replaced by Cilium LoadBalancer IPAM
+  - weave-gitops
+  - ceph-csi
+  - ceph-rgw  # Ceph RGW keyring for S3 object storage
+  - rook-ceph-external  # Rook external Ceph cluster connection secrets
+  - vault  # Bank-Vaults with SOPS-encrypted keys
+  - velero  # Backup and disaster recovery credentials
+  - zitadel  # Identity and Access Management
+  - adguard  # DNS filtering and ad blocking
+  - grafana  # Grafana admin credentials
+  - loki  # Loki S3 credentials for log storage
+  - prometheus  # Prometheus S3 credentials for metric storage
+  - gateways  # Gateway resources for Traefik routing
+  - cert-manager  # TLS certificates and Cloudflare credentials

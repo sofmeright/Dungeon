@@ -1,0 +1,60 @@
+apiVersion: vault.banzaicloud.com/v1alpha1
+kind: Vault
+metadata:
+  name: vault
+spec:
+  image: docker.io/hashicorp/vault:1.20.4
+  unsealConfig:
+    kubernetes:
+      secretNamespace: zeldas-lullaby
+  externalConfig:
+    policies:
+      - name: external-secrets
+        rules: |
+          path "operationtimecapsule/data/*" {
+            capabilities = ["read", "list"]
+          }
+          path "operationtimecapsule/metadata/*" {
+            capabilities = ["read", "list"]
+          }
+          path "precisionplanit/data/*" {
+            capabilities = ["read", "list"]
+          }
+          path "precisionplanit/metadata/*" {
+            capabilities = ["read", "list"]
+          }
+          path "zeldas-letter/data/*" {
+            capabilities = ["read", "list"]
+          }
+          path "zeldas-letter/metadata/*" {
+            capabilities = ["read", "list"]
+          }
+    auth:
+      - type: kubernetes
+        config:
+          token_reviewer_jwt: vault:external-secrets-vault-token#token
+          kubernetes_host: https://kubernetes.default.svc.cluster.local
+          kubernetes_ca_cert: vault:external-secrets-vault-token#ca.crt
+          disable_iss_validation: true
+        roles:
+          - name: external-secrets
+            bound_service_account_names: ["external-secrets-vault"]
+            bound_service_account_namespaces: ["zeldas-lullaby"]
+            policies: ["external-secrets"]
+            ttl: 24h
+    secrets:
+      - path: operationtimecapsule
+        type: kv
+        description: Media and archives secrets
+        options:
+          version: 2
+      - path: precisionplanit
+        type: kv
+        description: PrecisionPlanIt business secrets
+        options:
+          version: 2
+      - path: zeldas-letter
+        type: kv
+        description: System and core infrastructure secrets
+        options:
+          version: 2

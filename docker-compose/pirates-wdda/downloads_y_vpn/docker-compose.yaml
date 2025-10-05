@@ -1,0 +1,496 @@
+---
+services:
+
+  bazarr:
+    cap_add:
+      - NET_ADMIN
+    container_name: bazarr
+    depends_on:
+      gluetun:
+        condition: service_healthy
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Etc/UTC
+    image: lscr.io/linuxserver/bazarr:latest
+    network_mode: "container:gluetun"
+    restart: always
+    volumes:
+      - /opt/docker/bazarr/config:/config
+      #- /opt/docker/bazarr/movies:/movies #optional
+      #- /opt/docker/bazarr/tv:/tv #optional
+    logging: &logging
+      driver: "loki"
+      options:
+        loki-batch-size: "400"
+        loki-url: "http://monitoring:3100/loki/api/v1/push"
+        max-size: "10m"
+        max-file: "3"
+        mode: "non-blocking"
+        loki-retries: "2"
+        loki-max-backoff: "800ms"
+        loki-timeout: "1s"
+
+  byparr:
+    logging: *logging
+    cap_add:
+      - NET_ADMIN
+    container_name: byparr
+    depends_on:
+      gluetun:
+        condition: service_healthy
+    environment:
+      - TZ=Etc/UTC
+      - LOG_LEVEL=INFO
+    image: ghcr.io/thephaseless/byparr
+    network_mode: "container:gluetun"
+    restart: always
+    volumes:
+      - /opt/docker/byparr/screenshots:/app/screenshots # For screenshots when exception occurs
+
+   # A tool that automates cross-seeding within qBittorrent
+  cross-seed:
+    logging: *logging
+    command: daemon
+    container_name: cross-seed
+    depends_on:
+      gluetun:
+        condition: service_healthy
+    environment:
+      - TZ=Etc/UTC
+      - PUID=1000
+      - PGID=1000
+    image: crossseed/cross-seed:latest
+    network_mode: "container:gluetun"
+    restart: always
+    user: 1000:1000
+    volumes:
+     - /opt/docker/cross-seed/config:/config
+     #- /opt/docker/cross-seed/torrents:/torrents
+     #- /opt/docker/cross-seed/downloads:/mnt/downloads
+
+  #flaresolverr: # Use Byparr if it does not work.
+    #cap_add:
+      #- NET_ADMIN
+    #container_name: flaresolverr
+    #depends_on: 
+      #- gluetun
+    #environment:
+      #- LOG_LEVEL=${LOG_LEVEL:-info}
+      #- LOG_HTML=${LOG_HTML:-false}
+      #- CAPTCHA_SOLVER=${CAPTCHA_SOLVER:-none}
+      #- TZ=Etc/UTC
+    # DockerHub mirror flaresolverr/flaresolverr:latest
+    #image: ghcr.io/flaresolverr/flaresolverr:latest
+    #network_mode: "container:gluetun"
+    #restart: always
+
+  gluetun:
+    logging: *logging
+    container_name: gluetun
+    # line above must be uncommented to allow external containers to connect.
+    # See https://github.com/qdm12/gluetun-wiki/blob/main/setup/connect-a-container-to-gluetun.md#external-container-to-gluetun
+    cap_add:
+      - NET_ADMIN
+    devices:
+      - /dev/net/tun:/dev/net/tun
+    env_file: gluetun_secret.env
+    environment:
+      # See https://github.com/qdm12/gluetun-wiki/tree/main/setup#setup
+      #- VPN_SERVICE_PROVIDER=ivpn
+      #- VPN_TYPE=openvpn
+      # OpenVPN:
+      #- OPENVPN_USER=
+      #- OPENVPN_PASSWORD=
+      - VPN_SERVICE_PROVIDER=private internet access
+      #- OPENVPN_USER=$PIA_USER  # Set this in the gluetun_secret.env !!!
+      #- OPENVPN_PASSWORD=$PIA_PASS
+      - SERVER_REGIONS=CA Vancouver
+      - PORT_FORWARD_ONLY=true
+      - VPN_PORT_FORWARDING=on
+      - VPN_PORT_FORWARDING_STATUS_FILE=/tmp/gluetun/forwarded_port
+      - FIREWALL_OUTBOUND_SUBNETS=10.0.0.0/8
+      # Wireguard:
+      # - WIREGUARD_PRIVATE_KEY=wOEI9rqqbDwnN8/Bpp22sVz48T71vJ4fYmFWujulwUU=
+      # - WIREGUARD_ADDRESSES=10.64.222.21/32
+      # Timezone for accurate log times
+      - TZ=Etc/UTC
+      # Server list updater
+      # See https://github.com/qdm12/gluetun-wiki/blob/main/setup/servers.md#update-the-vpn-servers-list
+      - UPDATER_PERIOD=
+    image: qmcgaw/gluetun
+    network_mode: bridge
+    ports:
+      #- 3000:3000                     # anirra
+      #- 8000:8000                     # anirra
+      - 8888:8888/tcp                 # HTTP proxy
+      - 8388:8388/tcp                 # Shadowsocks
+      - 8388:8388/udp                 # Shadowsocks
+      - 6767:6767/tcp                 # bazarr
+      - 2468:2468/tcp                 # cross-seed
+      - 8191:8191/tcp                 # Flaresolverr
+      - 5055:5055/tcp                 # Jellyseer
+      - 8686:8686/tcp                 # Lidarr
+      - 9000:9000/tcp                 # thelounge
+      - 8080:5340                     # Neko
+      - "52000-52100:52000-52100/udp" # Neko
+      - 5056:5056/tcp                 # Overseer
+      - 8945:8945/tcp                 # Pinchflat
+      - 9696:9696/tcp                 # Prowlarr
+      - 8227:8227/tcp                 # pyload
+      - 6887:6887/tcp                 # Qbittorrent
+      - 7878:7878/tcp                 # Radarr
+      - 8787:8787/tcp                 # readarr
+      #- 7007:7007/tcp                 # Romm
+      - 8085:8080/tcp                 # Sabnzbd
+      - 8989:8989/tcp                 # Sonarr
+      - 6969:6969/tcp                 # Whisparr
+    restart: always
+    volumes:
+      - /opt/docker/gluetun:/gluetun
+      - /opt/docker/gluetun/config:/tmp/gluetun
+
+  gluetun-qbittorrent-port-manager:
+    logging: *logging
+    container_name: gluetun-qbittorrent-port-manager
+    cap_add:
+      - NET_ADMIN
+    depends_on:
+      gluetun:
+        condition: service_healthy
+    env_file: qbittorrent_secret.env
+    environment:
+      QBITTORRENT_SERVER: localhost # IP Address of qbittorrent
+      QBITTORRENT_PORT: 6887
+      QBITTORRENT_USER: $QBITTORRENT_USER # username
+      QBITTORRENT_PASS: $QBITTORRENT_PASS # password
+      PORT_FORWARDED: /tmp/gluetun/forwarded_port
+      HTTP_S: http # Select 'http' or 'https' depending on if you use certificates.
+    image: gluetun-qbittorrent-port-manager:1.3
+    network_mode: "container:gluetun"
+    restart: always
+    volumes:
+      - /opt/docker/gluetun/config:/tmp/gluetun #Set "yourfolder" to the same directory you used for Gluetun
+
+  jellyseerr:
+    logging: *logging
+    cap_add:
+      - NET_ADMIN
+    container_name: jellyseerr
+    depends_on:
+      gluetun:
+        condition: service_healthy
+    environment:
+      - LOG_LEVEL=debug
+      - TZ=Etc/UTC
+      - PORT=5055 #optional
+    image: ghcr.io/fallenbagel/jellyseerr:latest
+    network_mode: "container:gluetun"
+    restart: always
+    volumes:
+      - /opt/docker/jellyseer/config:/app/config
+
+  lidarr:
+    logging: *logging
+    cap_add:
+      - NET_ADMIN
+    container_name: lidarr
+    depends_on:
+      gluetun:
+        condition: service_healthy
+    #env_file: stack.env
+    environment:
+      - TZ=Etc/UTC
+      - PUID=1000
+      - PGID=1000
+    image: lscr.io/linuxserver/lidarr:latest
+    network_mode: "container:gluetun"
+    restart: always
+    volumes:
+      - /opt/docker/lidarr/config:/config
+      - otc_music:/media/Music #optional
+      #- /path/to/downloads:/downloads #optional
+
+  # A web based IRC client
+  thelounge:
+    logging: *logging
+    container_name: thelounge
+    depends_on:
+      gluetun:
+        condition: service_healthy
+    image: ghcr.io/thelounge/thelounge:latest
+    network_mode: "container:gluetun"
+    restart: always
+    volumes:
+     - /opt/docker/thelounge/config:/var/opt/thelounge
+
+  neko:
+    logging: *logging
+    cap_add:
+      - NET_ADMIN
+    container_name: neko
+    depends_on:
+      gluetun:
+        condition: service_healthy
+    environment:
+      NEKO_DESKTOP_INPUT_ENABLED: true
+      NEKO_DESKTOP_INPUT_SOCKET: "/tmp/xf86-input-neko.sock"
+      NEKO_DESKTOP_SCREEN: 1920x1080@30
+      NEKO_MEMBER_MULTIUSER_USER_PASSWORD: neko
+      NEKO_MEMBER_MULTIUSER_ADMIN_PASSWORD: admin
+      NEKO_NAT1TO1: 10.161.80.33
+      NEKO_WEBRTC_NAT1TO1: 10.161.80.33
+      NEKO_SESSION_HEARTBEAT_INTERVAL: 30
+      NEKO_TCPMUX: 52000
+      NEKO_UDPMUX: 52000
+      NEKO_ICELITE: 1
+      # trust reverse proxy headers (boolean)
+      NEKO_SERVER_PROXY: true
+      NEKO_SERVER_BIND: '0.0.0.0:5340'
+      NEKO_WEBRTC_EPR: 52000-52100
+      NEKO_WEBRTC_ICELITE: 1
+    image: "ghcr.io/m1k1o/neko/vivaldi"
+    network_mode: "container:gluetun"
+    restart: "always"
+    shm_size: "2gb"
+
+  overseerr:
+    logging: *logging
+    cap_add:
+      - NET_ADMIN
+    container_name: overseerr
+    depends_on:
+      gluetun:
+        condition: service_healthy
+    #env_file: stack.env
+    environment:
+      - TZ=Etc/UTC
+      - LOG_LEVEL=debug
+      - PORT=5056
+    image: sctx/overseerr
+    network_mode: "container:gluetun"
+    restart: always
+    volumes:
+      - /opt/docker/overseerr/config:/app/config
+      
+  pinchflat:
+    logging: *logging
+    cap_add:
+      - NET_ADMIN
+    container_name: pinchflat
+    depends_on:
+      gluetun:
+        condition: service_healthy
+    env_file: pinchflat_secret.env
+    environment:
+      - TZ=Etc/UTC # Change this to match your server's timezone
+      - PUID=3000
+      - PGID=3141
+      - BASIC_AUTH_USERNAME=$PINCHFLAT_USER
+      - BASIC_AUTH_PASSWORD=$PINCHFLAT_PASS
+    image: ghcr.io/kieraneglin/pinchflat:latest
+    network_mode: "container:gluetun"
+    restart: always
+    volumes:
+      - /opt/docker/pinchflat/config:/config
+      - otc_media:/downloads/
+
+  prowlarr:
+    logging: *logging
+    cap_add:
+      - NET_ADMIN
+    container_name: prowlarr
+    depends_on:
+      gluetun:
+        condition: service_healthy
+    #env_file: stack.env
+    environment:
+      - TZ=Etc/UTC
+      - PUID=1000
+      - PGID=1000
+    image: lscr.io/linuxserver/prowlarr:latest
+    restart: always
+    network_mode: "container:gluetun"
+    volumes:
+      - /opt/docker/prowlarr/config:/config
+
+  pyload-ng:
+    logging: *logging
+    cap_add:
+      - NET_ADMIN
+    container_name: pyload-ng
+    depends_on:
+      gluetun:
+        condition: service_healthy
+    environment:
+      - TZ=Etc/UTC
+      - PUID=1000
+      - PGID=1000
+    image: lscr.io/linuxserver/pyload-ng:latest
+    network_mode: "container:gluetun"
+    restart: always
+    volumes:
+      - /opt/docker/pyload/config:/config
+      #- /opt/docker/pyload/downloads:/downloads
+      - pyload_dl:/downloads
+
+
+  qbittorrent:
+    logging: *logging
+    cap_add:
+      - NET_ADMIN
+    container_name: qbittorrent
+    depends_on:
+      gluetun:
+        condition: service_healthy
+    env_file: qbittorrent_secret.env
+    environment:
+      - TZ=Etc/UTC
+      - WEBUI_PORT=6887
+      - PUID=1000
+      - PGID=1000
+    image: lscr.io/linuxserver/qbittorrent:latest
+    network_mode: "container:gluetun"
+    restart: always
+    volumes:
+      - /opt/docker/qbittorrent/config:/config
+      - /mnt/ceph_hdd/docker/qbittorrent/downloads:/downloads
+      - otc_movies:/media/Movies
+      - otc_tv_shows:/media/TV_Shows
+
+  radarr:
+    logging: *logging
+    cap_add:
+      - NET_ADMIN
+    container_name: radarr
+    depends_on:
+      gluetun:
+        condition: service_healthy
+    #env_file: stack.env
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=UTC/ETC
+    image: ghcr.io/hotio/radarr:latest
+    network_mode: "container:gluetun"
+    restart: always
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /opt/docker/radarr/config:/config
+      - /opt/docker/radarr/data:/data
+      - /mnt/ceph_hdd/docker/qbittorrent/downloads/zz-radarr:/downloads/zz-radarr
+      - otc_movies:/media/Movies
+      #- radar_dl:/media/timecapsule/Media/Download/__qbittorrent/_Media-Movies
+
+  # A library / filter system for books
+  readarr:
+    logging: *logging
+    cap_add:
+      - NET_ADMIN
+    container_name: readarr
+    depends_on:
+      gluetun:
+        condition: service_healthy
+    environment:
+      - TZ=Etc/UTC
+      - PUID=1000
+      - PGID=1000
+    image: lscr.io/linuxserver/readarr:develop
+    network_mode: "container:gluetun"
+    restart: always
+    volumes:
+      - /opt/docker/readarr/config:/config
+      #- media_books:/mnt/Books
+
+  sabnzbd:
+    logging: *logging
+    cap_add:
+      - NET_ADMIN
+    container_name: "sabnzbd"
+    depends_on: 
+      gluetun:
+        condition: service_healthy
+    image: "lscr.io/linuxserver/sabnzbd:latest"
+    network_mode: "container:gluetun"
+    restart: always
+    volumes:
+      - /opt/docker/sabnzbd/config:/config
+      - /opt/docker/sabnzbd/incomplete:/config/Downloads/incomplete
+      - /opt/docker/sabnzbd/downloads:/config/Downloads/complete
+    privileged: true
+    
+  sonarr:
+    logging: *logging
+    cap_add:
+      - NET_ADMIN
+    container_name: sonarr
+    depends_on:
+      gluetun:
+        condition: service_healthy
+    #env_file: stack.env
+    environment:
+      - TZ=Etc/UTC
+      - PUID=1000
+      - PGID=1000
+    image: ghcr.io/hotio/sonarr:latest
+    network_mode: "container:gluetun"
+    restart: always
+    volumes:
+      - /opt/docker/sonarr/config:/config
+      - /opt/docker/sonarr/data:/data
+      - /mnt/ceph_hdd/docker/qbittorrent/downloads/zz-sonarr:/downloads/zz-sonarr
+      - otc_tv_shows:/media/TV_Shows
+      #- sonarr_dl:/media/timecapsule/Media/Download/__qbittorrent/_Media-TV_Shows
+      #- sonarr_rb:/timecapsule/Media/TV_Shows/TV_Managed_Recycling_Bin
+      #- /path/to/music:/music #optional
+      #- /path/to/downloads:/downloads #optional
+
+volumes:
+  sonarr_dl:
+    driver: local
+    driver_opts:
+      type: cifs
+      o: "iocharset=utf8,username=$OTC_NAS_QBITT_USER,password=$OTC_NAS_QBITT_PASS,vers=2.1,rw,uid=9091,file_mode=0777,dir_mode=0777"
+      device: "//gringotts/timecapsule/Media/Download/__qbittorrent/_Media-TV_Shows"
+#  sonarr_rb:
+#    driver: local
+ #   driver_opts:
+  #    type: cifs
+   #   o: "iocharset=utf8,username=$OTC_NAS_QBITT_USER,password=$OTC_NAS_QBITT_PASS,vers=2.1,rw,uid=9091,file_mode=0777,dir_mode=0777"
+    #  device: "//gringotts/timecapsule/Media/Download/__qbittorrent/TV_Managed_Recycling_Bin"
+  radar_dl:
+    driver: local
+    driver_opts:
+      type: cifs
+      o: "iocharset=utf8,username=$OTC_NAS_QBITT_USER,password=$OTC_NAS_QBITT_PASS,vers=2.1,rw,uid=9091,file_mode=0777,dir_mode=0777"
+      device: "//gringotts/timecapsule/Media/Download/__qbittorrent/_Media-Movies"
+  pyload_dl:
+    driver: local
+    driver_opts:
+      type: cifs
+      o: "iocharset=utf8,username=$OTC_NAS_MEDIA_USER,password=$OTC_NAS_MEDIA_PASS,vers=2.1,rw,uid=32400,gid=3141,file_mode=0777,dir_mode=0777"
+      device: "//gringotts/timecapsule/Media/Download/__pyload"
+  otc_media:
+    driver: local
+    driver_opts:
+      type: cifs
+      o: "iocharset=utf8,username=$OTC_NAS_MEDIA_USER,password=$OTC_NAS_MEDIA_PASS,vers=2.1,rw,uid=32400,file_mode=0777,dir_mode=0777"
+      device: "//gringotts/timecapsule/Media/"
+  otc_movies:
+    driver: local
+    driver_opts:
+      type: cifs
+      o: "iocharset=utf8,username=$OTC_NAS_QBITT_USER,password=$OTC_NAS_QBITT_PASS,vers=2.1,rw,uid=1000,file_mode=0777,dir_mode=0777"
+      device: "//gringotts/timecapsule/Media/Movies"
+  otc_tv_shows:
+    driver: local
+    driver_opts:
+      type: cifs
+      o: "iocharset=utf8,username=$OTC_NAS_QBITT_USER,password=$OTC_NAS_QBITT_PASS,vers=2.1,rw,uid=1000,file_mode=0777,dir_mode=0777"
+      device: "//gringotts/timecapsule/Media/TV_Shows"
+  otc_music:
+    driver: local
+    driver_opts:
+      type: cifs
+      o: "iocharset=utf8,username=$OTC_NAS_MUSIC_USER,password=$OTC_NAS_MUSIC_PASS,vers=2.1,rw,uid=8686,file_mode=0777,dir_mode=0777"
+      device: "//gringotts/timecapsule/Media/Music"

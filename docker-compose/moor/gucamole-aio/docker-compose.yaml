@@ -1,0 +1,11 @@
+#version: '3.8'
+services:
+  guacamole:
+    image: oznu/guacamole:latest
+    environment: 
+      - TZ=Etc/UTC
+      - EXTENSIONS=auth-openid
+    ports:
+      - 980:8080/tcp
+    volumes:
+      - /mnt/app_data/Server/_docker_stack/guacamole-aio/config:/config

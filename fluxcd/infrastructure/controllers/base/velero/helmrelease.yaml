@@ -1,0 +1,48 @@
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: velero
+spec:
+  releaseName: velero
+  targetNamespace: PLACEHOLDER_TARGET_NAMESPACE
+  interval: 30m
+  chart:
+    spec:
+      chart: velero
+      version: "11.0.0"
+      sourceRef:
+        kind: HelmRepository
+        name: vmware-tanzu
+        namespace: flux-system
+      interval: 12h
+  values:
+    fullnameOverride: "velero"
+    image:
+      repository: docker.io/velero/velero
+      tag: v1.17.0
+
+    initContainers:
+      - name: velero-plugin-for-aws
+        image: PLACEHOLDER_PLUGIN_IMAGE
+        imagePullPolicy: IfNotPresent
+        volumeMounts:
+          - mountPath: /target
+            name: plugins
+
+    # Base configuration - override in production overlay
+    deployNodeAgent: true
+    upgradeCRDs: false
+
+    # Base server configuration
+    configuration:
+      logLevel: info
+      logFormat: text
+
+    rbac:
+      create: true
+
+    serviceAccount:
+      server:
+        create: true
+
+    snapshotsEnabled: true

@@ -1,0 +1,26 @@
+# Optional: For cluster-wide OIDC integration
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: zitadel-oidc
+rules:
+  # For validating service account tokens cluster-wide
+  - apiGroups: ["authentication.k8s.io"]
+    resources: ["tokenreviews"]
+    verbs: ["create"]
+  # For user/group information
+  - apiGroups: ["authorization.k8s.io"]
+    resources: ["subjectaccessreviews"]
+    verbs: ["create"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: zitadel-oidc
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: zitadel-oidc
+subjects:
+  - kind: ServiceAccount
+    name: zitadel

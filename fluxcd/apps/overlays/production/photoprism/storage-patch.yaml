@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: photoprism
+spec:
+  volumeClaimTemplates:
+  - metadata:
+      name: storage
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      storageClassName: ceph-rbd-retain
+      resources:
+        requests:
+          storage: 50Gi
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: photoprism-mariadb
+spec:
+  volumeClaimTemplates:
+  - metadata:
+      name: database
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      storageClassName: ceph-rbd-retain
+      resources:
+        requests:
+          storage: 10Gi

@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: chrony-config
+data:
+  # Core NTP Configuration
+  NTP_SERVERS: "PLACEHOLDER_NTP_SERVERS"
+  TZ: "Etc/UTC"
+
+  # Logging Configuration
+  LOG_LEVEL: "0"
+  NOCLIENTLOG: "false"
+
+  # Security and Advanced Features
+  ENABLE_NTS: "false"
+  ENABLE_SYSCLK: "false"
+  ENABLE_PTP: "false"
+
+  # Additional Docker Options (if needed)
+  DOCKER_OPTS: ""

@@ -1,0 +1,197 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: searxng-settings
+  namespace: tingle-tuner
+data:
+  settings.yml: |
+    general:
+      debug: false
+      instance_name: "SearXNG - Private Search"
+      privacypolicy_url: false
+      donation_url: false
+      contact_url: false
+      enable_metrics: true
+    
+    brand:
+      new_issue_url: ""
+      docs_url: ""
+      public_instances: ""
+      wiki_url: ""
+      issue_url: ""
+    
+    doi_resolvers:
+      oadoi.org: 'https://oadoi.org/'
+      doi.org: 'https://doi.org/'
+      doai.io: 'https://dissem.in/'
+      sci-hub.se: 'https://sci-hub.se/'
+      sci-hub.st: 'https://sci-hub.st/'
+      sci-hub.ru: 'https://sci-hub.ru/'
+    
+    default_doi_resolver: 'doi.org'
+    
+    search:
+      safe_search: 0
+      autocomplete: "duckduckgo"
+      default_lang: "en"
+      max_page: 0
+      ban_time_on_fail: 5
+      max_ban_time_on_fail: 120
+      suspended_times:
+        SearxEngineAccessDenied: 86400
+        SearxEngineCaptcha: 86400
+        SearxEngineTooManyRequests: 3600
+        cf_SearxEngineCaptcha: 1296000
+        cf_SearxEngineAccessDenied: 86400
+        recaptcha_SearxEngineCaptcha: 604800
+      formats:
+        - html
+        - json
+    
+    server:
+      port: 8080
+      bind_address: "0.0.0.0"
+      secret_key: "$(head -c 32 /dev/urandom | base64)"
+      limiter: true
+      public_instance: false
+      image_proxy: true
+      http_protocol_version: "1.1"
+      method: "GET"
+      default_http_headers:
+        X-Content-Type-Options: nosniff
+        X-XSS-Protection: 1; mode=block
+        X-Robots-Tag: noindex, nofollow
+        Referrer-Policy: no-referrer
+    
+    redis:
+      url: redis://searxng-redis:6379/0
+    
+    ui:
+      static_use_hash: true
+      default_locale: "en"
+      query_in_title: false
+      infinite_scroll: false
+      center_alignment: false
+      cache_url: ""
+      default_theme: simple
+      theme_args:
+        simple_style: dark
+    
+    outgoing:
+      request_timeout: 3.0
+      max_request_timeout: 10.0
+      useragent_suffix: ""
+      pool_connections: 100
+      pool_maxsize: 20
+      enable_http2: true
+    
+    enabled_plugins:
+      - 'Hash plugin'
+      - 'Self Information'
+      - 'Tracker URL remover'
+      - 'Hostname replace'
+      - 'Open Access DOI rewrite'
+    
+    hostname_replace:
+      '(.*\.)?youtube\.com$': 'yewtu.be'
+      '(.*\.)?youtu\.be$': 'yewtu.be'
+      '(.*\.)?reddit\.com$': 'teddit.net'
+      '(.*\.)?twitter\.com$': 'nitter.net'
+      '(.*\.)?x\.com$': 'nitter.net'
+      '(.*\.)?instagram\.com$': 'imginn.com'
+      '(.*\.)?medium\.com$': 'scribe.rip'
+    
+    engines:
+      - name: google
+        engine: google
+        shortcut: go
+        use_mobile_ui: false
+      
+      - name: duckduckgo
+        engine: duckduckgo
+        shortcut: ddg
+      
+      - name: bing
+        engine: bing
+        shortcut: bi
+        disabled: false
+      
+      - name: qwant
+        engine: qwant
+        shortcut: qw
+        categories: [general, web]
+        disabled: false
+      
+      - name: startpage
+        engine: startpage
+        shortcut: sp
+        disabled: false
+      
+      - name: wikipedia
+        engine: wikipedia
+        shortcut: wp
+        base_url: 'https://{language}.wikipedia.org/'
+      
+      - name: wikidata
+        engine: wikidata
+        shortcut: wd
+        timeout: 3.0
+        weight: 2
+      
+      - name: github
+        engine: github
+        shortcut: gh
+      
+      - name: codeberg
+        engine: json_engine
+        search_url: https://codeberg.org/api/v1/repos/search?q={query}&limit=10
+        url_query: html_url
+        title_query: name
+        content_query: description
+        categories: [it, repos]
+        shortcut: cb
+        disabled: false
+        about:
+          website: https://codeberg.org/
+          wikidata_id: Q106538503
+          official_api_documentation: https://try.gitea.io/api/swagger
+          use_official_api: true
+          require_api_key: false
+          results: JSON
+      
+      - name: dockerhub
+        engine: docker_hub
+        shortcut: dh
+      
+      - name: ddg definitions
+        engine: duckduckgo_definitions
+        shortcut: ddd
+        weight: 2
+      
+      - name: brave
+        engine: brave
+        shortcut: br
+        disabled: false
+      
+      - name: wolframalpha
+        engine: wolframalpha_noapi
+        shortcut: wa
+        timeout: 10.0
+        categories: general
+      
+      - name: arxiv
+        engine: arxiv
+        shortcut: arx
+        timeout: 4.0
+        disabled: false
+      
+      - name: google scholar
+        engine: google_scholar
+        shortcut: gos
+        disabled: false
+      
+      - name: pubmed
+        engine: pubmed
+        shortcut: pub
+        timeout: 3.0
+        disabled: false

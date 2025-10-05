@@ -1,0 +1,30 @@
+services:
+  drawio:
+    image: jgraph/drawio
+    container_name: drawio
+    restart: unless-stopped
+    ports:
+      - 4549:8080
+      - 4550:8443
+    environment:
+      PUBLIC_DNS: draw.pcfae.com
+      # LETS_ENCRYPT_ENABLED: true
+      ORGANISATION_UNIT: Internal
+      ORGANISATION: PrecisionPlanIT
+      CITY: Seattle
+      STATE: WA
+      COUNTRY_CODE: US
+    tty: true
+    stdin_open: true
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f https://draw.pcfae.com:443 || exit 1"]
+      interval: 1m30s
+      timeout: 10s
+      retries: 5
+      start_period: 10s
+    logging: &logging
+      driver: loki
+      options:
+        loki-batch-size: "400"
+        loki-url: "http://moor:3100/loki/api/v1/push"
+        max-size: "10m"

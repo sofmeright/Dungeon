@@ -1,0 +1,31 @@
+services:
+  netbird-client:
+    image: netbirdio/netbird:latest
+    #hostname: marnina-nb
+    env_file: stack.env
+    environment:
+      - NB_MANAGEMENT_URL=https://netbird.prplanit.com:443
+      - NB_SETUP_KEY=$NB_SETUP_KEY
+      - NB_HOSTNAME=marina-nb
+      #- NB_SERVICE=netbird
+      #- NB_DAEMON_ADDR=unix:///var/run/netbird.sock
+      #- NB_MANAGEMENT_URL=https://mgmt.domain.com:33073
+      #- NB_LOG_LEVEL=debug
+    volumes:
+      - netbird-client:/etc/netbird
+    cap_add:
+      - SYS_ADMIN
+      - SYS_RESOURCE
+      - NET_ADMIN
+      - NET_RAW
+      - BPF
+    restart: unless-stopped
+    logging: &logging
+      driver: loki
+      options:
+        loki-batch-size: "400"
+        loki-url: "http://monitoring:3100/loki/api/v1/push"
+        max-size: "10m"
+
+volumes:
+  netbird-client:

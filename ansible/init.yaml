@@ -1,0 +1,85 @@
+
+---
+
+- name: Ad Arbitorium 🔐 - GitOps - Ensure VMs are Running as Expected
+  hosts: localhost
+  gather_facts: no
+  vars:
+    ansible_python_interpreter: auto_silent
+    vm_list:
+      - Dungeon-Map-001
+      - Dungeon-Map-002
+      - Dungeon-Map-003
+      - Dungeon-Map-004
+      - Dungeon-Map-005
+      - Dungeon-Worker-001
+      - Dungeon-Worker-002
+      - Dungeon-Worker-003
+      - Dungeon-Worker-004
+      - Dungeon-Worker-005
+  tasks:
+    - name: Execute Playbook - Ensure Proxmox VMs in vm_list are active.
+      include_tasks: misc/proxmox-start_vm_by_name.yaml
+      loop: "{{ vm_list }}"
+      loop_control:
+        loop_var: target_vm_name
+
+- name: Ad Arbitorium 🔐 - GitOps - Services - Configure apt-cacher-ng clients
+  import_playbook: services/apt-cacher-debian.yaml
+  vars:
+    ansible_python_interpreter: auto_silent
+
+- name: Ad Arbitorium 🔐 - GitOps - Services - deploy-docker.yaml
+  import_playbook: services/deploy-docker.yaml
+  vars:
+    ansible_python_interpreter: auto_silent
+
+- name: Ad Arbitorium 🔐 - GitOps - Services - FusionPBX
+  import_playbook: services/fusionpbx-debian.yaml
+  vars:
+    ansible_python_interpreter: auto_silent
+
+- name: Ad Arbitorium 🔐 - GitOps - Maintenance - Extend /dev/sda to Span Available Disk Capacity
+  import_playbook: maintenance/disk-sda-dynamic-resize-debian.yaml
+  vars:
+    ansible_python_interpreter: auto_silent
+
+- name: Ad Arbitorium 🔐 - GitOps - Infrastructure - FRR/OSPFv6 Networking (Ceph & Proxmox)
+  import_playbook: infrastructure/frr-ospfv6-proxmox.yaml
+  vars:
+    ansible_python_interpreter: auto_silent
+
+- name: Ad Arbitorium 🔐 - GitOps - Infrastructure - Proxmox Networking
+  import_playbook: infrastructure/networking-proxmox.yaml
+  vars:
+    ansible_python_interpreter: auto_silent
+
+- name: Ad Arbitorium 🔐 - GitOps - Infrastructure - DNS Servers (Adguard)
+  import_playbook: infrastructure/dns-servers.yaml
+  vars:
+    ansible_python_interpreter: auto_silent
+
+- name: Ad Arbitorium 🔐 - GitOps - Infrastructure - Monitoring Agents
+  import_playbook: infrastructure/monitoring-agents-docker.yaml
+  vars:
+    ansible_python_interpreter: auto_silent
+
+- name: Ad Arbitorium 🔐 - GitOps - Infrastructure - qemu-guest-agent (Proxmox Debian VMs)
+  import_playbook: infrastructure/qemu-guest-agent-debian.yaml
+  vars:
+    ansible_python_interpreter: auto_silent
+
+- name: Ad Arbitorium 🔐 - GitOps - Services - Docker (Debian)
+  import_playbook: services/docker-debian.yaml
+  vars:
+    ansible_python_interpreter: auto_silent
+
+- name: Ad Arbitorium 🔐 - GitOps - Services - NGINX Servers
+  import_playbook: services/nginx-webservers.yaml
+  vars:
+    ansible_python_interpreter: auto_silent
+
+- name: Ad Arbitorium 🔐 - GitOps - Services - Core Applications
+  import_playbook: services/_core-apps-debian.yaml
+  vars:
+    ansible_python_interpreter: auto_silent

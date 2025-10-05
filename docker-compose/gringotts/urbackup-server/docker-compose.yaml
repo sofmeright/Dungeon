@@ -1,0 +1,30 @@
+version: '2'
+
+services:
+  urbackup:
+    image: uroni/urbackup-server:latest
+    container_name: urbackup
+    restart: unless-stopped
+    environment:
+      - PUID=1000 # Enter the UID of the user who should own the files here
+      - PGID=1000  # Enter the GID of the user who should own the files here
+      - TZ=Etc/UTC # Enter your timezone
+      # Uncomment the next lines if you want to set the ZFS datasets via ENV variables instead of mounting /etc/urbackup/dataset*
+      #- ZFS_IMAGE=tank/images
+      #- ZFS_FILES=tank/files
+    ports:
+      - 35623:35623/udp 
+      - 55413-55415:55413-55415
+    volumes:
+      - /mnt/Flashy_Fuchsia/PrecisionPlanIT/Servers/Gringotts/docker/urbackup/data:/var/urbackup
+      - /mnt/operation/PrecisionPlanIT/Servers/Gringotts/docker/urbackup/backups:/backups
+      # Uncomment the next line if you want to bind-mount the www-folder
+      #- /path/to/wwwfolder:/usr/share/urbackup
+    network_mode: "host"
+    # Uncomment the following two lines if you're using BTRFS support
+    #cap_add:
+    #  - SYS_ADMIN
+    # Uncomment the following two lines if you're using ZFS support
+    #devices:
+    #  - /dev/zfs:/dev/zfs
+  

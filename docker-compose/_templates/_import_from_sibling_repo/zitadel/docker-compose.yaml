@@ -1,0 +1,51 @@
+services:
+  zitadel:
+    restart: 'always'
+    networks:
+      - 'zitadel'
+    image: 'ghcr.io/zitadel/zitadel:latest'
+    command: 'start-from-init --masterkey "<redactedchange>" --tlsMode external --config /home/kai/app_data/_docker/zitadel/config/runtime.yaml --steps /home/kai/app_data/_docker/zitadel/config/init.yaml'
+    environment:
+      ZITADEL_DATABASE_POSTGRES_HOST: db
+      ZITADEL_DATABASE_POSTGRES_PORT: 5432
+      ZITADEL_DATABASE_POSTGRES_DATABASE: zitadel
+      ZITADEL_DATABASE_POSTGRES_USER_USERNAME: zitadel
+      ZITADEL_DATABASE_POSTGRES_USER_PASSWORD: <redactedchange>
+      ZITADEL_DATABASE_POSTGRES_USER_SSL_MODE: disable
+      ZITADEL_DATABASE_POSTGRES_ADMIN_USERNAME: postgres
+      ZITADEL_DATABASE_POSTGRES_ADMIN_PASSWORD: <redactedchange>
+      ZITADEL_DATABASE_POSTGRES_ADMIN_SSL_MODE: disable
+      ZITADEL_EXTERNALSECURE: false
+      ZITADEL_DEFAULTINSTANCE_SMTPCONFIGURATION_SMTP_HOST: "smtp.gmail.com:465"
+      ZITADEL_DEFAULTINSTANCE_SMTPCONFIGURATION_SMTP_USER: 'precisionplanit@gmail.com'
+      ZITADEL_DEFAULTINSTANCE_SMTPCONFIGURATION_SMTP_PASSWORD: '<redactedchange>'
+      ZITADEL_DEFAULTINSTANCE_SMTPCONFIGURATION_TLS: true
+      ZITADEL_DEFAULTINSTANCE_SMTPCONFIGURATION_FROM: precisionplanit@gmail.com
+      ZITADEL_DEFAULTINSTANCE_SMTPCONFIGURATION_FROMNAME: Precision Plan IT Automated Support
+    depends_on:
+      db:
+        condition: 'service_healthy'
+    ports:
+      - '8174:8080'
+    volumes:
+      - /home/kai/app_data/_docker/zitadel/config/:/home/kai/app_data/_docker/zitadel/config/
+
+  db:
+    restart: 'always'
+    image: postgres:16-alpine
+    environment:
+      PGUSER: postgres
+      POSTGRES_PASSWORD: <redactedchange>
+    networks:
+      - 'zitadel'
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready", "-d", "zitadel", "-U", "postgres"]
+      interval: '10s'
+      timeout: '30s'
+      retries: 5
+      start_period: '20s'
+    volumes:
+      - /home/kai/app_data/_docker/zitadel/postgres:/var/lib/postgresql/data
+
+networks:
+  zitadel:

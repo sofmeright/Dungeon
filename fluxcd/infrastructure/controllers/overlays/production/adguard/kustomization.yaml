@@ -1,0 +1,42 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: compass
+
+resources:
+  - ../../../base/adguard
+  - cilium-network-policy.yaml
+
+patches:
+  - path: configmap-patch.yaml
+    target:
+      kind: ConfigMap
+      name: adguard-config
+  - path: statefulset-patch.yaml
+    target:
+      kind: StatefulSet
+      name: adguard
+  - path: service-dns-patch.yaml
+    target:
+      kind: Service
+      name: adguard-dns
+  - path: service-web-patch.yaml
+    target:
+      kind: Service
+      name: adguard-web
+  - path: service-external-traffic-policy-local.yaml
+    target:
+      kind: Service
+      name: adguard-dns
+  - path: service-external-traffic-policy-local.yaml
+    target:
+      kind: Service
+      name: adguard-web
+  - path: pvc-patch.yaml
+    target:
+      kind: PersistentVolumeClaim
+      name: adguard-data-adguard-0
+  - path: pvc-patch.yaml
+    target:
+      kind: PersistentVolumeClaim
+      name: adguard-conf-adguard-0

@@ -1,0 +1,28 @@
+server {
+    listen 80;
+    listen [::]:80;
+    listen 443 ssl http2;
+    listen [::]:443 ssl http2;
+
+    server_name gitea.prplanit.com;
+
+    ssl_certificate /etc/letsencrypt/live/prplanit.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/prplanit.com/privkey.pem;
+
+    access_log /var/log/nginx/gitea.prplanit.com-access.log;
+    error_log /var/log/nginx/gitea.prplanit.com-error.log;
+
+
+    location / {
+        add_header       X-Served-By $host;
+        proxy_set_header Host $host;
+        proxy_set_header X-Forwarded-Scheme $scheme;
+        proxy_set_header X-Forwarded-Proto  $scheme;
+        proxy_set_header X-Forwarded-For    $remote_addr;
+        proxy_set_header X-Real-IP          $remote_addr;
+
+        proxy_pass       http://10.30.1.123:7843$request_uri;
+
+    }
+
+}

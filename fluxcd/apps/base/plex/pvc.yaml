@@ -1,0 +1,2 @@
+# Media PVCs remain as standalone for shared storage
+# Config and transcode now managed by StatefulSet volumeClaimTemplates

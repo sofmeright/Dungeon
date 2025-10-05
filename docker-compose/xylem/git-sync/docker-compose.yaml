@@ -1,0 +1,48 @@
+# Solution inspired by m-rgba (04-17-2022) https://github.com/portainer/portainer/issues/6390#issuecomment-1100954657
+# version: '2'
+#services:
+  # Service container
+  # Purge any leftover files, clone repo, copy necessary files to the temporary volume
+  # Note: you could also use a sparse checkout for this (size of clone, performance), but I didn't since my use case was pretty small
+#  git-checkout:
+#    image: bitnami/git:latest
+#    working_dir: /temp
+#    command: >
+#      bash -c "
+#        find /temp -mindepth 1 -delete && 
+#        find /files -mindepth 1 -delete &&
+#        git clone https://$GITLAB_NGINX_TOKEN@gitlab.prplanit.com/SoFMeRight/ad-arbitorium-private.git &&
+#       cp -R ./ad-arbitorium-private/-/tree/main/nginx-extras/xylem/conf.d/. /conf.d
+#      "
+#    volumes:
+#      - service_files:/conf.d
+
+  # Target container -> mounts files
+  # target-container:
+    # image: <image>
+    # volumes:
+      # - service_files:/etc/nginx/conf.d:ro
+   
+#volumes:
+#  service_files:
+
+services:
+  
+  git-sync-nginx:
+    container_name: git-sync-nginx
+    env_file: git-sync-nginx-secret.env
+    environment:
+      GIT_SYNC_REPO: "https://gitlab.prplanit.com/SoFMeRight/ad-arbitorium-private.git"
+      GIT_SYNC_DEST: "/git"
+      GIT_SYNC_BRANCH: "main"
+      GIT_SYNC_REV: "FETCH_HEAD"
+      GIT_SYNC_WAIT: "10"
+    image: openweb/git-sync:0.0.1
+    restart: always
+    volumes:
+      - nginx_conf_d:/git:z
+
+volumes:
+
+  nginx_conf_d:
+    driver: local

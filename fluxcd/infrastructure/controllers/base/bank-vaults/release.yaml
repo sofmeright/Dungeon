@@ -1,0 +1,30 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: bank-vaults-operator
+spec:
+  releaseName: bank-vaults-operator
+  targetNamespace: zeldas-lullaby
+  interval: 30m
+  chart:
+    spec:
+      chart: vault-operator
+      version: "PLACEHOLDER_CHART_VERSION"
+      sourceRef:
+        kind: HelmRepository
+        name: bank-vaults
+        namespace: flux-system
+  values:
+    fullnameOverride: "bank-vaults-operator"
+    image:
+      repository: ghcr.io/bank-vaults/vault-operator
+      tag: PLACEHOLDER_OPERATOR_TAG
+    bankVaults:
+      image:
+        repository: ghcr.io/bank-vaults/bank-vaults
+        tag: PLACEHOLDER_BANKVAULTS_TAG
+    webhook:
+      enabled: true
+      image:
+        repository: ghcr.io/bank-vaults/vault-secrets-webhook
+        tag: PLACEHOLDER_WEBHOOK_TAG

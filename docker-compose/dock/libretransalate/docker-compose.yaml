@@ -1,0 +1,23 @@
+services:
+  libretranslate-cuda:
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
+      - NVIDIA_DRIVER_CAPABILITIES=all
+    image: libretranslate/libretranslate
+    ports:
+      - "5005:5000"
+    restart: unless-stopped
+    runtime: nvidia
+    logging: &logging
+      driver: loki
+      options:
+        loki-batch-size: "400"
+        loki-url: "http://monitoring:3100/loki/api/v1/push"
+        max-size: "10m"

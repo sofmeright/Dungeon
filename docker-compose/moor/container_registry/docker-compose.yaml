@@ -1,0 +1,69 @@
+# version: '3'
+
+services:
+
+  jfrog-artifactory-postgres:
+    container_name: jfrog-artifactory-postgres
+    env_file:
+      - jfrog-artifactory-secret.env
+      - jfrog-artifactory.env
+    environment:
+      - PGPORT=$PGPORT
+      # - POSTGRES_DB=$POSTGRES_DB
+      # - POSTGRES_USER=$POSTGRES_USER
+      # - POSTGRES_PASSWORD=$POSTGRES_PASSWORD
+    image: ${DOCKER_REGISTRY}/postgres:16.6-alpine
+    ports:
+      - $PGPORT:$PGPORT
+    restart: always
+    ulimits:
+      nproc: 65535
+      nofile:
+        soft: 32000
+        hard: 40000
+    volumes:
+      - ${ROOT_DATA_DIR}/var/data/postgres/data:/var/lib/postgresql/data
+      - /etc/localtime:/etc/localtime:ro
+    logging:
+      driver: json-file
+      options:
+        max-size: "50m"
+        max-file: "10"
+
+  jfrog-artifactory-jcr:
+    container_name: jfrog-artifactory-jcr
+    depends_on:
+      - jfrog-artifactory-postgres
+    env_file:
+      - jfrog-artifactory-secret.env
+      - jfrog-artifactory.env
+    environment:
+      - JF_ROUTER_ENTRYPOINTS_EXTERNALPORT=${JF_ROUTER_ENTRYPOINTS_EXTERNALPORT}
+      # - ENABLE_MIGRATION=y
+      # - JF_SHARED_DATABASE_TYPE=postgresql
+      # The following must match the POSTGRES_USER and POSTGRES_PASSWORD values passed to PostgreSQL
+      # - JF_SHARED_DATABASE_USERNAME=artifactory
+      # - JF_SHARED_DATABASE_PASSWORD=password
+      # - JF_SHARED_DATABASE_URL=jdbc:postgresql://postgresql:$PGPORT/artifactory
+      # - JF_SHARED_DATABASE_DRIVER=org.postgresql.Driver
+      # - JF_SHARED_NODE_IP=${JF_SHARED_NODE_IP}
+      # - JF_SHARED_NODE_ID=${JF_SHARED_NODE_ID}
+      # - JF_SHARED_NODE_NAME=${JF_SHARED_NODE_NAME}
+    image: ${DOCKER_REGISTRY}/jfrog/artifactory-jcr:${ARTIFACTORY_VERSION}
+    ports:
+      - ${JF_ROUTER_ENTRYPOINTS_EXTERNALPORT}:${JF_ROUTER_ENTRYPOINTS_EXTERNALPORT} # for router communication
+      - 8081:8081 # for artifactory communication
+    restart: always
+    ulimits:
+      nproc: 65535
+      nofile:
+        soft: 32000
+        hard: 40000
+    volumes:
+      - ${ROOT_DATA_DIR}/var:/var/opt/jfrog/artifactory
+      - /etc/localtime:/etc/localtime:ro
+    logging:
+      driver: json-file
+      options:
+        max-size: "50m"
+        max-file: "10"

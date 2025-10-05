@@ -1,0 +1,23 @@
+services:
+  anubis-nginx:
+    image: ghcr.io/techarohq/anubis:latest
+    env_file: stack.env
+    environment:
+      BIND: ":8080"
+      DIFFICULTY: "4"
+      METRICS_BIND: ":9090"
+      SERVE_ROBOTS_TXT: "true"
+      TARGET: "http://10.55.6.136:5005"
+      POLICY_FNAME: "/data/cfg/botPolicy.json"
+      OG_PASSTHROUGH: "true"
+      OG_EXPIRY_TIME: "24h"
+      ED25519_PRIVATE_KEY_HEX: "$ED25519_KEY"
+    restart: always
+    ports:
+      - 8911:8080
+    volumes:
+      - "/mnt/app_data/Server/_docker_stack/anubis/botPolicy.json:/data/cfg/botPolicy.json:ro"
+  nginx:
+    image: nginx
+    volumes:
+      - "/mnt/app_data/Server/_docker_stack/anubis/nginx/html:/usr/share/nginx/html"

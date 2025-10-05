@@ -1,0 +1,15 @@
+{
+  "mcpServers": {
+    "deepwiki": {
+      "type": "sse",
+      "url": "https://mcp.deepwiki.com/sse"
+    },
+    "kubernetes": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "kubernetes-mcp-server@latest"
+      ]
+    }
+  }
+}

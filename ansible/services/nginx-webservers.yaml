@@ -1,0 +1,20 @@
+- name: Ad Arbitorium 🔐 - GitOps - Services - NGINX Servers
+  become: true
+  hosts: "nginx"
+
+  tasks:
+    - name: Ensuring the configuration of nginx matches the state defined within this repo.
+      ansible.posix.synchronize:
+        src: "../../nginx-extras/{{ inventory_hostname }}/conf.d/"
+        dest: /etc/nginx/conf.d/
+      delegate_to: "localhost"
+    # - name: Synchronizing nginx conf.d - configuration files...
+      # ansible.posix.synchronize:
+        # delete: true
+        # dest: /etc/nginx/conf.d/
+        # recursive: true
+        # src: "nginx-extras/{{ inventory_hostname }}/conf.d/"
+    - name: Applying/Reloading nginx configs.
+    # Note: This will fail if nginx is not already started. This needs to be resolved soon.
+      ansible.builtin.shell:
+        cmd: sudo nginx -t && sudo systemctl reload nginx

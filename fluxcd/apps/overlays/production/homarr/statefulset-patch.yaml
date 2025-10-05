@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: homarr
+spec:
+  template:
+    spec:
+      containers:
+      - name: homarr
+        volumeMounts:
+        - name: lost-woods-homarr-sqlite
+          mountPath: /appdata/db
+        - name: lost-woods-homarr-images
+          mountPath: /images
+        env:
+        - name: DATABASE_URL
+          value: "file:/appdata/db/homarr.db"
+        - name: NEXTAUTH_URL
+          value: "http://172.22.30.223:7575"
+        - name: AUTH_PROVIDERS
+          value: "oidc"
+        - name: AUTH_OIDC_URI
+          value: "https://sso.prplanit.com"
+        - name: AUTH_OIDC_ISSUER
+          value: "https://sso.prplanit.com"
+        - name: AUTH_OIDC_CLIENT_NAME
+          value: "Zitadel"
+        - name: AUTH_OIDC_AUTO_LOGIN
+          value: "true"
+  volumeClaimTemplates:
+  - metadata:
+      name: lost-woods-homarr-sqlite
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      storageClassName: ceph-rbd-retain
+      resources:
+        requests:
+          storage: 100Mi
+  - metadata:
+      name: lost-woods-homarr-images
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      storageClassName: ceph-rbd-retain
+      resources:
+        requests:
+          storage: 2Gi

@@ -1,0 +1,26 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    env_file: stack.env
+    restart: always
+    volumes:
+      - /mnt/app_data/Server/Web-App/_docker-stack/linkwarden/pgdata:/var/lib/postgresql/data
+  linkwarden:
+    env_file: stack.env
+    environment:
+      - DATABASE_URL=postgresql://postgres:${POSTGRES_PASSWORD}@postgres:5432/postgres
+    restart: always
+    # build: . # uncomment this line to build from source
+    image: ghcr.io/linkwarden/linkwarden:latest # comment this line to build from source
+    ports:
+      - 3000:3000
+    volumes:
+      - /mnt/app_data/Server/Web-App/_docker-stack/linkwarden/storage:/data/data
+    depends_on:
+      - postgres
+#volumes:
+#  otc-data:
+#    driver_opts:
+#      type: cifs
+#      o: "iocharset=utf8,username=app_linkwarden,password=3Xe!j50YT!3Z,rw"
+#      device: "//172.22.22.101/linkwarden"

@@ -1,0 +1,75 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: photoprism-originals
+spec:
+  capacity:
+    storage: 1Ti
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: smb
+  mountOptions:
+    - dir_mode=0777
+    - file_mode=0777
+    - uid=1000
+    - gid=1000
+  csi:
+    driver: smb.csi.k8s.io
+    readOnly: false
+    volumeHandle: photoprism-originals
+    volumeAttributes:
+      source: //gringotts/timecapsule/Media/Photos/photoprism/originals
+    nodeStageSecretRef:
+      name: photoprism-smb-secret
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: photoprism-originals
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Ti
+  storageClassName: smb
+  volumeName: photoprism-originals
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: photoprism-import
+spec:
+  capacity:
+    storage: 1Ti
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: smb
+  mountOptions:
+    - dir_mode=0777
+    - file_mode=0777
+    - uid=1000
+    - gid=1000
+  csi:
+    driver: smb.csi.k8s.io
+    readOnly: false
+    volumeHandle: photoprism-import
+    volumeAttributes:
+      source: //gringotts/timecapsule/Media/Photos/photoprism/import
+    nodeStageSecretRef:
+      name: photoprism-smb-secret
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: photoprism-import
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Ti
+  storageClassName: smb
+  volumeName: photoprism-import

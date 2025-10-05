@@ -1,0 +1,26 @@
+services:
+
+  minecraft-paper-vanilla-1_19_2-yiv:
+    env_file: minecraft-paper-vanilla-1_19_2-yiv-secret.env
+    image: itzg/minecraft-server
+    network_mode: bridge
+    ports:
+      - "35567:35567"
+    restart: unless-stopped
+    stdin_open: true
+    tty: true
+    volumes:
+      # attach the relative directory 'data' to the container's /data path
+      - /opt/docker/minecraft-paper-vanilla-1_19_2-yiv/server/:/data
+
+  minecraft-paper-vanilla-1_19_2-otc:
+    env_file: minecraft-paper-vanilla-1_19_2-otc-secret.env
+    image: itzg/minecraft-server
+    ports:
+      - "35566:35566"
+    restart: unless-stopped
+    stdin_open: true
+    tty: true
+    volumes:
+      # attach the relative directory 'data' to the container's /data path
+      - /opt/docker/minecraft-paper-vanilla-1_19_2-otc/server/:/data

@@ -1,0 +1,16 @@
+---
+- name: Ad Arbitorium 🔐 - GitOps - Services - Docker (w/o GPU)
+  hosts: docker_reg
+  become: true
+  tasks:
+    - name: Ensuring docker daemon config of each host matches the state defined in the repository...
+      ansible.posix.synchronize:
+        src: "../../fs/Ad_Arbitorium/etc/docker/daemon-base.json"
+        dest: /etc/docker/daemon.json
+      delegate_to: "localhost"
+    - name: Ensuring /etc/docker/daemon.json permissions are set as expected...
+      ansible.builtin.file:
+        path: /etc/docker/daemon.json
+        owner: root
+        group: root
+        mode: '0644'

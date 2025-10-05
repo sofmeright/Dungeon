@@ -1,0 +1,112 @@
+services:
+  #UI dashboard
+  dashboard:
+    image: netbirdio/dashboard:latest
+    restart: always
+    ports:
+      - 8011:80
+      #- 443:443
+    env_file: stack.env
+    environment:
+      # Endpoints
+      - NETBIRD_MGMT_API_ENDPOINT=https://netbird.prplanit.com:443
+      - NETBIRD_MGMT_GRPC_API_ENDPOINT=https://netbird.prplanit.com:443
+      # OIDC
+      - AUTH_AUDIENCE=$NETBIRD_AUTH_DEVICE_AUTH_AUDIENCE
+      - AUTH_CLIENT_ID=$NETBIRD_AUTH_DEVICE_AUTH_CLIENT_ID
+      - AUTH_CLIENT_SECRET=$AUTH_CLIENT_SECRET
+      - AUTH_AUTHORITY=https://sso.prplanit.com
+      - USE_AUTH0=false
+      - AUTH_SUPPORTED_SCOPES=openid profile email offline_access api
+      - AUTH_REDIRECT_URI=/auth
+      - AUTH_SILENT_REDIRECT_URI=/silent-auth
+      - NETBIRD_TOKEN_SOURCE=accessToken
+      # SSL
+      - NGINX_SSL_PORT=443
+      # Letsencrypt
+      - LETSENCRYPT_DOMAIN=
+      - LETSENCRYPT_EMAIL=kai.hamil@gmail.com
+    #volumes:
+      #- netbird-letsencrypt:/etc/letsencrypt/
+    #labels: &logging
+      #labels-regex: "^.+"
+      #log_driver: "loki"
+      #log_opt:
+        #loki-batch-size:"400"
+        #loki-url:"http://localhost:3100/loki/api/v1/push"
+        #max-size:"500m"
+        #max-file:"2"
+        
+  # Signal
+  signal:
+    #labels: *logging
+    image: netbirdio/signal:latest
+    restart: always
+    volumes:
+      - netbird-signal:/var/lib/netbird
+    ports:
+      - 10000:80
+  #      # port and command for Let's Encrypt validation
+  #      - 443:443
+  #    command: ["--letsencrypt-domain", "", "--log-file", "console"]
+  
+  # Relay
+  relay:
+    #labels: *logging
+    image: netbirdio/relay:latest
+    restart: always
+    env_file: stack.env
+    environment:
+    - NB_LOG_LEVEL=info
+    - NB_LISTEN_ADDRESS=:33080
+    - NB_EXPOSED_ADDRESS=rels://netbird.prplanit.com:443
+    # todo: change to a secure secret
+    - NB_AUTH_SECRET=$NETBIRD_RELAY_AUTH_SECRET # hN46uC2c1lC2b95teNLz1G2JNbVqd9lfrcLf/NX1BNg
+    ports:
+      - 33080:33080
+
+  # Management
+  management:
+    #labels: *logging
+    image: netbirdio/management:latest
+    restart: always
+    depends_on:
+      - dashboard
+    volumes:
+      - netbird-mgmt:/var/lib/netbird
+      #- netbird-letsencrypt:/etc/letsencrypt:ro
+      - /mnt/app_data/Server/_docker_stack/netbird/management.json:/etc/netbird/management.json
+    ports:
+      - 8012:443 #API port
+  #    # command for Let's Encrypt validation without dashboard container
+  #    command: ["--letsencrypt-domain", "", "--log-file", "console"]
+    command: [
+      "--port", "443",
+      "--log-file", "console",
+      "--log-level", "info",
+      "--disable-anonymous-metrics=false",
+      "--single-account-mode-domain=netbird.prplanit.com",
+      "--dns-domain=netbird.selfhosted"
+      ]
+    environment:
+      - NETBIRD_STORE_ENGINE_POSTGRES_DSN=
+      - NETBIRD_STORE_ENGINE_MYSQL_DSN=
+      
+  # Coturn
+  coturn:
+    #labels: *logging
+    image: coturn/coturn:latest
+    restart: always
+    #domainname: netbird.prplanit.com # only needed when TLS is enabled
+    volumes:
+      - /mnt/app_data/Server/_docker_stack/netbird/turnserver.conf:/etc/turnserver.conf:ro
+    #      - ./privkey.pem:/etc/coturn/private/privkey.pem:ro
+    #      - ./cert.pem:/etc/coturn/certs/cert.pem:ro
+    network_mode: host
+    command:
+      - -c /etc/turnserver.conf
+      
+volumes:
+  netbird-mgmt:
+  netbird-signal:
+  #netbird-letsencrypt:

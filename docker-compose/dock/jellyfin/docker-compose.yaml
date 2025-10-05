@@ -1,0 +1,82 @@
+services:
+
+  #change-vol-ownership:
+    #command: >
+      #bash -c "
+      #chown -R 1000:1000 /config
+      #&& chown -R 1000:1000 /cache"
+    #container_name: zz-change-vol-ownership
+    #image: ubuntu
+    #user: root
+    #volumes:
+      #- /opt/docker/jellyfin/config:/config
+      #- /opt/docker/jellyfin/cache:/cache
+      
+  jellyfin:
+    container_name: jellyfin
+    # depends_on:
+      # change-vol-ownership:
+        # condition: service_completed_successfully
+    # Optional - alternative address used for autodiscovery
+    env_file: 
+      - jellyfin.env
+    # Optional - may be necessary for docker healthcheck to pass if running in host network mode
+    extra_hosts:
+      - 'host.docker.internal:host-gateway'
+    image: jellyfin/jellyfin
+    network_mode: 'host'
+    user: 1000:1000
+    volumes:
+      - /opt/docker/jellyfin/config:/config
+      - /opt/docker/jellyfin/cache:/cache
+      - movies:/media/Movies
+      - tv_shows:/media/TV_Shows
+      - music:/media/Music
+      - photos:/media/Photos
+    restart: 'always'
+    runtime: nvidia
+    # Uncomment the lines below to use Nvidia GPUs for Hardware Transcoding
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    logging: &logging
+      driver: "loki"
+      options:
+        loki-batch-size: "400"
+        loki-url: "http://monitoring:3100/loki/api/v1/push"
+        max-size: "10m"
+        max-file: "3"
+        mode: "non-blocking"
+        loki-retries: "2"
+        loki-max-backoff: "800ms"
+        loki-timeout: "1s"
+
+volumes:    
+  movies:
+    driver: local
+    driver_opts:
+      type: cifs
+      o: "iocharset=utf8,username=$SAMBA_PLEX_USER,password=$SAMBA_PLEX_PASS,vers=2.1,rw,uid=32400,file_mode=0777,dir_mode=0777"
+      device: "//gringotts/media_movies"
+  tv_shows:
+    driver: local
+    driver_opts:
+      type: cifs
+      o: "iocharset=utf8,username=$SAMBA_PLEX_USER,password=$SAMBA_PLEX_PASS,vers=2.1,rw,uid=32400,file_mode=0777,dir_mode=0777"
+      device: "//gringotts/media_tv_shows"
+  music:
+    driver: local
+    driver_opts:
+      type: cifs
+      o: "iocharset=utf8,username=$SAMBA_PLEX_USER,password=$SAMBA_PLEX_PASS,vers=2.1,rw,uid=32400,file_mode=0777,dir_mode=0777"
+      device: "//gringotts/media_music"
+  photos:
+    driver: local
+    driver_opts:
+      type: cifs
+      o: "iocharset=utf8,username=$SAMBA_PLEX_USER,password=$SAMBA_PLEX_PASS,vers=2.1,rw,uid=32400,file_mode=0777,dir_mode=0777"
+      device: "//gringotts/media_photos"

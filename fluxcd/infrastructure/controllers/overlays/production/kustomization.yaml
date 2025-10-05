@@ -1,0 +1,28 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - cilium
+  - kube-vip
+  # - metallb  # Removed - using Cilium LoadBalancer IPAM with BGP instead
+  - weave-gitops
+  - ceph-csi
+  - rook-ceph-operator  # Rook operator for Ceph orchestration
+  - ceph-rgw  # Ceph RGW S3 gateway for object storage
+  - snapshot-controller  # CSI snapshot controller for volume snapshots
+  - ../../../configs/overlays/production/volume-snapshot-class  # VolumeSnapshotClass (needs snapshot-controller CRDs)
+  - cifs-csi
+  - vault
+  - bank-vaults
+  - external-secrets
+  - zitadel
+  - adguard  # DNS server with network policy for proper routing
+  - ../../../configs/overlays/production/chrony  # Chrony NTP server ConfigMap
+  - chrony  # NTP time synchronization server
+  - velero  # Backup and disaster recovery
+  - grafana  # Grafana visualization dashboard
+  - prometheus  # Metrics storage and query engine
+  - thanos-query  # Unified querying across Prometheus replicas with deduplication
+  - loki  # Log aggregation and storage
+  - alloy  # Unified observability collector (scrapes K8s + Docker)
+  - traefik  # Gateway API controller for ingress routing
+  - cert-manager  # TLS certificate management with Let's Encrypt

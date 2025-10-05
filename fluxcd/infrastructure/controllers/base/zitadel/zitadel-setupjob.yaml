@@ -1,0 +1,86 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: zitadel-setup
+spec:
+  backoffLimit: 5
+  template:
+    spec:
+      restartPolicy: OnFailure
+      serviceAccountName: zitadel
+      initContainers:
+      - name: wait-for-db
+        image: PLACEHOLDER_POSTGRES_IMAGE
+        command:
+        - sh
+        - -c
+        - |
+          echo "Waiting for PostgreSQL to be ready..."
+          until pg_isready -h PLACEHOLDER_POSTGRES_HOST -p 5432 -U postgres; do
+            echo "Waiting for postgres..."
+            sleep 2
+          done
+          echo "Waiting additional 10s for init job to complete..."
+          sleep 10
+      containers:
+      - name: zitadel-setup
+        image: PLACEHOLDER_IMAGE
+        env:
+        - name: ZITADEL_MASTERKEY
+          valueFrom:
+            secretKeyRef:
+              name: zitadel-masterkey
+              key: masterkey
+        - name: ZITADEL_DATABASE_POSTGRES_USER_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: zitadel-secrets
+              key: ZITADEL_DATABASE_POSTGRES_USER_PASSWORD
+        - name: ZITADEL_DATABASE_POSTGRES_ADMIN_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: postgres-secrets
+              key: POSTGRES_PASSWORD
+        # First instance configuration
+        - name: ZITADEL_FIRSTINSTANCE_INSTANCENAME
+          value: "PLACEHOLDER_INSTANCE_NAME"
+        - name: ZITADEL_FIRSTINSTANCE_DEFAULTLANGUAGE
+          value: "PLACEHOLDER_DEFAULT_LANGUAGE"
+        - name: ZITADEL_FIRSTINSTANCE_ORG_NAME
+          value: "PLACEHOLDER_ORG_NAME"
+        - name: ZITADEL_FIRSTINSTANCE_ORG_HUMAN_USERNAME
+          value: "PLACEHOLDER_ADMIN_USERNAME"
+        - name: ZITADEL_FIRSTINSTANCE_ORG_HUMAN_FIRSTNAME
+          value: "PLACEHOLDER_ADMIN_FIRSTNAME"
+        - name: ZITADEL_FIRSTINSTANCE_ORG_HUMAN_LASTNAME
+          value: "PLACEHOLDER_ADMIN_LASTNAME"
+        - name: ZITADEL_FIRSTINSTANCE_ORG_HUMAN_EMAIL_ADDRESS
+          value: "PLACEHOLDER_ADMIN_EMAIL"
+        - name: ZITADEL_FIRSTINSTANCE_ORG_HUMAN_EMAIL_VERIFIED
+          value: "PLACEHOLDER_EMAIL_VERIFIED"
+        - name: ZITADEL_FIRSTINSTANCE_ORG_HUMAN_PASSWORD
+          value: "PLACEHOLDER_ADMIN_PASSWORD"
+        - name: ZITADEL_FIRSTINSTANCE_ORG_HUMAN_PASSWORDCHANGEREQUIRED
+          value: "PLACEHOLDER_PASSWORD_CHANGE_REQUIRED"
+        command:
+        - /app/zitadel
+        - setup
+        - --config
+        - /config/zitadel-config.yaml
+        - --masterkeyFromEnv
+        - --init-projections=true
+        volumeMounts:
+        - name: zitadel-config
+          mountPath: /config
+          readOnly: true
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "100m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+      volumes:
+      - name: zitadel-config
+        configMap:
+          name: zitadel-config

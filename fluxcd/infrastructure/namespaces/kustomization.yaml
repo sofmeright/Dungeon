@@ -1,0 +1,15 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - tingle-tuner.yaml
+  - zeldas-lullaby.yaml
+  - compass.yaml
+  - gossip-stone.yaml
+  - lost-woods.yaml
+  - temple-of-time.yaml
+  - fairy-bottle.yaml
+  - gorons-bracelet.yaml
+  - arylls-lookout.yaml
+  - kokiri-forest.yaml
+  - hyrule-castle.yaml
+  - king-of-red-lions.yaml

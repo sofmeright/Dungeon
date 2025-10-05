@@ -1,0 +1,38 @@
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: calibre-web-books
+spec:
+  capacity:
+    storage: 1Ti
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  mountOptions:
+    - vers=2.1
+    - uid=8083
+    - gid=1000
+    - file_mode=0777
+    - dir_mode=0777
+  csi:
+    driver: smb.csi.k8s.io
+    readOnly: false
+    volumeHandle: calibre-web-books
+    volumeAttributes:
+      source: "//gringotts/media_books"
+    nodeStageSecretRef:
+      name: calibre-web-samba-secret
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: calibre-web-books-pvc
+spec:
+  storageClassName: PLACEHOLDER_STORAGE_CLASS
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Ti
+  volumeName: calibre-web-books

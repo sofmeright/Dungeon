@@ -1,0 +1,48 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: linkwarden-config
+data:
+  # Core App Settings
+  NEXTAUTH_URL: "PLACEHOLDER_NEXTAUTH_URL"
+  DATABASE_URL: "postgresql://postgres:${POSTGRES_PASSWORD}@linkwarden-postgres:5432/postgres"
+  MEILI_HOST: "http://linkwarden-meilisearch:7700"
+  STORAGE_FOLDER: "/data/data"
+
+  # Performance Settings
+  PAGINATION_TAKE_COUNT: "50"
+  AUTOSCROLL_TIMEOUT: "30"
+  RE_ARCHIVE_LIMIT: "5"
+
+  # Authentication Settings
+  NEXT_PUBLIC_DISABLE_REGISTRATION: "true"
+  NEXT_PUBLIC_CREDENTIALS_ENABLED: "true"
+  DISABLE_NEW_SSO_USERS: "false"
+
+  # Admin Settings
+  NEXT_PUBLIC_ADMIN: "3"
+
+  # Zitadel SSO
+  NEXT_PUBLIC_ZITADEL_ENABLED: "true"
+  ZITADEL_CUSTOM_NAME: "PLACEHOLDER_SSO_NAME"
+  ZITADEL_ISSUER: "PLACEHOLDER_ZITADEL_ISSUER"
+
+  # Cloud Storage (Disabled by default)
+  SPACES_KEY: "-"
+  SPACES_SECRET: "-"
+  SPACES_ENDPOINT: "-"
+  SPACES_BUCKET_NAME: "-"
+  SPACES_REGION: "-"
+  SPACES_FORCE_PATH_STYLE: "-"
+
+  # Email (Disabled by default)
+  NEXT_PUBLIC_EMAIL_PROVIDER: "-"
+  EMAIL_FROM: "-"
+  EMAIL_SERVER: "-"
+
+  # AI Features (Disabled by default)
+  NEXT_PUBLIC_OLLAMA_ENDPOINT_URL: ""
+  OLLAMA_MODEL: ""
+  CUSTOM_OPENAI_BASE_URL: ""
+  OPENAI_MODEL: ""
+  OPENAI_API_KEY: ""

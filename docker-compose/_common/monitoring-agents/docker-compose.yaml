@@ -1,0 +1,70 @@
+services:
+
+  beszel-agent:
+    image: henrygd/beszel-agent:0.11.1 #customgpu  #latest
+    container_name: beszel-agent
+    restart: always
+    network_mode: host
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    # env_file: beszel-agent_secret.env
+    environment:
+      PORT: 45876
+      # Do not remove quotes around the key
+      # KEY: 'UPDATE WITH YOUR PUBLIC KEY (copy from "Add system" dialog)'
+      KEY: '$BESZEL_KEY'
+    #  NVIDIA_VISIBLE_DEVICES: "all"
+    #  NVIDIA_DRIVER_CAPABILITIES: "all"
+    # Uncomment the lines below to use Nvidia GPUs for Hardware Transcoding
+    #runtime: nvidia
+    #deploy:
+    #  resources:
+    #    reservations:
+    #      devices:
+    #        - driver: nvidia
+    #          count: 1
+    #          capabilities: [gpu]
+    #logging: &logging
+    #  driver: "loki"
+    #  options:
+    #    loki-batch-size: "400"
+    #    loki-url: "http://monitoring:3100/loki/api/v1/push"
+    #    max-size: "10m"
+    #    max-file: "3"
+    #    mode: "non-blocking"
+    #    loki-retries: "2"
+    #    loki-max-backoff: "800ms"
+    #    loki-timeout: "1s"
+      
+  cadvisor:
+    #logging: *logging
+    image: gcr.io/cadvisor/cadvisor:v0.52.1
+    container_name: cadvisor
+    command:
+      - '-port=8098'
+    ports:
+      - 8098:8098
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+      - /dev/disk/:/dev/disk:ro
+    devices:
+      - /dev/kmsg
+    privileged: true
+    restart: always
+    environment:
+      - 'CADVISOR_HEALTHCHECK_URL=http://localhost:8098/healthz'
+    
+  node_exporter:
+    #logging: *logging
+    image: quay.io/prometheus/node-exporter:v1.5.0
+    container_name: node_exporter
+    command: '--path.rootfs=/host'
+    pid: host
+    ports:
+      - 9100:9100
+    restart: always
+    volumes:
+      - /:/host:ro,rslave

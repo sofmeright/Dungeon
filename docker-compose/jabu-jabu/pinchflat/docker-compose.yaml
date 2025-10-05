@@ -1,0 +1,31 @@
+version: '3'
+services:
+  pinchflat:
+    image: ghcr.io/kieraneglin/pinchflat:latest
+    env_file: stack.env
+    environment:
+      - TZ=Etc/UTC # Change this to match your server's timezone
+      - PUID=3000
+      - PGID=3141
+      - BASIC_AUTH_USERNAME=$PINCHFLAT_USER_NAME
+      - BASIC_AUTH_PASSWORD=$PINCHFLAT_USER_PASS
+    ports:
+      - '8947:8945'
+    volumes:
+      - /mnt/app_data/Server/_docker_stack/pinchflat/config:/config
+      - otc_media:/downloads/
+    restart: unless-stopped
+    logging: &logging
+      driver: loki
+      options:
+        loki-batch-size: "400"
+        loki-url: "http://monitoring:3100/loki/api/v1/push"
+        max-size: "10m"
+
+volumes: 
+  otc_media:
+    driver: local
+    driver_opts:
+      type: cifs
+      o: "iocharset=utf8,username=$SMTP_PLEX_USER,password=$SMTP_PLEX_PASS,rw,vers=3.02,uid=32400,file_mode=0777,dir_mode=0777"
+      device: "//gringotts/timecapsule/Media/"

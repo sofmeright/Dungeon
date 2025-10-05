@@ -1,0 +1,39 @@
+services:
+  # uncomment this section and comment out the mysql section to use postgres instead of mysql
+  postgres:
+    env_file: .env
+    hostname: postgres
+    image: postgres:14
+    restart: unless-stopped
+    volumes: 
+      - /opt/docker/semaphore/postgresql:/var/lib/postgresql/data
+  # if you wish to use postgres, comment the mysql service section below 
+  #mysql:
+    #restart: unless-stopped
+    #image: mysql:8.0
+    #hostname: mysql
+    #volumes:
+      #- semaphore-mysql:/var/lib/mysql
+    #environment:
+      #MYSQL_RANDOM_ROOT_PASSWORD: 'yes'
+      #MYSQL_ROOT_PASSWORD: REDACTED_MYSQL_PASSWORD
+      #MYSQL_DATABASE: semaphore
+      #MYSQL_USER: semaphore
+      #MYSQL_PASSWORD: REDACTED_MYSQL_PASSWORD
+  semaphore:
+    depends_on:
+      - postgres # for postgres, change to: postgres
+    env_file: .env
+    image: semaphoreui/semaphore:latest
+    ports:
+      - 3000:3000
+    restart: unless-stopped
+    user: "${UID}:${GID}"
+    volumes: 
+      - /opt/docker/semaphore/playbook:/tmp/semaphore/  
+      - /opt/docker/semaphore/config.json:/etc/semaphore/config.json:ro
+      - /opt/docker/semaphore/.ssh:/root/.ssh 
+      #- /mnt/app_data/Server/_docker_stack/semaphore/ansible.cfg:/etc/ansible/ansible.cfg:ro
+      #- /mnt/app_data/Server/Web-App/_docker-stack/semaphore/inventory/:/inventory:ro 
+      #- /mnt/app_data/Server/Web-App/_docker-stack/semaphore/authorized-keys/:/authorized-keys:ro
+      #- /mnt/app_data/Server/Web-App/_docker-stack/semaphore/config/:/etc/semaphore:rw

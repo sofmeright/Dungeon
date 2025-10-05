@@ -1,0 +1,2 @@
+# Mealie PVCs now managed by StatefulSet volumeClaimTemplates
+# This prevents PVC multiplication on updates
