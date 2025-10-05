@@ -7,3 +7,19 @@ patches:
   - path: statefulset-patch.yaml
   - path: httproute-patch.yaml
   - path: service-patch.yaml
+    target:
+      kind: Service
+      name: uptime-kuma
+patchesJson6902:
+  - target:
+      version: v1
+      kind: Service
+      name: uptime-kuma
+    patch: |-
+      - op: replace
+        path: /spec/ports
+        value:
+          - name: http
+            port: 3001
+            protocol: TCP
+            targetPort: 3001
