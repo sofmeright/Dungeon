@@ -32,6 +32,10 @@ spec:
       kubernetesIngress:
         enabled: false
 
+    # Disable Gateway resource creation (we create our own)
+    gateway:
+      enabled: false
+
     # Enable experimental features for Gateway API
     experimental:
       kubernetesGateway:
