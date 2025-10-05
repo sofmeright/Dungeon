@@ -81,17 +81,17 @@ for vol in "${no_watcher_vols[@]}"; do
     fi
 
     # Check for children (clones) first
-    children=$(rbd children "$POOL/$vol" 2>/dev/null)
+    children=$(rbd children "$POOL/$vol" 2>/dev/null || true)
     if [ -n "$children" ]; then
         echo "  Found clones, deleting them first..."
-        echo "$children" | while read child; do
+        while IFS= read -r child; do
             if [ -n "$child" ]; then
                 echo "    Purging snapshots from clone: $child"
                 rbd snap purge "$child" 2>/dev/null || true
                 echo "    Deleting clone: $child"
                 rbd rm "$child" 2>/dev/null || true
             fi
-        done
+        done <<< "$children"
     fi
 
     # Check for snapshots
