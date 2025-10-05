@@ -3,9 +3,4 @@ kind: Kustomization
 resources:
   - ../../../base/cert-manager
 patches:
-  - target:
-      kind: HelmRelease
-    patch: |
-      - op: replace
-        path: /spec/targetNamespace
-        value: king-of-red-lions
+  - path: helmrelease-patch.yaml
