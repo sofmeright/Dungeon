@@ -42,6 +42,11 @@
     - `smtp/<service-name>` - SMTP-related secrets that may be shared between applications (e.g., smtp/ofcourseimvegan)
     - `smb/<share-name>` - SMB/storage secrets that may be shared between applications (e.g., smb/media-books-rw)
     - Shared paths (smtp/, smb/) are for secrets used by multiple applications, app-specific paths (apps/) are for single application use
+- Container Image Standards:
+  - **ALWAYS use fully qualified image names** with registry prefix (e.g., `docker.io/binwiederhier/ntfy:v2.11.0` NOT `binwiederhier/ntfy:v2.11.0`)
+  - Common registries: `docker.io/` (Docker Hub), `ghcr.io/` (GitHub), `quay.io/` (Quay), `gcr.io/` (Google)
+  - Prevents ImageInspectError and image pull issues in air-gapped or registry-configured clusters
+
 - FluxCD App Structure:
   - `fluxcd/apps/base/<app>/` contains TEMPLATED Kubernetes resources WITHOUT any environment-specific values including: no hardcoded namespaces, image tags, replicas, storage classes, LoadBalancer IPs, cluster-specific annotations (lbipam.cilium.io/*), domain names, URLs, etc. These are reusable templates across environments.
   - `fluxcd/apps/overlays/production/<app>/` references the base (`../../../base/<app>`) and contains ALL environment-specific configurations via patches: namespace, image tags, replica counts, storage classes, LoadBalancer configurations, ingress configs, domain names, URLs, cluster-specific annotations, etc. for the production cluster.

@@ -8,7 +8,7 @@ spec:
     spec:
       containers:
         - name: ntfy
-          image: binwiederhier/ntfy:v2.11.0
+          image: docker.io/binwiederhier/ntfy:v2.11.0
           env:
             - name: NTFY_BASE_URL
               value: "https://ntfy.prplanit.com"
