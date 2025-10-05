@@ -21,6 +21,11 @@ spec:
     # Deploy as DaemonSet for better performance
     deployment:
       kind: DaemonSet
+      # Allow binding to privileged ports (80/443)
+      podSecurityContext:
+        capabilities:
+          drop: [ALL]
+          add: [NET_BIND_SERVICE]
 
     # Enable Gateway API support
     providers:
@@ -35,13 +40,6 @@ spec:
     # Disable Gateway resource creation (we create our own)
     gateway:
       enabled: false
-
-    # Allow binding to privileged ports (80/443)
-    securityContext:
-      capabilities:
-        drop: [ALL]
-        add: [NET_BIND_SERVICE]
-      readOnlyRootFilesystem: true
 
     # Logs
     logs:
