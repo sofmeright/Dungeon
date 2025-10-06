@@ -32,4 +32,4 @@ data:
       permissions: 0644
 kind: ConfigMap
 metadata:
-  name: PLACEHOLDER_FILEBEAT_CONFIG
+  name: wazuh-filebeat-config
