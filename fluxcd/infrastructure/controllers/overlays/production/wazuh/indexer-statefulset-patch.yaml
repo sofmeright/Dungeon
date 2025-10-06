@@ -30,6 +30,7 @@ spec:
     - metadata:
         name: wazuh-indexer-data
       spec:
+        accessModes: ["ReadWriteOnce"]
         resources:
           requests:
             storage: 50Gi

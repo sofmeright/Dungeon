@@ -29,66 +29,77 @@ spec:
     - metadata:
         name: wazuh-manager-api-configuration
       spec:
+        accessModes: ["ReadWriteOnce"]
         resources:
           requests:
             storage: 1Gi
     - metadata:
         name: wazuh-manager-etc
       spec:
+        accessModes: ["ReadWriteOnce"]
         resources:
           requests:
             storage: 2Gi
     - metadata:
         name: wazuh-manager-logs
       spec:
+        accessModes: ["ReadWriteOnce"]
         resources:
           requests:
             storage: 10Gi
     - metadata:
         name: wazuh-manager-queue
       spec:
+        accessModes: ["ReadWriteOnce"]
         resources:
           requests:
             storage: 5Gi
     - metadata:
         name: wazuh-manager-var-multigroups
       spec:
+        accessModes: ["ReadWriteOnce"]
         resources:
           requests:
             storage: 1Gi
     - metadata:
         name: wazuh-manager-integrations
       spec:
+        accessModes: ["ReadWriteOnce"]
         resources:
           requests:
             storage: 1Gi
     - metadata:
         name: wazuh-manager-active-response
       spec:
+        accessModes: ["ReadWriteOnce"]
         resources:
           requests:
             storage: 1Gi
     - metadata:
         name: wazuh-manager-agentless
       spec:
+        accessModes: ["ReadWriteOnce"]
         resources:
           requests:
             storage: 1Gi
     - metadata:
         name: wazuh-manager-wodles
       spec:
+        accessModes: ["ReadWriteOnce"]
         resources:
           requests:
             storage: 2Gi
     - metadata:
         name: wazuh-manager-filebeat-etc
       spec:
+        accessModes: ["ReadWriteOnce"]
         resources:
           requests:
             storage: 1Gi
     - metadata:
         name: wazuh-manager-filebeat-var
       spec:
+        accessModes: ["ReadWriteOnce"]
         resources:
           requests:
             storage: 5Gi
