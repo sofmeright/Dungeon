@@ -26,6 +26,9 @@ patches:
           limits:
             cpu: 200m
             memory: 128Mi
+      - op: replace
+        path: /spec/template/spec/volumes/0/secret/secretName
+        value: prometheus-exporter-eaton-ups
   - target:
       version: v1
       kind: Service
