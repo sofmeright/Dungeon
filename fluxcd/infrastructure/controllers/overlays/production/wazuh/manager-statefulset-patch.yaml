@@ -1,0 +1,94 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: wazuh-manager
+spec:
+  template:
+    spec:
+      containers:
+      - name: wazuh-manager
+        image: docker.io/wazuh/wazuh-manager:4.13.1
+        envFrom:
+        - secretRef:
+            name: wazuh-manager-secrets
+        resources:
+          requests:
+            cpu: 500m
+            memory: 512Mi
+          limits:
+            cpu: 2000m
+            memory: 2Gi
+      volumes:
+      - name: wazuh-manager-conf
+        configMap:
+          name: wazuh-manager-config
+      - name: ssl-certs
+        secret:
+          secretName: wazuh-ssl-certs
+  volumeClaimTemplates:
+    - metadata:
+        name: wazuh-manager-api-configuration
+      spec:
+        resources:
+          requests:
+            storage: 1Gi
+    - metadata:
+        name: wazuh-manager-etc
+      spec:
+        resources:
+          requests:
+            storage: 2Gi
+    - metadata:
+        name: wazuh-manager-logs
+      spec:
+        resources:
+          requests:
+            storage: 10Gi
+    - metadata:
+        name: wazuh-manager-queue
+      spec:
+        resources:
+          requests:
+            storage: 5Gi
+    - metadata:
+        name: wazuh-manager-var-multigroups
+      spec:
+        resources:
+          requests:
+            storage: 1Gi
+    - metadata:
+        name: wazuh-manager-integrations
+      spec:
+        resources:
+          requests:
+            storage: 1Gi
+    - metadata:
+        name: wazuh-manager-active-response
+      spec:
+        resources:
+          requests:
+            storage: 1Gi
+    - metadata:
+        name: wazuh-manager-agentless
+      spec:
+        resources:
+          requests:
+            storage: 1Gi
+    - metadata:
+        name: wazuh-manager-wodles
+      spec:
+        resources:
+          requests:
+            storage: 2Gi
+    - metadata:
+        name: wazuh-manager-filebeat-etc
+      spec:
+        resources:
+          requests:
+            storage: 1Gi
+    - metadata:
+        name: wazuh-manager-filebeat-var
+      spec:
+        resources:
+          requests:
+            storage: 5Gi

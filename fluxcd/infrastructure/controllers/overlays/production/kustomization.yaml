@@ -31,3 +31,4 @@ resources:
   - graphite-exporter-truenas  # Graphite metrics exporter for TrueNAS
   - prometheus-exporter-eaton-ups  # Prometheus exporter for Eaton UPS metrics
   - prometheus-exporter-pve  # Prometheus exporter for Proxmox VE metrics
+  - wazuh  # Wazuh SIEM for security monitoring and threat detection

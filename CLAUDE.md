@@ -166,6 +166,7 @@
       - Backup services (velero, urbackup): 172.22.30.119 (sharing-key: fairy-bottle)
       - Storage services (minio, longhorn, rook-ceph): 172.22.30.101 (sharing-key: gorons-bracelet)
       - Game servers (minecraft, etc): 172.22.30.231 (sharing-key: shooting-gallery)
+      - SIEM/IDS/IPS managers (wazuh-manager, crowdsec-lapi): 172.22.30.119 (sharing-key: lens-of-truth-managers)
 
 - Traefik & Gateway API Routing Strategy:
   - **IP-based Domain Isolation**: Use separate Gateway resources with unique LoadBalancer IPs to enable firewall-based internet exposure control (pfSense NAT rules per IP)

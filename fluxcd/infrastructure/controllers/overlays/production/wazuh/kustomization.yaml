@@ -1,0 +1,16 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: lens-of-truth
+resources:
+  - ../../../base/wazuh
+patches:
+  - path: manager-statefulset-patch.yaml
+  - path: indexer-statefulset-patch.yaml
+  - path: dashboard-deployment-patch.yaml
+  - path: dashboard-resources-patch.yaml
+  - path: manager-service-patch.yaml
+  - path: indexer-service-patch.yaml
+  - path: dashboard-service-patch.yaml
+  - path: manager-externalsecret-patch.yaml
+  - path: dashboard-externalsecret-patch.yaml
+  - path: ssl-externalsecret-patch.yaml

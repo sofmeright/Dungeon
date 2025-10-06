@@ -1,0 +1,173 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: wazuh-manager
+spec:
+  serviceName: wazuh-manager
+  replicas: 1
+  selector:
+    matchLabels:
+      app: wazuh-manager
+  template:
+    metadata:
+      labels:
+        app: wazuh-manager
+    spec:
+      hostname: wazuh-manager
+      containers:
+      - name: wazuh-manager
+        image: PLACEHOLDER_IMAGE
+        ports:
+        - containerPort: 1514
+          name: agent-events
+          protocol: TCP
+        - containerPort: 1515
+          name: agent-auth
+          protocol: TCP
+        - containerPort: 514
+          name: syslog
+          protocol: UDP
+        - containerPort: 55000
+          name: api
+          protocol: TCP
+        envFrom:
+        - secretRef:
+            name: PLACEHOLDER_ENV_SECRET
+        volumeMounts:
+        - name: wazuh-manager-conf
+          mountPath: /wazuh-config-mount/etc/ossec.conf
+          subPath: ossec.conf
+        - name: ssl-certs
+          mountPath: /etc/ssl/root-ca.pem
+          subPath: root-ca-manager.pem
+        - name: ssl-certs
+          mountPath: /etc/ssl/filebeat.pem
+          subPath: wazuh.manager.pem
+        - name: ssl-certs
+          mountPath: /etc/ssl/filebeat.key
+          subPath: wazuh.manager-key.pem
+        - name: wazuh-api-configuration
+          mountPath: /var/ossec/api/configuration
+        - name: wazuh-etc
+          mountPath: /var/ossec/etc
+        - name: wazuh-logs
+          mountPath: /var/ossec/logs
+        - name: wazuh-queue
+          mountPath: /var/ossec/queue
+        - name: wazuh-var-multigroups
+          mountPath: /var/ossec/var/multigroups
+        - name: wazuh-integrations
+          mountPath: /var/ossec/integrations
+        - name: wazuh-active-response
+          mountPath: /var/ossec/active-response/bin
+        - name: wazuh-agentless
+          mountPath: /var/ossec/agentless
+        - name: wazuh-wodles
+          mountPath: /var/ossec/wodles
+        - name: filebeat-etc
+          mountPath: /etc/filebeat
+        - name: filebeat-var
+          mountPath: /var/lib/filebeat
+        resources:
+          requests:
+            cpu: PLACEHOLDER_CPU
+            memory: PLACEHOLDER_MEMORY
+          limits:
+            cpu: PLACEHOLDER_CPU_LIMIT
+            memory: PLACEHOLDER_MEMORY_LIMIT
+      volumes:
+      - name: wazuh-manager-conf
+        configMap:
+          name: PLACEHOLDER_MANAGER_CONFIG
+      - name: ssl-certs
+        secret:
+          secretName: PLACEHOLDER_SSL_SECRET
+  volumeClaimTemplates:
+  - metadata:
+      name: wazuh-api-configuration
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      storageClassName: PLACEHOLDER_STORAGE_CLASS
+      resources:
+        requests:
+          storage: PLACEHOLDER_STORAGE_SIZE
+  - metadata:
+      name: wazuh-etc
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      storageClassName: PLACEHOLDER_STORAGE_CLASS
+      resources:
+        requests:
+          storage: PLACEHOLDER_STORAGE_SIZE
+  - metadata:
+      name: wazuh-logs
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      storageClassName: PLACEHOLDER_STORAGE_CLASS
+      resources:
+        requests:
+          storage: PLACEHOLDER_STORAGE_SIZE
+  - metadata:
+      name: wazuh-queue
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      storageClassName: PLACEHOLDER_STORAGE_CLASS
+      resources:
+        requests:
+          storage: PLACEHOLDER_STORAGE_SIZE
+  - metadata:
+      name: wazuh-var-multigroups
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      storageClassName: PLACEHOLDER_STORAGE_CLASS
+      resources:
+        requests:
+          storage: PLACEHOLDER_STORAGE_SIZE
+  - metadata:
+      name: wazuh-integrations
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      storageClassName: PLACEHOLDER_STORAGE_CLASS
+      resources:
+        requests:
+          storage: PLACEHOLDER_STORAGE_SIZE
+  - metadata:
+      name: wazuh-active-response
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      storageClassName: PLACEHOLDER_STORAGE_CLASS
+      resources:
+        requests:
+          storage: PLACEHOLDER_STORAGE_SIZE
+  - metadata:
+      name: wazuh-agentless
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      storageClassName: PLACEHOLDER_STORAGE_CLASS
+      resources:
+        requests:
+          storage: PLACEHOLDER_STORAGE_SIZE
+  - metadata:
+      name: wazuh-wodles
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      storageClassName: PLACEHOLDER_STORAGE_CLASS
+      resources:
+        requests:
+          storage: PLACEHOLDER_STORAGE_SIZE
+  - metadata:
+      name: filebeat-etc
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      storageClassName: PLACEHOLDER_STORAGE_CLASS
+      resources:
+        requests:
+          storage: PLACEHOLDER_STORAGE_SIZE
+  - metadata:
+      name: filebeat-var
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      storageClassName: PLACEHOLDER_STORAGE_CLASS
+      resources:
+        requests:
+          storage: PLACEHOLDER_STORAGE_SIZE
