@@ -39,6 +39,5 @@ spec:
             memory: PLACEHOLDER_MEMORY_LIMIT
       volumes:
       - name: config
-        hostPath:
-          path: PLACEHOLDER_CONFIG_PATH
-          type: File
+        configMap:
+          name: graphite-mappings-truenas

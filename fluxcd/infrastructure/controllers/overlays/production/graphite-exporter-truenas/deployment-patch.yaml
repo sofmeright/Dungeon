@@ -15,8 +15,3 @@ spec:
           limits:
             cpu: 200m
             memory: 128Mi
-      volumes:
-      - name: config
-        hostPath:
-          path: /mnt/ceph-treasure-chest/pgraphite_mappings.yaml
-          type: File
