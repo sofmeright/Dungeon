@@ -23,7 +23,7 @@ patches:
           {
             "auths": {
               "cr.pcfae.com": {
-                "auth": "{{ printf \"%s:%s\" .username .password | b64enc }}",
+                "auth": "{{ printf "%s:%s" .username .password | b64enc }}",
                 "email": ""
               }
             }
