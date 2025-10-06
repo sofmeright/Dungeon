@@ -1,6 +1,7 @@
 - Repository Information:
   - Git repository: ssh://git@10.30.1.123:2424/precisionplanit/dungeon
   - Repository name: dungeon (formerly ant_parade-public)
+  - **Git Commits**: Only sign commits as sofmeright@gmail.com / SoFMeRight. No anthropic attribution comments in commits.
 
 - CRITICAL RULES:
   - Prefer using flux to reconcile resources from source. We are GitOps native, we use kubectl commands to adjust state only when it is otherwise impossible!!!!!
@@ -30,6 +31,7 @@
       - kokiri-forest: Gateway for personal/public services (phloem replacement)
       - hyrule-castle: Gateway for business/work services (cell-membrane replacement)
       - shooting-gallery: Game servers (minecraft, etc - aiming for fun)
+      - lens-of-truth: IDS/IPS/SIEM security monitoring (reveals hidden threats)
   - Base should NEVER contain deployment-ready configs - only generic templates that overlays patch with real values. Base should document application defaults from upstream/vendor documentation, not production-specific configurations.
   - Always use overlays/production for actual deployment to the production cluster, never deploy from base
 
@@ -46,6 +48,11 @@
   - **ALWAYS use fully qualified image names** with registry prefix (e.g., `docker.io/binwiederhier/ntfy:v2.11.0` NOT `binwiederhier/ntfy:v2.11.0`)
   - Common registries: `docker.io/` (Docker Hub), `ghcr.io/` (GitHub), `quay.io/` (Quay), `gcr.io/` (Google)
   - Prevents ImageInspectError and image pull issues in air-gapped or registry-configured clusters
+  - **Container Registry Credentials**: Managed as shared resources in `infrastructure/configs/overlays/production/registries/`
+    - Base template: `infrastructure/configs/base/registries/docker.io-example/`
+    - Production overlays: `infrastructure/configs/overlays/production/registries/<registry>-<account>/`
+    - Apps reference the pull secret by name (e.g., `cr-pcfae-admin-pull-secret`) in their deployment `imagePullSecrets`
+    - Credentials stored in Vault at `registries/<registry-url>` with keys: `username`, `password`
 
 - FluxCD App Structure:
   - `fluxcd/apps/base/<app>/` contains TEMPLATED Kubernetes resources WITHOUT any environment-specific values including: no hardcoded namespaces, image tags, replicas, storage classes, LoadBalancer IPs, cluster-specific annotations (lbipam.cilium.io/*), domain names, URLs, etc. These are reusable templates across environments.
@@ -75,6 +82,7 @@
 - Stateful sets should be used for PVCs that are for stateful applications! Deployments should only be used when the applications state doesnt need to be kept!
 
 - PersistentVolume Naming Standard:
+  - **NO hostPath VOLUMES**: This is a cluster - hostPath only works on a single node. Use ConfigMaps, Secrets, or PVCs instead.
   - PVC names created via StatefulSet volumeClaimTemplates MUST follow this pattern: `<namespace>-<app>-<purpose>-<replica-number>`
   - Components:
     - `<namespace>`: The Kubernetes namespace (e.g., temple-of-time, lost-woods, gossip-stone)
@@ -124,6 +132,7 @@
     ```
 
 - Cluster Networking:
+  - **NO MANUAL ROUTES EVER**: Cilium handles all routing via native eBPF with DSR, masquerading, BGP, LoadBalancer IPAM, and Gateway API (HTTPRoute). Never create manual ip route commands or static routes.
   - Pfsense router IPs are 172.22.144.21 & 172.22.144.23; the carp vip is 172.22.144.22. They provide BGP by peering with 172.22.144.150-154 172.22.144.170-74 and advertising routes for 172.22.30.0/24.
   - **Dual-Stack Configuration**:
     - Cluster Pod CIDR IPv4: 192.168.144.0/20
