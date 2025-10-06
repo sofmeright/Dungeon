@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: beszel
+spec:
+  replicas: 1
+  template:
+    spec:
+      containers:
+      - name: beszel
+        image: docker.io/henrygd/beszel:latest
+        volumeMounts:
+        - name: gossip-stone-beszel-data
+          mountPath: /beszel_data
+        resources:
+          requests:
+            cpu: 50m
+            memory: 128Mi
+          limits:
+            cpu: 500m
+            memory: 512Mi
+  volumeClaimTemplates:
+  - metadata:
+      name: gossip-stone-beszel-data
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      storageClassName: ceph-rbd-retain
+      resources:
+        requests:
+          storage: 2Gi
