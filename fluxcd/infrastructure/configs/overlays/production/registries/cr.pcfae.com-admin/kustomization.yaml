@@ -4,4 +4,30 @@ namespace: gossip-stone
 resources:
   - ../../../../base/registries/docker.io-example
 patches:
-  - path: externalsecret-patch.yaml
+  - target:
+      kind: ExternalSecret
+      name: PLACEHOLDER_REGISTRY_NAME
+    patch: |-
+      - op: replace
+        path: /metadata/name
+        value: cr-pcfae-admin-pull-secret
+      - op: replace
+        path: /spec/secretStoreRef/name
+        value: vault-zeldas-letter
+      - op: replace
+        path: /spec/target/name
+        value: cr-pcfae-admin-pull-secret
+      - op: replace
+        path: /spec/target/template/data/.dockerconfigjson
+        value: |
+          {
+            "auths": {
+              "cr.pcfae.com": {
+                "auth": "{{ printf \"%s:%s\" .username .password | b64enc }}",
+                "email": ""
+              }
+            }
+          }
+      - op: replace
+        path: /spec/dataFrom/0/extract/key
+        value: registries/cr.pcfae.com
