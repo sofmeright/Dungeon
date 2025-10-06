@@ -12,6 +12,8 @@ spec:
       labels:
         app: prometheus-exporter-eaton-ups
     spec:
+      imagePullSecrets:
+      - name: PLACEHOLDER_IMAGE_PULL_SECRET
       securityContext:
         runAsUser: 1000
         runAsGroup: 1000

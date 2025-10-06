@@ -5,6 +5,8 @@ metadata:
 spec:
   template:
     spec:
+      imagePullSecrets:
+      - name: cr-pcfae-admin-pull-secret
       containers:
       - name: exporter
         image: cr.pcfae.com/sofmeright/prometheus-eaton-ups-exporter:latest
