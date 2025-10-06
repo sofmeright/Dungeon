@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: graphite-exporter-truenas
+spec:
+  type: ClusterIP
+  selector:
+    app: graphite-exporter-truenas
+  ports:
+    - port: 80
+      targetPort: 2003
+      protocol: TCP
+      name: graphite

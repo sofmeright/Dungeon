@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: graphite-exporter-truenas
+spec:
+  template:
+    spec:
+      containers:
+      - name: graphite-exporter
+        image: docker.io/prom/graphite-exporter:v0.16.0
+        resources:
+          requests:
+            cpu: 50m
+            memory: 64Mi
+          limits:
+            cpu: 200m
+            memory: 128Mi
+      volumes:
+      - name: config
+        hostPath:
+          path: /mnt/ceph-treasure-chest/pgraphite_mappings.yaml
+          type: File

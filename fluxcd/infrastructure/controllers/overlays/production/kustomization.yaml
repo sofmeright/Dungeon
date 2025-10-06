@@ -28,3 +28,4 @@ resources:
   - cert-manager  # TLS certificate management with Let's Encrypt
   - uptime-kuma  # Service uptime monitoring
   - ntfy  # Notification delivery service
+  - graphite-exporter-truenas  # Graphite metrics exporter for TrueNAS
