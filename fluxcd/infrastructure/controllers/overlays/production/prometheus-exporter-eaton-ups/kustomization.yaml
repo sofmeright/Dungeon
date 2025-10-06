@@ -4,8 +4,28 @@ namespace: gossip-stone
 resources:
   - ../../../base/prometheus-exporter-eaton-ups
 patches:
-  - path: deployment-patch.yaml
   - path: externalsecret-patch.yaml
+  - target:
+      version: v1
+      kind: Deployment
+      name: prometheus-exporter-eaton-ups
+    patch: |-
+      - op: replace
+        path: /spec/template/spec/imagePullSecrets
+        value:
+          - name: cr-pcfae-admin-pull-secret
+      - op: replace
+        path: /spec/template/spec/containers/0/image
+        value: cr.pcfae.com/sofmeright/prometheus-eaton-ups-exporter:latest
+      - op: replace
+        path: /spec/template/spec/containers/0/resources
+        value:
+          requests:
+            cpu: 50m
+            memory: 64Mi
+          limits:
+            cpu: 200m
+            memory: 128Mi
   - target:
       version: v1
       kind: Service
