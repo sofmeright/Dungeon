@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: prometheus-exporter-eaton-ups
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: prometheus-exporter-eaton-ups
+  template:
+    metadata:
+      labels:
+        app: prometheus-exporter-eaton-ups
+    spec:
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+      containers:
+      - name: exporter
+        image: PLACEHOLDER_IMAGE
+        ports:
+        - containerPort: 9795
+          name: metrics
+          protocol: TCP
+        volumeMounts:
+        - name: config
+          mountPath: /usr/src/app/etc/config.json
+          subPath: config.json
+          readOnly: true
+        resources:
+          requests:
+            cpu: PLACEHOLDER_CPU
+            memory: PLACEHOLDER_MEMORY
+          limits:
+            cpu: PLACEHOLDER_CPU_LIMIT
+            memory: PLACEHOLDER_MEMORY_LIMIT
+      volumes:
+      - name: config
+        secret:
+          secretName: PLACEHOLDER_SECRET
