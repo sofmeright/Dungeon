@@ -27,77 +27,77 @@ spec:
           secretName: wazuh-ssl-certs
   volumeClaimTemplates:
     - metadata:
-        name: wazuh-manager-api-configuration
+        name: wazuh-api-configuration
       spec:
         accessModes: ["ReadWriteOnce"]
         resources:
           requests:
             storage: 1Gi
     - metadata:
-        name: wazuh-manager-etc
+        name: wazuh-etc
       spec:
         accessModes: ["ReadWriteOnce"]
         resources:
           requests:
             storage: 2Gi
     - metadata:
-        name: wazuh-manager-logs
+        name: wazuh-logs
       spec:
         accessModes: ["ReadWriteOnce"]
         resources:
           requests:
             storage: 10Gi
     - metadata:
-        name: wazuh-manager-queue
+        name: wazuh-queue
       spec:
         accessModes: ["ReadWriteOnce"]
         resources:
           requests:
             storage: 5Gi
     - metadata:
-        name: wazuh-manager-var-multigroups
+        name: wazuh-var-multigroups
       spec:
         accessModes: ["ReadWriteOnce"]
         resources:
           requests:
             storage: 1Gi
     - metadata:
-        name: wazuh-manager-integrations
+        name: wazuh-integrations
       spec:
         accessModes: ["ReadWriteOnce"]
         resources:
           requests:
             storage: 1Gi
     - metadata:
-        name: wazuh-manager-active-response
+        name: wazuh-active-response
       spec:
         accessModes: ["ReadWriteOnce"]
         resources:
           requests:
             storage: 1Gi
     - metadata:
-        name: wazuh-manager-agentless
+        name: wazuh-agentless
       spec:
         accessModes: ["ReadWriteOnce"]
         resources:
           requests:
             storage: 1Gi
     - metadata:
-        name: wazuh-manager-wodles
+        name: wazuh-wodles
       spec:
         accessModes: ["ReadWriteOnce"]
         resources:
           requests:
             storage: 2Gi
     - metadata:
-        name: wazuh-manager-filebeat-etc
+        name: filebeat-etc
       spec:
         accessModes: ["ReadWriteOnce"]
         resources:
           requests:
             storage: 1Gi
     - metadata:
-        name: wazuh-manager-filebeat-var
+        name: filebeat-var
       spec:
         accessModes: ["ReadWriteOnce"]
         resources:
