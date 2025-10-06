@@ -66,8 +66,9 @@ spec:
           mountPath: /var/ossec/agentless
         - name: wazuh-wodles
           mountPath: /var/ossec/wodles
-        - name: filebeat-etc
-          mountPath: /etc/filebeat
+        - name: filebeat-config
+          mountPath: /etc/filebeat/filebeat.yml
+          subPath: filebeat.yml
         - name: filebeat-var
           mountPath: /var/lib/filebeat
         resources:
@@ -81,6 +82,9 @@ spec:
       - name: wazuh-manager-conf
         configMap:
           name: PLACEHOLDER_MANAGER_CONFIG
+      - name: filebeat-config
+        configMap:
+          name: PLACEHOLDER_FILEBEAT_CONFIG
       - name: ssl-certs
         secret:
           secretName: PLACEHOLDER_SSL_SECRET
@@ -151,14 +155,6 @@ spec:
           storage: PLACEHOLDER_STORAGE_SIZE
   - metadata:
       name: wazuh-wodles
-    spec:
-      accessModes: ["ReadWriteOnce"]
-      storageClassName: PLACEHOLDER_STORAGE_CLASS
-      resources:
-        requests:
-          storage: PLACEHOLDER_STORAGE_SIZE
-  - metadata:
-      name: filebeat-etc
     spec:
       accessModes: ["ReadWriteOnce"]
       storageClassName: PLACEHOLDER_STORAGE_CLASS
