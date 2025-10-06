@@ -30,3 +30,4 @@ resources:
   - ntfy  # Notification delivery service
   - graphite-exporter-truenas  # Graphite metrics exporter for TrueNAS
   - prometheus-exporter-eaton-ups  # Prometheus exporter for Eaton UPS metrics
+  - prometheus-exporter-pve  # Prometheus exporter for Proxmox VE metrics
