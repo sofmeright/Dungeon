@@ -32,14 +32,14 @@ spec:
             cpu: PLACEHOLDER_CPU_LIMIT
             memory: PLACEHOLDER_MEMORY_LIMIT
         volumeMounts:
-        - name: dashboard-data
-          mountPath: /usr/share/wazuh-dashboard/data
         - name: dashboard-secrets
           mountPath: /usr/share/wazuh-dashboard/config/opensearch_dashboards.yml
           subPath: opensearch_dashboards.yml
         - name: dashboard-secrets
-          mountPath: /usr/share/wazuh-dashboard/data/wazuh/config/wazuh.yml
+          mountPath: /usr/share/wazuh-dashboard/config/wazuh.yml
           subPath: wazuh.yml
+        - name: dashboard-data
+          mountPath: /usr/share/wazuh-dashboard/data
         - name: ssl-certs
           mountPath: /usr/share/wazuh-dashboard/certs/wazuh-dashboard.pem
           subPath: wazuh.dashboard.pem
