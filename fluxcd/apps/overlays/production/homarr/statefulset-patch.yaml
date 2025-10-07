@@ -18,15 +18,25 @@ spec:
         - name: NEXTAUTH_URL
           value: "http://172.22.30.223:7575"
         - name: AUTH_PROVIDERS
-          value: "oidc"
-        - name: AUTH_OIDC_URI
-          value: "https://sso.prplanit.com"
+          value: "credentials,oidc"
+        - name: AUTH_LOGOUT_REDIRECT_URL
+          value: "https://apptray.pcfae.com"
+        - name: AUTH_SESSION_EXPIRY_TIME
+          value: "30d"
         - name: AUTH_OIDC_ISSUER
           value: "https://sso.prplanit.com"
         - name: AUTH_OIDC_CLIENT_NAME
-          value: "Zitadel"
+          value: "PrecisionPlanIT.com SSO"
         - name: AUTH_OIDC_AUTO_LOGIN
-          value: "true"
+          value: "false"
+        - name: AUTH_OIDC_SCOPE_OVERWRITE
+          value: "openid email profile groups"
+        - name: AUTH_OIDC_GROUPS_ATTRIBUTE
+          value: "roles"
+        - name: AUTH_OIDC_NAME_ATTRIBUTE_OVERWRITE
+          value: "email"
+        - name: AUTH_OIDC_FORCE_USERINFO
+          value: "false"
   volumeClaimTemplates:
   - metadata:
       name: lost-woods-homarr-sqlite
