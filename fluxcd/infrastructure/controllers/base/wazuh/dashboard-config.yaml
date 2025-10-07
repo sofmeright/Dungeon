@@ -4,6 +4,8 @@ data:
     server.host: 0.0.0.0
     server.port: 5601
     opensearch.hosts: https://wazuh-indexer:9200
+    opensearch.username: "${INDEXER_USERNAME}"
+    opensearch.password: "${INDEXER_PASSWORD}"
     opensearch.ssl.verificationMode: certificate
     opensearch.requestHeadersWhitelist: ["securitytenant","Authorization"]
     opensearch_security.multitenancy.enabled: false
