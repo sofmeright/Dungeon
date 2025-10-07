@@ -7,3 +7,6 @@
 - op: add
   path: /metadata/annotations/lbipam.cilium.io~1sharing-cross-namespace
   value: "*"
+- op: add
+  path: /spec/externalTrafficPolicy
+  value: "Local"
