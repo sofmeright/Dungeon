@@ -31,7 +31,7 @@ spec:
             cpu: PLACEHOLDER_CPU_LIMIT
             memory: PLACEHOLDER_MEMORY_LIMIT
         volumeMounts:
-        - name: dashboard-config
+        - name: dashboard-secrets
           mountPath: /usr/share/wazuh-dashboard/config/opensearch_dashboards.yml
           subPath: opensearch_dashboards.yml
         - name: dashboard-secrets
@@ -47,9 +47,6 @@ spec:
           mountPath: /usr/share/wazuh-dashboard/certs/root-ca.pem
           subPath: root-ca.pem
       volumes:
-      - name: dashboard-config
-        configMap:
-          name: PLACEHOLDER_DASHBOARD_CONFIG
       - name: dashboard-secrets
         secret:
           secretName: PLACEHOLDER_DASHBOARD_SECRETS
