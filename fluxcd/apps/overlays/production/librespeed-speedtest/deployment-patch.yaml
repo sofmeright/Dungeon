@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: librespeed-speedtest
+spec:
+  template:
+    spec:
+      containers:
+      - name: librespeed-speedtest
+        image: ghcr.io/librespeed/speedtest:latest
+        resources:
+          requests:
+            cpu: 100m
+            memory: 128Mi
+          limits:
+            cpu: 500m
+            memory: 512Mi
+        envFrom:
+        - secretRef:
+            name: librespeed-speedtest-secrets
