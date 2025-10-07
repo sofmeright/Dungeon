@@ -3,7 +3,7 @@ data:
   opensearch_dashboards.yml: |-
     server.host: 0.0.0.0
     server.port: 5601
-    opensearch.hosts: https://wazuh.indexer:9200
+    opensearch.hosts: https://wazuh-indexer:9200
     opensearch.ssl.verificationMode: certificate
     opensearch.requestHeadersWhitelist: ["securitytenant","Authorization"]
     opensearch_security.multitenancy.enabled: false
