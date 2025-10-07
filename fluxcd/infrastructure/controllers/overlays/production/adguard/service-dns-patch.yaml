@@ -1,3 +1,6 @@
+- op: add
+  path: /metadata/annotations/lbipam.cilium.io~1ips
+  value: "172.22.30.122"
 - op: replace
   path: /metadata/annotations/lbipam.cilium.io~1sharing-key
   value: "compass"

@@ -1,12 +1,12 @@
 - op: replace
   path: /metadata/annotations/lbipam.cilium.io~1ips
-  value: "172.22.30.102"
+  value: "172.22.30.86"
 - op: add
   path: /metadata/annotations/lbipam.cilium.io~1sharing-key
-  value: "prplanit-system"
+  value: "zeldas-lullaby"
 - op: add
   path: /metadata/annotations/lbipam.cilium.io~1sharing-cross-namespace
   value: "*"
 - op: replace
   path: /spec/loadBalancerIP
-  value: "172.22.30.102"
+  value: "172.22.30.86"
