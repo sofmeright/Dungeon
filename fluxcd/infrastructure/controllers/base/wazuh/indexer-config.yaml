@@ -14,14 +14,14 @@ data:
     ## Demo users
 
     admin:
-      hash: "$2y$12$vJ5vdlhcDxEADL5t/wMtq.SSKEgws5ik/rBsdWxD.yd5ZJiR.8cXm"
+      hash: "$2a$12$S9EjQJA4hj7w/bmgBKjgIey9vsu8eJHyB7hr2B42YUVSx0tdSPo5i"
       reserved: true
       backend_roles:
       - "admin"
       description: "Demo admin user"
 
     kibanaserver:
-      hash: "$2y$12$17KwBrAs5LxV1DR9UB/tY.drl2tQfhpwNeQLYNIhKlGpfhLcvze5e"
+      hash: "$2a$12$ufdDGUes2vhDChfis4SGqe9QzDz0iQGOFuTjwc5kN3.agJ8RvgDrG"
       reserved: true
       description: "Demo kibanaserver user"
 
