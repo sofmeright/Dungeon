@@ -5,7 +5,6 @@ resources:
   - manager-service.yaml
   - manager-config.yaml
   - manager-externalsecret.yaml
-  - filebeat-config.yaml
   - indexer-statefulset.yaml
   - indexer-service.yaml
   - indexer-config.yaml

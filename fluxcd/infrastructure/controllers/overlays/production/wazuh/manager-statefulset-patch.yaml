@@ -22,9 +22,6 @@ spec:
       - name: wazuh-manager-conf
         configMap:
           name: wazuh-manager-config
-      - name: filebeat-config
-        configMap:
-          name: wazuh-filebeat-config
       - name: ssl-certs
         secret:
           secretName: wazuh-ssl-certs
