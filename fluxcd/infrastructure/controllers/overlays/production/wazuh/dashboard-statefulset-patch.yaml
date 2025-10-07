@@ -1,0 +1,15 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: wazuh-dashboard
+spec:
+  replicas: 1
+  volumeClaimTemplates:
+  - metadata:
+      name: dashboard-data
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      storageClassName: ceph-rbd
+      resources:
+        requests:
+          storage: 10Gi

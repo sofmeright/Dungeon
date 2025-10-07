@@ -9,7 +9,7 @@ resources:
   - indexer-service.yaml
   - indexer-config.yaml
   - indexer-security-config.yaml
-  - dashboard-deployment.yaml
+  - dashboard-statefulset.yaml
   - dashboard-service.yaml
   - dashboard-externalsecret.yaml
   - ssl-externalsecret.yaml

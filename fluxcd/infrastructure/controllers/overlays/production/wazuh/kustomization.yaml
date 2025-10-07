@@ -6,7 +6,7 @@ resources:
 patches:
   - path: manager-statefulset-patch.yaml
   - path: indexer-statefulset-patch.yaml
-  - path: dashboard-deployment-patch.yaml
+  - path: dashboard-statefulset-patch.yaml
   - path: dashboard-resources-patch.yaml
   - path: manager-service-patch.yaml
   - path: indexer-service-patch.yaml
