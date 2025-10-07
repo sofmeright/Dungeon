@@ -4,3 +4,6 @@
 - op: replace
   path: /metadata/annotations/lbipam.cilium.io~1sharing-key
   value: "compass"
+- op: add
+  path: /metadata/annotations/lbipam.cilium.io~1sharing-cross-namespace
+  value: "*"
