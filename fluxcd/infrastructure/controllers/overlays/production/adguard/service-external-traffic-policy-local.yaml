@@ -1,3 +1,3 @@
 - op: replace
   path: /spec/externalTrafficPolicy
-  value: Cluster
+  value: Local
