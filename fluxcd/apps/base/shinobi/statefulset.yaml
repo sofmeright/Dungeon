@@ -45,11 +45,6 @@ spec:
           value: "all"
         - name: NVIDIA_DRIVER_CAPABILITIES
           value: "all"
-        resources:
-          requests:
-            nvidia.com/gpu: 1
-          limits:
-            nvidia.com/gpu: 1
         volumeMounts:
         - name: streams
           mountPath: /dev/shm/streams
