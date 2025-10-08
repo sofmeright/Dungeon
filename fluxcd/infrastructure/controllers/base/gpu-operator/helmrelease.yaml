@@ -31,7 +31,7 @@ spec:
       enabled: true
       # Use pre-installed drivers if available, otherwise container will install
       usePreinstalledDrivers: false
-      version: "550.127.05"
+      # Omit version to use GPU Operator's default latest driver
 
     # Toolkit configuration
     toolkit:
