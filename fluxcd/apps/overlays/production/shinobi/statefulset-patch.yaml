@@ -10,7 +10,7 @@ spec:
         app: shinobi
         volume-type: streams
     spec:
-      storageClassName: ceph-block
+      storageClassName: ceph-rbd
       accessModes:
       - ReadWriteOnce
       resources:
@@ -22,7 +22,7 @@ spec:
         app: shinobi
         volume-type: app
     spec:
-      storageClassName: ceph-block
+      storageClassName: ceph-rbd
       accessModes:
       - ReadWriteOnce
       resources:
@@ -34,7 +34,7 @@ spec:
         app: shinobi
         volume-type: mysql
     spec:
-      storageClassName: ceph-block
+      storageClassName: ceph-rbd
       accessModes:
       - ReadWriteOnce
       resources:
