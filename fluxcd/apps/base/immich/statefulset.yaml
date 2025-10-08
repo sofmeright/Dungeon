@@ -13,6 +13,7 @@ spec:
       labels:
         app: immich
     spec:
+      enableServiceLinks: false
       initContainers:
       - name: fix-library-permissions
         image: docker.io/library/busybox:latest
