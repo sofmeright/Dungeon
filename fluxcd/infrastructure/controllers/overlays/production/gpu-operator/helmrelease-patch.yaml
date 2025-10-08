@@ -32,6 +32,8 @@ spec:
       nodeSelector:
         kubernetes.io/hostname: dungeon-chest-004
       env:
+        - name: CDI_ENABLED
+          value: "true"
         - name: NVIDIA_CONTAINER_RUNTIME_MODE
           value: "cdi"
 
