@@ -13,6 +13,16 @@ spec:
       labels:
         app: libretranslate
     spec:
+      initContainers:
+      - name: fix-permissions
+        image: docker.io/library/busybox:latest
+        command:
+        - sh
+        - -c
+        - chown -R 1032:1032 /home/libretranslate/.local && chmod -R 755 /home/libretranslate/.local
+        volumeMounts:
+        - name: models
+          mountPath: /home/libretranslate/.local
       containers:
       - name: libretranslate
         image: docker.io/libretranslate/libretranslate:latest
