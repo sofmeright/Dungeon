@@ -116,8 +116,7 @@ spec:
         securityContext:
           runAsUser: 999
           runAsGroup: 999
-        command:
-        - postgres
+        args:
         - -c
         - shared_preload_libraries=vectors.so
         - -c
