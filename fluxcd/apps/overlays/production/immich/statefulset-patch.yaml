@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: immich
+spec:
+  volumeClaimTemplates:
+  - metadata:
+      name: library
+      labels:
+        app: immich
+        volume-type: library
+    spec:
+      storageClassName: ceph-rbd
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: 500Gi
+  - metadata:
+      name: model-cache
+      labels:
+        app: immich
+        volume-type: model-cache
+    spec:
+      storageClassName: ceph-rbd
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: 20Gi
+  - metadata:
+      name: postgres
+      labels:
+        app: immich
+        volume-type: postgres
+    spec:
+      storageClassName: ceph-rbd
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: 50Gi

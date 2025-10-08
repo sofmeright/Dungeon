@@ -18,3 +18,4 @@ resources:
   - shinobi
   - ollama
   - libretranslate
+  - immich
