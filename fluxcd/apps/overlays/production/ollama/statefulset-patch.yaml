@@ -1,0 +1,18 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: ollama
+spec:
+  volumeClaimTemplates:
+  - metadata:
+      name: data
+      labels:
+        app: ollama
+        volume-type: data
+    spec:
+      storageClassName: ceph-rbd
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: 100Gi
