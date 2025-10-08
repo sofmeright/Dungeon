@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: shinobi
+spec:
+  volumeClaimTemplates:
+  - metadata:
+      name: streams
+      labels:
+        app: shinobi
+        volume-type: streams
+    spec:
+      storageClassName: ceph-block
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: 50Gi
+  - metadata:
+      name: app
+      labels:
+        app: shinobi
+        volume-type: app
+    spec:
+      storageClassName: ceph-block
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: 10Gi
+  - metadata:
+      name: mysql
+      labels:
+        app: shinobi
+        volume-type: mysql
+    spec:
+      storageClassName: ceph-block
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: 20Gi

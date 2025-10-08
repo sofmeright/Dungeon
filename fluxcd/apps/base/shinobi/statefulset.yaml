@@ -1,0 +1,111 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: shinobi
+spec:
+  serviceName: shinobi
+  replicas: 1
+  selector:
+    matchLabels:
+      app: shinobi
+  template:
+    metadata:
+      labels:
+        app: shinobi
+    spec:
+      containers:
+      - name: shinobi
+        image: cr.pcfae.com/prplanit/shinobi-docker:latest
+        ports:
+        - containerPort: 8080
+          name: http
+        env:
+        - name: HOME
+          value: /home/Shinobi
+        - name: DB_HOST
+          value: localhost
+        - name: DB_DATABASE
+          valueFrom:
+            secretKeyRef:
+              name: shinobi-db
+              key: database
+        - name: DB_USER
+          valueFrom:
+            secretKeyRef:
+              name: shinobi-db
+              key: username
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: shinobi-db
+              key: password
+        - name: SHINOBI_UPDATE
+          value: "false"
+        - name: NVIDIA_VISIBLE_DEVICES
+          value: "all"
+        - name: NVIDIA_DRIVER_CAPABILITIES
+          value: "all"
+        resources:
+          requests:
+            nvidia.com/gpu: 1
+          limits:
+            nvidia.com/gpu: 1
+        volumeMounts:
+        - name: streams
+          mountPath: /dev/shm/streams
+        - name: app
+          mountPath: /home/Shinobi
+      - name: mysql
+        image: docker.io/library/mysql:5.7
+        env:
+        - name: MYSQL_DATABASE
+          valueFrom:
+            secretKeyRef:
+              name: shinobi-db
+              key: database
+        - name: MYSQL_USER
+          valueFrom:
+            secretKeyRef:
+              name: shinobi-db
+              key: username
+        - name: MYSQL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: shinobi-db
+              key: password
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: shinobi-db
+              key: root-password
+        ports:
+        - containerPort: 3306
+          name: mysql
+        volumeMounts:
+        - name: mysql
+          mountPath: /var/lib/mysql
+  volumeClaimTemplates:
+  - metadata:
+      name: streams
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: 10Gi
+  - metadata:
+      name: app
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: 5Gi
+  - metadata:
+      name: mysql
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: 10Gi
