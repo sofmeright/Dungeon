@@ -21,6 +21,11 @@ spec:
     remediation:
       retries: 3
   values:
+    # Enable CDI as default mode
+    cdi:
+      enabled: true
+      default: true
+
     # Operator configuration
     operator:
       defaultRuntime: crio

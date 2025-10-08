@@ -52,7 +52,6 @@ spec:
       nodeSelector:
         kubernetes.io/hostname: dungeon-chest-004
 
-    # Validator node selector
+    # Validator - disabled in production (CDI mode doesn't require validation)
     validator:
-      nodeSelector:
-        kubernetes.io/hostname: dungeon-chest-004
+      enabled: false
