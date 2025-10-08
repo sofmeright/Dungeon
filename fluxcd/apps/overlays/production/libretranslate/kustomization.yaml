@@ -5,3 +5,8 @@ resources:
   - ../../../base/libretranslate
   - httproute.yaml
   - service-loadbalancer.yaml
+patches:
+  - path: statefulset-patch.yaml
+    target:
+      kind: StatefulSet
+      name: libretranslate
