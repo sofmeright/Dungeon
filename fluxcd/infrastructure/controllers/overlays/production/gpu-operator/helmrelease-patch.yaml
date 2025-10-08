@@ -1,0 +1,52 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: gpu-operator
+spec:
+  values:
+    # Node selector - only deploy GPU components to nodes with GPUs
+    # Initially target dungeon-chest-004, can be expanded later
+    daemonsets:
+      nodeSelector:
+        kubernetes.io/hostname: dungeon-chest-004
+      tolerations:
+        - key: nvidia.com/gpu
+          operator: Exists
+          effect: NoSchedule
+
+    # Driver configuration for production
+    driver:
+      enabled: true
+      # Let the operator install drivers in containers
+      usePreinstalledDrivers: false
+      # Specific driver version for GTX 980 Ti compatibility
+      version: "550.127.05"
+
+      # Node selector for driver daemonset
+      nodeSelector:
+        kubernetes.io/hostname: dungeon-chest-004
+
+    # Toolkit node selector
+    toolkit:
+      nodeSelector:
+        kubernetes.io/hostname: dungeon-chest-004
+
+    # Device plugin node selector
+    devicePlugin:
+      nodeSelector:
+        kubernetes.io/hostname: dungeon-chest-004
+
+    # DCGM exporter node selector
+    dcgmExporter:
+      nodeSelector:
+        kubernetes.io/hostname: dungeon-chest-004
+
+    # GPU Feature Discovery node selector
+    gfd:
+      nodeSelector:
+        kubernetes.io/hostname: dungeon-chest-004
+
+    # Validator node selector
+    validator:
+      nodeSelector:
+        kubernetes.io/hostname: dungeon-chest-004

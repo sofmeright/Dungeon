@@ -1,0 +1,67 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: gpu-operator
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: gpu-operator
+      version: v25.3.4
+      sourceRef:
+        kind: HelmRepository
+        name: nvidia
+      interval: 12h
+  install:
+    crds: Create
+    remediation:
+      retries: 3
+  upgrade:
+    crds: CreateReplace
+    remediation:
+      retries: 3
+  values:
+    # Operator configuration
+    operator:
+      defaultRuntime: crio
+      runtimeClass: nvidia
+
+    # Driver configuration
+    driver:
+      enabled: true
+      # Use pre-installed drivers if available, otherwise container will install
+      usePreinstalledDrivers: false
+      version: "550.127.05"
+
+    # Toolkit configuration
+    toolkit:
+      enabled: true
+      version: v1.17.2
+
+    # Device plugin configuration
+    devicePlugin:
+      enabled: true
+      version: v0.17.0
+
+    # DCGM exporter for GPU metrics
+    dcgmExporter:
+      enabled: true
+      version: 3.3.9-3.6.0
+
+    # GPU Feature Discovery
+    gfd:
+      enabled: true
+      version: v0.9.0
+
+    # MIG Manager (Multi-Instance GPU)
+    migManager:
+      enabled: false
+
+    # Node Feature Discovery
+    nfd:
+      enabled: true
+
+    # Validator
+    validator:
+      enabled: true
+      version: v25.3.4
