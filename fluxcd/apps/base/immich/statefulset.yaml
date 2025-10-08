@@ -30,8 +30,12 @@ spec:
         - containerPort: 2283
           name: http
         env:
+        - name: IMMICH_PORT
+          value: "2283"
         - name: DB_HOSTNAME
           value: localhost
+        - name: DB_PORT
+          value: "5432"
         - name: DB_USERNAME
           valueFrom:
             secretKeyRef:
@@ -49,6 +53,8 @@ spec:
               key: database
         - name: REDIS_HOSTNAME
           value: localhost
+        - name: REDIS_PORT
+          value: "6379"
         - name: NVIDIA_VISIBLE_DEVICES
           value: "all"
         - name: NVIDIA_DRIVER_CAPABILITIES
