@@ -51,9 +51,6 @@ spec:
     # Device plugin configuration
     devicePlugin:
       enabled: true
-      config:
-        name: device-plugin-config
-        default: "cdi"
 
     # DCGM exporter for GPU metrics
     dcgmExporter:
