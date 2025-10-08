@@ -14,7 +14,7 @@ spec:
         app: immich
     spec:
       initContainers:
-      - name: fix-permissions
+      - name: fix-library-permissions
         image: docker.io/library/busybox:latest
         command:
         - sh
@@ -23,6 +23,15 @@ spec:
         volumeMounts:
         - name: library
           mountPath: /usr/src/app/upload
+      - name: fix-postgres-permissions
+        image: docker.io/library/busybox:latest
+        command:
+        - sh
+        - -c
+        - chown -R 999:999 /var/lib/postgresql/data && chmod -R 700 /var/lib/postgresql/data
+        volumeMounts:
+        - name: postgres
+          mountPath: /var/lib/postgresql/data
       containers:
       - name: immich-server
         image: ghcr.io/immich-app/immich-server:release
@@ -107,7 +116,6 @@ spec:
         securityContext:
           runAsUser: 999
           runAsGroup: 999
-          fsGroup: 999
         command:
         - postgres
         - -c
