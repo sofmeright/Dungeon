@@ -4,6 +4,7 @@ namespace: tingle-tuner
 resources:
   - ../../../base/ollama
   - httproute.yaml
+  - service-loadbalancer.yaml
 patches:
   - path: statefulset-patch.yaml
     target:
