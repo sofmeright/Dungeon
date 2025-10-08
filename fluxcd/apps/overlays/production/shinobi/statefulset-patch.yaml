@@ -3,6 +3,10 @@ kind: StatefulSet
 metadata:
   name: shinobi
 spec:
+  template:
+    spec:
+      imagePullSecrets:
+      - name: cr-pcfae-admin-pull-secret
   volumeClaimTemplates:
   - metadata:
       name: streams

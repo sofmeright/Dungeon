@@ -4,6 +4,7 @@ namespace: lens-of-truth
 resources:
   - ../../../base/shinobi
   - httproute.yaml
+  - imagepullsecret.yaml
 patches:
   - path: statefulset-patch.yaml
     target:
