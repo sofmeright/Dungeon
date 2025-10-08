@@ -104,6 +104,10 @@ spec:
           name: redis
       - name: postgres
         image: docker.io/tensorchord/pgvecto-rs:pg14-v0.2.0
+        securityContext:
+          runAsUser: 999
+          runAsGroup: 999
+          fsGroup: 999
         command:
         - postgres
         - -c
