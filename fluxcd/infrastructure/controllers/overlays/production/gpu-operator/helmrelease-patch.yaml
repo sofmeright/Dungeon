@@ -31,6 +31,9 @@ spec:
     toolkit:
       nodeSelector:
         kubernetes.io/hostname: dungeon-chest-004
+      env:
+        - name: NVIDIA_CONTAINER_RUNTIME_MODE
+          value: "cdi"
 
     # Device plugin node selector
     devicePlugin:
