@@ -37,6 +37,9 @@ spec:
     # Toolkit configuration
     toolkit:
       enabled: true
+      env:
+        - name: NVIDIA_CONTAINER_RUNTIME_MODE
+          value: "cdi"
 
     # Device plugin configuration
     devicePlugin:
