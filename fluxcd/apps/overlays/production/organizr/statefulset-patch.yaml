@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: organizr
+spec:
+  template:
+    spec:
+      containers:
+      - name: organizr
+        volumeMounts:
+        - name: lost-woods-organizr-config
+          mountPath: /config
+  volumeClaimTemplates:
+  - metadata:
+      name: lost-woods-organizr-config
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      storageClassName: ceph-rbd-retain
+      resources:
+        requests:
+          storage: 2Gi

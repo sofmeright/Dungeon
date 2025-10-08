@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: organizr
+spec:
+  type: ClusterIP
+  selector:
+    app: organizr
+  ports:
+  - name: http
+    port: 80
+    targetPort: http
+    protocol: TCP
