@@ -42,10 +42,27 @@ spec:
         - name: NVIDIA_CONTAINER_RUNTIME_MODE
           value: "cdi"
 
-    # Device plugin node selector
+    # Device plugin with time-slicing configuration for GPU sharing
     devicePlugin:
+      enabled: true
       nodeSelector:
         kubernetes.io/hostname: dungeon-chest-004
+      config:
+        name: time-slicing-config
+        default: any
+        create: true
+        data:
+          any: |-
+            version: v1
+            flags:
+              migStrategy: none
+            sharing:
+              timeSlicing:
+                renameByDefault: false
+                failRequestsGreaterThanOne: false
+                resources:
+                - name: nvidia.com/gpu
+                  replicas: 10
 
     # DCGM exporter node selector
     dcgmExporter:

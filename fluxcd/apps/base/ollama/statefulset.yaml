@@ -24,6 +24,9 @@ spec:
           value: "all"
         - name: NVIDIA_DRIVER_CAPABILITIES
           value: "all"
+        resources:
+          limits:
+            nvidia.com/gpu: 1
         volumeMounts:
         - name: data
           mountPath: /root/.ollama
