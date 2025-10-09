@@ -8,8 +8,7 @@ spec:
     image: quay.io/opstree/redis:v7.0.15
     imagePullPolicy: IfNotPresent
   redisExporter:
-    enabled: true
-    image: quay.io/opstree/redis-exporter:v1.62.0
+    enabled: false
   storage:
     volumeClaimTemplate:
       spec:
