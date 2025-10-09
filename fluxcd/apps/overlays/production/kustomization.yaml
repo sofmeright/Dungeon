@@ -27,5 +27,4 @@ resources:
   - ollama
   - libretranslate
   - immich
-  - gitlab-postgresql
   - gitlab

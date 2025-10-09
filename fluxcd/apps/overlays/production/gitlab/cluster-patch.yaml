@@ -1,0 +1,10 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: gitlab-postgresql
+spec:
+  storage:
+    storageClass: ceph-rbd-retain
+  backup:
+    barmanObjectStore:
+      endpointURL: http://ceph-rgw.gorons-bracelet.svc.cluster.local

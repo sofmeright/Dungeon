@@ -3,12 +3,24 @@ kind: Kustomization
 namespace: hyrule-castle
 resources:
   - ../../../base/gitlab
+  - externalsecret-root.yaml
   - externalsecret-s3.yaml
   - externalsecret-s3-creds.yaml
-  - externalsecret-root.yaml
   - httproute.yaml
 patches:
   - path: helmrelease-patch.yaml
     target:
       kind: HelmRelease
       name: gitlab
+  - path: cluster-patch.yaml
+    target:
+      kind: Cluster
+      name: gitlab-postgresql
+  - path: externalsecret-credentials-patch.yaml
+    target:
+      kind: ExternalSecret
+      name: gitlab-postgresql-credentials
+  - path: externalsecret-s3-patch.yaml
+    target:
+      kind: ExternalSecret
+      name: gitlab-s3-credentials
