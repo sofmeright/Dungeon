@@ -80,13 +80,14 @@ spec:
           secret: gitlab-postgresql-credentials
           key: password
 
+    # External Redis (Redis Operator)
     redis:
-      master:
-        persistence:
-          storageClass: ceph-rbd-retain
-      replica:
-        persistence:
-          storageClass: ceph-rbd-retain
+      install: false  # Disable built-in Redis
+
+    global:
+      redis:
+        host: gitlab-redis-leader.hyrule-castle.svc.cluster.local
+        port: 6379
 
     # GitLab Shell SSH configuration
     gitlab-shell:

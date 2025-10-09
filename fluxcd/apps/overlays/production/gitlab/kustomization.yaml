@@ -20,3 +20,7 @@ patches:
     target:
       kind: ExternalSecret
       name: gitlab-postgresql-credentials
+  - path: redis-cluster-patch.yaml
+    target:
+      kind: RedisCluster
+      name: gitlab-redis

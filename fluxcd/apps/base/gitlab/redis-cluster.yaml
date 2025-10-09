@@ -1,0 +1,30 @@
+apiVersion: redis.redis.opstreelabs.in/v1beta2
+kind: RedisCluster
+metadata:
+  name: gitlab-redis
+spec:
+  clusterSize: 3
+  kubernetesConfig:
+    image: quay.io/opstree/redis:v7.0.15
+    imagePullPolicy: IfNotPresent
+  redisExporter:
+    enabled: true
+    image: quay.io/opstree/redis-exporter:v1.62.0
+  storage:
+    volumeClaimTemplate:
+      spec:
+        storageClassName: PLACEHOLDER_STORAGE_CLASS
+        accessModes: ["ReadWriteOnce"]
+        resources:
+          requests:
+            storage: 5Gi
+  resources:
+    requests:
+      cpu: 100m
+      memory: 256Mi
+    limits:
+      cpu: 500m
+      memory: 512Mi
+  securityContext:
+    runAsUser: 1000
+    fsGroup: 1000

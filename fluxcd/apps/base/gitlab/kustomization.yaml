@@ -5,3 +5,4 @@ resources:
   - helmrelease.yaml
   - externalsecret-credentials.yaml
   - cluster.yaml
+  - redis-cluster.yaml
