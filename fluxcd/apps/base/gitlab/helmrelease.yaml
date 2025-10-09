@@ -131,6 +131,15 @@ spec:
             cpu: 500m
             memory: 256Mi
 
+    # Toolbox (for backups, etc)
+    gitlab:
+      toolbox:
+        backups:
+          objectStorage:
+            config:
+              secret: gitlab-s3-storage
+              key: connection
+
     # Disable components we don't need
     nginx-ingress:
       enabled: false
