@@ -73,12 +73,25 @@ spec:
             - persistentvolumes/plex-media-tv
             - persistentvolumes/plex-media-music
             - persistentvolumes/plex-media-photos
+            - persistentvolumes/jellyfin-media-movies
+            - persistentvolumes/jellyfin-media-tv
+            - persistentvolumes/jellyfin-media-music
+            - persistentvolumes/jellyfin-media-photos
+            - persistentvolumes/photoprism-import
+            - persistentvolumes/photoprism-originals
             - persistentvolumes/calibre-web-books
             - persistentvolumeclaims/plex-media-movies
             - persistentvolumeclaims/plex-media-tv
             - persistentvolumeclaims/plex-media-music
             - persistentvolumeclaims/plex-media-photos
+            - persistentvolumeclaims/jellyfin-media-movies
+            - persistentvolumeclaims/jellyfin-media-tv
+            - persistentvolumeclaims/jellyfin-media-music
+            - persistentvolumeclaims/jellyfin-media-photos
+            - persistentvolumeclaims/photoprism-import
+            - persistentvolumeclaims/photoprism-originals
             - persistentvolumeclaims/calibre-web-books-pvc
+            - persistentvolumeclaims/transcode-plex-0
           storageLocation: default
           volumeSnapshotLocations:
             - default
