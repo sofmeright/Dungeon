@@ -12,6 +12,9 @@ spec:
         env:
         - name: APP_URL
           value: "https://2fa.pcfae.com"
+        volumeMounts:
+        - name: zeldas-lullaby-twofauth-data
+          mountPath: /2fauth
   volumeClaimTemplates:
   - metadata:
       name: zeldas-lullaby-twofauth-data
