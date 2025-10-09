@@ -16,13 +16,13 @@ spec:
         - name: PGPORT
           value: "5432"
         - name: PGUSER
-          value: gitlab
+          value: postgres
         - name: PGDATABASE
-          value: gitlabhq_production
+          value: postgres
         - name: PGPASSWORD
           valueFrom:
             secretKeyRef:
-              name: gitlab-postgresql-credentials
+              name: gitlab-postgresql-superuser
               key: password
         - name: PRAEFECT_PASSWORD
           valueFrom:
