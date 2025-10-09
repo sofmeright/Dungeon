@@ -3,6 +3,30 @@ kind: StatefulSet
 metadata:
   name: immich
 spec:
+  template:
+    spec:
+      initContainers:
+      - name: fix-library-permissions
+        volumeMounts:
+        - name: temple-of-time-immich-library
+          mountPath: /usr/src/app/upload
+      - name: fix-postgres-permissions
+        volumeMounts:
+        - name: temple-of-time-immich-postgres
+          mountPath: /var/lib/postgresql/data
+      containers:
+      - name: immich-server
+        volumeMounts:
+        - name: temple-of-time-immich-library
+          mountPath: /usr/src/app/upload
+      - name: immich-machine-learning
+        volumeMounts:
+        - name: temple-of-time-immich-model-cache
+          mountPath: /cache
+      - name: postgres
+        volumeMounts:
+        - name: temple-of-time-immich-postgres
+          mountPath: /var/lib/postgresql/data
   volumeClaimTemplates:
   - metadata:
       name: temple-of-time-immich-library
