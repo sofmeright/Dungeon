@@ -83,21 +83,25 @@
 
 - PersistentVolume Naming Standard:
   - **NO hostPath VOLUMES**: This is a cluster - hostPath only works on a single node. Use ConfigMaps, Secrets, or PVCs instead.
-  - PVC names created via StatefulSet volumeClaimTemplates MUST follow this pattern: `<namespace>-<app>-<purpose>-<replica-number>`
+  - **StatefulSet volumeClaimTemplates Behavior**: StatefulSets automatically append the StatefulSet name before the ordinal when creating PVCs from volumeClaimTemplates
+    - Template naming pattern: `<namespace>-<app>-<purpose>`
+    - StatefulSet name: `<app>`
+    - Resulting PVC name: `<namespace>-<app>-<purpose>-<app>-<ordinal>`
+    - **NOTE**: This creates intentional redundancy where the app name appears twice - this is how Kubernetes StatefulSets work and cannot be avoided without non-standard naming
   - Components:
     - `<namespace>`: The Kubernetes namespace (e.g., temple-of-time, lost-woods, gossip-stone)
-    - `<app>`: The application name (e.g., plex, homarr, linkwarden, mealie)
+    - `<app>`: The application name (e.g., jellyfin, homarr, netalertx, beszel)
     - `<purpose>`: Descriptive purpose/type identifying what the volume stores
       - For databases: Use specific DB type (postgres, mysql, sqlite, redis) NOT generic "database" or "data"
-      - For storage: Use descriptive purpose (config, images, media, transcode, cache, storage)
-    - `<replica-number>`: StatefulSet replica index (0, 1, 2, etc.)
-  - Examples:
-    - `temple-of-time-plex-config-0` - Plex configuration
-    - `temple-of-time-plex-transcode-0` - Plex transcoding cache
-    - `temple-of-time-mealie-postgres-0` - Mealie's PostgreSQL database
-    - `lost-woods-homarr-sqlite-0` - Homarr's SQLite database
-    - `lost-woods-homarr-images-0` - Homarr image storage
-    - `gossip-stone-loki-storage-0` - Loki log storage
+      - For storage: Use descriptive purpose (config, images, media, transcode, cache, storage, data)
+    - `<ordinal>`: StatefulSet replica index (0, 1, 2, etc.)
+  - **Actual PVC naming examples** (as created by StatefulSets):
+    - `temple-of-time-jellyfin-config-jellyfin-0` - Jellyfin configuration (template: temple-of-time-jellyfin-config)
+    - `temple-of-time-jellyfin-cache-jellyfin-0` - Jellyfin cache (template: temple-of-time-jellyfin-cache)
+    - `lost-woods-homarr-sqlite-homarr-0` - Homarr SQLite database (template: lost-woods-homarr-sqlite)
+    - `lost-woods-homarr-images-homarr-0` - Homarr image storage (template: lost-woods-homarr-images)
+    - `gossip-stone-netalertx-config-netalertx-0` - NetAlertX configuration (template: gossip-stone-netalertx-config)
+    - `gossip-stone-beszel-data-beszel-0` - Beszel data (template: gossip-stone-beszel-data)
 
 - Ceph Storage Configuration:
   - External Ceph cluster managed via Proxmox
