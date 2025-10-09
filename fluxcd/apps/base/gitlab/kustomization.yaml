@@ -3,8 +3,6 @@ kind: Kustomization
 resources:
   - helmrepository.yaml
   - helmrelease.yaml
-  - externalsecret-root.yaml
-  - externalsecret-s3.yaml
-  - externalsecret-s3-creds.yaml
   - externalsecret-credentials.yaml
+  - externalsecret-s3.yaml
   - cluster.yaml
