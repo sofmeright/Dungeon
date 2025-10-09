@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: homebox
+spec:
+  serviceName: homebox
+  replicas: PLACEHOLDER_REPLICAS
+  selector:
+    matchLabels:
+      app: homebox
+  template:
+    metadata:
+      labels:
+        app: homebox
+    spec:
+      containers:
+      - name: homebox
+        image: PLACEHOLDER_IMAGE
+        ports:
+        - containerPort: 7745
+          name: http
+          protocol: TCP
+        env:
+        - name: HBOX_LOG_LEVEL
+          value: "info"
+        - name: HBOX_LOG_FORMAT
+          value: "text"
+        - name: HBOX_WEB_MAX_UPLOAD_SIZE
+          value: "10"
+        - name: HBOX_OPTIONS_ALLOW_REGISTRATION
+          value: "true"
+        volumeMounts:
+        - name: data
+          mountPath: /data
+        resources:
+          requests:
+            memory: 256Mi
+            cpu: 100m
+          limits:
+            memory: 512Mi
+            cpu: 500m
+  volumeClaimTemplates:
+  - metadata:
+      name: data
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      storageClassName: PLACEHOLDER_STORAGE_CLASS
+      resources:
+        requests:
+          storage: 5Gi

@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: homebox
+spec:
+  replicas: 1
+  template:
+    spec:
+      containers:
+      - name: homebox
+        image: ghcr.io/hay-kot/homebox:latest
+        volumeMounts:
+        - name: pedestal-of-time-homebox-data
+          mountPath: /data
+  volumeClaimTemplates:
+  - metadata:
+      name: pedestal-of-time-homebox-data
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      storageClassName: ceph-rbd-retain
+      resources:
+        requests:
+          storage: 5Gi
