@@ -61,16 +61,7 @@ spec:
       minio:
         enabled: false  # Using external Ceph RGW
 
-    # Use Ceph RBD for all persistent volumes
-    gitaly:
-      persistence:
-        storageClass: ceph-rbd-retain
-
-    # External PostgreSQL (CloudNativePG)
-    postgresql:
-      install: false  # Disable built-in PostgreSQL
-
-    global:
+      # External PostgreSQL (CloudNativePG)
       psql:
         host: gitlab-postgresql-rw.hyrule-castle.svc.cluster.local
         port: 5432
@@ -80,14 +71,23 @@ spec:
           secret: gitlab-postgresql-credentials
           key: password
 
-    # External Redis (Redis Operator)
-    redis:
-      install: false  # Disable built-in Redis
-
-    global:
+      # External Redis (Redis Operator)
       redis:
         host: gitlab-redis-leader.hyrule-castle.svc.cluster.local
         port: 6379
+
+    # Use Ceph RBD for all persistent volumes
+    gitaly:
+      persistence:
+        storageClass: ceph-rbd-retain
+
+    # External PostgreSQL (CloudNativePG)
+    postgresql:
+      install: false  # Disable built-in PostgreSQL
+
+    # External Redis (Redis Operator)
+    redis:
+      install: false  # Disable built-in Redis
 
     # GitLab Shell SSH configuration
     gitlab-shell:
