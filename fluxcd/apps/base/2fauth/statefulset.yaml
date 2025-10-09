@@ -1,0 +1,158 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: 2fauth
+spec:
+  serviceName: 2fauth
+  replicas: PLACEHOLDER_REPLICAS
+  selector:
+    matchLabels:
+      app: 2fauth
+  template:
+    metadata:
+      labels:
+        app: 2fauth
+    spec:
+      containers:
+      - name: 2fauth
+        image: PLACEHOLDER_IMAGE
+        ports:
+        - containerPort: 8000
+          name: http
+          protocol: TCP
+        env:
+        - name: APP_NAME
+          value: "2FAuth"
+        - name: APP_ENV
+          value: "local"
+        - name: APP_TIMEZONE
+          value: "America/Los_Angeles"
+        - name: APP_DEBUG
+          value: "false"
+        - name: SITE_OWNER
+          valueFrom:
+            secretKeyRef:
+              name: 2fauth-secrets
+              key: site_owner
+        - name: APP_KEY
+          valueFrom:
+            secretKeyRef:
+              name: 2fauth-secrets
+              key: app_key
+        - name: APP_URL
+          value: "PLACEHOLDER_APP_URL"
+        - name: IS_DEMO_APP
+          value: "false"
+        - name: LOG_CHANNEL
+          value: "daily"
+        - name: LOG_LEVEL
+          value: "notice"
+        - name: DB_DATABASE
+          value: "/srv/database/database.sqlite"
+        - name: CACHE_DRIVER
+          value: "file"
+        - name: SESSION_DRIVER
+          value: "file"
+        - name: MAIL_MAILER
+          value: "smtp"
+        - name: MAIL_HOST
+          value: "smtp.gmail.com"
+        - name: MAIL_PORT
+          value: "465"
+        - name: MAIL_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: 2fauth-secrets
+              key: smtp_user
+        - name: MAIL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: 2fauth-secrets
+              key: smtp_password
+        - name: MAIL_ENCRYPTION
+          value: "SSL"
+        - name: MAIL_FROM_NAME
+          valueFrom:
+            secretKeyRef:
+              name: 2fauth-secrets
+              key: smtp_from
+        - name: MAIL_FROM_ADDRESS
+          valueFrom:
+            secretKeyRef:
+              name: 2fauth-secrets
+              key: smtp_user
+        - name: MAIL_VERIFY_SSL_PEER
+          value: "true"
+        - name: THROTTLE_API
+          value: "60"
+        - name: LOGIN_THROTTLE
+          value: "5"
+        - name: AUTHENTICATION_GUARD
+          value: "web-guard"
+        - name: AUTHENTICATION_LOG_RETENTION
+          value: "365"
+        - name: AUTH_PROXY_HEADER_FOR_USER
+          value: "null"
+        - name: AUTH_PROXY_HEADER_FOR_EMAIL
+          value: "null"
+        - name: PROXY_LOGOUT_URL
+          value: "null"
+        - name: WEBAUTHN_NAME
+          value: "2FAuth"
+        - name: WEBAUTHN_ID
+          value: "null"
+        - name: WEBAUTHN_USER_VERIFICATION
+          value: "preferred"
+        - name: OPENID_AUTHORIZE_URL
+          value: "https://sso.prplanit.com/oauth/v2/authorize"
+        - name: OPENID_TOKEN_URL
+          value: "https://sso.prplanit.com/oauth/v2/token"
+        - name: OPENID_USERINFO_URL
+          value: "https://sso.prplanit.com/oidc/v1/userinfo"
+        - name: OPENID_CLIENT_ID
+          valueFrom:
+            secretKeyRef:
+              name: 2fauth-secrets
+              key: openid_client_id
+        - name: OPENID_CLIENT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: 2fauth-secrets
+              key: openid_client_secret
+        - name: TRUSTED_PROXIES
+          value: "10.0.0.0/8,172.16.0.0/12,192.168.0.0/16"
+        - name: PROXY_FOR_OUTGOING_REQUESTS
+          value: "null"
+        - name: CONTENT_SECURITY_POLICY
+          value: "false"
+        - name: BROADCAST_DRIVER
+          value: "log"
+        - name: QUEUE_DRIVER
+          value: "sync"
+        - name: SESSION_LIFETIME
+          value: "120"
+        - name: REDIS_HOST
+          value: "127.0.0.1"
+        - name: REDIS_PASSWORD
+          value: "null"
+        - name: REDIS_PORT
+          value: "6379"
+        volumeMounts:
+        - name: data
+          mountPath: /2fauth
+        resources:
+          requests:
+            memory: 256Mi
+            cpu: 100m
+          limits:
+            memory: 512Mi
+            cpu: 500m
+  volumeClaimTemplates:
+  - metadata:
+      name: data
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      storageClassName: PLACEHOLDER_STORAGE_CLASS
+      resources:
+        requests:
+          storage: 5Gi

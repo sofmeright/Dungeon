@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: 2fauth
+spec:
+  replicas: 1
+  template:
+    spec:
+      containers:
+      - name: 2fauth
+        image: docker.io/2fauth/2fauth:v5.4.2
+        env:
+        - name: APP_URL
+          value: "https://2fa.pcfae.com"
+  volumeClaimTemplates:
+  - metadata:
+      name: zeldas-lullaby-2fauth-data
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      storageClassName: ceph-rbd-retain
+      resources:
+        requests:
+          storage: 5Gi
