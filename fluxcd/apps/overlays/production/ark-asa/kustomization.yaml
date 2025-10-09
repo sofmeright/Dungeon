@@ -1,0 +1,93 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: shooting-gallery
+resources:
+- ../../../base/ark-asa
+nameSuffix: -theisland
+patches:
+- patch: |-
+    apiVersion: apps/v1
+    kind: StatefulSet
+    metadata:
+      name: ark-asa
+    spec:
+      template:
+        metadata:
+          labels:
+            map: theisland
+        spec:
+          containers:
+          - name: ark-asa-server
+            ports:
+            - containerPort: 8777
+              protocol: UDP
+              name: game
+            - containerPort: 8777
+              protocol: TCP
+              name: game-tcp
+            - containerPort: 28020
+              protocol: TCP
+              name: rcon
+            - containerPort: 28015
+              protocol: UDP
+              name: query
+            env:
+            - name: INSTANCE_NAME
+              value: theisland
+            - name: TZ
+              value: America/Los_Angeles
+            - name: MAP_NAME
+              value: TheIsland_WP
+            - name: SESSION_NAME
+              value: ARK Survival Ascended - The Island
+            - name: ASA_PORT
+              value: "8777"
+            - name: RCON_PORT
+              value: "28020"
+            - name: MAX_PLAYERS
+              value: "70"
+            - name: CLUSTER_ID
+              value: dungeon-asa-cluster
+            resources:
+              limits:
+                memory: 16Gi
+              requests:
+                memory: 12Gi
+                cpu: 2000m
+      volumeClaimTemplates:
+      - metadata:
+          name: shooting-gallery-ark-asa-saved
+  target:
+    kind: StatefulSet
+    name: ark-asa
+- patch: |-
+    - op: replace
+      path: /spec/type
+      value: LoadBalancer
+    - op: add
+      path: /metadata/annotations
+      value:
+        lbipam.cilium.io/ips: "172.22.30.231"
+        lbipam.cilium.io/sharing-key: shooting-gallery
+    - op: replace
+      path: /spec/ports
+      value:
+      - port: 8777
+        targetPort: 8777
+        protocol: UDP
+        name: game
+      - port: 8777
+        targetPort: 8777
+        protocol: TCP
+        name: game-tcp
+      - port: 28020
+        targetPort: 28020
+        protocol: TCP
+        name: rcon
+      - port: 28015
+        targetPort: 28015
+        protocol: UDP
+        name: query
+  target:
+    kind: Service
+    name: ark-asa

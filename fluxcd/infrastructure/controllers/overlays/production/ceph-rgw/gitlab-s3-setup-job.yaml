@@ -1,0 +1,77 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: gitlab-s3-setup
+  namespace: gorons-bracelet
+spec:
+  ttlSecondsAfterFinished: 86400
+  template:
+    spec:
+      restartPolicy: OnFailure
+      containers:
+      - name: s3-setup
+        image: quay.io/ceph/ceph:v18.2.0
+        command:
+        - /bin/bash
+        - -c
+        - |
+          set -ex
+
+          # Wait for RGW to be ready
+          until radosgw-admin user list 2>/dev/null; do
+            echo "Waiting for RGW to be accessible..."
+            sleep 5
+          done
+
+          # Create S3 user for GitLab if it doesn't exist
+          if ! radosgw-admin user info --uid=gitlab 2>/dev/null; then
+            echo "Creating GitLab S3 user..."
+            radosgw-admin user create \
+              --uid=gitlab \
+              --display-name="GitLab S3 User" \
+              --access-key="gitlab-s3-user" \
+              --secret-key="2Aft2kRKVo9yZcsSZAjRcnMSCPRarY4g9pieUfQcG3M="
+          else
+            echo "GitLab S3 user already exists"
+          fi
+
+          # Install s3cmd for bucket creation
+          apt-get update && apt-get install -y s3cmd
+
+          # Configure s3cmd
+          cat > /root/.s3cfg <<EOF
+          [default]
+          access_key = gitlab-s3-user
+          secret_key = 2Aft2kRKVo9yZcsSZAjRcnMSCPRarY4g9pieUfQcG3M=
+          host_base = ceph-rgw.gorons-bracelet.svc.cluster.local
+          host_bucket = ceph-rgw.gorons-bracelet.svc.cluster.local/%(bucket)
+          use_https = False
+          EOF
+
+          # Create buckets
+          for bucket in gitlab-lfs gitlab-artifacts gitlab-uploads gitlab-packages gitlab-backups gitlab-tmp gitlab-registry; do
+            if ! s3cmd ls s3://${bucket} 2>/dev/null; then
+              echo "Creating bucket: ${bucket}"
+              s3cmd mb s3://${bucket}
+            else
+              echo "Bucket already exists: ${bucket}"
+            fi
+          done
+
+          echo "GitLab S3 setup complete"
+        volumeMounts:
+        - name: ceph-config
+          mountPath: /etc/ceph/ceph.conf
+          subPath: ceph.conf
+          readOnly: true
+        - name: ceph-keyring
+          mountPath: /etc/ceph/ceph.keyring
+          subPath: keyring
+          readOnly: true
+      volumes:
+      - name: ceph-config
+        configMap:
+          name: ceph-config
+      - name: ceph-keyring
+        secret:
+          secretName: ceph-rgw-keyring

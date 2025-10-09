@@ -7,7 +7,6 @@ resources:
   - externalsecret-s3-creds.yaml
   - externalsecret-root.yaml
   - httproute.yaml
-  - s3-setup-job.yaml
 patches:
   - path: helmrelease-patch.yaml
     target:
