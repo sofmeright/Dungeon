@@ -4,6 +4,10 @@ metadata:
   name: gitlab
 spec:
   targetNamespace: hyrule-castle
+  chart:
+    spec:
+      sourceRef:
+        namespace: hyrule-castle
   values:
     global:
       hosts:
