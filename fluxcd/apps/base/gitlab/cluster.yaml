@@ -41,9 +41,6 @@ spec:
       memory: "2Gi"
       cpu: "2000m"
 
-  monitoring:
-    enabled: true
-
   backup:
     barmanObjectStore:
       destinationPath: s3://gitlab-backups/postgresql
