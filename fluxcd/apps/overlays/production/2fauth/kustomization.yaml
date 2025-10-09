@@ -7,8 +7,8 @@ patches:
   - path: statefulset-patch.yaml
     target:
       kind: StatefulSet
-      name: 2fauth
+      name: twofauth
   - path: service-patch.yaml
     target:
       kind: Service
-      name: 2fauth
+      name: twofauth

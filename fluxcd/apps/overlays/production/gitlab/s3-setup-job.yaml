@@ -82,6 +82,8 @@ spec:
       - name: ceph-config
         configMap:
           name: ceph-config
+          namespace: gorons-bracelet
       - name: ceph-keyring
         secret:
           secretName: ceph-rgw-keyring
+          namespace: gorons-bracelet

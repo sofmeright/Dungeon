@@ -1,11 +1,11 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: 2fauth
+  name: twofauth
 spec:
   type: LoadBalancer
   selector:
-    app: 2fauth
+    app: twofauth
   ports:
   - port: 8000
     targetPort: 8000

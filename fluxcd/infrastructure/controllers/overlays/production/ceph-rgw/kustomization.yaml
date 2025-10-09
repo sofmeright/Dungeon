@@ -8,3 +8,4 @@ patches:
   - path: service-patch.yaml
   - path: init-job-patch.yaml
   - path: zone-config-patch.yaml
+  - gitlab-s3-setup-job.yaml

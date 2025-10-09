@@ -1,20 +1,20 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: 2fauth
+  name: twofauth
 spec:
-  serviceName: 2fauth
+  serviceName: twofauth
   replicas: PLACEHOLDER_REPLICAS
   selector:
     matchLabels:
-      app: 2fauth
+      app: twofauth
   template:
     metadata:
       labels:
-        app: 2fauth
+        app: twofauth
     spec:
       containers:
-      - name: 2fauth
+      - name: twofauth
         image: PLACEHOLDER_IMAGE
         ports:
         - containerPort: 8000
@@ -32,12 +32,12 @@ spec:
         - name: SITE_OWNER
           valueFrom:
             secretKeyRef:
-              name: 2fauth-secrets
+              name: twofauth-secrets
               key: site_owner
         - name: APP_KEY
           valueFrom:
             secretKeyRef:
-              name: 2fauth-secrets
+              name: twofauth-secrets
               key: app_key
         - name: APP_URL
           value: "PLACEHOLDER_APP_URL"
@@ -62,24 +62,24 @@ spec:
         - name: MAIL_USERNAME
           valueFrom:
             secretKeyRef:
-              name: 2fauth-secrets
+              name: twofauth-secrets
               key: smtp_user
         - name: MAIL_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: 2fauth-secrets
+              name: twofauth-secrets
               key: smtp_password
         - name: MAIL_ENCRYPTION
           value: "SSL"
         - name: MAIL_FROM_NAME
           valueFrom:
             secretKeyRef:
-              name: 2fauth-secrets
+              name: twofauth-secrets
               key: smtp_from
         - name: MAIL_FROM_ADDRESS
           valueFrom:
             secretKeyRef:
-              name: 2fauth-secrets
+              name: twofauth-secrets
               key: smtp_user
         - name: MAIL_VERIFY_SSL_PEER
           value: "true"
@@ -112,12 +112,12 @@ spec:
         - name: OPENID_CLIENT_ID
           valueFrom:
             secretKeyRef:
-              name: 2fauth-secrets
+              name: twofauth-secrets
               key: openid_client_id
         - name: OPENID_CLIENT_SECRET
           valueFrom:
             secretKeyRef:
-              name: 2fauth-secrets
+              name: twofauth-secrets
               key: openid_client_secret
         - name: TRUSTED_PROXIES
           value: "10.0.0.0/8,172.16.0.0/12,192.168.0.0/16"

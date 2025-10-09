@@ -74,6 +74,7 @@ spec:
     # Redis HA with Sentinel
     redis:
       install: true
+      architecture: replication  # Required for Sentinel
       master:
         persistence:
           enabled: true
