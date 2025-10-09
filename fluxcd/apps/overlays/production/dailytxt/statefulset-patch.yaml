@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: dailytxt
+spec:
+  replicas: 1
+  template:
+    spec:
+      securityContext:
+        fsGroup: 1000
+        runAsUser: 1000
+        runAsGroup: 1000
+      containers:
+      - name: dailytxt
+        image: docker.io/phitux/dailytxt:latest
+        volumeMounts:
+        - name: pedestal-of-time-dailytxt-data
+          mountPath: /app/data
+  volumeClaimTemplates:
+  - metadata:
+      name: pedestal-of-time-dailytxt-data
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      storageClassName: ceph-rbd-retain
+      resources:
+        requests:
+          storage: 1Gi

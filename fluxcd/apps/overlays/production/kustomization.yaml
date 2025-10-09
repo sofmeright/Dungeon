@@ -3,6 +3,7 @@ kind: Kustomization
 resources:
   - 2fauth
   - actualbudget
+  - dailytxt
   - it-tools
   - podinfo
   - searxng

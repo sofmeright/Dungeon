@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: dailytxt
+spec:
+  type: LoadBalancer
+  selector:
+    app: dailytxt
+  ports:
+  - port: 8765
+    targetPort: 8765
+    protocol: TCP
+    name: http
