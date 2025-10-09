@@ -8,7 +8,7 @@ spec:
     spec:
       containers:
       - name: twofauth
-        image: docker.io/2fauth/2fauth:v5.4.2
+        image: docker.io/2fauth/2fauth:v5.6.0
         env:
         - name: APP_URL
           value: "https://2fa.pcfae.com"
