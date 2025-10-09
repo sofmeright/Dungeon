@@ -1,0 +1,64 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: paperless-webserver
+spec:
+  replicas: 1
+  template:
+    spec:
+      containers:
+      - name: paperless
+        image: ghcr.io/paperless-ngx/paperless-ngx:latest
+        env:
+        - name: PAPERLESS_URL
+          value: "https://paperless.pcfae.com"
+        - name: PAPERLESS_CSRF_TRUSTED_ORIGINS
+          value: "https://apps.pcfae.com"
+        - name: PAPERLESS_ALLOWED_HOSTS
+          value: "apps.pcfae.com,paperless.pcfae.com"
+        - name: PAPERLESS_CORS_ALLOWED_HOSTS
+          value: "http://172.22.30.124:8000"
+        - name: PAPERLESS_ADMIN_USER
+          value: "kai.hamil@gmail.com"
+        volumeMounts:
+        - name: pedestal-of-time-paperless-data
+          mountPath: /usr/src/paperless/data
+        - name: pedestal-of-time-paperless-media
+          mountPath: /usr/src/paperless/media
+        - name: pedestal-of-time-paperless-export
+          mountPath: /usr/src/paperless/export
+        - name: pedestal-of-time-paperless-consume
+          mountPath: /usr/src/paperless/consume
+  volumeClaimTemplates:
+  - metadata:
+      name: pedestal-of-time-paperless-data
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      storageClassName: ceph-rbd-retain
+      resources:
+        requests:
+          storage: 10Gi
+  - metadata:
+      name: pedestal-of-time-paperless-media
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      storageClassName: ceph-rbd-retain
+      resources:
+        requests:
+          storage: 20Gi
+  - metadata:
+      name: pedestal-of-time-paperless-export
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      storageClassName: ceph-rbd-retain
+      resources:
+        requests:
+          storage: 5Gi
+  - metadata:
+      name: pedestal-of-time-paperless-consume
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      storageClassName: ceph-rbd-retain
+      resources:
+        requests:
+          storage: 5Gi

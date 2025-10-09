@@ -1,0 +1,22 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: pedestal-of-time
+resources:
+  - ../../../base/paperless-ngx
+patches:
+  - path: statefulset-redis-patch.yaml
+    target:
+      kind: StatefulSet
+      name: paperless-redis
+  - path: statefulset-db-patch.yaml
+    target:
+      kind: StatefulSet
+      name: paperless-db
+  - path: statefulset-webserver-patch.yaml
+    target:
+      kind: StatefulSet
+      name: paperless-webserver
+  - path: service-webserver-patch.yaml
+    target:
+      kind: Service
+      name: paperless-webserver
