@@ -1,0 +1,113 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: lubelogger
+spec:
+  serviceName: lubelogger
+  replicas: PLACEHOLDER_REPLICAS
+  selector:
+    matchLabels:
+      app: lubelogger
+  template:
+    metadata:
+      labels:
+        app: lubelogger
+    spec:
+      containers:
+      - name: lubelogger
+        image: PLACEHOLDER_IMAGE
+        ports:
+        - containerPort: 8080
+          name: http
+          protocol: TCP
+        env:
+        - name: LC_ALL
+          value: "en_US.UTF-8"
+        - name: LANG
+          value: "en_US.UTF-8"
+        - name: MailConfig__EmailServer
+          value: ""
+        - name: MailConfig__EmailFrom
+          value: ""
+        - name: MailConfig__UseSSL
+          value: "false"
+        - name: MailConfig__Port
+          value: "587"
+        - name: MailConfig__Username
+          value: ""
+        - name: MailConfig__Password
+          value: ""
+        - name: LOGGING__LOGLEVEL__DEFAULT
+          value: "Error"
+        volumeMounts:
+        - name: config
+          mountPath: /App/config
+        - name: data
+          mountPath: /App/data
+        - name: documents
+          mountPath: /App/wwwroot/documents
+        - name: images
+          mountPath: /App/wwwroot/images
+        - name: keys
+          mountPath: /root/.aspnet/DataProtection-Keys
+        - name: translations
+          mountPath: /App/wwwroot/translations
+        - name: temp
+          mountPath: /App/wwwroot/temp
+        - name: log
+          mountPath: /App/log
+        resources:
+          requests:
+            memory: 256Mi
+            cpu: 100m
+          limits:
+            memory: 512Mi
+            cpu: 500m
+      volumes:
+      - name: translations
+        emptyDir: {}
+      - name: temp
+        emptyDir: {}
+      - name: log
+        emptyDir: {}
+  volumeClaimTemplates:
+  - metadata:
+      name: config
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      storageClassName: PLACEHOLDER_STORAGE_CLASS
+      resources:
+        requests:
+          storage: 1Gi
+  - metadata:
+      name: data
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      storageClassName: PLACEHOLDER_STORAGE_CLASS
+      resources:
+        requests:
+          storage: 5Gi
+  - metadata:
+      name: documents
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      storageClassName: PLACEHOLDER_STORAGE_CLASS
+      resources:
+        requests:
+          storage: 5Gi
+  - metadata:
+      name: images
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      storageClassName: PLACEHOLDER_STORAGE_CLASS
+      resources:
+        requests:
+          storage: 5Gi
+  - metadata:
+      name: keys
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      storageClassName: PLACEHOLDER_STORAGE_CLASS
+      resources:
+        requests:
+          storage: 1Gi

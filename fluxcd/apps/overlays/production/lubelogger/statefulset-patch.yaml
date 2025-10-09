@@ -1,0 +1,63 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: lubelogger
+spec:
+  replicas: 1
+  template:
+    spec:
+      containers:
+      - name: lubelogger
+        image: ghcr.io/hargata/lubelogger:latest
+        volumeMounts:
+        - name: pedestal-of-time-lubelogger-config
+          mountPath: /App/config
+        - name: pedestal-of-time-lubelogger-data
+          mountPath: /App/data
+        - name: pedestal-of-time-lubelogger-documents
+          mountPath: /App/wwwroot/documents
+        - name: pedestal-of-time-lubelogger-images
+          mountPath: /App/wwwroot/images
+        - name: pedestal-of-time-lubelogger-keys
+          mountPath: /root/.aspnet/DataProtection-Keys
+  volumeClaimTemplates:
+  - metadata:
+      name: pedestal-of-time-lubelogger-config
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      storageClassName: ceph-rbd-retain
+      resources:
+        requests:
+          storage: 1Gi
+  - metadata:
+      name: pedestal-of-time-lubelogger-data
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      storageClassName: ceph-rbd-retain
+      resources:
+        requests:
+          storage: 5Gi
+  - metadata:
+      name: pedestal-of-time-lubelogger-documents
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      storageClassName: ceph-rbd-retain
+      resources:
+        requests:
+          storage: 5Gi
+  - metadata:
+      name: pedestal-of-time-lubelogger-images
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      storageClassName: ceph-rbd-retain
+      resources:
+        requests:
+          storage: 5Gi
+  - metadata:
+      name: pedestal-of-time-lubelogger-keys
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      storageClassName: ceph-rbd-retain
+      resources:
+        requests:
+          storage: 1Gi

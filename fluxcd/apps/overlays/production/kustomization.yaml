@@ -6,6 +6,7 @@ resources:
   - dailytxt
   - homebox
   - it-tools
+  - lubelogger
   - podinfo
   - searxng
   - plex
