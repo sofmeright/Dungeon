@@ -1,0 +1,139 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: gitlab
+spec:
+  releaseName: gitlab
+  targetNamespace: PLACEHOLDER_TARGET_NAMESPACE
+  install:
+    createNamespace: false
+  interval: 30m
+  timeout: 30m
+  chart:
+    spec:
+      chart: gitlab
+      version: "8.6.1"  # Latest stable
+      sourceRef:
+        kind: HelmRepository
+        name: gitlab
+        namespace: flux-system
+  values:
+    global:
+      edition: ce  # Community Edition
+
+      hosts:
+        domain: PLACEHOLDER_DOMAIN
+        gitlab:
+          name: PLACEHOLDER_GITLAB_HOSTNAME
+
+      ingress:
+        enabled: false  # Using Gateway API instead
+
+      # Full HA configuration
+      gitaly:
+        enabled: true
+
+      praefect:
+        enabled: true
+        replicas: 3
+
+    # Gitaly Cluster - 3 replicas for HA
+    gitaly:
+      replicas: 3
+      persistence:
+        enabled: true
+        storageClass: PLACEHOLDER_STORAGE_CLASS
+        size: 20Gi
+        accessMode: ReadWriteOnce
+      resources:
+        requests:
+          cpu: 500m
+          memory: 1Gi
+        limits:
+          cpu: 2000m
+          memory: 2Gi
+
+    # PostgreSQL HA
+    postgresql:
+      install: true
+      replication:
+        enabled: true
+        slaveReplicas: 2
+      persistence:
+        enabled: true
+        storageClass: PLACEHOLDER_STORAGE_CLASS
+        size: 20Gi
+      resources:
+        requests:
+          cpu: 500m
+          memory: 1Gi
+        limits:
+          cpu: 1000m
+          memory: 2Gi
+
+    # Redis HA with Sentinel
+    redis:
+      install: true
+      master:
+        persistence:
+          enabled: true
+          storageClass: PLACEHOLDER_STORAGE_CLASS
+          size: 5Gi
+      replica:
+        replicaCount: 2
+        persistence:
+          enabled: true
+          storageClass: PLACEHOLDER_STORAGE_CLASS
+          size: 5Gi
+      sentinel:
+        enabled: true
+        quorum: 2
+      resources:
+        requests:
+          cpu: 100m
+          memory: 256Mi
+        limits:
+          cpu: 500m
+          memory: 512Mi
+
+    # Webservice - HA
+    gitlab:
+      webservice:
+        replicas: 3
+        resources:
+          requests:
+            cpu: 1000m
+            memory: 2Gi
+          limits:
+            cpu: 2000m
+            memory: 4Gi
+
+      # Sidekiq - HA
+      sidekiq:
+        replicas: 2
+        resources:
+          requests:
+            cpu: 500m
+            memory: 1Gi
+          limits:
+            cpu: 1000m
+            memory: 2Gi
+
+      # GitLab Shell
+      gitlab-shell:
+        replicas: 2
+        resources:
+          requests:
+            cpu: 100m
+            memory: 128Mi
+          limits:
+            cpu: 500m
+            memory: 256Mi
+
+    # Disable components we don't need
+    nginx-ingress:
+      enabled: false
+    certmanager:
+      install: false
+    prometheus:
+      install: false

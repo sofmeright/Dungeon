@@ -20,3 +20,4 @@ resources:
   - ollama
   - libretranslate
   - immich
+  - gitlab

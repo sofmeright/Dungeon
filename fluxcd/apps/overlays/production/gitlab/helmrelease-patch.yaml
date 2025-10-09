@@ -1,0 +1,84 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: gitlab
+spec:
+  targetNamespace: hyrule-castle
+  values:
+    global:
+      hosts:
+        domain: prplanit.com
+        gitlab:
+          name: gitlab.prplanit.com
+        ssh: gitlab.prplanit.com
+
+      shell:
+        port: 2424  # SSH port for git operations
+
+      # S3/RGW object storage configuration
+      appConfig:
+        initialDefaults:
+          signupEnabled: false  # Disable public signups
+        lfs:
+          enabled: true
+          proxy_download: true
+          bucket: gitlab-lfs
+          connection:
+            secret: gitlab-s3-storage
+            key: connection
+        artifacts:
+          enabled: true
+          proxy_download: true
+          bucket: gitlab-artifacts
+          connection:
+            secret: gitlab-s3-storage
+            key: connection
+        uploads:
+          enabled: true
+          proxy_download: true
+          bucket: gitlab-uploads
+          connection:
+            secret: gitlab-s3-storage
+            key: connection
+        packages:
+          enabled: true
+          proxy_download: true
+          bucket: gitlab-packages
+          connection:
+            secret: gitlab-s3-storage
+            key: connection
+        backups:
+          bucket: gitlab-backups
+          tmpBucket: gitlab-tmp
+
+      registry:
+        bucket: gitlab-registry
+
+      minio:
+        enabled: false  # Using external Ceph RGW
+
+    # Use Ceph RBD for all persistent volumes
+    gitaly:
+      persistence:
+        storageClass: ceph-rbd-retain
+
+    postgresql:
+      persistence:
+        storageClass: ceph-rbd-retain
+
+    redis:
+      master:
+        persistence:
+          storageClass: ceph-rbd-retain
+      replica:
+        persistence:
+          storageClass: ceph-rbd-retain
+
+    # GitLab Shell SSH configuration
+    gitlab-shell:
+      service:
+        type: LoadBalancer
+        loadBalancerIP: 172.22.30.71  # Same as cell-membrane-gateway
+        annotations:
+          lbipam.cilium.io/ips: "172.22.30.71"
+          lbipam.cilium.io/sharing-key: "hyrule-castle"

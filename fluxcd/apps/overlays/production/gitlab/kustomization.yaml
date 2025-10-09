@@ -1,0 +1,15 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: hyrule-castle
+resources:
+  - ../../../base/gitlab
+  - externalsecret-s3.yaml
+  - externalsecret-s3-creds.yaml
+  - externalsecret-root.yaml
+  - httproute.yaml
+  - s3-setup-job.yaml
+patches:
+  - path: helmrelease-patch.yaml
+    target:
+      kind: HelmRelease
+      name: gitlab
