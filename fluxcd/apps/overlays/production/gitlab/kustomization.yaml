@@ -20,7 +20,3 @@ patches:
     target:
       kind: ExternalSecret
       name: gitlab-postgresql-credentials
-  - path: externalsecret-s3-patch.yaml
-    target:
-      kind: ExternalSecret
-      name: gitlab-s3-credentials

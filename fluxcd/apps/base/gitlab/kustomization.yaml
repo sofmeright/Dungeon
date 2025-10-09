@@ -4,5 +4,4 @@ resources:
   - helmrepository.yaml
   - helmrelease.yaml
   - externalsecret-credentials.yaml
-  - externalsecret-s3.yaml
   - cluster.yaml
