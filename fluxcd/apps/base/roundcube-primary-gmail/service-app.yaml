@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: roundcube-primary-gmail
+spec:
+  type: PLACEHOLDER_SERVICE_TYPE
+  selector:
+    app: roundcube-primary-gmail
+  ports:
+  - name: http
+    port: PLACEHOLDER_PORT
+    targetPort: 80
+    protocol: TCP

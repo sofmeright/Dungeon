@@ -4,6 +4,7 @@ namespace: hyrule-castle
 resources:
   - ../../../base/gitlab
   - externalsecret-root.yaml
+  - externalsecret-redis.yaml
   - externalsecret-s3.yaml
   - externalsecret-s3-creds.yaml
   - httproute.yaml

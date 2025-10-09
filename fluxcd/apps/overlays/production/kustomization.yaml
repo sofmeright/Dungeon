@@ -28,3 +28,4 @@ resources:
   - libretranslate
   - immich
   - gitlab
+  - roundcube-primary-gmail

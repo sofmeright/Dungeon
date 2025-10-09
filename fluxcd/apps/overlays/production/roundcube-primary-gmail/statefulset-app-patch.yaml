@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: roundcube-primary-gmail
+spec:
+  replicas: 1
+  template:
+    spec:
+      containers:
+      - name: roundcube
+        image: docker.io/roundcube/roundcubemail:latest
+        env:
+        - name: ROUNDCUBEMAIL_SKIN
+          value: "elastic"
+        - name: ROUNDCUBEMAIL_DEFAULT_HOST
+          value: "ssl://imap.gmail.com"
+        - name: ROUNDCUBEMAIL_DEFAULT_PORT
+          value: "993"
+        - name: ROUNDCUBEMAIL_SMTP_SERVER
+          value: "tls://smtp.gmail.com"
+        - name: ROUNDCUBEMAIL_SMTP_PORT
+          value: "587"
+  volumeClaimTemplates:
+  - metadata:
+      name: pedestal-of-time-roundcube-primary-gmail-html
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      storageClassName: ceph-rbd-retain
+      resources:
+        requests:
+          storage: 5Gi

@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: roundcube-primary-gmail-db
+spec:
+  replicas: 1
+  template:
+    spec:
+      containers:
+      - name: mysql
+        image: docker.io/library/mysql:5.7
+  volumeClaimTemplates:
+  - metadata:
+      name: pedestal-of-time-roundcube-primary-gmail-mysql
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      storageClassName: ceph-rbd-retain
+      resources:
+        requests:
+          storage: 10Gi

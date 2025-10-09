@@ -3,6 +3,10 @@ kind: RedisCluster
 metadata:
   name: gitlab-redis
 spec:
+  kubernetesConfig:
+    redisSecret:
+      name: gitlab-redis-password
+      key: password
   storage:
     volumeClaimTemplate:
       spec:

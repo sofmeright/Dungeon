@@ -7,6 +7,9 @@ spec:
   kubernetesConfig:
     image: quay.io/opstree/redis:v7.0.15
     imagePullPolicy: IfNotPresent
+    redisSecret:
+      name: PLACEHOLDER_SECRET_NAME
+      key: password
   redisExporter:
     enabled: false
     image: quay.io/opstree/redis-exporter:v1.44.0

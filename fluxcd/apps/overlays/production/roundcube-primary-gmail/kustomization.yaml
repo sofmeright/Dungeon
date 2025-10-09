@@ -1,0 +1,22 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: pedestal-of-time
+resources:
+  - ../../../base/roundcube-primary-gmail
+patches:
+  - path: statefulset-db-patch.yaml
+    target:
+      kind: StatefulSet
+      name: roundcube-primary-gmail-db
+  - path: statefulset-app-patch.yaml
+    target:
+      kind: StatefulSet
+      name: roundcube-primary-gmail
+  - path: service-app-patch.yaml
+    target:
+      kind: Service
+      name: roundcube-primary-gmail
+  - path: vault-secret-patch.yaml
+    target:
+      kind: ExternalSecret
+      name: roundcube-primary-gmail-secrets

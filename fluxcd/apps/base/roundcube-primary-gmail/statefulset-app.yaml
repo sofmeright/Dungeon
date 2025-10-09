@@ -1,0 +1,66 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: roundcube-primary-gmail
+spec:
+  serviceName: roundcube-primary-gmail
+  replicas: PLACEHOLDER_REPLICAS
+  selector:
+    matchLabels:
+      app: roundcube-primary-gmail
+  template:
+    metadata:
+      labels:
+        app: roundcube-primary-gmail
+    spec:
+      containers:
+      - name: roundcube
+        image: PLACEHOLDER_IMAGE
+        ports:
+        - containerPort: 80
+          name: http
+          protocol: TCP
+        env:
+        - name: ROUNDCUBEMAIL_DB_TYPE
+          value: "mysql"
+        - name: ROUNDCUBEMAIL_DB_HOST
+          value: "roundcube-primary-gmail-db"
+        - name: ROUNDCUBEMAIL_DB_USER
+          valueFrom:
+            secretKeyRef:
+              name: roundcube-primary-gmail-secrets
+              key: mysql_user
+        - name: ROUNDCUBEMAIL_DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: roundcube-primary-gmail-secrets
+              key: mysql_password
+        - name: ROUNDCUBEMAIL_SKIN
+          value: "PLACEHOLDER_SKIN"
+        - name: ROUNDCUBEMAIL_DEFAULT_HOST
+          value: "PLACEHOLDER_DEFAULT_HOST"
+        - name: ROUNDCUBEMAIL_DEFAULT_PORT
+          value: "PLACEHOLDER_DEFAULT_PORT"
+        - name: ROUNDCUBEMAIL_SMTP_SERVER
+          value: "PLACEHOLDER_SMTP_SERVER"
+        - name: ROUNDCUBEMAIL_SMTP_PORT
+          value: "PLACEHOLDER_SMTP_PORT"
+        volumeMounts:
+        - name: html
+          mountPath: /var/www/html
+        resources:
+          requests:
+            memory: 256Mi
+            cpu: 100m
+          limits:
+            memory: 512Mi
+            cpu: 500m
+  volumeClaimTemplates:
+  - metadata:
+      name: html
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      storageClassName: PLACEHOLDER_STORAGE_CLASS
+      resources:
+        requests:
+          storage: PLACEHOLDER_STORAGE_SIZE
