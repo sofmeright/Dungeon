@@ -20,6 +20,9 @@ spec:
           value: "tls://smtp.gmail.com"
         - name: ROUNDCUBEMAIL_SMTP_PORT
           value: "587"
+        volumeMounts:
+        - name: pedestal-of-time-roundcube-primary-gmail-html
+          mountPath: /var/www/html
   volumeClaimTemplates:
   - metadata:
       name: pedestal-of-time-roundcube-primary-gmail-html
