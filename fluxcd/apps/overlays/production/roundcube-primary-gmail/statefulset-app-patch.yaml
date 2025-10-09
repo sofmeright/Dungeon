@@ -3,7 +3,7 @@ kind: StatefulSet
 metadata:
   name: roundcube-primary-gmail
 spec:
-  replicas: 1
+  replicas: 0
   template:
     spec:
       containers:
