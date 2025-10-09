@@ -16,6 +16,7 @@ resources:
   - bank-vaults
   - external-secrets
   - cloudnative-pg  # PostgreSQL operator for cloud-native database clusters
+  - redis-operator  # Redis operator for cloud-native Redis clusters
   - zitadel
   - adguard  # DNS server with network policy for proper routing
   - ../../../configs/overlays/production/chrony  # Chrony NTP server ConfigMap
