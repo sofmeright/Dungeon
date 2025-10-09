@@ -1,0 +1,14 @@
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: plex-ms-x-media-movies
+spec:
+  storageClassName: ""
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: plex-ms-x-media-photos
+spec:
+  storageClassName: ""

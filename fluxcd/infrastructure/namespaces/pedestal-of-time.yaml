@@ -1,0 +1,6 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: pedestal-of-time
+  labels:
+    name: pedestal-of-time

@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: plex-ms-x
+spec:
+  replicas: 1
+  template:
+    spec:
+      containers:
+      - name: plex-ms-x
+        image: docker.io/plexinc/pms-docker:1.40.2.8395-c67dce28e
+        env:
+        - name: ADVERTISE_IP
+          value: "http://172.22.30.124:32419/"
+        volumeMounts:
+        - name: pedestal-of-time-plex-ms-x-config
+          mountPath: /config
+        - name: pedestal-of-time-plex-ms-x-transcode
+          mountPath: /transcode
+  volumeClaimTemplates:
+  - metadata:
+      name: pedestal-of-time-plex-ms-x-config
+    spec:
+      accessModes:
+        - ReadWriteOnce
+      storageClassName: ceph-rbd-retain
+      resources:
+        requests:
+          storage: 200Gi
+  - metadata:
+      name: pedestal-of-time-plex-ms-x-transcode
+    spec:
+      accessModes:
+        - ReadWriteOnce
+      storageClassName: ceph-rbd-retain
+      resources:
+        requests:
+          storage: 100Gi

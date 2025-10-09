@@ -9,6 +9,7 @@ resources:
   - external-secrets-sa.yaml      # ServiceAccount for External Secrets Kubernetes auth
   - external-secrets-token.yaml   # Token secret for ServiceAccount
   - clustersecretstore-operationtimecapsule.yaml  # External Secrets for operationtimecapsule (media/archives stuff like in song-of-storms, song-of-time)
+  - clustersecretstore-pedestal-of-time.yaml  # External Secrets for pedestal-of-time (plex-ms-x and related apps)
   - clustersecretstore-precisionplanit.yaml  # External Secrets for PrecisionPlanIt secrets
   - clustersecretstore-zeldas-letter.yaml  # External Secrets for the Hyrule family (system/core apps)
 

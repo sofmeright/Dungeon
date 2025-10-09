@@ -5,6 +5,7 @@ resources:
   - podinfo
   - searxng
   - plex
+  - plex-ms-x
   - jellyfin
   - photoprism
   - calibre-web
