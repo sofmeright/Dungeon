@@ -1,0 +1,82 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: actualbudget
+spec:
+  serviceName: actualbudget
+  replicas: PLACEHOLDER_REPLICAS
+  selector:
+    matchLabels:
+      app: actualbudget
+  template:
+    metadata:
+      labels:
+        app: actualbudget
+    spec:
+      containers:
+      - name: actualbudget
+        image: PLACEHOLDER_IMAGE
+        ports:
+        - containerPort: 5006
+          name: http
+          protocol: TCP
+        env:
+        - name: ACTUAL_TRUSTED_PROXIES
+          value: "10.0.0.0/8,172.16.0.0/12,192.168.0.0/16"
+        - name: ACTUAL_OPENID_SERVER_HOSTNAME
+          value: "PLACEHOLDER_SERVER_HOSTNAME"
+        - name: ACTUAL_OPENID_DISCOVERY_URL
+          valueFrom:
+            secretKeyRef:
+              name: actualbudget-secrets
+              key: openid_discovery_url
+        - name: ACTUAL_OPENID_AUTHORIZATION_ENDPOINT
+          valueFrom:
+            secretKeyRef:
+              name: actualbudget-secrets
+              key: openid_authorization_endpoint
+        - name: ACTUAL_OPENID_TOKEN_ENDPOINT
+          valueFrom:
+            secretKeyRef:
+              name: actualbudget-secrets
+              key: openid_token_endpoint
+        - name: ACTUAL_OPENID_USERINFO_ENDPOINT
+          valueFrom:
+            secretKeyRef:
+              name: actualbudget-secrets
+              key: openid_userinfo_endpoint
+        - name: ACTUAL_OPENID_CLIENT_ID
+          valueFrom:
+            secretKeyRef:
+              name: actualbudget-secrets
+              key: openid_client_id
+        - name: ACTUAL_OPENID_CLIENT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: actualbudget-secrets
+              key: openid_client_secret
+        - name: ACTUAL_OPENID_AUTH_METHOD
+          value: "openid"
+        - name: ACTUAL_OPENID_ENFORCE
+          value: "false"
+        - name: ACTUAL_TOKEN_EXPIRATION
+          value: "openid-provider"
+        volumeMounts:
+        - name: data
+          mountPath: /data
+        resources:
+          requests:
+            memory: 256Mi
+            cpu: 100m
+          limits:
+            memory: 512Mi
+            cpu: 500m
+  volumeClaimTemplates:
+  - metadata:
+      name: data
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      storageClassName: PLACEHOLDER_STORAGE_CLASS
+      resources:
+        requests:
+          storage: 5Gi

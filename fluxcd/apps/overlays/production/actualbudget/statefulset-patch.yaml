@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: actualbudget
+spec:
+  replicas: 1
+  template:
+    spec:
+      securityContext:
+        fsGroup: 1000
+        runAsUser: 1000
+        runAsGroup: 1000
+      containers:
+      - name: actualbudget
+        image: docker.io/actualbudget/actual-server:latest
+        env:
+        - name: ACTUAL_OPENID_SERVER_HOSTNAME
+          value: "https://funds.arbitorium.com"
+        volumeMounts:
+        - name: pedestal-of-time-actualbudget-data
+          mountPath: /data
+  volumeClaimTemplates:
+  - metadata:
+      name: pedestal-of-time-actualbudget-data
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      storageClassName: ceph-rbd-retain
+      resources:
+        requests:
+          storage: 5Gi
