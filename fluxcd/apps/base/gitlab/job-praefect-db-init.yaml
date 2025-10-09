@@ -1,0 +1,56 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: gitlab-praefect-db-init
+spec:
+  ttlSecondsAfterFinished: 300
+  template:
+    spec:
+      restartPolicy: OnFailure
+      containers:
+      - name: init-praefect-db
+        image: docker.io/library/postgres:16
+        env:
+        - name: PGHOST
+          value: PLACEHOLDER_DB_HOST
+        - name: PGPORT
+          value: "5432"
+        - name: PGUSER
+          value: gitlab
+        - name: PGDATABASE
+          value: gitlabhq_production
+        - name: PGPASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: gitlab-postgresql-credentials
+              key: password
+        - name: PRAEFECT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: gitlab-praefect-credentials
+              key: password
+        command:
+        - /bin/bash
+        - -c
+        - |
+          set -e
+          echo "Checking if praefect user exists..."
+          if psql -tAc "SELECT 1 FROM pg_roles WHERE rolname='praefect'" | grep -q 1; then
+            echo "User praefect already exists"
+          else
+            echo "Creating praefect user..."
+            psql -c "CREATE USER praefect WITH PASSWORD '$PRAEFECT_PASSWORD';"
+          fi
+
+          echo "Checking if praefect database exists..."
+          if psql -lqt | cut -d \| -f 1 | grep -qw praefect; then
+            echo "Database praefect already exists"
+          else
+            echo "Creating praefect database..."
+            psql -c "CREATE DATABASE praefect OWNER praefect;"
+          fi
+
+          echo "Granting privileges..."
+          psql -c "GRANT ALL PRIVILEGES ON DATABASE praefect TO praefect;"
+
+          echo "Praefect database setup complete!"

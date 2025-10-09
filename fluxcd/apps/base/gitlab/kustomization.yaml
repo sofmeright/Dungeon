@@ -4,5 +4,7 @@ resources:
   - helmrepository.yaml
   - helmrelease.yaml
   - externalsecret-credentials.yaml
+  - externalsecret-praefect.yaml
   - cluster.yaml
   - redis-cluster.yaml
+  - job-praefect-db-init.yaml
