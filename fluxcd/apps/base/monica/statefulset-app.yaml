@@ -1,0 +1,63 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: monica
+spec:
+  serviceName: monica
+  replicas: PLACEHOLDER_REPLICAS
+  selector:
+    matchLabels:
+      app: monica
+  template:
+    metadata:
+      labels:
+        app: monica
+    spec:
+      containers:
+      - name: monica
+        image: PLACEHOLDER_IMAGE
+        ports:
+        - containerPort: 80
+          name: http
+          protocol: TCP
+        env:
+        - name: APP_URL
+          value: "PLACEHOLDER_APP_URL"
+        - name: APP_TRUSTED_PROXIES
+          value: "*"
+        - name: APP_KEY
+          valueFrom:
+            secretKeyRef:
+              name: monica-secrets
+              key: app_key
+        - name: DB_HOST
+          value: "monica-db"
+        - name: DB_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: monica-secrets
+              key: db_username
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: monica-secrets
+              key: db_password
+        volumeMounts:
+        - name: data
+          mountPath: /var/www/html/storage
+        resources:
+          requests:
+            memory: 512Mi
+            cpu: 200m
+          limits:
+            memory: 1Gi
+            cpu: 1000m
+  volumeClaimTemplates:
+  - metadata:
+      name: data
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      storageClassName: PLACEHOLDER_STORAGE_CLASS
+      resources:
+        requests:
+          storage: 10Gi

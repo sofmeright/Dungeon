@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: monica-db
+spec:
+  replicas: 1
+  template:
+    spec:
+      containers:
+      - name: mariadb
+        image: docker.io/mariadb:11
+        volumeMounts:
+        - name: pedestal-of-time-monica-mysql
+          mountPath: /var/lib/mysql
+  volumeClaimTemplates:
+  - metadata:
+      name: pedestal-of-time-monica-mysql
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      storageClassName: ceph-rbd-retain
+      resources:
+        requests:
+          storage: 10Gi
