@@ -6,10 +6,6 @@ spec:
   replicas: 1
   template:
     spec:
-      securityContext:
-        fsGroup: 1000
-        runAsUser: 1000
-        runAsGroup: 1000
       containers:
       - name: dailytxt
         image: docker.io/phitux/dailytxt:latest
