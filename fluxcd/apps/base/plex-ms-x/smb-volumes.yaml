@@ -20,7 +20,7 @@ spec:
     readOnly: false
     volumeHandle: plex-ms-x-media-movies
     volumeAttributes:
-      source: "//gringotts/timecapsule/Media/systemadm/McAfee\\ Antivirus/Studio/Movies"
+      source: "//gringotts/timecapsule/Media/systemadm/McAfee Antivirus/Studio/Movies"
     nodeStageSecretRef:
       name: plex-ms-x-smb-secret
 ---
@@ -58,7 +58,7 @@ spec:
     readOnly: false
     volumeHandle: plex-ms-x-media-photos
     volumeAttributes:
-      source: "//gringotts/timecapsule/Media/systemadm/McAfee\\ Antivirus/Studio/Photos"
+      source: "//gringotts/timecapsule/Media/systemadm/McAfee Antivirus/Studio/Photos"
     nodeStageSecretRef:
       name: plex-ms-x-smb-secret
 ---
