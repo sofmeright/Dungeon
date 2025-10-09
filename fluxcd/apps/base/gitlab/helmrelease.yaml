@@ -131,8 +131,7 @@ spec:
             cpu: 500m
             memory: 256Mi
 
-    # Toolbox (for backups, etc)
-    gitlab:
+      # Toolbox (for backups, etc)
       toolbox:
         backups:
           objectStorage:
