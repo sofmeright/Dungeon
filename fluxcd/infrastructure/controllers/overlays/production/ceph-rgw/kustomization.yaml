@@ -3,9 +3,9 @@ kind: Kustomization
 namespace: gorons-bracelet
 resources:
   - ../../../base/ceph-rgw
+  - gitlab-s3-setup-job.yaml
 patches:
   - path: statefulset-patch.yaml
   - path: service-patch.yaml
   - path: init-job-patch.yaml
   - path: zone-config-patch.yaml
-  - gitlab-s3-setup-job.yaml
