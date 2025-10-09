@@ -13,6 +13,10 @@ spec:
       owner: gitlab
       secret:
         name: gitlab-postgresql-credentials
+      postInitApplicationSQL:
+        - CREATE USER praefect WITH PASSWORD 'PLACEHOLDER_PRAEFECT_PASSWORD';
+        - CREATE DATABASE praefect OWNER praefect;
+        - GRANT ALL PRIVILEGES ON DATABASE praefect TO praefect;
 
   storage:
     storageClass: PLACEHOLDER_STORAGE_CLASS
