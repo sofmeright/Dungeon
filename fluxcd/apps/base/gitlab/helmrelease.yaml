@@ -136,5 +136,8 @@ spec:
       enabled: false
     certmanager:
       install: false
+      email: devops@prplanit.com  # Required even when disabled
+    certmanager-issuer:
+      email: devops@prplanit.com  # Required even when disabled
     prometheus:
       install: false
