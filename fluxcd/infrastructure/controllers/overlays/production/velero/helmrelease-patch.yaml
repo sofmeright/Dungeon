@@ -60,9 +60,12 @@ spec:
         template:
           ttl: "720h0m0s"
           includedNamespaces:
-            - operationtimecapsule
             - zeldas-lullaby
-            - lighthouse
+            - temple-of-time
+            - lost-woods
+            - gossip-stone
+            - lens-of-truth
+            - shooting-gallery
           excludedResources:
             - events
             - events.events.k8s.io

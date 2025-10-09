@@ -21,19 +21,20 @@ ceph fsid
 ceph mon dump | grep mon
 
 # Create a dedicated pool for Kubernetes (if not exists)
-ceph osd pool create kubernetes 128
-rbd pool init kubernetes
+ceph osd pool create dungeon 128
+rbd pool init dungeon
 
 # Create the provisioner user (for creating/deleting volumes)
 ceph auth get-or-create client.dungeon-provisioner \
   mon 'allow r, allow command "osd blacklist"' \
-  osd 'allow rwx pool=kubernetes' \
+  osd 'allow rwx pool=dungeon' \
   mgr 'allow rw'
 
-# Create the mount user (for attaching volumes to nodes)
+# Create the mount user (for attaching volumes to nodes and snapshots)
 ceph auth get-or-create client.dungeon \
   mon 'allow r' \
-  osd 'allow class-read object_prefix rbd_children, allow rwx pool=kubernetes'
+  osd 'allow class-read object_prefix rbd_children, allow rwx pool=dungeon' \
+  mgr 'allow rw'
 
 # Get the keys for both users
 ceph auth get-key client.dungeon-provisioner
@@ -43,6 +44,13 @@ ceph auth get-key client.dungeon
 ceph auth get client.dungeon-provisioner
 ceph auth get client.dungeon
 ```
+
+**Important Notes on Permissions:**
+- `mgr 'allow rw'` is **required for CSI snapshots and Velero backups**
+- MGR capabilities cannot be scoped to specific pools (Ceph limitation)
+- Security is enforced via OSD pool scoping (`pool=dungeon`)
+- Without MGR permissions, RBD snapshot creation fails with "Operation not permitted"
+- The `allow rwx` (not just `allow rw`) on OSD pool is required for snapshot operations
 
 2. Update the files with your actual values:
 
