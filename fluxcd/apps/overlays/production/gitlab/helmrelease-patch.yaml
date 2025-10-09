@@ -75,6 +75,8 @@ spec:
       redis:
         host: gitlab-redis-leader.hyrule-castle.svc.cluster.local
         port: 6379
+        password:
+          enabled: false  # Redis cluster has no password authentication
 
     # Use Ceph RBD for all persistent volumes
     gitaly:
