@@ -9,6 +9,8 @@ spec:
       containers:
       - name: mysql
         image: docker.io/library/mysql:5.7
+        args:
+        - --datadir=/var/lib/mysql/data
         volumeMounts:
         - name: pedestal-of-time-roundcube-primary-gmail-mysql
           mountPath: /var/lib/mysql
