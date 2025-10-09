@@ -22,8 +22,8 @@ spec:
         - name: PGPASSWORD
           valueFrom:
             secretKeyRef:
-              name: gitlab-postgresql-superuser
-              key: password
+              name: gitlab-postgresql-password
+              key: postgresql-postgres-password
         - name: PRAEFECT_PASSWORD
           valueFrom:
             secretKeyRef:
