@@ -5,7 +5,7 @@ metadata:
 spec:
   volumeClaimTemplates:
   - metadata:
-      name: library
+      name: temple-of-time-immich-library
       labels:
         app: immich
         volume-type: library
@@ -17,7 +17,7 @@ spec:
         requests:
           storage: 500Gi
   - metadata:
-      name: model-cache
+      name: temple-of-time-immich-model-cache
       labels:
         app: immich
         volume-type: model-cache
@@ -29,7 +29,7 @@ spec:
         requests:
           storage: 20Gi
   - metadata:
-      name: postgres
+      name: temple-of-time-immich-postgres
       labels:
         app: immich
         volume-type: postgres
