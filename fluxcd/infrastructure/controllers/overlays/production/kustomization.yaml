@@ -28,6 +28,7 @@ resources:
   - loki  # Log aggregation and storage
   - alloy  # Unified observability collector (scrapes K8s + Docker)
   - traefik  # Gateway API controller for ingress routing
+  - stunner  # STUNner WebRTC gateway for TURN/STUN services
   - cert-manager  # TLS certificate management with Let's Encrypt
   - uptime-kuma  # Service uptime monitoring
   - ntfy  # Notification delivery service

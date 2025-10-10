@@ -30,8 +30,11 @@
       - arylls-lookout: Gateway for internal-only services (xylem replacement)
       - kokiri-forest: Gateway for personal/public services (phloem replacement)
       - hyrule-castle: Gateway for business/work services (cell-membrane replacement)
+      - king-of-red-lions: Routing & Gateway infrastructure (traefik, stunner - guides you across the sea)
       - shooting-gallery: Game servers (minecraft, etc - aiming for fun)
       - lens-of-truth: IDS/IPS/SIEM security monitoring (reveals hidden threats)
+      - swift-sail: Arr apps & downloaders (prowlarr, radarr, sonarr - swift sailing across the seas)
+      - pedestal-of-time: Restricted/privileged services (only link can pull the master sword)
   - Base should NEVER contain deployment-ready configs - only generic templates that overlays patch with real values. Base should document application defaults from upstream/vendor documentation, not production-specific configurations.
   - Always use overlays/production for actual deployment to the production cluster, never deploy from base
 

@@ -1,0 +1,20 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: stunner
+spec:
+  releaseName: stunner
+  targetNamespace: PLACEHOLDER_TARGET_NAMESPACE
+  install:
+    createNamespace: false
+  interval: 30m
+  chart:
+    spec:
+      chart: stunner
+      version: PLACEHOLDER_CHART_VERSION
+      sourceRef:
+        kind: HelmRepository
+        name: stunner
+        namespace: flux-system
+  values:
+    fullnameOverride: "stunner"
