@@ -27,9 +27,6 @@ spec:
         resources:
           requests:
             storage: 5Gi
-  redisConfig:
-    additionalRedisConfig: |
-      maxmemory-policy allkeys-lru
 ---
 apiVersion: redis.redis.opstreelabs.in/v1beta2
 kind: RedisSentinel
