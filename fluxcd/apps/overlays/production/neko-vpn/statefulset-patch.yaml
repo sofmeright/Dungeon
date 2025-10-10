@@ -39,6 +39,8 @@ spec:
         env:
         - name: NEKO_DESKTOP_SCREEN
           value: "1920x1080@30"
+        - name: NEKO_ICESERVERS
+          value: '[{"urls":["turn:172.22.30.120:3478?transport=udp"],"username":"neko-user","credential":"neko-pass"}]'
   volumeClaimTemplates:
   - metadata:
       name: tingle-tuner-neko-vpn-gluetun-config
