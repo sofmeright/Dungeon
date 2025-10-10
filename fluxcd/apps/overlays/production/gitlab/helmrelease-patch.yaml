@@ -76,13 +76,16 @@ spec:
           secret: gitlab-postgresql-credentials
           key: password
 
-      # External Redis (Redis Operator)
+      # External Redis with Sentinel (Redis Operator)
       redis:
-        host: gitlab-redis-leader.hyrule-castle.svc.cluster.local
+        host: gitlab-redis.hyrule-castle.svc.cluster.local
         port: 6379
         password:
           secret: gitlab-redis-password
           key: password
+        sentinels:
+          - host: gitlab-redis-sentinel.hyrule-castle.svc.cluster.local
+            port: 26379
 
       # Praefect PostgreSQL configuration
       praefect:
