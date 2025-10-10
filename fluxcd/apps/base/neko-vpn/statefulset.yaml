@@ -94,8 +94,6 @@ spec:
           value: "true"
         - name: NEKO_SERVER_BIND
           value: "0.0.0.0:5340"
-        - name: NEKO_WEBRTC_EPR
-          value: "52000-52100"
         - name: NEKO_WEBRTC_ICELITE
           value: "1"
         volumeMounts:
