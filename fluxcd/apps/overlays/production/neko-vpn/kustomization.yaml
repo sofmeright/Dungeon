@@ -16,10 +16,3 @@ patches:
       kind: Service
       name: neko-vpn
   - path: vault-secret-patch.yaml
-    target:
-      kind: ExternalSecret
-      name: gluetun-secrets
-  - path: vault-secret-patch.yaml
-    target:
-      kind: ExternalSecret
-      name: neko-secrets
