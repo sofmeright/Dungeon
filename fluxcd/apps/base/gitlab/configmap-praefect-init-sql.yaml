@@ -4,14 +4,15 @@ metadata:
   name: praefect-init-sql
 data:
   init-praefect.sql: |
-    -- Check if praefect user exists, create if not
+    -- Check if praefect user exists, create if not, always set password
     DO $$
     BEGIN
       IF NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'praefect') THEN
         CREATE USER praefect WITH PASSWORD 'PLACEHOLDER_PASSWORD';
         RAISE NOTICE 'User praefect created';
       ELSE
-        RAISE NOTICE 'User praefect already exists';
+        ALTER USER praefect WITH PASSWORD 'PLACEHOLDER_PASSWORD';
+        RAISE NOTICE 'User praefect password updated';
       END IF;
     END
     $$;
