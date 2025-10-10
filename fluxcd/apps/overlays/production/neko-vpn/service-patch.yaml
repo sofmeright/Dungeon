@@ -3,7 +3,10 @@ kind: Service
 metadata:
   name: neko-vpn
   annotations:
-    lbipam.cilium.io/ips: "172.22.30.108"
+    lbipam.cilium.io/ips: "172.22.30.107"
+    lbipam.cilium.io/sharing-key: "tingle-tuner"
+    lbipam.cilium.io/sharing-cross-namespace: "*"
+    service.cilium.io/loadbalancer-mode: "dsr"
 spec:
   type: LoadBalancer
   ports:
@@ -11,10 +14,6 @@ spec:
   - name: neko-http
     port: 5340
     targetPort: 5340
-    protocol: TCP
-  - name: webrtc-tcp
-    port: 52000
-    targetPort: 52000
     protocol: TCP
   - name: webrtc-udp
     port: 52000

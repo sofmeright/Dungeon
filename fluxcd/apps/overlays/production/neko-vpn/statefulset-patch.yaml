@@ -28,12 +28,10 @@ spec:
       - name: neko
         image: ghcr.io/m1k1o/neko/vivaldi:latest
         env:
-        - name: NEKO_BIND
-          value: ":5340"
         - name: NEKO_DESKTOP_SCREEN
           value: "1920x1080@30"
         - name: NEKO_WEBRTC_NAT1TO1
-          value: "172.22.30.108"
+          value: "172.22.30.107"
   volumeClaimTemplates:
   - metadata:
       name: tingle-tuner-neko-vpn-gluetun-config
