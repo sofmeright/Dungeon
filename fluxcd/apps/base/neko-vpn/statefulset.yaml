@@ -95,6 +95,8 @@ spec:
           value: "52000"
         - name: NEKO_ICELITE
           value: "1"
+        - name: NEKO_WEBRTC_ICESERVERS
+          value: "[]"
         - name: NEKO_SERVER_PROXY
           value: "true"
         - name: NEKO_SERVER_BIND
