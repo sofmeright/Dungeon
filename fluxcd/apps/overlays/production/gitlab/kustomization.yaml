@@ -27,7 +27,7 @@ patches:
       name: gitlab-praefect-credentials
   - path: redis-patch.yaml
     target:
-      kind: Redis
+      kind: RedisReplication
       name: gitlab-redis
   - path: redis-sentinel-patch.yaml
     target:
