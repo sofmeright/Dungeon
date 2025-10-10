@@ -25,9 +25,13 @@ spec:
 
           echo "Setting up Praefect database via PostgreSQL pod..."
 
-          # Replace password placeholder in SQL script and pipe directly to psql
+          # Find the primary PostgreSQL pod
+          PRIMARY_POD=$(kubectl get pods -n hyrule-castle -l cnpg.io/instanceRole=primary -o jsonpath='{.items[0].metadata.name}')
+          echo "Found primary PostgreSQL pod: $PRIMARY_POD"
+
+          # Replace password placeholder in SQL script and pipe directly to psql on primary
           sed "s|PLACEHOLDER_PASSWORD|$PRAEFECT_PASSWORD|g" /scripts/init-praefect.sql | \
-            kubectl exec -i -n hyrule-castle gitlab-postgresql-1 -- psql -U postgres
+            kubectl exec -i -n hyrule-castle $PRIMARY_POD -- psql -U postgres
 
           echo "Praefect database setup complete!"
         volumeMounts:
