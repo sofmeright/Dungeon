@@ -10,10 +10,7 @@ spec:
       - name: gluetun
         image: docker.io/qmcgaw/gluetun:latest
         securityContext:
-          capabilities:
-            add:
-              - NET_ADMIN
-              - SYS_MODULE
+          privileged: true
         env:
         - name: VPN_SERVICE_PROVIDER
           value: "private internet access"
