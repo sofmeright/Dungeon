@@ -2,19 +2,22 @@ apiVersion: v1
 kind: Service
 metadata:
   name: neko-vpn
+  annotations:
+    lbipam.cilium.io/ips: "172.22.30.107"
+    lbipam.cilium.io/sharing-key: "tingle-tuner"
 spec:
-  type: ClusterIP
+  type: LoadBalancer
   ports:
   - $patch: replace
   - name: neko-http
     port: 5340
     targetPort: 5340
     protocol: TCP
-  - name: webrtc-tcp
-    port: 52000
-    targetPort: 52000
-    protocol: TCP
-  - name: webrtc-udp
-    port: 52000
-    targetPort: 52000
+  - name: webrtc-udp-1
+    port: 62001
+    targetPort: 62001
+    protocol: UDP
+  - name: webrtc-udp-2
+    port: 62002
+    targetPort: 62002
     protocol: UDP

@@ -28,7 +28,7 @@ spec:
         - name: FIREWALL_OUTBOUND_SUBNETS
           value: "10.0.0.0/8,172.16.0.0/12,192.168.0.0/16"
         - name: FIREWALL_INPUT_PORTS
-          value: "5340,52000"
+          value: "5340,62001,62002"
         - name: TZ
           value: "Etc/UTC"
         volumeMounts:
@@ -39,8 +39,6 @@ spec:
         env:
         - name: NEKO_DESKTOP_SCREEN
           value: "1920x1080@30"
-        - name: NEKO_WEBRTC_NAT1TO1
-          value: "172.22.144.170"
   volumeClaimTemplates:
   - metadata:
       name: tingle-tuner-neko-vpn-gluetun-config
