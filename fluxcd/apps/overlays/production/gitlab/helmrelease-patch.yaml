@@ -83,6 +83,10 @@ spec:
         password:
           secret: gitlab-redis-password
           key: password
+        sentinelAuth:
+          enabled: true
+          secret: gitlab-redis-password
+          key: password
         sentinels:
           - host: gitlab-redis-sentinel-sentinel.hyrule-castle.svc.cluster.local
             port: 26379
