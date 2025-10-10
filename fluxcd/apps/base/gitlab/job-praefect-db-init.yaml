@@ -25,17 +25,9 @@ spec:
 
           echo "Setting up Praefect database via PostgreSQL pod..."
 
-          # Replace password placeholder in SQL script (use | as delimiter to avoid issues with special chars)
-          sed "s|PLACEHOLDER_PASSWORD|$PRAEFECT_PASSWORD|g" /scripts/init-praefect.sql > /tmp/init-praefect.sql
-
-          # Copy SQL script to PostgreSQL pod
-          kubectl cp /tmp/init-praefect.sql hyrule-castle/gitlab-postgresql-1:/tmp/init-praefect.sql
-
-          # Execute SQL as postgres superuser
-          kubectl exec -n hyrule-castle gitlab-postgresql-1 -- psql -U postgres -f /tmp/init-praefect.sql
-
-          # Clean up
-          kubectl exec -n hyrule-castle gitlab-postgresql-1 -- rm /tmp/init-praefect.sql
+          # Replace password placeholder in SQL script and pipe directly to psql
+          sed "s|PLACEHOLDER_PASSWORD|$PRAEFECT_PASSWORD|g" /scripts/init-praefect.sql | \
+            kubectl exec -i -n hyrule-castle gitlab-postgresql-1 -- psql -U postgres
 
           echo "Praefect database setup complete!"
         volumeMounts:
