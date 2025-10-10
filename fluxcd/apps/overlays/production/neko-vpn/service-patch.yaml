@@ -3,9 +3,7 @@ kind: Service
 metadata:
   name: neko-vpn
   annotations:
-    lbipam.cilium.io/ips: "172.22.30.107"
-    lbipam.cilium.io/sharing-key: "tingle-tuner"
-    lbipam.cilium.io/sharing-cross-namespace: "*"
+    lbipam.cilium.io/ips: "172.22.30.108"
 spec:
   type: LoadBalancer
   ports:
