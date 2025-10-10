@@ -10,6 +10,10 @@ spec:
     port: 5340
     targetPort: 5340
     protocol: TCP
+  - name: webrtc-tcp
+    port: 52000
+    targetPort: 52000
+    protocol: TCP
   - name: webrtc-udp
     port: 52000
     targetPort: 52000
