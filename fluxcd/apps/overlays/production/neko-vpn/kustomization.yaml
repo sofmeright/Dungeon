@@ -1,0 +1,25 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: tingle-tuner
+
+resources:
+  - ../../../base/neko-vpn
+
+patches:
+  - path: statefulset-patch.yaml
+    target:
+      kind: StatefulSet
+      name: neko-vpn
+  - path: service-patch.yaml
+    target:
+      kind: Service
+      name: neko-vpn
+  - path: vault-secret-patch.yaml
+    target:
+      kind: ExternalSecret
+      name: gluetun-secrets
+  - path: vault-secret-patch.yaml
+    target:
+      kind: ExternalSecret
+      name: neko-secrets

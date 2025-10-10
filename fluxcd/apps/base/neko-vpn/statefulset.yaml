@@ -1,0 +1,133 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: neko-vpn
+spec:
+  serviceName: neko-vpn
+  replicas: PLACEHOLDER_REPLICAS
+  selector:
+    matchLabels:
+      app: neko-vpn
+  template:
+    metadata:
+      labels:
+        app: neko-vpn
+    spec:
+      containers:
+      # Gluetun VPN Gateway
+      - name: gluetun
+        image: PLACEHOLDER_GLUETUN_IMAGE
+        securityContext:
+          privileged: true  # Required for TUN device creation
+        env:
+        - name: VPN_SERVICE_PROVIDER
+          value: PLACEHOLDER_VPN_PROVIDER
+        - name: SERVER_REGIONS
+          value: PLACEHOLDER_SERVER_REGIONS
+        - name: VPN_PORT_FORWARDING
+          value: PLACEHOLDER_PORT_FORWARDING
+        - name: VPN_PORT_FORWARDING_STATUS_FILE
+          value: "/tmp/gluetun/forwarded_port"
+        - name: FIREWALL_OUTBOUND_SUBNETS
+          value: PLACEHOLDER_FIREWALL_SUBNETS
+        - name: FIREWALL_INPUT_PORTS
+          value: PLACEHOLDER_FIREWALL_INPUT_PORTS
+        - name: DNS_KEEP_NAMESERVER
+          value: "on"
+        - name: TZ
+          value: PLACEHOLDER_TZ
+        - name: OPENVPN_USER
+          valueFrom:
+            secretKeyRef:
+              name: gluetun-secrets
+              key: vpn_user
+        - name: OPENVPN_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: gluetun-secrets
+              key: vpn_password
+        volumeMounts:
+        - name: gluetun-config
+          mountPath: /gluetun
+        - name: gluetun-tmp
+          mountPath: /tmp/gluetun
+        ports:
+        - containerPort: 8888
+          name: http-proxy
+          protocol: TCP
+        - containerPort: 5340
+          name: neko-http
+          protocol: TCP
+        - containerPort: 52000
+          name: webrtc-tcp
+          protocol: TCP
+        - containerPort: 52000
+          name: webrtc-udp
+          protocol: UDP
+
+      # Neko Browser
+      - name: neko
+        image: PLACEHOLDER_NEKO_IMAGE
+        env:
+        - name: NEKO_DESKTOP_INPUT_ENABLED
+          value: "true"
+        - name: NEKO_DESKTOP_INPUT_SOCKET
+          value: "/tmp/xf86-input-neko.sock"
+        - name: NEKO_DESKTOP_SCREEN
+          value: PLACEHOLDER_SCREEN_RESOLUTION
+        - name: NEKO_MEMBER_MULTIUSER_USER_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: neko-secrets
+              key: user_password
+        - name: NEKO_MEMBER_MULTIUSER_ADMIN_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: neko-secrets
+              key: admin_password
+        - name: NEKO_WEBRTC_NAT1TO1
+          value: PLACEHOLDER_NAT_IP
+        - name: NEKO_SESSION_HEARTBEAT_INTERVAL
+          value: "30"
+        - name: NEKO_WEBRTC_TCPMUX
+          value: "52000"
+        - name: NEKO_WEBRTC_UDPMUX
+          value: "52000"
+        - name: NEKO_ICELITE
+          value: "1"
+        - name: NEKO_SERVER_PROXY
+          value: "true"
+        - name: NEKO_SERVER_BIND
+          value: "0.0.0.0:5340"
+        - name: NEKO_WEBRTC_EPR
+          value: "52000-52100"
+        - name: NEKO_WEBRTC_ICELITE
+          value: "1"
+        volumeMounts:
+        - name: shm
+          mountPath: /dev/shm
+        resources:
+          requests:
+            memory: 2Gi
+            cpu: 500m
+          limits:
+            memory: 4Gi
+            cpu: 2000m
+
+      volumes:
+      - name: gluetun-tmp
+        emptyDir: {}
+      - name: shm
+        emptyDir:
+          medium: Memory
+          sizeLimit: 2Gi
+
+  volumeClaimTemplates:
+  - metadata:
+      name: gluetun-config
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      storageClassName: PLACEHOLDER_STORAGE_CLASS
+      resources:
+        requests:
+          storage: PLACEHOLDER_GLUETUN_STORAGE
