@@ -10,11 +10,11 @@ spec:
       - name: postgres
         image: docker.io/library/postgres:15-alpine
         volumeMounts:
-        - name: pedestal-of-time-wikijs-vegan-postgres
+        - name: temple-of-time-wikijs-vegan-postgres
           mountPath: /var/lib/postgresql/data
   volumeClaimTemplates:
   - metadata:
-      name: pedestal-of-time-wikijs-vegan-postgres
+      name: temple-of-time-wikijs-vegan-postgres
     spec:
       accessModes: ["ReadWriteOnce"]
       storageClassName: ceph-rbd-retain
