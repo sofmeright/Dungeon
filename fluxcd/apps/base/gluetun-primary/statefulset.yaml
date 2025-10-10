@@ -19,7 +19,7 @@ spec:
         image: PLACEHOLDER_GLUETUN_IMAGE
         securityContext:
           capabilities:
-            add: ["NET_ADMIN"]
+            add: ["NET_ADMIN", "SYS_MODULE"]
         env:
         - name: VPN_SERVICE_PROVIDER
           value: PLACEHOLDER_VPN_PROVIDER
