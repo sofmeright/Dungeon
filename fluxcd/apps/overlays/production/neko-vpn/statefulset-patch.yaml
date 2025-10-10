@@ -6,6 +6,15 @@ spec:
   replicas: 1
   template:
     spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: kubernetes.io/hostname
+                operator: In
+                values:
+                - dungeon-chest-001
       containers:
       - name: gluetun
         image: docker.io/qmcgaw/gluetun:latest
@@ -30,6 +39,8 @@ spec:
         env:
         - name: NEKO_DESKTOP_SCREEN
           value: "1920x1080@30"
+        - name: NEKO_WEBRTC_NAT1TO1
+          value: "172.22.144.170"
   volumeClaimTemplates:
   - metadata:
       name: tingle-tuner-neko-vpn-gluetun-config
