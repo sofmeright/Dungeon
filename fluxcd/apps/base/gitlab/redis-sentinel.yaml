@@ -64,8 +64,3 @@ spec:
     image: quay.io/opstree/redis-exporter:v1.44.0
   redisSentinelConfig:
     redisReplicationName: gitlab-redis
-    # Sentinel monitors the Redis master and handles automatic failover
-    additionalSentinelConfig: |
-      sentinel down-after-milliseconds gitlab-redis 5000
-      sentinel parallel-syncs gitlab-redis 1
-      sentinel failover-timeout gitlab-redis 10000
