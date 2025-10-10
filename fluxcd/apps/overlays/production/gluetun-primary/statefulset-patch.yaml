@@ -18,8 +18,6 @@ spec:
           value: "CA Vancouver"
         - name: VPN_PORT_FORWARDING
           value: "on"
-        - name: PORT_FORWARD_ONLY
-          value: "true"
         - name: FIREWALL_OUTBOUND_SUBNETS
           value: "10.0.0.0/8"
         - name: TZ

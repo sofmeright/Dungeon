@@ -28,8 +28,6 @@ spec:
           value: PLACEHOLDER_PORT_FORWARDING
         - name: VPN_PORT_FORWARDING_STATUS_FILE
           value: "/tmp/gluetun/forwarded_port"
-        - name: PORT_FORWARD_ONLY
-          value: PLACEHOLDER_PORT_FORWARD_ONLY
         - name: FIREWALL_OUTBOUND_SUBNETS
           value: PLACEHOLDER_FIREWALL_SUBNETS
         - name: DNS_KEEP_NAMESERVER
