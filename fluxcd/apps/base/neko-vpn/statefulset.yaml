@@ -58,10 +58,10 @@ spec:
         - containerPort: 5340
           name: neko-http
           protocol: TCP
-        - containerPort: 52000
+        - containerPort: 30500
           name: webrtc-tcp
           protocol: TCP
-        - containerPort: 52000
+        - containerPort: 30500
           name: webrtc-udp
           protocol: UDP
 
@@ -88,9 +88,9 @@ spec:
         - name: NEKO_SESSION_HEARTBEAT_INTERVAL
           value: "30"
         - name: NEKO_WEBRTC_UDPMUX
-          value: "52000"
+          value: "30500"
         - name: NEKO_WEBRTC_TCPMUX
-          value: "52000"
+          value: "30500"
         - name: NEKO_ICELITE
           value: "1"
         - name: NEKO_SERVER_PROXY
