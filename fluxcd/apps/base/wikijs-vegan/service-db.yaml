@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: wikijs-vegan-db
+spec:
+  type: ClusterIP
+  selector:
+    app: wikijs-vegan-db
+  ports:
+  - name: postgres
+    port: 5432
+    targetPort: 5432
+    protocol: TCP
