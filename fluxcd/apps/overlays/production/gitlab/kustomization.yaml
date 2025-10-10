@@ -32,7 +32,7 @@ patches:
   - path: redis-sentinel-patch.yaml
     target:
       kind: RedisSentinel
-      name: gitlab-redis-sentinel
+      name: gitlab-redis
   - path: configmap-praefect-init-sql-patch.yaml
     target:
       kind: ConfigMap

@@ -88,7 +88,7 @@ spec:
           secret: gitlab-redis-password
           key: password
         sentinels:
-          - host: gitlab-redis-sentinel-sentinel.hyrule-castle.svc.cluster.local
+          - host: gitlab-redis-sentinel.hyrule-castle.svc.cluster.local
             port: 26379
 
       # Praefect PostgreSQL configuration

@@ -38,7 +38,7 @@ spec:
 apiVersion: redis.redis.opstreelabs.in/v1beta2
 kind: RedisSentinel
 metadata:
-  name: gitlab-redis-sentinel
+  name: gitlab-redis
 spec:
   clusterSize: 3
   kubernetesConfig:
