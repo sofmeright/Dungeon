@@ -88,14 +88,10 @@ spec:
           value: "30"
         - name: NEKO_WEBRTC_UDPMUX
           value: "52000"
-        - name: NEKO_ICELITE
-          value: "1"
         - name: NEKO_SERVER_PROXY
           value: "true"
         - name: NEKO_SERVER_BIND
           value: "0.0.0.0:5340"
-        - name: NEKO_WEBRTC_ICELITE
-          value: "1"
         volumeMounts:
         - name: shm
           mountPath: /dev/shm
