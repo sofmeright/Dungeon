@@ -7,4 +7,6 @@ resources:
   - externalsecret-praefect.yaml
   - cluster.yaml
   - redis-cluster.yaml
+  - configmap-praefect-init-sql.yaml
+  - serviceaccount-praefect-db-init.yaml
   - job-praefect-db-init.yaml

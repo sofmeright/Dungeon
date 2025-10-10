@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: praefect-init-sql
+data:
+  init-praefect.sql: |
+    -- This uses PLACEHOLDER_PASSWORD which gets replaced by the job with the actual password from the secret
+    DO $$
+    BEGIN
+      IF NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'praefect') THEN
+        CREATE USER praefect WITH PASSWORD 'PLACEHOLDER_PASSWORD';
+        RAISE NOTICE 'User praefect created';
+      ELSE
+        RAISE NOTICE 'User praefect already exists';
+        -- Update password in case it changed
+        ALTER USER praefect WITH PASSWORD 'PLACEHOLDER_PASSWORD';
+      END IF;
+    END
+    $$;
+
+    -- Check if praefect database exists, create if not
+    SELECT 'CREATE DATABASE praefect OWNER praefect'
+    WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'praefect')\gexec
+
+    -- Grant privileges
+    GRANT ALL PRIVILEGES ON DATABASE praefect TO praefect;

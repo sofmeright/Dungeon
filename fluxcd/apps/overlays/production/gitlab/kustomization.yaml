@@ -29,6 +29,10 @@ patches:
     target:
       kind: RedisCluster
       name: gitlab-redis
+  - path: configmap-praefect-init-sql-patch.yaml
+    target:
+      kind: ConfigMap
+      name: praefect-init-sql
   - path: job-praefect-db-init-patch.yaml
     target:
       kind: Job
