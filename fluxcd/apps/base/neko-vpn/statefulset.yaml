@@ -85,8 +85,6 @@ spec:
             secretKeyRef:
               name: neko-secrets
               key: admin_password
-        - name: NEKO_WEBRTC_NAT1TO1
-          value: PLACEHOLDER_NAT_IP
         - name: NEKO_SESSION_HEARTBEAT_INTERVAL
           value: "30"
         - name: NEKO_WEBRTC_UDPMUX
