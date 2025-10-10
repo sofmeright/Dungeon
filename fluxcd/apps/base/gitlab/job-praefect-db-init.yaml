@@ -5,6 +5,9 @@ metadata:
 spec:
   ttlSecondsAfterFinished: 300
   template:
+    metadata:
+      annotations:
+        run-timestamp: "2025-10-10-22-00"
     spec:
       restartPolicy: OnFailure
       serviceAccountName: gitlab-praefect-db-init
