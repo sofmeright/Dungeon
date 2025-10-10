@@ -29,6 +29,12 @@ spec:
           path "zeldas-letter/metadata/*" {
             capabilities = ["read", "list"]
           }
+          path "great-sea/data/*" {
+            capabilities = ["read", "list"]
+          }
+          path "great-sea/metadata/*" {
+            capabilities = ["read", "list"]
+          }
     auth:
       - type: kubernetes
         config:
@@ -56,5 +62,10 @@ spec:
       - path: zeldas-letter
         type: kv
         description: System and core infrastructure secrets
+        options:
+          version: 2
+      - path: great-sea
+        type: kv
+        description: VPN-routed media automation secrets
         options:
           version: 2
