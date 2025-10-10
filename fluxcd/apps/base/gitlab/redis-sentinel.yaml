@@ -9,6 +9,13 @@ spec:
     redisSecret:
       name: PLACEHOLDER_SECRET_NAME
       key: password
+    resources:
+      requests:
+        cpu: 100m
+        memory: 256Mi
+      limits:
+        cpu: 500m
+        memory: 512Mi
   redisExporter:
     enabled: false
     image: quay.io/opstree/redis-exporter:v1.44.0
@@ -20,13 +27,6 @@ spec:
         resources:
           requests:
             storage: 5Gi
-  resources:
-    requests:
-      cpu: 100m
-      memory: 256Mi
-    limits:
-      cpu: 500m
-      memory: 512Mi
   redisConfig:
     additionalRedisConfig: |
       maxmemory-policy allkeys-lru
@@ -43,6 +43,13 @@ spec:
     redisSecret:
       name: PLACEHOLDER_SECRET_NAME
       key: password
+    resources:
+      requests:
+        cpu: 50m
+        memory: 128Mi
+      limits:
+        cpu: 200m
+        memory: 256Mi
   redisExporter:
     enabled: false
     image: quay.io/opstree/redis-exporter:v1.44.0
@@ -53,10 +60,3 @@ spec:
       sentinel down-after-milliseconds gitlab-redis 5000
       sentinel parallel-syncs gitlab-redis 1
       sentinel failover-timeout gitlab-redis 10000
-  resources:
-    requests:
-      cpu: 50m
-      memory: 128Mi
-    limits:
-      cpu: 200m
-      memory: 256Mi
