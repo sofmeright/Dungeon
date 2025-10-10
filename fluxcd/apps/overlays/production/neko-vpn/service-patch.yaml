@@ -3,21 +3,18 @@ kind: Service
 metadata:
   name: neko-vpn
 spec:
-  type: NodePort
+  type: ClusterIP
   ports:
   - $patch: replace
   - name: neko-http
     port: 5340
     targetPort: 5340
     protocol: TCP
-    nodePort: 30540
   - name: webrtc-tcp
     port: 52000
     targetPort: 52000
     protocol: TCP
-    nodePort: 30500
   - name: webrtc-udp
     port: 52000
     targetPort: 52000
     protocol: UDP
-    nodePort: 30500

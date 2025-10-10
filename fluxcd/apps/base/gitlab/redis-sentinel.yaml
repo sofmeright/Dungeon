@@ -64,3 +64,4 @@ spec:
     image: quay.io/opstree/redis-exporter:v1.44.0
   redisSentinelConfig:
     redisReplicationName: gitlab-redis
+    masterGroupName: gitlab-redis

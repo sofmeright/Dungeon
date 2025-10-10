@@ -6,6 +6,8 @@ spec:
   replicas: 1
   template:
     spec:
+      hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
@@ -28,7 +30,7 @@ spec:
         - name: FIREWALL_OUTBOUND_SUBNETS
           value: "10.0.0.0/8,172.16.0.0/12,192.168.0.0/16"
         - name: FIREWALL_INPUT_PORTS
-          value: "5340,30500"
+          value: "5340,52000"
         - name: TZ
           value: "Etc/UTC"
         volumeMounts:
