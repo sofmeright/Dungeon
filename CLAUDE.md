@@ -170,6 +170,7 @@
       - Backup services (velero, urbackup): 172.22.30.119 (sharing-key: fairy-bottle)
       - Storage services (minio, longhorn, rook-ceph): 172.22.30.101 (sharing-key: gorons-bracelet)
       - Game servers (minecraft, etc): 172.22.30.231 (sharing-key: shooting-gallery)
+      - VPN-routed *arr apps (qbittorrent, prowlarr, radarr, sonarr) in swift-sail namespace: 172.22.30.33 (sharing-key: great-sea)
       - SIEM/IDS/IPS managers (wazuh-manager, crowdsec-lapi): 172.22.30.119 (sharing-key: lens-of-truth-managers)
       - SIEM/IDS/IPS dashboards (wazuh-dashboard, crowdsec-dashboard): 172.22.30.118 (sharing-key: lens-of-truth-dashboards)
 
