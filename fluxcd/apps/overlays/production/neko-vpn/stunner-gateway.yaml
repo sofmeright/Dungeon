@@ -1,0 +1,48 @@
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: GatewayClass
+metadata:
+  name: stunner-gatewayclass
+spec:
+  controllerName: "stunner.l7mp.io/gateway-operator"
+  parametersRef:
+    group: "stunner.l7mp.io"
+    kind: GatewayConfig
+    name: stunner-gatewayconfig
+    namespace: tingle-tuner
+  description: "STUNner WebRTC gateway for neko-vpn"
+
+---
+apiVersion: stunner.l7mp.io/v1
+kind: GatewayConfig
+metadata:
+  name: stunner-gatewayconfig
+spec:
+  realm: stunner.l7mp.io
+  authType: static
+  userName: "neko-user"
+  password: "neko-pass"
+
+---
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: neko-gateway
+spec:
+  gatewayClassName: stunner-gatewayclass
+  listeners:
+    - name: udp-listener
+      port: 3478
+      protocol: TURN-UDP
+
+---
+apiVersion: stunner.l7mp.io/v1
+kind: UDPRoute
+metadata:
+  name: neko-udproute
+spec:
+  parentRefs:
+    - name: neko-gateway
+  rules:
+    - backendRefs:
+        - name: neko-vpn

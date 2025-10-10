@@ -5,6 +5,7 @@ namespace: tingle-tuner
 
 resources:
   - ../../../base/neko-vpn
+  - stunner-gateway.yaml
 
 patches:
   - path: statefulset-patch.yaml
