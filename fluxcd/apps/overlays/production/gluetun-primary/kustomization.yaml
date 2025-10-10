@@ -1,0 +1,18 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: swift-sail
+resources:
+  - ../../../base/gluetun-primary
+patches:
+  - path: statefulset-patch.yaml
+    target:
+      kind: StatefulSet
+      name: gluetun-primary
+  - path: service-patch.yaml
+    target:
+      kind: Service
+      name: gluetun-primary
+  - path: vault-secret-patch.yaml
+    target:
+      kind: ExternalSecret
+      name: gluetun-secrets

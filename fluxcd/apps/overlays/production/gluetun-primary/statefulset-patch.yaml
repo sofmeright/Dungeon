@@ -1,0 +1,64 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: gluetun-primary
+spec:
+  replicas: 1
+  template:
+    spec:
+      containers:
+      - name: gluetun
+        image: docker.io/qmcgaw/gluetun:latest
+        env:
+        - name: VPN_SERVICE_PROVIDER
+          value: "private internet access"
+        - name: SERVER_REGIONS
+          value: "CA Vancouver"
+        - name: VPN_PORT_FORWARDING
+          value: "on"
+        - name: PORT_FORWARD_ONLY
+          value: "true"
+        - name: FIREWALL_OUTBOUND_SUBNETS
+          value: "10.0.0.0/8"
+        - name: TZ
+          value: "Etc/UTC"
+        volumeMounts:
+        - name: swift-sail-gluetun-primary-gluetun-config
+          mountPath: /gluetun
+      - name: qbittorrent
+        image: lscr.io/linuxserver/qbittorrent:latest
+        env:
+        - name: TZ
+          value: "Etc/UTC"
+        volumeMounts:
+        - name: swift-sail-gluetun-primary-config
+          mountPath: /config
+        - name: swift-sail-gluetun-primary-downloads
+          mountPath: /downloads
+      - name: port-manager
+        image: docker.io/library/gluetun-qbittorrent-port-manager:1.3
+  volumeClaimTemplates:
+  - metadata:
+      name: swift-sail-gluetun-primary-gluetun-config
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      storageClassName: ceph-rbd-retain
+      resources:
+        requests:
+          storage: 1Gi
+  - metadata:
+      name: swift-sail-gluetun-primary-config
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      storageClassName: ceph-rbd-retain
+      resources:
+        requests:
+          storage: 5Gi
+  - metadata:
+      name: swift-sail-gluetun-primary-downloads
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      storageClassName: ceph-rbd-retain
+      resources:
+        requests:
+          storage: 500Gi
