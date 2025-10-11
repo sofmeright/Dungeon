@@ -1,13 +1,16 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
-namespace: hyrule-castle
+namespace: zeldas-lullaby
 resources:
   - ../../../base/semaphore
-  - httproute.yaml
 patches:
   - path: statefulset-patch.yaml
     target:
       kind: StatefulSet
+      name: semaphore
+  - path: service-patch.yaml
+    target:
+      kind: Service
       name: semaphore
   - path: externalsecret-patch.yaml
     target:
