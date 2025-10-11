@@ -7,7 +7,7 @@ spec:
     spec:
       containers:
       - name: readarr
-        image: docker.io/linuxserver/readarr:nightly
+        image: docker.io/linuxserver/readarr:amd64-nightly
         env:
         - name: TZ
           value: "America/Chicago"
