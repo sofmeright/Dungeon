@@ -1,0 +1,84 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: cross-seed
+spec:
+  serviceName: cross-seed
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cross-seed
+  template:
+    metadata:
+      labels:
+        app: cross-seed
+    spec:
+      securityContext:
+        fsGroup: 1000
+      containers:
+      - name: cross-seed
+        image: docker.io/crossseed/cross-seed:PLACEHOLDER_IMAGE_TAG
+        command: ["daemon"]
+        env:
+        - name: TZ
+          value: "PLACEHOLDER_TIMEZONE"
+        - name: PUID
+          value: "1000"
+        - name: PGID
+          value: "1000"
+        securityContext:
+          runAsUser: 1000
+          runAsGroup: 1000
+        resources:
+          requests:
+            cpu: 100m
+            memory: 256Mi
+          limits:
+            cpu: 500m
+            memory: 512Mi
+        volumeMounts:
+        - name: config
+          mountPath: /config
+      - name: gluetun
+        image: docker.io/qmcgaw/gluetun:PLACEHOLDER_IMAGE_TAG
+        securityContext:
+          privileged: true
+        env:
+        - name: VPN_SERVICE_PROVIDER
+          value: "PLACEHOLDER_VPN_PROVIDER"
+        - name: SERVER_REGIONS
+          value: "PLACEHOLDER_SERVER_REGIONS"
+        - name: FIREWALL_VPN_INPUT_PORTS
+          value: "PLACEHOLDER_VPN_INPUT_PORTS"
+        - name: OPENVPN_USER
+          valueFrom:
+            secretKeyRef:
+              name: cross-seed-vpn-secret
+              key: vpn_user
+        - name: OPENVPN_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: cross-seed-vpn-secret
+              key: vpn_password
+        - name: DOT
+          value: "off"
+        - name: DNS_ADDRESS
+          value: "PLACEHOLDER_DNS_ADDRESS"
+        - name: HEALTH_VPN_DURATION_INITIAL
+          value: "60s"
+        resources:
+          requests:
+            cpu: 50m
+            memory: 128Mi
+          limits:
+            cpu: 200m
+            memory: 256Mi
+  volumeClaimTemplates:
+  - metadata:
+      name: config
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      storageClassName: PLACEHOLDER_STORAGE_CLASS
+      resources:
+        requests:
+          storage: 2Gi
