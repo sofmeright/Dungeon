@@ -1,0 +1,32 @@
+apiVersion: external-secrets.io/v1beta1
+kind: ClusterExternalSecret
+metadata:
+  name: jcr-pcfae-dungeon-pull-secret
+spec:
+  # Deploy to all namespaces matching the selector
+  namespaceSelector:
+    matchLabels:
+      jcr-pull-secret: "enabled"
+  refreshTime: 1h
+  externalSecretSpec:
+    secretStoreRef:
+      name: PLACEHOLDER_SECRET_STORE
+      kind: ClusterSecretStore
+    target:
+      name: jcr-pcfae-dungeon-pull-secret
+      creationPolicy: Owner
+      template:
+        type: kubernetes.io/dockerconfigjson
+        data:
+          .dockerconfigjson: |
+            {
+              "auths": {
+                "docker.jcr.pcfae.com": {
+                  "auth": "{{ printf "%s:%s" .username .password | b64enc }}",
+                  "email": ""
+                }
+              }
+            }
+    dataFrom:
+    - extract:
+        key: PLACEHOLDER_VAULT_KEY

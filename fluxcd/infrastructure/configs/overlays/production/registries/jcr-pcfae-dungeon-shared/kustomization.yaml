@@ -1,0 +1,15 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - ../../../../base/registries/jcr-pcfae-dungeon-shared.yaml
+patches:
+  - target:
+      kind: ClusterExternalSecret
+      name: jcr-pcfae-dungeon-pull-secret
+    patch: |-
+      - op: replace
+        path: /spec/externalSecretSpec/secretStoreRef/name
+        value: vault-zeldas-letter
+      - op: replace
+        path: /spec/externalSecretSpec/dataFrom/0/extract/key
+        value: registries/jcr.pcfae.com

@@ -6,13 +6,15 @@ spec:
   replicas: 1
   template:
     spec:
+      imagePullSecrets:
+      - name: jcr-pcfae-dungeon-pull-secret
       securityContext:
         fsGroup: 1000
       containers:
       - name: postgres
-        image: docker.io/postgres:14
+        image: docker.jcr.pcfae.com/postgres:14
       - name: semaphore
-        image: docker.io/semaphoreui/semaphore:latest
+        image: docker.jcr.pcfae.com/semaphoreui/semaphore:latest
         securityContext:
           runAsUser: 1000
           runAsGroup: 1000
