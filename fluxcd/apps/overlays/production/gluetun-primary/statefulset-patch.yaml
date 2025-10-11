@@ -17,7 +17,7 @@ spec:
         - name: VPN_SERVICE_PROVIDER
           value: "private internet access"
         - name: SERVER_REGIONS
-          value: "CA Vancouver"
+          value: "CA Ontario"
         - name: PORT_FORWARD_ONLY
           value: "true"
         - name: VPN_PORT_FORWARDING
@@ -26,8 +26,8 @@ spec:
           value: "/tmp/gluetun/forwarded_port"
         - name: DNS_KEEP_NAMESERVER
           value: "off"
-        - name: DNS_ADDRESS
-          value: "10.144.0.10"
+        - name: DOT
+          value: "on"
         - name: FIREWALL_OUTBOUND_SUBNETS
           value: "10.0.0.0/8,172.16.0.0/12,192.168.0.0/16"
         - name: FIREWALL_INPUT_PORTS
