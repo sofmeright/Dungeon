@@ -35,3 +35,4 @@ resources:
   - prowlarr
   - radarr
   - sonarr
+  - lidarr
