@@ -37,3 +37,4 @@ resources:
   - sonarr
   - lidarr
   - jellyseerr
+  - bazarr
