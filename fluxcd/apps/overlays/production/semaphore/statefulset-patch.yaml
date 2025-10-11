@@ -21,6 +21,8 @@ spec:
         env:
         - name: TZ
           value: "Etc/UTC"
+        - name: SEMAPHORE_PORT
+          value: "3000"
   volumeClaimTemplates:
   - metadata:
       name: postgres-data
