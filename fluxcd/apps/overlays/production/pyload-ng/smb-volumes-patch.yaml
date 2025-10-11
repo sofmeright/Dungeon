@@ -1,0 +1,17 @@
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pyload-ng-downloads
+spec:
+  csi:
+    volumeHandle: pyload-ng-downloads-gringotts-timecapsule-media-download-pyload
+    volumeAttributes:
+      source: "//gringotts/timecapsule/Media/Download/__pyload"
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pyload-ng-downloads
+spec:
+  storageClassName: ""
