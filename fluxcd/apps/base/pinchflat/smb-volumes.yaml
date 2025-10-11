@@ -1,0 +1,38 @@
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pinchflat-downloads
+spec:
+  capacity:
+    storage: 50Ti
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  mountOptions:
+    - vers=2.1
+    - uid=3000
+    - gid=3141
+    - file_mode=0777
+    - dir_mode=0777
+  csi:
+    driver: smb.csi.k8s.io
+    readOnly: false
+    volumeHandle: pinchflat-downloads
+    volumeAttributes:
+      source: PLACEHOLDER_SMB_MEDIA_SOURCE
+    nodeStageSecretRef:
+      name: pinchflat-smb-secret
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pinchflat-downloads
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 50Ti
+  volumeName: pinchflat-downloads
+  storageClassName: ""

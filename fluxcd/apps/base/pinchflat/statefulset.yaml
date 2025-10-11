@@ -1,0 +1,99 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: pinchflat
+spec:
+  serviceName: pinchflat
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pinchflat
+  template:
+    metadata:
+      labels:
+        app: pinchflat
+    spec:
+      securityContext:
+        fsGroup: 3141
+      containers:
+      - name: pinchflat
+        image: ghcr.io/kieraneglin/pinchflat:PLACEHOLDER_IMAGE_TAG
+        env:
+        - name: TZ
+          value: "PLACEHOLDER_TIMEZONE"
+        - name: PUID
+          value: "3000"
+        - name: PGID
+          value: "3141"
+        - name: BASIC_AUTH_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: pinchflat-auth-secret
+              key: username
+        - name: BASIC_AUTH_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: pinchflat-auth-secret
+              key: password
+        securityContext:
+          runAsUser: 3000
+          runAsGroup: 3141
+        resources:
+          requests:
+            cpu: 200m
+            memory: 512Mi
+          limits:
+            cpu: 1000m
+            memory: 2Gi
+        volumeMounts:
+        - name: config
+          mountPath: /config
+        - name: downloads
+          mountPath: /downloads
+      - name: gluetun
+        image: docker.io/qmcgaw/gluetun:PLACEHOLDER_IMAGE_TAG
+        securityContext:
+          privileged: true
+        env:
+        - name: VPN_SERVICE_PROVIDER
+          value: "PLACEHOLDER_VPN_PROVIDER"
+        - name: SERVER_REGIONS
+          value: "PLACEHOLDER_SERVER_REGIONS"
+        - name: FIREWALL_VPN_INPUT_PORTS
+          value: "PLACEHOLDER_VPN_INPUT_PORTS"
+        - name: OPENVPN_USER
+          valueFrom:
+            secretKeyRef:
+              name: pinchflat-vpn-secret
+              key: vpn_user
+        - name: OPENVPN_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: pinchflat-vpn-secret
+              key: vpn_password
+        - name: DOT
+          value: "off"
+        - name: DNS_ADDRESS
+          value: "PLACEHOLDER_DNS_ADDRESS"
+        - name: HEALTH_VPN_DURATION_INITIAL
+          value: "60s"
+        resources:
+          requests:
+            cpu: 50m
+            memory: 128Mi
+          limits:
+            cpu: 200m
+            memory: 256Mi
+      volumes:
+      - name: downloads
+        persistentVolumeClaim:
+          claimName: pinchflat-downloads
+  volumeClaimTemplates:
+  - metadata:
+      name: config
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      storageClassName: PLACEHOLDER_STORAGE_CLASS
+      resources:
+        requests:
+          storage: 2Gi

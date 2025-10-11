@@ -1,0 +1,17 @@
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: pinchflat-downloads
+spec:
+  csi:
+    volumeHandle: pinchflat-downloads-gringotts-timecapsule-media
+    volumeAttributes:
+      source: "//gringotts/timecapsule/Media"
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pinchflat-downloads
+spec:
+  storageClassName: ""
