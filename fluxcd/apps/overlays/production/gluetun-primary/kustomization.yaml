@@ -3,6 +3,7 @@ kind: Kustomization
 namespace: swift-sail
 resources:
   - ../../../base/gluetun-primary
+  - externalsecret-registry.yaml
 patches:
   - path: statefulset-patch.yaml
     target:

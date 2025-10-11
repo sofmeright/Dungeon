@@ -6,9 +6,11 @@ spec:
   replicas: 1
   template:
     spec:
+      imagePullSecrets:
+      - name: jcr-pcfae-dungeon-pull-secret
       containers:
       - name: gluetun
-        image: docker.io/qmcgaw/gluetun:latest
+        image: docker.jcr.pcfae.com/qmcgaw/gluetun:latest
         securityContext:
           privileged: true
         env:
