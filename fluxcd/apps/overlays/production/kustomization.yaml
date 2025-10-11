@@ -36,3 +36,4 @@ resources:
   - radarr
   - sonarr
   - lidarr
+  - jellyseerr

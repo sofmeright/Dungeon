@@ -1,0 +1,78 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: jellyseerr
+spec:
+  serviceName: jellyseerr
+  replicas: 1
+  selector:
+    matchLabels:
+      app: jellyseerr
+  template:
+    metadata:
+      labels:
+        app: jellyseerr
+    spec:
+      containers:
+      - name: jellyseerr
+        image: docker.io/fallenbagel/jellyseerr:PLACEHOLDER_IMAGE_TAG
+        env:
+        - name: TZ
+          value: "PLACEHOLDER_TIMEZONE"
+        - name: LOG_LEVEL
+          value: "debug"
+        - name: PORT
+          value: "5055"
+        resources:
+          requests:
+            cpu: 100m
+            memory: 256Mi
+          limits:
+            cpu: 500m
+            memory: 512Mi
+        volumeMounts:
+        - name: config
+          mountPath: /app/config
+      - name: gluetun
+        image: docker.io/qmcgaw/gluetun:PLACEHOLDER_IMAGE_TAG
+        securityContext:
+          privileged: true
+        env:
+        - name: VPN_SERVICE_PROVIDER
+          value: "PLACEHOLDER_VPN_PROVIDER"
+        - name: SERVER_REGIONS
+          value: "PLACEHOLDER_SERVER_REGIONS"
+        - name: FIREWALL_VPN_INPUT_PORTS
+          value: "PLACEHOLDER_VPN_INPUT_PORTS"
+        - name: OPENVPN_USER
+          valueFrom:
+            secretKeyRef:
+              name: jellyseerr-vpn-secret
+              key: vpn_user
+        - name: OPENVPN_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: jellyseerr-vpn-secret
+              key: vpn_password
+        - name: DOT
+          value: "off"
+        - name: DNS_ADDRESS
+          value: "PLACEHOLDER_DNS_ADDRESS"
+        - name: HEALTH_VPN_DURATION_INITIAL
+          value: "60s"
+        resources:
+          requests:
+            cpu: 50m
+            memory: 128Mi
+          limits:
+            cpu: 200m
+            memory: 256Mi
+  volumeClaimTemplates:
+  - metadata:
+      name: config
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      storageClassName: PLACEHOLDER_STORAGE_CLASS
+      resources:
+        requests:
+          storage: 2Gi
