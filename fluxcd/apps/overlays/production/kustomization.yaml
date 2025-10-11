@@ -40,3 +40,4 @@ resources:
   - bazarr
   - readarr
   - cross-seed
+  - sabnzbd
