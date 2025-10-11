@@ -18,7 +18,7 @@ spec:
       containers:
       - name: cross-seed
         image: docker.io/crossseed/cross-seed:PLACEHOLDER_IMAGE_TAG
-        command: ["daemon"]
+        args: ["daemon"]
         env:
         - name: TZ
           value: "PLACEHOLDER_TIMEZONE"
