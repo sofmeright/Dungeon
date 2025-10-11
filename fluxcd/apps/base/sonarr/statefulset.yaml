@@ -75,9 +75,6 @@ spec:
       - name: tv-shows
         persistentVolumeClaim:
           claimName: sonarr-tv-shows
-      - name: downloads
-        persistentVolumeClaim:
-          claimName: sonarr-downloads
   volumeClaimTemplates:
   - metadata:
       name: config
@@ -87,3 +84,11 @@ spec:
       resources:
         requests:
           storage: 2Gi
+  - metadata:
+      name: downloads
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      storageClassName: PLACEHOLDER_STORAGE_CLASS
+      resources:
+        requests:
+          storage: 100Gi

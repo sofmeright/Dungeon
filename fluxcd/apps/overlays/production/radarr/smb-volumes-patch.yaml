@@ -15,20 +15,3 @@ metadata:
   name: radarr-movies
 spec:
   storageClassName: ""
----
-apiVersion: v1
-kind: PersistentVolume
-metadata:
-  name: radarr-downloads
-spec:
-  csi:
-    volumeHandle: radarr-downloads-gringotts-timecapsule-downloads
-    volumeAttributes:
-      source: "//gringotts/timecapsule/Downloads"
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: radarr-downloads
-spec:
-  storageClassName: ""

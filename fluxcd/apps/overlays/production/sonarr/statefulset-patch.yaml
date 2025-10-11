@@ -29,3 +29,11 @@ spec:
       resources:
         requests:
           storage: 2Gi
+  - metadata:
+      name: downloads
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      storageClassName: ceph-rbd-retain
+      resources:
+        requests:
+          storage: 100Gi
