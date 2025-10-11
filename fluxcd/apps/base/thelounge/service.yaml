@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: thelounge
+spec:
+  type: ClusterIP
+  selector:
+    app: thelounge
+  ports:
+  - name: http
+    protocol: TCP
+    port: 9000
+    targetPort: 9000

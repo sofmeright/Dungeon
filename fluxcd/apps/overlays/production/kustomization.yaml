@@ -42,3 +42,6 @@ resources:
   - cross-seed
   - sabnzbd
   - pyload-ng
+  - overseerr
+  - thelounge
+  - byparr

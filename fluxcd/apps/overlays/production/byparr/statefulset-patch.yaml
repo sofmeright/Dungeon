@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: byparr
+spec:
+  template:
+    spec:
+      containers:
+      - name: byparr
+        image: ghcr.io/thephaseless/byparr:latest
+        env:
+        - name: TZ
+          value: "America/Chicago"
+      - name: gluetun
+        image: docker.io/qmcgaw/gluetun:v3.39.1
+        env:
+        - name: VPN_SERVICE_PROVIDER
+          value: "private internet access"
+        - name: SERVER_REGIONS
+          value: "CA Vancouver"
+        - name: DNS_ADDRESS
+          value: "10.144.0.10"
+  volumeClaimTemplates:
+  - metadata:
+      name: screenshots
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      storageClassName: ceph-rbd-retain
+      resources:
+        requests:
+          storage: 1Gi
