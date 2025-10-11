@@ -3,6 +3,9 @@ kind: Namespace
 metadata:
   name: shooting-gallery
   labels:
+    name: shooting-gallery
+    purpose: game-servers
+    jcr-pull-secret: "enabled"
     pod-security.kubernetes.io/enforce: baseline
     pod-security.kubernetes.io/audit: baseline
     pod-security.kubernetes.io/warn: baseline
