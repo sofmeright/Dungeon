@@ -7,7 +7,7 @@ spec:
     spec:
       containers:
       - name: readarr
-        image: lscr.io/linuxserver/readarr:nightly
+        image: docker.io/linuxserver/readarr:develop
         env:
         - name: TZ
           value: "America/Chicago"
