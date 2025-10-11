@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: prowlarr
+spec:
+  template:
+    spec:
+      containers:
+      - name: prowlarr
+        image: ghcr.io/hotio/prowlarr:latest
+        env:
+        - name: TZ
+          value: "America/Chicago"
+      - name: gluetun
+        image: docker.io/qmcgaw/gluetun:v3.39.1
+        env:
+        - name: FIREWALL_VPN_INPUT_PORTS
+          value: "9696"
+  volumeClaimTemplates:
+  - metadata:
+      name: config
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      storageClassName: ceph-rbd-retain
+      resources:
+        requests:
+          storage: 1Gi
