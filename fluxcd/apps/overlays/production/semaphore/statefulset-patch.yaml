@@ -21,7 +21,7 @@ spec:
           value: "Etc/UTC"
   volumeClaimTemplates:
   - metadata:
-      name: hyrule-castle-semaphore-postgres-data
+      name: postgres-data
     spec:
       storageClassName: ceph-rbd-retain
       accessModes: ["ReadWriteOnce"]
@@ -29,7 +29,7 @@ spec:
         requests:
           storage: 10Gi
   - metadata:
-      name: hyrule-castle-semaphore-config
+      name: config
     spec:
       storageClassName: ceph-rbd-retain
       accessModes: ["ReadWriteOnce"]
@@ -37,7 +37,7 @@ spec:
         requests:
           storage: 1Gi
   - metadata:
-      name: hyrule-castle-semaphore-playbooks
+      name: playbooks
     spec:
       storageClassName: ceph-rbd-retain
       accessModes: ["ReadWriteOnce"]
@@ -45,7 +45,7 @@ spec:
         requests:
           storage: 10Gi
   - metadata:
-      name: hyrule-castle-semaphore-ssh-keys
+      name: ssh-keys
     spec:
       storageClassName: ceph-rbd-retain
       accessModes: ["ReadWriteOnce"]
