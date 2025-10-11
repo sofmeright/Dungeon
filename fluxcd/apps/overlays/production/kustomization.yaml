@@ -38,3 +38,4 @@ resources:
   - lidarr
   - jellyseerr
   - bazarr
+  - readarr
