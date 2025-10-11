@@ -63,3 +63,16 @@ spec:
   dnsNames:
     - "*.uni2.cc"
     - "uni2.cc"
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: pcfae-com-tls
+spec:
+  secretName: pcfae-com-tls
+  issuerRef:
+    name: letsencrypt-production
+    kind: ClusterIssuer
+  dnsNames:
+    - "*.pcfae.com"
+    - "pcfae.com"

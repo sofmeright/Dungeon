@@ -1,0 +1,20 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: xylem-gateway
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-production
+spec:
+  gatewayClassName: traefik
+  listeners:
+    - name: https-pcfae
+      protocol: HTTPS
+      port: 443
+      hostname: "*.pcfae.com"
+      tls:
+        mode: Terminate
+        certificateRefs:
+          - name: PLACEHOLDER_TLS_SECRET
+      allowedRoutes:
+        namespaces:
+          from: All

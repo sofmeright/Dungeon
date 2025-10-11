@@ -22,6 +22,8 @@ spec:
           value: "true"
         - name: VPN_PORT_FORWARDING
           value: "on"
+        - name: VPN_PORT_FORWARDING_STATUS_FILE
+          value: "/tmp/gluetun/forwarded_port"
         - name: FIREWALL_OUTBOUND_SUBNETS
           value: "10.0.0.0/8,172.16.0.0/12,192.168.0.0/16"
         - name: FIREWALL_INPUT_PORTS
