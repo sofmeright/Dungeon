@@ -1,0 +1,102 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: radarr
+spec:
+  serviceName: radarr
+  replicas: 1
+  selector:
+    matchLabels:
+      app: radarr
+  template:
+    metadata:
+      labels:
+        app: radarr
+    spec:
+      containers:
+      - name: radarr
+        image: ghcr.io/hotio/radarr:PLACEHOLDER_IMAGE_TAG
+        env:
+        - name: PUID
+          value: "1000"
+        - name: PGID
+          value: "1000"
+        - name: TZ
+          value: PLACEHOLDER_TIMEZONE
+        volumeMounts:
+        - name: config
+          mountPath: /config
+        - name: movies
+          mountPath: /media/Movies
+        - name: downloads
+          mountPath: /downloads
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "200m"
+          limits:
+            memory: "1Gi"
+            cpu: "1000m"
+      - name: gluetun
+        image: docker.io/qmcgaw/gluetun:PLACEHOLDER_IMAGE_TAG
+        securityContext:
+          capabilities:
+            add:
+              - NET_ADMIN
+        env:
+        - name: VPN_SERVICE_PROVIDER
+          valueFrom:
+            secretKeyRef:
+              name: radarr-vpn-secret
+              key: vpn_service_provider
+        - name: VPN_TYPE
+          valueFrom:
+            secretKeyRef:
+              name: radarr-vpn-secret
+              key: vpn_type
+        - name: WIREGUARD_PRIVATE_KEY
+          valueFrom:
+            secretKeyRef:
+              name: radarr-vpn-secret
+              key: wireguard_private_key
+        - name: WIREGUARD_ADDRESSES
+          valueFrom:
+            secretKeyRef:
+              name: radarr-vpn-secret
+              key: wireguard_addresses
+        - name: SERVER_CITIES
+          valueFrom:
+            secretKeyRef:
+              name: radarr-vpn-secret
+              key: server_cities
+        - name: FIREWALL_VPN_INPUT_PORTS
+          value: "PLACEHOLDER_FIREWALL_PORTS"
+        - name: DOT
+          value: "off"
+        - name: DNS_ADDRESS
+          value: "10.144.0.10"
+        - name: HEALTH_VPN_DURATION_INITIAL
+          value: "60s"
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "50m"
+          limits:
+            memory: "256Mi"
+            cpu: "200m"
+      volumes:
+      - name: movies
+        persistentVolumeClaim:
+          claimName: radarr-movies
+      - name: downloads
+        persistentVolumeClaim:
+          claimName: radarr-downloads
+  volumeClaimTemplates:
+  - metadata:
+      name: config
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      storageClassName: PLACEHOLDER_STORAGE_CLASS
+      resources:
+        requests:
+          storage: 2Gi

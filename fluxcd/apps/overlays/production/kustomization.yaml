@@ -33,3 +33,5 @@ resources:
   - gluetun-primary
   - neko-vpn
   - prowlarr
+  - radarr
+  - sonarr
