@@ -1,0 +1,103 @@
+---
+# Media root directory (for general media access)
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: smb-media
+spec:
+  capacity:
+    storage: 100Ti
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  mountOptions:
+    - dir_mode=0777
+    - file_mode=0777
+    - uid=1000
+    - gid=1000
+  csi:
+    driver: smb.csi.k8s.io
+    volumeHandle: PLACEHOLDER_VOLUME_HANDLE
+    volumeAttributes:
+      source: PLACEHOLDER_SMB_SOURCE
+    nodeStageSecretRef:
+      name: smb-plex-credentials
+      namespace: PLACEHOLDER_NAMESPACE
+
+---
+# Movies directory
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: smb-movies
+spec:
+  capacity:
+    storage: 50Ti
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  mountOptions:
+    - dir_mode=0777
+    - file_mode=0777
+    - uid=1000
+    - gid=1000
+  csi:
+    driver: smb.csi.k8s.io
+    volumeHandle: PLACEHOLDER_VOLUME_HANDLE
+    volumeAttributes:
+      source: PLACEHOLDER_SMB_SOURCE
+    nodeStageSecretRef:
+      name: smb-qbittorrent-credentials
+      namespace: PLACEHOLDER_NAMESPACE
+
+---
+# TV Shows directory
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: smb-tv-shows
+spec:
+  capacity:
+    storage: 50Ti
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  mountOptions:
+    - dir_mode=0777
+    - file_mode=0777
+    - uid=1000
+    - gid=1000
+  csi:
+    driver: smb.csi.k8s.io
+    volumeHandle: PLACEHOLDER_VOLUME_HANDLE
+    volumeAttributes:
+      source: PLACEHOLDER_SMB_SOURCE
+    nodeStageSecretRef:
+      name: smb-qbittorrent-credentials
+      namespace: PLACEHOLDER_NAMESPACE
+
+---
+# Music directory
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: smb-music
+spec:
+  capacity:
+    storage: 10Ti
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  mountOptions:
+    - dir_mode=0777
+    - file_mode=0777
+    - uid=8686
+    - gid=8686
+  csi:
+    driver: smb.csi.k8s.io
+    volumeHandle: PLACEHOLDER_VOLUME_HANDLE
+    volumeAttributes:
+      source: PLACEHOLDER_SMB_SOURCE
+    nodeStageSecretRef:
+      name: smb-lidarr-credentials
+      namespace: PLACEHOLDER_NAMESPACE
