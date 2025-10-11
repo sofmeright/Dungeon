@@ -11,9 +11,8 @@ data:
         CREATE USER praefect WITH PASSWORD 'PLACEHOLDER_PASSWORD';
         RAISE NOTICE 'User praefect created';
       ELSE
-        RAISE NOTICE 'User praefect already exists';
-        -- Update password in case it changed
         ALTER USER praefect WITH PASSWORD 'PLACEHOLDER_PASSWORD';
+        RAISE NOTICE 'User praefect password updated';
       END IF;
     END
     $$;
