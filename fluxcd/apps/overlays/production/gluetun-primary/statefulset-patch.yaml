@@ -34,6 +34,8 @@ spec:
           value: "6887"
         - name: TZ
           value: "Etc/UTC"
+        - name: LOG_LEVEL
+          value: "debug"
         volumeMounts:
         - name: swift-sail-gluetun-primary-gluetun-config
           mountPath: /gluetun
