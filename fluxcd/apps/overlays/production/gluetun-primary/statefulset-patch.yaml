@@ -16,6 +16,8 @@ spec:
           value: "private internet access"
         - name: SERVER_REGIONS
           value: "CA Vancouver"
+        - name: PORT_FORWARD_ONLY
+          value: "true"
         - name: VPN_PORT_FORWARDING
           value: "on"
         - name: FIREWALL_OUTBOUND_SUBNETS
