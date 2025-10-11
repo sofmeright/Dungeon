@@ -4,6 +4,8 @@ metadata:
   name: gitlab
 spec:
   targetNamespace: hyrule-castle
+  upgrade:
+    disableWait: true
   chart:
     spec:
       sourceRef:
