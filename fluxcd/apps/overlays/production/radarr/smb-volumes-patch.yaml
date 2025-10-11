@@ -8,9 +8,6 @@ spec:
     volumeHandle: radarr-movies-gringotts-timecapsule-media-movies
     volumeAttributes:
       source: "//gringotts/timecapsule/Media/Movies"
-    nodeStageSecretRef:
-      name: radarr-smb-secret
-      namespace: swift-sail
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -28,9 +25,6 @@ spec:
     volumeHandle: radarr-downloads-gringotts-timecapsule-downloads
     volumeAttributes:
       source: "//gringotts/timecapsule/Downloads"
-    nodeStageSecretRef:
-      name: radarr-smb-secret
-      namespace: swift-sail
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
