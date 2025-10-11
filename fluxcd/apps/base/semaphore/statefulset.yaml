@@ -1,0 +1,153 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: semaphore
+spec:
+  serviceName: semaphore
+  replicas: PLACEHOLDER_REPLICAS
+  selector:
+    matchLabels:
+      app: semaphore
+  template:
+    metadata:
+      labels:
+        app: semaphore
+    spec:
+      securityContext:
+        fsGroup: PLACEHOLDER_GID
+      containers:
+      # PostgreSQL 14 sidecar
+      - name: postgres
+        image: PLACEHOLDER_POSTGRES_IMAGE
+        env:
+        - name: POSTGRES_DB
+          value: semaphore
+        - name: POSTGRES_USER
+          valueFrom:
+            secretKeyRef:
+              name: semaphore-secrets
+              key: postgres_user
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: semaphore-secrets
+              key: postgres_password
+        - name: PGDATA
+          value: /var/lib/postgresql/data/pgdata
+        ports:
+        - containerPort: 5432
+          name: postgres
+        volumeMounts:
+        - name: postgres-data
+          mountPath: /var/lib/postgresql/data
+        resources:
+          requests:
+            memory: 256Mi
+            cpu: 100m
+          limits:
+            memory: 512Mi
+            cpu: 500m
+
+      # Semaphore UI
+      - name: semaphore
+        image: PLACEHOLDER_SEMAPHORE_IMAGE
+        securityContext:
+          runAsUser: PLACEHOLDER_UID
+          runAsGroup: PLACEHOLDER_GID
+        env:
+        - name: SEMAPHORE_DB_DIALECT
+          value: postgres
+        - name: SEMAPHORE_DB_HOST
+          value: localhost
+        - name: SEMAPHORE_DB_PORT
+          value: "5432"
+        - name: SEMAPHORE_DB_USER
+          valueFrom:
+            secretKeyRef:
+              name: semaphore-secrets
+              key: postgres_user
+        - name: SEMAPHORE_DB_PASS
+          valueFrom:
+            secretKeyRef:
+              name: semaphore-secrets
+              key: postgres_password
+        - name: SEMAPHORE_DB_NAME
+          value: semaphore
+        - name: SEMAPHORE_ADMIN_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: semaphore-secrets
+              key: admin_password
+        - name: SEMAPHORE_ADMIN_NAME
+          valueFrom:
+            secretKeyRef:
+              name: semaphore-secrets
+              key: admin_name
+        - name: SEMAPHORE_ADMIN_EMAIL
+          valueFrom:
+            secretKeyRef:
+              name: semaphore-secrets
+              key: admin_email
+        - name: SEMAPHORE_ADMIN
+          valueFrom:
+            secretKeyRef:
+              name: semaphore-secrets
+              key: admin_username
+        - name: SEMAPHORE_ACCESS_KEY_ENCRYPTION
+          valueFrom:
+            secretKeyRef:
+              name: semaphore-secrets
+              key: access_key_encryption
+        - name: TZ
+          value: PLACEHOLDER_TZ
+        ports:
+        - containerPort: 3000
+          name: http
+        volumeMounts:
+        - name: config
+          mountPath: /etc/semaphore
+        - name: playbooks
+          mountPath: /tmp/semaphore
+        - name: ssh-keys
+          mountPath: /root/.ssh
+        resources:
+          requests:
+            memory: 256Mi
+            cpu: 100m
+          limits:
+            memory: 1Gi
+            cpu: 1000m
+
+  volumeClaimTemplates:
+  - metadata:
+      name: postgres-data
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      storageClassName: PLACEHOLDER_STORAGE_CLASS
+      resources:
+        requests:
+          storage: PLACEHOLDER_POSTGRES_STORAGE
+  - metadata:
+      name: config
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      storageClassName: PLACEHOLDER_STORAGE_CLASS
+      resources:
+        requests:
+          storage: PLACEHOLDER_CONFIG_STORAGE
+  - metadata:
+      name: playbooks
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      storageClassName: PLACEHOLDER_STORAGE_CLASS
+      resources:
+        requests:
+          storage: PLACEHOLDER_PLAYBOOKS_STORAGE
+  - metadata:
+      name: ssh-keys
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      storageClassName: PLACEHOLDER_STORAGE_CLASS
+      resources:
+        requests:
+          storage: PLACEHOLDER_SSH_STORAGE

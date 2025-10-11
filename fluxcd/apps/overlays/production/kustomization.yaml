@@ -28,6 +28,7 @@ resources:
   - libretranslate
   - immich
   - gitlab
+  - semaphore
   - roundcube-primary-gmail
   - wikijs-vegan
   - gluetun-primary

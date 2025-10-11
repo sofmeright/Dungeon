@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: semaphore
+spec:
+  replicas: 1
+  template:
+    spec:
+      securityContext:
+        fsGroup: 1000
+      containers:
+      - name: postgres
+        image: docker.io/postgres:14
+      - name: semaphore
+        image: docker.io/semaphoreui/semaphore:latest
+        securityContext:
+          runAsUser: 1000
+          runAsGroup: 1000
+        env:
+        - name: TZ
+          value: "Etc/UTC"
+  volumeClaimTemplates:
+  - metadata:
+      name: hyrule-castle-semaphore-postgres-data
+    spec:
+      storageClassName: ceph-rbd-retain
+      accessModes: ["ReadWriteOnce"]
+      resources:
+        requests:
+          storage: 10Gi
+  - metadata:
+      name: hyrule-castle-semaphore-config
+    spec:
+      storageClassName: ceph-rbd-retain
+      accessModes: ["ReadWriteOnce"]
+      resources:
+        requests:
+          storage: 1Gi
+  - metadata:
+      name: hyrule-castle-semaphore-playbooks
+    spec:
+      storageClassName: ceph-rbd-retain
+      accessModes: ["ReadWriteOnce"]
+      resources:
+        requests:
+          storage: 10Gi
+  - metadata:
+      name: hyrule-castle-semaphore-ssh-keys
+    spec:
+      storageClassName: ceph-rbd-retain
+      accessModes: ["ReadWriteOnce"]
+      resources:
+        requests:
+          storage: 100Mi
