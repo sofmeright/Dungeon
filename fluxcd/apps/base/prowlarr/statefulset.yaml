@@ -41,30 +41,19 @@ spec:
               - NET_ADMIN
         env:
         - name: VPN_SERVICE_PROVIDER
+          value: PLACEHOLDER_VPN_PROVIDER
+        - name: SERVER_REGIONS
+          value: PLACEHOLDER_SERVER_REGIONS
+        - name: OPENVPN_USER
           valueFrom:
             secretKeyRef:
               name: prowlarr-vpn-secret
-              key: vpn_service_provider
-        - name: VPN_TYPE
+              key: vpn_user
+        - name: OPENVPN_PASSWORD
           valueFrom:
             secretKeyRef:
               name: prowlarr-vpn-secret
-              key: vpn_type
-        - name: WIREGUARD_PRIVATE_KEY
-          valueFrom:
-            secretKeyRef:
-              name: prowlarr-vpn-secret
-              key: wireguard_private_key
-        - name: WIREGUARD_ADDRESSES
-          valueFrom:
-            secretKeyRef:
-              name: prowlarr-vpn-secret
-              key: wireguard_addresses
-        - name: SERVER_CITIES
-          valueFrom:
-            secretKeyRef:
-              name: prowlarr-vpn-secret
-              key: server_cities
+              key: vpn_password
         - name: FIREWALL_VPN_INPUT_PORTS
           value: "PLACEHOLDER_FIREWALL_PORTS"
         - name: DOT
