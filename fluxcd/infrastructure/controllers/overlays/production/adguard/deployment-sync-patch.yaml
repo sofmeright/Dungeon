@@ -1,0 +1,11 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: adguardhome-sync
+spec:
+  replicas: 1
+  template:
+    spec:
+      containers:
+      - name: adguardhome-sync
+        image: docker.jcr.pcfae.com/linuxserver/adguardhome-sync:latest

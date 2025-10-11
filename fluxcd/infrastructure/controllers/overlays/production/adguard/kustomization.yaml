@@ -40,3 +40,11 @@ patches:
     target:
       kind: PersistentVolumeClaim
       name: adguard-conf-adguard-0
+  - path: deployment-sync-patch.yaml
+    target:
+      kind: Deployment
+      name: adguardhome-sync
+  - path: externalsecret-sync-patch.yaml
+    target:
+      kind: ExternalSecret
+      name: adguardhome-sync-config
