@@ -9,6 +9,9 @@ spec:
       containers:
       - name: postgres
         image: docker.io/postgres:16-alpine
+        env:
+        - name: PGDATA
+          value: /var/lib/postgresql/data/pgdata
         volumeMounts:
         - name: temple-of-time-reactive-resume-postgres-data
           mountPath: /var/lib/postgresql/data
