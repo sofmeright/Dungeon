@@ -17,4 +17,4 @@ spec:
             memory: "1Gi"
             cpu: "500m"
       imagePullSecrets:
-      - name: cr-pcfae-admin-pull-secret
+      - name: jcr-pcfae-dungeon-pull-secret

@@ -25,13 +25,13 @@ spec:
             memory: "2Gi"
             cpu: "1000m"
       imagePullSecrets:
-      - name: cr-pcfae-admin-pull-secret
+      - name: jcr-pcfae-dungeon-pull-secret
   volumeClaimTemplates:
   - metadata:
       name: temple-of-time-appflowy-postgres-data
     spec:
       accessModes: ["ReadWriteOnce"]
-      storageClassName: ceph-block
+      storageClassName: ceph-rbd
       resources:
         requests:
           storage: 20Gi
