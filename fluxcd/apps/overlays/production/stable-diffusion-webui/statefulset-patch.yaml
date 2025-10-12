@@ -21,9 +21,9 @@ spec:
           value: "--allow-code --medvram --xformers --enable-insecure-extension-access --api --listen --port 7860"
         volumeMounts:
         - name: data
-          mountPath: /opt/stable-diffusion-webui
+          mountPath: /opt/stable-diffusion-webui/models
         - name: output
-          mountPath: /output
+          mountPath: /opt/stable-diffusion-webui/outputs
   volumeClaimTemplates:
   - metadata:
       name: data
