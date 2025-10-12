@@ -4,7 +4,7 @@ kind: StatefulSet
 metadata:
   name: zitadel
 spec:
-  replicas: 1
+  replicas: 3
 ---
 apiVersion: apps/v1
 kind: StatefulSet
