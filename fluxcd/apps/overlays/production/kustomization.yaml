@@ -63,6 +63,7 @@ resources:
   - netbootxyz
   - faster-whisper
   - apt-cacher-ng
+  - jfrog-artifactory
   - projectsend
   - bagisto-demo
   - speedtest-tracker

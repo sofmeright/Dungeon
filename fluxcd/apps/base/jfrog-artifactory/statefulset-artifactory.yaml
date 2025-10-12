@@ -1,0 +1,87 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: jfrog-artifactory-jcr
+spec:
+  serviceName: jfrog-artifactory-jcr
+  replicas: 1
+  selector:
+    matchLabels:
+      app: jfrog-artifactory-jcr
+  template:
+    metadata:
+      labels:
+        app: jfrog-artifactory-jcr
+    spec:
+      initContainers:
+      - name: wait-for-postgres
+        image: docker.io/busybox:1.36
+        command:
+        - sh
+        - -c
+        - |
+          until nc -z jfrog-artifactory-postgres 5433; do
+            echo "Waiting for postgres..."
+            sleep 2
+          done
+      containers:
+      - name: artifactory
+        image: PLACEHOLDER_ARTIFACTORY_IMAGE
+        ports:
+        - containerPort: 8082
+          name: router
+        - containerPort: 8081
+          name: artifactory
+        env:
+        - name: JF_ROUTER_ENTRYPOINTS_EXTERNALPORT
+          value: "8082"
+        - name: JF_SHARED_DATABASE_TYPE
+          value: "postgresql"
+        - name: JF_SHARED_DATABASE_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: jfrog-artifactory-secrets
+              key: POSTGRES_USER
+        - name: JF_SHARED_DATABASE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: jfrog-artifactory-secrets
+              key: POSTGRES_PASSWORD
+        - name: JF_SHARED_DATABASE_URL
+          value: "jdbc:postgresql://jfrog-artifactory-postgres:5433/artifactory"
+        - name: JF_SHARED_DATABASE_DRIVER
+          value: "org.postgresql.Driver"
+        - name: JF_SHARED_NODE_IP
+          value: "PLACEHOLDER_NODE_IP"
+        - name: JF_SHARED_NODE_ID
+          value: "PLACEHOLDER_NODE_ID"
+        - name: JF_SHARED_NODE_NAME
+          value: "PLACEHOLDER_NODE_NAME"
+        volumeMounts:
+        - name: PLACEHOLDER_ARTIFACTORY_DATA
+          mountPath: /var/opt/jfrog/artifactory
+        - name: localtime
+          mountPath: /etc/localtime
+          readOnly: true
+        resources:
+          requests:
+            cpu: PLACEHOLDER_CPU_REQUEST
+            memory: PLACEHOLDER_MEMORY_REQUEST
+          limits:
+            cpu: PLACEHOLDER_CPU_LIMIT
+            memory: PLACEHOLDER_MEMORY_LIMIT
+      volumes:
+      - name: localtime
+        hostPath:
+          path: /etc/localtime
+          type: File
+  volumeClaimTemplates:
+  - metadata:
+      name: PLACEHOLDER_ARTIFACTORY_DATA
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      storageClassName: PLACEHOLDER_STORAGE_CLASS
+      resources:
+        requests:
+          storage: PLACEHOLDER_STORAGE_SIZE

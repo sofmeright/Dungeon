@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: jfrog-artifactory-postgres
+spec:
+  template:
+    spec:
+      imagePullSecrets:
+      - name: jcr-pcfae-dungeon-pull-secret
+      containers:
+      - name: postgres
+        image: docker.jcr.pcfae.com/postgres:16.6-alpine
+        resources:
+          requests:
+            cpu: "500m"
+            memory: "512Mi"
+          limits:
+            cpu: "2000m"
+            memory: "2Gi"
+  volumeClaimTemplates:
+  - metadata:
+      name: compass-jfrog-artifactory-postgres-data
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      storageClassName: ceph-rbd
+      resources:
+        requests:
+          storage: 20Gi

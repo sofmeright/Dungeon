@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: jfrog-artifactory-jcr
+spec:
+  template:
+    spec:
+      imagePullSecrets:
+      - name: jcr-pcfae-dungeon-pull-secret
+      initContainers:
+      - name: wait-for-postgres
+        image: docker.jcr.pcfae.com/busybox:1.36
+      containers:
+      - name: artifactory
+        image: docker.jcr.pcfae.com/jfrog/artifactory-jcr:7.111.11
+        env:
+        - name: JF_SHARED_NODE_IP
+          valueFrom:
+            fieldRef:
+              fieldPath: status.podIP
+        - name: JF_SHARED_NODE_ID
+          value: "dungeon-artifactory"
+        - name: JF_SHARED_NODE_NAME
+          value: "dungeon-artifactory"
+        resources:
+          requests:
+            cpu: "1000m"
+            memory: "2Gi"
+          limits:
+            cpu: "4000m"
+            memory: "8Gi"
+  volumeClaimTemplates:
+  - metadata:
+      name: compass-jfrog-artifactory-data
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      storageClassName: ceph-rbd
+      resources:
+        requests:
+          storage: 100Gi
