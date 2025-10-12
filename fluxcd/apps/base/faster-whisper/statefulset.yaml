@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: faster-whisper
+spec:
+  serviceName: faster-whisper
+  replicas: 1
+  selector:
+    matchLabels:
+      app: faster-whisper
+  template:
+    metadata:
+      labels:
+        app: faster-whisper
+    spec:
+      containers:
+      - name: faster-whisper
+        image: lscr.io/linuxserver/faster-whisper:gpu
+        ports:
+        - containerPort: 10300
+          name: http
+        env:
+        - name: PUID
+          value: "1000"
+        - name: PGID
+          value: "1000"
+        - name: TZ
+          value: "Etc/UTC"
+        - name: WHISPER_BEAM
+          value: "1"
+        - name: WHISPER_LANG
+          value: "en"
+        - name: WHISPER_MODEL
+          value: "turbo"
+        resources:
+          limits:
+            nvidia.com/gpu: 1
+        volumeMounts:
+        - name: config
+          mountPath: /config
+  volumeClaimTemplates:
+  - metadata:
+      name: config
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: 10Gi
