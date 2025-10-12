@@ -2,5 +2,5 @@
   path: /metadata/annotations
   value:
     lbipam.cilium.io/ips: "172.22.30.119"
-    lbipam.cilium.io/sharing-key: "lens-of-truth-dashboards"
+    lbipam.cilium.io/sharing-key: "lens-of-truth"
     lbipam.cilium.io/sharing-cross-namespace: "*"
