@@ -7,8 +7,18 @@ spec:
   - metadata:
       name: data
     spec:
+      accessModes:
+      - ReadWriteOnce
       storageClassName: ceph-rbd
+      resources:
+        requests:
+          storage: 50Gi
   - metadata:
       name: profiles
     spec:
+      accessModes:
+      - ReadWriteOnce
       storageClassName: ceph-rbd
+      resources:
+        requests:
+          storage: 20Gi
