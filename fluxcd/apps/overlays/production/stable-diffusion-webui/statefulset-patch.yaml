@@ -9,8 +9,16 @@ spec:
       - name: webui
         image: ghcr.io/ai-dock/stable-diffusion-webui:latest
         env:
+        - name: WEBUI_PORT
+          value: "7860"
+        - name: DIRECT_ADDRESS
+          value: "0.0.0.0"
+        - name: DIRECT_ADDRESS_GET_WAN
+          value: "false"
+        - name: WEB_ENABLE_AUTH
+          value: "false"
         - name: CLI_ARGS
-          value: "--allow-code --medvram --xformers --enable-insecure-extension-access --api --listen"
+          value: "--allow-code --medvram --xformers --enable-insecure-extension-access --api --listen --port 7860"
   volumeClaimTemplates:
   - metadata:
       name: data
