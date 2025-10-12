@@ -5,6 +5,7 @@ resources:
   - ../../../base/code-server
   - httproute.yaml
 patches:
+  - path: statefulset-remove-vct.yaml
   - path: statefulset-patch.yaml
   - path: service-patch.yaml
   - path: externalsecret-patch.yaml
