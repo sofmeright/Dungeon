@@ -1,0 +1,88 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: speedtest-tracker
+spec:
+  serviceName: speedtest-tracker
+  replicas: PLACEHOLDER_REPLICAS
+  selector:
+    matchLabels:
+      app: speedtest-tracker
+  template:
+    metadata:
+      labels:
+        app: speedtest-tracker
+    spec:
+      containers:
+      - name: speedtest-tracker
+        image: PLACEHOLDER_IMAGE
+        ports:
+        - containerPort: 80
+          name: http
+        - containerPort: 443
+          name: https
+        env:
+        - name: PUID
+          value: "PLACEHOLDER_PUID"
+        - name: PGID
+          value: "PLACEHOLDER_PGID"
+        - name: APP_KEY
+          valueFrom:
+            secretKeyRef:
+              name: speedtest-tracker-secrets
+              key: APP_KEY
+        - name: DB_CONNECTION
+          value: pgsql
+        - name: DB_HOST
+          value: speedtest-tracker-db
+        - name: DB_PORT
+          value: "5432"
+        - name: DB_DATABASE
+          valueFrom:
+            secretKeyRef:
+              name: speedtest-tracker-secrets
+              key: DB_DATABASE
+        - name: DB_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: speedtest-tracker-secrets
+              key: DB_USERNAME
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: speedtest-tracker-secrets
+              key: DB_PASSWORD
+        - name: SPEEDTEST_SCHEDULE
+          value: "PLACEHOLDER_SPEEDTEST_SCHEDULE"
+        - name: SPEEDTEST_SERVERS
+          value: "PLACEHOLDER_SPEEDTEST_SERVERS"
+        - name: PRUNE_RESULTS_OLDER_THAN
+          value: "PLACEHOLDER_PRUNE_RESULTS_OLDER_THAN"
+        - name: DISPLAY_TIMEZONE
+          value: "PLACEHOLDER_DISPLAY_TIMEZONE"
+        - name: APP_TIMEZONE
+          value: "PLACEHOLDER_APP_TIMEZONE"
+        volumeMounts:
+        - name: PLACEHOLDER_NAMESPACE-speedtest-tracker-config
+          mountPath: /config
+        - name: PLACEHOLDER_NAMESPACE-speedtest-tracker-keys
+          mountPath: /config/keys
+  volumeClaimTemplates:
+  - metadata:
+      name: PLACEHOLDER_NAMESPACE-speedtest-tracker-config
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      storageClassName: PLACEHOLDER_STORAGE_CLASS
+      resources:
+        requests:
+          storage: PLACEHOLDER_CONFIG_STORAGE_SIZE
+  - metadata:
+      name: PLACEHOLDER_NAMESPACE-speedtest-tracker-keys
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      storageClassName: PLACEHOLDER_STORAGE_CLASS
+      resources:
+        requests:
+          storage: PLACEHOLDER_KEYS_STORAGE_SIZE

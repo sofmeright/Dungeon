@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: speedtest-tracker
+spec:
+  type: PLACEHOLDER_SERVICE_TYPE
+  selector:
+    app: speedtest-tracker
+  ports:
+  - name: http
+    port: PLACEHOLDER_HTTP_PORT
+    targetPort: 80
+  - name: https
+    port: PLACEHOLDER_HTTPS_PORT
+    targetPort: 443

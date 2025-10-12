@@ -64,3 +64,4 @@ resources:
   - apt-cacher-ng
   - projectsend
   - bagisto-demo
+  - speedtest-tracker

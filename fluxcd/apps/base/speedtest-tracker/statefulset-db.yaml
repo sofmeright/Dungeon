@@ -1,0 +1,84 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: speedtest-tracker-db
+spec:
+  serviceName: speedtest-tracker-db
+  replicas: PLACEHOLDER_REPLICAS
+  selector:
+    matchLabels:
+      app: speedtest-tracker-db
+  template:
+    metadata:
+      labels:
+        app: speedtest-tracker-db
+    spec:
+      initContainers:
+      - name: init-permissions
+        image: PLACEHOLDER_INIT_IMAGE
+        command:
+        - sh
+        - -c
+        - |
+          chown -R 999:999 /var/lib/postgresql/data
+          chmod 700 /var/lib/postgresql/data
+        volumeMounts:
+        - name: PLACEHOLDER_NAMESPACE-speedtest-tracker-postgres
+          mountPath: /var/lib/postgresql/data
+        securityContext:
+          runAsUser: 0
+      containers:
+      - name: postgres
+        image: PLACEHOLDER_IMAGE
+        ports:
+        - containerPort: 5432
+          name: postgres
+        env:
+        - name: POSTGRES_USER
+          valueFrom:
+            secretKeyRef:
+              name: speedtest-tracker-secrets
+              key: DB_USERNAME
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: speedtest-tracker-secrets
+              key: DB_PASSWORD
+        - name: POSTGRES_DB
+          valueFrom:
+            secretKeyRef:
+              name: speedtest-tracker-secrets
+              key: DB_DATABASE
+        volumeMounts:
+        - name: PLACEHOLDER_NAMESPACE-speedtest-tracker-postgres
+          mountPath: /var/lib/postgresql/data
+        securityContext:
+          runAsUser: 999
+          runAsGroup: 999
+          fsGroup: 999
+        livenessProbe:
+          exec:
+            command:
+            - pg_isready
+            - -U
+            - $(POSTGRES_USER)
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          exec:
+            command:
+            - pg_isready
+            - -U
+            - $(POSTGRES_USER)
+          initialDelaySeconds: 5
+          periodSeconds: 5
+  volumeClaimTemplates:
+  - metadata:
+      name: PLACEHOLDER_NAMESPACE-speedtest-tracker-postgres
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      storageClassName: PLACEHOLDER_STORAGE_CLASS
+      resources:
+        requests:
+          storage: PLACEHOLDER_POSTGRES_STORAGE_SIZE
