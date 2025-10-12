@@ -8,6 +8,9 @@ spec:
       containers:
       - name: mariadb
         image: lscr.io/linuxserver/mariadb:latest
+        volumeMounts:
+        - name: hyrule-castle-bookstack-db-data
+          mountPath: /config
         env:
         - name: PUID
           value: "1000"

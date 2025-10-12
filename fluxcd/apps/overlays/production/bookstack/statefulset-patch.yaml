@@ -11,6 +11,14 @@ spec:
       containers:
       - name: bookstack
         image: lscr.io/linuxserver/bookstack:latest
+        volumeMounts:
+        - name: hyrule-castle-bookstack-config
+          mountPath: /config
+        - name: hyrule-castle-bookstack-uploads
+          mountPath: /app/www/public/uploads
+        - name: custom-functions
+          mountPath: /app/www/themes/custom/functions.php
+          subPath: functions.php
         env:
         - name: PUID
           value: "1000"
