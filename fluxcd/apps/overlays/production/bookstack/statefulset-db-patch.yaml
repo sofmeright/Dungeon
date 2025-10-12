@@ -19,4 +19,9 @@ spec:
   - metadata:
       name: hyrule-castle-bookstack-db-data
     spec:
+      accessModes:
+      - ReadWriteOnce
       storageClassName: ceph-rbd
+      resources:
+        requests:
+          storage: 5Gi
