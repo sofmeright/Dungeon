@@ -16,9 +16,8 @@ spec:
           mountPath: /config
         - name: hyrule-castle-bookstack-uploads
           mountPath: /app/www/public/uploads
-        - name: custom-functions
-          mountPath: /app/www/themes/custom/functions.php
-          subPath: functions.php
+        - $patch: delete
+          name: custom-functions
         env:
         - name: PUID
           value: "1000"
@@ -60,6 +59,9 @@ spec:
           value: "https://apps.pcfae.com"
         - name: ALLOWED_IFRAME_SOURCES
           value: "https://apps.pcfae.com"
+      volumes:
+      - $patch: delete
+        name: custom-functions
   volumeClaimTemplates:
   - metadata:
       name: hyrule-castle-bookstack-config
