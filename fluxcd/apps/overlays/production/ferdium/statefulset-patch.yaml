@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: ferdium
+spec:
+  replicas: 1
+  template:
+    spec:
+      containers:
+      - name: ferdium
+        image: lscr.io/linuxserver/ferdium:latest
+        env:
+        - name: PUID
+          value: "1000"
+        - name: PGID
+          value: "1000"
+        - name: TZ
+          value: "America/New_York"
+        resources:
+          requests:
+            cpu: 100m
+            memory: 512Mi
+          limits:
+            cpu: 2000m
+            memory: 2Gi
+        volumeMounts:
+        - name: lost-woods-ferdium-config
+          mountPath: /config
+  volumeClaimTemplates:
+  - metadata:
+      name: lost-woods-ferdium-config
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      storageClassName: ceph-rbd
+      resources:
+        requests:
+          storage: 1Gi

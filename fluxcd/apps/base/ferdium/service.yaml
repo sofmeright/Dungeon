@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: ferdium
+spec:
+  type: PLACEHOLDER_SERVICE_TYPE
+  selector:
+    app: ferdium
+  ports:
+  - name: http
+    port: PLACEHOLDER_HTTP_PORT
+    targetPort: 3000
+  - name: https
+    port: PLACEHOLDER_HTTPS_PORT
+    targetPort: 3001

@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: ferdium
+spec:
+  serviceName: ferdium
+  replicas: PLACEHOLDER_REPLICAS
+  selector:
+    matchLabels:
+      app: ferdium
+  template:
+    metadata:
+      labels:
+        app: ferdium
+    spec:
+      containers:
+      - name: ferdium
+        image: PLACEHOLDER_IMAGE
+        ports:
+        - containerPort: 3000
+          name: http
+        - containerPort: 3001
+          name: https
+        env:
+        - name: PUID
+          value: "PLACEHOLDER_PUID"
+        - name: PGID
+          value: "PLACEHOLDER_PGID"
+        - name: TZ
+          value: "PLACEHOLDER_TZ"
+        volumeMounts:
+        - name: PLACEHOLDER_NAMESPACE-ferdium-config
+          mountPath: /config
+        - name: dshm
+          mountPath: /dev/shm
+        securityContext:
+          seccompProfile:
+            type: Unconfined
+      volumes:
+      - name: dshm
+        emptyDir:
+          medium: Memory
+          sizeLimit: 1Gi
+  volumeClaimTemplates:
+  - metadata:
+      name: PLACEHOLDER_NAMESPACE-ferdium-config
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      storageClassName: PLACEHOLDER_STORAGE_CLASS
+      resources:
+        requests:
+          storage: PLACEHOLDER_CONFIG_STORAGE_SIZE
