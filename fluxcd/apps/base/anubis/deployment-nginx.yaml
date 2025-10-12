@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: anubis-nginx
+spec:
+  replicas: PLACEHOLDER_REPLICAS
+  selector:
+    matchLabels:
+      app: anubis-nginx
+  template:
+    metadata:
+      labels:
+        app: anubis-nginx
+    spec:
+      containers:
+      - name: nginx
+        image: PLACEHOLDER_NGINX_IMAGE
+        ports:
+        - containerPort: 80
+          name: http
+        volumeMounts:
+        - name: html
+          mountPath: /usr/share/nginx/html
+          readOnly: true
+        resources:
+          requests:
+            memory: PLACEHOLDER_MEMORY_REQUEST
+            cpu: PLACEHOLDER_CPU_REQUEST
+          limits:
+            memory: PLACEHOLDER_MEMORY_LIMIT
+            cpu: PLACEHOLDER_CPU_LIMIT
+      volumes:
+      - name: html
+        configMap:
+          name: anubis-nginx-html

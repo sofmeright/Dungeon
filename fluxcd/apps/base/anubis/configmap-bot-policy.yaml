@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: anubis-bot-policy
+data:
+  botPolicy.json: |
+    PLACEHOLDER_BOT_POLICY_JSON

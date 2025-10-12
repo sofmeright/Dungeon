@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: anubis
+spec:
+  replicas: 1
+  template:
+    spec:
+      imagePullSecrets:
+      - name: jcr-pcfae-dungeon-pull-secret
+      containers:
+      - name: anubis
+        image: ghcr.io/techarohq/anubis:latest
+        env:
+        - name: DIFFICULTY
+          value: "4"
+        - name: SERVE_ROBOTS_TXT
+          value: "true"
+        - name: TARGET
+          value: "http://10.55.6.136:5005"
+        - name: OG_PASSTHROUGH
+          value: "true"
+        - name: OG_EXPIRY_TIME
+          value: "24h"
+        resources:
+          requests:
+            memory: 128Mi
+            cpu: 100m
+          limits:
+            memory: 512Mi
+            cpu: 500m

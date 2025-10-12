@@ -36,6 +36,7 @@
       - swift-sail: Arr apps & downloaders (prowlarr, radarr, sonarr - swift sailing across the seas)
       - pedestal-of-time: Restricted/privileged services (only link can pull the master sword)
       - delivery-bag: Mail services (mailcow - postman's delivery bag)
+      - wallmaster: Bot protection & security services (anubis - the hand that grabs intruders)
   - Base should NEVER contain deployment-ready configs - only generic templates that overlays patch with real values. Base should document application defaults from upstream/vendor documentation, not production-specific configurations.
   - Always use overlays/production for actual deployment to the production cluster, never deploy from base
 
@@ -165,6 +166,7 @@
     - Shared IPs (Ocarina of Time naming theme):
       - Administrative (e.g. vault,weave,zitadel): 172.22.30.86 (sharing-key: zeldas-lullaby)
       - Mail services (mailcow SMTP/IMAP/POP3): 172.22.30.102 (sharing-key: delivery-bag)
+      - Bot protection services (anubis): 172.22.30.187 (sharing-key: wallmaster)
       - General MediaServers: 172.22.30.123 (sharing-key: song-of-storms)
       - DNS & NTP, similar publicly needed core services: 172.22.30.122 (sharing-key: compass)
       - Monitoring: 172.22.30.137 (sharing-key: gossip-stone)
