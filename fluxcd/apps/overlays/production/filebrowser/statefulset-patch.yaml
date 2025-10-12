@@ -5,12 +5,6 @@ metadata:
 spec:
   template:
     spec:
-      nodeSelector:
-        kubernetes.io/hostname: dungeon-map-002
-      tolerations:
-      - key: node-role.kubernetes.io/control-plane
-        operator: Exists
-        effect: NoSchedule
       imagePullSecrets:
       - name: jcr-pcfae-dungeon-pull-secret
       containers:
