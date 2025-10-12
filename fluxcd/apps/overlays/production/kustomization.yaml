@@ -51,3 +51,4 @@ resources:
   - stable-diffusion-webui
   - filebrowser
   - frigate
+  - kasm

@@ -1,0 +1,14 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: kasm
+spec:
+  volumeClaimTemplates:
+  - metadata:
+      name: data
+    spec:
+      storageClassName: ceph-rbd
+  - metadata:
+      name: profiles
+    spec:
+      storageClassName: ceph-rbd

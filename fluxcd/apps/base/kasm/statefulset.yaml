@@ -1,0 +1,73 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: kasm
+spec:
+  serviceName: kasm
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kasm
+  template:
+    metadata:
+      labels:
+        app: kasm
+    spec:
+      containers:
+      - name: kasm
+        image: lscr.io/linuxserver/kasm:latest
+        ports:
+        - containerPort: 3000
+          name: http
+        - containerPort: 3443
+          name: https
+        env:
+        - name: KASM_PORT
+          value: "3443"
+        - name: PUID
+          value: "1000"
+        - name: PGID
+          value: "1000"
+        envFrom:
+        - secretRef:
+            name: kasm-secret
+        resources:
+          limits:
+            nvidia.com/gpu: 1
+        securityContext:
+          privileged: true
+        volumeMounts:
+        - name: data
+          mountPath: /opt
+        - name: profiles
+          mountPath: /profiles
+        - name: dev-input
+          mountPath: /dev/input
+        - name: udev-data
+          mountPath: /run/udev/data
+      volumes:
+      - name: dev-input
+        hostPath:
+          path: /dev/input
+          type: DirectoryOrCreate
+      - name: udev-data
+        hostPath:
+          path: /run/udev/data
+          type: DirectoryOrCreate
+  volumeClaimTemplates:
+  - metadata:
+      name: data
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: 50Gi
+  - metadata:
+      name: profiles
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: 20Gi
