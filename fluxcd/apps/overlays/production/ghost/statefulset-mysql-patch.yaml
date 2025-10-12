@@ -6,9 +6,11 @@ spec:
   replicas: 1
   template:
     spec:
+      imagePullSecrets:
+      - name: jcr-pcfae-dungeon-pull-secret
       containers:
       - name: mysql
-        image: docker.io/mysql:8.0
+        image: docker.jcr.pcfae.com/library/mysql:8.0
         volumeMounts:
         - name: temple-of-time-ghost-mysql-data
           mountPath: /var/lib/mysql
