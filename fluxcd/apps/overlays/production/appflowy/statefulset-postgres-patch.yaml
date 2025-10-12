@@ -8,10 +8,10 @@ spec:
     spec:
       initContainers:
       - name: init-db
-        image: docker.io/pgvector/pgvector:pg16
+        image: docker.jcr.pcfae.com/pgvector/pgvector:pg16
       containers:
       - name: postgres
-        image: docker.io/pgvector/pgvector:pg16
+        image: docker.jcr.pcfae.com/pgvector/pgvector:pg16
         volumeMounts:
         - name: temple-of-time-appflowy-postgres-data
           mountPath: /var/lib/postgresql/data

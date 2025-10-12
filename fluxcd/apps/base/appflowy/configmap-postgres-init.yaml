@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: postgres-init
+  name: appflowy-postgres-init
   labels:
     app: appflowy
     component: postgres

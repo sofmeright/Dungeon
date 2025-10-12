@@ -8,7 +8,7 @@ spec:
     spec:
       containers:
       - name: appflowy-worker
-        image: docker.io/appflowyinc/appflowy_worker:latest
+        image: docker.jcr.pcfae.com/appflowyinc/appflowy_worker:latest
         resources:
           requests:
             memory: "512Mi"

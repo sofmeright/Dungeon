@@ -8,7 +8,7 @@ spec:
     spec:
       containers:
       - name: minio
-        image: docker.io/minio/minio:latest
+        image: docker.jcr.pcfae.com/minio/minio:latest
         env:
         - name: MINIO_BROWSER_REDIRECT_URL
           value: "https://flwy.prplanit.com/minio"

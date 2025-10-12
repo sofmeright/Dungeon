@@ -45,7 +45,7 @@ spec:
       volumes:
       - name: nginx-config
         configMap:
-          name: nginx-config
+          name: appflowy-nginx-config
       - name: ssl-certs
         configMap:
           name: ssl-certs

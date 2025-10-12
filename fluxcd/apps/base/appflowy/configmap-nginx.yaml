@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: nginx-config
+  name: appflowy-nginx-config
   labels:
     app: appflowy
     component: nginx

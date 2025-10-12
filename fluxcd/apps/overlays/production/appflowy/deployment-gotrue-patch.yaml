@@ -8,7 +8,7 @@ spec:
     spec:
       containers:
       - name: gotrue
-        image: docker.io/appflowyinc/gotrue:latest
+        image: docker.jcr.pcfae.com/appflowyinc/gotrue:latest
         resources:
           requests:
             memory: "512Mi"
