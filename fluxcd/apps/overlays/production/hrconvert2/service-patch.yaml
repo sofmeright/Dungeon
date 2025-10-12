@@ -1,0 +1,9 @@
+- op: add
+  path: /metadata/annotations
+  value:
+    lbipam.cilium.io/ips: "172.22.30.107"
+    lbipam.cilium.io/sharing-key: "tingle-tuner"
+    lbipam.cilium.io/sharing-cross-namespace: "*"
+- op: replace
+  path: /spec/ports/0/port
+  value: 8085

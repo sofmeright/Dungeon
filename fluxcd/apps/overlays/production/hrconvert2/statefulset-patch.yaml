@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: hrconvert2
+spec:
+  replicas: 1
+  template:
+    spec:
+      containers:
+      - name: hrconvert2
+        image: docker.io/zelon88/hrconvert2:latest
+        resources:
+          requests:
+            cpu: 100m
+            memory: 256Mi
+          limits:
+            cpu: 1000m
+            memory: 1Gi
+        volumeMounts:
+        - name: tingle-tuner-hrconvert2-config
+          mountPath: /var/www/html/HRProprietary/HRConvert2/config.php
+          subPath: config.php
+        - name: tingle-tuner-hrconvert2-files
+          mountPath: /home/converter
+  volumeClaimTemplates:
+  - metadata:
+      name: tingle-tuner-hrconvert2-config
+    spec:
+      storageClassName: ceph-rbd
+      resources:
+        requests:
+          storage: 1Gi
+  - metadata:
+      name: tingle-tuner-hrconvert2-files
+    spec:
+      storageClassName: ceph-rbd
+      resources:
+        requests:
+          storage: 10Gi
