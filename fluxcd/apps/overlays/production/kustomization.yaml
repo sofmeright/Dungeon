@@ -50,3 +50,4 @@ resources:
   - emulatorjs
   - stable-diffusion-webui
   - filebrowser
+  - frigate

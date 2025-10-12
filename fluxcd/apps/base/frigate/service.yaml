@@ -1,0 +1,35 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: frigate
+spec:
+  type: LoadBalancer
+  selector:
+    app: frigate
+  ports:
+  - port: 5000
+    targetPort: http
+    protocol: TCP
+    name: http
+  - port: 8554
+    targetPort: rtsp
+    protocol: TCP
+    name: rtsp
+  - port: 8555
+    targetPort: webrtc-tcp
+    protocol: TCP
+    name: webrtc-tcp
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: frigate-webrtc-udp
+spec:
+  type: LoadBalancer
+  selector:
+    app: frigate
+  ports:
+  - port: 8555
+    targetPort: webrtc-udp
+    protocol: UDP
+    name: webrtc-udp
