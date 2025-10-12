@@ -1,0 +1,22 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: kokiri-forest
+resources:
+  - ../../../base/linkstack
+patches:
+  - path: statefulset-patch.yaml
+    target:
+      kind: StatefulSet
+      name: linkstack
+  - path: statefulset-db-patch.yaml
+    target:
+      kind: StatefulSet
+      name: linkstack-db
+  - path: service-patch.yaml
+    target:
+      kind: Service
+      name: linkstack
+  - path: httproute-patch.yaml
+    target:
+      kind: HTTPRoute
+      name: linkstack

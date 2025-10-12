@@ -21,6 +21,7 @@ resources:
   - calibre-web
   - mealie
   - linkwarden
+  - linkstack
   - ghost
   - homarr
   - minecraft-optcp

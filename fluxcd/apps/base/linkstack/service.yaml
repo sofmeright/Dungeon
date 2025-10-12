@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: linkstack
+spec:
+  type: LoadBalancer
+  selector:
+    app: linkstack
+  ports:
+  - name: https
+    port: PLACEHOLDER_HTTPS_PORT
+    targetPort: https
+    protocol: TCP

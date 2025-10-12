@@ -1,0 +1,63 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: linkstack-db
+spec:
+  serviceName: linkstack-db
+  replicas: PLACEHOLDER_REPLICAS
+  selector:
+    matchLabels:
+      app: linkstack-db
+  template:
+    metadata:
+      labels:
+        app: linkstack-db
+    spec:
+      containers:
+      - name: mariadb
+        image: PLACEHOLDER_IMAGE
+        env:
+        - name: TZ
+          value: PLACEHOLDER_TZ
+        - name: MYSQL_USER
+          valueFrom:
+            secretKeyRef:
+              name: linkstack-secrets
+              key: MYSQL_USER
+        - name: MYSQL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: linkstack-secrets
+              key: MYSQL_PASSWORD
+        - name: MYSQL_DATABASE
+          valueFrom:
+            secretKeyRef:
+              name: linkstack-secrets
+              key: MYSQL_DATABASE
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: linkstack-secrets
+              key: MYSQL_ROOT_PASSWORD
+        - name: TERM
+          value: "dumb"
+        resources:
+          requests:
+            cpu: PLACEHOLDER_CPU_REQUEST
+            memory: PLACEHOLDER_MEMORY_REQUEST
+          limits:
+            cpu: PLACEHOLDER_CPU_LIMIT
+            memory: PLACEHOLDER_MEMORY_LIMIT
+        volumeMounts:
+        - name: PLACEHOLDER_NAMESPACE-linkstack-mariadb
+          mountPath: /var/lib/mysql
+  volumeClaimTemplates:
+  - metadata:
+      name: PLACEHOLDER_NAMESPACE-linkstack-mariadb
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      storageClassName: PLACEHOLDER_STORAGE_CLASS
+      resources:
+        requests:
+          storage: PLACEHOLDER_DB_STORAGE
