@@ -29,13 +29,20 @@ spec:
           subPath: filebrowser.json
         - name: srv
           mountPath: /srv
+        - name: home
+          mountPath: /home
       volumes:
       - name: config
         configMap:
           name: filebrowser-config
       - name: srv
-        persistentVolumeClaim:
-          claimName: filebrowser-srv
+        hostPath:
+          path: /srv
+          type: DirectoryOrCreate
+      - name: home
+        hostPath:
+          path: /home
+          type: Directory
   volumeClaimTemplates:
   - metadata:
       name: database

@@ -3,7 +3,6 @@ kind: Kustomization
 namespace: tingle-tuner
 resources:
   - ../../../base/filebrowser
-  - pvc-srv.yaml
 patches:
   - path: statefulset-patch.yaml
     target:
