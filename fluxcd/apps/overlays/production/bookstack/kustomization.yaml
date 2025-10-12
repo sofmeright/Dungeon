@@ -1,0 +1,25 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: hyrule-castle
+
+resources:
+  - ../../../base/bookstack
+
+patches:
+  - path: statefulset-patch.yaml
+    target:
+      kind: StatefulSet
+      name: bookstack
+  - path: statefulset-db-patch.yaml
+    target:
+      kind: StatefulSet
+      name: bookstack-db
+  - path: service-patch.yaml
+    target:
+      kind: Service
+      name: bookstack
+  - path: externalsecret-patch.yaml
+    target:
+      kind: ExternalSecret
+      name: bookstack-secrets

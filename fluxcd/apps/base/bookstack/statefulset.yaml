@@ -1,0 +1,146 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: bookstack
+spec:
+  serviceName: bookstack
+  replicas: 1
+  selector:
+    matchLabels:
+      app: bookstack
+  template:
+    metadata:
+      labels:
+        app: bookstack
+    spec:
+      initContainers:
+      - name: wait-for-db
+        image: PLACEHOLDER_INIT_IMAGE
+        command:
+        - sh
+        - -c
+        - |
+          until nc -z bookstack-db 3306; do
+            echo "Waiting for MariaDB..."
+            sleep 2
+          done
+          echo "MariaDB is ready"
+      containers:
+      - name: bookstack
+        image: PLACEHOLDER_IMAGE
+        env:
+        - name: PUID
+          value: "PLACEHOLDER_PUID"
+        - name: PGID
+          value: "PLACEHOLDER_PGID"
+        - name: TZ
+          value: "PLACEHOLDER_TZ"
+        - name: APP_URL
+          value: "PLACEHOLDER_APP_URL"
+        - name: APP_KEY
+          valueFrom:
+            secretKeyRef:
+              name: bookstack-secrets
+              key: APP_KEY
+        - name: DB_HOST
+          value: "bookstack-db"
+        - name: DB_PORT
+          value: "3306"
+        - name: DB_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: bookstack-secrets
+              key: DB_USERNAME
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: bookstack-secrets
+              key: DB_PASSWORD
+        - name: DB_DATABASE
+          valueFrom:
+            secretKeyRef:
+              name: bookstack-secrets
+              key: DB_DATABASE
+        - name: AUTH_METHOD
+          value: "PLACEHOLDER_AUTH_METHOD"
+        - name: AUTH_AUTO_INITIATE
+          value: "PLACEHOLDER_AUTH_AUTO_INITIATE"
+        - name: CACHE_DRIVER
+          value: "PLACEHOLDER_CACHE_DRIVER"
+        - name: OIDC_NAME
+          value: "PLACEHOLDER_OIDC_NAME"
+        - name: OIDC_DISPLAY_NAME_CLAIMS
+          value: "PLACEHOLDER_OIDC_DISPLAY_NAME_CLAIMS"
+        - name: OIDC_CLIENT_ID
+          valueFrom:
+            secretKeyRef:
+              name: bookstack-secrets
+              key: OIDC_CLIENT_ID
+        - name: OIDC_CLIENT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: bookstack-secrets
+              key: OIDC_CLIENT_SECRET
+        - name: OIDC_ISSUER
+          value: "PLACEHOLDER_OIDC_ISSUER"
+        - name: OIDC_END_SESSION_ENDPOINT
+          value: "PLACEHOLDER_OIDC_END_SESSION_ENDPOINT"
+        - name: OIDC_ISSUER_DISCOVER
+          value: "PLACEHOLDER_OIDC_ISSUER_DISCOVER"
+        - name: APP_THEME
+          value: "PLACEHOLDER_APP_THEME"
+        - name: OIDC_DUMP_USER_DETAILS
+          value: "PLACEHOLDER_OIDC_DUMP_USER_DETAILS"
+        - name: OIDC_USER_TO_GROUPS
+          value: "PLACEHOLDER_OIDC_USER_TO_GROUPS"
+        - name: OIDC_GROUPS_CLAIM
+          value: "PLACEHOLDER_OIDC_GROUPS_CLAIM"
+        - name: OIDC_ADDITIONAL_SCOPES
+          value: "PLACEHOLDER_OIDC_ADDITIONAL_SCOPES"
+        - name: OIDC_REMOVE_FROM_GROUPS
+          value: "PLACEHOLDER_OIDC_REMOVE_FROM_GROUPS"
+        - name: ALLOWED_IFRAME_HOSTS
+          value: "PLACEHOLDER_ALLOWED_IFRAME_HOSTS"
+        - name: ALLOWED_IFRAME_SOURCES
+          value: "PLACEHOLDER_ALLOWED_IFRAME_SOURCES"
+        ports:
+        - containerPort: 443
+          name: https
+        volumeMounts:
+        - name: PLACEHOLDER_NAMESPACE-bookstack-config
+          mountPath: /config
+        - name: PLACEHOLDER_NAMESPACE-bookstack-uploads
+          mountPath: /app/www/public/uploads
+        - name: custom-functions
+          mountPath: /app/www/themes/custom/functions.php
+          subPath: functions.php
+        resources:
+          requests:
+            cpu: 100m
+            memory: 256Mi
+          limits:
+            cpu: 1000m
+            memory: 512Mi
+      volumes:
+      - name: custom-functions
+        configMap:
+          name: bookstack-custom-functions
+  volumeClaimTemplates:
+  - metadata:
+      name: PLACEHOLDER_NAMESPACE-bookstack-config
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      storageClassName: PLACEHOLDER_STORAGE_CLASS
+      resources:
+        requests:
+          storage: 1Gi
+  - metadata:
+      name: PLACEHOLDER_NAMESPACE-bookstack-uploads
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      storageClassName: PLACEHOLDER_STORAGE_CLASS
+      resources:
+        requests:
+          storage: 10Gi

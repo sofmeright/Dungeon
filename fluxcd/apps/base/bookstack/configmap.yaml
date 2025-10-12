@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: bookstack-custom-functions
+data:
+  functions.php: |
+    <?php
+    // Custom BookStack functions
+    // This file can be used to add custom functions or hooks
