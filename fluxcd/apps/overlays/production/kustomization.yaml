@@ -49,3 +49,4 @@ resources:
   - pinchflat
   - emulatorjs
   - stable-diffusion-webui
+  - filebrowser

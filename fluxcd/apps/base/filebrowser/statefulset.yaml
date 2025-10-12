@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: filebrowser
+spec:
+  serviceName: filebrowser
+  replicas: 1
+  selector:
+    matchLabels:
+      app: filebrowser
+  template:
+    metadata:
+      labels:
+        app: filebrowser
+    spec:
+      securityContext:
+        fsGroup: 1000
+      containers:
+      - name: filebrowser
+        image: PLACEHOLDER_IMAGE
+        ports:
+        - containerPort: 80
+          name: http
+        volumeMounts:
+        - name: database
+          mountPath: /database
+        - name: config
+          mountPath: /.filebrowser.json
+          subPath: filebrowser.json
+        - name: srv
+          mountPath: /srv
+      volumes:
+      - name: config
+        configMap:
+          name: filebrowser-config
+      - name: srv
+        persistentVolumeClaim:
+          claimName: filebrowser-srv
+  volumeClaimTemplates:
+  - metadata:
+      name: database
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      storageClassName: PLACEHOLDER_STORAGE_CLASS
+      resources:
+        requests:
+          storage: PLACEHOLDER_DATABASE_STORAGE

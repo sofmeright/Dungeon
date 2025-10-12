@@ -1,0 +1,15 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: tingle-tuner
+resources:
+  - ../../../base/filebrowser
+  - pvc-srv.yaml
+patches:
+  - path: statefulset-patch.yaml
+    target:
+      kind: StatefulSet
+      name: filebrowser
+  - path: service-patch.yaml
+    target:
+      kind: Service
+      name: filebrowser

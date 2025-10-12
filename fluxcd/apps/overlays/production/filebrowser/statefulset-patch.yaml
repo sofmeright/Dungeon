@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: filebrowser
+spec:
+  template:
+    spec:
+      nodeSelector:
+        kubernetes.io/hostname: dungeon-map-002
+      imagePullSecrets:
+      - name: jcr-pcfae-dungeon-pull-secret
+      containers:
+      - name: filebrowser
+        image: docker.jcr.pcfae.com/filebrowser/filebrowser:v2.31.2
+  volumeClaimTemplates:
+  - metadata:
+      name: database
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      storageClassName: ceph-rbd
+      resources:
+        requests:
+          storage: 1Gi
