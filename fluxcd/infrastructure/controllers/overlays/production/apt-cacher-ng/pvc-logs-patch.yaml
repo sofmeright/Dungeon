@@ -4,8 +4,8 @@ metadata:
   name: apt-cacher-ng-logs
 spec:
   accessModes:
-  - ReadWriteMany
-  storageClassName: ceph-filesystem
+  - ReadWriteOnce
+  storageClassName: ceph-rbd
   resources:
     requests:
       storage: 10Gi

@@ -4,7 +4,7 @@ metadata:
   name: apt-cacher-ng-cache
 spec:
   accessModes:
-  - ReadWriteMany
+  - ReadWriteOnce
   resources:
     requests:
       storage: 100Gi
@@ -15,7 +15,7 @@ metadata:
   name: apt-cacher-ng-logs
 spec:
   accessModes:
-  - ReadWriteMany
+  - ReadWriteOnce
   resources:
     requests:
       storage: 10Gi
