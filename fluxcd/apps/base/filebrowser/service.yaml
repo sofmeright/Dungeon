@@ -7,7 +7,7 @@ spec:
   selector:
     app: filebrowser
   ports:
-  - port: 80
+  - port: 8754
     targetPort: http
     protocol: TCP
     name: http
