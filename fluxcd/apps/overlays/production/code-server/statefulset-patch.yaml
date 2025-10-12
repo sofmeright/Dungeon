@@ -25,7 +25,7 @@ spec:
         image: lscr.io/linuxserver/code-server:latest
         env:
         - name: PROXY_DOMAIN
-          value: "code.prplanit.com"
+          value: "code.pcfae.com"
         volumeMounts:
         - name: tingle-tuner-code-server-config
           mountPath: /config
