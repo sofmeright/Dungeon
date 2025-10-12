@@ -1,8 +1,9 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: apt-cacher-ng
 spec:
+  serviceName: apt-cacher-ng
   replicas: 1
   selector:
     matchLabels:
@@ -39,10 +40,20 @@ spec:
           mountPath: /var/cache/apt-cacher-ng
         - name: logs
           mountPath: /var/log/apt-cacher-ng
-      volumes:
-      - name: cache
-        persistentVolumeClaim:
-          claimName: apt-cacher-ng-cache
-      - name: logs
-        persistentVolumeClaim:
-          claimName: apt-cacher-ng-logs
+  volumeClaimTemplates:
+  - metadata:
+      name: cache
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: 100Gi
+  - metadata:
+      name: logs
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: 10Gi

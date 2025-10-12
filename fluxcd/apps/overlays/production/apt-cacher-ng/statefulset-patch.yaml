@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: apt-cacher-ng
+spec:
+  volumeClaimTemplates:
+  - metadata:
+      name: cache
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      storageClassName: ceph-rbd
+      resources:
+        requests:
+          storage: 100Gi
+  - metadata:
+      name: logs
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      storageClassName: ceph-rbd
+      resources:
+        requests:
+          storage: 10Gi

@@ -54,3 +54,4 @@ resources:
   - kasm
   - netbootxyz
   - faster-whisper
+  - apt-cacher-ng
