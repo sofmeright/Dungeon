@@ -10,7 +10,7 @@ spec:
       - name: jcr-pcfae-dungeon-pull-secret
       containers:
       - name: emulatorjs
-        image: docker.jcr.pcfae.com/linuxserver/emulatorjs:latest
+        image: lscr.io/linuxserver/emulatorjs:latest
   volumeClaimTemplates:
   - metadata:
       name: config
