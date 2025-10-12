@@ -7,11 +7,11 @@ spec:
   selector:
     app: netbootxyz
   ports:
-  - port: 3000
+  - port: 3101
     targetPort: web-app
     protocol: TCP
     name: web-app
-  - port: 80
+  - port: 8101
     targetPort: http
     protocol: TCP
     name: http
