@@ -14,6 +14,24 @@ spec:
       - name: artifactory
         image: docker.jcr.pcfae.com/jfrog/artifactory-jcr:7.111.11
         env:
+        - name: JF_ROUTER_ENTRYPOINTS_EXTERNALPORT
+          value: "8082"
+        - name: JF_SHARED_DATABASE_TYPE
+          value: "postgresql"
+        - name: JF_SHARED_DATABASE_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: jfrog-artifactory-secrets
+              key: POSTGRES_USER
+        - name: JF_SHARED_DATABASE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: jfrog-artifactory-secrets
+              key: POSTGRES_PASSWORD
+        - name: JF_SHARED_DATABASE_URL
+          value: "jdbc:postgresql://jfrog-artifactory-postgres:5433/artifactory"
+        - name: JF_SHARED_DATABASE_DRIVER
+          value: "org.postgresql.Driver"
         - name: JF_SHARED_NODE_IP
           valueFrom:
             fieldRef:
@@ -22,6 +40,12 @@ spec:
           value: "dungeon-artifactory"
         - name: JF_SHARED_NODE_NAME
           value: "dungeon-artifactory"
+        volumeMounts:
+        - name: compass-jfrog-artifactory-data
+          mountPath: /var/opt/jfrog/artifactory
+        - name: localtime
+          mountPath: /etc/localtime
+          readOnly: true
         resources:
           requests:
             cpu: "1000m"

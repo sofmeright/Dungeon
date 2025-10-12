@@ -10,6 +10,12 @@ spec:
       containers:
       - name: postgres
         image: docker.jcr.pcfae.com/postgres:16.6-alpine
+        volumeMounts:
+        - name: compass-jfrog-artifactory-postgres-data
+          mountPath: /var/lib/postgresql/data
+        - name: localtime
+          mountPath: /etc/localtime
+          readOnly: true
         resources:
           requests:
             cpu: "500m"
