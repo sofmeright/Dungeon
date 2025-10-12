@@ -1,0 +1,104 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vaultwarden
+spec:
+  replicas: PLACEHOLDER_REPLICAS
+  selector:
+    matchLabels:
+      app: vaultwarden
+  template:
+    metadata:
+      labels:
+        app: vaultwarden
+    spec:
+      containers:
+      - name: vaultwarden
+        image: PLACEHOLDER_IMAGE
+        ports:
+        - containerPort: 80
+          name: http
+        - containerPort: 3012
+          name: websocket
+        env:
+        - name: DOMAIN
+          value: "PLACEHOLDER_DOMAIN"
+        - name: DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: vaultwarden-secrets
+              key: DATABASE_URL
+        - name: ADMIN_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: vaultwarden-secrets
+              key: ADMIN_TOKEN
+        - name: SMTP_HOST
+          valueFrom:
+            secretKeyRef:
+              name: vaultwarden-secrets
+              key: SMTP_HOST
+        - name: SMTP_FROM
+          valueFrom:
+            secretKeyRef:
+              name: vaultwarden-secrets
+              key: SMTP_FROM
+        - name: SMTP_PORT
+          valueFrom:
+            secretKeyRef:
+              name: vaultwarden-secrets
+              key: SMTP_PORT
+        - name: SMTP_SECURITY
+          valueFrom:
+            secretKeyRef:
+              name: vaultwarden-secrets
+              key: SMTP_SECURITY
+        - name: SMTP_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: vaultwarden-secrets
+              key: SMTP_USERNAME
+        - name: SMTP_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: vaultwarden-secrets
+              key: SMTP_PASSWORD
+        - name: SIGNUPS_ALLOWED
+          value: "PLACEHOLDER_SIGNUPS_ALLOWED"
+        - name: INVITATIONS_ALLOWED
+          value: "PLACEHOLDER_INVITATIONS_ALLOWED"
+        - name: WEBSOCKET_ENABLED
+          value: "true"
+        - name: SHOW_PASSWORD_HINT
+          value: "false"
+        - name: SENDS_ALLOWED
+          value: "true"
+        - name: EMERGENCY_ACCESS_ALLOWED
+          value: "true"
+        - name: SSO_ENABLED
+          value: "PLACEHOLDER_SSO_ENABLED"
+        - name: SSO_ONLY
+          value: "PLACEHOLDER_SSO_ONLY"
+        - name: SSO_SIGNUPS_MATCH_EMAIL
+          value: "PLACEHOLDER_SSO_SIGNUPS_MATCH_EMAIL"
+        - name: SSO_CLIENT_ID
+          valueFrom:
+            secretKeyRef:
+              name: vaultwarden-secrets
+              key: SSO_CLIENT_ID
+              optional: true
+        - name: SSO_CLIENT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: vaultwarden-secrets
+              key: SSO_CLIENT_SECRET
+              optional: true
+        - name: SSO_AUTHORITY
+          value: "PLACEHOLDER_SSO_AUTHORITY"
+        volumeMounts:
+        - name: vaultwarden-data
+          mountPath: /data
+      volumes:
+      - name: vaultwarden-data
+        persistentVolumeClaim:
+          claimName: vaultwarden-data

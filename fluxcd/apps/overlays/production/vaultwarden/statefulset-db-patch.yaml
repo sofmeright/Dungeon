@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: vaultwarden-db
+spec:
+  replicas: 1
+  template:
+    spec:
+      initContainers:
+      - name: init-permissions
+        image: docker.io/busybox:latest
+      containers:
+      - name: postgres
+        image: docker.io/postgres:16
+        resources:
+          requests:
+            cpu: 100m
+            memory: 256Mi
+          limits:
+            cpu: 500m
+            memory: 512Mi
+        volumeMounts:
+        - name: zeldas-lullaby-vaultwarden-postgres
+          mountPath: /var/lib/postgresql/data
+  volumeClaimTemplates:
+  - metadata:
+      name: zeldas-lullaby-vaultwarden-postgres
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      storageClassName: ceph-rbd
+      resources:
+        requests:
+          storage: 10Gi
