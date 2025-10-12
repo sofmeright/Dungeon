@@ -19,6 +19,11 @@ spec:
           value: "false"
         - name: CLI_ARGS
           value: "--allow-code --medvram --xformers --enable-insecure-extension-access --api --listen --port 7860"
+        volumeMounts:
+        - name: data
+          mountPath: /opt/stable-diffusion-webui
+        - name: output
+          mountPath: /output
   volumeClaimTemplates:
   - metadata:
       name: data
