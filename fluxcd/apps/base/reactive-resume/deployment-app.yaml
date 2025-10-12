@@ -1,0 +1,82 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: reactive-resume-app
+spec:
+  replicas: PLACEHOLDER_REPLICAS
+  selector:
+    matchLabels:
+      app: reactive-resume-app
+  template:
+    metadata:
+      labels:
+        app: reactive-resume-app
+    spec:
+      containers:
+      - name: app
+        image: PLACEHOLDER_APP_IMAGE
+        env:
+        - name: PORT
+          value: "3000"
+        - name: NODE_ENV
+          value: production
+        - name: PUBLIC_URL
+          value: PLACEHOLDER_PUBLIC_URL
+        - name: STORAGE_URL
+          value: PLACEHOLDER_STORAGE_URL
+        - name: CHROME_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: reactive-resume-secrets
+              key: chrome_token
+        - name: CHROME_URL
+          value: ws://reactive-resume-chrome:3000
+        - name: DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: reactive-resume-secrets
+              key: database_url
+        - name: ACCESS_TOKEN_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: reactive-resume-secrets
+              key: access_token_secret
+        - name: REFRESH_TOKEN_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: reactive-resume-secrets
+              key: refresh_token_secret
+        - name: MAIL_FROM
+          value: PLACEHOLDER_MAIL_FROM
+        - name: STORAGE_ENDPOINT
+          value: reactive-resume-minio
+        - name: STORAGE_PORT
+          value: "9000"
+        - name: STORAGE_REGION
+          value: us-east-1
+        - name: STORAGE_BUCKET
+          value: default
+        - name: STORAGE_ACCESS_KEY
+          valueFrom:
+            secretKeyRef:
+              name: reactive-resume-secrets
+              key: minio_root_user
+        - name: STORAGE_SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              name: reactive-resume-secrets
+              key: minio_root_password
+        - name: STORAGE_USE_SSL
+          value: "false"
+        - name: STORAGE_SKIP_BUCKET_CHECK
+          value: "false"
+        ports:
+        - containerPort: 3000
+          name: http
+        resources:
+          requests:
+            memory: 256Mi
+            cpu: 100m
+          limits:
+            memory: 1Gi
+            cpu: 1000m

@@ -23,6 +23,7 @@ resources:
   - linkwarden
   - linkstack
   - ghost
+  - reactive-resume
   - homarr
   - minecraft-optcp
   - umami

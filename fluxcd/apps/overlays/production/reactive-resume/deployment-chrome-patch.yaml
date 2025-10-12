@@ -1,0 +1,11 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: reactive-resume-chrome
+spec:
+  replicas: 1
+  template:
+    spec:
+      containers:
+      - name: chrome
+        image: ghcr.io/browserless/chromium:latest

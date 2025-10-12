@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: reactive-resume-minio
+spec:
+  replicas: 1
+  template:
+    spec:
+      containers:
+      - name: minio
+        image: docker.io/minio/minio:latest
+        volumeMounts:
+        - name: temple-of-time-reactive-resume-minio-data
+          mountPath: /data
+  volumeClaimTemplates:
+  - metadata:
+      name: temple-of-time-reactive-resume-minio-data
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      storageClassName: ceph-rbd-retain
+      resources:
+        requests:
+          storage: 10Gi

@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: reactive-resume-chrome
+spec:
+  replicas: PLACEHOLDER_REPLICAS
+  selector:
+    matchLabels:
+      app: reactive-resume-chrome
+  template:
+    metadata:
+      labels:
+        app: reactive-resume-chrome
+    spec:
+      containers:
+      - name: chrome
+        image: PLACEHOLDER_CHROME_IMAGE
+        env:
+        - name: HEALTH
+          value: "true"
+        - name: TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: reactive-resume-secrets
+              key: chrome_token
+        - name: PROXY_HOST
+          value: chrome
+        - name: PROXY_PORT
+          value: "3000"
+        - name: PROXY_SSL
+          value: "false"
+        ports:
+        - containerPort: 3000
+          name: chrome
+        resources:
+          requests:
+            memory: 512Mi
+            cpu: 250m
+          limits:
+            memory: 2Gi
+            cpu: 2000m
