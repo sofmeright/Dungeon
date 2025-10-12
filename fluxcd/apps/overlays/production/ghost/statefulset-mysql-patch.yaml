@@ -9,6 +9,9 @@ spec:
       containers:
       - name: mysql
         image: docker.io/mysql:8.0
+        volumeMounts:
+        - name: temple-of-time-ghost-mysql-data
+          mountPath: /var/lib/mysql
   volumeClaimTemplates:
   - metadata:
       name: temple-of-time-ghost-mysql-data
