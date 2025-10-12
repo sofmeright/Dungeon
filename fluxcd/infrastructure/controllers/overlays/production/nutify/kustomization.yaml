@@ -1,0 +1,14 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: gossip-stone
+resources:
+  - ../../../base/nutify
+patches:
+  - path: service-patch.yaml
+    target:
+      kind: Service
+      name: nutify
+  - path: statefulset-patch.yaml
+    target:
+      kind: StatefulSet
+      name: nutify

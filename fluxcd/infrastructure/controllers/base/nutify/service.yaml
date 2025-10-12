@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: nutify
+spec:
+  type: LoadBalancer
+  selector:
+    app: nutify
+  ports:
+  - port: 3493
+    targetPort: nut
+    protocol: TCP
+    name: nut
+  - port: 5050
+    targetPort: http
+    protocol: TCP
+    name: http
+  - port: 443
+    targetPort: https
+    protocol: TCP
+    name: https

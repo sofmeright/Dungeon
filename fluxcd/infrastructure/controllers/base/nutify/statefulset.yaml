@@ -1,0 +1,114 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: nutify
+spec:
+  serviceName: nutify
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nutify
+  template:
+    metadata:
+      labels:
+        app: nutify
+    spec:
+      containers:
+      - name: nutify
+        image: cr.pcfae.com/prplanit/nutify-ssh:latest
+        ports:
+        - containerPort: 3493
+          name: nut
+        - containerPort: 5050
+          name: http
+        - containerPort: 443
+          name: https
+        env:
+        - name: UDEV
+          value: "1"
+        envFrom:
+        - secretRef:
+            name: nutify-secret
+        securityContext:
+          privileged: true
+          capabilities:
+            add:
+            - SYS_ADMIN
+            - SYS_RAWIO
+            - MKNOD
+        volumeMounts:
+        - name: logs
+          mountPath: /app/nutify/logs
+        - name: instance
+          mountPath: /app/nutify/instance
+        - name: ssl
+          mountPath: /app/ssl
+        - name: nut-config
+          mountPath: /etc/nut
+        - name: ssh
+          mountPath: /root/.ssh
+        - name: script
+          mountPath: /root/script
+        - name: dev
+          mountPath: /dev
+        - name: udev
+          mountPath: /run/udev
+          readOnly: true
+      volumes:
+      - name: dev
+        hostPath:
+          path: /dev
+          type: Directory
+      - name: udev
+        hostPath:
+          path: /run/udev
+          type: Directory
+  volumeClaimTemplates:
+  - metadata:
+      name: logs
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: 5Gi
+  - metadata:
+      name: instance
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: 5Gi
+  - metadata:
+      name: ssl
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: 1Gi
+  - metadata:
+      name: nut-config
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: 1Gi
+  - metadata:
+      name: ssh
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: 1Gi
+  - metadata:
+      name: script
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: 1Gi
