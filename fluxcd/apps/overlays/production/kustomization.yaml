@@ -55,6 +55,7 @@ resources:
   - pinchflat
   - emulatorjs
   - stable-diffusion-webui
+  - supermicro-license-generator
   - filebrowser
   - frigate
   - kasm

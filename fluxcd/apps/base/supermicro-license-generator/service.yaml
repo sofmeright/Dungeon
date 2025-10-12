@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: supermicro-license-generator
+spec:
+  type: LoadBalancer
+  selector:
+    app: supermicro-license-generator
+  ports:
+  - name: http
+    port: PLACEHOLDER_HTTP_PORT
+    targetPort: http
+    protocol: TCP
