@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vlmcsd
+spec:
+  replicas: PLACEHOLDER_REPLICAS
+  selector:
+    matchLabels:
+      app: vlmcsd
+  template:
+    metadata:
+      labels:
+        app: vlmcsd
+    spec:
+      containers:
+      - name: vlmcsd
+        image: PLACEHOLDER_IMAGE
+        ports:
+        - containerPort: 1688
+          name: kms
+        resources:
+          requests:
+            cpu: PLACEHOLDER_CPU_REQUEST
+            memory: PLACEHOLDER_MEMORY_REQUEST
+          limits:
+            cpu: PLACEHOLDER_CPU_LIMIT
+            memory: PLACEHOLDER_MEMORY_LIMIT

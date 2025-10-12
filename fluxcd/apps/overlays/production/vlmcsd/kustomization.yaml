@@ -1,0 +1,14 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: swift-sail
+resources:
+  - ../../../base/vlmcsd
+patches:
+  - path: deployment-patch.yaml
+    target:
+      kind: Deployment
+      name: vlmcsd
+  - path: service-patch.yaml
+    target:
+      kind: Service
+      name: vlmcsd
