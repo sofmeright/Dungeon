@@ -10,7 +10,7 @@ spec:
       - name: jcr-pcfae-dungeon-pull-secret
       containers:
       - name: minio
-        image: docker.io/minio/minio:latest
+        image: docker.jcr.pcfae.com/minio/minio:latest
         volumeMounts:
         - name: temple-of-time-reactive-resume-minio-data
           mountPath: /data

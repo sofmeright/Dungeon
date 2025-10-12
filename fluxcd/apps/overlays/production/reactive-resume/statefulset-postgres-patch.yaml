@@ -6,9 +6,11 @@ spec:
   replicas: 1
   template:
     spec:
+      imagePullSecrets:
+      - name: jcr-pcfae-dungeon-pull-secret
       containers:
       - name: postgres
-        image: docker.io/postgres:16-alpine
+        image: docker.jcr.pcfae.com/library/postgres:16-alpine
         env:
         - name: PGDATA
           value: /var/lib/postgresql/data/pgdata

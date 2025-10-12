@@ -10,7 +10,7 @@ spec:
       - name: jcr-pcfae-dungeon-pull-secret
       containers:
       - name: app
-        image: docker.io/amruthpillai/reactive-resume:latest
+        image: docker.jcr.pcfae.com/amruthpillai/reactive-resume:latest
         env:
         - name: PUBLIC_URL
           value: "https://resume.sofmeright.com"
