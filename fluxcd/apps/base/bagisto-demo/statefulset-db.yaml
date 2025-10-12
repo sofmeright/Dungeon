@@ -1,0 +1,47 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: bagisto-demo-db
+spec:
+  serviceName: bagisto-demo-db
+  replicas: PLACEHOLDER_REPLICAS
+  selector:
+    matchLabels:
+      app: bagisto-demo-db
+  template:
+    metadata:
+      labels:
+        app: bagisto-demo-db
+    spec:
+      containers:
+      - name: mysql
+        image: PLACEHOLDER_IMAGE
+        ports:
+        - containerPort: 3306
+          name: mysql
+        env:
+        - name: MYSQL_ROOT_HOST
+          value: "%"
+        envFrom:
+        - secretRef:
+            name: bagisto-demo-secrets
+        resources:
+          requests:
+            cpu: PLACEHOLDER_CPU_REQUEST
+            memory: PLACEHOLDER_MEMORY_REQUEST
+          limits:
+            cpu: PLACEHOLDER_CPU_LIMIT
+            memory: PLACEHOLDER_MEMORY_LIMIT
+        volumeMounts:
+        - name: PLACEHOLDER_NAMESPACE-bagisto-demo-mysql
+          mountPath: /var/lib/mysql
+  volumeClaimTemplates:
+  - metadata:
+      name: PLACEHOLDER_NAMESPACE-bagisto-demo-mysql
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      storageClassName: PLACEHOLDER_STORAGE_CLASS
+      resources:
+        requests:
+          storage: PLACEHOLDER_DB_STORAGE_SIZE

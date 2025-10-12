@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: bagisto-demo-db
+spec:
+  replicas: 1
+  template:
+    spec:
+      containers:
+      - name: mysql
+        image: docker.io/mysql:5.7
+        resources:
+          requests:
+            cpu: 100m
+            memory: 256Mi
+          limits:
+            cpu: 500m
+            memory: 512Mi
+        volumeMounts:
+        - name: hyrule-castle-bagisto-demo-mysql
+          mountPath: /var/lib/mysql
+  volumeClaimTemplates:
+  - metadata:
+      name: hyrule-castle-bagisto-demo-mysql
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      storageClassName: ceph-rbd
+      resources:
+        requests:
+          storage: 10Gi

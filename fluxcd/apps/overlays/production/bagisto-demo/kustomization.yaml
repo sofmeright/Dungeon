@@ -1,0 +1,18 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: hyrule-castle
+resources:
+  - ../../../base/bagisto-demo
+patches:
+  - path: service-patch.yaml
+    target:
+      kind: Service
+      name: bagisto-demo
+  - path: statefulset-patch.yaml
+    target:
+      kind: StatefulSet
+      name: bagisto-demo
+  - path: statefulset-db-patch.yaml
+    target:
+      kind: StatefulSet
+      name: bagisto-demo-db

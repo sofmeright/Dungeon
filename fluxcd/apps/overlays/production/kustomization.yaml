@@ -56,3 +56,4 @@ resources:
   - faster-whisper
   - apt-cacher-ng
   - projectsend
+  - bagisto-demo
