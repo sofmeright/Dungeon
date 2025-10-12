@@ -42,7 +42,7 @@
 - Secret Management Strategy:
   - Critical infrastructure apps (vault, zitadel, etc.) use SOPS for secret management so they can run with local auth without dependencies during cluster issues
   - **CRITICAL: Never edit .enc.yaml files directly!** These are SOPS-encrypted files. Direct editing corrupts them and destroys secrets permanently. Always use `sops` command to decrypt, edit plaintext, then re-encrypt.
-  - Most other applications use Vault External Secrets Operator to manage secrets from Vault at http://172.22.30.102:8200/ui/vault/secrets/operationtimecapsule/kv/list
+  - Most other applications use Vault External Secrets Operator to manage secrets from Vault at http://172.22.30.86:8200/ui/vault/secrets/operationtimecapsule/kv/list
   - Vault secret path structure in operationtimecapsule namespace:
     - `apps/<app-name>` - bundled comprehensive secrets specific to that application (e.g., apps/linkwarden)
     - `smtp/<service-name>` - SMTP-related secrets that may be shared between applications (e.g., smtp/ofcourseimvegan)
