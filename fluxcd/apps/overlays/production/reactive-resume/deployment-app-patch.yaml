@@ -6,6 +6,8 @@ spec:
   replicas: 1
   template:
     spec:
+      imagePullSecrets:
+      - name: jcr-pcfae-dungeon-pull-secret
       containers:
       - name: app
         image: docker.io/amruthpillai/reactive-resume:latest
