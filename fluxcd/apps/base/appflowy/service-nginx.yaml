@@ -1,0 +1,24 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx
+  labels:
+    app: appflowy
+    component: nginx
+  annotations:
+    lbipam.cilium.io/ips: PLACEHOLDER_NGINX_IP
+    lbipam.cilium.io/sharing-key: PLACEHOLDER_SHARING_KEY
+spec:
+  type: LoadBalancer
+  selector:
+    app: appflowy
+    component: nginx
+  ports:
+  - name: http
+    port: 80
+    targetPort: http
+    protocol: TCP
+  - name: https
+    port: 443
+    targetPort: https
+    protocol: TCP

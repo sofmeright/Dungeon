@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: minio
+  labels:
+    app: appflowy
+    component: minio
+spec:
+  type: ClusterIP
+  selector:
+    app: appflowy
+    component: minio
+  ports:
+  - name: api
+    port: 9000
+    targetPort: api
+    protocol: TCP
+  - name: console
+    port: 9001
+    targetPort: console
+    protocol: TCP

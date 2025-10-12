@@ -1,0 +1,116 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: appflowy-worker
+  labels:
+    app: appflowy-worker
+    component: worker
+spec:
+  replicas: PLACEHOLDER_REPLICAS
+  selector:
+    matchLabels:
+      app: appflowy-worker
+      component: worker
+  template:
+    metadata:
+      labels:
+        app: appflowy-worker
+        component: worker
+    spec:
+      containers:
+      - name: appflowy-worker
+        image: PLACEHOLDER_WORKER_IMAGE
+        env:
+        - name: RUST_LOG
+          valueFrom:
+            secretKeyRef:
+              name: appflowy-secrets
+              key: RUST_LOG
+        - name: APPFLOWY_ENVIRONMENT
+          value: "production"
+        - name: APPFLOWY_WORKER_REDIS_URL
+          valueFrom:
+            secretKeyRef:
+              name: appflowy-secrets
+              key: APPFLOWY_WORKER_REDIS_URL
+        - name: APPFLOWY_WORKER_ENVIRONMENT
+          value: "production"
+        - name: APPFLOWY_WORKER_DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: appflowy-secrets
+              key: APPFLOWY_WORKER_DATABASE_URL
+        - name: APPFLOWY_WORKER_DATABASE_NAME
+          valueFrom:
+            secretKeyRef:
+              name: appflowy-secrets
+              key: APPFLOWY_WORKER_DATABASE_NAME
+        - name: APPFLOWY_WORKER_IMPORT_TICK_INTERVAL
+          value: "30"
+        - name: APPFLOWY_S3_USE_MINIO
+          valueFrom:
+            secretKeyRef:
+              name: appflowy-secrets
+              key: APPFLOWY_S3_USE_MINIO
+        - name: APPFLOWY_S3_MINIO_URL
+          valueFrom:
+            secretKeyRef:
+              name: appflowy-secrets
+              key: APPFLOWY_S3_MINIO_URL
+        - name: APPFLOWY_S3_ACCESS_KEY
+          valueFrom:
+            secretKeyRef:
+              name: appflowy-secrets
+              key: APPFLOWY_S3_ACCESS_KEY
+        - name: APPFLOWY_S3_SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              name: appflowy-secrets
+              key: APPFLOWY_S3_SECRET_KEY
+        - name: APPFLOWY_S3_BUCKET
+          valueFrom:
+            secretKeyRef:
+              name: appflowy-secrets
+              key: APPFLOWY_S3_BUCKET
+        - name: APPFLOWY_S3_REGION
+          valueFrom:
+            secretKeyRef:
+              name: appflowy-secrets
+              key: APPFLOWY_S3_REGION
+        - name: APPFLOWY_MAILER_SMTP_HOST
+          valueFrom:
+            secretKeyRef:
+              name: appflowy-secrets
+              key: APPFLOWY_MAILER_SMTP_HOST
+        - name: APPFLOWY_MAILER_SMTP_PORT
+          valueFrom:
+            secretKeyRef:
+              name: appflowy-secrets
+              key: APPFLOWY_MAILER_SMTP_PORT
+        - name: APPFLOWY_MAILER_SMTP_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: appflowy-secrets
+              key: APPFLOWY_MAILER_SMTP_USERNAME
+        - name: APPFLOWY_MAILER_SMTP_EMAIL
+          valueFrom:
+            secretKeyRef:
+              name: appflowy-secrets
+              key: APPFLOWY_MAILER_SMTP_EMAIL
+        - name: APPFLOWY_MAILER_SMTP_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: appflowy-secrets
+              key: APPFLOWY_MAILER_SMTP_PASSWORD
+        - name: APPFLOWY_MAILER_SMTP_TLS_KIND
+          valueFrom:
+            secretKeyRef:
+              name: appflowy-secrets
+              key: APPFLOWY_MAILER_SMTP_TLS_KIND
+        resources:
+          requests:
+            cpu: PLACEHOLDER_CPU_REQUEST
+            memory: PLACEHOLDER_MEMORY_REQUEST
+          limits:
+            cpu: PLACEHOLDER_CPU_LIMIT
+            memory: PLACEHOLDER_MEMORY_LIMIT

@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: appflowy-postgres
+spec:
+  replicas: 1
+  template:
+    spec:
+      initContainers:
+      - name: init-db
+        image: docker.io/pgvector/pgvector:pg16
+      containers:
+      - name: postgres
+        image: docker.io/pgvector/pgvector:pg16
+        volumeMounts:
+        - name: temple-of-time-appflowy-postgres-data
+          mountPath: /var/lib/postgresql/data
+        - name: initdb
+          mountPath: /docker-entrypoint-initdb.d
+        resources:
+          requests:
+            memory: "1Gi"
+            cpu: "500m"
+          limits:
+            memory: "2Gi"
+            cpu: "1000m"
+      imagePullSecrets:
+      - name: cr-pcfae-admin-pull-secret
+  volumeClaimTemplates:
+  - metadata:
+      name: temple-of-time-appflowy-postgres-data
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      storageClassName: ceph-block
+      resources:
+        requests:
+          storage: 20Gi

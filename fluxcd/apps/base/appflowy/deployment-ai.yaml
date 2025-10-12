@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: appflowy-ai
+  labels:
+    app: appflowy-ai
+    component: ai-service
+spec:
+  replicas: PLACEHOLDER_REPLICAS
+  selector:
+    matchLabels:
+      app: appflowy-ai
+      component: ai-service
+  template:
+    metadata:
+      labels:
+        app: appflowy-ai
+        component: ai-service
+    spec:
+      containers:
+      - name: appflowy-ai
+        image: PLACEHOLDER_AI_IMAGE
+        ports:
+        - name: http
+          containerPort: 5001
+          protocol: TCP
+        env:
+        - name: OPENAI_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: appflowy-secrets
+              key: AI_OPENAI_API_KEY
+        - name: APPFLOWY_AI_SERVER_PORT
+          valueFrom:
+            secretKeyRef:
+              name: appflowy-secrets
+              key: AI_SERVER_PORT
+        - name: APPFLOWY_AI_DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: appflowy-secrets
+              key: AI_DATABASE_URL
+        - name: APPFLOWY_AI_REDIS_URL
+          valueFrom:
+            secretKeyRef:
+              name: appflowy-secrets
+              key: AI_REDIS_URL
+        resources:
+          requests:
+            cpu: PLACEHOLDER_CPU_REQUEST
+            memory: PLACEHOLDER_MEMORY_REQUEST
+          limits:
+            cpu: PLACEHOLDER_CPU_LIMIT
+            memory: PLACEHOLDER_MEMORY_LIMIT

@@ -1,0 +1,25 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - statefulset-postgres.yaml
+  - statefulset-redis.yaml
+  - statefulset-minio.yaml
+  - deployment-gotrue.yaml
+  - deployment-appflowy-cloud.yaml
+  - deployment-admin-frontend.yaml
+  - deployment-ai.yaml
+  - deployment-worker.yaml
+  - deployment-web.yaml
+  - deployment-nginx.yaml
+  - service-postgres.yaml
+  - service-redis.yaml
+  - service-minio.yaml
+  - service-gotrue.yaml
+  - service-appflowy-cloud.yaml
+  - service-admin-frontend.yaml
+  - service-ai.yaml
+  - service-web.yaml
+  - service-nginx.yaml
+  - configmap-nginx.yaml
+  - configmap-postgres-init.yaml
+  - externalsecret.yaml

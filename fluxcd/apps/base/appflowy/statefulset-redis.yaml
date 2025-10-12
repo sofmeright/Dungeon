@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: appflowy-redis
+spec:
+  serviceName: appflowy-redis
+  replicas: PLACEHOLDER_REPLICAS
+  selector:
+    matchLabels:
+      app: appflowy-redis
+  template:
+    metadata:
+      labels:
+        app: appflowy-redis
+    spec:
+      containers:
+      - name: redis
+        image: PLACEHOLDER_REDIS_IMAGE
+        ports:
+        - containerPort: 6379
+          name: redis
+        resources:
+          requests:
+            memory: PLACEHOLDER_MEMORY_REQUEST
+            cpu: PLACEHOLDER_CPU_REQUEST
+          limits:
+            memory: PLACEHOLDER_MEMORY_LIMIT
+            cpu: PLACEHOLDER_CPU_LIMIT

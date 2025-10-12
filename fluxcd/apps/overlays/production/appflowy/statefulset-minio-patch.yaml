@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: appflowy-minio
+spec:
+  replicas: 1
+  template:
+    spec:
+      containers:
+      - name: minio
+        image: docker.io/minio/minio:latest
+        env:
+        - name: MINIO_BROWSER_REDIRECT_URL
+          value: "https://flwy.prplanit.com/minio"
+        volumeMounts:
+        - name: temple-of-time-appflowy-minio-data
+          mountPath: /data
+        resources:
+          requests:
+            memory: "1Gi"
+            cpu: "500m"
+          limits:
+            memory: "2Gi"
+            cpu: "1000m"
+      imagePullSecrets:
+      - name: cr-pcfae-admin-pull-secret
+  volumeClaimTemplates:
+  - metadata:
+      name: temple-of-time-appflowy-minio-data
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      storageClassName: ceph-block
+      resources:
+        requests:
+          storage: 50Gi

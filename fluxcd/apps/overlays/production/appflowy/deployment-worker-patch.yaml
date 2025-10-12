@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: appflowy-worker
+spec:
+  replicas: 1
+  template:
+    spec:
+      containers:
+      - name: appflowy-worker
+        image: docker.io/appflowyinc/appflowy_worker:latest
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "250m"
+          limits:
+            memory: "1Gi"
+            cpu: "500m"
+      imagePullSecrets:
+      - name: cr-pcfae-admin-pull-secret

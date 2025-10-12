@@ -1,0 +1,61 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: appflowy-minio
+spec:
+  serviceName: appflowy-minio
+  replicas: PLACEHOLDER_REPLICAS
+  selector:
+    matchLabels:
+      app: appflowy-minio
+  template:
+    metadata:
+      labels:
+        app: appflowy-minio
+    spec:
+      containers:
+      - name: minio
+        image: PLACEHOLDER_MINIO_IMAGE
+        ports:
+        - containerPort: 9000
+          name: api
+        - containerPort: 9001
+          name: console
+        env:
+        - name: MINIO_BROWSER_REDIRECT_URL
+          value: PLACEHOLDER_MINIO_BROWSER_URL
+        - name: MINIO_ROOT_USER
+          valueFrom:
+            secretKeyRef:
+              name: appflowy-secrets
+              key: minio_root_user
+        - name: MINIO_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: appflowy-secrets
+              key: minio_root_password
+        command:
+        - minio
+        - server
+        - /data
+        - --console-address
+        - ":9001"
+        volumeMounts:
+        - name: PLACEHOLDER_NAMESPACE-appflowy-minio-data
+          mountPath: /data
+        resources:
+          requests:
+            memory: PLACEHOLDER_MEMORY_REQUEST
+            cpu: PLACEHOLDER_CPU_REQUEST
+          limits:
+            memory: PLACEHOLDER_MEMORY_LIMIT
+            cpu: PLACEHOLDER_CPU_LIMIT
+  volumeClaimTemplates:
+  - metadata:
+      name: PLACEHOLDER_NAMESPACE-appflowy-minio-data
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      storageClassName: PLACEHOLDER_STORAGE_CLASS
+      resources:
+        requests:
+          storage: PLACEHOLDER_STORAGE_SIZE
