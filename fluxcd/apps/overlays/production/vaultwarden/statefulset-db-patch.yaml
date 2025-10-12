@@ -9,6 +9,9 @@ spec:
       initContainers:
       - name: init-permissions
         image: docker.io/busybox:latest
+        volumeMounts:
+        - name: zeldas-lullaby-vaultwarden-postgres
+          mountPath: /var/lib/postgresql/data
       containers:
       - name: postgres
         image: docker.io/postgres:16
