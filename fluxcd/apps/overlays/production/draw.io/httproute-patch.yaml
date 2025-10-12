@@ -1,0 +1,18 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: draw-io
+spec:
+  parentRefs:
+  - name: xylem-gateway
+    namespace: kokiri-forest
+  hostnames:
+  - draw.pcfae.com
+  rules:
+  - matches:
+    - path:
+        type: PathPrefix
+        value: /
+    backendRefs:
+    - name: draw-io
+      port: 4549

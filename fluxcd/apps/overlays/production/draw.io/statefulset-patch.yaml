@@ -1,0 +1,18 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: draw-io
+spec:
+  replicas: 1
+  template:
+    spec:
+      containers:
+      - name: draw-io
+        image: docker.io/jgraph/drawio:latest
+        resources:
+          requests:
+            cpu: 100m
+            memory: 256Mi
+          limits:
+            cpu: 1000m
+            memory: 512Mi
