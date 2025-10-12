@@ -5,7 +5,9 @@ metadata:
 spec:
   template:
     spec:
-      initContainers: []
+      initContainers:
+      - name: wait-for-db
+        image: lscr.io/linuxserver/bookstack:latest
       containers:
       - name: bookstack
         image: lscr.io/linuxserver/bookstack:latest
