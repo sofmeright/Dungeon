@@ -35,6 +35,7 @@
       - lens-of-truth: IDS/IPS/SIEM security monitoring (reveals hidden threats)
       - swift-sail: Arr apps & downloaders (prowlarr, radarr, sonarr - swift sailing across the seas)
       - pedestal-of-time: Restricted/privileged services (only link can pull the master sword)
+      - delivery-bag: Mail services (mailcow - postman's delivery bag)
   - Base should NEVER contain deployment-ready configs - only generic templates that overlays patch with real values. Base should document application defaults from upstream/vendor documentation, not production-specific configurations.
   - Always use overlays/production for actual deployment to the production cluster, never deploy from base
 
@@ -163,6 +164,7 @@
     - General CIDR: 172.22.30.0/24.
     - Shared IPs (Ocarina of Time naming theme):
       - Administrative (e.g. vault,weave,zitadel): 172.22.30.86 (sharing-key: zeldas-lullaby)
+      - Mail services (mailcow SMTP/IMAP/POP3): 172.22.30.102 (sharing-key: delivery-bag)
       - General MediaServers: 172.22.30.123 (sharing-key: song-of-storms)
       - DNS & NTP, similar publicly needed core services: 172.22.30.122 (sharing-key: compass)
       - Monitoring: 172.22.30.137 (sharing-key: gossip-stone)
@@ -170,7 +172,7 @@
       - Discovery & Dashboards: 172.22.30.223 (sharing-key: lost-woods)
       - Tools w/o userdata (it-tools, podinfo, searxng): 172.22.30.107 (sharing-key: tingle-tuner)
       - Archival/Content Management (linkwarden, calibre-web, mealie): 172.22.30.222 (sharing-key: song-of-time)
-      - Backup services (velero, urbackup): 172.22.30.119 (sharing-key: fairy-bottle)
+      - Backup services (velero, urbackup): 172.22.30.117 (sharing-key: fairy-bottle)
       - Storage services (minio, longhorn, rook-ceph): 172.22.30.101 (sharing-key: gorons-bracelet)
       - Game servers (minecraft, etc): 172.22.30.231 (sharing-key: shooting-gallery)
       - VPN-routed *arr apps (qbittorrent, prowlarr, radarr, sonarr) in swift-sail namespace: 172.22.30.33 (sharing-key: great-sea)
