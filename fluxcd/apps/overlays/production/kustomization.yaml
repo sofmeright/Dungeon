@@ -5,6 +5,7 @@ resources:
   - actualbudget
   - dailytxt
   - draw.io
+  - google-webfonts-helper
   - homebox
   - it-tools
   - lubelogger

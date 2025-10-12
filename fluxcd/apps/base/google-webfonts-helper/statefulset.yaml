@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: google-webfonts-helper
+spec:
+  serviceName: google-webfonts-helper
+  replicas: PLACEHOLDER_REPLICAS
+  selector:
+    matchLabels:
+      app: google-webfonts-helper
+  template:
+    metadata:
+      labels:
+        app: google-webfonts-helper
+    spec:
+      containers:
+      - name: google-webfonts-helper
+        image: PLACEHOLDER_IMAGE
+        ports:
+        - containerPort: 8080
+          name: http
+        env:
+        - name: GOOGLE_FONTS_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: google-webfonts-helper-secrets
+              key: GOOGLE_FONTS_API_KEY
+        resources:
+          requests:
+            cpu: PLACEHOLDER_CPU_REQUEST
+            memory: PLACEHOLDER_MEMORY_REQUEST
+          limits:
+            cpu: PLACEHOLDER_CPU_LIMIT
+            memory: PLACEHOLDER_MEMORY_LIMIT
