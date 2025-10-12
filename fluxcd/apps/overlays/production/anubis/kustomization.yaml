@@ -5,7 +5,6 @@ resources:
   - ../../../base/anubis
 patches:
   - path: deployment-anubis-patch.yaml
-  - path: deployment-nginx-patch.yaml
   - path: service-anubis-patch.yaml
   - path: configmap-bot-policy-patch.yaml
   - path: externalsecret-patch.yaml
