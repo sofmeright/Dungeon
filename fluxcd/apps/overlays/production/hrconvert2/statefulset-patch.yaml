@@ -26,6 +26,8 @@ spec:
   - metadata:
       name: tingle-tuner-hrconvert2-config
     spec:
+      accessModes:
+      - ReadWriteOnce
       storageClassName: ceph-rbd
       resources:
         requests:
@@ -33,6 +35,8 @@ spec:
   - metadata:
       name: tingle-tuner-hrconvert2-files
     spec:
+      accessModes:
+      - ReadWriteOnce
       storageClassName: ceph-rbd
       resources:
         requests:
