@@ -3,7 +3,9 @@ kind: Deployment
 metadata:
   name: vaultwarden
 spec:
-  replicas: 3
+  replicas: 1
+  strategy:
+    type: Recreate
   template:
     spec:
       containers:
