@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: ghost
+spec:
+  replicas: 1
+  template:
+    spec:
+      containers:
+      - name: ghost
+        image: docker.io/ghost:5-alpine
+        env:
+        - name: url
+          value: "https://blog.sofmeright.com/"
+  volumeClaimTemplates:
+  - metadata:
+      name: temple-of-time-ghost-data
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      storageClassName: ceph-rbd-retain
+      resources:
+        requests:
+          storage: 10Gi

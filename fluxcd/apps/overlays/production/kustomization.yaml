@@ -19,6 +19,7 @@ resources:
   - calibre-web
   - mealie
   - linkwarden
+  - ghost
   - homarr
   - minecraft-optcp
   - umami

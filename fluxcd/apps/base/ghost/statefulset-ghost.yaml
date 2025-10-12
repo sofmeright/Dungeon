@@ -1,0 +1,93 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: ghost
+spec:
+  serviceName: ghost
+  replicas: PLACEHOLDER_REPLICAS
+  selector:
+    matchLabels:
+      app: ghost
+  template:
+    metadata:
+      labels:
+        app: ghost
+    spec:
+      containers:
+      - name: ghost
+        image: PLACEHOLDER_GHOST_IMAGE
+        env:
+        - name: database__client
+          value: mysql
+        - name: database__connection__host
+          value: ghost-mysql
+        - name: database__connection__user
+          value: ghost
+        - name: database__connection__password
+          valueFrom:
+            secretKeyRef:
+              name: ghost-mysql-secret
+              key: mysql_user_password
+        - name: database__connection__database
+          value: ghost_db
+        - name: mail__transport
+          value: SMTP
+        - name: mail__options__service
+          value: Google
+        - name: mail__options__host
+          value: smtp.gmail.com
+        - name: mail__options__port
+          value: "465"
+        - name: mail__options__secure
+          value: "true"
+        - name: mail__options__auth__user
+          valueFrom:
+            secretKeyRef:
+              name: ghost-smtp-secret
+              key: smtp_email
+        - name: mail__options__auth__pass
+          valueFrom:
+            secretKeyRef:
+              name: ghost-smtp-secret
+              key: smtp_token
+        - name: mail__from
+          valueFrom:
+            secretKeyRef:
+              name: ghost-smtp-secret
+              key: smtp_email
+        - name: mail__options__secure_connection
+          value: "true"
+        - name: privacy__useUpdateCheck
+          value: "true"
+        - name: privacy__useGravatar
+          value: "true"
+        - name: privacy__useRpcPing
+          value: "true"
+        - name: privacy__useStructuredData
+          value: "true"
+        - name: url
+          value: PLACEHOLDER_GHOST_URL
+        - name: NODE_ENV
+          value: production
+        ports:
+        - containerPort: 2368
+          name: http
+        volumeMounts:
+        - name: data
+          mountPath: /var/lib/ghost/content
+        resources:
+          requests:
+            memory: 256Mi
+            cpu: 100m
+          limits:
+            memory: 1Gi
+            cpu: 1000m
+  volumeClaimTemplates:
+  - metadata:
+      name: data
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      storageClassName: PLACEHOLDER_STORAGE_CLASS
+      resources:
+        requests:
+          storage: PLACEHOLDER_DATA_STORAGE

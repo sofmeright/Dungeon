@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: ghost-mysql
+spec:
+  replicas: 1
+  template:
+    spec:
+      containers:
+      - name: mysql
+        image: docker.io/mysql:8.0
+  volumeClaimTemplates:
+  - metadata:
+      name: temple-of-time-ghost-mysql-data
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      storageClassName: ceph-rbd-retain
+      resources:
+        requests:
+          storage: 5Gi
