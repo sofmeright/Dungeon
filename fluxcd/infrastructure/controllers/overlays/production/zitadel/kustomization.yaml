@@ -8,12 +8,15 @@ resources:
 
 patches:
   - path: image-patch.yaml
-  - path: replicas-patch.yaml
-  - path: jobs-env-patch.yaml
-  - path: pvc-patch.yaml
+  - path: postgres-cluster-patch.yaml
     target:
-      kind: PersistentVolumeClaim
-      name: zitadel-postgres-data
+      kind: Cluster
+      name: zitadel-postgres
+  - path: zitadel-statefulset-patch.yaml
+    target:
+      kind: StatefulSet
+      name: zitadel
+  - path: jobs-env-patch.yaml
   - path: service-patch.yaml
     target:
       kind: Service

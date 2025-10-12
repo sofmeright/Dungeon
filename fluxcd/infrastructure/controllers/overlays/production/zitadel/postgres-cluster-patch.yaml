@@ -1,0 +1,7 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: zitadel-postgres
+spec:
+  storage:
+    storageClass: ceph-rbd-retain

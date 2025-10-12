@@ -14,7 +14,7 @@ data:
 
     Database:
       Postgres:
-        Host: zitadel-postgres.zeldas-lullaby.svc.cluster.local
+        Host: zitadel-postgres-rw.zeldas-lullaby.svc.cluster.local
         Port: 5432
         Database: zitadel
         User:
