@@ -3,9 +3,35 @@ kind: StatefulSet
 metadata:
   name: apt-cacher-ng
 spec:
+  replicas: 1
+  template:
+    spec:
+      initContainers:
+      - name: init
+        image: docker.io/prplanit/apt-cacher-ng-oci:3.7.4-v0.1
+      containers:
+      - name: apt-cacher-ng
+        image: docker.io/prplanit/apt-cacher-ng-oci:3.7.4-v0.1
+        env:
+        - name: MAX_THREADS
+          value: "30"
+        - name: NETWORK_TIMEOUT
+          value: "120"
+        resources:
+          limits:
+            memory: 4Gi
+            cpu: "4000m"
+          requests:
+            memory: 512Mi
+            cpu: "500m"
+        volumeMounts:
+        - name: compass-apt-cacher-ng-cache
+          mountPath: /var/cache/apt-cacher-ng
+        - name: compass-apt-cacher-ng-logs
+          mountPath: /var/log/apt-cacher-ng
   volumeClaimTemplates:
   - metadata:
-      name: cache
+      name: compass-apt-cacher-ng-cache
     spec:
       accessModes:
       - ReadWriteOnce
@@ -14,7 +40,7 @@ spec:
         requests:
           storage: 100Gi
   - metadata:
-      name: logs
+      name: compass-apt-cacher-ng-logs
     spec:
       accessModes:
       - ReadWriteOnce
