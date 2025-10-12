@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: projectsend
+spec:
+  replicas: 1
+  template:
+    spec:
+      containers:
+      - name: projectsend
+        image: docker.io/linuxserver/projectsend:latest
+        env:
+        - name: PUID
+          value: "1000"
+        - name: PGID
+          value: "1000"
+        - name: TZ
+          value: "America/Los_Angeles"
+        resources:
+          requests:
+            cpu: 100m
+            memory: 256Mi
+          limits:
+            cpu: 1000m
+            memory: 1Gi
+        volumeMounts:
+        - name: temple-of-time-projectsend-config
+          mountPath: /config
+        - name: temple-of-time-projectsend-data
+          mountPath: /data
+  volumeClaimTemplates:
+  - metadata:
+      name: temple-of-time-projectsend-config
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      storageClassName: ceph-rbd
+      resources:
+        requests:
+          storage: 1Gi
+  - metadata:
+      name: temple-of-time-projectsend-data
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      storageClassName: ceph-rbd
+      resources:
+        requests:
+          storage: 50Gi
