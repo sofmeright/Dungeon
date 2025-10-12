@@ -9,6 +9,9 @@ spec:
       initContainers:
       - name: init-permissions
         image: docker.io/busybox:latest
+        volumeMounts:
+        - name: compass-speedtest-tracker-postgres
+          mountPath: /var/lib/postgresql/data
       containers:
       - name: postgres
         image: docker.io/postgres:17
