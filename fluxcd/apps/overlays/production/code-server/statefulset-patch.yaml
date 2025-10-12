@@ -43,13 +43,7 @@ spec:
         hostPath:
           path: /srv
           type: Directory
-  volumeClaimTemplates:
-  - metadata:
-      name: tingle-tuner-code-server-config
-    spec:
-      accessModes:
-      - ReadWriteOnce
-      storageClassName: ceph-rbd
-      resources:
-        requests:
-          storage: 10Gi
+      - name: tingle-tuner-code-server-config
+        hostPath:
+          path: /opt/k8s-data/code-server/config
+          type: DirectoryOrCreate
