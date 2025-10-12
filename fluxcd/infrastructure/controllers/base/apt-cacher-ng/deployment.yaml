@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: apt-cacher-ng
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: apt-cacher-ng
+  template:
+    metadata:
+      labels:
+        app: apt-cacher-ng
+    spec:
+      initContainers:
+      - name: init
+        image: docker.io/prplanit/apt-cacher-ng-oci:3.7.4-v0.1
+        command: ["true"]
+      containers:
+      - name: apt-cacher-ng
+        image: docker.io/prplanit/apt-cacher-ng-oci:3.7.4-v0.1
+        ports:
+        - containerPort: 3142
+          name: http
+        env:
+        - name: MAX_THREADS
+          value: "30"
+        - name: NETWORK_TIMEOUT
+          value: "120"
+        resources:
+          limits:
+            memory: 4Gi
+            cpu: "4000m"
+          requests:
+            memory: 512Mi
+            cpu: "500m"
+        volumeMounts:
+        - name: cache
+          mountPath: /var/cache/apt-cacher-ng
+        - name: logs
+          mountPath: /var/log/apt-cacher-ng
+      volumes:
+      - name: cache
+        persistentVolumeClaim:
+          claimName: apt-cacher-ng-cache
+      - name: logs
+        persistentVolumeClaim:
+          claimName: apt-cacher-ng-logs

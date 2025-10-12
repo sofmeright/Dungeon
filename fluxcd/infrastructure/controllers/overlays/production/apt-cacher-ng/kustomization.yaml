@@ -1,0 +1,18 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: kube-system
+resources:
+  - ../../../base/apt-cacher-ng
+patches:
+  - path: service-patch.yaml
+    target:
+      kind: Service
+      name: apt-cacher-ng
+  - path: pvc-cache-patch.yaml
+    target:
+      kind: PersistentVolumeClaim
+      name: apt-cacher-ng-cache
+  - path: pvc-logs-patch.yaml
+    target:
+      kind: PersistentVolumeClaim
+      name: apt-cacher-ng-logs
