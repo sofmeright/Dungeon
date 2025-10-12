@@ -1,0 +1,20 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: code-server
+  namespace: tingle-tuner
+spec:
+  parentRefs:
+  - name: cell-membrane-gateway
+    namespace: hyrule-castle
+    sectionName: https
+  hostnames:
+  - "code.prplanit.com"
+  rules:
+  - matches:
+    - path:
+        type: PathPrefix
+        value: /
+    backendRefs:
+    - name: code-server
+      port: 8443

@@ -57,6 +57,7 @@ resources:
   - stable-diffusion-webui
   - supermicro-license-generator
   - filebrowser
+  - code-server
   - frigate
   - kasm
   - netbootxyz

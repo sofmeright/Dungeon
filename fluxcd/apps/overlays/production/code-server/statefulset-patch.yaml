@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: code-server
+spec:
+  template:
+    spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: kubernetes.io/hostname
+                operator: In
+                values:
+                - dungeon-map-002
+      tolerations:
+      - key: node-role.kubernetes.io/control-plane
+        operator: Exists
+        effect: NoSchedule
+      imagePullSecrets:
+      - name: jcr-pcfae-dungeon-pull-secret
+      containers:
+      - name: code-server
+        image: lscr.io/linuxserver/code-server:latest
+        env:
+        - name: PROXY_DOMAIN
+          value: "code.prplanit.com"
+        volumeMounts:
+        - name: tingle-tuner-code-server-config
+          mountPath: /config
+        - name: srv
+          mountPath: /srv
+        resources:
+          requests:
+            cpu: "250m"
+            memory: "512Mi"
+          limits:
+            cpu: "1000m"
+            memory: "2Gi"
+      volumes:
+      - name: srv
+        hostPath:
+          path: /srv
+          type: Directory
+  volumeClaimTemplates:
+  - metadata:
+      name: tingle-tuner-code-server-config
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      storageClassName: ceph-rbd
+      resources:
+        requests:
+          storage: 10Gi
