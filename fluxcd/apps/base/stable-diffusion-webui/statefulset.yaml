@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: stable-diffusion-webui
+spec:
+  serviceName: stable-diffusion-webui
+  replicas: 1
+  selector:
+    matchLabels:
+      app: stable-diffusion-webui
+  template:
+    metadata:
+      labels:
+        app: stable-diffusion-webui
+    spec:
+      containers:
+      - name: webui
+        image: PLACEHOLDER_IMAGE
+        ports:
+        - containerPort: 7860
+          name: http
+        env:
+        - name: CLI_ARGS
+          value: "PLACEHOLDER_CLI_ARGS"
+        - name: NVIDIA_VISIBLE_DEVICES
+          value: "all"
+        - name: NVIDIA_DRIVER_CAPABILITIES
+          value: "all"
+        resources:
+          limits:
+            nvidia.com/gpu: 1
+          requests:
+            memory: "8Gi"
+            cpu: "2000m"
+        volumeMounts:
+        - name: data
+          mountPath: /data
+        - name: output
+          mountPath: /output
+        tty: true
+        stdin: true
+  volumeClaimTemplates:
+  - metadata:
+      name: data
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      storageClassName: PLACEHOLDER_STORAGE_CLASS
+      resources:
+        requests:
+          storage: PLACEHOLDER_DATA_STORAGE
+  - metadata:
+      name: output
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      storageClassName: PLACEHOLDER_STORAGE_CLASS
+      resources:
+        requests:
+          storage: PLACEHOLDER_OUTPUT_STORAGE

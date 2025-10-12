@@ -48,3 +48,4 @@ resources:
   - byparr
   - pinchflat
   - emulatorjs
+  - stable-diffusion-webui
