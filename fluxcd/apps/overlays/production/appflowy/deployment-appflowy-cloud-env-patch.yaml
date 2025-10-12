@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: appflowy-cloud
+spec:
+  template:
+    spec:
+      containers:
+      - name: appflowy-cloud
+        env:
+        - name: APPFLOWY_GOTRUE_JWT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: appflowy-secrets
+              key: GOTRUE_JWT_SECRET
+        - name: APPFLOWY_GOTRUE_JWT_EXP
+          valueFrom:
+            secretKeyRef:
+              name: appflowy-secrets
+              key: GOTRUE_JWT_EXP
+        - name: APPFLOWY_GOTRUE_EXT_URL
+          valueFrom:
+            secretKeyRef:
+              name: appflowy-secrets
+              key: API_EXTERNAL_URL
+        - name: APPFLOWY_GOTRUE_ADMIN_EMAIL
+          valueFrom:
+            secretKeyRef:
+              name: appflowy-secrets
+              key: GOTRUE_ADMIN_EMAIL
+        - name: APPFLOWY_GOTRUE_ADMIN_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: appflowy-secrets
+              key: GOTRUE_ADMIN_PASSWORD

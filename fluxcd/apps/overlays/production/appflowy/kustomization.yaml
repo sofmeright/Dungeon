@@ -10,6 +10,7 @@ patches:
   - path: statefulset-minio-patch.yaml
   - path: deployment-gotrue-patch.yaml
   - path: deployment-appflowy-cloud-patch.yaml
+  - path: deployment-appflowy-cloud-env-patch.yaml
   - path: deployment-admin-frontend-patch.yaml
   - path: deployment-ai-patch.yaml
   - path: deployment-worker-patch.yaml
