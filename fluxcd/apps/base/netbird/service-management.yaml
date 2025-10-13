@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: netbird-management
+  labels:
+    app: netbird
+    component: management
+spec:
+  type: ClusterIP
+  ports:
+  - port: 443
+    targetPort: https
+    protocol: TCP
+    name: https
+  selector:
+    app: netbird
+    component: management

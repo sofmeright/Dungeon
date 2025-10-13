@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: netbird-relay
+  labels:
+    app: netbird
+    component: relay
+spec:
+  type: ClusterIP
+  ports:
+  - port: 33080
+    targetPort: relay
+    protocol: TCP
+    name: relay
+  selector:
+    app: netbird
+    component: relay
