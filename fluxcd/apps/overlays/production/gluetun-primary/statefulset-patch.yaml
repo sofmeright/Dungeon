@@ -50,7 +50,7 @@ spec:
         - name: swift-sail-gluetun-primary-downloads
           mountPath: /downloads
       - name: port-manager
-        image: docker.io/prplanit/qbittorrent-port-manager:1.3
+        image: docker.jcr.pcfae.com/prplanit/qbittorrent-port-manager:1.3
         volumeMounts:
         - name: swift-sail-gluetun-primary-gluetun-tmp
           mountPath: /tmp/gluetun

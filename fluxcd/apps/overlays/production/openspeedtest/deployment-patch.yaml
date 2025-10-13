@@ -7,7 +7,7 @@ spec:
     spec:
       containers:
       - name: openspeedtest
-        image: docker.io/openspeedtest/latest:latest
+        image: docker.jcr.pcfae.com/openspeedtest/latest:latest
         resources:
           requests:
             cpu: 100m

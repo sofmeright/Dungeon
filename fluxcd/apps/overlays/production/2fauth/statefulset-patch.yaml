@@ -12,7 +12,7 @@ spec:
         runAsGroup: 1000
       containers:
       - name: twofauth
-        image: docker.io/2fauth/2fauth:latest
+        image: docker.jcr.pcfae.com/2fauth/2fauth:latest
         env:
         - name: APP_URL
           value: "http://172.22.30.86:8000"

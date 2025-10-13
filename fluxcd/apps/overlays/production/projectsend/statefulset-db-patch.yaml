@@ -8,7 +8,7 @@ spec:
     spec:
       containers:
       - name: mariadb
-        image: docker.io/linuxserver/mariadb:latest
+        image: docker.jcr.pcfae.com/linuxserver/mariadb:latest
         env:
         - name: PUID
           value: "1000"

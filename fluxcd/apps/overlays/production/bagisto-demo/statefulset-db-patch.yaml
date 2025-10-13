@@ -8,7 +8,7 @@ spec:
     spec:
       containers:
       - name: mysql
-        image: docker.io/mysql:5.7
+        image: docker.jcr.pcfae.com/mysql:5.7
         resources:
           requests:
             cpu: 100m

@@ -7,12 +7,12 @@ spec:
     spec:
       containers:
       - name: jellyseerr
-        image: docker.io/fallenbagel/jellyseerr:latest
+        image: docker.jcr.pcfae.com/fallenbagel/jellyseerr:latest
         env:
         - name: TZ
           value: "America/Chicago"
       - name: gluetun
-        image: docker.io/qmcgaw/gluetun:v3.39.1
+        image: docker.jcr.pcfae.com/qmcgaw/gluetun:v3.39.1
         env:
         - name: VPN_SERVICE_PROVIDER
           value: "private internet access"

@@ -7,12 +7,12 @@ spec:
     spec:
       containers:
       - name: cross-seed
-        image: docker.io/crossseed/cross-seed:latest
+        image: docker.jcr.pcfae.com/crossseed/cross-seed:latest
         env:
         - name: TZ
           value: "America/Chicago"
       - name: gluetun
-        image: docker.io/qmcgaw/gluetun:v3.39.1
+        image: docker.jcr.pcfae.com/qmcgaw/gluetun:v3.39.1
         env:
         - name: VPN_SERVICE_PROVIDER
           value: "private internet access"

@@ -12,7 +12,7 @@ spec:
         runAsGroup: 1000
       containers:
       - name: actualbudget
-        image: docker.io/actualbudget/actual-server:latest
+        image: docker.jcr.pcfae.com/actualbudget/actual-server:latest
         env:
         - name: ACTUAL_OPENID_SERVER_HOSTNAME
           value: "https://funds.arbitorium.com"

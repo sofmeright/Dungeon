@@ -8,9 +8,9 @@ spec:
     spec:
       initContainers:
       - name: wait-for-postgres
-        image: docker.io/library/postgres:16-alpine
+        image: docker.jcr.pcfae.com/library/postgres:16-alpine
       - name: wait-for-meilisearch
-        image: docker.io/curlimages/curl:8.5.0
+        image: docker.jcr.pcfae.com/curlimages/curl:8.5.0
       containers:
       - name: linkwarden
         image: ghcr.io/linkwarden/linkwarden:latest
@@ -24,7 +24,7 @@ spec:
     spec:
       containers:
       - name: postgres
-        image: docker.io/library/postgres:16-alpine
+        image: docker.jcr.pcfae.com/library/postgres:16-alpine
 ---
 apiVersion: apps/v1
 kind: StatefulSet
@@ -35,4 +35,4 @@ spec:
     spec:
       containers:
       - name: meilisearch
-        image: docker.io/getmeili/meilisearch:v1.6
+        image: docker.jcr.pcfae.com/getmeili/meilisearch:v1.6

@@ -8,7 +8,7 @@ spec:
     spec:
       containers:
       - name: linkstack
-        image: docker.io/linkstackorg/linkstack:latest
+        image: docker.jcr.pcfae.com/linkstackorg/linkstack:latest
         env:
         - name: PUID
           value: "1000"

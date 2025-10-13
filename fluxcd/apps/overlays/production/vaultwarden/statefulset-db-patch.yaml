@@ -8,13 +8,13 @@ spec:
     spec:
       initContainers:
       - name: init-permissions
-        image: docker.io/busybox:latest
+        image: docker.jcr.pcfae.com/busybox:latest
         volumeMounts:
         - name: zeldas-lullaby-vaultwarden-postgres
           mountPath: /var/lib/postgresql/data
       containers:
       - name: postgres
-        image: docker.io/postgres:16
+        image: docker.jcr.pcfae.com/postgres:16
         resources:
           requests:
             cpu: 100m

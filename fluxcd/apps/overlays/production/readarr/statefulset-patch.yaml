@@ -7,12 +7,12 @@ spec:
     spec:
       containers:
       - name: readarr
-        image: docker.io/linuxserver/readarr:0.4.19-nightly
+        image: docker.jcr.pcfae.com/linuxserver/readarr:0.4.19-nightly
         env:
         - name: TZ
           value: "America/Chicago"
       - name: gluetun
-        image: docker.io/qmcgaw/gluetun:v3.39.1
+        image: docker.jcr.pcfae.com/qmcgaw/gluetun:v3.39.1
         env:
         - name: VPN_SERVICE_PROVIDER
           value: "private internet access"

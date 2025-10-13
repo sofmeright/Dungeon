@@ -17,7 +17,7 @@ spec:
                 - dungeon-chest-001
       containers:
       - name: gluetun
-        image: docker.io/qmcgaw/gluetun:latest
+        image: docker.jcr.pcfae.com/qmcgaw/gluetun:latest
         env:
         - name: VPN_SERVICE_PROVIDER
           value: "private internet access"

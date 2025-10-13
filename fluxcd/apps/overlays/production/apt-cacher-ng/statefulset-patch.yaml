@@ -8,10 +8,10 @@ spec:
     spec:
       initContainers:
       - name: init
-        image: docker.io/prplanit/apt-cacher-ng-oci:3.7.4-v0.1
+        image: docker.jcr.pcfae.com/prplanit/apt-cacher-ng-oci:3.7.4-v0.1
       containers:
       - name: apt-cacher-ng
-        image: docker.io/prplanit/apt-cacher-ng-oci:3.7.4-v0.1
+        image: docker.jcr.pcfae.com/prplanit/apt-cacher-ng-oci:3.7.4-v0.1
         env:
         - name: MAX_THREADS
           value: "30"

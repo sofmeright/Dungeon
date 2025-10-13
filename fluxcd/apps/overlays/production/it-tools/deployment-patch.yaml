@@ -8,4 +8,4 @@ spec:
     spec:
       containers:
       - name: it-tools
-        image: docker.io/corentinth/it-tools:latest
+        image: docker.jcr.pcfae.com/corentinth/it-tools:latest

@@ -8,7 +8,7 @@ spec:
     spec:
       containers:
       - name: hrconvert2
-        image: docker.io/zelon88/hrconvert2:latest
+        image: docker.jcr.pcfae.com/zelon88/hrconvert2:latest
         resources:
           requests:
             cpu: 100m
