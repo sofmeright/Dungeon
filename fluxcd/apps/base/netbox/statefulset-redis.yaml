@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: netbox-redis
+spec:
+  serviceName: netbox-redis
+  replicas: 1
+  selector:
+    matchLabels:
+      app: netbox-redis
+  template:
+    metadata:
+      labels:
+        app: netbox-redis
+    spec:
+      containers:
+      - name: redis
+        image: PLACEHOLDER_REDIS_IMAGE
+        command:
+        - redis-server
+        ports:
+        - containerPort: 6379
+          name: redis
+        volumeMounts:
+        - name: PLACEHOLDER_REDIS_DATA
+          mountPath: /data
+  volumeClaimTemplates:
+  - metadata:
+      name: PLACEHOLDER_REDIS_DATA
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      storageClassName: PLACEHOLDER_STORAGE_CLASS
+      resources:
+        requests:
+          storage: 5Gi

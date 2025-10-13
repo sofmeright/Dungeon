@@ -1,0 +1,38 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: netbox-postgres
+spec:
+  type: ClusterIP
+  ports:
+  - port: 5432
+    targetPort: 5432
+    name: postgres
+  selector:
+    app: netbox-postgres
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: netbox-redis
+spec:
+  type: ClusterIP
+  ports:
+  - port: 6379
+    targetPort: 6379
+    name: redis
+  selector:
+    app: netbox-redis
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: netbox-server
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 13031
+    targetPort: 8000
+    name: http
+  selector:
+    app: netbox-server

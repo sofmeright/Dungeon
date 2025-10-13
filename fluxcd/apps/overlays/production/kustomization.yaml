@@ -78,4 +78,5 @@ resources:
   - guacamole
   - invoiceninja
   - joplin
+  - netbox
   - netbird

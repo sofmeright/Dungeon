@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: netbox-redis
+spec:
+  template:
+    spec:
+      securityContext:
+        fsGroup: 1026
+      containers:
+      - name: redis
+        image: docker.jcr.pcfae.com/redis:7-alpine
+        volumeMounts:
+        - $patch: delete
+          name: PLACEHOLDER_REDIS_DATA
+        - name: zeldas-lullaby-netbox-redis-data
+          mountPath: /data
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "256Mi"
+          limits:
+            cpu: "500m"
+            memory: "1Gi"
+  volumeClaimTemplates:
+  - metadata:
+      name: zeldas-lullaby-netbox-redis-data
+    spec:
+      storageClassName: ceph-rbd

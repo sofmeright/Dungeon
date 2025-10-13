@@ -1,0 +1,95 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: netbox-server
+spec:
+  serviceName: netbox-server
+  replicas: 1
+  selector:
+    matchLabels:
+      app: netbox-server
+  template:
+    metadata:
+      labels:
+        app: netbox-server
+    spec:
+      initContainers:
+      - name: wait-for-postgres
+        image: PLACEHOLDER_BUSYBOX_IMAGE
+        command:
+        - sh
+        - -c
+        - |
+          until nc -z netbox-postgres 5432; do
+            echo "Waiting for PostgreSQL..."
+            sleep 2
+          done
+      - name: wait-for-redis
+        image: PLACEHOLDER_BUSYBOX_IMAGE
+        command:
+        - sh
+        - -c
+        - |
+          until nc -z netbox-redis 6379; do
+            echo "Waiting for Redis..."
+            sleep 2
+          done
+      containers:
+      - name: netbox
+        image: PLACEHOLDER_NETBOX_IMAGE
+        ports:
+        - containerPort: 8000
+          name: http
+        env:
+        - name: PUID
+          value: "1026"
+        - name: PGID
+          value: "100"
+        - name: TZ
+          value: "America/Los_Angeles"
+        - name: ALLOWED_HOSTS
+          value: "PLACEHOLDER_ALLOWED_HOSTS"
+        - name: DB_NAME
+          value: "netbox"
+        - name: DB_USER
+          value: "netbox"
+        - name: DB_HOST
+          value: "netbox-postgres"
+        - name: DB_PORT
+          value: "5432"
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: netbox-secrets
+              key: DB_PASSWORD
+        - name: REDIS_HOST
+          value: "netbox-redis"
+        - name: REDIS_PORT
+          value: "6379"
+        - name: REDIS_DB_TASK
+          value: "0"
+        - name: REDIS_DB_CACHE
+          value: "1"
+        - name: SUPERUSER_EMAIL
+          valueFrom:
+            secretKeyRef:
+              name: netbox-secrets
+              key: SUPERUSER_EMAIL
+        - name: SUPERUSER_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: netbox-secrets
+              key: SUPERUSER_PASSWORD
+        volumeMounts:
+        - name: PLACEHOLDER_CONFIG_DATA
+          mountPath: /config
+  volumeClaimTemplates:
+  - metadata:
+      name: PLACEHOLDER_CONFIG_DATA
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      storageClassName: PLACEHOLDER_STORAGE_CLASS
+      resources:
+        requests:
+          storage: 10Gi

@@ -1,0 +1,8 @@
+- op: add
+  path: /metadata/annotations
+  value:
+    lbipam.cilium.io/ips: "172.22.30.86"
+    lbipam.cilium.io/sharing-key: "zeldas-lullaby"
+- op: replace
+  path: /spec/ports/0/port
+  value: 13031
