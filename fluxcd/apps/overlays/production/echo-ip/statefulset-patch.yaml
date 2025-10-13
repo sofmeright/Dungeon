@@ -7,7 +7,8 @@ spec:
     spec:
       containers:
       - name: echo-ip
-        image: docker.io/mpolden/echoip:latest
+        image: ghcr.io/mpolden/echoip:latest
+        imagePullPolicy: IfNotPresent
         volumeMounts:
         - name: compass-echo-ip-data
           mountPath: /data

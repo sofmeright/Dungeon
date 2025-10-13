@@ -4,7 +4,16 @@ namespace: hyrule-castle
 resources:
   - ../../../base/bagisto-demo
 patches:
-  - path: service-patch.yaml
+  - patch: |-
+      - op: add
+        path: /metadata/annotations
+        value:
+          lbipam.cilium.io/ips: "172.22.30.71"
+          lbipam.cilium.io/sharing-key: "hyrule-castle"
+          lbipam.cilium.io/sharing-cross-namespace: "*"
+      - op: replace
+        path: /spec/ports/0/port
+        value: 324
     target:
       kind: Service
       name: bagisto-demo
