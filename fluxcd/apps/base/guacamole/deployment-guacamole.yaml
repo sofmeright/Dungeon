@@ -13,16 +13,29 @@ spec:
         app: guacamole
     spec:
       initContainers:
-      - name: init-db
+      - name: generate-initdb
         image: PLACEHOLDER_GUACAMOLE_IMAGE
         command:
         - sh
         - -c
         - |
+          /opt/guacamole/bin/initdb.sh --postgresql > /initdb/initdb.sql
+        volumeMounts:
+        - name: initdb
+          mountPath: /initdb
+      - name: init-db
+        image: PLACEHOLDER_POSTGRES_IMAGE
+        command:
+        - sh
+        - -c
+        - |
+          until pg_isready -h guacamole-postgres -U $POSTGRES_USER; do
+            echo "Waiting for PostgreSQL..."
+            sleep 2
+          done
           if ! PGPASSWORD=$POSTGRES_PASSWORD psql -h guacamole-postgres -U $POSTGRES_USER -d guacamole -c '\dt' | grep -q guacamole_user; then
             echo "Initializing database..."
-            /opt/guacamole/bin/initdb.sh --postgresql > /tmp/initdb.sql
-            PGPASSWORD=$POSTGRES_PASSWORD psql -h guacamole-postgres -U $POSTGRES_USER -d guacamole < /tmp/initdb.sql
+            PGPASSWORD=$POSTGRES_PASSWORD psql -h guacamole-postgres -U $POSTGRES_USER -d guacamole < /initdb/initdb.sql
           else
             echo "Database already initialized"
           fi
@@ -37,6 +50,9 @@ spec:
             secretKeyRef:
               name: guacamole-secrets
               key: POSTGRES_PASSWORD
+        volumeMounts:
+        - name: initdb
+          mountPath: /initdb
       containers:
       - name: guacamole
         image: PLACEHOLDER_GUACAMOLE_IMAGE
@@ -64,3 +80,6 @@ spec:
             secretKeyRef:
               name: guacamole-secrets
               key: POSTGRES_PASSWORD
+      volumes:
+      - name: initdb
+        emptyDir: {}
