@@ -18,23 +18,6 @@ spec:
       containers:
       - name: echo-ip
         image: PLACEHOLDER_IMAGE
-        command:
-        - "/echoip"
-        args:
-        - "-C"
-        - "0"
-        - "-p"
-        - "-r"
-        - "-H"
-        - "X-Forwarded-For"
-        - "-a"
-        - "/data/GeoLite2-ASN.mmdb"
-        - "-c"
-        - "/data/GeoLite2-City.mmdb"
-        - "-f"
-        - "/data/GeoLite2-Country.mmdb"
-        - "-t"
-        - "html"
         ports:
         - containerPort: 8080
           name: http

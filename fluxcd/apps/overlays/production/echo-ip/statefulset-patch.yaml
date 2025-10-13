@@ -8,8 +8,21 @@ spec:
       containers:
       - name: echo-ip
         image: docker.jcr.pcfae.com/mpolden/echoip:latest
-        command: []
-        args: []
+        args:
+        - "-C"
+        - "0"
+        - "-p"
+        - "-r"
+        - "-H"
+        - "X-Forwarded-For"
+        - "-a"
+        - "/data/GeoLite2-ASN.mmdb"
+        - "-c"
+        - "/data/GeoLite2-City.mmdb"
+        - "-f"
+        - "/data/GeoLite2-Country.mmdb"
+        - "-t"
+        - "html"
         volumeMounts:
         - name: compass-echo-ip-data
           mountPath: /data
