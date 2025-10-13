@@ -12,6 +12,8 @@ spec:
       labels:
         app: openspeedtest
     spec:
+      imagePullSecrets:
+        - name: PLACEHOLDER_IMAGE_PULL_SECRET
       containers:
       - name: openspeedtest
         image: PLACEHOLDER_IMAGE

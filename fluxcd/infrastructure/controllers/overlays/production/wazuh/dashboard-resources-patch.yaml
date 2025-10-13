@@ -7,7 +7,7 @@ spec:
     spec:
       containers:
       - name: wazuh-dashboard
-        image: docker.io/wazuh/wazuh-dashboard:4.13.1
+        image: docker.jcr.pcfae.com/wazuh/wazuh-dashboard:4.13.1
         resources:
           requests:
             cpu: 250m

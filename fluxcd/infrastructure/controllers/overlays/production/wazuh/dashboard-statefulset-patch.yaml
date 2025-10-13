@@ -4,6 +4,10 @@ metadata:
   name: wazuh-dashboard
 spec:
   replicas: 1
+  template:
+    spec:
+      imagePullSecrets:
+        - name: jcr-pcfae-dungeon-pull-secret
   volumeClaimTemplates:
   - metadata:
       name: dashboard-data

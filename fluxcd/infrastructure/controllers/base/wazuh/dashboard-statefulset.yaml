@@ -14,6 +14,8 @@ spec:
         app: wazuh-dashboard
     spec:
       hostname: wazuh-dashboard
+      imagePullSecrets:
+        - name: PLACEHOLDER_IMAGE_PULL_SECRET
       initContainers:
       - name: fix-permissions
         image: docker.io/busybox:latest

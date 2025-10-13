@@ -5,9 +5,11 @@ metadata:
 spec:
   template:
     spec:
+      imagePullSecrets:
+        - name: jcr-pcfae-dungeon-pull-secret
       containers:
       - name: wazuh-manager
-        image: docker.io/wazuh/wazuh-manager:4.13.1
+        image: docker.jcr.pcfae.com/wazuh/wazuh-manager:4.13.1
         envFrom:
         - secretRef:
             name: wazuh-manager-secrets

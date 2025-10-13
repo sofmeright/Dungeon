@@ -11,6 +11,8 @@ spec:
     spec:
       restartPolicy: OnFailure
       serviceAccountName: gitlab-praefect-db-init
+      imagePullSecrets:
+        - name: PLACEHOLDER_IMAGE_PULL_SECRET
       containers:
       - name: init-praefect-db
         image: docker.io/bitnami/kubectl:latest

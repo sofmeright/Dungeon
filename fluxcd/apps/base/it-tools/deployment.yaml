@@ -12,6 +12,8 @@ spec:
       labels:
         app: it-tools
     spec:
+      imagePullSecrets:
+        - name: PLACEHOLDER_IMAGE_PULL_SECRET
       containers:
       - name: it-tools
         image: PLACEHOLDER_IMAGE
