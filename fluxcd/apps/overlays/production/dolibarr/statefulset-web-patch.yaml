@@ -14,6 +14,10 @@ spec:
       - name: dolibarr
         image: docker.jcr.pcfae.com/tuxgasy/dolibarr:latest
         volumeMounts:
+        - $patch: delete
+          name: PLACEHOLDER_DOLIBARR_DATA
+        - $patch: delete
+          name: PLACEHOLDER_DOLIBARR_CONFIG
         - name: hyrule-castle-dolibarr-data
           mountPath: /var/www/html
         - name: hyrule-castle-dolibarr-config
