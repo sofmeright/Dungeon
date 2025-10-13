@@ -1,0 +1,145 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: invoiceninja-app
+spec:
+  serviceName: invoiceninja-app
+  replicas: 1
+  selector:
+    matchLabels:
+      app: invoiceninja-app
+  template:
+    metadata:
+      labels:
+        app: invoiceninja-app
+    spec:
+      initContainers:
+      - name: wait-for-mysql
+        image: PLACEHOLDER_BUSYBOX_IMAGE
+        command:
+        - sh
+        - -c
+        - |
+          until nc -z invoiceninja-mysql 3306; do
+            echo "Waiting for MySQL..."
+            sleep 2
+          done
+      - name: wait-for-redis
+        image: PLACEHOLDER_BUSYBOX_IMAGE
+        command:
+        - sh
+        - -c
+        - |
+          until nc -z invoiceninja-redis 6379; do
+            echo "Waiting for Redis..."
+            sleep 2
+          done
+      containers:
+      - name: app
+        image: PLACEHOLDER_APP_IMAGE
+        env:
+        - name: APP_URL
+          value: "PLACEHOLDER_APP_URL"
+        - name: APP_KEY
+          valueFrom:
+            secretKeyRef:
+              name: invoiceninja-secrets
+              key: APP_KEY
+        - name: APP_ENV
+          value: "production"
+        - name: APP_DEBUG
+          value: "false"
+        - name: REQUIRE_HTTPS
+          value: "false"
+        - name: PHANTOMJS_PDF_GENERATION
+          value: "false"
+        - name: NINJA_ENVIRONMENT
+          value: "selfhost"
+        - name: PDF_GENERATOR
+          value: "hosted_ninja"
+        - name: TRUSTED_PROXIES
+          value: "*"
+        - name: CACHE_DRIVER
+          value: "redis"
+        - name: QUEUE_CONNECTION
+          value: "redis"
+        - name: SESSION_DRIVER
+          value: "redis"
+        - name: REDIS_HOST
+          value: "invoiceninja-redis"
+        - name: REDIS_PASSWORD
+          value: "null"
+        - name: REDIS_PORT
+          value: "6379"
+        - name: FILESYSTEM_DISK
+          value: "debian_docker"
+        - name: DB_HOST
+          value: "invoiceninja-mysql"
+        - name: DB_PORT
+          value: "3306"
+        - name: DB_DATABASE
+          valueFrom:
+            secretKeyRef:
+              name: invoiceninja-secrets
+              key: DB_DATABASE
+        - name: DB_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: invoiceninja-secrets
+              key: DB_USERNAME
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: invoiceninja-secrets
+              key: DB_PASSWORD
+        - name: DB_CONNECTION
+          value: "mysql"
+        - name: IN_USER_EMAIL
+          valueFrom:
+            secretKeyRef:
+              name: invoiceninja-secrets
+              key: IN_USER_EMAIL
+        - name: IN_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: invoiceninja-secrets
+              key: IN_PASSWORD
+        - name: IS_DOCKER
+          value: "true"
+        - name: SCOUT_DRIVER
+          value: "null"
+        volumeMounts:
+        - name: PLACEHOLDER_APP_CACHE
+          mountPath: /var/www/html/bootstrap/cache
+        - name: PLACEHOLDER_APP_PUBLIC
+          mountPath: /var/www/html/public
+        - name: PLACEHOLDER_APP_STORAGE
+          mountPath: /var/www/html/storage
+  volumeClaimTemplates:
+  - metadata:
+      name: PLACEHOLDER_APP_CACHE
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      storageClassName: PLACEHOLDER_STORAGE_CLASS
+      resources:
+        requests:
+          storage: 5Gi
+  - metadata:
+      name: PLACEHOLDER_APP_PUBLIC
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      storageClassName: PLACEHOLDER_STORAGE_CLASS
+      resources:
+        requests:
+          storage: 5Gi
+  - metadata:
+      name: PLACEHOLDER_APP_STORAGE
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      storageClassName: PLACEHOLDER_STORAGE_CLASS
+      resources:
+        requests:
+          storage: 10Gi

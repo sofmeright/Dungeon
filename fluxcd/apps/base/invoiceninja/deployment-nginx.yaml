@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: invoiceninja-nginx
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: invoiceninja-nginx
+  template:
+    metadata:
+      labels:
+        app: invoiceninja-nginx
+    spec:
+      containers:
+      - name: nginx
+        image: PLACEHOLDER_NGINX_IMAGE
+        ports:
+        - containerPort: 80
+          name: http
+        volumeMounts:
+        - name: nginx-config
+          mountPath: /etc/nginx/conf.d
+          readOnly: true
+        - name: app-public
+          mountPath: /var/www/html/public
+          readOnly: true
+        - name: app-storage
+          mountPath: /var/www/html/storage
+          readOnly: true
+      volumes:
+      - name: nginx-config
+        configMap:
+          name: invoiceninja-nginx-config
+      - name: app-public
+        persistentVolumeClaim:
+          claimName: PLACEHOLDER_APP_PUBLIC_PVC
+      - name: app-storage
+        persistentVolumeClaim:
+          claimName: PLACEHOLDER_APP_STORAGE_PVC

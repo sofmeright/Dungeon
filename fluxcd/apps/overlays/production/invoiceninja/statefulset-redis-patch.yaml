@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: invoiceninja-redis
+spec:
+  template:
+    spec:
+      containers:
+      - name: redis
+        image: docker.jcr.pcfae.com/redis:alpine
+        volumeMounts:
+        - $patch: delete
+          name: PLACEHOLDER_REDIS_DATA
+        - name: hyrule-castle-invoiceninja-redis-data
+          mountPath: /data
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "256Mi"
+          limits:
+            cpu: "500m"
+            memory: "1Gi"
+  volumeClaimTemplates:
+  - metadata:
+      name: hyrule-castle-invoiceninja-redis-data
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      storageClassName: ceph-rbd
+      resources:
+        requests:
+          storage: 5Gi

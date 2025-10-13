@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: invoiceninja-redis
+spec:
+  serviceName: invoiceninja-redis
+  replicas: 1
+  selector:
+    matchLabels:
+      app: invoiceninja-redis
+  template:
+    metadata:
+      labels:
+        app: invoiceninja-redis
+    spec:
+      containers:
+      - name: redis
+        image: PLACEHOLDER_REDIS_IMAGE
+        ports:
+        - containerPort: 6379
+          name: redis
+        volumeMounts:
+        - name: PLACEHOLDER_REDIS_DATA
+          mountPath: /data
+        livenessProbe:
+          exec:
+            command:
+            - redis-cli
+            - ping
+          initialDelaySeconds: 10
+          periodSeconds: 10
+  volumeClaimTemplates:
+  - metadata:
+      name: PLACEHOLDER_REDIS_DATA
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      storageClassName: PLACEHOLDER_STORAGE_CLASS
+      resources:
+        requests:
+          storage: 5Gi

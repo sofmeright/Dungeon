@@ -1,0 +1,51 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: invoiceninja-mysql
+spec:
+  type: ClusterIP
+  ports:
+  - port: 3306
+    targetPort: 3306
+    name: mysql
+  selector:
+    app: invoiceninja-mysql
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: invoiceninja-redis
+spec:
+  type: ClusterIP
+  ports:
+  - port: 6379
+    targetPort: 6379
+    name: redis
+  selector:
+    app: invoiceninja-redis
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: invoiceninja-app
+spec:
+  type: ClusterIP
+  ports:
+  - port: 9000
+    targetPort: 9000
+    name: fastcgi
+  selector:
+    app: invoiceninja-app
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: invoiceninja-nginx
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 80
+    targetPort: 80
+    name: http
+  selector:
+    app: invoiceninja-nginx
