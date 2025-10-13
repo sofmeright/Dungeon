@@ -4,8 +4,9 @@ metadata:
   name: vault
 spec:
   image: docker.jcr.pcfae.com/hashicorp/vault:1.20.4
-  imagePullSecrets:
-    - name: jcr-pcfae-dungeon-pull-secret
+  vaultPodSpec:
+    imagePullSecrets:
+      - name: jcr-pcfae-dungeon-pull-secret
   unsealConfig:
     kubernetes:
       secretNamespace: zeldas-lullaby
