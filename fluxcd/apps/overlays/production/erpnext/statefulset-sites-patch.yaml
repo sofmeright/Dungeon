@@ -10,8 +10,26 @@ spec:
       initContainers:
       - name: configurator
         image: docker.jcr.pcfae.com/frappe/erpnext:v15.54.5
+        volumeMounts:
+        - $patch: delete
+          name: PLACEHOLDER_SITES_DATA
+        - $patch: delete
+          name: PLACEHOLDER_LOGS_DATA
+        - name: hyrule-castle-erpnext-sites-data
+          mountPath: /home/frappe/frappe-bench/sites
+        - name: hyrule-castle-erpnext-logs-data
+          mountPath: /home/frappe/frappe-bench/logs
       - name: create-site
         image: docker.jcr.pcfae.com/frappe/erpnext:v15.54.5
+        volumeMounts:
+        - $patch: delete
+          name: PLACEHOLDER_SITES_DATA
+        - $patch: delete
+          name: PLACEHOLDER_LOGS_DATA
+        - name: hyrule-castle-erpnext-sites-data
+          mountPath: /home/frappe/frappe-bench/sites
+        - name: hyrule-castle-erpnext-logs-data
+          mountPath: /home/frappe/frappe-bench/logs
       containers:
       - name: backend
         image: docker.jcr.pcfae.com/frappe/erpnext:v15.54.5

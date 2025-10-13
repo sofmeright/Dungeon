@@ -5,8 +5,6 @@ metadata:
 spec:
   template:
     spec:
-      imagePullSecrets:
-      - name: jcr-pcfae-dungeon-pull-secret
       containers:
       - name: redis
         image: docker.jcr.pcfae.com/redis:6.2-alpine

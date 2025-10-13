@@ -5,8 +5,6 @@ metadata:
 spec:
   template:
     spec:
-      imagePullSecrets:
-      - name: jcr-pcfae-dungeon-pull-secret
       containers:
       - name: scheduler
         image: docker.jcr.pcfae.com/frappe/erpnext:v15.54.5
