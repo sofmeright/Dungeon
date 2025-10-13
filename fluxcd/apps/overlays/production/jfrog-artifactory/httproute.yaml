@@ -9,7 +9,7 @@ spec:
     namespace: arylls-lookout
     sectionName: https
   hostnames:
-  - "jfrog.pcfae.com"
+  - "jcr.pcfae.com"
   rules:
   - matches:
     - path:
