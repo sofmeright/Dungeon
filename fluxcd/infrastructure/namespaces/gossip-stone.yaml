@@ -5,3 +5,4 @@ metadata:
   labels:
     name: lighthouse
     purpose: monitoring
+    jcr-pull-secret: "enabled"

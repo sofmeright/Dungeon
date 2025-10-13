@@ -4,4 +4,5 @@ metadata:
   name: lens-of-truth
   labels:
     name: lens-of-truth
+    jcr-pull-secret: "enabled"
     pod-security.kubernetes.io/enforce: privileged

@@ -4,3 +4,4 @@ metadata:
   name: pedestal-of-time
   labels:
     name: pedestal-of-time
+    jcr-pull-secret: "enabled"
