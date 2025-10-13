@@ -15,7 +15,18 @@ patches:
     target:
       kind: ExternalSecret
       name: echo-ip-secrets
-  - path: cronjob-patch.yaml
+  - patch: |-
+      - op: replace
+        path: /spec/jobTemplate/spec/template/spec/containers/0/volumeMounts
+        value:
+        - name: compass-echo-ip-data
+          mountPath: /usr/share/GeoIP
+      - op: replace
+        path: /spec/jobTemplate/spec/template/spec/volumes
+        value:
+        - name: compass-echo-ip-data
+          persistentVolumeClaim:
+            claimName: compass-echo-ip-data-echo-ip-0
     target:
       kind: CronJob
       name: echo-ip-geoip-update
