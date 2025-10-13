@@ -22,20 +22,19 @@ spec:
     # Driver configuration for production
     driver:
       enabled: true
-      # Let the operator install drivers in containers
+      # Let the operator manage drivers in containers
       usePreinstalledDrivers: false
       # Driver 580 series - will work with any compatible kernel
       # Supports both GTX 980 Ti and A2000 GPUs
       version: "580"
 
-      # Upgrade policy - allow driver updates without node drain
+      # Upgrade policy - disable automatic upgrades to avoid driver reload issues
       upgradePolicy:
-        autoUpgrade: true
+        autoUpgrade: false
         drain:
           enable: false
         podDeletion:
-          force: true
-          timeoutSeconds: 300
+          force: false
 
       # Node selector for driver daemonset
       nodeSelector:
@@ -86,3 +85,7 @@ spec:
     # Validator - disabled in production (CDI mode doesn't require validation)
     validator:
       enabled: false
+
+    # Node status exporter
+    nodeStatusExporter:
+      enabled: true
