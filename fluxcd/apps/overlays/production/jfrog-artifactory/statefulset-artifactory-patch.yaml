@@ -50,10 +50,10 @@ spec:
           readOnly: true
         resources:
           requests:
-            cpu: "250m"
+            cpu: "1000m"
             memory: "2Gi"
           limits:
-            cpu: "2000m"
+            cpu: "4000m"
             memory: "8Gi"
   volumeClaimTemplates:
   - metadata:
