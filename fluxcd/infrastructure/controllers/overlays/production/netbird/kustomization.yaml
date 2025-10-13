@@ -1,0 +1,103 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: zeldas-lullaby
+
+resources:
+  - ../../../base/netbird
+
+patches:
+  - patch: |-
+      - op: replace
+        path: /spec/storage/storageClass
+        value: ceph-rbd
+    target:
+      kind: Cluster
+      name: netbird-postgres
+  - patch: |-
+      - op: replace
+        path: /spec/imageName
+        value: docker.jcr.pcfae.com/cloudnative-pg/postgresql:16.1
+    target:
+      kind: Cluster
+      name: netbird-postgres
+  - patch: |-
+      - op: replace
+        path: /spec/template/spec/containers/0/image
+        value: docker.jcr.pcfae.com/netbirdio/management:latest
+    target:
+      kind: StatefulSet
+      name: netbird-management
+  - patch: |-
+      - op: replace
+        path: /spec/template/spec/containers/0/image
+        value: docker.jcr.pcfae.com/netbirdio/signal:latest
+    target:
+      kind: StatefulSet
+      name: netbird-signal
+  - patch: |-
+      - op: replace
+        path: /spec/template/spec/containers/0/image
+        value: docker.jcr.pcfae.com/netbirdio/dashboard:latest
+    target:
+      kind: Deployment
+      name: netbird-dashboard
+  - patch: |-
+      - op: replace
+        path: /spec/template/spec/containers/0/image
+        value: docker.jcr.pcfae.com/netbirdio/relay:latest
+    target:
+      kind: Deployment
+      name: netbird-relay
+  - patch: |-
+      - op: replace
+        path: /spec/template/spec/containers/0/image
+        value: docker.jcr.pcfae.com/coturn/coturn:latest
+    target:
+      kind: Deployment
+      name: netbird-coturn
+  - patch: |-
+      - op: replace
+        path: /spec/secretStoreRef/name
+        value: vault-zeldas-letter
+      - op: replace
+        path: /spec/data/0/remoteRef/key
+        value: apps/netbird
+      - op: replace
+        path: /spec/data/1/remoteRef/key
+        value: apps/netbird
+      - op: replace
+        path: /spec/data/2/remoteRef/key
+        value: apps/netbird
+      - op: replace
+        path: /spec/data/3/remoteRef/key
+        value: apps/netbird
+      - op: replace
+        path: /spec/data/4/remoteRef/key
+        value: apps/netbird
+    target:
+      kind: ExternalSecret
+      name: netbird-secrets
+  - patch: |-
+      - op: add
+        path: /metadata/annotations
+        value:
+          lbipam.cilium.io/ips: "172.22.30.86"
+          lbipam.cilium.io/sharing-key: "zeldas-lullaby"
+    target:
+      kind: Service
+      name: netbird-coturn
+  - patch: |-
+      - op: replace
+        path: /spec/volumeClaimTemplates/0/spec/storageClassName
+        value: ceph-rbd
+    target:
+      kind: StatefulSet
+      name: netbird-management
+  - patch: |-
+      - op: replace
+        path: /spec/volumeClaimTemplates/0/spec/storageClassName
+        value: ceph-rbd
+    target:
+      kind: StatefulSet
+      name: netbird-signal

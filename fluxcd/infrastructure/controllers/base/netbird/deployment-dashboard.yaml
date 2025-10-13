@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: netbird-dashboard
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: netbird
+      component: dashboard
+  template:
+    metadata:
+      labels:
+        app: netbird
+        component: dashboard
+    spec:
+      containers:
+      - name: dashboard
+        image: PLACEHOLDER_IMAGE
+        ports:
+        - containerPort: 80
+          name: http
+        env:
+        - name: NETBIRD_MGMT_API_ENDPOINT
+          value: "https://netbird.prplanit.com:443"
+        - name: NETBIRD_MGMT_GRPC_API_ENDPOINT
+          value: "https://netbird.prplanit.com:443"
+        - name: AUTH_AUDIENCE
+          value: "305223206304813058"
+        - name: AUTH_CLIENT_ID
+          value: "305223206304813058"
+        - name: AUTH_CLIENT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: netbird-secrets
+              key: AUTH_CLIENT_SECRET
+        - name: AUTH_AUTHORITY
+          value: "https://sso.prplanit.com"
+        - name: USE_AUTH0
+          value: "false"
+        - name: AUTH_SUPPORTED_SCOPES
+          value: "openid profile email offline_access api"
+        - name: AUTH_REDIRECT_URI
+          value: "/auth"
+        - name: AUTH_SILENT_REDIRECT_URI
+          value: "/silent-auth"
+        - name: NETBIRD_TOKEN_SOURCE
+          value: "idToken"
+        - name: NGINX_SSL_PORT
+          value: "443"
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"

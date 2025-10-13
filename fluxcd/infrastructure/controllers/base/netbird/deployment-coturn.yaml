@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: netbird-coturn
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: netbird
+      component: coturn
+  template:
+    metadata:
+      labels:
+        app: netbird
+        component: coturn
+    spec:
+      containers:
+      - name: coturn
+        image: PLACEHOLDER_IMAGE
+        ports:
+        - containerPort: 3478
+          name: turn-udp
+          protocol: UDP
+        - containerPort: 3478
+          name: turn-tcp
+          protocol: TCP
+        - containerPort: 5349
+          name: turns
+          protocol: TCP
+        volumeMounts:
+        - name: coturn-config
+          mountPath: /etc/turnserver.conf
+          subPath: turnserver.conf
+        command:
+        - turnserver
+        - -c
+        - /etc/turnserver.conf
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "1Gi"
+            cpu: "1000m"
+      volumes:
+      - name: coturn-config
+        configMap:
+          name: netbird-coturn-config

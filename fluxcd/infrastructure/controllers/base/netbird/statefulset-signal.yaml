@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: netbird-signal
+spec:
+  serviceName: netbird-signal
+  replicas: 3
+  selector:
+    matchLabels:
+      app: netbird
+      component: signal
+  template:
+    metadata:
+      labels:
+        app: netbird
+        component: signal
+    spec:
+      containers:
+      - name: signal
+        image: PLACEHOLDER_IMAGE
+        ports:
+        - containerPort: 80
+          name: http
+        volumeMounts:
+        - name: signal-data
+          mountPath: /var/lib/netbird
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+  volumeClaimTemplates:
+  - metadata:
+      name: signal-data
+    spec:
+      accessModes: [ReadWriteOnce]
+      storageClassName: PLACEHOLDER_STORAGE_CLASS
+      resources:
+        requests:
+          storage: 1Gi

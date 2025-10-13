@@ -1,0 +1,67 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: netbird-management
+spec:
+  serviceName: netbird-management
+  replicas: 3
+  selector:
+    matchLabels:
+      app: netbird
+      component: management
+  template:
+    metadata:
+      labels:
+        app: netbird
+        component: management
+    spec:
+      containers:
+      - name: management
+        image: PLACEHOLDER_IMAGE
+        ports:
+        - containerPort: 443
+          name: https
+        env:
+        - name: NETBIRD_STORE_ENGINE
+          value: postgres
+        - name: NETBIRD_STORE_ENGINE_POSTGRES_DSN
+          valueFrom:
+            secretKeyRef:
+              name: netbird-secrets
+              key: POSTGRES_DSN
+        volumeMounts:
+        - name: management-data
+          mountPath: /var/lib/netbird
+        - name: management-config
+          mountPath: /etc/netbird
+        command:
+        - /usr/local/bin/management
+        - --port
+        - "443"
+        - --log-file
+        - console
+        - --log-level
+        - info
+        - --disable-anonymous-metrics=false
+        - --single-account-mode-domain=netbird.prplanit.com
+        - --dns-domain=netbird.selfhosted
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "1Gi"
+            cpu: "1000m"
+      volumes:
+      - name: management-config
+        configMap:
+          name: netbird-management-config
+  volumeClaimTemplates:
+  - metadata:
+      name: management-data
+    spec:
+      accessModes: [ReadWriteOnce]
+      storageClassName: PLACEHOLDER_STORAGE_CLASS
+      resources:
+        requests:
+          storage: 5Gi

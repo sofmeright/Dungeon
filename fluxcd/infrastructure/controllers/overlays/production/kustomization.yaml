@@ -18,6 +18,7 @@ resources:
   - cloudnative-pg  # PostgreSQL operator for cloud-native database clusters
   - redis-operator  # Redis operator for cloud-native Redis clusters
   - zitadel
+  - netbird
   - adguard  # DNS server with network policy for proper routing
   - ../../../configs/overlays/production/chrony  # Chrony NTP server ConfigMap
   - chrony  # NTP time synchronization server
@@ -37,3 +38,4 @@ resources:
   - prometheus-exporter-pve  # Prometheus exporter for Proxmox VE metrics
   - wazuh  # Wazuh SIEM for security monitoring and threat detection
   - nutify  # UPS monitoring and power management
+  - netbird  # Netbird VPN mesh networking and remote access
