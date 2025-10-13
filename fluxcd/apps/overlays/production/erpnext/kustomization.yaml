@@ -1,0 +1,32 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: hyrule-castle
+
+resources:
+  - ../../../base/erpnext
+  - httproute.yaml
+
+patches:
+  - path: statefulset-mariadb-patch.yaml
+  - path: statefulset-redis-queue-patch.yaml
+  - path: statefulset-sites-patch.yaml
+  - path: deployment-redis-cache-patch.yaml
+  - path: deployment-frontend-patch.yaml
+  - path: deployment-websocket-patch.yaml
+  - path: deployment-scheduler-patch.yaml
+  - path: deployment-queue-long-patch.yaml
+  - path: deployment-queue-short-patch.yaml
+  - patch: |-
+      - op: add
+        path: /metadata/annotations
+        value:
+          lbipam.cilium.io/ips: "172.22.30.71"
+          lbipam.cilium.io/sharing-key: "hyrule-castle"
+      - op: replace
+        path: /spec/ports/0/port
+        value: 8085
+    target:
+      kind: Service
+      name: erpnext-frontend
+  - path: externalsecret-patch.yaml

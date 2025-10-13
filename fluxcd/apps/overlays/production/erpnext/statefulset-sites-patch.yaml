@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: erpnext-sites
+spec:
+  template:
+    spec:
+      imagePullSecrets:
+      - name: jcr-pcfae-dungeon-pull-secret
+      initContainers:
+      - name: configurator
+        image: docker.jcr.pcfae.com/frappe/erpnext:v15.54.5
+      - name: create-site
+        image: docker.jcr.pcfae.com/frappe/erpnext:v15.54.5
+      containers:
+      - name: backend
+        image: docker.jcr.pcfae.com/frappe/erpnext:v15.54.5
+        volumeMounts:
+        - $patch: delete
+          name: PLACEHOLDER_SITES_DATA
+        - $patch: delete
+          name: PLACEHOLDER_LOGS_DATA
+        - name: hyrule-castle-erpnext-sites-data
+          mountPath: /home/frappe/frappe-bench/sites
+        - name: hyrule-castle-erpnext-logs-data
+          mountPath: /home/frappe/frappe-bench/logs
+        resources:
+          requests:
+            cpu: "500m"
+            memory: "1Gi"
+          limits:
+            cpu: "2000m"
+            memory: "4Gi"
+  volumeClaimTemplates:
+  - metadata:
+      name: hyrule-castle-erpnext-sites-data
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      storageClassName: ceph-rbd
+      resources:
+        requests:
+          storage: 20Gi
+  - metadata:
+      name: hyrule-castle-erpnext-logs-data
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      storageClassName: ceph-rbd
+      resources:
+        requests:
+          storage: 5Gi

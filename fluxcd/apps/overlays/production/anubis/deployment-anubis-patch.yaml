@@ -6,8 +6,6 @@ spec:
   replicas: 1
   template:
     spec:
-      imagePullSecrets:
-      - name: jcr-pcfae-dungeon-pull-secret
       containers:
       - name: anubis
         image: ghcr.io/techarohq/anubis:latest

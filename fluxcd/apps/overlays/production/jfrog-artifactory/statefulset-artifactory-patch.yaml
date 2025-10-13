@@ -5,8 +5,6 @@ metadata:
 spec:
   template:
     spec:
-      imagePullSecrets:
-      - name: jcr-pcfae-dungeon-pull-secret
       securityContext:
         fsGroup: 1030
       initContainers:

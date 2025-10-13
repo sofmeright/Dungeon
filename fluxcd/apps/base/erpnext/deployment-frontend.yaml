@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: erpnext-frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: erpnext-frontend
+  template:
+    metadata:
+      labels:
+        app: erpnext-frontend
+    spec:
+      containers:
+      - name: frontend
+        image: PLACEHOLDER_ERPNEXT_IMAGE
+        command:
+        - nginx-entrypoint.sh
+        ports:
+        - containerPort: 8080
+          name: http
+        env:
+        - name: BACKEND
+          value: "erpnext-sites:8000"
+        - name: FRAPPE_SITE_NAME_HEADER
+          value: "frontend"
+        - name: SOCKETIO
+          value: "erpnext-websocket:9000"
+        - name: UPSTREAM_REAL_IP_ADDRESS
+          value: "PLACEHOLDER_UPSTREAM_IP"
+        - name: UPSTREAM_REAL_IP_HEADER
+          value: "X-Forwarded-For"
+        - name: UPSTREAM_REAL_IP_RECURSIVE
+          value: "off"
+        - name: PROXY_READ_TIMEOUT
+          value: "120"
+        - name: CLIENT_MAX_BODY_SIZE
+          value: "50m"
+        volumeMounts:
+        - name: sites-data
+          mountPath: /home/frappe/frappe-bench/sites
+          readOnly: true
+        - name: logs-data
+          mountPath: /home/frappe/frappe-bench/logs
+          readOnly: true
+      volumes:
+      - name: sites-data
+        persistentVolumeClaim:
+          claimName: PLACEHOLDER_SITES_PVC
+      - name: logs-data
+        persistentVolumeClaim:
+          claimName: PLACEHOLDER_LOGS_PVC

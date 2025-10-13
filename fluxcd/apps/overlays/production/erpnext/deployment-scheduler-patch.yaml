@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: erpnext-scheduler
+spec:
+  template:
+    spec:
+      imagePullSecrets:
+      - name: jcr-pcfae-dungeon-pull-secret
+      containers:
+      - name: scheduler
+        image: docker.jcr.pcfae.com/frappe/erpnext:v15.54.5
+        resources:
+          requests:
+            cpu: "250m"
+            memory: "512Mi"
+          limits:
+            cpu: "1000m"
+            memory: "2Gi"
+      volumes:
+      - name: sites-data
+        persistentVolumeClaim:
+          claimName: hyrule-castle-erpnext-sites-data-erpnext-sites-0
+      - name: logs-data
+        persistentVolumeClaim:
+          claimName: hyrule-castle-erpnext-logs-data-erpnext-sites-0

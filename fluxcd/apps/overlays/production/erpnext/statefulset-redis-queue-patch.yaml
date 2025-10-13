@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: erpnext-redis-queue
+spec:
+  template:
+    spec:
+      imagePullSecrets:
+      - name: jcr-pcfae-dungeon-pull-secret
+      containers:
+      - name: redis
+        image: docker.jcr.pcfae.com/redis:6.2-alpine
+        volumeMounts:
+        - $patch: delete
+          name: PLACEHOLDER_REDIS_QUEUE_DATA
+        - name: hyrule-castle-erpnext-redis-queue-data
+          mountPath: /data
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "256Mi"
+          limits:
+            cpu: "500m"
+            memory: "1Gi"
+  volumeClaimTemplates:
+  - metadata:
+      name: hyrule-castle-erpnext-redis-queue-data
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      storageClassName: ceph-rbd
+      resources:
+        requests:
+          storage: 5Gi

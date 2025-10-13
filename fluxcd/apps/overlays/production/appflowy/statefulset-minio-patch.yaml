@@ -22,8 +22,6 @@ spec:
           limits:
             memory: "2Gi"
             cpu: "1000m"
-      imagePullSecrets:
-      - name: jcr-pcfae-dungeon-pull-secret
   volumeClaimTemplates:
   - metadata:
       name: temple-of-time-appflowy-minio-data

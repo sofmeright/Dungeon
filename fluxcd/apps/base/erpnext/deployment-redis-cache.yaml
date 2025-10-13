@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: erpnext-redis-cache
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: erpnext-redis-cache
+  template:
+    metadata:
+      labels:
+        app: erpnext-redis-cache
+    spec:
+      containers:
+      - name: redis
+        image: PLACEHOLDER_REDIS_IMAGE
+        ports:
+        - containerPort: 6379
+          name: redis

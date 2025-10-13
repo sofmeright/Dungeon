@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: erpnext-scheduler
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: erpnext-scheduler
+  template:
+    metadata:
+      labels:
+        app: erpnext-scheduler
+    spec:
+      containers:
+      - name: scheduler
+        image: PLACEHOLDER_ERPNEXT_IMAGE
+        command:
+        - bench
+        - schedule
+        volumeMounts:
+        - name: sites-data
+          mountPath: /home/frappe/frappe-bench/sites
+        - name: logs-data
+          mountPath: /home/frappe/frappe-bench/logs
+      volumes:
+      - name: sites-data
+        persistentVolumeClaim:
+          claimName: PLACEHOLDER_SITES_PVC
+      - name: logs-data
+        persistentVolumeClaim:
+          claimName: PLACEHOLDER_LOGS_PVC

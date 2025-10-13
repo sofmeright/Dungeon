@@ -12,10 +12,6 @@ spec:
         namespace: hyrule-castle
   values:
     global:
-      # Use JFrog Docker Hub cache to avoid rate limits
-      imagePullSecrets:
-        - name: jcr-pcfae-dungeon-pull-secret
-
       hosts:
         domain: prplanit.com
         gitlab:

@@ -1,0 +1,133 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: erpnext-sites
+spec:
+  serviceName: erpnext-sites
+  replicas: 1
+  selector:
+    matchLabels:
+      app: erpnext-sites
+  template:
+    metadata:
+      labels:
+        app: erpnext-sites
+    spec:
+      initContainers:
+      - name: configurator
+        image: PLACEHOLDER_ERPNEXT_IMAGE
+        command:
+        - bash
+        - -c
+        - |
+          ls -1 apps > sites/apps.txt;
+          bench set-config -g db_host $DB_HOST;
+          bench set-config -gp db_port $DB_PORT;
+          bench set-config -g redis_cache "redis://$REDIS_CACHE";
+          bench set-config -g redis_queue "redis://$REDIS_QUEUE";
+          bench set-config -g redis_socketio "redis://$REDIS_QUEUE";
+          bench set-config -gp socketio_port $SOCKETIO_PORT;
+        env:
+        - name: DB_HOST
+          value: "erpnext-mariadb"
+        - name: DB_PORT
+          value: "3306"
+        - name: REDIS_CACHE
+          value: "erpnext-redis-cache:6379"
+        - name: REDIS_QUEUE
+          value: "erpnext-redis-queue:6379"
+        - name: SOCKETIO_PORT
+          value: "9000"
+        volumeMounts:
+        - name: PLACEHOLDER_SITES_DATA
+          mountPath: /home/frappe/frappe-bench/sites
+        - name: PLACEHOLDER_LOGS_DATA
+          mountPath: /home/frappe/frappe-bench/logs
+      - name: create-site
+        image: PLACEHOLDER_ERPNEXT_IMAGE
+        command:
+        - bash
+        - -c
+        - |
+          wait-for-it -t 120 erpnext-mariadb:3306;
+          wait-for-it -t 120 erpnext-redis-cache:6379;
+          wait-for-it -t 120 erpnext-redis-queue:6379;
+          export start=`date +%s`;
+          until [[ -n `grep -hs ^ sites/common_site_config.json | jq -r ".db_host // empty"` ]] && \
+            [[ -n `grep -hs ^ sites/common_site_config.json | jq -r ".redis_cache // empty"` ]] && \
+            [[ -n `grep -hs ^ sites/common_site_config.json | jq -r ".redis_queue // empty"` ]];
+          do
+            echo "Waiting for sites/common_site_config.json to be created";
+            sleep 5;
+            if (( `date +%s`-start > 120 )); then
+              echo "could not find sites/common_site_config.json with required keys";
+              exit 1
+            fi
+          done;
+          echo "sites/common_site_config.json found";
+          if [ ! -f sites/frontend/site_config.json ]; then
+            bench new-site --mariadb-user-host-login-scope='%' --admin-password=$ADMIN_PASSWORD --db-root-username=root --db-root-password=$DB_ROOT_PASSWORD --install-app erpnext --set-default frontend;
+          else
+            echo "Site already exists, skipping creation";
+          fi
+        env:
+        - name: ADMIN_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: erpnext-secrets
+              key: ADMIN_PASSWORD
+        - name: DB_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: erpnext-secrets
+              key: MYSQL_ROOT_PASSWORD
+        volumeMounts:
+        - name: PLACEHOLDER_SITES_DATA
+          mountPath: /home/frappe/frappe-bench/sites
+        - name: PLACEHOLDER_LOGS_DATA
+          mountPath: /home/frappe/frappe-bench/logs
+      containers:
+      - name: backend
+        image: PLACEHOLDER_ERPNEXT_IMAGE
+        ports:
+        - containerPort: 8000
+          name: backend
+        env:
+        - name: DB_HOST
+          value: "erpnext-mariadb"
+        - name: DB_PORT
+          value: "3306"
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: erpnext-secrets
+              key: MYSQL_ROOT_PASSWORD
+        - name: MARIADB_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: erpnext-secrets
+              key: MYSQL_ROOT_PASSWORD
+        volumeMounts:
+        - name: PLACEHOLDER_SITES_DATA
+          mountPath: /home/frappe/frappe-bench/sites
+        - name: PLACEHOLDER_LOGS_DATA
+          mountPath: /home/frappe/frappe-bench/logs
+  volumeClaimTemplates:
+  - metadata:
+      name: PLACEHOLDER_SITES_DATA
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      storageClassName: PLACEHOLDER_STORAGE_CLASS
+      resources:
+        requests:
+          storage: 20Gi
+  - metadata:
+      name: PLACEHOLDER_LOGS_DATA
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      storageClassName: PLACEHOLDER_STORAGE_CLASS
+      resources:
+        requests:
+          storage: 5Gi

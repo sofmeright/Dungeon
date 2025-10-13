@@ -18,8 +18,6 @@ spec:
       - key: node-role.kubernetes.io/control-plane
         operator: Exists
         effect: NoSchedule
-      imagePullSecrets:
-      - name: jcr-pcfae-dungeon-pull-secret
       containers:
       - name: code-server
         image: lscr.io/linuxserver/code-server:latest

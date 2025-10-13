@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: erpnext-queue-long
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: erpnext-queue-long
+  template:
+    metadata:
+      labels:
+        app: erpnext-queue-long
+    spec:
+      containers:
+      - name: queue-long
+        image: PLACEHOLDER_ERPNEXT_IMAGE
+        command:
+        - bench
+        - worker
+        - --queue
+        - long,default,short
+        volumeMounts:
+        - name: sites-data
+          mountPath: /home/frappe/frappe-bench/sites
+        - name: logs-data
+          mountPath: /home/frappe/frappe-bench/logs
+      volumes:
+      - name: sites-data
+        persistentVolumeClaim:
+          claimName: PLACEHOLDER_SITES_PVC
+      - name: logs-data
+        persistentVolumeClaim:
+          claimName: PLACEHOLDER_LOGS_PVC

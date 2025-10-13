@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: erpnext-redis-queue
+spec:
+  serviceName: erpnext-redis-queue
+  replicas: 1
+  selector:
+    matchLabels:
+      app: erpnext-redis-queue
+  template:
+    metadata:
+      labels:
+        app: erpnext-redis-queue
+    spec:
+      containers:
+      - name: redis
+        image: PLACEHOLDER_REDIS_IMAGE
+        ports:
+        - containerPort: 6379
+          name: redis
+        volumeMounts:
+        - name: PLACEHOLDER_REDIS_QUEUE_DATA
+          mountPath: /data
+  volumeClaimTemplates:
+  - metadata:
+      name: PLACEHOLDER_REDIS_QUEUE_DATA
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      storageClassName: PLACEHOLDER_STORAGE_CLASS
+      resources:
+        requests:
+          storage: 5Gi
