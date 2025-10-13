@@ -4,3 +4,4 @@ metadata:
   name: temple-of-time
   labels:
     jcr-pull-secret: enabled
+    docker-io-pull-secret: "enabled"

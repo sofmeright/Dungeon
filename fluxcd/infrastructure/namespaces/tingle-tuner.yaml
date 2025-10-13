@@ -6,3 +6,4 @@ metadata:
     name: tingle-tuner
     purpose: tools-utilities
     jcr-pull-secret: "enabled"
+    docker-io-pull-secret: "enabled"

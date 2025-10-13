@@ -6,3 +6,4 @@ metadata:
     name: lighthouse
     purpose: monitoring
     jcr-pull-secret: "enabled"
+    docker-io-pull-secret: "enabled"
