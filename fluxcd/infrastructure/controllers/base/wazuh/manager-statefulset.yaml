@@ -14,8 +14,6 @@ spec:
         app: wazuh-manager
     spec:
       hostname: wazuh-manager
-      imagePullSecrets:
-        - name: PLACEHOLDER_IMAGE_PULL_SECRET
       securityContext:
         fsGroup: 101
       containers:

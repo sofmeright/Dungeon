@@ -14,8 +14,6 @@ spec:
         app: wazuh-indexer
     spec:
       hostname: wazuh-indexer
-      imagePullSecrets:
-        - name: PLACEHOLDER_IMAGE_PULL_SECRET
       securityContext:
         fsGroup: 1000
       containers:
