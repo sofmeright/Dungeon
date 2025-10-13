@@ -15,7 +15,7 @@ spec:
         - name: hyrule-castle-bookstack-config
           mountPath: /config
         - name: hyrule-castle-bookstack-uploads
-          mountPath: /app/www/public/uploads
+          mountPath: /config/uploads
         - $patch: delete
           name: custom-functions
         env:
@@ -59,6 +59,10 @@ spec:
           value: "https://apps.pcfae.com"
         - name: ALLOWED_IFRAME_SOURCES
           value: "https://apps.pcfae.com"
+        - name: STORAGE_TYPE
+          value: "local"
+        - name: STORAGE_UPLOADS_PATH
+          value: "/config/uploads"
       volumes:
       - $patch: delete
         name: custom-functions

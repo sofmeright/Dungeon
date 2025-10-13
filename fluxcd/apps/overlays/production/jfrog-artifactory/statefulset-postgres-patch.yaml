@@ -14,6 +14,7 @@ spec:
         - $patch: replace
         - name: compass-jfrog-artifactory-postgres-data
           mountPath: /var/lib/postgresql/data
+          subPath: pgdata
         - name: localtime
           mountPath: /etc/localtime
           readOnly: true
