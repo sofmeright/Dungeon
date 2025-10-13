@@ -20,3 +20,4 @@ resources:
   - registries/cr.pcfae.com-admin  # Container registry pull credentials
   - registries/docker.jcr.pcfae.com-dungeon  # JFrog Docker Hub cache pull credentials (hyrule-castle only)
   - registries/jcr-pcfae-dungeon-shared  # JFrog Docker Hub cache pull credentials (shared across namespaces)
+  - registries/docker.io-prplanit  # Docker Hub pull credentials (temple-of-time)

@@ -6,6 +6,8 @@ spec:
   replicas: 1
   template:
     spec:
+      imagePullSecrets:
+      - name: docker-io-prplanit-pull-secret
       containers:
       - name: plex
         image: docker.io/plexinc/pms-docker:latest
