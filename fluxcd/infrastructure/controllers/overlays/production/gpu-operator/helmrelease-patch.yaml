@@ -27,9 +27,9 @@ spec:
       enabled: true
       # Let the operator manage drivers in containers
       usePreinstalledDrivers: false
-      # Driver 580 series - will work with any compatible kernel
+      # Driver 580 series - matches installed version on dungeon-chest-004
       # Supports both GTX 980 Ti and A2000 GPUs
-      version: "580"
+      version: "580.65.06"
 
       # Upgrade policy - disable automatic upgrades to avoid driver reload issues
       upgradePolicy:
