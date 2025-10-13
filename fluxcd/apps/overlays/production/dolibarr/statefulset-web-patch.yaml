@@ -13,6 +13,11 @@ spec:
       containers:
       - name: dolibarr
         image: docker.jcr.pcfae.com/tuxgasy/dolibarr:latest
+        volumeMounts:
+        - name: hyrule-castle-dolibarr-data
+          mountPath: /var/www/html
+        - name: hyrule-castle-dolibarr-config
+          mountPath: /var/www/documents
         env:
         - name: DOLI_URL_ROOT
           value: "https://dolibarr.prplanit.com"
