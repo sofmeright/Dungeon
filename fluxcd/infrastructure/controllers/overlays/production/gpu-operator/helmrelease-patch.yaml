@@ -28,6 +28,15 @@ spec:
       # Supports both GTX 980 Ti and A2000 GPUs
       version: "580"
 
+      # Upgrade policy - allow driver updates without node drain
+      upgradePolicy:
+        autoUpgrade: true
+        drain:
+          enable: false
+        podDeletion:
+          force: true
+          timeoutSeconds: 300
+
       # Node selector for driver daemonset
       nodeSelector:
         kubernetes.io/hostname: dungeon-chest-004
