@@ -12,7 +12,7 @@ spec:
         image: docker.jcr.pcfae.com/busybox:1.36
       containers:
       - name: artifactory
-        image: docker.jcr.pcfae.com/jfrog/artifactory-jcr:7.111.11
+        image: releases-docker.jfrog.io/jfrog/artifactory-jcr:7.111.11
         env:
         - $patch: replace
         - name: JF_ROUTER_ENTRYPOINTS_EXTERNALPORT
