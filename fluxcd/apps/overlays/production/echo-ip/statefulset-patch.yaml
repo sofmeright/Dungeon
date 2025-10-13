@@ -5,10 +5,11 @@ metadata:
 spec:
   template:
     spec:
+      imagePullSecrets:
+      - name: jcr-pcfae-dungeon-pull-secret
       containers:
       - name: echo-ip
-        image: ghcr.io/mpolden/echoip:latest
-        imagePullPolicy: IfNotPresent
+        image: docker.jcr.pcfae.com/mpolden/echoip:latest
         volumeMounts:
         - name: compass-echo-ip-data
           mountPath: /data
