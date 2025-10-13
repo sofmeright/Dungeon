@@ -75,6 +75,18 @@ patches:
       - op: replace
         path: /spec/data/4/remoteRef/key
         value: apps/netbird
+      - op: replace
+        path: /spec/data/5/remoteRef/key
+        value: apps/netbird
+      - op: replace
+        path: /spec/data/6/remoteRef/key
+        value: apps/netbird
+      - op: replace
+        path: /spec/data/7/remoteRef/key
+        value: apps/netbird
+      - op: replace
+        path: /spec/data/8/remoteRef/key
+        value: apps/netbird
     target:
       kind: ExternalSecret
       name: netbird-secrets
