@@ -1,0 +1,91 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: joplin-app
+  labels:
+    app: joplin
+    component: app
+spec:
+  serviceName: joplin-app
+  replicas: 1
+  selector:
+    matchLabels:
+      app: joplin
+      component: app
+  template:
+    metadata:
+      labels:
+        app: joplin
+        component: app
+    spec:
+      containers:
+      - name: joplin
+        image: PLACEHOLDER_IMAGE
+        ports:
+        - containerPort: 22300
+          name: http
+          protocol: TCP
+        env:
+        - name: APP_PORT
+          value: "22300"
+        - name: APP_BASE_URL
+          value: PLACEHOLDER_BASE_URL
+        - name: DB_CLIENT
+          value: pg
+        - name: POSTGRES_HOST
+          value: joplin-postgres
+        - name: POSTGRES_PORT
+          value: "5432"
+        - name: POSTGRES_USER
+          valueFrom:
+            secretKeyRef:
+              name: joplin-secrets
+              key: POSTGRES_USER
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: joplin-secrets
+              key: POSTGRES_PASSWORD
+        - name: POSTGRES_DATABASE
+          valueFrom:
+            secretKeyRef:
+              name: joplin-secrets
+              key: POSTGRES_DB
+        - name: MAILER_ENABLED
+          value: "1"
+        - name: MAILER_HOST
+          valueFrom:
+            secretKeyRef:
+              name: joplin-secrets
+              key: MAILER_HOST
+        - name: MAILER_PORT
+          valueFrom:
+            secretKeyRef:
+              name: joplin-secrets
+              key: MAILER_PORT
+        - name: MAILER_SECURE
+          value: "1"
+        - name: MAILER_AUTH_USER
+          valueFrom:
+            secretKeyRef:
+              name: joplin-secrets
+              key: MAILER_AUTH_USER
+        - name: MAILER_AUTH_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: joplin-secrets
+              key: MAILER_AUTH_PASSWORD
+        - name: MAILER_NOREPLY_NAME
+          value: Joplin
+        - name: MAILER_NOREPLY_EMAIL
+          valueFrom:
+            secretKeyRef:
+              name: joplin-secrets
+              key: MAILER_NOREPLY_EMAIL
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "1Gi"
+            cpu: "1000m"

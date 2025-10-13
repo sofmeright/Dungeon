@@ -76,3 +76,5 @@ resources:
   - echo-ip
   - erpnext
   - guacamole
+  - invoiceninja
+  - joplin
