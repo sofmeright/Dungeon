@@ -8,6 +8,7 @@ spec:
       containers:
       - name: echo-ip
         image: docker.jcr.pcfae.com/mpolden/echoip:latest
+        command: []
         args:
         - "-C"
         - "0"
