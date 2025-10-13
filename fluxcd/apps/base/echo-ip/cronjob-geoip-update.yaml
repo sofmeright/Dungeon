@@ -1,0 +1,49 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: echo-ip-geoip-update
+  labels:
+    app: echo-ip
+spec:
+  schedule: "0 2 * * 0"  # Weekly on Sunday at 2 AM
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      template:
+        metadata:
+          labels:
+            app: echo-ip
+            job: geoip-update
+        spec:
+          restartPolicy: OnFailure
+          containers:
+          - name: geoipupdate
+            image: docker.io/maxmindinc/geoipupdate:latest
+            env:
+            - name: GEOIPUPDATE_ACCOUNT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: echo-ip-secrets
+                  key: GEOIPUPDATE_ACCOUNT_ID
+            - name: GEOIPUPDATE_LICENSE_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: echo-ip-secrets
+                  key: GEOIPUPDATE_LICENSE_KEY
+            - name: GEOIPUPDATE_EDITION_IDS
+              value: "GeoLite2-ASN GeoLite2-City GeoLite2-Country"
+            volumeMounts:
+            - name: PLACEHOLDER_NAMESPACE-echo-ip-data
+              mountPath: /usr/share/GeoIP
+            resources:
+              requests:
+                memory: "64Mi"
+                cpu: "50m"
+              limits:
+                memory: "256Mi"
+                cpu: "500m"
+          volumes:
+          - name: PLACEHOLDER_NAMESPACE-echo-ip-data
+            persistentVolumeClaim:
+              claimName: PLACEHOLDER_NAMESPACE-echo-ip-data-echo-ip-0

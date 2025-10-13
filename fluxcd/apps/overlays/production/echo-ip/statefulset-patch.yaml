@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: echo-ip
+spec:
+  template:
+    spec:
+      containers:
+      - name: echo-ip
+        image: docker.io/mpolden/echoip:latest
+  volumeClaimTemplates:
+  - metadata:
+      name: compass-echo-ip-data
+    spec:
+      storageClassName: ceph-rbd
+  - metadata:
+      name: compass-echo-ip-html
+    spec:
+      storageClassName: ceph-rbd
