@@ -9,16 +9,14 @@ spec:
       - name: echo-ip
         image: docker.io/mpolden/echoip:latest
         volumeMounts:
-        - $patch: delete
-          name: PLACEHOLDER_NAMESPACE-echo-ip-data
-        - $patch: delete
-          name: PLACEHOLDER_NAMESPACE-echo-ip-html
+        - $patch: replace
         - name: compass-echo-ip-data
           mountPath: /data
           readOnly: true
         - name: compass-echo-ip-html
           mountPath: /html
   volumeClaimTemplates:
+  - $patch: replace
   - metadata:
       name: compass-echo-ip-data
     spec:
