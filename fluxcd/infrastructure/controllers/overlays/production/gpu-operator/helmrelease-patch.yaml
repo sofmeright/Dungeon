@@ -27,9 +27,11 @@ spec:
       enabled: true
       # Let the operator manage drivers in containers
       usePreinstalledDrivers: false
-      # Driver 580 series - matches installed version on dungeon-chest-004
+      # Driver 580 series with Canonical signed modules for Secure Boot
+      # Using -signed suffix automatically selects signed kernel modules from Ubuntu repos
+      # Works across kernel updates as long as Canonical provides signed modules
       # Supports both GTX 980 Ti and A2000 GPUs
-      version: "580.65.06"
+      version: "580-signed"
 
       # Upgrade policy - disable automatic upgrades to avoid driver reload issues
       upgradePolicy:
