@@ -24,9 +24,9 @@ spec:
       enabled: true
       # Let the operator install drivers in containers
       usePreinstalledDrivers: false
-      # Driver 580 series for Ubuntu 24.04 kernel 6.8.0-85-generic
+      # Driver 580 series - will work with any compatible kernel
       # Supports both GTX 980 Ti and A2000 GPUs
-      version: "580-6.8.0-85-generic"
+      version: "580"
 
       # Node selector for driver daemonset
       nodeSelector:
