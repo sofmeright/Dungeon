@@ -27,11 +27,12 @@ spec:
       enabled: true
       # Let the operator manage drivers in containers
       usePreinstalledDrivers: false
-      # Driver 580 series with Canonical signed modules for Secure Boot
-      # Using -signed suffix automatically selects signed kernel modules from Ubuntu repos
-      # Works across kernel updates as long as Canonical provides signed modules
+      # Driver 580 series for Ubuntu 24.04 kernel 6.8.0-85-generic
+      # Uses Canonical signed kernel modules from linux-modules-nvidia-580-* packages
+      # Required for Secure Boot compatibility - unsigned modules are rejected
+      # NOTE: Update version string when kernel updates (format: DRIVER-KERNEL)
       # Supports both GTX 980 Ti and A2000 GPUs
-      version: "580-signed"
+      version: "580-6.8.0-85-generic"
 
       # Upgrade policy - disable automatic upgrades to avoid driver reload issues
       upgradePolicy:
