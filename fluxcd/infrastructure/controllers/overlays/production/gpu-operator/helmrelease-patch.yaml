@@ -22,17 +22,15 @@ spec:
       # Driver pods will only update when manually deleted
       updateStrategy: OnDelete
 
-    # Driver configuration for production
+    # Driver configuration for production with Secure Boot
     driver:
       enabled: true
-      # Let the operator manage drivers in containers
       usePreinstalledDrivers: false
-      # Driver 580-server-generic meta-package - tracks generic kernel automatically
-      # Uses linux-modules-nvidia-580-server-generic meta-package from Ubuntu
-      # Automatically installs signed modules for current generic kernel version
-      # Works with Secure Boot and handles kernel updates without manual changes
-      # Supports both GTX 980 Ti and A2000 GPUs
-      version: "580-server-generic"
+      # MUST use kernel-specific version for Ubuntu 24.04 + Secure Boot
+      # Meta-packages (580-server-generic) don't work - init container crashes
+      # Update this version string when kernel updates
+      # Uses Canonical signed linux-modules-nvidia-580-server-* packages
+      version: "580-6.8.0-85-generic"
 
       # Upgrade policy - disable automatic upgrades to avoid driver reload issues
       upgradePolicy:

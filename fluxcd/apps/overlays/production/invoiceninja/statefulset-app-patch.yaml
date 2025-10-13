@@ -5,6 +5,8 @@ metadata:
 spec:
   template:
     spec:
+      securityContext:
+        fsGroup: 82
       initContainers:
       - name: wait-for-mysql
         image: docker.jcr.pcfae.com/busybox:1.36
