@@ -75,3 +75,4 @@ resources:
   - dolibarr
   - echo-ip
   - erpnext
+  - guacamole

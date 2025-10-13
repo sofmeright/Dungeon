@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: guacamole-guacd
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: guacamole-guacd
+  template:
+    metadata:
+      labels:
+        app: guacamole-guacd
+    spec:
+      containers:
+      - name: guacd
+        image: PLACEHOLDER_GUACD_IMAGE
+        ports:
+        - containerPort: 4822
+          name: guacd

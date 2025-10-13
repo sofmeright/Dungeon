@@ -1,0 +1,66 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: guacamole
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: guacamole
+  template:
+    metadata:
+      labels:
+        app: guacamole
+    spec:
+      initContainers:
+      - name: init-db
+        image: PLACEHOLDER_GUACAMOLE_IMAGE
+        command:
+        - sh
+        - -c
+        - |
+          if ! PGPASSWORD=$POSTGRES_PASSWORD psql -h guacamole-postgres -U $POSTGRES_USER -d guacamole -c '\dt' | grep -q guacamole_user; then
+            echo "Initializing database..."
+            /opt/guacamole/bin/initdb.sh --postgresql > /tmp/initdb.sql
+            PGPASSWORD=$POSTGRES_PASSWORD psql -h guacamole-postgres -U $POSTGRES_USER -d guacamole < /tmp/initdb.sql
+          else
+            echo "Database already initialized"
+          fi
+        env:
+        - name: POSTGRES_USER
+          valueFrom:
+            secretKeyRef:
+              name: guacamole-secrets
+              key: POSTGRES_USER
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: guacamole-secrets
+              key: POSTGRES_PASSWORD
+      containers:
+      - name: guacamole
+        image: PLACEHOLDER_GUACAMOLE_IMAGE
+        ports:
+        - containerPort: 8080
+          name: http
+        env:
+        - name: GUACD_HOSTNAME
+          value: "guacamole-guacd"
+        - name: GUACD_PORT
+          value: "4822"
+        - name: POSTGRES_HOSTNAME
+          value: "guacamole-postgres"
+        - name: POSTGRES_PORT
+          value: "5432"
+        - name: POSTGRES_DATABASE
+          value: "guacamole"
+        - name: POSTGRES_USER
+          valueFrom:
+            secretKeyRef:
+              name: guacamole-secrets
+              key: POSTGRES_USER
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: guacamole-secrets
+              key: POSTGRES_PASSWORD

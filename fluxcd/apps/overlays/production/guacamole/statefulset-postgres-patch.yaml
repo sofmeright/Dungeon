@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: guacamole-postgres
+spec:
+  template:
+    spec:
+      containers:
+      - name: postgres
+        image: docker.jcr.pcfae.com/postgres:15-alpine
+        volumeMounts:
+        - $patch: delete
+          name: PLACEHOLDER_POSTGRES_DATA
+        - name: zeldas-lullaby-guacamole-postgres-data
+          mountPath: /var/lib/postgresql/data
+          subPath: pgdata
+        resources:
+          requests:
+            cpu: "250m"
+            memory: "512Mi"
+          limits:
+            cpu: "1000m"
+            memory: "2Gi"
+  volumeClaimTemplates:
+  - metadata:
+      name: zeldas-lullaby-guacamole-postgres-data
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      storageClassName: ceph-rbd
+      resources:
+        requests:
+          storage: 10Gi

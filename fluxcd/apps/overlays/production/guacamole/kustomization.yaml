@@ -1,0 +1,26 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: zeldas-lullaby
+
+resources:
+  - ../../../base/guacamole
+  - httproute.yaml
+
+patches:
+  - path: statefulset-postgres-patch.yaml
+  - path: deployment-guacd-patch.yaml
+  - path: deployment-guacamole-patch.yaml
+  - patch: |-
+      - op: add
+        path: /metadata/annotations
+        value:
+          lbipam.cilium.io/ips: "172.22.30.86"
+          lbipam.cilium.io/sharing-key: "zeldas-lullaby"
+      - op: replace
+        path: /spec/ports/0/port
+        value: 8090
+    target:
+      kind: Service
+      name: guacamole
+  - path: externalsecret-patch.yaml
