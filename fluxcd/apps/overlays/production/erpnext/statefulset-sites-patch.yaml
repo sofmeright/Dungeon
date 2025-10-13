@@ -5,6 +5,8 @@ metadata:
 spec:
   template:
     spec:
+      securityContext:
+        fsGroup: 1000
       initContainers:
       - name: configurator
         image: docker.jcr.pcfae.com/frappe/erpnext:v15.54.5
