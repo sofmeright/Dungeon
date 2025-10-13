@@ -27,12 +27,12 @@ spec:
       enabled: true
       # Let the operator manage drivers in containers
       usePreinstalledDrivers: false
-      # Driver 580 series for Ubuntu 24.04 kernel 6.8.0-85-generic
-      # Uses Canonical signed kernel modules from linux-modules-nvidia-580-* packages
-      # Required for Secure Boot compatibility - unsigned modules are rejected
-      # NOTE: Update version string when kernel updates (format: DRIVER-KERNEL)
+      # Driver 580-server-generic meta-package - tracks generic kernel automatically
+      # Uses linux-modules-nvidia-580-server-generic meta-package from Ubuntu
+      # Automatically installs signed modules for current generic kernel version
+      # Works with Secure Boot and handles kernel updates without manual changes
       # Supports both GTX 980 Ti and A2000 GPUs
-      version: "580-6.8.0-85-generic"
+      version: "580-server-generic"
 
       # Upgrade policy - disable automatic upgrades to avoid driver reload issues
       upgradePolicy:
