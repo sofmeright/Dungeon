@@ -1,0 +1,11 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: hyrule-castle
+resources:
+  - ../../../base/dolibarr
+  - httproute.yaml
+patches:
+  - path: statefulset-mariadb-patch.yaml
+  - path: statefulset-web-patch.yaml
+  - path: service-web-patch.yaml
+  - path: externalsecret-patch.yaml

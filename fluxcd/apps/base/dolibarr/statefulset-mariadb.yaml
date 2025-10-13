@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: dolibarr-mariadb
+spec:
+  serviceName: dolibarr-mariadb
+  replicas: 1
+  selector:
+    matchLabels:
+      app: dolibarr-mariadb
+  template:
+    metadata:
+      labels:
+        app: dolibarr-mariadb
+    spec:
+      containers:
+      - name: mariadb
+        image: PLACEHOLDER_MARIADB_IMAGE
+        ports:
+        - containerPort: 3306
+          name: mysql
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: dolibarr-secrets
+              key: MYSQL_ROOT_PASSWORD
+        - name: MYSQL_DATABASE
+          value: "dolibarr"
+        - name: MYSQL_USER
+          value: "dolibarr"
+        - name: MYSQL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: dolibarr-secrets
+              key: MYSQL_PASSWORD
+        volumeMounts:
+        - name: PLACEHOLDER_MARIADB_DATA
+          mountPath: /var/lib/mysql
+          subPath: mysql
+        resources:
+          requests:
+            cpu: PLACEHOLDER_CPU_REQUEST
+            memory: PLACEHOLDER_MEMORY_REQUEST
+          limits:
+            cpu: PLACEHOLDER_CPU_LIMIT
+            memory: PLACEHOLDER_MEMORY_LIMIT
+  volumeClaimTemplates:
+  - metadata:
+      name: PLACEHOLDER_MARIADB_DATA
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      storageClassName: PLACEHOLDER_STORAGE_CLASS
+      resources:
+        requests:
+          storage: PLACEHOLDER_STORAGE_SIZE
