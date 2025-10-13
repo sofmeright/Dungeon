@@ -37,6 +37,9 @@ spec:
       containers:
       - name: app
         image: PLACEHOLDER_APP_IMAGE
+        ports:
+        - containerPort: 9000
+          name: php-fpm
         env:
         - name: APP_URL
           value: "PLACEHOLDER_APP_URL"
@@ -115,6 +118,25 @@ spec:
           mountPath: /var/www/html/public
         - name: PLACEHOLDER_APP_STORAGE
           mountPath: /var/www/html/storage
+      - name: nginx
+        image: PLACEHOLDER_NGINX_IMAGE
+        ports:
+        - containerPort: 80
+          name: http
+        volumeMounts:
+        - name: nginx-config
+          mountPath: /etc/nginx/conf.d
+          readOnly: true
+        - name: PLACEHOLDER_APP_PUBLIC
+          mountPath: /var/www/html/public
+          readOnly: true
+        - name: PLACEHOLDER_APP_STORAGE
+          mountPath: /var/www/html/storage
+          readOnly: true
+      volumes:
+      - name: nginx-config
+        configMap:
+          name: invoiceninja-nginx-config
   volumeClaimTemplates:
   - metadata:
       name: PLACEHOLDER_APP_CACHE

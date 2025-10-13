@@ -4,7 +4,6 @@ resources:
   - statefulset-mysql.yaml
   - statefulset-redis.yaml
   - statefulset-app.yaml
-  - deployment-nginx.yaml
   - configmap-nginx.yaml
   - service.yaml
   - externalsecret.yaml

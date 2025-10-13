@@ -48,4 +48,4 @@ spec:
     targetPort: 80
     name: http
   selector:
-    app: invoiceninja-nginx
+    app: invoiceninja-app
