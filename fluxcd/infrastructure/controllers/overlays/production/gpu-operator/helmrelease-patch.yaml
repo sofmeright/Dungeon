@@ -18,6 +18,9 @@ spec:
         - key: nvidia.com/gpu
           operator: Exists
           effect: NoSchedule
+      # Use OnDelete update strategy to prevent automatic driver pod restarts
+      # Driver pods will only update when manually deleted
+      updateStrategy: OnDelete
 
     # Driver configuration for production
     driver:
