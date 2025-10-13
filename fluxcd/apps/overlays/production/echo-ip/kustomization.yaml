@@ -11,18 +11,7 @@ patches:
     target:
       kind: StatefulSet
       name: echo-ip
-  - patch: |-
-      - op: add
-        path: /metadata/annotations
-        value:
-          lbipam.cilium.io/ips: "172.22.30.122"
-          lbipam.cilium.io/sharing-key: "compass"
-      - op: replace
-        path: /spec/type
-        value: LoadBalancer
-      - op: replace
-        path: /spec/ports/0/port
-        value: 80
+  - path: service-patch.yaml
     target:
       kind: Service
       name: echo-ip
@@ -30,18 +19,7 @@ patches:
     target:
       kind: ExternalSecret
       name: echo-ip-secrets
-  - patch: |-
-      - op: replace
-        path: /spec/jobTemplate/spec/template/spec/containers/0/volumeMounts
-        value:
-        - name: compass-echo-ip-data
-          mountPath: /usr/share/GeoIP
-      - op: replace
-        path: /spec/jobTemplate/spec/template/spec/volumes
-        value:
-        - name: compass-echo-ip-data
-          persistentVolumeClaim:
-            claimName: compass-echo-ip-data-echo-ip-0
+  - path: cronjob-patch.yaml
     target:
       kind: CronJob
       name: echo-ip-geoip-update
