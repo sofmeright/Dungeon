@@ -14,6 +14,21 @@ spec:
         app: invoiceninja-app
     spec:
       initContainers:
+      - name: setup-dirs
+        image: PLACEHOLDER_BUSYBOX_IMAGE
+        command:
+        - sh
+        - -c
+        - |
+          mkdir -p /cache /public /storage
+          chmod -R 777 /cache /public /storage
+        volumeMounts:
+        - name: PLACEHOLDER_APP_CACHE
+          mountPath: /cache
+        - name: PLACEHOLDER_APP_PUBLIC
+          mountPath: /public
+        - name: PLACEHOLDER_APP_STORAGE
+          mountPath: /storage
       - name: wait-for-mysql
         image: PLACEHOLDER_BUSYBOX_IMAGE
         command:

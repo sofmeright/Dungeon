@@ -26,11 +26,10 @@ spec:
     driver:
       enabled: true
       usePreinstalledDrivers: false
-      # MUST use kernel-specific version for Ubuntu 24.04 + Secure Boot
-      # Meta-packages (580-server-generic) don't work - init container crashes
-      # Update this version string when kernel updates
-      # Uses Canonical signed linux-modules-nvidia-580-server-* packages
-      version: "580-6.8.0-85-generic"
+      # Use precompiled driver containers with signed kernel modules
+      # Ubuntu 24.04 officially supported with R580 precompiled drivers
+      usePrecompiled: true
+      version: "580"
 
       # Upgrade policy - disable automatic upgrades to avoid driver reload issues
       upgradePolicy:
