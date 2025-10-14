@@ -16,13 +16,6 @@ patches:
       name: netbird-postgres
   - patch: |-
       - op: replace
-        path: /spec/imageName
-        value: docker.jcr.pcfae.com/cloudnative-pg/postgresql:16.1
-    target:
-      kind: Cluster
-      name: netbird-postgres
-  - patch: |-
-      - op: replace
         path: /spec/template/spec/containers/0/image
         value: docker.jcr.pcfae.com/netbirdio/management:latest
     target:
