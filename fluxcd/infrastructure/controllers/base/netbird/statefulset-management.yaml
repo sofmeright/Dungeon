@@ -15,6 +15,107 @@ spec:
         app: netbird
         component: management
     spec:
+      initContainers:
+      - name: config-generator
+        image: busybox:latest
+        command: ["/bin/sh", "-c"]
+        args:
+          - |
+            cat > /config-output/management.json <<EOF
+            {
+              "Stuns": [
+                {
+                  "Proto": "udp",
+                  "URI": "stun:stun.netbird.io:3478"
+                }
+              ],
+              "TURNConfig": {
+                "Turns": [
+                  {
+                    "Proto": "udp",
+                    "URI": "turn:netbird.prplanit.com:3478",
+                    "Username": "netbird",
+                    "Password": ""
+                  }
+                ],
+                "CredentialsTTL": "12h",
+                "Secret": "",
+                "TimeBasedCredentials": false
+              },
+              "Signal": {
+                "Proto": "https",
+                "URI": "netbird.prplanit.com:443"
+              },
+              "Relay": {
+                "Addresses": ["rels://netbird.prplanit.com:443"],
+                "CredentialsTTL": "12h"
+              },
+              "Datadir": "/var/lib/netbird",
+              "StoreConfig": {
+                "Engine": "postgres"
+              },
+              "HttpConfig": {
+                "Address": "0.0.0.0:443",
+                "AuthIssuer": "https://sso.prplanit.com",
+                "AuthAudience": "${AUTH_CLIENT_ID}",
+                "OIDCConfigEndpoint": "https://sso.prplanit.com/.well-known/openid-configuration",
+                "IdpSignKeyRefreshEnabled": true
+              },
+              "IdpManagerConfig": {
+                "ManagerType": "zitadel",
+                "ClientConfig": {
+                  "Issuer": "https://sso.prplanit.com",
+                  "TokenEndpoint": "https://sso.prplanit.com/oauth/v2/token",
+                  "ClientID": "${AUTH_CLIENT_ID}",
+                  "GrantType": "client_credentials"
+                },
+                "ZitadelClientCredentials": {
+                  "ClientID": "${AUTH_CLIENT_ID}",
+                  "ClientSecret": "${AUTH_CLIENT_SECRET}",
+                  "GrantType": "client_credentials"
+                }
+              },
+              "DeviceAuthorizationFlow": {
+                "Provider": "hosted",
+                "ProviderConfig": {
+                  "Audience": "${AUTH_CLIENT_ID}",
+                  "ClientID": "${AUTH_CLIENT_ID}",
+                  "TokenEndpoint": "https://sso.prplanit.com/oauth/v2/token",
+                  "DeviceAuthEndpoint": "https://sso.prplanit.com/oauth/v2/device_authorization",
+                  "Scope": "openid",
+                  "UseIDToken": false
+                }
+              },
+              "PKCEAuthorizationFlow": {
+                "ProviderConfig": {
+                  "Audience": "${AUTH_CLIENT_ID}",
+                  "ClientID": "${AUTH_CLIENT_ID}",
+                  "TokenEndpoint": "https://sso.prplanit.com/oauth/v2/token",
+                  "AuthorizationEndpoint": "https://sso.prplanit.com/oauth/v2/authorize",
+                  "Scope": "openid profile email offline_access api",
+                  "RedirectURLs": ["http://localhost:53000/"]
+                }
+              }
+            }
+            EOF
+
+            # Substitute environment variables
+            sed -i "s|\${AUTH_CLIENT_ID}|${AUTH_CLIENT_ID}|g" /config-output/management.json
+            sed -i "s|\${AUTH_CLIENT_SECRET}|${AUTH_CLIENT_SECRET}|g" /config-output/management.json
+        env:
+        - name: AUTH_CLIENT_ID
+          valueFrom:
+            secretKeyRef:
+              name: netbird-secrets
+              key: AUTH_CLIENT_ID
+        - name: AUTH_CLIENT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: netbird-secrets
+              key: AUTH_CLIENT_SECRET
+        volumeMounts:
+        - name: generated-config
+          mountPath: /config-output
       containers:
       - name: management
         image: PLACEHOLDER_IMAGE
@@ -44,7 +145,7 @@ spec:
         volumeMounts:
         - name: management-data
           mountPath: /var/lib/netbird
-        - name: management-config
+        - name: generated-config
           mountPath: /etc/netbird
         resources:
           requests:
@@ -54,9 +155,8 @@ spec:
             memory: "1Gi"
             cpu: "1000m"
       volumes:
-      - name: management-config
-        configMap:
-          name: netbird-management-config
+      - name: generated-config
+        emptyDir: {}
   volumeClaimTemplates:
   - metadata:
       name: management-data
