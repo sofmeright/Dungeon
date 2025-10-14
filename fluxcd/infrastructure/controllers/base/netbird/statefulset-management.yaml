@@ -122,6 +122,8 @@ spec:
       containers:
       - name: management
         image: PLACEHOLDER_IMAGE
+        command:
+        - /management
         args:
         - --config
         - /etc/netbird/config.json
