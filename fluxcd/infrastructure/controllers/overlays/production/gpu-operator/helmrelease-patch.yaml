@@ -55,6 +55,8 @@ spec:
           value: "true"
         - name: NVIDIA_CONTAINER_RUNTIME_MODE
           value: "cdi"
+        - name: SET_AS_DEFAULT
+          value: "false"
 
     # Device plugin with time-slicing configuration for GPU sharing
     devicePlugin:

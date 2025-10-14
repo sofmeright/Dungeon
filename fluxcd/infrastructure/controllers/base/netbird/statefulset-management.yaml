@@ -122,12 +122,11 @@ spec:
       containers:
       - name: management
         image: PLACEHOLDER_IMAGE
-        command:
-        - /go/bin/netbird-mgmt
         args:
-        - management
         - --config
         - /etc/netbird/config.json
+        - --log-file
+        - console
         ports:
         - containerPort: 443
           name: https
