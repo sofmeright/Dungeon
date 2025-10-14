@@ -1,0 +1,63 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: orangehrm
+spec:
+  serviceName: orangehrm
+  replicas: 1
+  selector:
+    matchLabels:
+      app: orangehrm
+  template:
+    metadata:
+      labels:
+        app: orangehrm
+    spec:
+      initContainers:
+      - name: wait-for-mariadb
+        image: PLACEHOLDER_BUSYBOX_IMAGE
+        command:
+        - sh
+        - -c
+        - |
+          until nc -z orangehrm-mariadb 3306; do
+            echo "Waiting for MariaDB..."
+            sleep 2
+          done
+      containers:
+      - name: orangehrm
+        image: PLACEHOLDER_ORANGEHRM_IMAGE
+        ports:
+        - containerPort: 80
+          name: http
+        - containerPort: 443
+          name: https
+        env:
+        - name: ORANGEHRM_DATABASE_HOST
+          value: "orangehrm-mariadb"
+        - name: ORANGEHRM_DATABASE_USER
+          value: "orangehrm"
+        - name: ORANGEHRM_DATABASE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: orangehrm-secrets
+              key: MYSQL_PASS
+        - name: ORANGEHRM_DATABASE_NAME
+          value: "orangehrm"
+        - name: PUID
+          value: "998"
+        - name: PGID
+          value: "100"
+        volumeMounts:
+        - name: PLACEHOLDER_ORANGEHRM_DATA
+          mountPath: /orangehrm
+  volumeClaimTemplates:
+  - metadata:
+      name: PLACEHOLDER_ORANGEHRM_DATA
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      storageClassName: PLACEHOLDER_STORAGE_CLASS
+      resources:
+        requests:
+          storage: 5Gi

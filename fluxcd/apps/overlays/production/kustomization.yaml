@@ -81,3 +81,4 @@ resources:
   - netbox
   - oauth2-proxy
   - open-webui
+  - orangehrm
