@@ -21,7 +21,7 @@ spec:
         command: ["/bin/sh", "-c"]
         args:
           - |
-            cat > /config-output/management.json <<EOF
+            cat > /config-output/config.json <<EOF
             {
               "Stuns": [
                 {
@@ -100,11 +100,11 @@ spec:
             EOF
 
             # Substitute environment variables using shell parameter expansion
-            sed -i "s/\${AUTH_CLIENT_ID}/${AUTH_CLIENT_ID}/g" /config-output/management.json
-            sed -i "s/\${AUTH_CLIENT_SECRET}/${AUTH_CLIENT_SECRET}/g" /config-output/management.json
+            sed -i "s/\${AUTH_CLIENT_ID}/${AUTH_CLIENT_ID}/g" /config-output/config.json
+            sed -i "s/\${AUTH_CLIENT_SECRET}/${AUTH_CLIENT_SECRET}/g" /config-output/config.json
 
             echo "Config generated successfully. Checking content:"
-            cat /config-output/management.json | grep -i "clientsecret" | head -5
+            cat /config-output/config.json | grep -i "clientsecret" | head -5
         env:
         - name: AUTH_CLIENT_ID
           valueFrom:
