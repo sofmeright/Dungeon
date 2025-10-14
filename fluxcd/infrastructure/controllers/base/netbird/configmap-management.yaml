@@ -52,7 +52,7 @@ data:
           "GrantType": "client_credentials"
         },
         "ZitadelClientCredentials": {
-          "ClientID": "305223206304813058",
+          "ClientID": "PLACEHOLDER_CLIENT_ID",
           "GrantType": "client_credentials"
         }
       },

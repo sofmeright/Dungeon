@@ -29,6 +29,8 @@ spec:
             secretKeyRef:
               name: netbird-secrets
               key: POSTGRES_DSN
+        - name: NETBIRD_MGMT_IDP
+          value: zitadel
         - name: NETBIRD_IDP_MGMT_CLIENT_ID
           valueFrom:
             secretKeyRef:
