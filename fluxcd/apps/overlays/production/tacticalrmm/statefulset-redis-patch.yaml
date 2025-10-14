@@ -17,8 +17,9 @@ spec:
             memory: "1Gi"
   volumeClaimTemplates:
   - metadata:
-      name: hookshot-tactical-redis-data
+      name: redis-data
     spec:
+      accessModes: ["ReadWriteOnce"]
       storageClassName: ceph-rbd
       resources:
         requests:

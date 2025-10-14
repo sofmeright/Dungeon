@@ -17,8 +17,9 @@ spec:
             memory: "2Gi"
   volumeClaimTemplates:
   - metadata:
-      name: hookshot-tactical-postgres-data
+      name: postgres-data
     spec:
+      accessModes: ["ReadWriteOnce"]
       storageClassName: ceph-rbd
       resources:
         requests:
