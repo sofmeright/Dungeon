@@ -5,6 +5,9 @@ metadata:
 spec:
   template:
     spec:
+      imagePullSecrets:
+      - name: jcr-pcfae-dungeon-pull-secret
+      - name: docker-io-pull-secret
       initContainers:
       - name: wait-for-mongodb
         image: docker.jcr.pcfae.com/busybox:1.36
