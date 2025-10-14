@@ -6,6 +6,7 @@ metadata:
     name: hookshot
     purpose: rdp-remote-control
     jcr-pull-secret: "enabled"
+    docker-io-pull-secret: "enabled"
     pod-security.kubernetes.io/enforce: baseline
     pod-security.kubernetes.io/audit: baseline
     pod-security.kubernetes.io/warn: baseline
