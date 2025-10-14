@@ -21,6 +21,9 @@ patches:
       - key: nvidia.com/gpu
         operator: Exists
         effect: NoSchedule
+      - key: node.cilium.io/agent-not-ready
+        operator: Exists
+        effect: NoSchedule
     - op: replace
       path: /spec/template/spec/initContainers/0/image
       value: docker.io/busybox:latest
