@@ -5,7 +5,7 @@ metadata:
     namespace: zeldas-lullaby
 type: Opaque
 stringData:
-    vault-root: ENC[AES256_GCM,data:6ozPhUcj4ptfMwK6QMZUdKv3eEKQMoeTjeIV3g==,iv:RsUTA/yCmXuOB36SUUa20FRHXWwIRZi+ESryZMjJTlE=,tag:G6ouMVAdf4JTqWmY5xcIWg==,type:str]
+    vault-root: ENC[AES256_GCM,data:2giVoGao9Qcrhcwqflo3L85YoVgVUUEBP9briQ==,iv:HhCZlXSBj/kz9zWFu40046Yrq3OvBMactwVZjQP+K8E=,tag:TXtGxZqIEVfrDmORBMY6Xg==,type:str]
     vault-test: ENC[AES256_GCM,data:Yl+6gZShiP4erg==,iv:rF4ixwKCRdeECgzNuRxvDIf7DdqdNeVwJrH+TQRO2Q8=,tag:nPiDms2enpCCkDeD+pXtUg==,type:str]
     vault-unseal-0: ENC[AES256_GCM,data:+v9uBGqSL3YHwx3044yP/RlzVcD27qh12uOSuv3/qZCStu2s6uc8BQIvF/nU4qX331DFbo8sImIha3cFmRFyKUwk,iv:khkDykeI5Wb0G6aDxec952TYnYRv0rDoW89Lmgn54Yk=,tag:HcmWvhmTeiDSCfxiCm+kvw==,type:str]
     vault-unseal-1: ENC[AES256_GCM,data:Cmjf23w5E7f5kjZ70vtTe/hcv/uciql6ME4Ml8gqFhuO39+xMNzsR7CO6LsYKa9ZQLZI1lmKsZe7SPpHP79d8Q8x,iv:TM1go/EehkoEPniKscpWRSqhSjkISRcWmwAtasGZZSk=,tag:Pr49s6fZbWXBcnzT1hYs3A==,type:str]
@@ -23,7 +23,7 @@ sops:
             cXRQalUyRHp2SHdDZUliUVkySVhrYzgKfQVEnHr7WQRdKvi3zmrdqfZldh7fQR8C
             PsDq7mDYCKYDL5JwTfb5YOaStSNvOwERiolUmcF8zX2DO0hYwFbQ/g==
             -----END AGE ENCRYPTED FILE-----
-    lastmodified: "2025-10-03T05:15:55Z"
-    mac: ENC[AES256_GCM,data:nCuObLsfNWPAdDtadAeq7/E8y1xxV77oOIlN3uYLgrI1caqZDTQI1D4NcB66UIPw2YCJfzdXLKeCcBxAw1jige/EGkxDYPmoGLdxnYp5YpHwAPmgTraey0AFcri21xk2NY1Pcoeqw5wnoCnP5b3nW577pcBrjtiIqHE8T698WJQ=,iv:hTfBl3oJO6UIHTlRiTcv4ZDClp43/quqXQBE7r8/vkk=,tag:kuFtHlmQNsVE6ss2FZcefA==,type:str]
+    lastmodified: "2025-10-14T22:25:56Z"
+    mac: ENC[AES256_GCM,data:Qz29iUODrA/t8ziCao8T6/nqfAZIj/rgRSGM3SEIcSobwiqS4FCGoYTYOGzUK21z8/QS8B6S9bN+CKg5AufWyLArk6k4jkt3SWaszRd0WeTG5aiW31lzh4BzYj608kyKOqw9kw6YgXsfuUWAeM2XTFl9iMTluvm3SPTLPOGQxRc=,iv:jCdKy6/p/eGi/6rRFO7IqFJokIfjiqEAfmN/6wwa4g0=,tag:vyT/vZo6+8xB25reF6j6DQ==,type:str]
     encrypted_regex: ^(data|stringData)$
     version: 3.10.2
