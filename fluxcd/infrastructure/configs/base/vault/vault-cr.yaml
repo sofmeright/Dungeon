@@ -3,7 +3,7 @@ kind: Vault
 metadata:
   name: vault
 spec:
-  size: 1
+  size: 3
   image: PLACEHOLDER_VAULT_IMAGE
   bankVaultsImage: ghcr.io/bank-vaults/bank-vaults:v1.32.0
 
@@ -14,20 +14,10 @@ spec:
       secretNamespace: PLACEHOLDER_NAMESPACE
       secretName: vault-unseal-keys
 
-  # Volume configuration for persistent storage
-  volumes:
-    - name: vault-data
-      persistentVolumeClaim:
-        claimName: vault-data
-
-  volumeMounts:
-    - name: vault-data
-      mountPath: /vault/data
-
-  # Vault configuration
+  # Vault configuration for HA with Raft storage
   config:
     storage:
-      file:
+      raft:
         path: /vault/data
     listener:
       tcp:
@@ -36,6 +26,18 @@ spec:
     api_addr: "http://vault.vault:8200"
     cluster_addr: "https://vault.vault:8201"
     ui: true
+
+  # Volume claim templates for raft storage (one per pod)
+  volumeClaimTemplates:
+    - metadata:
+        name: vault-data
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        storageClassName: ceph-rbd
+        resources:
+          requests:
+            storage: 10Gi
 
   # Resources
   resources:
@@ -56,7 +58,7 @@ spec:
   # Fix statsd exporter image with full registry path
   statsdImage: docker.jcr.pcfae.com/prom/statsd-exporter:latest
 
-  # Make sure it runs on worker nodes
+  # Make sure it runs on worker nodes with pod anti-affinity for HA
   affinity:
     nodeAffinity:
       preferredDuringSchedulingIgnoredDuringExecution:
@@ -65,3 +67,14 @@ spec:
             matchExpressions:
               - key: node-role.kubernetes.io/worker
                 operator: Exists
+    podAntiAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+        - weight: 100
+          podAffinityTerm:
+            labelSelector:
+              matchExpressions:
+                - key: app.kubernetes.io/name
+                  operator: In
+                  values:
+                    - vault
+            topologyKey: kubernetes.io/hostname
