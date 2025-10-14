@@ -7,6 +7,7 @@ spec:
   vaultPodSpec:
     imagePullSecrets:
       - name: jcr-pcfae-dungeon-pull-secret
+  vaultContainerSpec:
     securityContext:
       capabilities:
         add:
