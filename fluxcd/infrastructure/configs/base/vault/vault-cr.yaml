@@ -3,7 +3,7 @@ kind: Vault
 metadata:
   name: vault
 spec:
-  size: 3
+  size: 1
   image: PLACEHOLDER_VAULT_IMAGE
   bankVaultsImage: ghcr.io/bank-vaults/bank-vaults:v1.32.0
 
