@@ -99,9 +99,12 @@ spec:
             }
             EOF
 
-            # Substitute environment variables
-            sed -i "s|\${AUTH_CLIENT_ID}|${AUTH_CLIENT_ID}|g" /config-output/management.json
-            sed -i "s|\${AUTH_CLIENT_SECRET}|${AUTH_CLIENT_SECRET}|g" /config-output/management.json
+            # Substitute environment variables using shell parameter expansion
+            sed -i "s/\${AUTH_CLIENT_ID}/${AUTH_CLIENT_ID}/g" /config-output/management.json
+            sed -i "s/\${AUTH_CLIENT_SECRET}/${AUTH_CLIENT_SECRET}/g" /config-output/management.json
+
+            echo "Config generated successfully. Checking content:"
+            cat /config-output/management.json | grep -i "clientsecret" | head -5
         env:
         - name: AUTH_CLIENT_ID
           valueFrom:
