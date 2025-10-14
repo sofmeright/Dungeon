@@ -1,0 +1,24 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: gorons-bracelet
+
+resources:
+- ../../../base/nvidia-runtime-dirs
+
+patches:
+- target:
+    kind: ConfigMap
+    name: PLACEHOLDER_SERVICE_CONFIG
+  patch: |-
+    - op: replace
+      path: /metadata/name
+      value: nvidia-runtime-dirs-config
+
+- target:
+    kind: DaemonSet
+    name: nvidia-runtime-dirs-init
+  patch: |-
+    - op: replace
+      path: /spec/template/spec/volumes/1/configMap/name
+      value: nvidia-runtime-dirs-config

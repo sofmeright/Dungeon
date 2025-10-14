@@ -1,0 +1,72 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: nvidia-runtime-dirs-init
+spec:
+  selector:
+    matchLabels:
+      app: nvidia-runtime-dirs-init
+  template:
+    metadata:
+      labels:
+        app: nvidia-runtime-dirs-init
+    spec:
+      hostPID: true
+      hostNetwork: true
+      nodeSelector:
+        nvidia.com/gpu.present: "true"
+      tolerations:
+      - key: nvidia.com/gpu
+        operator: Exists
+        effect: NoSchedule
+      initContainers:
+      - name: setup-dirs
+        image: docker.io/busybox:latest
+        command:
+        - sh
+        - -c
+        - |
+          set -e
+          echo "Creating NVIDIA runtime directories on host..."
+          mkdir -p /host/run/nvidia/driver/dev
+          mkdir -p /host/run/nvidia/toolkit
+          mkdir -p /host/run/nvidia/validations
+          mkdir -p /host/var/run/cdi
+          chmod 755 /host/run/nvidia
+          chmod 755 /host/run/nvidia/driver
+          chmod 755 /host/run/nvidia/driver/dev
+          chmod 755 /host/run/nvidia/toolkit
+          chmod 755 /host/run/nvidia/validations
+          chmod 755 /host/var/run/cdi
+          echo "Directories created successfully"
+
+          # Install systemd service
+          cp /config/nvidia-runtime-dirs.service /host/etc/systemd/system/
+          chroot /host systemctl daemon-reload
+          chroot /host systemctl enable nvidia-runtime-dirs.service
+          echo "Systemd service installed and enabled"
+        volumeMounts:
+        - name: host-root
+          mountPath: /host
+        - name: service-config
+          mountPath: /config
+        securityContext:
+          privileged: true
+      containers:
+      - name: pause
+        image: registry.k8s.io/pause:3.10.1
+        resources:
+          requests:
+            cpu: 1m
+            memory: 1Mi
+          limits:
+            cpu: 1m
+            memory: 1Mi
+      volumes:
+      - name: host-root
+        hostPath:
+          path: /
+      - name: service-config
+        configMap:
+          name: PLACEHOLDER_SERVICE_CONFIG
+      priorityClassName: system-node-critical
