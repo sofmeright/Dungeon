@@ -27,8 +27,8 @@ spec:
       tcp:
         address: "0.0.0.0:8200"
         tls_disable: true
-    api_addr: "http://vault.vault:8200"
-    cluster_addr: "https://vault.vault:8201"
+    api_addr: "http://$(VAULT_K8S_POD_NAME).zeldas-lullaby.svc.cluster.local:8200"
+    cluster_addr: "https://$(VAULT_K8S_POD_NAME).zeldas-lullaby.svc.cluster.local:8201"
     ui: true
     disable_mlock: true
 
