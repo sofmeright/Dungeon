@@ -34,17 +34,6 @@ spec:
           mountPath: /var/lib/netbird
         - name: management-config
           mountPath: /etc/netbird
-        command:
-        - /management
-        - --port
-        - "443"
-        - --log-file
-        - console
-        - --log-level
-        - info
-        - --disable-anonymous-metrics=false
-        - --single-account-mode-domain=netbird.prplanit.com
-        - --dns-domain=netbird.selfhosted
         resources:
           requests:
             memory: "256Mi"
