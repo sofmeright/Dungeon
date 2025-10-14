@@ -105,6 +105,11 @@ spec:
 
             echo "Config generated successfully. Checking content:"
             cat /etc/netbird/config.json | grep -i "clientsecret" | head -5
+
+            echo "Verifying file exists and is readable:"
+            ls -la /etc/netbird/
+            echo "File permissions:"
+            ls -l /etc/netbird/config.json
         env:
         - name: AUTH_CLIENT_ID
           valueFrom:
