@@ -22,10 +22,6 @@ spec:
     storage:
       raft:
         path: /vault/data
-        retry_join:
-          - leader_api_addr: "http://vault-0.zeldas-lullaby.svc.cluster.local:8200"
-          - leader_api_addr: "http://vault-1.zeldas-lullaby.svc.cluster.local:8200"
-          - leader_api_addr: "http://vault-2.zeldas-lullaby.svc.cluster.local:8200"
     listener:
       tcp:
         address: "0.0.0.0:8200"
