@@ -17,7 +17,7 @@ patches:
   - patch: |-
       - op: replace
         path: /spec/template/spec/initContainers/0/image
-        value: docker.io/busybox:latest
+        value: docker.jcr.pcfae.com/library/busybox:latest
     target:
       kind: StatefulSet
       name: netbird-management
