@@ -29,6 +29,16 @@ spec:
             secretKeyRef:
               name: netbird-secrets
               key: POSTGRES_DSN
+        - name: NETBIRD_IDP_MGMT_CLIENT_ID
+          valueFrom:
+            secretKeyRef:
+              name: netbird-secrets
+              key: AUTH_CLIENT_ID
+        - name: NETBIRD_IDP_MGMT_CLIENT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: netbird-secrets
+              key: AUTH_CLIENT_SECRET
         volumeMounts:
         - name: management-data
           mountPath: /var/lib/netbird
