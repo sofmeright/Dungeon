@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: gpu-operator-prereqs
+spec:
+  selector:
+    matchLabels:
+      app: gpu-operator-prereqs
+  template:
+    metadata:
+      labels:
+        app: gpu-operator-prereqs
+    spec:
+      hostPID: true
+      hostNetwork: true
+      priorityClassName: system-node-critical
+      initContainers:
+      - name: create-host-dirs
+        image: PLACEHOLDER_IMAGE
+        command:
+        - /bin/sh
+        - -c
+        - |
+          mkdir -p /host-run/nvidia/driver
+          mkdir -p /host-run/nvidia/toolkit
+          mkdir -p /host-run/nvidia/validations
+          mkdir -p /host-var-run/cdi
+          echo "Host directories created"
+        volumeMounts:
+        - name: host-run
+          mountPath: /host-run
+        - name: host-var-run
+          mountPath: /host-var-run
+        securityContext:
+          privileged: true
+      containers:
+      - name: pause
+        image: PLACEHOLDER_PAUSE_IMAGE
+        resources:
+          requests:
+            cpu: 1m
+            memory: 1Mi
+          limits:
+            cpu: 10m
+            memory: 10Mi
+      volumes:
+      - name: host-run
+        hostPath:
+          path: /run
+          type: Directory
+      - name: host-var-run
+        hostPath:
+          path: /var/run
+          type: Directory

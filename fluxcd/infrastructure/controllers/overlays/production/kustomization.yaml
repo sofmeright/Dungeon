@@ -4,6 +4,7 @@ resources:
   - cilium
   - kube-vip
   # - metallb  # Removed - using Cilium LoadBalancer IPAM with BGP instead
+  - gpu-operator-prereqs  # Prerequisites for GPU Operator (host directory setup)
   - gpu-operator  # NVIDIA GPU Operator for GPU support
   - weave-gitops
   - ceph-csi
