@@ -80,3 +80,4 @@ resources:
   - joplin
   - netbox
   - oauth2-proxy
+  - open-webui

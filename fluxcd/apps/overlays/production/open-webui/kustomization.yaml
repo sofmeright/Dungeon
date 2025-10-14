@@ -1,0 +1,16 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: temple-of-time
+
+resources:
+  - ../../../base/open-webui
+  - httproute.yaml
+
+patches:
+  - path: statefulset-patch.yaml
+  - path: service-patch.yaml
+    target:
+      kind: Service
+      name: open-webui
+  - path: externalsecret-patch.yaml

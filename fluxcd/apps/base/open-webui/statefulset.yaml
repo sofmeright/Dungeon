@@ -1,0 +1,82 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: open-webui
+spec:
+  serviceName: open-webui
+  replicas: 1
+  selector:
+    matchLabels:
+      app: open-webui
+  template:
+    metadata:
+      labels:
+        app: open-webui
+    spec:
+      containers:
+      - name: open-webui
+        image: PLACEHOLDER_OPEN_WEBUI_IMAGE
+        ports:
+        - containerPort: 8080
+          name: http
+        env:
+        - name: WEBUI_SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              name: open-webui-secrets
+              key: WEBUI_SECRET_KEY
+        - name: OLLAMA_HOST
+          value: "0.0.0.0"
+        - name: OLLAMA_ORIGINS
+          value: "*"
+        - name: OLLAMA_BASE_URL
+          value: ""
+        - name: OLLAMA_BASE_URLS
+          value: "http://172.22.22.143:11434,http://172.22.22.144:11434"
+        - name: AIOHTTP_CLIENT_TIMEOUT
+          value: "600"
+        - name: ENABLE_OAUTH_SIGNUP
+          value: "true"
+        - name: OAUTH_MERGE_ACCOUNTS_BY_EMAIL
+          value: "true"
+        - name: OAUTH_PROVIDER_NAME
+          value: "PrPlanIT.com SSO"
+        - name: OAUTH_CLIENT_ID
+          valueFrom:
+            secretKeyRef:
+              name: open-webui-secrets
+              key: OAUTH_CLIENT_ID
+        - name: OAUTH_CLIENT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: open-webui-secrets
+              key: OAUTH_CLIENT_SECRET
+        - name: OPENID_PROVIDER_URL
+          value: "https://sso.prplanit.com/.well-known/openid-configuration"
+        - name: OAUTH_SCOPES
+          value: "openid email profile"
+        - name: ENABLE_OAUTH_ROLE_MANAGEMENT
+          value: "true"
+        - name: OAUTH_ROLES_CLAIM
+          value: "roles"
+        - name: OAUTH_ALLOWED_ROLES
+          value: "user"
+        - name: OAUTH_ADMIN_ROLES
+          value: "admin"
+        - name: ENABLE_OAUTH_GROUP_MANAGEMENT
+          value: "false"
+        - name: OAUTH_GROUP_CLAIM
+          value: "groups"
+        volumeMounts:
+        - name: PLACEHOLDER_DATA
+          mountPath: /app/backend/data
+  volumeClaimTemplates:
+  - metadata:
+      name: PLACEHOLDER_DATA
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      storageClassName: PLACEHOLDER_STORAGE_CLASS
+      resources:
+        requests:
+          storage: 10Gi

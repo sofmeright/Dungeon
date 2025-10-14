@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: open-webui
+spec:
+  template:
+    spec:
+      containers:
+      - name: open-webui
+        image: ghcr.io/open-webui/open-webui:latest
+        volumeMounts:
+        - $patch: delete
+          name: PLACEHOLDER_DATA
+        - name: temple-of-time-open-webui-data
+          mountPath: /app/backend/data
+        resources:
+          requests:
+            cpu: "500m"
+            memory: "1Gi"
+          limits:
+            cpu: "2000m"
+            memory: "4Gi"
+  volumeClaimTemplates:
+  - metadata:
+      name: temple-of-time-open-webui-data
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      storageClassName: ceph-rbd
+      resources:
+        requests:
+          storage: 10Gi
