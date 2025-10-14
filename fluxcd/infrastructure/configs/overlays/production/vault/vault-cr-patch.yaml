@@ -7,6 +7,10 @@ spec:
   vaultPodSpec:
     imagePullSecrets:
       - name: jcr-pcfae-dungeon-pull-secret
+    securityContext:
+      capabilities:
+        add:
+          - IPC_LOCK
   unsealConfig:
     kubernetes:
       secretNamespace: zeldas-lullaby
