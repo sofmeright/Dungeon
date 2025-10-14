@@ -7,9 +7,6 @@ spec:
   image: PLACEHOLDER_VAULT_IMAGE
   bankVaultsImage: ghcr.io/bank-vaults/bank-vaults:v1.32.0
 
-  # Raft leader configuration for HA
-  raftLeaderAddress: "http://vault-0.zeldas-lullaby.svc.cluster.local:8200"
-
   # Use Kubernetes secrets for unseal keys (SOPS encrypted in source)
   unsealConfig:
     options: {}  # Empty options object required by CRD
