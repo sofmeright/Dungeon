@@ -79,3 +79,4 @@ resources:
   - invoiceninja
   - joplin
   - netbox
+  - oauth2-proxy

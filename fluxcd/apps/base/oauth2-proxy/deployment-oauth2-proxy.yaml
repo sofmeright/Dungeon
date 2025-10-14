@@ -1,0 +1,71 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: oauth2-proxy
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: oauth2-proxy
+  template:
+    metadata:
+      labels:
+        app: oauth2-proxy
+    spec:
+      containers:
+      - name: oauth2-proxy
+        image: PLACEHOLDER_OAUTH2_PROXY_IMAGE
+        ports:
+        - containerPort: 4180
+          name: http
+        args:
+        - --http-address
+        - 0.0.0.0:4180
+        - --cookie-domain
+        - prplanit.com,pcfae.com
+        - --whitelist-domain=*.prplanit.com,*.pcfae.com,*.uni2.cc
+        env:
+        - name: OAUTH2_PROXY_COOKIE_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: oauth2-proxy-secrets
+              key: OAUTH2_PROXY_COOKIE_SECRET
+        - name: OAUTH2_PROXY_COOKIE_SECURE
+          value: "false"
+        - name: OAUTH2_PROXY_EMAIL_DOMAINS
+          value: "gmail.com"
+        - name: OAUTH2_PROXY_HTTP_ADDRESS
+          value: "0.0.0.0:4180"
+        - name: OAUTH2_PROXY_UPSTREAMS
+          value: "http://httpbin"
+        - name: OAUTH2_PROXY_PROVIDER
+          value: "oidc"
+        - name: OAUTH2_PROXY_OIDC_GROUPS_CLAIM
+          value: "roles"
+        - name: OAUTH2_PROXY_ALLOWED_GROUPS
+          valueFrom:
+            secretKeyRef:
+              name: oauth2-proxy-secrets
+              key: OAUTH2_PROXY_ALLOWED_GROUPS
+        - name: OAUTH2_PROXY_OIDC_ISSUER_URL
+          value: "https://sso.prplanit.com"
+        - name: OAUTH2_PROXY_REDIRECT_URL
+          value: "https://oa2p.pcfae.com/oauth2/callback"
+        - name: OAUTH2_PROXY_CLIENT_ID
+          valueFrom:
+            secretKeyRef:
+              name: oauth2-proxy-secrets
+              key: OAUTH2_PROXY_CLIENT_ID
+        - name: OAUTH2_PROXY_CLIENT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: oauth2-proxy-secrets
+              key: OAUTH2_PROXY_CLIENT_SECRET
+        - name: OAUTH2_PROXY_BANNER
+          value: "The requested application is secured by PrecisionPlanIT's authorization proxy."
+        - name: OAUTH2_PROXY_CUSTOM_SIGN_IN_LOGO
+          value: "https://support.pcfae.com/logo.php"
+        - name: OAUTH2_PROXY_PROVIDER_DISPLAY_NAME
+          value: "PrecisionPlanIT SSO"
+        - name: OAUTH2_PROXY_THEME
+          value: "dark"
