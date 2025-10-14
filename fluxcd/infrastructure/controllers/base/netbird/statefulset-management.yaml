@@ -123,8 +123,9 @@ spec:
       - name: management
         image: PLACEHOLDER_IMAGE
         command:
-        - /management
+        - /go/bin/netbird-mgmt
         args:
+        - management
         - --config
         - /etc/netbird/config.json
         ports:
