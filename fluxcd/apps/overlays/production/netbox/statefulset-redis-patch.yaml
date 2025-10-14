@@ -26,4 +26,9 @@ spec:
   - metadata:
       name: zeldas-lullaby-netbox-redis-data
     spec:
+      accessModes:
+      - ReadWriteOnce
       storageClassName: ceph-rbd
+      resources:
+        requests:
+          storage: 5Gi
