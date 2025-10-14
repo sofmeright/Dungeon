@@ -19,3 +19,4 @@ resources:
   - swift-sail.yaml
   - delivery-bag.yaml
   - wallmaster.yaml
+  - hookshot.yaml

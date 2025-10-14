@@ -1,0 +1,11 @@
+- op: add
+  path: /metadata/annotations
+  value:
+    lbipam.cilium.io/ips: "172.22.30.8"
+    lbipam.cilium.io/sharing-key: "hookshot"
+- op: replace
+  path: /spec/ports/0/port
+  value: 80
+- op: replace
+  path: /spec/ports/1/port
+  value: 443

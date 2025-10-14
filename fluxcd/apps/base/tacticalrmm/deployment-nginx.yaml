@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tactical-nginx
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tactical-nginx
+  template:
+    metadata:
+      labels:
+        app: tactical-nginx
+    spec:
+      initContainers:
+      - name: wait-for-backend
+        image: PLACEHOLDER_BUSYBOX_IMAGE
+        command:
+        - sh
+        - -c
+        - |
+          until nc -z tactical-backend 8000; do
+            echo "Waiting for Backend..."
+            sleep 2
+          done
+      containers:
+      - name: nginx
+        image: PLACEHOLDER_NGINX_IMAGE
+        ports:
+        - containerPort: 80
+          name: http
+        - containerPort: 443
+          name: https

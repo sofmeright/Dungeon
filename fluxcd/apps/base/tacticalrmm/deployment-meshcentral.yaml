@@ -1,0 +1,52 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tactical-meshcentral
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tactical-meshcentral
+  template:
+    metadata:
+      labels:
+        app: tactical-meshcentral
+    spec:
+      initContainers:
+      - name: wait-for-mongodb
+        image: PLACEHOLDER_BUSYBOX_IMAGE
+        command:
+        - sh
+        - -c
+        - |
+          until nc -z tactical-mongodb 27017; do
+            echo "Waiting for MongoDB..."
+            sleep 2
+          done
+      containers:
+      - name: meshcentral
+        image: PLACEHOLDER_MESHCENTRAL_IMAGE
+        ports:
+        - containerPort: 4430
+          name: http
+        env:
+        - name: MESH_USER
+          value: "tactical"
+        - name: MESH_PASS
+          valueFrom:
+            secretKeyRef:
+              name: tacticalrmm-secrets
+              key: MESH_PASSWORD
+        - name: MONGODB_USER
+          value: "tactical"
+        - name: MONGODB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: tacticalrmm-secrets
+              key: MONGODB_PASSWORD
+        - name: MONGODB_HOST
+          value: "tactical-mongodb"
+        - name: MONGODB_PORT
+          value: "27017"
+        - name: MESH_PERSISTENT_CONFIG
+          value: "1"

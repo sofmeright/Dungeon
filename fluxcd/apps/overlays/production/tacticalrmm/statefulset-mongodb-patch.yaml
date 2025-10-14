@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: tactical-mongodb
+spec:
+  template:
+    spec:
+      containers:
+      - name: mongodb
+        image: docker.io/mongo:6
+        resources:
+          requests:
+            cpu: "250m"
+            memory: "512Mi"
+          limits:
+            cpu: "1000m"
+            memory: "2Gi"
+  volumeClaimTemplates:
+  - metadata:
+      name: hookshot-tactical-mongodb-data
+    spec:
+      storageClassName: ceph-rbd
+      resources:
+        requests:
+          storage: 10Gi

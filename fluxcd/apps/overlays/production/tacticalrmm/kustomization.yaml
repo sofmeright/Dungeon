@@ -1,0 +1,62 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: hookshot
+resources:
+  - ../../../base/tacticalrmm
+patches:
+  - path: externalsecret-patch.yaml
+    target:
+      kind: ExternalSecret
+      name: tacticalrmm-secrets
+  - path: statefulset-postgres-patch.yaml
+    target:
+      kind: StatefulSet
+      name: tactical-postgres
+  - path: statefulset-redis-patch.yaml
+    target:
+      kind: StatefulSet
+      name: tactical-redis
+  - path: statefulset-mongodb-patch.yaml
+    target:
+      kind: StatefulSet
+      name: tactical-mongodb
+  - path: deployment-nats-patch.yaml
+    target:
+      kind: Deployment
+      name: tactical-nats
+  - path: deployment-meshcentral-patch.yaml
+    target:
+      kind: Deployment
+      name: tactical-meshcentral
+  - path: deployment-frontend-patch.yaml
+    target:
+      kind: Deployment
+      name: tactical-frontend
+  - path: deployment-backend-patch.yaml
+    target:
+      kind: Deployment
+      name: tactical-backend
+  - path: deployment-websockets-patch.yaml
+    target:
+      kind: Deployment
+      name: tactical-websockets
+  - path: deployment-celery-patch.yaml
+    target:
+      kind: Deployment
+      name: tactical-celery
+  - path: deployment-celerybeat-patch.yaml
+    target:
+      kind: Deployment
+      name: tactical-celerybeat
+  - path: deployment-nginx-patch.yaml
+    target:
+      kind: Deployment
+      name: tactical-nginx
+  - path: service-meshcentral-patch.yaml
+    target:
+      kind: Service
+      name: tactical-meshcentral
+  - path: service-nginx-patch.yaml
+    target:
+      kind: Service
+      name: tactical-nginx

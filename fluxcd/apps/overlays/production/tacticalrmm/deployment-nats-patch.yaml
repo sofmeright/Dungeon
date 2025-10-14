@@ -1,0 +1,17 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tactical-nats
+spec:
+  template:
+    spec:
+      containers:
+      - name: nats
+        image: docker.io/nats:2.10-alpine
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "128Mi"
+          limits:
+            cpu: "500m"
+            memory: "512Mi"

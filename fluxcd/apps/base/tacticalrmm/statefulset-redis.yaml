@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: tactical-redis
+spec:
+  serviceName: tactical-redis
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tactical-redis
+  template:
+    metadata:
+      labels:
+        app: tactical-redis
+    spec:
+      containers:
+      - name: redis
+        image: PLACEHOLDER_REDIS_IMAGE
+        ports:
+        - containerPort: 6379
+          name: redis
+        command:
+        - redis-server
+        - --appendonly
+        - "yes"
+        volumeMounts:
+        - name: redis-data
+          mountPath: /data
+  volumeClaimTemplates:
+  - metadata:
+      name: redis-data
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      storageClassName: PLACEHOLDER_STORAGE_CLASS
+      resources:
+        requests:
+          storage: PLACEHOLDER_STORAGE_SIZE

@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: tactical-redis
+spec:
+  template:
+    spec:
+      containers:
+      - name: redis
+        image: docker.io/redis:7-alpine
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "256Mi"
+          limits:
+            cpu: "500m"
+            memory: "1Gi"
+  volumeClaimTemplates:
+  - metadata:
+      name: hookshot-tactical-redis-data
+    spec:
+      storageClassName: ceph-rbd
+      resources:
+        requests:
+          storage: 5Gi

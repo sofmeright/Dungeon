@@ -33,6 +33,7 @@
       - king-of-red-lions: Routing & Gateway infrastructure (traefik, stunner - guides you across the sea)
       - shooting-gallery: Game servers (minecraft, etc - aiming for fun)
       - lens-of-truth: IDS/IPS/SIEM security monitoring (reveals hidden threats)
+      - hookshot: RDP/remote control services (tacticalrmm, meshcentral - grappling to reach remote targets)
       - swift-sail: Arr apps & downloaders (prowlarr, radarr, sonarr - swift sailing across the seas)
       - pedestal-of-time: Restricted/privileged services (only link can pull the master sword)
       - delivery-bag: Mail services (mailcow - postman's delivery bag)
@@ -180,6 +181,7 @@
       - VPN-routed *arr apps (qbittorrent, prowlarr, radarr, sonarr) in swift-sail namespace: 172.22.30.33 (sharing-key: great-sea)
       - SIEM/IDS/IPS managers (wazuh-manager, crowdsec-lapi): 172.22.30.119 (sharing-key: lens-of-truth-managers)
       - SIEM/IDS/IPS dashboards (wazuh-dashboard, crowdsec-dashboard): 172.22.30.118 (sharing-key: lens-of-truth-dashboards)
+      - RDP/remote control services (tacticalrmm, meshcentral): 172.22.30.8 (sharing-key: hookshot)
 
 - Traefik & Gateway API Routing Strategy:
   - **IP-based Domain Isolation**: Use separate Gateway resources with unique LoadBalancer IPs to enable firewall-based internet exposure control (pfSense NAT rules per IP)

@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tactical-nats
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tactical-nats
+  template:
+    metadata:
+      labels:
+        app: tactical-nats
+    spec:
+      containers:
+      - name: nats
+        image: PLACEHOLDER_NATS_IMAGE
+        ports:
+        - containerPort: 4222
+          name: client
+        - containerPort: 8222
+          name: monitor
+        env:
+        - name: NATS_HTTP_PORT
+          value: "4222"
+        - name: NATS_WS_PORT
+          value: "9235"
+        command:
+        - nats-server
+        - --config
+        - /config/nats-server.conf
