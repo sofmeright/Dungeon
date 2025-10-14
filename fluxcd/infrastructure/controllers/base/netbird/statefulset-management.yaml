@@ -35,7 +35,7 @@ spec:
         - name: management-config
           mountPath: /etc/netbird
         command:
-        - /usr/local/bin/management
+        - /management
         - --port
         - "443"
         - --log-file
