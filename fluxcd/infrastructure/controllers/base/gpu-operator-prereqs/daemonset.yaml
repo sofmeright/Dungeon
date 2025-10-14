@@ -14,25 +14,6 @@ spec:
       hostPID: true
       hostNetwork: true
       priorityClassName: system-node-critical
-      initContainers:
-      - name: create-host-dirs
-        image: PLACEHOLDER_IMAGE
-        command:
-        - /bin/sh
-        - -c
-        - |
-          mkdir -p /host-run/nvidia/driver
-          mkdir -p /host-run/nvidia/toolkit
-          mkdir -p /host-run/nvidia/validations
-          mkdir -p /host-var-run/cdi
-          echo "Host directories created"
-        volumeMounts:
-        - name: host-run
-          mountPath: /host-run
-        - name: host-var-run
-          mountPath: /host-var-run
-        securityContext:
-          privileged: true
       containers:
       - name: pause
         image: PLACEHOLDER_PAUSE_IMAGE
@@ -44,11 +25,11 @@ spec:
             cpu: 10m
             memory: 10Mi
       volumes:
-      - name: host-run
+      - name: nvidia-run
         hostPath:
-          path: /run
-          type: Directory
-      - name: host-var-run
+          path: /run/nvidia
+          type: DirectoryOrCreate
+      - name: cdi-run
         hostPath:
-          path: /var/run
-          type: Directory
+          path: /var/run/cdi
+          type: DirectoryOrCreate

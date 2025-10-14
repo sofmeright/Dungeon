@@ -25,8 +25,5 @@ patches:
         operator: Exists
         effect: NoSchedule
     - op: replace
-      path: /spec/template/spec/initContainers/0/image
-      value: docker.io/busybox:latest
-    - op: replace
       path: /spec/template/spec/containers/0/image
       value: registry.k8s.io/pause:3.10.1
