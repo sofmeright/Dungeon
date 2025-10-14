@@ -82,3 +82,4 @@ resources:
   - oauth2-proxy
   - open-webui
   - orangehrm
+  - osticket

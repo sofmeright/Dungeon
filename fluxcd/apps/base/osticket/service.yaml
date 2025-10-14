@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: osticket-db
+spec:
+  type: ClusterIP
+  ports:
+  - port: 3306
+    targetPort: 3306
+    name: mysql
+  selector:
+    app: osticket-db
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: osticket
+spec:
+  type: LoadBalancer
+  ports:
+  - port: 8184
+    targetPort: 80
+    name: http
+  selector:
+    app: osticket

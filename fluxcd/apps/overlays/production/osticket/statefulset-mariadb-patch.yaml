@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: osticket-db
+spec:
+  template:
+    spec:
+      securityContext:
+        fsGroup: 999
+      containers:
+      - name: mariadb
+        image: docker.jcr.pcfae.com/mariadb:latest
+        volumeMounts:
+        - $patch: delete
+          name: PLACEHOLDER_MYSQL_DATA
+        - name: hyrule-castle-osticket-mysql-data
+          mountPath: /var/lib/mysql
+          subPath: mysql
+        resources:
+          requests:
+            cpu: "250m"
+            memory: "512Mi"
+          limits:
+            cpu: "1000m"
+            memory: "2Gi"
+  volumeClaimTemplates:
+  - metadata:
+      name: hyrule-castle-osticket-mysql-data
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      storageClassName: ceph-rbd
+      resources:
+        requests:
+          storage: 10Gi

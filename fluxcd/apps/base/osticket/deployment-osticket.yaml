@@ -1,0 +1,105 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: osticket
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: osticket
+  template:
+    metadata:
+      labels:
+        app: osticket
+    spec:
+      initContainers:
+      - name: wait-for-db
+        image: PLACEHOLDER_BUSYBOX_IMAGE
+        command:
+        - sh
+        - -c
+        - |
+          until nc -z osticket-db 3306; do
+            echo "Waiting for MariaDB..."
+            sleep 2
+          done
+      containers:
+      - name: osticket
+        image: PLACEHOLDER_OSTICKET_IMAGE
+        ports:
+        - containerPort: 80
+          name: http
+        env:
+        - name: TZ
+          value: "America/Los_Angeles"
+        - name: DB_HOST
+          value: "osticket-db"
+        - name: DB_PASS
+          valueFrom:
+            secretKeyRef:
+              name: osticket-secrets
+              key: DB_PASS
+        - name: DB_NAME
+          value: "osticket"
+        - name: DB_USER
+          value: "osticket"
+        - name: SMTP_FROM
+          valueFrom:
+            secretKeyRef:
+              name: osticket-secrets
+              key: SMTP_FROM
+        - name: SMTP_HOST
+          valueFrom:
+            secretKeyRef:
+              name: osticket-secrets
+              key: SMTP_HOST
+        - name: SMTP_PORT
+          valueFrom:
+            secretKeyRef:
+              name: osticket-secrets
+              key: SMTP_PORT
+        - name: SMTP_TLS
+          value: "1"
+        - name: SMTP_USER
+          valueFrom:
+            secretKeyRef:
+              name: osticket-secrets
+              key: SMTP_USER
+        - name: SMTP_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: osticket-secrets
+              key: SMTP_PASSWORD
+        - name: CRON_INTERVAL
+          value: "5"
+        - name: INSTALL_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: osticket-secrets
+              key: INSTALL_SECRET
+        - name: INSTALL_EMAIL
+          valueFrom:
+            secretKeyRef:
+              name: osticket-secrets
+              key: INSTALL_EMAIL
+        - name: INSTALL_NAME
+          value: "PrecisionPlanIT Helpdesk"
+        - name: ADMIN_FIRSTNAME
+          value: "Kai"
+        - name: ADMIN_LASTNAME
+          value: "H."
+        - name: ADMIN_EMAIL
+          valueFrom:
+            secretKeyRef:
+              name: osticket-secrets
+              key: ADMIN_EMAIL
+        - name: ADMIN_USER
+          valueFrom:
+            secretKeyRef:
+              name: osticket-secrets
+              key: ADMIN_USER
+        - name: ADMIN_PASS
+          valueFrom:
+            secretKeyRef:
+              name: osticket-secrets
+              key: ADMIN_PASS

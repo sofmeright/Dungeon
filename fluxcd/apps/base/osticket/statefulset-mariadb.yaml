@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: osticket-db
+spec:
+  serviceName: osticket-db
+  replicas: 1
+  selector:
+    matchLabels:
+      app: osticket-db
+  template:
+    metadata:
+      labels:
+        app: osticket-db
+    spec:
+      containers:
+      - name: mariadb
+        image: PLACEHOLDER_MARIADB_IMAGE
+        ports:
+        - containerPort: 3306
+          name: mysql
+        env:
+        - name: TZ
+          value: "Etc/UTC"
+        - name: TERM
+          value: "dumb"
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: osticket-secrets
+              key: MYSQL_ROOT_PASSWORD
+        - name: MYSQL_DATABASE
+          value: "osticket"
+        - name: MYSQL_USER
+          value: "osticket"
+        - name: MYSQL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: osticket-secrets
+              key: MYSQL_PASSWORD
+        volumeMounts:
+        - name: PLACEHOLDER_MYSQL_DATA
+          mountPath: /var/lib/mysql
+  volumeClaimTemplates:
+  - metadata:
+      name: PLACEHOLDER_MYSQL_DATA
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      storageClassName: PLACEHOLDER_STORAGE_CLASS
+      resources:
+        requests:
+          storage: 10Gi
