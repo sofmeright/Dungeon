@@ -67,12 +67,11 @@ spec:
                   "Issuer": "https://sso.prplanit.com",
                   "TokenEndpoint": "https://sso.prplanit.com/oauth/v2/token",
                   "ClientID": "${AUTH_CLIENT_ID}",
-                  "GrantType": "client_credentials"
-                },
-                "ZitadelClientCredentials": {
-                  "ClientID": "${AUTH_CLIENT_ID}",
                   "ClientSecret": "${AUTH_CLIENT_SECRET}",
                   "GrantType": "client_credentials"
+                },
+                "ExtraConfig": {
+                  "ManagementEndpoint": "https://sso.prplanit.com/management/v1"
                 }
               },
               "DeviceAuthorizationFlow": {
