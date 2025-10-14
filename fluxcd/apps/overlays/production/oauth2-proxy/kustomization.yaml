@@ -8,7 +8,6 @@ resources:
   - httproute.yaml
 
 patches:
-  - path: deployment-httpbin-patch.yaml
   - path: deployment-oauth2-proxy-patch.yaml
   - path: service-patch.yaml
     target:
