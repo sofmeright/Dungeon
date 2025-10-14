@@ -56,8 +56,8 @@ spec:
         memory: "512Mi"
         cpu: "500m"
 
-  # Service configuration - MUST be enabled for HA with raft
-  serviceRegistrationEnabled: true
+  # Service configuration - disabled during initialization, enable after for HA
+  serviceRegistrationEnabled: false
 
   # Use the vault service account
   serviceAccount: vault
