@@ -45,6 +45,12 @@ spec:
           path "great-sea/metadata/*" {
             capabilities = ["read", "list"]
           }
+          path "pedestal-of-time/data/*" {
+            capabilities = ["read", "list"]
+          }
+          path "pedestal-of-time/metadata/*" {
+            capabilities = ["read", "list"]
+          }
     auth:
       - type: kubernetes
         config:
@@ -75,5 +81,10 @@ spec:
       - path: great-sea
         type: kv
         description: VPN-routed media automation secrets
+        options:
+          version: 2
+      - path: pedestal-of-time
+        type: kv
+        description: Personal productivity and management apps
         options:
           version: 2
