@@ -21,3 +21,12 @@ patches:
       name: searxng-settings
   - path: deployment-patch.yaml
   - path: storage-patch.yaml
+  - target:
+      kind: PersistentVolumeClaim
+      name: searxng-data
+    patch: |-
+      apiVersion: v1
+      kind: PersistentVolumeClaim
+      metadata:
+        name: searxng-data
+      $patch: delete

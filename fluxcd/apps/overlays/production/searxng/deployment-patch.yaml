@@ -13,16 +13,9 @@ spec:
         env:
         - name: SEARXNG_BASE_URL
           value: "http://172.22.30.107:8986/"
-        volumeMounts:
-        - name: searxng-config
-          mountPath: /etc/searxng
-        - name: searxng-data
-          mountPath: /var/log/uwsgi
       volumes:
-      - name: searxng-config
-        configMap:
-          name: searxng-settings
       - name: searxng-data
+        persistentVolumeClaim: null
         emptyDir: {}
 ---
 apiVersion: apps/v1
