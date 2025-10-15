@@ -16,6 +16,7 @@ spec:
   unsealConfig:
     kubernetes:
       secretNamespace: zeldas-lullaby
+  vaultConfigurerPodSpec: {}
   externalConfig:
     policies:
       - name: external-secrets
