@@ -29,6 +29,8 @@ spec:
   - metadata:
       name: temple-of-time-penpot-assets
     spec:
+      accessModes:
+      - ReadWriteOnce
       storageClassName: ceph-rbd
       resources:
         requests:

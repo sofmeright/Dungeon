@@ -12,6 +12,8 @@ spec:
   - metadata:
       name: temple-of-time-penpot-postgres-data
     spec:
+      accessModes:
+      - ReadWriteOnce
       storageClassName: ceph-rbd
       resources:
         requests:
