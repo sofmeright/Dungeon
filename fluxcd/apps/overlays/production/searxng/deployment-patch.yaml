@@ -8,6 +8,9 @@ spec:
   template:
     spec:
       volumes:
+      - name: searxng-config
+        configMap:
+          name: searxng-settings
       - name: searxng-data
         emptyDir: {}
       containers:
