@@ -1,0 +1,31 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: temple-of-time
+resources:
+  - ../../../base/penpot
+  - httproute.yaml
+patches:
+  - path: postgres-patch.yaml
+    target:
+      kind: StatefulSet
+      name: penpot-postgres
+  - path: redis-patch.yaml
+    target:
+      kind: StatefulSet
+      name: penpot-redis
+  - path: backend-patch.yaml
+    target:
+      kind: StatefulSet
+      name: penpot-backend
+  - path: frontend-patch.yaml
+    target:
+      kind: StatefulSet
+      name: penpot-frontend
+  - path: exporter-patch.yaml
+    target:
+      kind: StatefulSet
+      name: penpot-exporter
+  - path: externalsecret-patch.yaml
+    target:
+      kind: ExternalSecret
+      name: penpot-secrets

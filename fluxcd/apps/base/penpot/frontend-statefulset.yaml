@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: penpot-frontend
+spec:
+  serviceName: penpot-frontend
+  replicas: 1
+  selector:
+    matchLabels:
+      app: penpot-frontend
+  template:
+    metadata:
+      labels:
+        app: penpot-frontend
+    spec:
+      containers:
+      - name: frontend
+        image: PLACEHOLDER_IMAGE
+        ports:
+        - containerPort: 8080
+          name: http
+        env:
+        - name: PENPOT_FLAGS
+          value: "PLACEHOLDER_FLAGS"
+        - name: ASSETS_STORAGE_BACKEND
+          value: "assets-fs"
+        - name: PENPOT_STORAGE_ASSETS_FS_DIRECTORY
+          value: "/opt/data/assets"
+        - name: PENPOT_PUBLIC_URI
+          value: "PLACEHOLDER_PUBLIC_URI"
+        volumeMounts:
+        - name: assets
+          mountPath: /opt/data/assets
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "100m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+      volumes:
+      - name: assets
+        persistentVolumeClaim:
+          claimName: PLACEHOLDER_ASSETS_PVC

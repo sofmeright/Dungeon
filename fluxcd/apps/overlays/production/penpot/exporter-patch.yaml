@@ -1,0 +1,10 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: penpot-exporter
+spec:
+  template:
+    spec:
+      containers:
+      - name: exporter
+        image: docker.io/penpotapp/exporter:latest

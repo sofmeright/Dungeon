@@ -1,0 +1,18 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: penpot-postgres
+spec:
+  template:
+    spec:
+      containers:
+      - name: postgres
+        image: docker.io/postgres:15
+  volumeClaimTemplates:
+  - metadata:
+      name: temple-of-time-penpot-postgres-data
+    spec:
+      storageClassName: ceph-rbd
+      resources:
+        requests:
+          storage: 10Gi

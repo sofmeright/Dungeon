@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: penpot-backend
+spec:
+  template:
+    spec:
+      containers:
+      - name: backend
+        image: docker.io/penpotapp/backend:latest
+        env:
+        - name: PENPOT_FLAGS
+          value: "enable-registration enable-login-with-password enable-login-with-oidc enable-oidc-registration disable-email-verification enable-insecure-register enable-smtp enable-prepl-server disable-secure-session-cookies"
+        - name: PENPOT_PUBLIC_URI
+          value: "https://design.pcfae.com"
+        - name: PENPOT_SMTP_HOST
+          value: "smtp.gmail.com"
+        - name: PENPOT_SMTP_PORT
+          value: "465"
+        - name: PENPOT_OIDC_BASE_URI
+          value: "https://sso.prplanit.com"
+        - name: PENPOT_OIDC_AUTH_URI
+          value: "https://sso.prplanit.com/oauth/v2/authorize"
+        - name: PENPOT_OIDC_TOKEN_URI
+          value: "https://sso.prplanit.com/oauth/v2/token"
+        - name: PENPOT_OIDC_USER_INFO_SOURCE
+          value: "https://sso.prplanit.com/oidc/v1/userinfo"
+  volumeClaimTemplates:
+  - metadata:
+      name: temple-of-time-penpot-assets
+    spec:
+      storageClassName: ceph-rbd
+      resources:
+        requests:
+          storage: 20Gi
