@@ -4,12 +4,15 @@ kind: Deployment
 metadata:
   name: searxng
 spec:
-  replicas: 1
+  replicas: 3
   template:
     spec:
+      volumes:
+      - name: searxng-data
+        emptyDir: {}
       containers:
       - name: searxng
-        image: docker.jcr.pcfae.com/searxng/searxng:latest
+        image: docker.io/searxng/searxng:2024.11.14-a1947c5cf
         env:
         - name: SEARXNG_BASE_URL
           value: "http://172.22.30.107:8986/"
@@ -24,4 +27,4 @@ spec:
     spec:
       containers:
       - name: redis
-        image: docker.jcr.pcfae.com/valkey/valkey:7-alpine
+        image: docker.io/valkey/valkey:7-alpine
