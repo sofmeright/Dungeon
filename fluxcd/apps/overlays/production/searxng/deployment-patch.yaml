@@ -7,21 +7,23 @@ spec:
   replicas: 3
   template:
     spec:
-      $setElementOrder/volumes:
-      - name: searxng-config
-      - name: searxng-data
-      volumes:
-      - name: searxng-config
-        configMap:
-          name: searxng-settings
-      - name: searxng-data
-        emptyDir: {}
       containers:
       - name: searxng
         image: docker.io/searxng/searxng:2024.11.14-a1947c5cf
         env:
         - name: SEARXNG_BASE_URL
           value: "http://172.22.30.107:8986/"
+        volumeMounts:
+        - name: searxng-config
+          mountPath: /etc/searxng
+        - name: searxng-data
+          mountPath: /var/log/uwsgi
+      volumes:
+      - name: searxng-config
+        configMap:
+          name: searxng-settings
+      - name: searxng-data
+        emptyDir: {}
 ---
 apiVersion: apps/v1
 kind: Deployment
