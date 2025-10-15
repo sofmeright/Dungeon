@@ -7,6 +7,9 @@ spec:
   replicas: 3
   template:
     spec:
+      $setElementOrder/volumes:
+      - name: searxng-config
+      - name: searxng-data
       volumes:
       - name: searxng-config
         configMap:
