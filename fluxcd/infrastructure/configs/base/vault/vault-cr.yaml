@@ -19,15 +19,15 @@ spec:
     storage:
       raft:
         path: /vault/data
-        node_id: "${ env `VAULT_K8S_POD_NAME` }"
+        node_id: "${ env `POD_NAME` }"
         retry_join:
           - leader_api_addr: "http://vault-0.zeldas-lullaby.svc.cluster.local:8200"
     listener:
       tcp:
         address: "0.0.0.0:8200"
         tls_disable: true
-    api_addr: "http://${ env `VAULT_K8S_POD_NAME` }.zeldas-lullaby.svc.cluster.local:8200"
-    cluster_addr: "https://${ env `VAULT_K8S_POD_NAME` }.zeldas-lullaby.svc.cluster.local:8201"
+    api_addr: "http://${ env `POD_NAME` }.zeldas-lullaby.svc.cluster.local:8200"
+    cluster_addr: "https://${ env `POD_NAME` }.zeldas-lullaby.svc.cluster.local:8201"
     ui: true
     disable_mlock: true
 
