@@ -25,7 +25,7 @@ spec:
           value: "1000"
         resources:
           requests:
-            cpu: 200m
+            cpu: 100m
             memory: 512Mi
           limits:
             cpu: 2000m
@@ -66,10 +66,10 @@ spec:
           value: "60s"
         resources:
           requests:
-            cpu: 50m
+            cpu: 25m
             memory: 128Mi
           limits:
-            cpu: 200m
+            cpu: 100m
             memory: 256Mi
   volumeClaimTemplates:
   - metadata:

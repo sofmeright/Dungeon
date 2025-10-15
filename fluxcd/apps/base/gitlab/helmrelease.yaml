@@ -47,7 +47,7 @@ spec:
         accessMode: ReadWriteOnce
       resources:
         requests:
-          cpu: 500m
+          cpu: 250m
           memory: 1Gi
         limits:
           cpu: 2000m
@@ -68,7 +68,7 @@ spec:
           cpu: 500m
           memory: 1Gi
         limits:
-          cpu: 1000m
+          cpu: 2000m
           memory: 2Gi
 
     # Redis HA with Sentinel
@@ -103,10 +103,10 @@ spec:
         replicas: 3
         resources:
           requests:
-            cpu: 1000m
+            cpu: 500m
             memory: 2Gi
           limits:
-            cpu: 2000m
+            cpu: 4000m
             memory: 4Gi
 
       # Sidekiq - HA
@@ -114,10 +114,10 @@ spec:
         replicas: 2
         resources:
           requests:
-            cpu: 500m
+            cpu: 300m
             memory: 1Gi
           limits:
-            cpu: 1000m
+            cpu: 2000m
             memory: 2Gi
 
       # GitLab Shell
