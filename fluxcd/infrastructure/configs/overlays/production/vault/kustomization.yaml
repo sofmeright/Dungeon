@@ -19,3 +19,7 @@ patches:
     target:
       kind: Vault
       name: vault
+  - path: vault-sa-auth-delegator-patch.yaml
+    target:
+      kind: ClusterRoleBinding
+      name: vault-tokenreview-binding

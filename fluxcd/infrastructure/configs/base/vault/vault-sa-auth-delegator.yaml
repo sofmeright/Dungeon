@@ -1,0 +1,14 @@
+# ClusterRoleBinding to allow Vault service account to validate
+# service account tokens via the Kubernetes TokenReview API
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: vault-tokenreview-binding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: system:auth-delegator
+subjects:
+  - kind: ServiceAccount
+    name: vault
+    namespace: PLACEHOLDER_NAMESPACE

@@ -3,3 +3,4 @@ kind: Kustomization
 
 resources:
   - vault-cr.yaml
+  - vault-sa-auth-delegator.yaml
