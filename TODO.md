@@ -55,3 +55,19 @@ CLAUDE.md specifies PVC naming pattern for StatefulSets: `<namespace>-<app>-<pur
 7. Clean up old PVCs, PVs, and RBD images from Ceph
 
 **Note:** Each migration requires app downtime. Plan migrations during maintenance windows.
+
+## Application Deployment - Final Stretch
+
+### Remaining Applications to Template and Deploy to Kubernetes
+- [ ] calcom (Cal.com) - Scheduling platform from Moor (2 containers: app + studio)
+- [ ] opnform - Form builder platform from Moor (7 containers: api, scheduler, worker, client, db, ingress, redis)
+- [ ] crowdsec - Security/IDS platform from Lighthouse (2 containers: crowdsec + dashboard)
+- [ ] anirra - Custom arr app from Pirates-WDDA
+
+**Status:** Final 4 applications remaining out of 100+ total applications inventoried across all Portainer endpoints.
+
+**Large stacks to migrate** (not yet deployed to K8s):
+- [ ] Mailcow (18 containers) - Email stack, production critical
+- [ ] Nextcloud AIO (14 containers) - File sharing, large stack
+- [ ] ARK servers (6 instances) - Game servers on Jabu-Jabu
+- [ ] Minecraft servers (2 instances) - Game servers on Jabu-Jabu
