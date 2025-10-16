@@ -10,8 +10,15 @@ spec:
       containers:
       - name: postgres
         image: docker.jcr.pcfae.com/postgres:16-alpine
+      - $patch: delete
+        name: sidecar-to-delete
   volumeClaimTemplates:
   - metadata:
       name: hookshot-dd-ui-postgres-data
     spec:
+      accessModes:
+      - ReadWriteOnce
       storageClassName: ceph-rbd-retain
+      resources:
+        requests:
+          storage: 10Gi

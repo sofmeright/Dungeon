@@ -21,4 +21,9 @@ spec:
   - metadata:
       name: hookshot-dd-ui-data
     spec:
+      accessModes:
+      - ReadWriteOnce
       storageClassName: ceph-rbd-retain
+      resources:
+        requests:
+          storage: 50Gi
