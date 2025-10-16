@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: tiki-wiki-db
+spec:
+  replicas: 1
+  template:
+    spec:
+      imagePullSecrets:
+      - name: jcr-pcfae-dungeon-pull-secret
+      containers:
+      - name: mariadb
+        image: docker.jcr.pcfae.com/library/mariadb:latest
+  volumeClaimTemplates:
+  - metadata:
+      name: temple-of-time-tiki-wiki-mysql
+    spec:
+      storageClassName: ceph-rbd-retain
+  - metadata:
+      name: temple-of-time-tiki-wiki-backups
+    spec:
+      storageClassName: ceph-rbd-retain

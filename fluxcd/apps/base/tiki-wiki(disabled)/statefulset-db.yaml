@@ -1,0 +1,71 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: tiki-wiki-db
+spec:
+  serviceName: tiki-wiki-db
+  replicas: PLACEHOLDER_REPLICAS
+  selector:
+    matchLabels:
+      app: tiki-wiki-db
+  template:
+    metadata:
+      labels:
+        app: tiki-wiki-db
+    spec:
+      containers:
+      - name: mariadb
+        image: PLACEHOLDER_IMAGE
+        ports:
+        - containerPort: 3306
+          name: mysql
+          protocol: TCP
+        env:
+        - name: MYSQL_USER
+          valueFrom:
+            secretKeyRef:
+              name: tiki-wiki-secrets
+              key: db-user
+        - name: MYSQL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: tiki-wiki-secrets
+              key: db-password
+        - name: MYSQL_DATABASE
+          value: "tikidb"
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: tiki-wiki-secrets
+              key: mysql-root-password
+        - name: TERM
+          value: "dumb"
+        volumeMounts:
+        - name: temple-of-time-tiki-wiki-mysql
+          mountPath: /var/lib/mysql
+        - name: temple-of-time-tiki-wiki-backups
+          mountPath: /docker-entrypoint-initdb.d
+        resources:
+          requests:
+            cpu: 100m
+            memory: 256Mi
+          limits:
+            cpu: 1000m
+            memory: 1Gi
+  volumeClaimTemplates:
+  - metadata:
+      name: temple-of-time-tiki-wiki-mysql
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      storageClassName: PLACEHOLDER_STORAGE_CLASS
+      resources:
+        requests:
+          storage: 10Gi
+  - metadata:
+      name: temple-of-time-tiki-wiki-backups
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      storageClassName: PLACEHOLDER_STORAGE_CLASS
+      resources:
+        requests:
+          storage: 5Gi

@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: py-kms
+spec:
+  replicas: 1
+  template:
+    spec:
+      containers:
+      - name: py-kms
+        image: ghcr.io/py-kms-organization/py-kms:python3-next
+        env:
+        - name: TZ
+          value: "America/Phoenix"
+  volumeClaimTemplates:
+  - metadata:
+      name: swift-sail-py-kms-db
+    spec:
+      storageClassName: ceph-rbd-retain

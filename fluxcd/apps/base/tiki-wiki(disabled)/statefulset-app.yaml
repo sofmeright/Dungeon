@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: tiki-wiki
+spec:
+  serviceName: tiki-wiki
+  replicas: PLACEHOLDER_REPLICAS
+  selector:
+    matchLabels:
+      app: tiki-wiki
+  template:
+    metadata:
+      labels:
+        app: tiki-wiki
+    spec:
+      containers:
+      - name: tiki-wiki
+        image: PLACEHOLDER_IMAGE
+        ports:
+        - containerPort: 80
+          name: http
+          protocol: TCP
+        env:
+        - name: TIKI_DB_USER
+          valueFrom:
+            secretKeyRef:
+              name: tiki-wiki-secrets
+              key: db-user
+        - name: TIKI_DB_PASS
+          valueFrom:
+            secretKeyRef:
+              name: tiki-wiki-secrets
+              key: db-password
+        - name: TIKI_DB_NAME
+          value: "tikidb"
+        - name: TIKI_DB_HOST
+          value: "tiki-wiki-db"
+        resources:
+          requests:
+            cpu: 200m
+            memory: 512Mi
+          limits:
+            cpu: 2000m
+            memory: 2Gi

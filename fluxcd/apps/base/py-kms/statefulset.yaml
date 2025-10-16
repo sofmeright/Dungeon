@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: py-kms
+spec:
+  serviceName: py-kms
+  replicas: PLACEHOLDER_REPLICAS
+  selector:
+    matchLabels:
+      app: py-kms
+  template:
+    metadata:
+      labels:
+        app: py-kms
+    spec:
+      containers:
+      - name: py-kms
+        image: PLACEHOLDER_IMAGE
+        ports:
+        - containerPort: 1688
+          name: kms
+          protocol: TCP
+        - containerPort: 8080
+          name: web
+          protocol: TCP
+        env:
+        - name: HWID
+          value: "RANDOM"
+        - name: IP
+          value: "::"
+        - name: LOGLEVEL
+          value: "INFO"
+        - name: TZ
+          value: PLACEHOLDER_TZ
+        volumeMounts:
+        - name: swift-sail-py-kms-db
+          mountPath: /home/py-kms/db
+        resources:
+          requests:
+            cpu: 50m
+            memory: 128Mi
+          limits:
+            cpu: 500m
+            memory: 512Mi
+  volumeClaimTemplates:
+  - metadata:
+      name: swift-sail-py-kms-db
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      storageClassName: PLACEHOLDER_STORAGE_CLASS
+      resources:
+        requests:
+          storage: 1Gi
