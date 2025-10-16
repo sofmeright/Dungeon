@@ -5,9 +5,11 @@ metadata:
 spec:
   template:
     spec:
+      imagePullSecrets:
+      - name: jcr-pcfae-dungeon-pull-secret
       containers:
       - name: graphite-exporter
-        image: docker.io/prom/graphite-exporter:v0.16.0
+        image: docker.jcr.pcfae.com/prom/graphite-exporter:v0.16.0
         resources:
           requests:
             cpu: 50m

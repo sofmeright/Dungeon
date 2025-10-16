@@ -6,6 +6,8 @@ spec:
   replicas: 1
   template:
     spec:
+      imagePullSecrets:
+      - name: jcr-pcfae-dungeon-pull-secret
       containers:
       - name: chrony
-        image: docker.io/simonrupf/chronyd:0.7.0
+        image: docker.jcr.pcfae.com/simonrupf/chronyd:0.7.0
