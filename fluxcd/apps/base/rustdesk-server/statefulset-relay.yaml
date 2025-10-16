@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: rustdesk-relay
+spec:
+  serviceName: rustdesk-relay
+  replicas: PLACEHOLDER_REPLICAS
+  selector:
+    matchLabels:
+      app: rustdesk-relay
+  template:
+    metadata:
+      labels:
+        app: rustdesk-relay
+    spec:
+      containers:
+      - name: rustdesk-relay
+        image: PLACEHOLDER_IMAGE
+        command: ["hbbr"]
+        ports:
+        - containerPort: 21117
+          name: tcp-21117
+          protocol: TCP
+        - containerPort: 21119
+          name: webclient
+          protocol: TCP
+        volumeMounts:
+        - name: hookshot-rustdesk-relay-data
+          mountPath: /root
+        resources:
+          requests:
+            cpu: 100m
+            memory: 128Mi
+          limits:
+            cpu: 500m
+            memory: 512Mi
+  volumeClaimTemplates:
+  - metadata:
+      name: hookshot-rustdesk-relay-data
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      storageClassName: PLACEHOLDER_STORAGE_CLASS
+      resources:
+        requests:
+          storage: 1Gi

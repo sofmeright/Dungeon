@@ -1,0 +1,18 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: rustdesk-relay
+spec:
+  replicas: 1
+  template:
+    spec:
+      imagePullSecrets:
+      - name: jcr-pcfae-dungeon-pull-secret
+      containers:
+      - name: rustdesk-relay
+        image: docker.jcr.pcfae.com/rustdesk/rustdesk-server:latest
+  volumeClaimTemplates:
+  - metadata:
+      name: hookshot-rustdesk-relay-data
+    spec:
+      storageClassName: ceph-rbd-retain

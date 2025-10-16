@@ -1,0 +1,57 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: rustdesk-server
+spec:
+  serviceName: rustdesk-server
+  replicas: PLACEHOLDER_REPLICAS
+  selector:
+    matchLabels:
+      app: rustdesk-server
+  template:
+    metadata:
+      labels:
+        app: rustdesk-server
+    spec:
+      containers:
+      - name: rustdesk-server
+        image: PLACEHOLDER_IMAGE
+        command: ["hbbs"]
+        env:
+        - name: ALWAYS_USE_RELAY
+          value: "Y"
+        ports:
+        - containerPort: 21114
+          name: tcp-21114
+          protocol: TCP
+        - containerPort: 21115
+          name: tcp-21115
+          protocol: TCP
+        - containerPort: 21116
+          name: tcp-21116
+          protocol: TCP
+        - containerPort: 21116
+          name: udp-21116
+          protocol: UDP
+        - containerPort: 21118
+          name: webclient
+          protocol: TCP
+        volumeMounts:
+        - name: hookshot-rustdesk-server-data
+          mountPath: /root
+        resources:
+          requests:
+            cpu: 100m
+            memory: 128Mi
+          limits:
+            cpu: 500m
+            memory: 512Mi
+  volumeClaimTemplates:
+  - metadata:
+      name: hookshot-rustdesk-server-data
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      storageClassName: PLACEHOLDER_STORAGE_CLASS
+      resources:
+        requests:
+          storage: 1Gi
