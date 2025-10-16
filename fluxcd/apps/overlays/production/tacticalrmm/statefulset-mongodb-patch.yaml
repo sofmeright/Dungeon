@@ -7,7 +7,7 @@ spec:
     spec:
       containers:
       - name: mongodb
-        image: docker.io/mongo:6
+        image: docker.jcr.pcfae.com/mongo:6
         resources:
           requests:
             cpu: "250m"

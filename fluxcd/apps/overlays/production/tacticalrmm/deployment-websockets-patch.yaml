@@ -15,7 +15,7 @@ spec:
         image: docker.jcr.pcfae.com/busybox:1.36
       containers:
       - name: websockets
-        image: docker.io/tacticalrmm/tactical:latest
+        image: docker.jcr.pcfae.com/tacticalrmm/tactical:latest
         resources:
           requests:
             cpu: "100m"

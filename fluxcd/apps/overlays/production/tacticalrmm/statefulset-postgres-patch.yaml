@@ -7,7 +7,7 @@ spec:
     spec:
       containers:
       - name: postgres
-        image: docker.io/postgres:15-alpine
+        image: docker.jcr.pcfae.com/postgres:15-alpine
         resources:
           requests:
             cpu: "250m"

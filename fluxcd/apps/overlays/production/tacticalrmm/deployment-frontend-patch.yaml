@@ -7,7 +7,7 @@ spec:
     spec:
       containers:
       - name: frontend
-        image: docker.io/tacticalrmm/tactical-frontend:latest
+        image: docker.jcr.pcfae.com/tacticalrmm/tactical-frontend:latest
         resources:
           requests:
             cpu: "100m"
