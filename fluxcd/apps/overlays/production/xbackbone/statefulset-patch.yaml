@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: xbackbone
+spec:
+  replicas: 1
+  template:
+    spec:
+      containers:
+      - name: xbackbone
+        image: lscr.io/linuxserver/xbackbone:latest
+        env:
+        - name: TZ
+          value: "America/Phoenix"
+  volumeClaimTemplates:
+  - metadata:
+      name: tingle-tuner-xbackbone-config
+    spec:
+      storageClassName: ceph-rbd-retain
