@@ -125,7 +125,7 @@ spec:
         - name: DD_UI_INVENTORY_FILE
           value: ansible/inventory.yaml
         - name: DD_UI_SCAN_IAC_AUTO
-          value: "true"
+          value: "false"
         - name: DD_UI_SCAN_IAC_INTERVAL
           value: 90s
 
