@@ -11,7 +11,7 @@ spec:
         volumeMounts:
         - $patch: delete
           name: PLACEHOLDER_POSTGRES_DATA
-        - name: zeldas-lullaby-guacamole-postgres-data
+        - name: hookshot-guacamole-postgres-data
           mountPath: /var/lib/postgresql/data
           subPath: pgdata
         resources:
@@ -23,7 +23,7 @@ spec:
             memory: "2Gi"
   volumeClaimTemplates:
   - metadata:
-      name: zeldas-lullaby-guacamole-postgres-data
+      name: hookshot-guacamole-postgres-data
     spec:
       accessModes:
       - ReadWriteOnce
