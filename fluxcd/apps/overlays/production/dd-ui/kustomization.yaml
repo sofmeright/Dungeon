@@ -7,6 +7,7 @@ resources:
 - ../../../base/dd-ui
 - externalsecret.yaml
 - httproute.yaml
+- loadbalancer-service.yaml
 
 patches:
 - path: postgres-patch.yaml
