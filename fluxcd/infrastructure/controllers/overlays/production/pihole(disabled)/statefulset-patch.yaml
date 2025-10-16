@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: pihole
+spec:
+  replicas: 1
+  template:
+    spec:
+      imagePullSecrets:
+      - name: jcr-pcfae-dungeon-pull-secret
+      containers:
+      - name: pihole
+        image: docker.jcr.pcfae.com/pihole/pihole:latest
+        env:
+        - name: TZ
+          value: "America/Phoenix"
+  volumeClaimTemplates:
+  - metadata:
+      name: compass-pihole-etc-pihole
+    spec:
+      storageClassName: ceph-rbd-retain
+  - metadata:
+      name: compass-pihole-etc-dnsmasq
+    spec:
+      storageClassName: ceph-rbd-retain
