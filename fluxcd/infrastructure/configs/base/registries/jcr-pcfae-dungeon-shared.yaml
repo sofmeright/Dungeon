@@ -24,6 +24,18 @@ spec:
                 "docker.jcr.pcfae.com": {
                   "auth": "{{ printf "%s:%s" .username .password | b64enc }}",
                   "email": ""
+                },
+                "quay.jcr.pcfae.com": {
+                  "auth": "{{ printf "%s:%s" .username .password | b64enc }}",
+                  "email": ""
+                },
+                "lscr.jcr.pcfae.com": {
+                  "auth": "{{ printf "%s:%s" .username .password | b64enc }}",
+                  "email": ""
+                },
+                "ghcr.jcr.pcfae.com": {
+                  "auth": "{{ printf "%s:%s" .username .password | b64enc }}",
+                  "email": ""
                 }
               }
             }
