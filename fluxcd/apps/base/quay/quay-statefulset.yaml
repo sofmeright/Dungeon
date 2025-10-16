@@ -29,14 +29,11 @@ spec:
           mountPath: /conf/stack
         - name: quay-storage
           mountPath: /datastorage
+      volumes:
+      - name: quay-config
+        secret:
+          secretName: quay-secrets
   volumeClaimTemplates:
-  - metadata:
-      name: quay-config
-    spec:
-      storageClassName: PLACEHOLDER_STORAGE_CLASS
-      resources:
-        requests:
-          storage: PLACEHOLDER_STORAGE_SIZE
   - metadata:
       name: quay-storage
     spec:

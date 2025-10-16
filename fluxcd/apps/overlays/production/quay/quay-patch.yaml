@@ -13,15 +13,6 @@ spec:
         image: quay.jcr.pcfae.com/projectquay/quay:latest
   volumeClaimTemplates:
   - metadata:
-      name: quay-config
-    spec:
-      accessModes:
-      - ReadWriteOnce
-      storageClassName: ceph-rbd
-      resources:
-        requests:
-          storage: 5Gi
-  - metadata:
       name: quay-storage
     spec:
       accessModes:
