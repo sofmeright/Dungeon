@@ -1,8 +1,9 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: twenty-redis
 spec:
+  serviceName: twenty-redis
   replicas: PLACEHOLDER_REPLICAS
   selector:
     matchLabels:
@@ -19,6 +20,9 @@ spec:
         - containerPort: 6379
           name: redis
           protocol: TCP
+        volumeMounts:
+        - name: hyrule-castle-twenty-redis
+          mountPath: /data
         resources:
           requests:
             cpu: 50m
@@ -26,3 +30,12 @@ spec:
           limits:
             cpu: 500m
             memory: 512Mi
+  volumeClaimTemplates:
+  - metadata:
+      name: hyrule-castle-twenty-redis
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      storageClassName: PLACEHOLDER_STORAGE_CLASS
+      resources:
+        requests:
+          storage: 5Gi

@@ -5,5 +5,5 @@ resources:
 - statefulset-app.yaml
 - statefulset-worker.yaml
 - statefulset-postgres.yaml
-- deployment-redis.yaml
+- statefulset-redis.yaml
 - service.yaml

@@ -10,6 +10,6 @@ patches:
 - path: statefulset-app-patch.yaml
 - path: statefulset-worker-patch.yaml
 - path: statefulset-postgres-patch.yaml
-- path: deployment-redis-patch.yaml
+- path: statefulset-redis-patch.yaml
 - path: service-patch.yaml
 - path: externalsecret.yaml

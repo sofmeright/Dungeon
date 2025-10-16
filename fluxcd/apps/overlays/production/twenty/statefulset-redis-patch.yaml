@@ -1,5 +1,5 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: twenty-redis
 spec:
@@ -11,3 +11,8 @@ spec:
       containers:
       - name: redis
         image: docker.jcr.pcfae.com/library/redis:latest
+  volumeClaimTemplates:
+  - metadata:
+      name: hyrule-castle-twenty-redis
+    spec:
+      storageClassName: ceph-rbd-retain
