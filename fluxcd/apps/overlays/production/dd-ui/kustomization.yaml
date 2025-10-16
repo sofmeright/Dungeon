@@ -5,9 +5,9 @@ namespace: hookshot
 
 resources:
 - ../../../base/dd-ui
+- externalsecret.yaml
 - httproute.yaml
 
 patches:
 - path: postgres-patch.yaml
 - path: app-patch.yaml
-- path: externalsecret.yaml
