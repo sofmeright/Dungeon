@@ -31,6 +31,8 @@ spec:
             secretKeyRef:
               name: penpot-secrets
               key: database_password
+        - name: PGDATA
+          value: /var/lib/postgresql/data/pgdata
         volumeMounts:
         - name: temple-of-time-penpot-postgres-data
           mountPath: /var/lib/postgresql/data
