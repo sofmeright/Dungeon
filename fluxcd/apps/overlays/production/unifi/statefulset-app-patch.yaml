@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: unifi-app
+spec:
+  replicas: 1
+  template:
+    spec:
+      containers:
+      - name: unifi-app
+        image: lscr.io/linuxserver/unifi-network-application:latest
+        env:
+        - name: TZ
+          value: "America/Phoenix"
+  volumeClaimTemplates:
+  - metadata:
+      name: zeldas-lullaby-unifi-config
+    spec:
+      storageClassName: ceph-rbd-retain

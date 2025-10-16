@@ -1,0 +1,94 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: unifi-app
+spec:
+  serviceName: unifi-app
+  replicas: PLACEHOLDER_REPLICAS
+  selector:
+    matchLabels:
+      app: unifi-app
+  template:
+    metadata:
+      labels:
+        app: unifi-app
+    spec:
+      containers:
+      - name: unifi-app
+        image: PLACEHOLDER_IMAGE
+        ports:
+        - containerPort: 8443
+          name: https-ui
+          protocol: TCP
+        - containerPort: 3478
+          name: stun
+          protocol: UDP
+        - containerPort: 10001
+          name: discovery
+          protocol: UDP
+        - containerPort: 8080
+          name: http-portal
+          protocol: TCP
+        - containerPort: 1900
+          name: upnp
+          protocol: UDP
+        - containerPort: 8843
+          name: https-portal
+          protocol: TCP
+        - containerPort: 8880
+          name: http-redir
+          protocol: TCP
+        - containerPort: 6789
+          name: mobile-speed
+          protocol: TCP
+        - containerPort: 5514
+          name: syslog
+          protocol: UDP
+        env:
+        - name: PUID
+          value: "1000"
+        - name: PGID
+          value: "1000"
+        - name: TZ
+          value: PLACEHOLDER_TZ
+        - name: MONGO_USER
+          valueFrom:
+            secretKeyRef:
+              name: unifi-secrets
+              key: mongo-user
+        - name: MONGO_PASS
+          valueFrom:
+            secretKeyRef:
+              name: unifi-secrets
+              key: mongo-pass
+        - name: MONGO_HOST
+          value: "unifi-db"
+        - name: MONGO_PORT
+          value: "27017"
+        - name: MONGO_DBNAME
+          value: "unifi"
+        - name: MONGO_AUTHSOURCE
+          value: "unifi"
+        - name: MEM_LIMIT
+          value: "1024"
+        - name: MEM_STARTUP
+          value: "1024"
+        volumeMounts:
+        - name: zeldas-lullaby-unifi-config
+          mountPath: /config
+        resources:
+          requests:
+            cpu: 200m
+            memory: 1Gi
+          limits:
+            cpu: 2000m
+            memory: 2Gi
+  volumeClaimTemplates:
+  - metadata:
+      name: zeldas-lullaby-unifi-config
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      storageClassName: PLACEHOLDER_STORAGE_CLASS
+      resources:
+        requests:
+          storage: 10Gi
