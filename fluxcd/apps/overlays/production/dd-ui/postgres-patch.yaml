@@ -13,6 +13,7 @@ spec:
         volumeMounts:
         - name: hookshot-dd-ui-postgres-data
           mountPath: /var/lib/postgresql/data
+          subPath: pgdata
   volumeClaimTemplates:
   - metadata:
       name: hookshot-dd-ui-postgres-data
