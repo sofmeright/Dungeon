@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: romm
+spec:
+  replicas: 1
+  template:
+    spec:
+      imagePullSecrets:
+      - name: jcr-pcfae-dungeon-pull-secret
+      containers:
+      - name: romm
+        image: docker.jcr.pcfae.com/rommapp/romm:latest
+  volumeClaimTemplates:
+  - metadata:
+      name: shooting-gallery-romm-resources
+    spec:
+      storageClassName: ceph-rbd-retain
+  - metadata:
+      name: shooting-gallery-romm-redis
+    spec:
+      storageClassName: ceph-rbd-retain
+  - metadata:
+      name: shooting-gallery-romm-assets
+    spec:
+      storageClassName: ceph-rbd-retain
+  - metadata:
+      name: shooting-gallery-romm-config
+    spec:
+      storageClassName: ceph-rbd-retain

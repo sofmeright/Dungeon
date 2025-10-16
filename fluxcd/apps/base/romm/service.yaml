@@ -1,0 +1,27 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: romm
+spec:
+  type: PLACEHOLDER_SERVICE_TYPE
+  selector:
+    app: romm
+  ports:
+  - name: http
+    port: 7007
+    targetPort: 7007
+    protocol: TCP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: romm-db
+spec:
+  type: ClusterIP
+  selector:
+    app: romm-db
+  ports:
+  - name: mysql
+    port: 3306
+    targetPort: 3306
+    protocol: TCP
