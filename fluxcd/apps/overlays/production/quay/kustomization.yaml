@@ -3,10 +3,10 @@ kind: Kustomization
 namespace: hyrule-castle
 resources:
   - ../../../base/quay
+  - httproute.yaml
 patches:
   - path: postgres-patch.yaml
   - path: redis-patch.yaml
   - path: minio-patch.yaml
   - path: quay-patch.yaml
   - path: externalsecret-patch.yaml
-  - path: httproute.yaml
