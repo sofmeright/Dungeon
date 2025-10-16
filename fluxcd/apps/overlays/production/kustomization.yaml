@@ -4,7 +4,6 @@ resources:
   - 2fauth
   - actualbudget
   - dailytxt
-  - dd-ui
   - draw.io
   - google-webfonts-helper
   - homebox
