@@ -1,0 +1,13 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: tingle-tuner
+
+resources:
+- ../../../base/lenpaste
+
+patches:
+- path: statefulset-app-patch.yaml
+- path: statefulset-postgres-patch.yaml
+- path: service-patch.yaml
+- path: externalsecret.yaml

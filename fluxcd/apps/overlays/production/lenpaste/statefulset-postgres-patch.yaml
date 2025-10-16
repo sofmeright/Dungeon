@@ -1,0 +1,18 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: lenpaste-postgres
+spec:
+  replicas: 1
+  template:
+    spec:
+      imagePullSecrets:
+      - name: jcr-pcfae-dungeon-pull-secret
+      containers:
+      - name: postgres
+        image: docker.jcr.pcfae.com/library/postgres:16.1
+  volumeClaimTemplates:
+  - metadata:
+      name: tingle-tuner-lenpaste-postgres
+    spec:
+      storageClassName: ceph-rbd-retain

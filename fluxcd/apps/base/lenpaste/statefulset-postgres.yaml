@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: lenpaste-postgres
+spec:
+  serviceName: lenpaste-postgres
+  replicas: PLACEHOLDER_REPLICAS
+  selector:
+    matchLabels:
+      app: lenpaste-postgres
+  template:
+    metadata:
+      labels:
+        app: lenpaste-postgres
+    spec:
+      containers:
+      - name: postgres
+        image: PLACEHOLDER_IMAGE
+        ports:
+        - containerPort: 5432
+          name: postgres
+          protocol: TCP
+        env:
+        - name: PGDATA
+          value: "/var/lib/postgresql/data/pgdata"
+        - name: POSTGRES_USER
+          valueFrom:
+            secretKeyRef:
+              name: lenpaste-secrets
+              key: postgres-user
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: lenpaste-secrets
+              key: postgres-password
+        volumeMounts:
+        - name: tingle-tuner-lenpaste-postgres
+          mountPath: /var/lib/postgresql/data
+        resources:
+          requests:
+            cpu: 100m
+            memory: 256Mi
+          limits:
+            cpu: 1000m
+            memory: 1Gi
+  volumeClaimTemplates:
+  - metadata:
+      name: tingle-tuner-lenpaste-postgres
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      storageClassName: PLACEHOLDER_STORAGE_CLASS
+      resources:
+        requests:
+          storage: 10Gi

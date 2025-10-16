@@ -1,0 +1,16 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: lenpaste-app
+spec:
+  replicas: 1
+  template:
+    spec:
+      containers:
+      - name: lenpaste-app
+        image: ghcr.io/lcomrade/lenpaste:1.3.1
+  volumeClaimTemplates:
+  - metadata:
+      name: tingle-tuner-lenpaste-data
+    spec:
+      storageClassName: ceph-rbd-retain
