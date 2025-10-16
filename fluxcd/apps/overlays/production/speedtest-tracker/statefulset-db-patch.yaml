@@ -10,7 +10,7 @@ spec:
       - name: init-permissions
         image: docker.jcr.pcfae.com/busybox:latest
         volumeMounts:
-        - name: compass-speedtest-tracker-postgres
+        - name: gossip-stone-speedtest-tracker-postgres
           mountPath: /var/lib/postgresql/data
       containers:
       - name: postgres
@@ -23,11 +23,11 @@ spec:
             cpu: 500m
             memory: 256Mi
         volumeMounts:
-        - name: compass-speedtest-tracker-postgres
+        - name: gossip-stone-speedtest-tracker-postgres
           mountPath: /var/lib/postgresql/data
   volumeClaimTemplates:
   - metadata:
-      name: compass-speedtest-tracker-postgres
+      name: gossip-stone-speedtest-tracker-postgres
     spec:
       accessModes:
       - ReadWriteOnce

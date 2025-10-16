@@ -32,13 +32,13 @@ spec:
             cpu: 500m
             memory: 512Mi
         volumeMounts:
-        - name: compass-speedtest-tracker-config
+        - name: gossip-stone-speedtest-tracker-config
           mountPath: /config
-        - name: compass-speedtest-tracker-keys
+        - name: gossip-stone-speedtest-tracker-keys
           mountPath: /config/keys
   volumeClaimTemplates:
   - metadata:
-      name: compass-speedtest-tracker-config
+      name: gossip-stone-speedtest-tracker-config
     spec:
       accessModes:
       - ReadWriteOnce
@@ -47,7 +47,7 @@ spec:
         requests:
           storage: 1Gi
   - metadata:
-      name: compass-speedtest-tracker-keys
+      name: gossip-stone-speedtest-tracker-keys
     spec:
       accessModes:
       - ReadWriteOnce
