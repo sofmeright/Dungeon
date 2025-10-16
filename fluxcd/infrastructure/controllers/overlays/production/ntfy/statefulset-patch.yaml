@@ -28,7 +28,7 @@ spec:
             - name: NTFY_SMTP_SERVER_ADDR_PREFIX
               value: "ntfy-"
           volumeMounts:
-            - name: hyrule-castle-ntfy-data
+            - name: delivery-bag-ntfy-data
               mountPath: /var/lib/ntfy
           resources:
             requests:
@@ -39,7 +39,7 @@ spec:
               memory: 512Mi
   volumeClaimTemplates:
     - metadata:
-        name: hyrule-castle-ntfy-data
+        name: delivery-bag-ntfy-data
       spec:
         accessModes: ["ReadWriteOnce"]
         storageClassName: ceph-rbd-retain
