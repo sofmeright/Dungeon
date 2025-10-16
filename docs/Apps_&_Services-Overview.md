@@ -1,147 +1,173 @@
-Core Services & Infrastructure:
+## Core Services & Infrastructure
 - chrony
 - Netbox
 - Portainer
 - Proxmox
-- PBS
+- PBS (Proxmox Backup Server)
 - Semaphore
 - TrueNAS
 - Eaton 5PX 3000 (UPS)
 - Smlight SLZB-06 (Zigbee Router)
 - Zitadel
+- hashicorp-vault
 
-
-Authentication & IDP/IAM:
+## Authentication & IDP/IAM
 - 2fauth
-- bitwarden (config not in repo)
+- vaultwarden
+- oauth2-proxy
 
-Business
+## Business & Productivity
 - bagisto
+- calcom (scheduling)
 - dolibarr
+- invoice-ninja
+- opnform (form builder)
+- orangehrm
+- osticket
+- twentycrm
 
-Documentation / Notes / Design
+## Documentation / Notes / Design
 - appflowy
 - bookstack
 - code-server
 - dailyTxt
 - drawio
+- joplin
 
-Downloads / Servarr
+## Downloads / Servarr
+- anirra
 - bazarr
 - byparr
 - cross-seed
-
-Lifestyle
-- actualbudget
-- adguardhome
-- adguardhome-sync
-
-Multimedia
-- calibre-web
-- emulatorjs
-
-Monitoring & Diagnostics
-- bezsel
-- echoip
-
-Networking
-
-Security & Auditing
-- anubis
-- crowdsec
-- endlessh
-
-
-
-- ferdium
-- filebrowser
-- flaresolverr (not using)
-- frappe-erpnext
-- frigate
-- ghost
-- gitea
-- gitlab
 - gluetun
 - gluetun-qbittorrent-port-manager
-- google-webfonts-helper
-- guacamole (struggling with config actually)
-- hashicorp-vault (deployed to use w/ K8s, yet to implement)
-- homarr
-- homebox
-- hrconvert2
-- immich
-- invoice-ninja
-- it-tools
-- jellyfin
-- jellyseer
-- joplin
-- kasm
-- lenpaste
-- librespeed-speedtest
-- libretransalate
 - lidarr
-- linkstack
-- linkwarden
-- lubelogger
-- mailcow (config not in repo)
-- matrix-synapse
-- mealie
-- monica
-- monitoring-servers: beszel/grafana/loki/prometheus
-- monitoring-agents: beszel-agent/cadvisor/nodeexporter
-- neko
-- netbird
-- netbird-client(s)
-- netbox
-- nextcloud-aio
-- nginx (experiment(ing) with docker containers, but prefer a native install in VM)
-- oauth2-proxy
-- ollama
-- openai-whisper/fasterwhisper
-- openspeedtest
-- open-webui
-- orangehrm
-- organizr
-- osticket
-- overseer
-- paperless-ngx
-- penpot
-- photoprism
-- pihole
 - pinchflat
-- plexmediaserver
-- portainer
-- portainer_agent
-- project-send
 - prowlarr
-- proxmox-backup-server
-- py-kms
 - pyload-ng
 - qbittorrent
 - radarr
-- reactive-resume
 - readarr
-- romm
-- roundcube
-- rustdesk-server
 - sabnzbd
-- searxng
-- semaphore_ui
-- shinobi
-- shlink
 - sonarr
+- whisparr
+
+## Game Servers
+- ARK: Survival Evolved (6 instances: fjordur, olympus, theisland, thevolcano, valguero, valhalla)
+- Minecraft (multiple instances)
+- romm
+
+## Lifestyle & Personal
+- actualbudget
+- adguardhome
+- adguardhome-sync
+- ferdium
+- homebox
+- lubelogger
+- mealie
+- monica
+- paperless-ngx
+- reactive-resume
+
+## Multimedia & Media Servers
+- calibre-web
+- emulatorjs
+- immich
+- jellyfin
+- jellyseerr
+- kasm
+- overseerr
+- penpot
+- photoprism
+- plex
+- stable-diffusion-webui
+
+## Monitoring & Diagnostics
+- beszel
+- echoip
+- grafana
+- loki
+- netalertx
+- ntfy
+- prometheus
+- promtail
 - speedtest-tracker
+- umami
+- uptime-kuma
+
+## Networking
+- netbird
+- netbird-client(s)
+- nginx
+- rustdesk-server
+
+## Security & Auditing
+- anubis
+- crowdsec
+- endlessh
+- shinobi
+- wazuh
+
+## Storage & File Management
+- filebrowser
+- linkwarden
+- nextcloud-aio
+- project-send
+- xbackbone
+
+## Tools & Utilities
+- apt-cacher-ng
+- convertx
+- google-webfonts-helper
+- hrconvert2
+- it-tools
+- lenpaste
+- librespeed-speedtest
+- libretranslate
+- neko
+- ollama
+- open-webui
+- openspeedtest
+- pihole
+- podinfo
+- py-kms
+- searxng
 - supermicro-ipmi-license-generator
-- tactical-rmm
 - thelounge
-- tikiwiki
-- trivy
-- twentycrm
+- vlmcsd
+
+## Web Services & Dashboards
+- ghost
+- guacamole
+- homarr
+- linkstack
+- organizr
+- roundcube
+- shlink
+- wikijs
+
+## Remote Management & IT Services
+- gitea
+- gitlab
+- gitlab-runner
+- jfrog-artifactory
+- mailcow
+- quay (container registry)
+- tactical-rmm
 - unifi-network-application
 - urbackup-server
-- vlmcsd
-- wazuh
-- whisparr
-- wiki-js
-- xbackbone
-- zitadel
+
+## Development & AI/ML
+- faster-whisper
+- frigate
+- stable-diffusion-webui
+- ollama
+- open-webui
+
+## Social & Communication
+- mastodon (federated social media)
+- matrix-synapse (federated chat)
+
+## Deprecated / Not Using
+- flaresolverr
+- trivy

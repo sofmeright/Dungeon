@@ -63,8 +63,10 @@ CLAUDE.md specifies PVC naming pattern for StatefulSets: `<namespace>-<app>-<pur
 - [ ] opnform - Form builder platform from Moor (7 containers: api, scheduler, worker, client, db, ingress, redis)
 - [ ] crowdsec - Security/IDS platform from Lighthouse (2 containers: crowdsec + dashboard)
 - [ ] anirra - Custom arr app from Pirates-WDDA
+- [ ] matrix-synapse - Matrix homeserver (federated chat)
+- [ ] mastodon - Federated social media platform
 
-**Status:** Final 4 applications remaining out of 100+ total applications inventoried across all Portainer endpoints.
+**Status:** Final 6 applications remaining out of 100+ total applications inventoried across all Portainer endpoints.
 
 **Large stacks to migrate** (not yet deployed to K8s):
 - [ ] Mailcow (18 containers) - Email stack, production critical
