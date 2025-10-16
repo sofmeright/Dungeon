@@ -20,6 +20,8 @@ spec:
         - minio
         - server
         - /data
+        - --address
+        - :9002
         - --console-address
         - :9003
         env:
