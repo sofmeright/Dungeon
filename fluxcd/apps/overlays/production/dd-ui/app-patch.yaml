@@ -17,6 +17,13 @@ spec:
           value: https://dd-ui.pcfae.com/auth/callback
         - name: OIDC_POST_LOGOUT_REDIRECT_URL
           value: https://dd-ui.pcfae.com/login
+        volumeMounts:
+        - name: hookshot-dd-ui-data
+          mountPath: /data
+        - name: ssh-key
+          mountPath: /run/secrets/ssh_key
+          subPath: ssh-key
+          readOnly: true
   volumeClaimTemplates:
   - metadata:
       name: hookshot-dd-ui-data
