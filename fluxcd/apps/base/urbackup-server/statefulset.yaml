@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: urbackup-server
+spec:
+  serviceName: urbackup-server
+  replicas: PLACEHOLDER_REPLICAS
+  selector:
+    matchLabels:
+      app: urbackup-server
+  template:
+    metadata:
+      labels:
+        app: urbackup-server
+    spec:
+      hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet
+      containers:
+      - name: urbackup-server
+        image: PLACEHOLDER_IMAGE
+        ports:
+        - containerPort: 55414
+          name: urbackup
+          protocol: TCP
+        env:
+        - name: PUID
+          value: "1000"
+        - name: PGID
+          value: "1000"
+        - name: TZ
+          value: PLACEHOLDER_TZ
+        volumeMounts:
+        - name: fairy-bottle-urbackup-data
+          mountPath: /var/urbackup
+        - name: fairy-bottle-urbackup-backups
+          mountPath: /backups
+        resources:
+          requests:
+            cpu: 200m
+            memory: 512Mi
+          limits:
+            cpu: 2000m
+            memory: 4Gi
+  volumeClaimTemplates:
+  - metadata:
+      name: fairy-bottle-urbackup-data
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      storageClassName: PLACEHOLDER_STORAGE_CLASS
+      resources:
+        requests:
+          storage: 10Gi
+  - metadata:
+      name: fairy-bottle-urbackup-backups
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      storageClassName: PLACEHOLDER_STORAGE_CLASS
+      resources:
+        requests:
+          storage: 500Gi

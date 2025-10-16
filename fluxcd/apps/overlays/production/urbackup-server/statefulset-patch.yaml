@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: urbackup-server
+spec:
+  replicas: 1
+  template:
+    spec:
+      imagePullSecrets:
+      - name: jcr-pcfae-dungeon-pull-secret
+      containers:
+      - name: urbackup-server
+        image: docker.jcr.pcfae.com/uroni/urbackup-server:latest
+        env:
+        - name: TZ
+          value: "America/Phoenix"
+  volumeClaimTemplates:
+  - metadata:
+      name: fairy-bottle-urbackup-data
+    spec:
+      storageClassName: ceph-rbd-retain
+  - metadata:
+      name: fairy-bottle-urbackup-backups
+    spec:
+      storageClassName: ceph-rbd-retain

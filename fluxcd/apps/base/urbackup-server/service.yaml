@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: urbackup-server
+spec:
+  type: PLACEHOLDER_SERVICE_TYPE
+  selector:
+    app: urbackup-server
+  ports:
+  - name: urbackup
+    port: 55414
+    targetPort: 55414
+    protocol: TCP
