@@ -1,0 +1,17 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: dd-ui-postgres
+spec:
+  template:
+    spec:
+      imagePullSecrets:
+      - name: jcr-pcfae-dungeon-pull-secret
+      containers:
+      - name: postgres
+        image: docker.jcr.pcfae.com/postgres:16-alpine
+  volumeClaimTemplates:
+  - metadata:
+      name: hookshot-dd-ui-postgres-data
+    spec:
+      storageClassName: ceph-rbd-retain
