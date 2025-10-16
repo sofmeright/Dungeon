@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: shlink-db
+spec:
+  replicas: 1
+  template:
+    spec:
+      containers:
+      - name: mariadb
+        image: lscr.io/linuxserver/mariadb:latest
+        env:
+        - name: TZ
+          value: "America/Phoenix"
+  volumeClaimTemplates:
+  - metadata:
+      name: temple-of-time-shlink-mysql
+    spec:
+      storageClassName: ceph-rbd-retain

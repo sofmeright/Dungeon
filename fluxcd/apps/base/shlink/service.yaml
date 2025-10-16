@@ -1,0 +1,41 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: shlink-app
+spec:
+  type: PLACEHOLDER_SERVICE_TYPE
+  selector:
+    app: shlink-app
+  ports:
+  - name: http
+    port: 8080
+    targetPort: 8080
+    protocol: TCP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: shlink-db
+spec:
+  type: ClusterIP
+  selector:
+    app: shlink-db
+  ports:
+  - name: mysql
+    port: 3306
+    targetPort: 3306
+    protocol: TCP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: shlink-web-client
+spec:
+  type: PLACEHOLDER_SERVICE_TYPE
+  selector:
+    app: shlink-web-client
+  ports:
+  - name: http
+    port: 8080
+    targetPort: 8080
+    protocol: TCP

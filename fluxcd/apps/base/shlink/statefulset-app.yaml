@@ -1,0 +1,61 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: shlink-app
+spec:
+  serviceName: shlink-app
+  replicas: PLACEHOLDER_REPLICAS
+  selector:
+    matchLabels:
+      app: shlink-app
+  template:
+    metadata:
+      labels:
+        app: shlink-app
+    spec:
+      containers:
+      - name: shlink-app
+        image: PLACEHOLDER_IMAGE
+        ports:
+        - containerPort: 8080
+          name: http
+          protocol: TCP
+        env:
+        - name: TZ
+          value: PLACEHOLDER_TZ
+        - name: DEFAULT_DOMAIN
+          value: PLACEHOLDER_DEFAULT_DOMAIN
+        - name: IS_HTTPS_ENABLED
+          value: "true"
+        - name: DB_DRIVER
+          value: "maria"
+        - name: DB_HOST
+          value: "shlink-db"
+        - name: DB_PORT
+          value: "3306"
+        - name: DB_NAME
+          value: "shlinkapp"
+        - name: DB_USER
+          value: "shlink"
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: shlink-secrets
+              key: db-password
+        - name: GEOLITE_LICENSE_KEY
+          valueFrom:
+            secretKeyRef:
+              name: shlink-secrets
+              key: geolite-license-key
+        - name: INITIAL_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: shlink-secrets
+              key: initial-api-key
+        resources:
+          requests:
+            cpu: 100m
+            memory: 256Mi
+          limits:
+            cpu: 1000m
+            memory: 1Gi

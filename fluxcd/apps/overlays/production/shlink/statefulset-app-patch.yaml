@@ -1,0 +1,18 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: shlink-app
+spec:
+  replicas: 1
+  template:
+    spec:
+      imagePullSecrets:
+      - name: jcr-pcfae-dungeon-pull-secret
+      containers:
+      - name: shlink-app
+        image: docker.jcr.pcfae.com/shlinkio/shlink:latest
+        env:
+        - name: TZ
+          value: "America/Phoenix"
+        - name: DEFAULT_DOMAIN
+          value: "sh.uni2.cc"

@@ -1,0 +1,9 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+- statefulset-app.yaml
+- statefulset-db.yaml
+- deployment-web-client.yaml
+- pvc-web-config.yaml
+- service.yaml
