@@ -7,7 +7,7 @@ spec:
   template:
     spec:
       imagePullSecrets:
-      - name: docker-io-pull-secret
+      - name: jcr-pcfae-dungeon-pull-secret
       containers:
       - name: postgres
         image: docker.jcr.pcfae.com/postgres:15
