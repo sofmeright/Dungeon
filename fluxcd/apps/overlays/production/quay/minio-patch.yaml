@@ -13,7 +13,7 @@ spec:
         image: docker.jcr.pcfae.com/minio/minio:latest
   volumeClaimTemplates:
   - metadata:
-      name: hyrule-castle-quay-minio-data
+      name: minio-data
     spec:
       accessModes:
       - ReadWriteOnce

@@ -13,7 +13,7 @@ spec:
         image: docker.jcr.pcfae.com/postgres:15
   volumeClaimTemplates:
   - metadata:
-      name: hyrule-castle-quay-postgres-data
+      name: postgres-data
     spec:
       accessModes:
       - ReadWriteOnce

@@ -13,7 +13,7 @@ spec:
         image: docker.jcr.pcfae.com/quay/quay:latest
   volumeClaimTemplates:
   - metadata:
-      name: hyrule-castle-quay-config
+      name: quay-config
     spec:
       accessModes:
       - ReadWriteOnce
@@ -22,7 +22,7 @@ spec:
         requests:
           storage: 5Gi
   - metadata:
-      name: hyrule-castle-quay-storage
+      name: quay-storage
     spec:
       accessModes:
       - ReadWriteOnce
