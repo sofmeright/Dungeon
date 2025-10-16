@@ -73,3 +73,13 @@ CLAUDE.md specifies PVC naming pattern for StatefulSets: `<namespace>-<app>-<pur
 - [ ] Nextcloud AIO (14 containers) - File sharing, large stack
 - [ ] ARK servers (6 instances) - Game servers on Jabu-Jabu
 - [ ] Minecraft servers (2 instances) - Game servers on Jabu-Jabu
+
+**Custom container images needed:**
+- [ ] Proxmox Backup Server - No decent official container image available, will need to create custom image
+
+**Custom landing pages / static sites to containerize:**
+- [ ] sofmeright.com - Personal landing page
+- [ ] precisionplanit.com - Business landing page
+- [ ] yesimvegan.com - Vegan resources landing page
+- [ ] astralfocal.com - Landing page
+- [ ] homelabhelpdesk.com - Homelab resources landing page
