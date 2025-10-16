@@ -1,0 +1,16 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: convertx
+spec:
+  replicas: 1
+  template:
+    spec:
+      containers:
+      - name: convertx
+        image: ghcr.io/c4illin/convertx:main
+  volumeClaimTemplates:
+  - metadata:
+      name: tingle-tuner-convertx-data
+    spec:
+      storageClassName: ceph-rbd-retain
