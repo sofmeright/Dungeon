@@ -35,6 +35,7 @@ resources:
   - libretranslate
   - immich
   - gitlab
+  - quay
   - semaphore
   - roundcube-primary-gmail
   - wikijs-vegan

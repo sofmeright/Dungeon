@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: quay
+spec:
+  serviceName: quay
+  replicas: 1
+  selector:
+    matchLabels:
+      app: quay
+  template:
+    metadata:
+      labels:
+        app: quay
+    spec:
+      containers:
+      - name: quay
+        image: docker.io/quay/quay:latest
+        env:
+        - name: DEBUGLOG
+          value: "false"
+        ports:
+        - containerPort: 8080
+          name: http
+        - containerPort: 8443
+          name: https
+        volumeMounts:
+        - name: quay-config
+          mountPath: /conf/stack
+        - name: quay-storage
+          mountPath: /datastorage
+  volumeClaimTemplates:
+  - metadata:
+      name: quay-config
+    spec:
+      storageClassName: PLACEHOLDER_STORAGE_CLASS
+      resources:
+        requests:
+          storage: PLACEHOLDER_STORAGE_SIZE
+  - metadata:
+      name: quay-storage
+    spec:
+      storageClassName: PLACEHOLDER_STORAGE_CLASS
+      resources:
+        requests:
+          storage: PLACEHOLDER_STORAGE_SIZE

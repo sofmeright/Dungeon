@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: quay-redis
+spec:
+  replicas: 3
+  template:
+    spec:
+      imagePullSecrets:
+      - name: docker-io-pull-secret
+      containers:
+      - name: redis
+        image: docker.jcr.pcfae.com/redis:7
+  volumeClaimTemplates:
+  - metadata:
+      name: hyrule-castle-quay-redis-data
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      storageClassName: ceph-rbd
+      resources:
+        requests:
+          storage: 5Gi

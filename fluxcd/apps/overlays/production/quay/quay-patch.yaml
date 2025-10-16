@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: quay
+spec:
+  replicas: 3
+  template:
+    spec:
+      imagePullSecrets:
+      - name: docker-io-pull-secret
+      containers:
+      - name: quay
+        image: docker.jcr.pcfae.com/quay/quay:latest
+  volumeClaimTemplates:
+  - metadata:
+      name: hyrule-castle-quay-config
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      storageClassName: ceph-rbd
+      resources:
+        requests:
+          storage: 5Gi
+  - metadata:
+      name: hyrule-castle-quay-storage
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      storageClassName: ceph-rbd
+      resources:
+        requests:
+          storage: 50Gi

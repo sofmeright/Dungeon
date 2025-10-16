@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: quay-minio
+spec:
+  replicas: 3
+  template:
+    spec:
+      imagePullSecrets:
+      - name: docker-io-pull-secret
+      containers:
+      - name: minio
+        image: docker.jcr.pcfae.com/minio/minio:latest
+  volumeClaimTemplates:
+  - metadata:
+      name: hyrule-castle-quay-minio-data
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      storageClassName: ceph-rbd
+      resources:
+        requests:
+          storage: 100Gi
