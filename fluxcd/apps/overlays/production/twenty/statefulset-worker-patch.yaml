@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: twenty-worker
+spec:
+  replicas: 1
+  template:
+    spec:
+      imagePullSecrets:
+      - name: jcr-pcfae-dungeon-pull-secret
+      containers:
+      - name: twenty-worker
+        image: docker.jcr.pcfae.com/twentycrm/twenty:latest
+        env:
+        - name: SERVER_URL
+          value: "http://moor:2020"
+  volumeClaimTemplates:
+  - metadata:
+      name: hyrule-castle-twenty-worker-data
+    spec:
+      storageClassName: ceph-rbd-retain

@@ -1,0 +1,101 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: twenty-app
+spec:
+  serviceName: twenty-app
+  replicas: PLACEHOLDER_REPLICAS
+  selector:
+    matchLabels:
+      app: twenty-app
+  template:
+    metadata:
+      labels:
+        app: twenty-app
+    spec:
+      containers:
+      - name: twenty-app
+        image: PLACEHOLDER_IMAGE
+        ports:
+        - containerPort: 3000
+          name: http
+          protocol: TCP
+        env:
+        - name: NODE_PORT
+          value: "3000"
+        - name: PG_DATABASE_USER
+          valueFrom:
+            secretKeyRef:
+              name: twenty-secrets
+              key: pg-database-user
+        - name: PG_DATABASE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: twenty-secrets
+              key: pg-database-password
+        - name: PG_DATABASE_HOST
+          value: "twenty-postgres"
+        - name: PG_DATABASE_PORT
+          value: "5432"
+        - name: PG_DATABASE_URL
+          value: "postgres://$(PG_DATABASE_USER):$(PG_DATABASE_PASSWORD)@$(PG_DATABASE_HOST):$(PG_DATABASE_PORT)/default"
+        - name: SERVER_URL
+          value: PLACEHOLDER_SERVER_URL
+        - name: REDIS_URL
+          value: "redis://twenty-redis:6379"
+        - name: STORAGE_TYPE
+          value: "local"
+        - name: STORAGE_LOCAL_PATH
+          value: ".local-storage"
+        - name: SIGN_IN_PREFILLED
+          value: "false"
+        - name: APP_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: twenty-secrets
+              key: app-secret
+        volumeMounts:
+        - name: hyrule-castle-twenty-app-data
+          mountPath: /app/packages/twenty-server/.local-storage
+        - name: hyrule-castle-twenty-docker-data
+          mountPath: /app/docker-data
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 3000
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 10
+        readinessProbe:
+          httpGet:
+            path: /healthz
+            port: 3000
+          initialDelaySeconds: 10
+          periodSeconds: 5
+          timeoutSeconds: 5
+          failureThreshold: 10
+        resources:
+          requests:
+            cpu: 200m
+            memory: 512Mi
+          limits:
+            cpu: 2000m
+            memory: 2Gi
+  volumeClaimTemplates:
+  - metadata:
+      name: hyrule-castle-twenty-app-data
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      storageClassName: PLACEHOLDER_STORAGE_CLASS
+      resources:
+        requests:
+          storage: 10Gi
+  - metadata:
+      name: hyrule-castle-twenty-docker-data
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      storageClassName: PLACEHOLDER_STORAGE_CLASS
+      resources:
+        requests:
+          storage: 5Gi

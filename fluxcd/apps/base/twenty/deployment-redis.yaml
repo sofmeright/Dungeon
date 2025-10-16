@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: twenty-redis
+spec:
+  replicas: PLACEHOLDER_REPLICAS
+  selector:
+    matchLabels:
+      app: twenty-redis
+  template:
+    metadata:
+      labels:
+        app: twenty-redis
+    spec:
+      containers:
+      - name: redis
+        image: PLACEHOLDER_IMAGE
+        ports:
+        - containerPort: 6379
+          name: redis
+          protocol: TCP
+        resources:
+          requests:
+            cpu: 50m
+            memory: 128Mi
+          limits:
+            cpu: 500m
+            memory: 512Mi

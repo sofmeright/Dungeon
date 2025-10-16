@@ -1,0 +1,13 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: twenty-redis
+spec:
+  replicas: 1
+  template:
+    spec:
+      imagePullSecrets:
+      - name: jcr-pcfae-dungeon-pull-secret
+      containers:
+      - name: redis
+        image: docker.jcr.pcfae.com/library/redis:latest

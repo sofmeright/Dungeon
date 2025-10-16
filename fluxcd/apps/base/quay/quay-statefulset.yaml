@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: quay
-        image: docker.io/quay/quay:latest
+        image: quay.jcr.pcfae.com/projectquay/quay:latest
         env:
         - name: DEBUGLOG
           value: "false"
