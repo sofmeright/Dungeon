@@ -9,4 +9,4 @@ spec:
       - name: docker-io-pull-secret
       containers:
       - name: exporter
-        image: docker.io/penpotapp/exporter:latest
+        image: docker.jcr.pcfae.com/penpotapp/exporter:latest
