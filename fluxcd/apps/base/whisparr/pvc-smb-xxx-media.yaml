@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: swift-sail-whisparr-smb-xxx-media
+spec:
+  accessModes:
+  - ReadWriteMany
+  storageClassName: PLACEHOLDER_STORAGE_CLASS
+  resources:
+    requests:
+      storage: 1Ti

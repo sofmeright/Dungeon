@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: whisparr
+spec:
+  replicas: 1
+  template:
+    spec:
+      containers:
+      - name: whisparr
+        image: ghcr.io/hotio/whisparr:latest
+        env:
+        - name: TZ
+          value: "America/Phoenix"
+  volumeClaimTemplates:
+  - metadata:
+      name: swift-sail-whisparr-config
+    spec:
+      storageClassName: ceph-rbd-retain
+  - metadata:
+      name: swift-sail-whisparr-data
+    spec:
+      storageClassName: ceph-rbd-retain
+  - metadata:
+      name: swift-sail-whisparr-downloads
+    spec:
+      storageClassName: ceph-rbd-retain
