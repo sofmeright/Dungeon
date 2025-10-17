@@ -5,6 +5,10 @@ metadata:
   namespace: flux-system
 spec:
   interval: 10m0s
+  decryption:
+    provider: sops
+    secretRef:
+      name: sops-age
   dependsOn:
     - name: infra-configs
     - name: infra-controllers
