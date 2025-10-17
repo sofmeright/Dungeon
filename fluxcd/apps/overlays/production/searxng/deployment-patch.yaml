@@ -25,7 +25,7 @@ kind: Deployment
 metadata:
   name: searxng-redis
 spec:
-  replicas: 1
+  replicas: 3
   template:
     spec:
       imagePullSecrets:
@@ -33,3 +33,7 @@ spec:
       containers:
       - name: redis
         image: docker.jcr.pcfae.com/valkey/valkey:7-alpine
+      volumes:
+      - name: redis-data
+        persistentVolumeClaim: null
+        emptyDir: {}
