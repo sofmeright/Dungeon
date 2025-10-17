@@ -1,0 +1,35 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: quay-postgres-install-pg-trgm
+spec:
+  template:
+    spec:
+      restartPolicy: OnFailure
+      containers:
+      - name: install-extension
+        image: docker.io/postgres:15
+        command:
+        - /bin/bash
+        - -c
+        - |
+          for pod in quay-postgres-0 quay-postgres-1 quay-postgres-2; do
+            echo "Installing pg_trgm on $pod..."
+            PGPASSWORD="$POSTGRES_PASSWORD" psql -h $pod -U "$POSTGRES_USER" -d "$POSTGRES_DB" -c "CREATE EXTENSION IF NOT EXISTS pg_trgm;"
+          done
+        env:
+        - name: POSTGRES_USER
+          valueFrom:
+            secretKeyRef:
+              name: quay-secrets
+              key: postgres_user
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: quay-secrets
+              key: postgres_password
+        - name: POSTGRES_DB
+          valueFrom:
+            secretKeyRef:
+              name: quay-secrets
+              key: postgres_db

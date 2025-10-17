@@ -3,6 +3,7 @@ kind: Kustomization
 resources:
   - postgres-init-configmap.yaml
   - postgres-statefulset.yaml
+  - postgres-extension-job.yaml
   - redis-statefulset.yaml
   - minio-statefulset.yaml
   - quay-statefulset.yaml
