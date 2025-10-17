@@ -37,24 +37,24 @@ spec:
           valueFrom:
             secretKeyRef:
               name: appflowy-secrets
-              key: postgres_user
+              key: POSTGRES_USER
         - name: POSTGRES_DB
           valueFrom:
             secretKeyRef:
               name: appflowy-secrets
-              key: postgres_db
+              key: POSTGRES_DB
         - name: POSTGRES_PASSWORD
           valueFrom:
             secretKeyRef:
               name: appflowy-secrets
-              key: postgres_password
+              key: POSTGRES_PASSWORD
         - name: POSTGRES_HOST
           value: appflowy-postgres
         - name: SUPABASE_PASSWORD
           valueFrom:
             secretKeyRef:
               name: appflowy-secrets
-              key: supabase_password
+              key: SUPABASE_PASSWORD
         volumeMounts:
         - name: PLACEHOLDER_NAMESPACE-appflowy-postgres-data
           mountPath: /var/lib/postgresql/data

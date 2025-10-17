@@ -28,12 +28,12 @@ spec:
           valueFrom:
             secretKeyRef:
               name: appflowy-secrets
-              key: minio_root_user
+              key: MINIO_ROOT_USER
         - name: MINIO_ROOT_PASSWORD
           valueFrom:
             secretKeyRef:
               name: appflowy-secrets
-              key: minio_root_password
+              key: MINIO_ROOT_PASSWORD
         command:
         - minio
         - server
