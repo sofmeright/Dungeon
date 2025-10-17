@@ -24,8 +24,8 @@ spec:
         - name: ZITADEL_DATABASE_POSTGRES_ADMIN_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: postgres-secrets
-              key: POSTGRES_PASSWORD
+              name: zitadel-postgres-superuser
+              key: password
         - name: ZITADEL_DATABASE_POSTGRES_USER_PASSWORD
           valueFrom:
             secretKeyRef:

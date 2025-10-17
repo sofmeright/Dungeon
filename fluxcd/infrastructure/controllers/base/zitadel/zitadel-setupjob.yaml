@@ -39,8 +39,8 @@ spec:
         - name: ZITADEL_DATABASE_POSTGRES_ADMIN_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: postgres-secrets
-              key: POSTGRES_PASSWORD
+              name: zitadel-postgres-superuser
+              key: password
         # First instance configuration
         - name: ZITADEL_FIRSTINSTANCE_INSTANCENAME
           value: "PLACEHOLDER_INSTANCE_NAME"
