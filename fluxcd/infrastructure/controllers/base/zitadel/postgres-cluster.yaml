@@ -14,8 +14,7 @@ spec:
       secret:
         name: zitadel-secrets
 
-  superuserSecret:
-    name: zitadel-secrets
+  enableSuperuserAccess: true
 
   storage:
     storageClass: PLACEHOLDER_STORAGE_CLASS
