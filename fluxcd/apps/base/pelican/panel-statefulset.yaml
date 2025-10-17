@@ -29,6 +29,11 @@ spec:
         - containerPort: 443
           name: https
         env:
+        - name: ADMIN_EMAIL
+          valueFrom:
+            secretKeyRef:
+              name: pelican-secrets
+              key: smtp-from
         - name: APP_URL
           value: https://pelican.example.com
         - name: APP_TIMEZONE
