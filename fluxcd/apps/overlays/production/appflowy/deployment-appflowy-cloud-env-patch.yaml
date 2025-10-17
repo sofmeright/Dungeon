@@ -7,6 +7,10 @@ spec:
     spec:
       containers:
       - name: appflowy-cloud
+        ports:
+        - name: http
+          containerPort: 8000
+          protocol: TCP
         env:
         # Non-secret configuration
         - name: RUST_LOG

@@ -9,6 +9,10 @@ spec:
       containers:
       - name: gotrue
         image: docker.jcr.pcfae.com/appflowyinc/gotrue:latest
+        ports:
+        - name: http
+          containerPort: 9999
+          protocol: TCP
         env:
         # Non-secret configuration
         - name: GOTRUE_SITE_URL
