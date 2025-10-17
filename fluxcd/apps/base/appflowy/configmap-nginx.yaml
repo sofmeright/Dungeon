@@ -7,4 +7,63 @@ metadata:
     component: nginx
 data:
   nginx.conf: |
-    PLACEHOLDER_NGINX_CONFIG
+    events {
+        worker_connections 1024;
+    }
+
+    http {
+        upstream appflowy_cloud {
+            server appflowy-cloud:8000;
+        }
+
+        upstream appflowy_web {
+            server appflowy-web:3000;
+        }
+
+        upstream gotrue {
+            server appflowy-gotrue:9999;
+        }
+
+        upstream minio {
+            server appflowy-minio:9000;
+        }
+
+        server {
+            listen 80;
+            server_name _;
+
+            client_max_body_size 100M;
+
+            location /gotrue/ {
+                proxy_pass http://gotrue/;
+                proxy_set_header Host $host;
+                proxy_set_header X-Real-IP $remote_addr;
+                proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+                proxy_set_header X-Forwarded-Proto $scheme;
+            }
+
+            location /api/ {
+                proxy_pass http://appflowy_cloud/;
+                proxy_set_header Host $host;
+                proxy_set_header X-Real-IP $remote_addr;
+                proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+                proxy_set_header X-Forwarded-Proto $scheme;
+            }
+
+            location /files/ {
+                proxy_pass http://minio/;
+                proxy_set_header Host $host;
+                proxy_set_header X-Real-IP $remote_addr;
+                proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+                proxy_set_header X-Forwarded-Proto $scheme;
+            }
+
+            location / {
+                proxy_pass http://appflowy_web/;
+                proxy_set_header Host $host;
+                proxy_set_header X-Real-IP $remote_addr;
+                proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+                proxy_set_header X-Forwarded-Proto $scheme;
+            }
+        }
+    }
