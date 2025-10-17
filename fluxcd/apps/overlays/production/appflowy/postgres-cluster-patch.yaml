@@ -1,0 +1,20 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: appflowy-postgres
+spec:
+  instances: 3
+
+  postgresql:
+    parameters:
+      shared_buffers: "512MB"
+      max_connections: "200"
+
+  bootstrap:
+    initdb:
+      database: appflowy
+      owner: appflowy
+
+  storage:
+    storageClass: ceph-rbd
+    size: 20Gi

@@ -5,7 +5,7 @@ resources:
   - ../../../base/appflowy
   - httproute.yaml
 patches:
-  - path: statefulset-postgres-patch.yaml
+  - path: postgres-cluster-patch.yaml
   - path: statefulset-redis-patch.yaml
   - path: statefulset-minio-patch.yaml
   - path: deployment-gotrue-patch.yaml
