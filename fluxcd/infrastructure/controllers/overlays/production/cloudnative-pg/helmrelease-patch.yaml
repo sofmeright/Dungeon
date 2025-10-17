@@ -3,4 +3,4 @@ kind: HelmRelease
 metadata:
   name: cloudnative-pg
 spec:
-  targetNamespace: zeldas-lullaby
+  targetNamespace: gorons-bracelet
