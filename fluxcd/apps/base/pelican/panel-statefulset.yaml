@@ -97,6 +97,11 @@ spec:
             secretKeyRef:
               name: pelican-secrets
               key: smtp-from
+        - name: MAIL_FROM_NAME
+          valueFrom:
+            secretKeyRef:
+              name: pelican-secrets
+              key: smtp-from-name
         volumeMounts:
         - name: panel-data
           mountPath: /app/var
