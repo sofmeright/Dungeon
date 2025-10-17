@@ -14,6 +14,17 @@ spec:
         app: appflowy-postgres
     spec:
       initContainers:
+      - name: create-pgdata-dir
+        image: docker.io/busybox:1.36
+        command:
+        - sh
+        - -c
+        - |
+          mkdir -p /var/lib/postgresql/data
+          chown -R 999:999 /var/lib/postgresql/data
+        volumeMounts:
+        - name: PLACEHOLDER_NAMESPACE-appflowy-postgres-data
+          mountPath: /var/lib/postgresql
       - name: init-db
         image: PLACEHOLDER_POSTGRES_IMAGE
         command:
