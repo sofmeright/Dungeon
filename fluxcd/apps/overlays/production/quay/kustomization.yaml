@@ -5,7 +5,7 @@ resources:
   - ../../../base/quay
   - httproute.yaml
 patches:
-  - path: postgres-patch.yaml
+  - path: postgres-cluster-patch.yaml
   - path: redis-patch.yaml
   - path: minio-patch.yaml
   - path: quay-patch.yaml
