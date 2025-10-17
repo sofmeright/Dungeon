@@ -18,7 +18,7 @@ spec:
       owner: PLACEHOLDER_DB_USER
       secret:
         name: quay-secrets
-      postInitSQL:
+      postInitApplicationSQL:
         - CREATE EXTENSION IF NOT EXISTS pg_trgm;
 
   storage:
