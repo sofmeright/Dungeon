@@ -3,7 +3,7 @@ kind: Cluster
 metadata:
   name: vaultwarden-postgres
 spec:
-  imageName: docker.jcr.pcfae.com/cloudnative-pg/postgresql:16
+  imageName: ghcr.io/cloudnative-pg/postgresql:16
 
   storage:
     storageClass: ceph-rbd
