@@ -13,9 +13,6 @@ spec:
         - name: hyrule-castle-jfrog-artifactory-postgres-data
           mountPath: /var/lib/postgresql/data
           subPath: pgdata
-        - name: localtime
-          mountPath: /etc/localtime
-          readOnly: true
         resources:
           requests:
             cpu: "500m"

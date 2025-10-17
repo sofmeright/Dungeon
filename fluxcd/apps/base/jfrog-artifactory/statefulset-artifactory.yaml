@@ -60,9 +60,6 @@ spec:
         volumeMounts:
         - name: PLACEHOLDER_ARTIFACTORY_DATA
           mountPath: /var/opt/jfrog/artifactory
-        - name: localtime
-          mountPath: /etc/localtime
-          readOnly: true
         resources:
           requests:
             cpu: PLACEHOLDER_CPU_REQUEST
@@ -70,11 +67,6 @@ spec:
           limits:
             cpu: PLACEHOLDER_CPU_LIMIT
             memory: PLACEHOLDER_MEMORY_LIMIT
-      volumes:
-      - name: localtime
-        hostPath:
-          path: /etc/localtime
-          type: File
   volumeClaimTemplates:
   - metadata:
       name: PLACEHOLDER_ARTIFACTORY_DATA

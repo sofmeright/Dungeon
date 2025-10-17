@@ -65,9 +65,6 @@ spec:
         - $patch: replace
         - name: hyrule-castle-jfrog-artifactory-data
           mountPath: /var/opt/jfrog/artifactory
-        - name: localtime
-          mountPath: /etc/localtime
-          readOnly: true
         resources:
           requests:
             cpu: "1000m"
