@@ -3,6 +3,7 @@ kind: Kustomization
 namespace: zeldas-lullaby
 resources:
   - ../../../base/vaultwarden
+  - rsa-key-secret.enc.yaml
 patches:
   - path: deployment-patch.yaml
     target:

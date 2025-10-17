@@ -3,9 +3,12 @@ kind: Deployment
 metadata:
   name: vaultwarden
 spec:
-  replicas: 1
+  replicas: 3
   strategy:
-    type: Recreate
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
   template:
     spec:
       containers:
@@ -26,6 +29,12 @@ spec:
           value: "true"
         - name: SSO_AUTHORITY
           value: "https://zitadel.prplanit.com"
+        volumeMounts:
+        - $patch: replace
+        - name: rsa-key
+          mountPath: /data/rsa_key.pem
+          subPath: rsa_key.pem
+          readOnly: true
         resources:
           requests:
             cpu: 100m
@@ -33,3 +42,9 @@ spec:
           limits:
             cpu: 1000m
             memory: 512Mi
+      volumes:
+      - $patch: replace
+      - name: rsa-key
+        secret:
+          secretName: vaultwarden-rsa-key
+          defaultMode: 0600
