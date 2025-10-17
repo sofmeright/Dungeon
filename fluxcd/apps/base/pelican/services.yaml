@@ -1,0 +1,61 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: pelican-mariadb
+spec:
+  selector:
+    app: pelican-mariadb
+  ports:
+  - port: 3306
+    targetPort: 3306
+    protocol: TCP
+    name: mysql
+  clusterIP: None
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: pelican-redis
+spec:
+  selector:
+    app: pelican-redis
+  ports:
+  - port: 6379
+    targetPort: 6379
+    protocol: TCP
+    name: redis
+  clusterIP: None
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: pelican-panel
+spec:
+  selector:
+    app: pelican-panel
+  ports:
+  - port: 80
+    targetPort: 80
+    protocol: TCP
+    name: http
+  - port: 443
+    targetPort: 443
+    protocol: TCP
+    name: https
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: pelican-wings
+spec:
+  selector:
+    app: pelican-wings
+  ports:
+  - port: 8080
+    targetPort: 8080
+    protocol: TCP
+    name: wings-api
+  - port: 2022
+    targetPort: 2022
+    protocol: TCP
+    name: sftp

@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: pelican-panel
+spec:
+  template:
+    spec:
+      containers:
+      - name: panel
+        env:
+        - name: APP_URL
+          value: https://pelican.pcfae.com
+        - name: APP_TIMEZONE
+          value: America/Los_Angeles
+        resources:
+          requests:
+            cpu: "500m"
+            memory: "1Gi"
+          limits:
+            cpu: "2000m"
+            memory: "4Gi"
+        volumeMounts:
+        - name: shooting-gallery-pelican-panel-data
+          mountPath: /app/var
+  volumeClaimTemplates:
+  - metadata:
+      name: shooting-gallery-pelican-panel-data
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      storageClassName: ceph-rbd-retain
+      resources:
+        requests:
+          storage: 10Gi

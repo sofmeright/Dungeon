@@ -1,0 +1,111 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: pelican-panel
+spec:
+  serviceName: pelican-panel
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pelican-panel
+  template:
+    metadata:
+      labels:
+        app: pelican-panel
+    spec:
+      initContainers:
+      - name: wait-for-db
+        image: docker.io/busybox:latest
+        command:
+        - sh
+        - -c
+        - until nc -z pelican-mariadb 3306; do echo waiting for database; sleep 2; done
+      containers:
+      - name: panel
+        image: ghcr.io/pelican-dev/panel:latest
+        ports:
+        - containerPort: 80
+          name: http
+        - containerPort: 443
+          name: https
+        env:
+        - name: APP_URL
+          value: https://pelican.example.com
+        - name: APP_TIMEZONE
+          value: America/Los_Angeles
+        - name: APP_ENV
+          value: production
+        - name: APP_DEBUG
+          value: "false"
+        - name: DB_HOST
+          value: pelican-mariadb
+        - name: DB_PORT
+          value: "3306"
+        - name: DB_DATABASE
+          value: pelican
+        - name: DB_USERNAME
+          value: pelican
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: pelican-secrets
+              key: db-password
+        - name: REDIS_HOST
+          value: pelican-redis
+        - name: REDIS_PORT
+          value: "6379"
+        - name: REDIS_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: pelican-secrets
+              key: redis-password
+        - name: CACHE_DRIVER
+          value: redis
+        - name: SESSION_DRIVER
+          value: redis
+        - name: QUEUE_DRIVER
+          value: redis
+        - name: APP_KEY
+          valueFrom:
+            secretKeyRef:
+              name: pelican-secrets
+              key: app-key
+        - name: MAIL_DRIVER
+          value: smtp
+        - name: MAIL_HOST
+          valueFrom:
+            secretKeyRef:
+              name: pelican-secrets
+              key: smtp-host
+        - name: MAIL_PORT
+          valueFrom:
+            secretKeyRef:
+              name: pelican-secrets
+              key: smtp-port
+        - name: MAIL_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: pelican-secrets
+              key: smtp-username
+        - name: MAIL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: pelican-secrets
+              key: smtp-password
+        - name: MAIL_FROM
+          valueFrom:
+            secretKeyRef:
+              name: pelican-secrets
+              key: smtp-from
+        volumeMounts:
+        - name: panel-data
+          mountPath: /app/var
+  volumeClaimTemplates:
+  - metadata:
+      name: panel-data
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: 10Gi

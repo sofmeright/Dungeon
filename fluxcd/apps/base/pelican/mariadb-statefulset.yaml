@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: pelican-mariadb
+spec:
+  serviceName: pelican-mariadb
+  replicas: 1
+  selector:
+    matchLabels:
+      app: pelican-mariadb
+  template:
+    metadata:
+      labels:
+        app: pelican-mariadb
+    spec:
+      containers:
+      - name: mariadb
+        image: docker.io/mariadb:11.6
+        ports:
+        - containerPort: 3306
+          name: mysql
+        env:
+        - name: MYSQL_DATABASE
+          value: pelican
+        - name: MYSQL_USER
+          value: pelican
+        - name: MYSQL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: pelican-secrets
+              key: db-password
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: pelican-secrets
+              key: db-root-password
+        volumeMounts:
+        - name: mariadb-data
+          mountPath: /var/lib/mysql
+  volumeClaimTemplates:
+  - metadata:
+      name: mariadb-data
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: 10Gi

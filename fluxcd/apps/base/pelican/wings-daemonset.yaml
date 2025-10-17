@@ -1,0 +1,80 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: pelican-wings
+spec:
+  selector:
+    matchLabels:
+      app: pelican-wings
+  template:
+    metadata:
+      labels:
+        app: pelican-wings
+    spec:
+      hostNetwork: true
+      hostPID: true
+      nodeSelector:
+        node-role.kubernetes.io/worker: "true"
+      tolerations:
+      - key: node-role.kubernetes.io/control-plane
+        operator: Exists
+        effect: NoSchedule
+      containers:
+      - name: wings
+        image: ghcr.io/pelican-dev/wings:latest
+        securityContext:
+          privileged: true
+        ports:
+        - containerPort: 8080
+          name: wings-api
+          protocol: TCP
+        - containerPort: 2022
+          name: sftp
+          protocol: TCP
+        env:
+        - name: TZ
+          value: America/Los_Angeles
+        - name: WINGS_UID
+          value: "988"
+        - name: WINGS_GID
+          value: "988"
+        - name: WINGS_USERNAME
+          value: pelican
+        volumeMounts:
+        - name: wings-config
+          mountPath: /etc/pelican
+        - name: wings-data
+          mountPath: /var/lib/pelican
+        - name: wings-logs
+          mountPath: /var/log/pelican
+        - name: wings-tmp
+          mountPath: /tmp/pelican
+        - name: docker-sock
+          mountPath: /var/run/docker.sock
+        - name: containerd-sock
+          mountPath: /run/containerd/containerd.sock
+      volumes:
+      - name: wings-config
+        hostPath:
+          path: /etc/pelican
+          type: DirectoryOrCreate
+      - name: wings-data
+        hostPath:
+          path: /var/lib/pelican
+          type: DirectoryOrCreate
+      - name: wings-logs
+        hostPath:
+          path: /var/log/pelican
+          type: DirectoryOrCreate
+      - name: wings-tmp
+        hostPath:
+          path: /tmp/pelican
+          type: DirectoryOrCreate
+      - name: docker-sock
+        hostPath:
+          path: /var/run/docker.sock
+          type: Socket
+      - name: containerd-sock
+        hostPath:
+          path: /run/containerd/containerd.sock
+          type: Socket

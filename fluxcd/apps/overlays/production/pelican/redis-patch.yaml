@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: pelican-redis
+spec:
+  template:
+    spec:
+      imagePullSecrets:
+      - name: jcr-pcfae-dungeon-pull-secret
+      containers:
+      - name: redis
+        image: docker.jcr.pcfae.com/redis:7-alpine
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "128Mi"
+          limits:
+            cpu: "500m"
+            memory: "512Mi"
+        volumeMounts:
+        - name: shooting-gallery-pelican-redis-data
+          mountPath: /data
+  volumeClaimTemplates:
+  - metadata:
+      name: shooting-gallery-pelican-redis-data
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      storageClassName: ceph-rbd-retain
+      resources:
+        requests:
+          storage: 5Gi

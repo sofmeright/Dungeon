@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: pelican-mariadb
+spec:
+  template:
+    spec:
+      imagePullSecrets:
+      - name: jcr-pcfae-dungeon-pull-secret
+      containers:
+      - name: mariadb
+        image: docker.jcr.pcfae.com/mariadb:11.6
+        resources:
+          requests:
+            cpu: "250m"
+            memory: "512Mi"
+          limits:
+            cpu: "1000m"
+            memory: "2Gi"
+        volumeMounts:
+        - name: shooting-gallery-pelican-mariadb-data
+          mountPath: /var/lib/mysql
+          subPath: mysql
+  volumeClaimTemplates:
+  - metadata:
+      name: shooting-gallery-pelican-mariadb-data
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      storageClassName: ceph-rbd-retain
+      resources:
+        requests:
+          storage: 10Gi

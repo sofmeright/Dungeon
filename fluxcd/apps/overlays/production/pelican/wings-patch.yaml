@@ -1,0 +1,9 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: pelican-wings
+spec:
+  template:
+    spec:
+      nodeSelector:
+        pelican-wings: "true"
