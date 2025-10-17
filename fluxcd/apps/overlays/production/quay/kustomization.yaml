@@ -4,6 +4,7 @@ namespace: hyrule-castle
 resources:
   - ../../../base/quay
   - httproute.yaml
+  - postgres-bootstrap-secret.yaml
 patches:
   - path: postgres-cluster-patch.yaml
   - path: redis-patch.yaml

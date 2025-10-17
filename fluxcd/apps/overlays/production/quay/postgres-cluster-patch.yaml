@@ -14,6 +14,8 @@ spec:
     initdb:
       database: quay
       owner: prplanit
+      secret:
+        name: quay-postgres-bootstrap
 
   storage:
     storageClass: ceph-rbd
