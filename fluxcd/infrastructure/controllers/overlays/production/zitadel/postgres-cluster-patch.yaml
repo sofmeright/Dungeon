@@ -5,3 +5,9 @@ metadata:
 spec:
   storage:
     storageClass: ceph-rbd-retain
+    size: 20Gi
+
+  postgresql:
+    parameters:
+      min_wal_size: "256MB"
+      max_wal_size: "1GB"
