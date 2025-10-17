@@ -59,7 +59,7 @@ spec:
           value: /var/lib/postgresql/data/pgdata
         volumeMounts:
         - name: PLACEHOLDER_NAMESPACE-appflowy-postgres-data
-          mountPath: /var/lib/postgresql/data
+          mountPath: /var/lib/postgresql
         - name: initdb
           mountPath: /docker-entrypoint-initdb.d
         livenessProbe:
