@@ -9,7 +9,7 @@ spec:
       - name: panel
         env:
         - name: APP_URL
-          value: http://localhost:80
+          value: http://172.22.30.231:8000
         - name: APP_TIMEZONE
           value: America/Los_Angeles
         resources:
