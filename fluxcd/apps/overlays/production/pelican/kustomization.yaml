@@ -25,7 +25,7 @@ patches:
       path: /spec/ports
       value:
       - port: 8443
-        targetPort: 443
+        targetPort: 80
         protocol: TCP
         name: https
       - port: 8000
