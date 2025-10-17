@@ -18,7 +18,7 @@ spec:
           chown -R 1030:1030 /var/opt/jfrog/artifactory
           chmod -R 755 /var/opt/jfrog/artifactory
         volumeMounts:
-        - name: compass-jfrog-artifactory-data
+        - name: hyrule-castle-jfrog-artifactory-data
           mountPath: /var/opt/jfrog/artifactory
       - name: wait-for-postgres
         image: docker.jcr.pcfae.com/busybox:1.36
@@ -63,7 +63,7 @@ spec:
           value: "dungeon-artifactory"
         volumeMounts:
         - $patch: replace
-        - name: compass-jfrog-artifactory-data
+        - name: hyrule-castle-jfrog-artifactory-data
           mountPath: /var/opt/jfrog/artifactory
         - name: localtime
           mountPath: /etc/localtime
@@ -77,7 +77,7 @@ spec:
             memory: "8Gi"
   volumeClaimTemplates:
   - metadata:
-      name: compass-jfrog-artifactory-data
+      name: hyrule-castle-jfrog-artifactory-data
     spec:
       accessModes:
       - ReadWriteOnce
