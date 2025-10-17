@@ -9,7 +9,7 @@ spec:
       - name: panel
         env:
         - name: APP_URL
-          value: https://pelican.pcfae.com
+          value: http://localhost:80
         - name: APP_TIMEZONE
           value: America/Los_Angeles
         resources:
