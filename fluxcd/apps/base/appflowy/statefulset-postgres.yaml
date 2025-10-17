@@ -14,17 +14,18 @@ spec:
         app: appflowy-postgres
     spec:
       initContainers:
-      - name: create-pgdata-dir
+      - name: prepare-pgdata
         image: docker.io/busybox:1.36
         command:
         - sh
         - -c
         - |
-          mkdir -p /var/lib/postgresql/data
-          chown -R 999:999 /var/lib/postgresql/data
+          # Remove lost+found if it exists to prevent initdb errors
+          rm -rf /pgdata/lost+found
+          chown -R 999:999 /pgdata
         volumeMounts:
         - name: PLACEHOLDER_NAMESPACE-appflowy-postgres-data
-          mountPath: /var/lib/postgresql
+          mountPath: /pgdata
       - name: init-db
         image: PLACEHOLDER_POSTGRES_IMAGE
         command:
@@ -66,11 +67,9 @@ spec:
             secretKeyRef:
               name: appflowy-secrets
               key: SUPABASE_PASSWORD
-        - name: PGDATA
-          value: /var/lib/postgresql/data
         volumeMounts:
         - name: PLACEHOLDER_NAMESPACE-appflowy-postgres-data
-          mountPath: /var/lib/postgresql
+          mountPath: /var/lib/postgresql/data
         - name: initdb
           mountPath: /docker-entrypoint-initdb.d
         livenessProbe:
