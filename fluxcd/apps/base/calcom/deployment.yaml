@@ -1,0 +1,118 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: calcom
+spec:
+  replicas: PLACEHOLDER_REPLICAS
+  selector:
+    matchLabels:
+      app: calcom
+  template:
+    metadata:
+      labels:
+        app: calcom
+    spec:
+      containers:
+      - name: calcom
+        image: PLACEHOLDER_IMAGE
+        ports:
+        - containerPort: 3000
+          name: http
+        env:
+        - name: NEXT_PUBLIC_WEBAPP_URL
+          value: PLACEHOLDER_WEBAPP_URL
+        - name: NEXT_PUBLIC_API_V2_URL
+          value: PLACEHOLDER_API_V2_URL
+        - name: NEXT_PUBLIC_LICENSE_CONSENT
+          value: "true"
+        - name: NEXT_PUBLIC_WEBSITE_TERMS_URL
+          valueFrom:
+            secretKeyRef:
+              name: calcom-secrets
+              key: NEXT_PUBLIC_WEBSITE_TERMS_URL
+        - name: NEXT_PUBLIC_WEBSITE_PRIVACY_POLICY_URL
+          valueFrom:
+            secretKeyRef:
+              name: calcom-secrets
+              key: NEXT_PUBLIC_WEBSITE_PRIVACY_POLICY_URL
+        - name: NEXTAUTH_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: calcom-secrets
+              key: NEXTAUTH_SECRET
+        - name: CALENDSO_ENCRYPTION_KEY
+          valueFrom:
+            secretKeyRef:
+              name: calcom-secrets
+              key: CALENDSO_ENCRYPTION_KEY
+        - name: DATABASE_URL
+          value: postgresql://$(POSTGRES_USER):$(POSTGRES_PASSWORD)@calcom-postgres-rw:5432/$(POSTGRES_DB)
+        - name: DATABASE_DIRECT_URL
+          value: postgresql://$(POSTGRES_USER):$(POSTGRES_PASSWORD)@calcom-postgres-rw:5432/$(POSTGRES_DB)
+        - name: POSTGRES_USER
+          valueFrom:
+            secretKeyRef:
+              name: calcom-secrets
+              key: username
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: calcom-secrets
+              key: password
+        - name: POSTGRES_DB
+          value: calendso
+        - name: CALCOM_TELEMETRY_DISABLED
+          value: "1"
+        - name: EMAIL_FROM_NAME
+          valueFrom:
+            secretKeyRef:
+              name: calcom-secrets
+              key: EMAIL_FROM_NAME
+        - name: EMAIL_FROM
+          valueFrom:
+            secretKeyRef:
+              name: calcom-secrets
+              key: EMAIL_FROM
+        - name: EMAIL_SERVER_HOST
+          valueFrom:
+            secretKeyRef:
+              name: calcom-secrets
+              key: EMAIL_SERVER_HOST
+        - name: EMAIL_SERVER_PORT
+          valueFrom:
+            secretKeyRef:
+              name: calcom-secrets
+              key: EMAIL_SERVER_PORT
+        - name: EMAIL_SERVER_USER
+          valueFrom:
+            secretKeyRef:
+              name: calcom-secrets
+              key: EMAIL_SERVER_USER
+        - name: EMAIL_SERVER_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: calcom-secrets
+              key: EMAIL_SERVER_PASSWORD
+        - name: NODE_ENV
+          value: production
+        - name: GOOGLE_API_CREDENTIALS
+          value: "{}"
+        resources:
+          requests:
+            memory: "512Mi"
+            cpu: "250m"
+          limits:
+            memory: "2Gi"
+            cpu: "1000m"
+        livenessProbe:
+          httpGet:
+            path: /api/health
+            port: 3000
+          initialDelaySeconds: 30
+          periodSeconds: 10
+        readinessProbe:
+          httpGet:
+            path: /api/health
+            port: 3000
+          initialDelaySeconds: 10
+          periodSeconds: 5

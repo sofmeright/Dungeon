@@ -1,0 +1,16 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: calcom
+spec:
+  replicas: 2
+  template:
+    spec:
+      containers:
+      - name: calcom
+        image: docker.io/calcom/cal.com:latest
+        env:
+        - name: NEXT_PUBLIC_WEBAPP_URL
+          value: https://cal.prplanit.com
+        - name: NEXT_PUBLIC_API_V2_URL
+          value: https://cal.prplanit.com/api/v2

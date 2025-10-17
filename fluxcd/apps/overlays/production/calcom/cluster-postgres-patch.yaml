@@ -1,0 +1,8 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: calcom-postgres
+spec:
+  storage:
+    storageClass: ceph-rbd
+    size: 10Gi
