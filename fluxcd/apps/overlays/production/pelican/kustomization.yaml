@@ -24,11 +24,11 @@ patches:
     - op: replace
       path: /spec/ports
       value:
-      - port: 443
+      - port: 8443
         targetPort: 443
         protocol: TCP
         name: https
-      - port: 80
+      - port: 8000
         targetPort: 80
         protocol: TCP
         name: http
