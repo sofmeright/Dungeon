@@ -1,14 +1,19 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: nginx
+  name: appflowy-nginx
 spec:
-  replicas: 1
+  replicas: 3
   template:
     spec:
       containers:
       - name: nginx
         image: docker.jcr.pcfae.com/nginx:latest
+        volumeMounts:
+        - name: nginx-config
+          mountPath: /etc/nginx/nginx.conf
+          subPath: nginx.conf
+          readOnly: true
         resources:
           requests:
             memory: "256Mi"
@@ -16,3 +21,7 @@ spec:
           limits:
             memory: "512Mi"
             cpu: "500m"
+      volumes:
+      - name: nginx-config
+        configMap:
+          name: appflowy-nginx-config

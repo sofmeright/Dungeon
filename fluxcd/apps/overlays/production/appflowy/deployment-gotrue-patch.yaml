@@ -1,9 +1,9 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: gotrue
+  name: appflowy-gotrue
 spec:
-  replicas: 1
+  replicas: 3
   template:
     spec:
       containers:

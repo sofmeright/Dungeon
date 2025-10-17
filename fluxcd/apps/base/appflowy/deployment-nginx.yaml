@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: nginx
+  name: appflowy-nginx
   labels:
     app: appflowy
     component: nginx
@@ -32,9 +32,6 @@ spec:
           mountPath: /etc/nginx/nginx.conf
           subPath: nginx.conf
           readOnly: true
-        - name: ssl-certs
-          mountPath: /etc/nginx/ssl
-          readOnly: true
         resources:
           requests:
             cpu: PLACEHOLDER_CPU_REQUEST
@@ -46,6 +43,3 @@ spec:
       - name: nginx-config
         configMap:
           name: appflowy-nginx-config
-      - name: ssl-certs
-        configMap:
-          name: ssl-certs

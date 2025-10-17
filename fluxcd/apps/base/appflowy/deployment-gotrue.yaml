@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: gotrue
+  name: appflowy-gotrue
   labels:
     app: appflowy
     component: gotrue
