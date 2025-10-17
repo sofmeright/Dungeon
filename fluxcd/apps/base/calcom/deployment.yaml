@@ -46,21 +46,15 @@ spec:
               name: calcom-secrets
               key: CALENDSO_ENCRYPTION_KEY
         - name: DATABASE_URL
-          value: postgresql://$(POSTGRES_USER):$(POSTGRES_PASSWORD)@calcom-postgres-rw:5432/$(POSTGRES_DB)
+          valueFrom:
+            secretKeyRef:
+              name: calcom-secrets
+              key: DATABASE_URL
         - name: DATABASE_DIRECT_URL
-          value: postgresql://$(POSTGRES_USER):$(POSTGRES_PASSWORD)@calcom-postgres-rw:5432/$(POSTGRES_DB)
-        - name: POSTGRES_USER
           valueFrom:
             secretKeyRef:
               name: calcom-secrets
-              key: username
-        - name: POSTGRES_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: calcom-secrets
-              key: password
-        - name: POSTGRES_DB
-          value: calendso
+              key: DATABASE_URL
         - name: CALCOM_TELEMETRY_DISABLED
           value: "1"
         - name: EMAIL_FROM_NAME
