@@ -6,5 +6,5 @@ spec:
   imageName: docker.jcr.pcfae.com/cloudnative-pg/postgresql:16
 
   storage:
-    storageClass: ceph-block
+    storageClass: ceph-rbd
     size: 10Gi
