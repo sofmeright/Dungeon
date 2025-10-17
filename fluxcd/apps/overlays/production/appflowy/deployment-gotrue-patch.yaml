@@ -9,6 +9,85 @@ spec:
       containers:
       - name: gotrue
         image: docker.jcr.pcfae.com/appflowyinc/gotrue:latest
+        env:
+        # Non-secret configuration
+        - name: GOTRUE_SITE_URL
+          value: "https://flwy.prplanit.com"
+        - name: GOTRUE_URI_ALLOW_LIST
+          value: "https://flwy.prplanit.com"
+        - name: GOTRUE_DISABLE_SIGNUP
+          value: "false"
+        - name: GOTRUE_JWT_EXP
+          value: "7200"
+        - name: GOTRUE_MAILER_AUTOCONFIRM
+          value: "true"
+        - name: GOTRUE_MAILER_URLPATHS_CONFIRMATION
+          value: "/gotrue/verify"
+        - name: GOTRUE_MAILER_URLPATHS_INVITE
+          value: "/gotrue/verify"
+        - name: GOTRUE_MAILER_URLPATHS_RECOVERY
+          value: "/gotrue/verify"
+        - name: GOTRUE_MAILER_URLPATHS_EMAIL_CHANGE
+          value: "/gotrue/verify"
+        - name: GOTRUE_RATE_LIMIT_EMAIL_SENT
+          value: "100"
+        - name: GOTRUE_SMTP_HOST
+          value: "smtp.gmail.com"
+        - name: GOTRUE_SMTP_PORT
+          value: "465"
+        - name: GOTRUE_SMTP_MAX_FREQUENCY
+          value: "1ns"
+        - name: GOTRUE_SMTP_ADMIN_EMAIL
+          value: "precisionplanit@gmail.com"
+        - name: GOTRUE_EXTERNAL_GITHUB_ENABLED
+          value: "false"
+        - name: GOTRUE_EXTERNAL_GOOGLE_ENABLED
+          value: "false"
+        - name: GOTRUE_EXTERNAL_DISCORD_ENABLED
+          value: "false"
+        - name: GOTRUE_DATABASE_URL
+          value: "postgres://$(POSTGRES_USER):$(POSTGRES_PASSWORD)@appflowy-postgres-rw:5432/$(POSTGRES_DB)"
+        # Secrets from Vault
+        - name: POSTGRES_USER
+          valueFrom:
+            secretKeyRef:
+              name: appflowy-secrets
+              key: POSTGRES_USER
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: appflowy-secrets
+              key: POSTGRES_PASSWORD
+        - name: POSTGRES_DB
+          valueFrom:
+            secretKeyRef:
+              name: appflowy-secrets
+              key: POSTGRES_DB
+        - name: GOTRUE_JWT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: appflowy-secrets
+              key: GOTRUE_JWT_SECRET
+        - name: GOTRUE_ADMIN_EMAIL
+          valueFrom:
+            secretKeyRef:
+              name: appflowy-secrets
+              key: GOTRUE_ADMIN_EMAIL
+        - name: GOTRUE_ADMIN_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: appflowy-secrets
+              key: GOTRUE_ADMIN_PASSWORD
+        - name: GOTRUE_SMTP_USER
+          valueFrom:
+            secretKeyRef:
+              name: appflowy-secrets
+              key: GOTRUE_SMTP_USER
+        - name: GOTRUE_SMTP_PASS
+          valueFrom:
+            secretKeyRef:
+              name: appflowy-secrets
+              key: GOTRUE_SMTP_PASS
         resources:
           requests:
             memory: "512Mi"
