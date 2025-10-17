@@ -55,6 +55,8 @@ spec:
             secretKeyRef:
               name: appflowy-secrets
               key: SUPABASE_PASSWORD
+        - name: PGDATA
+          value: /var/lib/postgresql/data/pgdata
         volumeMounts:
         - name: PLACEHOLDER_NAMESPACE-appflowy-postgres-data
           mountPath: /var/lib/postgresql/data
