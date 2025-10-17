@@ -3,10 +3,5 @@ kind: Service
 metadata:
   name: vaultwarden-db
 spec:
-  type: ClusterIP
-  selector:
-    app: vaultwarden-db
-  ports:
-  - name: postgres
-    port: 5432
-    targetPort: 5432
+  type: ExternalName
+  externalName: vaultwarden-postgres-rw.zeldas-lullaby.svc.cluster.local
