@@ -26,6 +26,9 @@ spec:
           # Grant privileges
           psql "postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@appflowy-postgres-rw:5432/appflowy" -c "GRANT ALL PRIVILEGES ON DATABASE appflowy TO supabase_auth_admin;"
           psql "postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@appflowy-postgres-rw:5432/appflowy" -c "ALTER USER supabase_auth_admin WITH SUPERUSER;"
+
+          # Create factor_type enum if it doesn't exist (required by gotrue migrations)
+          psql "postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@appflowy-postgres-rw:5432/appflowy" -c "DO \$\$ BEGIN CREATE TYPE auth.factor_type AS ENUM ('totp', 'webauthn'); EXCEPTION WHEN duplicate_object THEN null; END \$\$;"
         env:
         - name: POSTGRES_USER
           valueFrom:
