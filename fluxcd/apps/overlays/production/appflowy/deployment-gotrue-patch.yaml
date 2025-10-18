@@ -6,6 +6,22 @@ spec:
   replicas: 3
   template:
     spec:
+      initContainers:
+      - name: init-auth-schema
+        image: postgres:17
+        command:
+        - sh
+        - -c
+        - |
+          psql "$GOTRUE_DATABASE_URL" <<'EOF'
+          CREATE SCHEMA IF NOT EXISTS auth;
+          EOF
+        env:
+        - name: GOTRUE_DATABASE_URL
+          valueFrom:
+            secretKeyRef:
+              name: appflowy-postgres-app
+              key: GOTRUE_DATABASE_URL
       containers:
       - name: gotrue
         image: docker.jcr.pcfae.com/appflowyinc/gotrue:latest
