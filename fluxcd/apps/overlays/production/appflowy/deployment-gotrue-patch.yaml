@@ -13,18 +13,19 @@ spec:
         - sh
         - -c
         - |
-          psql "postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@appflowy-postgres-rw:5432/appflowy" <<'EOF'
-          CREATE SCHEMA IF NOT EXISTS auth;
-          DO $$
-          BEGIN
-            IF NOT EXISTS (SELECT FROM pg_catalog.pg_roles WHERE rolname = 'supabase_auth_admin') THEN
-              EXECUTE format('CREATE USER supabase_auth_admin WITH PASSWORD %L', '${SUPABASE_PASSWORD}');
-            END IF;
-          END
-          $$;
-          GRANT ALL PRIVILEGES ON DATABASE appflowy TO supabase_auth_admin;
-          ALTER USER supabase_auth_admin WITH SUPERUSER;
-          EOF
+          # Create schema and user
+          psql "postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@appflowy-postgres-rw:5432/appflowy" -c "CREATE SCHEMA IF NOT EXISTS auth;"
+
+          # Check if user exists, create if not
+          USER_EXISTS=$(psql "postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@appflowy-postgres-rw:5432/appflowy" -tAc "SELECT 1 FROM pg_catalog.pg_roles WHERE rolname = 'supabase_auth_admin';")
+
+          if [ -z "$USER_EXISTS" ]; then
+            psql "postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@appflowy-postgres-rw:5432/appflowy" -c "CREATE USER supabase_auth_admin WITH PASSWORD '${SUPABASE_PASSWORD}';"
+          fi
+
+          # Grant privileges
+          psql "postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@appflowy-postgres-rw:5432/appflowy" -c "GRANT ALL PRIVILEGES ON DATABASE appflowy TO supabase_auth_admin;"
+          psql "postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@appflowy-postgres-rw:5432/appflowy" -c "ALTER USER supabase_auth_admin WITH SUPERUSER;"
         env:
         - name: POSTGRES_USER
           valueFrom:
