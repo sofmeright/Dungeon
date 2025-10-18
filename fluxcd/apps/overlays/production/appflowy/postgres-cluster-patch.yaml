@@ -12,11 +12,11 @@ spec:
 
   bootstrap:
     initdb:
-      database: prplanit-appflowy
+      database: appflowy
       owner: postgres
       postInitSQL:
         - CREATE USER supabase_auth_admin WITH PASSWORD '${SUPABASE_PASSWORD}';
-        - GRANT ALL PRIVILEGES ON DATABASE "prplanit-appflowy" TO supabase_auth_admin;
+        - GRANT ALL PRIVILEGES ON DATABASE appflowy TO supabase_auth_admin;
         - ALTER USER supabase_auth_admin WITH SUPERUSER;
 
   storage:
