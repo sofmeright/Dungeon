@@ -57,37 +57,37 @@ spec:
         - name: DATABASE_URL
           valueFrom:
             secretKeyRef:
-              name: appflowy-secrets
+              name: appflowy-postgres-app
               key: DATABASE_URL
         - name: GOTRUE_DATABASE_URL
           valueFrom:
             secretKeyRef:
-              name: appflowy-secrets
+              name: appflowy-postgres-app
               key: GOTRUE_DATABASE_URL
         - name: GOTRUE_JWT_SECRET
           valueFrom:
             secretKeyRef:
-              name: appflowy-secrets
+              name: appflowy-postgres-app
               key: GOTRUE_JWT_SECRET
         - name: GOTRUE_ADMIN_EMAIL
           valueFrom:
             secretKeyRef:
-              name: appflowy-secrets
+              name: appflowy-postgres-app
               key: GOTRUE_ADMIN_EMAIL
         - name: GOTRUE_ADMIN_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: appflowy-secrets
+              name: appflowy-postgres-app
               key: GOTRUE_ADMIN_PASSWORD
         - name: GOTRUE_SMTP_USER
           valueFrom:
             secretKeyRef:
-              name: appflowy-secrets
+              name: appflowy-postgres-app
               key: GOTRUE_SMTP_USER
         - name: GOTRUE_SMTP_PASS
           valueFrom:
             secretKeyRef:
-              name: appflowy-secrets
+              name: appflowy-postgres-app
               key: GOTRUE_SMTP_PASS
         resources:
           requests:

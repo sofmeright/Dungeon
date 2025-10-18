@@ -28,12 +28,12 @@ spec:
         - name: AF_BASE_URL
           valueFrom:
             secretKeyRef:
-              name: appflowy-secrets
+              name: appflowy-postgres-app
               key: APPFLOWY_BASE_URL
         - name: AF_GOTRUE_URL
           valueFrom:
             secretKeyRef:
-              name: appflowy-secrets
+              name: appflowy-postgres-app
               key: API_EXTERNAL_URL
         resources:
           requests:

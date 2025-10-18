@@ -28,22 +28,22 @@ spec:
         - name: OPENAI_API_KEY
           valueFrom:
             secretKeyRef:
-              name: appflowy-secrets
+              name: appflowy-postgres-app
               key: AI_OPENAI_API_KEY
         - name: APPFLOWY_AI_SERVER_PORT
           valueFrom:
             secretKeyRef:
-              name: appflowy-secrets
+              name: appflowy-postgres-app
               key: AI_SERVER_PORT
         - name: APPFLOWY_AI_DATABASE_URL
           valueFrom:
             secretKeyRef:
-              name: appflowy-secrets
+              name: appflowy-postgres-app
               key: AI_DATABASE_URL
         - name: APPFLOWY_AI_REDIS_URL
           valueFrom:
             secretKeyRef:
-              name: appflowy-secrets
+              name: appflowy-postgres-app
               key: AI_REDIS_URL
         resources:
           requests:
