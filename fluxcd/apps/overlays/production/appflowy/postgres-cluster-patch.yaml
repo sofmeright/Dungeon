@@ -13,12 +13,16 @@ spec:
   bootstrap:
     initdb:
       database: appflowy
-      owner: postgres
+      owner: appflowy
+      secret:
+        name: appflowy-postgres-app
       postInitApplicationSQL:
-        - ALTER USER postgres WITH PASSWORD '${POSTGRES_PASSWORD}';
+        - ALTER USER appflowy WITH SUPERUSER;
         - CREATE USER supabase_auth_admin WITH PASSWORD '${SUPABASE_PASSWORD}';
         - GRANT ALL PRIVILEGES ON DATABASE appflowy TO supabase_auth_admin;
         - ALTER USER supabase_auth_admin WITH SUPERUSER;
+
+  enableSuperuserAccess: true
 
   storage:
     storageClass: ceph-rbd
