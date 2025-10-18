@@ -13,19 +13,28 @@ spec:
         - sh
         - -c
         - |
-          # Create auth schema ONLY - let gotrue handle all migrations
-          psql "postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@appflowy-postgres-rw:5432/appflowy" -c "CREATE SCHEMA IF NOT EXISTS auth;"
+          # Run AppFlowy's supabase_auth.sh initialization (adapted for our env)
+          psql "postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@appflowy-postgres-rw:5432/appflowy" <<-EOSQL
+            -- Create supabase_auth_admin user if it does not exist
+            DO \$\$ BEGIN
+              IF NOT EXISTS (
+                SELECT FROM pg_catalog.pg_roles WHERE rolname = 'supabase_auth_admin'
+              ) THEN
+                CREATE USER supabase_auth_admin
+                  BYPASSRLS NOINHERIT CREATEROLE LOGIN NOREPLICATION
+                  PASSWORD '${SUPABASE_PASSWORD}';
+              END IF;
+            END \$\$;
 
-          # Check if user exists, create if not
-          USER_EXISTS=$(psql "postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@appflowy-postgres-rw:5432/appflowy" -tAc "SELECT 1 FROM pg_catalog.pg_roles WHERE rolname = 'supabase_auth_admin';")
+            -- Create auth schema owned by supabase_auth_admin
+            CREATE SCHEMA IF NOT EXISTS auth AUTHORIZATION supabase_auth_admin;
 
-          if [ -z "$USER_EXISTS" ]; then
-            psql "postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@appflowy-postgres-rw:5432/appflowy" -c "CREATE USER supabase_auth_admin WITH PASSWORD '${SUPABASE_PASSWORD}';"
-          fi
+            -- Grant permissions
+            GRANT CREATE ON DATABASE appflowy TO supabase_auth_admin;
 
-          # Grant privileges
-          psql "postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@appflowy-postgres-rw:5432/appflowy" -c "GRANT ALL PRIVILEGES ON DATABASE appflowy TO supabase_auth_admin;"
-          psql "postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@appflowy-postgres-rw:5432/appflowy" -c "ALTER USER supabase_auth_admin WITH SUPERUSER;"
+            -- Set search_path for supabase_auth_admin
+            ALTER USER supabase_auth_admin SET search_path = 'auth';
+          EOSQL
         env:
         - name: POSTGRES_USER
           valueFrom:
