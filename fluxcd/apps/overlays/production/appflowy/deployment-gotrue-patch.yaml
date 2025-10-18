@@ -13,15 +13,34 @@ spec:
         - sh
         - -c
         - |
-          psql "$GOTRUE_DATABASE_URL" <<'EOF'
+          psql "postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@appflowy-postgres-rw:5432/appflowy" <<'EOF'
           CREATE SCHEMA IF NOT EXISTS auth;
+          DO $$
+          BEGIN
+            IF NOT EXISTS (SELECT FROM pg_catalog.pg_roles WHERE rolname = 'supabase_auth_admin') THEN
+              EXECUTE format('CREATE USER supabase_auth_admin WITH PASSWORD %L', '${SUPABASE_PASSWORD}');
+            END IF;
+          END
+          $$;
+          GRANT ALL PRIVILEGES ON DATABASE appflowy TO supabase_auth_admin;
+          ALTER USER supabase_auth_admin WITH SUPERUSER;
           EOF
         env:
-        - name: GOTRUE_DATABASE_URL
+        - name: POSTGRES_USER
           valueFrom:
             secretKeyRef:
               name: appflowy-postgres-app
-              key: GOTRUE_DATABASE_URL
+              key: POSTGRES_USER
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: appflowy-postgres-app
+              key: POSTGRES_PASSWORD
+        - name: SUPABASE_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: appflowy-postgres-app
+              key: SUPABASE_PASSWORD
       containers:
       - name: gotrue
         image: docker.jcr.pcfae.com/appflowyinc/gotrue:latest

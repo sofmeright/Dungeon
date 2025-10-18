@@ -18,9 +18,6 @@ spec:
         name: appflowy-postgres-app
       postInitApplicationSQL:
         - ALTER USER appflowy WITH SUPERUSER;
-        - CREATE USER supabase_auth_admin WITH PASSWORD '${SUPABASE_PASSWORD}';
-        - GRANT ALL PRIVILEGES ON DATABASE appflowy TO supabase_auth_admin;
-        - ALTER USER supabase_auth_admin WITH SUPERUSER;
 
   enableSuperuserAccess: true
 
