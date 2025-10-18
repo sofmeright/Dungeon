@@ -53,26 +53,17 @@ spec:
           value: "false"
         - name: GOTRUE_EXTERNAL_DISCORD_ENABLED
           value: "false"
-        - name: DATABASE_URL
-          value: "postgres://$(POSTGRES_USER):$(POSTGRES_PASSWORD)@appflowy-postgres-rw:5432/$(POSTGRES_DB)"
-        - name: GOTRUE_DATABASE_URL
-          value: "postgres://$(POSTGRES_USER):$(POSTGRES_PASSWORD)@appflowy-postgres-rw:5432/$(POSTGRES_DB)"
         # Secrets from Vault
-        - name: POSTGRES_USER
+        - name: DATABASE_URL
           valueFrom:
             secretKeyRef:
               name: appflowy-secrets
-              key: POSTGRES_USER
-        - name: POSTGRES_PASSWORD
+              key: DATABASE_URL
+        - name: GOTRUE_DATABASE_URL
           valueFrom:
             secretKeyRef:
               name: appflowy-secrets
-              key: POSTGRES_PASSWORD
-        - name: POSTGRES_DB
-          valueFrom:
-            secretKeyRef:
-              name: appflowy-secrets
-              key: POSTGRES_DB
+              key: GOTRUE_DATABASE_URL
         - name: GOTRUE_JWT_SECRET
           valueFrom:
             secretKeyRef:
