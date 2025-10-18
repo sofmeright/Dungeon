@@ -15,6 +15,7 @@ spec:
       database: appflowy
       owner: postgres
       postInitApplicationSQL:
+        - ALTER USER postgres WITH PASSWORD '${POSTGRES_PASSWORD}';
         - CREATE USER supabase_auth_admin WITH PASSWORD '${SUPABASE_PASSWORD}';
         - GRANT ALL PRIVILEGES ON DATABASE appflowy TO supabase_auth_admin;
         - ALTER USER supabase_auth_admin WITH SUPERUSER;
