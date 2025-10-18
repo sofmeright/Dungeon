@@ -8,7 +8,7 @@ spec:
     spec:
       initContainers:
       - name: init-auth-schema
-        image: postgres:17
+        image: docker.jcr.pcfae.com/library/postgres:17
         command:
         - sh
         - -c
