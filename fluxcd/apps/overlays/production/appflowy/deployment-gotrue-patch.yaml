@@ -13,11 +13,8 @@ spec:
         - sh
         - -c
         - |
-          # Create schema
+          # Create auth schema ONLY - let gotrue handle all migrations
           psql "postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@appflowy-postgres-rw:5432/appflowy" -c "CREATE SCHEMA IF NOT EXISTS auth;"
-
-          # Run initial auth schema setup from AppFlowy gotrue
-          psql "postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@appflowy-postgres-rw:5432/appflowy" -f /sql/init-auth-schema.sql
 
           # Check if user exists, create if not
           USER_EXISTS=$(psql "postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@appflowy-postgres-rw:5432/appflowy" -tAc "SELECT 1 FROM pg_catalog.pg_roles WHERE rolname = 'supabase_auth_admin';")
@@ -29,10 +26,6 @@ spec:
           # Grant privileges
           psql "postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@appflowy-postgres-rw:5432/appflowy" -c "GRANT ALL PRIVILEGES ON DATABASE appflowy TO supabase_auth_admin;"
           psql "postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@appflowy-postgres-rw:5432/appflowy" -c "ALTER USER supabase_auth_admin WITH SUPERUSER;"
-        volumeMounts:
-        - name: auth-init-sql
-          mountPath: /sql
-          readOnly: true
         env:
         - name: POSTGRES_USER
           valueFrom:
@@ -139,7 +132,3 @@ spec:
           limits:
             memory: "1Gi"
             cpu: "500m"
-      volumes:
-      - name: auth-init-sql
-        configMap:
-          name: appflowy-auth-init
