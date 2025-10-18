@@ -52,13 +52,28 @@
     - Shared paths (smtp/, smb/) are for secrets used by multiple applications, app-specific paths (apps/) are for single application use
 - Container Image Standards:
   - **ALWAYS use fully qualified image names** with registry prefix (e.g., `docker.io/binwiederhier/ntfy:v2.11.0` NOT `binwiederhier/ntfy:v2.11.0`)
-  - Common registries: `docker.io/` (Docker Hub), `ghcr.io/` (GitHub), `quay.io/` (Quay), `gcr.io/` (Google)
-  - Prevents ImageInspectError and image pull issues in air-gapped or registry-configured clusters
   - **Container Registry Credentials**: Managed as shared resources in `infrastructure/configs/overlays/production/registries/`
     - Base template: `infrastructure/configs/base/registries/docker.io-example/`
     - Production overlays: `infrastructure/configs/overlays/production/registries/<registry>-<account>/`
     - Apps reference the pull secret by name (e.g., `cr-pcfae-admin-pull-secret`) in their deployment `imagePullSecrets`
     - Credentials stored in Vault at `registries/<registry-url>` with keys: `username`, `password`
+
+- JFrog Container Registry (JCR) Strategy:
+  - **Primary Registry**: JFrog Artifactory at `jcr.pcfae.com` managed by admin user
+  - **Pull-Through Cache Registries**: JFrog automatically caches and proxies upstream registries via `*.jcr.pcfae.com` subdomains
+    - `docker.jcr.pcfae.com` - Docker Hub (docker.io) pull-through cache
+    - `ghcr.jcr.pcfae.com` - GitHub Container Registry (ghcr.io) pull-through cache
+    - `quay.jcr.pcfae.com` - Quay.io (quay.io) pull-through cache
+    - `lscr.jcr.pcfae.com` - LinuxServer.io (lscr.io) pull-through cache
+  - **Image Pull Strategy**:
+    - **Critical Infrastructure** (JFrog itself, Vault, Zitadel, External Secrets, etc.): Pull directly from upstream source registries (docker.io, ghcr.io, quay.io, etc.) to avoid circular dependencies
+    - **All Other Applications**: Pull through JFrog caching proxies using `*.jcr.pcfae.com` registries for bandwidth efficiency, rate limit avoidance, and image caching
+  - **Pull Secret**: `jcr-pcfae-dungeon-pull-secret` deployed to all namespaces with label `jcr-pull-secret: "enabled"`
+  - **Image Naming Examples**:
+    - Infrastructure: `docker.io/hashicorp/vault:1.15.0` (direct from Docker Hub)
+    - Apps: `docker.jcr.pcfae.com/appflowyinc/appflowy_cloud:latest` (via JCR cache)
+    - Apps: `ghcr.jcr.pcfae.com/linuxserver/jellyfin:latest` (via JCR cache)
+    - Apps: `quay.jcr.pcfae.com/prometheus/prometheus:v2.45.0` (via JCR cache)
 
 - FluxCD App Structure:
   - `fluxcd/apps/base/<app>/` contains TEMPLATED Kubernetes resources WITHOUT any environment-specific values including: no hardcoded namespaces, image tags, replicas, storage classes, LoadBalancer IPs, cluster-specific annotations (lbipam.cilium.io/*), domain names, URLs, etc. These are reusable templates across environments.
