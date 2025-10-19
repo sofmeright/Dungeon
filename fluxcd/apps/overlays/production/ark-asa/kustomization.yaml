@@ -9,7 +9,7 @@ patches:
       path: /spec/template/spec/containers/-
       value:
         name: theisland
-        image: docker.io/jsknnr/ark-ascended-server:latest
+        image: docker.io/sknnr/ark-ascended-server:latest
         ports:
         - containerPort: 8777
           protocol: UDP
@@ -69,11 +69,11 @@ patches:
             cpu: 2000m
         volumeMounts:
         - name: shooting-gallery-ark-sa-tmc-serverfiles
-          mountPath: /home/steam/ark-server
+          mountPath: /home/steam/ark
         - name: shooting-gallery-ark-sa-tmc-cluster
-          mountPath: /home/steam/ark-server/ShooterGame/Saved/clusters
+          mountPath: /home/steam/ark/ShooterGame/Saved/clusters
         - name: shooting-gallery-ark-sa-tmc-theisland-saved
-          mountPath: /home/steam/ark-server/ShooterGame/Saved
+          mountPath: /home/steam/ark/ShooterGame/Saved
     - op: add
       path: /spec/volumeClaimTemplates/-
       value:
