@@ -9,14 +9,11 @@ patches:
       path: /spec/template/spec/containers/-
       value:
         name: theisland
-        image: docker.io/acekorneya/asa_server:2_1_latest
+        image: docker.io/jsknnr/ark-ascended-server:latest
         ports:
         - containerPort: 8777
           protocol: UDP
           name: game
-        - containerPort: 8777
-          protocol: TCP
-          name: game-tcp
         - containerPort: 28020
           protocol: TCP
           name: rcon
@@ -28,11 +25,9 @@ patches:
           value: "1001"
         - name: PGID
           value: "1001"
-        - name: INSTANCE_NAME
-          value: theisland
         - name: TZ
           value: America/Los_Angeles
-        - name: MAP_NAME
+        - name: SERVER_MAP
           value: TheIsland_WP
         - name: SESSION_NAME
           value: The Master Chiefers - The Island
@@ -46,7 +41,7 @@ patches:
             secretKeyRef:
               name: ark-asa-admin
               key: server-password
-        - name: ASA_PORT
+        - name: GAME_PORT
           value: "8777"
         - name: QUERY_PORT
           value: "8778"
@@ -56,16 +51,16 @@ patches:
           value: "70"
         - name: CLUSTER_ID
           value: the-master-chiefers
-        - name: RCON_ENABLED
-          value: "TRUE"
-        - name: UPDATE_SERVER
-          value: "TRUE"
-        - name: CHECK_FOR_UPDATE_INTERVAL
-          value: "24"
-        - name: BATTLEEYE
-          value: "FALSE"
-        - name: CUSTOM_SERVER_ARGS
-          value: "-PublicIPForEpic=71.24.190.218 -Crossplay"
+        - name: ENABLE_RCON
+          value: "True"
+        - name: UPDATE_ON_BOOT
+          value: "True"
+        - name: ENABLE_BATTLEYE
+          value: "False"
+        - name: ENABLE_CROSSPLAY
+          value: "True"
+        - name: EXTRA_FLAGS
+          value: "-PublicIPForEpic=71.24.190.218"
         resources:
           limits:
             memory: 16Gi
@@ -74,11 +69,11 @@ patches:
             cpu: 2000m
         volumeMounts:
         - name: shooting-gallery-ark-sa-tmc-serverfiles
-          mountPath: /home/pok/arkserver
+          mountPath: /home/steam/ark-server
         - name: shooting-gallery-ark-sa-tmc-cluster
-          mountPath: /home/pok/arkserver/ShooterGame/Saved/clusters
+          mountPath: /home/steam/ark-server/ShooterGame/Saved/clusters
         - name: shooting-gallery-ark-sa-tmc-theisland-saved
-          mountPath: /home/pok/arkserver/ShooterGame/Saved
+          mountPath: /home/steam/ark-server/ShooterGame/Saved
     - op: add
       path: /spec/volumeClaimTemplates/-
       value:
@@ -122,13 +117,6 @@ patches:
         targetPort: 8777
         protocol: UDP
         name: theisland-game-udp
-    - op: add
-      path: /spec/ports/-
-      value:
-        port: 8777
-        targetPort: 8777
-        protocol: TCP
-        name: theisland-game-tcp
     - op: add
       path: /spec/ports/-
       value:
