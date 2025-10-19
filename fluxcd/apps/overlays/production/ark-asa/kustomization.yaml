@@ -6,63 +6,75 @@ resources:
 nameSuffix: -theisland
 patches:
 - patch: |-
-    apiVersion: apps/v1
-    kind: StatefulSet
-    metadata:
-      name: ark-asa
-    spec:
-      template:
-        metadata:
-          labels:
-            map: theisland
-        spec:
-          containers:
-          - name: ark-asa-server
-            ports:
-            - containerPort: 8777
-              protocol: UDP
-              name: game
-            - containerPort: 8777
-              protocol: TCP
-              name: game-tcp
-            - containerPort: 28020
-              protocol: TCP
-              name: rcon
-            - containerPort: 28015
-              protocol: UDP
-              name: query
-            env:
-            - name: INSTANCE_NAME
-              value: theisland
-            - name: TZ
-              value: America/Los_Angeles
-            - name: MAP_NAME
-              value: TheIsland_WP
-            - name: SESSION_NAME
-              value: ARK Survival Ascended - The Island
-            - name: ASA_PORT
-              value: "8777"
-            - name: RCON_PORT
-              value: "28020"
-            - name: MAX_PLAYERS
-              value: "70"
-            - name: CLUSTER_ID
-              value: dungeon-asa-cluster
-            resources:
-              limits:
-                memory: 16Gi
-              requests:
-                memory: 12Gi
-                cpu: 2000m
-      volumeClaimTemplates:
-      - metadata:
-          name: shooting-gallery-ark-asa-saved
-        spec:
-          accessModes:
-          - ReadWriteOnce
-          resources:
-            requests:
-              storage: 50Gi
+    - op: add
+      path: /spec/template/metadata/labels/map
+      value: theisland
+    - op: replace
+      path: /spec/template/spec/containers/0/ports
+      value:
+      - containerPort: 8777
+        protocol: UDP
+        name: game
+      - containerPort: 8777
+        protocol: TCP
+        name: game-tcp
+      - containerPort: 28020
+        protocol: TCP
+        name: rcon
+      - containerPort: 28015
+        protocol: UDP
+        name: query
+    - op: add
+      path: /spec/template/spec/containers/0/env/-
+      value:
+        name: INSTANCE_NAME
+        value: theisland
+    - op: add
+      path: /spec/template/spec/containers/0/env/-
+      value:
+        name: TZ
+        value: America/Los_Angeles
+    - op: add
+      path: /spec/template/spec/containers/0/env/-
+      value:
+        name: MAP_NAME
+        value: TheIsland_WP
+    - op: add
+      path: /spec/template/spec/containers/0/env/-
+      value:
+        name: SESSION_NAME
+        value: ARK Survival Ascended - The Island
+    - op: add
+      path: /spec/template/spec/containers/0/env/-
+      value:
+        name: ASA_PORT
+        value: "8777"
+    - op: add
+      path: /spec/template/spec/containers/0/env/-
+      value:
+        name: RCON_PORT
+        value: "28020"
+    - op: add
+      path: /spec/template/spec/containers/0/env/-
+      value:
+        name: MAX_PLAYERS
+        value: "70"
+    - op: add
+      path: /spec/template/spec/containers/0/env/-
+      value:
+        name: CLUSTER_ID
+        value: dungeon-asa-cluster
+    - op: add
+      path: /spec/template/spec/containers/0/resources
+      value:
+        limits:
+          memory: 16Gi
+        requests:
+          memory: 12Gi
+          cpu: 2000m
+    - op: replace
+      path: /spec/volumeClaimTemplates/0/spec/resources/requests/storage
+      value: 50Gi
   target:
     kind: StatefulSet
     name: ark-asa
