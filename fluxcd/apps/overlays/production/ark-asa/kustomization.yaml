@@ -103,6 +103,9 @@ patches:
       path: /spec/type
       value: LoadBalancer
     - op: add
+      path: /spec/externalTrafficPolicy
+      value: Local
+    - op: add
       path: /metadata/annotations
       value:
         lbipam.cilium.io/ips: "172.22.30.231"
