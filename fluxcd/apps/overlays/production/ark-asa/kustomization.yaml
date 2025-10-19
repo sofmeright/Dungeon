@@ -64,6 +64,8 @@ patches:
           value: "24"
         - name: BATTLEEYE
           value: "FALSE"
+        - name: CUSTOM_SERVER_ARGS
+          value: "-PublicIPForEpic=71.24.190.218"
         resources:
           limits:
             memory: 16Gi
