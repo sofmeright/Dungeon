@@ -24,6 +24,10 @@ patches:
           protocol: UDP
           name: query
         env:
+        - name: PUID
+          value: "1001"
+        - name: PGID
+          value: "1001"
         - name: INSTANCE_NAME
           value: theisland
         - name: TZ

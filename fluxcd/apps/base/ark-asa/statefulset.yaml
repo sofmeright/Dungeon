@@ -20,7 +20,7 @@ spec:
         command:
         - sh
         - -c
-        - chown -R 1000:1000 /home/pok/arkserver && chmod -R 755 /home/pok/arkserver
+        - chown -R 1001:1001 /home/pok/arkserver && chmod -R 755 /home/pok/arkserver
         volumeMounts:
         - name: serverfiles
           mountPath: /home/pok/arkserver
@@ -29,7 +29,7 @@ spec:
         command:
         - sh
         - -c
-        - chown -R 1000:1000 /clusters && chmod -R 755 /clusters
+        - chown -R 1001:1001 /clusters && chmod -R 755 /clusters
         volumeMounts:
         - name: cluster
           mountPath: /clusters
