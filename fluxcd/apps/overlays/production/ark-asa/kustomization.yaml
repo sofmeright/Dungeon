@@ -36,7 +36,12 @@ patches:
           valueFrom:
             secretKeyRef:
               name: ark-asa-admin
-              key: password
+              key: admin-password
+        - name: SERVER_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: ark-asa-admin
+              key: server-password
         - name: ASA_PORT
           value: "8777"
         - name: RCON_PORT
