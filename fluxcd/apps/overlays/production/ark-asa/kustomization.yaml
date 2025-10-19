@@ -20,7 +20,7 @@ patches:
         - containerPort: 28020
           protocol: TCP
           name: rcon
-        - containerPort: 28015
+        - containerPort: 8778
           protocol: UDP
           name: query
         env:
@@ -48,6 +48,8 @@ patches:
               key: server-password
         - name: ASA_PORT
           value: "8777"
+        - name: QUERY_PORT
+          value: "8778"
         - name: RCON_PORT
           value: "28020"
         - name: MAX_PLAYERS
@@ -128,8 +130,8 @@ patches:
     - op: add
       path: /spec/ports/-
       value:
-        port: 28015
-        targetPort: 28015
+        port: 8778
+        targetPort: 8778
         protocol: UDP
         name: theisland-query
   target:
