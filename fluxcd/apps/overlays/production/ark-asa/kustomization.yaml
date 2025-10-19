@@ -86,12 +86,12 @@ patches:
           resources:
             requests:
               storage: 50Gi
-    - op: replace
-      path: /spec/template/spec/securityContext
-      value:
-        runAsUser: 1001
-        runAsGroup: 1001
-        fsGroup: 1001
+    - op: add
+      path: /spec/template/spec/securityContext/runAsUser
+      value: 1001
+    - op: add
+      path: /spec/template/spec/securityContext/runAsGroup
+      value: 1001
   target:
     kind: StatefulSet
     name: ark-sa-tmc
