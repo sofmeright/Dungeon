@@ -57,6 +57,12 @@ patches:
       volumeClaimTemplates:
       - metadata:
           name: shooting-gallery-ark-asa-saved
+        spec:
+          accessModes:
+          - ReadWriteOnce
+          resources:
+            requests:
+              storage: 50Gi
   target:
     kind: StatefulSet
     name: ark-asa
