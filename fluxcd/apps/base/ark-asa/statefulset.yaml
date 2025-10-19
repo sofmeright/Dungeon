@@ -42,14 +42,6 @@ spec:
         volumeMounts:
         - name: saved
           mountPath: /home/pok/arkserver/ShooterGame/Saved
-      - name: set-sysctl
-        image: docker.io/library/busybox:latest
-        command:
-        - sh
-        - -c
-        - sysctl -w vm.max_map_count=262144
-        securityContext:
-          privileged: true
       containers:
       - name: ark-asa-server
         image: docker.io/acekorneya/asa_server:2_0_latest
