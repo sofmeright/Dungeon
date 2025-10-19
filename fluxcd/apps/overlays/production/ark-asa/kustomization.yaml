@@ -119,7 +119,14 @@ patches:
         port: 8777
         targetPort: 8777
         protocol: UDP
-        name: theisland-game
+        name: theisland-game-udp
+    - op: add
+      path: /spec/ports/-
+      value:
+        port: 8777
+        targetPort: 8777
+        protocol: TCP
+        name: theisland-game-tcp
     - op: add
       path: /spec/ports/-
       value:
