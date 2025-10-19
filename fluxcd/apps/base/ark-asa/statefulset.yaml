@@ -18,25 +18,6 @@ spec:
         fsGroup: 1001
         runAsUser: 1001
         runAsGroup: 1001
-      initContainers:
-      - name: fix-serverfiles-permissions
-        image: docker.io/library/busybox:latest
-        command:
-        - sh
-        - -c
-        - chown -R 1001:1001 /home/pok/arkserver && chmod -R 755 /home/pok/arkserver
-        volumeMounts:
-        - name: serverfiles
-          mountPath: /home/pok/arkserver
-      - name: fix-cluster-permissions
-        image: docker.io/library/busybox:latest
-        command:
-        - sh
-        - -c
-        - chown -R 1001:1001 /clusters && chmod -R 755 /clusters
-        volumeMounts:
-        - name: cluster
-          mountPath: /clusters
       containers: []
       # Containers will be added via overlay patches for each map
   volumeClaimTemplates:
