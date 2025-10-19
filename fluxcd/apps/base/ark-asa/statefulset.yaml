@@ -1,17 +1,17 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: ark-asa
+  name: ark-sa-tmc
 spec:
-  serviceName: ark-asa
+  serviceName: ark-sa-tmc
   replicas: 1
   selector:
     matchLabels:
-      app: ark-asa
+      app: ark-sa-tmc
   template:
     metadata:
       labels:
-        app: ark-asa
+        app: ark-sa-tmc
     spec:
       enableServiceLinks: false
       initContainers:
@@ -22,65 +22,30 @@ spec:
         - -c
         - chown -R 7777:7777 /home/pok/arkserver && chmod -R 755 /home/pok/arkserver
         volumeMounts:
-        - name: ark-asa-serverfiles
+        - name: serverfiles
           mountPath: /home/pok/arkserver
       - name: fix-cluster-permissions
         image: docker.io/library/busybox:latest
         command:
         - sh
         - -c
-        - chown -R 7777:7777 /home/pok/arkserver/ShooterGame/Saved/clusters && chmod -R 755 /home/pok/arkserver/ShooterGame/Saved/clusters
+        - chown -R 7777:7777 /clusters && chmod -R 755 /clusters
         volumeMounts:
-        - name: ark-asa-cluster
-          mountPath: /home/pok/arkserver/ShooterGame/Saved/clusters
-      - name: fix-saved-permissions
-        image: docker.io/library/busybox:latest
-        command:
-        - sh
-        - -c
-        - chown -R 7777:7777 /home/pok/arkserver/ShooterGame/Saved && chmod -R 755 /home/pok/arkserver/ShooterGame/Saved
-        volumeMounts:
-        - name: saved
-          mountPath: /home/pok/arkserver/ShooterGame/Saved
-      containers:
-      - name: ark-asa-server
-        image: docker.io/acekorneya/asa_server:2_0_latest
-        ports:
-        - containerPort: 7777
-          protocol: UDP
-          name: game
-        - containerPort: 7777
-          protocol: TCP
-          name: game-tcp
-        - containerPort: 27020
-          protocol: TCP
-          name: rcon
-        - containerPort: 27015
-          protocol: UDP
-          name: query
-        env:
-        - name: SERVER_ADMIN_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: ark-asa-admin
-              key: password
-        volumeMounts:
-        - name: ark-asa-serverfiles
-          mountPath: /home/pok/arkserver
-        - name: ark-asa-cluster
-          mountPath: /home/pok/arkserver/ShooterGame/Saved/clusters
-        - name: saved
-          mountPath: /home/pok/arkserver/ShooterGame/Saved
-      volumes:
-      - name: ark-asa-serverfiles
-        persistentVolumeClaim:
-          claimName: ark-asa-serverfiles
-      - name: ark-asa-cluster
-        persistentVolumeClaim:
-          claimName: ark-asa-cluster
+        - name: cluster
+          mountPath: /clusters
+      containers: []
+      # Containers will be added via overlay patches for each map
   volumeClaimTemplates:
   - metadata:
-      name: saved
+      name: serverfiles
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: 100Gi
+  - metadata:
+      name: cluster
     spec:
       accessModes:
       - ReadWriteOnce

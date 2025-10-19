@@ -3,81 +3,83 @@ kind: Kustomization
 namespace: shooting-gallery
 resources:
 - ../../../base/ark-asa
-nameSuffix: -theisland
 patches:
 - patch: |-
     - op: add
-      path: /spec/template/metadata/labels/map
-      value: theisland
-    - op: replace
-      path: /spec/template/spec/containers/0/ports
+      path: /spec/template/spec/containers/-
       value:
-      - containerPort: 8777
-        protocol: UDP
-        name: game
-      - containerPort: 8777
-        protocol: TCP
-        name: game-tcp
-      - containerPort: 28020
-        protocol: TCP
-        name: rcon
-      - containerPort: 28015
-        protocol: UDP
-        name: query
+        name: theisland
+        image: docker.io/acekorneya/asa_server:2_0_latest
+        ports:
+        - containerPort: 8777
+          protocol: UDP
+          name: game
+        - containerPort: 8777
+          protocol: TCP
+          name: game-tcp
+        - containerPort: 28020
+          protocol: TCP
+          name: rcon
+        - containerPort: 28015
+          protocol: UDP
+          name: query
+        env:
+        - name: INSTANCE_NAME
+          value: theisland
+        - name: TZ
+          value: America/Los_Angeles
+        - name: MAP_NAME
+          value: TheIsland_WP
+        - name: SESSION_NAME
+          value: The Master Chiefers - The Island
+        - name: SERVER_ADMIN_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: ark-asa-admin
+              key: password
+        - name: ASA_PORT
+          value: "8777"
+        - name: RCON_PORT
+          value: "28020"
+        - name: MAX_PLAYERS
+          value: "70"
+        - name: CLUSTER_ID
+          value: the-master-chiefers
+        - name: RCON_ENABLED
+          value: "TRUE"
+        - name: UPDATE_SERVER
+          value: "TRUE"
+        - name: CHECK_FOR_UPDATE_INTERVAL
+          value: "24"
+        - name: BATTLEEYE
+          value: "FALSE"
+        resources:
+          limits:
+            memory: 16Gi
+          requests:
+            memory: 12Gi
+            cpu: 2000m
+        volumeMounts:
+        - name: serverfiles
+          mountPath: /home/pok/arkserver
+        - name: cluster
+          mountPath: /home/pok/arkserver/ShooterGame/Saved/clusters
+        - name: theisland-saved
+          mountPath: /home/pok/arkserver/ShooterGame/Saved
     - op: add
-      path: /spec/template/spec/containers/0/env/-
+      path: /spec/volumeClaimTemplates/-
       value:
-        name: INSTANCE_NAME
-        value: theisland
-    - op: add
-      path: /spec/template/spec/containers/0/env/-
-      value:
-        name: TZ
-        value: America/Los_Angeles
-    - op: add
-      path: /spec/template/spec/containers/0/env/-
-      value:
-        name: MAP_NAME
-        value: TheIsland_WP
-    - op: add
-      path: /spec/template/spec/containers/0/env/-
-      value:
-        name: SESSION_NAME
-        value: ARK Survival Ascended - The Island
-    - op: add
-      path: /spec/template/spec/containers/0/env/-
-      value:
-        name: ASA_PORT
-        value: "8777"
-    - op: add
-      path: /spec/template/spec/containers/0/env/-
-      value:
-        name: RCON_PORT
-        value: "28020"
-    - op: add
-      path: /spec/template/spec/containers/0/env/-
-      value:
-        name: MAX_PLAYERS
-        value: "70"
-    - op: add
-      path: /spec/template/spec/containers/0/env/-
-      value:
-        name: CLUSTER_ID
-        value: dungeon-asa-cluster
-    - op: add
-      path: /spec/template/spec/containers/0/resources
-      value:
-        limits:
-          memory: 16Gi
-        requests:
-          memory: 12Gi
-          cpu: 2000m
-    - op: replace
-      path: /spec/volumeClaimTemplates/0/spec/resources/requests/storage
-      value: 50Gi
+        metadata:
+          name: theisland-saved
+        spec:
+          accessModes:
+          - ReadWriteOnce
+          resources:
+            requests:
+              storage: 50Gi
   target:
     kind: StatefulSet
-    name: ark-asa
+    name: ark-sa-tmc
 - patch: |-
     - op: replace
       path: /spec/type
@@ -87,25 +89,34 @@ patches:
       value:
         lbipam.cilium.io/ips: "172.22.30.231"
         lbipam.cilium.io/sharing-key: shooting-gallery
-    - op: replace
-      path: /spec/ports
+    - op: add
+      path: /spec/ports/-
       value:
-      - port: 8777
+        port: 8777
         targetPort: 8777
         protocol: UDP
-        name: game
-      - port: 8777
+        name: theisland-game
+    - op: add
+      path: /spec/ports/-
+      value:
+        port: 8777
         targetPort: 8777
         protocol: TCP
-        name: game-tcp
-      - port: 28020
+        name: theisland-game-tcp
+    - op: add
+      path: /spec/ports/-
+      value:
+        port: 28020
         targetPort: 28020
         protocol: TCP
-        name: rcon
-      - port: 28015
+        name: theisland-rcon
+    - op: add
+      path: /spec/ports/-
+      value:
+        port: 28015
         targetPort: 28015
         protocol: UDP
-        name: query
+        name: theisland-query
   target:
     kind: Service
-    name: ark-asa
+    name: ark-sa-tmc

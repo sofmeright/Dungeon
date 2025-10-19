@@ -1,24 +1,9 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: ark-asa
+  name: ark-sa-tmc
 spec:
   selector:
-    app: ark-asa
-  ports:
-  - port: 7777
-    targetPort: 7777
-    protocol: UDP
-    name: game
-  - port: 7777
-    targetPort: 7777
-    protocol: TCP
-    name: game-tcp
-  - port: 27020
-    targetPort: 27020
-    protocol: TCP
-    name: rcon
-  - port: 27015
-    targetPort: 27015
-    protocol: UDP
-    name: query
+    app: ark-sa-tmc
+  ports: []
+  # Ports will be added via overlay patches for each map
