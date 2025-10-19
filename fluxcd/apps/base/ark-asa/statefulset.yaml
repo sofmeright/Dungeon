@@ -20,7 +20,7 @@ spec:
       # Containers will be added via overlay patches for each map
   volumeClaimTemplates:
   - metadata:
-      name: serverfiles
+      name: shooting-gallery-ark-sa-tmc-serverfiles
     spec:
       accessModes:
       - ReadWriteOnce
@@ -28,7 +28,7 @@ spec:
         requests:
           storage: 250Gi
   - metadata:
-      name: cluster
+      name: shooting-gallery-ark-sa-tmc-cluster
     spec:
       accessModes:
       - ReadWriteOnce

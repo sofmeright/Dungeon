@@ -69,17 +69,17 @@ patches:
             memory: 12Gi
             cpu: 2000m
         volumeMounts:
-        - name: serverfiles
+        - name: shooting-gallery-ark-sa-tmc-serverfiles
           mountPath: /home/pok/arkserver
-        - name: cluster
+        - name: shooting-gallery-ark-sa-tmc-cluster
           mountPath: /home/pok/arkserver/ShooterGame/Saved/clusters
-        - name: theisland-saved
+        - name: shooting-gallery-ark-sa-tmc-theisland-saved
           mountPath: /home/pok/arkserver/ShooterGame/Saved
     - op: add
       path: /spec/volumeClaimTemplates/-
       value:
         metadata:
-          name: theisland-saved
+          name: shooting-gallery-ark-sa-tmc-theisland-saved
         spec:
           accessModes:
           - ReadWriteOnce
