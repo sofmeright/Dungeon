@@ -87,13 +87,13 @@ patches:
               storage: 50Gi
     - op: add
       path: /spec/template/spec/securityContext/runAsUser
-      value: 7777
+      value: 1000
     - op: add
       path: /spec/template/spec/securityContext/runAsGroup
-      value: 7777
+      value: 1000
     - op: replace
       path: /spec/template/spec/securityContext/fsGroup
-      value: 7777
+      value: 1000
   target:
     kind: StatefulSet
     name: ark-sa-tmc
