@@ -65,7 +65,7 @@ patches:
         - name: BATTLEEYE
           value: "FALSE"
         - name: CUSTOM_SERVER_ARGS
-          value: "-PublicIPForEpic=71.24.190.218"
+          value: "-PublicIPForEpic=71.24.190.218 -MultiHome=0.0.0.0 -Crossplay"
         resources:
           limits:
             memory: 16Gi
