@@ -15,14 +15,14 @@ spec:
     spec:
       enableServiceLinks: false
       securityContext:
-        fsGroup: 1001
+        fsGroup: 7777
       initContainers:
       - name: fix-permissions
         image: docker.io/library/busybox:latest
         command:
         - sh
         - -c
-        - chown -R 1001:1001 /home/pok/arkserver && chmod -R 755 /home/pok/arkserver
+        - chown -R 7777:7777 /home/pok/arkserver && chmod -R 755 /home/pok/arkserver
         volumeMounts:
         - name: shooting-gallery-ark-sa-tmc-serverfiles
           mountPath: /home/pok/arkserver
