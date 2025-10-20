@@ -18,6 +18,15 @@ spec:
         fsGroup: 7777
         runAsUser: 7777
         runAsGroup: 7777
+      initContainers:
+      - name: fix-permissions
+        image: busybox:latest
+        command: ['sh', '-c', 'mkdir -p /home/pok/arkserver && chown -R 7777:7777 /home/pok/arkserver && chmod -R 755 /home/pok/arkserver']
+        volumeMounts:
+        - name: serverfiles
+          mountPath: /home/pok/arkserver
+        securityContext:
+          runAsUser: 0
       containers:
       - name: theisland
         image: docker.io/acekorneya/asa_server:2_1_latest
@@ -84,19 +93,34 @@ spec:
             memory: 12Gi
             cpu: 2000m
         volumeMounts:
-        - name: serverfiles
+        - name: shooting-gallery-ark-sa-tmc-theisland-serverfiles
           mountPath: /home/pok/arkserver
-        - name: cluster
+        - name: shooting-gallery-ark-sa-tmc-theisland-cluster
           mountPath: /home/pok/arkserver/ShooterGame/Saved/clusters
-        - name: saved
+        - name: shooting-gallery-ark-sa-tmc-theisland-saved
           mountPath: /home/pok/arkserver/ShooterGame/Saved
-      volumes:
-      - name: serverfiles
-        persistentVolumeClaim:
-          claimName: shooting-gallery-ark-sa-tmc-serverfiles-ark-sa-tmc-0
-      - name: cluster
-        persistentVolumeClaim:
-          claimName: shooting-gallery-ark-sa-tmc-cluster-ark-sa-tmc-0
-      - name: saved
-        persistentVolumeClaim:
-          claimName: shooting-gallery-ark-sa-tmc-theisland-saved-ark-sa-tmc-0
+  volumeClaimTemplates:
+  - metadata:
+      name: shooting-gallery-ark-sa-tmc-theisland-serverfiles
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: 250Gi
+  - metadata:
+      name: shooting-gallery-ark-sa-tmc-theisland-cluster
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: 20Gi
+  - metadata:
+      name: shooting-gallery-ark-sa-tmc-theisland-saved
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: 50Gi
