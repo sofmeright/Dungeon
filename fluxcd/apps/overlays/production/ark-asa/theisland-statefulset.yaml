@@ -84,34 +84,19 @@ spec:
             memory: 12Gi
             cpu: 2000m
         volumeMounts:
-        - name: shooting-gallery-ark-sa-tmc-theisland-serverfiles
+        - name: serverfiles
           mountPath: /home/pok/arkserver
-        - name: shooting-gallery-ark-sa-tmc-theisland-cluster
+        - name: cluster
           mountPath: /home/pok/arkserver/ShooterGame/Saved/clusters
-        - name: shooting-gallery-ark-sa-tmc-theisland-saved
+        - name: saved
           mountPath: /home/pok/arkserver/ShooterGame/Saved
-  volumeClaimTemplates:
-  - metadata:
-      name: shooting-gallery-ark-sa-tmc-theisland-serverfiles
-    spec:
-      accessModes:
-      - ReadWriteOnce
-      resources:
-        requests:
-          storage: 250Gi
-  - metadata:
-      name: shooting-gallery-ark-sa-tmc-theisland-cluster
-    spec:
-      accessModes:
-      - ReadWriteOnce
-      resources:
-        requests:
-          storage: 20Gi
-  - metadata:
-      name: shooting-gallery-ark-sa-tmc-theisland-saved
-    spec:
-      accessModes:
-      - ReadWriteOnce
-      resources:
-        requests:
-          storage: 50Gi
+      volumes:
+      - name: serverfiles
+        persistentVolumeClaim:
+          claimName: shooting-gallery-ark-sa-tmc-serverfiles-ark-sa-tmc-0
+      - name: cluster
+        persistentVolumeClaim:
+          claimName: shooting-gallery-ark-sa-tmc-cluster-ark-sa-tmc-0
+      - name: saved
+        persistentVolumeClaim:
+          claimName: shooting-gallery-ark-sa-tmc-theisland-saved-ark-sa-tmc-0
