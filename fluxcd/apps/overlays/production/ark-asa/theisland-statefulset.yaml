@@ -14,13 +14,15 @@ spec:
         app: ark-sa-tmc-theisland
     spec:
       enableServiceLinks: false
+      imagePullSecrets:
+      - name: jcr-pcfae-dungeon-pull-secret
       securityContext:
         fsGroup: 7777
         runAsUser: 7777
         runAsGroup: 7777
       initContainers:
       - name: fix-permissions
-        image: docker.io/library/busybox:latest
+        image: docker.jcr.pcfae.com/library/busybox:latest
         command: ['sh', '-c', 'mkdir -p /home/pok/arkserver && chown -R 7777:7777 /home/pok/arkserver && chmod -R 755 /home/pok/arkserver']
         volumeMounts:
         - name: shooting-gallery-ark-sa-tmc-theisland-serverfiles
@@ -29,7 +31,7 @@ spec:
           runAsUser: 0
       containers:
       - name: theisland
-        image: docker.io/acekorneya/asa_server:2_1_latest
+        image: docker.jcr.pcfae.com/acekorneya/asa_server:2_1_latest
         ports:
         - containerPort: 8777
           protocol: UDP
