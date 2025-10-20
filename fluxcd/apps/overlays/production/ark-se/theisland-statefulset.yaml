@@ -1,0 +1,131 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: ark-se-tmc-theisland
+spec:
+  serviceName: ark-se-tmc-theisland
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ark-se-tmc-theisland
+  template:
+    metadata:
+      labels:
+        app: ark-se-tmc-theisland
+    spec:
+      enableServiceLinks: false
+      imagePullSecrets:
+      - name: jcr-pcfae-dungeon-pull-secret
+      securityContext:
+        fsGroup: 1001
+      containers:
+      - name: theisland
+        image: docker.jcr.pcfae.com/drpsychick/arkserver:latest
+        ports:
+        - containerPort: 7797
+          protocol: UDP
+          name: game-udp
+        - containerPort: 7797
+          protocol: TCP
+          name: game-tcp
+        - containerPort: 27057
+          protocol: UDP
+          name: query-udp
+        - containerPort: 27057
+          protocol: TCP
+          name: query-tcp
+        - containerPort: 27095
+          protocol: TCP
+          name: rcon
+        env:
+        - name: am_ark_SessionName
+          value: "MasterChiefers-TheIsland"
+        - name: am_serverMap
+          value: TheIsland
+        - name: am_ark_GameModIds
+          value: "1213429840,1232362083,1565015734,1609138312,1840761213,506506101,731604991,751991809,793605978,806480270,821530042,895711211,902616446,924933745"
+        - name: am_ark_QueryPort
+          value: "27057"
+        - name: am_ark_Port
+          value: "7797"
+        - name: am_ark_RCONPort
+          value: "27095"
+        - name: am_ark_ServerAdminPassword
+          valueFrom:
+            secretKeyRef:
+              name: ark-se-tmc
+              key: admin-password
+        - name: am_ark_ServerPassword
+          valueFrom:
+            secretKeyRef:
+              name: ark-se-tmc
+              key: server-password
+        - name: am_arkopt_clusterid
+          valueFrom:
+            secretKeyRef:
+              name: ark-se-tmc
+              key: cluster-id
+        - name: am_arkNoPortDecrement
+          value: "true"
+        - name: am_ark_MaxPlayers
+          value: "10"
+        - name: am_arkAutoUpdateOnStart
+          value: "true"
+        - name: ARKCLUSTER
+          value: "true"
+        - name: am_arkflag_ForceAllowCaveFlyers
+          value: "true"
+        - name: am_arkflag_crossplay
+          value: "true"
+        - name: ARKSERVER_SHARED
+          value: "/arkserver"
+        resources:
+          limits:
+            memory: 16Gi
+          requests:
+            memory: 12Gi
+            cpu: 2000m
+        stdin: true
+        tty: true
+        volumeMounts:
+        - name: shooting-gallery-ark-se-tmc-theisland-data
+          mountPath: /ark
+        - name: shooting-gallery-ark-se-tmc-theisland-saved
+          mountPath: /arkserver/ShooterGame/Saved
+        - name: shooting-gallery-ark-se-tmc-theisland-cluster
+          mountPath: /arkserver/ShooterGame/Saved/clusters
+        - name: shooting-gallery-ark-se-tmc-theisland-serverfiles
+          mountPath: /arkserver
+  volumeClaimTemplates:
+  - metadata:
+      name: shooting-gallery-ark-se-tmc-theisland-data
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: 50Gi
+  - metadata:
+      name: shooting-gallery-ark-se-tmc-theisland-saved
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: 50Gi
+  - metadata:
+      name: shooting-gallery-ark-se-tmc-theisland-cluster
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: 20Gi
+  - metadata:
+      name: shooting-gallery-ark-se-tmc-theisland-serverfiles
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: 250Gi

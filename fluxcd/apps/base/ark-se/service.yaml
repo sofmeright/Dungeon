@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: ark-se-tmc
+spec:
+  type: LoadBalancer
+  selector:
+    app: ark-se-tmc
+  ports:
+  - port: 7797
+    targetPort: 7797
+    protocol: UDP
+    name: game-udp
+  - port: 7797
+    targetPort: 7797
+    protocol: TCP
+    name: game-tcp
+  - port: 27057
+    targetPort: 27057
+    protocol: UDP
+    name: query-udp
+  - port: 27057
+    targetPort: 27057
+    protocol: TCP
+    name: query-tcp
+  - port: 27095
+    targetPort: 27095
+    protocol: TCP
+    name: rcon
