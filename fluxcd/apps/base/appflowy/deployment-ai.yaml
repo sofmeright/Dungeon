@@ -24,9 +24,6 @@ spec:
         - name: http
           containerPort: 5001
           protocol: TCP
-        envFrom:
-        - configMapRef:
-            name: appflowy-app-config
         env:
         - name: OPENAI_API_KEY
           valueFrom:
@@ -43,6 +40,9 @@ spec:
             secretKeyRef:
               name: appflowy-postgres-app
               key: AI_DATABASE_URL
+        envFrom:
+        - configMapRef:
+            name: appflowy-app-config
         resources:
           requests:
             cpu: PLACEHOLDER_CPU_REQUEST
