@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: appflowy-app-config
+  labels:
+    app: appflowy
+data:
+  # Logging configuration
+  RUST_LOG: "info"
+
+  # Service URLs (internal cluster DNS)
+  ADMIN_FRONTEND_REDIS_URL: "redis://appflowy-redis:6379"
+  ADMIN_FRONTEND_GOTRUE_URL: "http://appflowy-gotrue:9999"
+  ADMIN_FRONTEND_APPFLOWY_CLOUD_URL: "http://appflowy-cloud:8000"
+  ADMIN_FRONTEND_PATH_PREFIX: "/admin"

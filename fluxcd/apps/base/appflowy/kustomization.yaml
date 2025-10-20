@@ -23,4 +23,5 @@ resources:
   - configmap-nginx.yaml
   - configmap-postgres-init.yaml
   - configmap-auth-init.yaml
+  - configmap-app.yaml
   - externalsecret.yaml

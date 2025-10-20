@@ -24,35 +24,9 @@ spec:
         - name: http
           containerPort: 3000
           protocol: TCP
-        env:
-        - name: RUST_LOG
-          valueFrom:
-            secretKeyRef:
-              name: appflowy-postgres-app
-              key: RUST_LOG
-        - name: ADMIN_FRONTEND_REDIS_URL
-          valueFrom:
-            secretKeyRef:
-              name: appflowy-postgres-app
-              key: ADMIN_FRONTEND_REDIS_URL
-              optional: true
-        - name: ADMIN_FRONTEND_GOTRUE_URL
-          valueFrom:
-            secretKeyRef:
-              name: appflowy-postgres-app
-              key: ADMIN_FRONTEND_GOTRUE_URL
-              optional: true
-        - name: ADMIN_FRONTEND_APPFLOWY_CLOUD_URL
-          valueFrom:
-            secretKeyRef:
-              name: appflowy-postgres-app
-              key: ADMIN_FRONTEND_APPFLOWY_CLOUD_URL
-              optional: true
-        - name: ADMIN_FRONTEND_PATH_PREFIX
-          valueFrom:
-            secretKeyRef:
-              name: appflowy-postgres-app
-              key: ADMIN_FRONTEND_PATH_PREFIX
+        envFrom:
+        - configMapRef:
+            name: appflowy-app-config
         resources:
           requests:
             cpu: PLACEHOLDER_CPU_REQUEST
