@@ -24,7 +24,7 @@ spec:
         - name: APPFLOWY_DATABASE_MAX_CONNECTIONS
           value: "40"
         - name: APPFLOWY_DATABASE_URL
-          value: "postgres://postgres:$(POSTGRES_PASSWORD)@appflowy-postgres-rw:5432/postgres"
+          value: "postgres://appflowy:$(POSTGRES_PASSWORD)@appflowy-postgres-rw:5432/appflowy"
         - name: APPFLOWY_REDIS_URI
           value: "redis://appflowy-redis:6379"
         - name: APPFLOWY_GOTRUE_BASE_URL
