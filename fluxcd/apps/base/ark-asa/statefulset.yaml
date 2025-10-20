@@ -16,6 +16,8 @@ spec:
       enableServiceLinks: false
       securityContext:
         fsGroup: 7777
+        runAsUser: 7777
+        runAsGroup: 7777
       containers:
       - name: theisland
         image: docker.io/acekorneya/asa_server:2_1_latest
