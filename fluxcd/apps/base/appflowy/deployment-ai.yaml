@@ -33,6 +33,11 @@ spec:
             secretKeyRef:
               name: appflowy-postgres-app
               key: AI_OPENAI_API_KEY
+        - name: JWT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: appflowy-postgres-app
+              key: GOTRUE_JWT_SECRET
         - name: APPFLOWY_AI_DATABASE_URL
           valueFrom:
             secretKeyRef:

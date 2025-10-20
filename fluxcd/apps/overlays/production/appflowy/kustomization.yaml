@@ -18,3 +18,4 @@ patches:
   - path: deployment-nginx-patch.yaml
   - path: service-nginx-patch.yaml
   - path: externalsecret-patch.yaml
+  - path: configmap-app-patch.yaml

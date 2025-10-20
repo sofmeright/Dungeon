@@ -32,7 +32,10 @@ data:
   APPFLOWY_MAILER_SMTP_PORT: "587"
   APPFLOWY_MAILER_SMTP_TLS_KIND: "starttls"
 
-  # AppFlowy Cloud Configuration
+  # AppFlowy Cloud Configuration (internal cluster DNS)
   APPFLOWY_BASE_URL: "http://appflowy-cloud:8000"
   APPFLOWY_GOTRUE_BASE_URL: "http://appflowy-gotrue:9999"
-  API_EXTERNAL_URL: "https://appflowy.precisionplanit.com"
+
+  # External URLs (patched by overlay for each environment)
+  APPFLOWY_WS_BASE_URL: "PLACEHOLDER_EXTERNAL_WS_URL"
+  API_EXTERNAL_URL: "PLACEHOLDER_EXTERNAL_API_URL"
