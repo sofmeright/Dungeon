@@ -75,8 +75,13 @@ spec:
           value: "24"
         - name: BATTLEEYE
           value: "FALSE"
+        - name: PUBLIC_IP
+          valueFrom:
+            secretKeyRef:
+              name: ark-asa-admin
+              key: public-ip
         - name: CUSTOM_SERVER_ARGS
-          value: "-PublicIPForEpic=71.24.190.218 -Crossplay"
+          value: "-PublicIPForEpic=$(PUBLIC_IP) -Crossplay"
         resources:
           limits:
             memory: 16Gi
