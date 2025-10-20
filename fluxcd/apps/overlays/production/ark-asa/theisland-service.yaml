@@ -9,6 +9,10 @@ metadata:
 spec:
   type: LoadBalancer
   externalTrafficPolicy: Cluster
+  sessionAffinity: ClientIP
+  sessionAffinityConfig:
+    clientIP:
+      timeoutSeconds: 10800
   selector:
     app: ark-sa-tmc-theisland
   ports:
