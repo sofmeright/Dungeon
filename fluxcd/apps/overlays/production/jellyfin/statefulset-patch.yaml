@@ -21,6 +21,7 @@ spec:
           mountPath: /cache
       containers:
       - name: jellyfin
+        image: docker.jcr.pcfae.com/jellyfin/jellyfin:10.10.7
         volumeMounts:
         - name: temple-of-time-jellyfin-config
           mountPath: /config
