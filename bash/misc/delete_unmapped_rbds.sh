@@ -76,7 +76,7 @@ for vol in "${no_watcher_vols[@]}"; do
     # Double-check watchers right before deletion (things can change)
     if rbd status "$POOL/$vol" 2>/dev/null | grep -q "watcher="; then
         echo "  ⚠️  SKIPPING: $vol now has active watchers (mounted between scan and deletion)"
-        ((skipped++))
+        skipped=$((skipped + 1))
         continue
     fi
 
@@ -95,7 +95,7 @@ for vol in "${no_watcher_vols[@]}"; do
     fi
 
     # Check for snapshots
-    snaps=$(rbd snap ls "$POOL/$vol" 2>/dev/null | tail -n +2)
+    snaps=$(rbd snap ls "$POOL/$vol" 2>/dev/null | tail -n +2 || true)
     if [ -n "$snaps" ]; then
         echo "  Purging snapshots..."
         rbd snap purge "$POOL/$vol" 2>/dev/null || true
@@ -104,11 +104,12 @@ for vol in "${no_watcher_vols[@]}"; do
     # Delete the volume
     if rbd rm "$POOL/$vol" 2>/dev/null; then
         echo "  ✓ Deleted $vol"
-        ((deleted++))
+        deleted=$((deleted + 1))
     else
         echo "  ✗ Failed to delete $vol"
-        ((failed++))
+        failed=$((failed + 1))
     fi
+    echo ""
 done
 
 echo ""
