@@ -18,17 +18,6 @@ spec:
       - name: jcr-pcfae-dungeon-pull-secret
       securityContext:
         fsGroup: 7777
-        runAsUser: 7777
-        runAsGroup: 7777
-      initContainers:
-      - name: fix-permissions
-        image: docker.jcr.pcfae.com/library/busybox:latest
-        command: ['sh', '-c', 'mkdir -p /home/pok/arkserver && chown -R 7777:7777 /home/pok/arkserver && chmod -R 755 /home/pok/arkserver']
-        volumeMounts:
-        - name: shooting-gallery-ark-sa-tmc-theisland-serverfiles
-          mountPath: /home/pok/arkserver
-        securityContext:
-          runAsUser: 0
       containers:
       - name: theisland
         image: docker.jcr.pcfae.com/acekorneya/asa_server:2_1_latest
