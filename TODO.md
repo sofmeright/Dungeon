@@ -65,8 +65,10 @@ CLAUDE.md specifies PVC naming pattern for StatefulSets: `<namespace>-<app>-<pur
 - [ ] anirra - Custom arr app from Pirates-WDDA
 - [ ] matrix-synapse - Matrix homeserver (federated chat)
 - [ ] mastodon - Federated social media platform
+- [ ] kimai - Time tracking application (https://github.com/kimai/kimai) - tingle-tuner namespace
+- [ ] mazanoke - Bookmark manager (https://github.com/civilblur/mazanoke) - tingle-tuner namespace
 
-**Status:** Final 6 applications remaining out of 100+ total applications inventoried across all Portainer endpoints.
+**Status:** Final 8 applications remaining out of 100+ total applications inventoried across all Portainer endpoints.
 
 **Large stacks to migrate** (not yet deployed to K8s):
 - [ ] Mailcow (18 containers) - Email stack, production critical
