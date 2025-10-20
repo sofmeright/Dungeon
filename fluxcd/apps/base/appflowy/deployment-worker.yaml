@@ -20,9 +20,6 @@ spec:
       containers:
       - name: appflowy-worker
         image: PLACEHOLDER_WORKER_IMAGE
-        envFrom:
-        - configMapRef:
-            name: appflowy-app-config
         env:
         - name: APPFLOWY_ENVIRONMENT
           value: "production"
@@ -65,6 +62,9 @@ spec:
             secretKeyRef:
               name: appflowy-postgres-app
               key: APPFLOWY_MAILER_SMTP_PASSWORD
+        envFrom:
+        - configMapRef:
+            name: appflowy-app-config
         resources:
           requests:
             cpu: PLACEHOLDER_CPU_REQUEST
