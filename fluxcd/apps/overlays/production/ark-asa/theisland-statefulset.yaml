@@ -81,7 +81,7 @@ spec:
               name: ark-asa-admin
               key: public-ip
         - name: CUSTOM_SERVER_ARGS
-          value: "-PublicIPForEpic=$(PUBLIC_IP) -Crossplay"
+          value: "-ServerPlatform=ALL"
         resources:
           limits:
             memory: 16Gi
