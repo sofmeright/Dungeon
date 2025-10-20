@@ -23,7 +23,7 @@ spec:
         image: busybox:latest
         command: ['sh', '-c', 'mkdir -p /home/pok/arkserver && chown -R 7777:7777 /home/pok/arkserver && chmod -R 755 /home/pok/arkserver']
         volumeMounts:
-        - name: serverfiles
+        - name: shooting-gallery-ark-sa-tmc-theisland-serverfiles
           mountPath: /home/pok/arkserver
         securityContext:
           runAsUser: 0
