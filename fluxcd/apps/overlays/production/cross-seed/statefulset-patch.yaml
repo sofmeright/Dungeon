@@ -12,7 +12,7 @@ spec:
         - name: TZ
           value: "America/Chicago"
       - name: gluetun
-        image: docker.jcr.pcfae.com/qmcgaw/gluetun:v3.39.1
+        image: docker.jcr.pcfae.com/qmcgaw/gluetun:v3.40.0
         env:
         - name: VPN_SERVICE_PROVIDER
           value: "private internet access"
@@ -22,6 +22,8 @@ spec:
           value: "2468"
         - name: DNS_ADDRESS
           value: "10.144.0.10"
+        - name: UPDATER_PERIOD
+          value: "24h"
   volumeClaimTemplates:
   - metadata:
       name: config
