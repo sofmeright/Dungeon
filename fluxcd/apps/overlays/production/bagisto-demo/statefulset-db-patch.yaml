@@ -11,7 +11,7 @@ spec:
         image: docker.jcr.pcfae.com/mysql:5.7
         env:
         - name: MYSQL_DATADIR
-          value: /var/lib/mysql/data
+          value: /var/lib/mysql/datadir
         resources:
           requests:
             cpu: 100m
@@ -22,6 +22,7 @@ spec:
         volumeMounts:
         - name: hyrule-castle-bagisto-demo-mysql
           mountPath: /var/lib/mysql
+          subPath: mysql
   volumeClaimTemplates:
   - metadata:
       name: hyrule-castle-bagisto-demo-mysql
