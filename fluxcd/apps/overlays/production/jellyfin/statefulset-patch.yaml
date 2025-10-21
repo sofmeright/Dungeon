@@ -22,11 +22,6 @@ spec:
       containers:
       - name: jellyfin
         image: docker.jcr.pcfae.com/jellyfin/jellyfin:10.10.7
-        env:
-        - name: ASPNETCORE_Kestrel__Limits__MinRequestBodyDataRate__BytesPerSecond
-          value: "0"
-        - name: ASPNETCORE_Kestrel__Limits__MinRequestBodyDataRate__GracePeriod
-          value: "0"
         volumeMounts:
         - name: temple-of-time-jellyfin-config
           mountPath: /config
