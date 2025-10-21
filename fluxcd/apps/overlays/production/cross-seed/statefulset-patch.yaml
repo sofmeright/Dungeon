@@ -5,6 +5,16 @@ metadata:
 spec:
   template:
     spec:
+      affinity:
+        podAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: app
+                operator: In
+                values:
+                - qbittorrent
+            topologyKey: kubernetes.io/hostname
       initContainers:
       - name: config-init
         image: docker.jcr.pcfae.com/busybox:latest
