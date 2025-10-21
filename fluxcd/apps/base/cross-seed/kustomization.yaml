@@ -5,3 +5,4 @@ resources:
   - statefulset.yaml
   - service.yaml
   - externalsecret.yaml
+  - externalsecret-prowlarr.yaml

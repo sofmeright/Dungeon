@@ -29,6 +29,11 @@ spec:
             secretKeyRef:
               name: qbittorrent-secrets
               key: qbittorrent_pass
+        - name: PROWLARR_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: prowlarr-api-secret
+              key: api_key
         command:
         - sh
         - -c
@@ -36,7 +41,7 @@ spec:
           cat > /config/config.js << CONFIGEOF
           module.exports = {
             delay: 30,
-            torznab: ["http://prowlarr:9696/api"],
+            torznab: ["http://prowlarr:9696/api?apikey=$PROWLARR_API_KEY"],
             torrentClients: ["qbittorrent:http://$QBITTORRENT_USERNAME:$QBITTORRENT_PASSWORD@qbittorrent:6887"],
             port: 2468,
             host: "0.0.0.0",
