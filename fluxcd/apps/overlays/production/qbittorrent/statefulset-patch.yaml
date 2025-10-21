@@ -6,6 +6,73 @@ spec:
   replicas: 1
   template:
     spec:
+      initContainers:
+      - name: webui-config
+        image: docker.jcr.pcfae.com/python:3.11-alpine
+        env:
+        - name: QBITTORRENT_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: qbittorrent-secrets
+              key: qbittorrent_user
+        - name: QBITTORRENT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: qbittorrent-secrets
+              key: qbittorrent_pass
+        command:
+        - sh
+        - -c
+        - |
+          # Install passlib for PBKDF2 password hashing
+          pip install passlib --quiet 2>&1 | grep -v "WARNING" | grep -v "Requirement"
+
+          # Create qBittorrent config directory if needed
+          mkdir -p /config/qBittorrent
+
+          # Generate PBKDF2 hash for the password
+          HASH=$(python3 -c "from passlib.hash import pbkdf2_sha256; print(pbkdf2_sha256.using(rounds=100000).hash('$QBITTORRENT_PASSWORD'))")
+
+          CONFIG_FILE="/config/qBittorrent/qBittorrent.conf"
+
+          if [ -f "$CONFIG_FILE" ]; then
+            # Existing config: check if credentials already exist
+            if grep -q "^WebUI\\\\Username=" "$CONFIG_FILE"; then
+              echo "WebUI credentials already configured in existing config"
+            else
+              # Add credentials to existing [Preferences] section
+              echo "Adding WebUI credentials to existing config"
+              # Use sed to add lines after WebUI\ServerDomains line or at end of [Preferences]
+              if grep -q "^WebUI\\\\ServerDomains=" "$CONFIG_FILE"; then
+                sed -i "/^WebUI\\\\ServerDomains=/a WebUI\\\\Username=$QBITTORRENT_USERNAME\nWebUI\\\\Password_PBKDF2=\"@ByteArray($HASH)\"" "$CONFIG_FILE"
+              else
+                # Fallback: append to [Preferences] section
+                sed -i "/^\[Preferences\]/a WebUI\\\\Username=$QBITTORRENT_USERNAME\nWebUI\\\\Password_PBKDF2=\"@ByteArray($HASH)\"" "$CONFIG_FILE"
+              fi
+            fi
+          else
+            # Fresh install: create minimal config with standard ordering
+            echo "Creating fresh qBittorrent config with credentials"
+            cat > "$CONFIG_FILE" <<EOF
+          [Preferences]
+          Connection\PortRangeMin=6881
+          Connection\UPnP=false
+          Downloads\SavePath=/downloads/
+          Downloads\TempPath=/downloads/incomplete/
+          WebUI\Address=*
+          WebUI\Port=6887
+          WebUI\ServerDomains=*
+          WebUI\Username=$QBITTORRENT_USERNAME
+          WebUI\Password_PBKDF2="@ByteArray($HASH)"
+          EOF
+          fi
+
+          # Set ownership to match qbittorrent container user
+          chown -R 1000:1000 /config/qBittorrent
+          echo "qBittorrent WebUI credentials configured successfully"
+        volumeMounts:
+        - name: swift-sail-qbittorrent-config
+          mountPath: /config
       containers:
       - name: gluetun
         image: docker.jcr.pcfae.com/qmcgaw/gluetun:latest
