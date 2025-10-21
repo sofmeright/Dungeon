@@ -15,6 +15,9 @@ spec:
       containers:
       - name: postgres
         image: docker.jcr.pcfae.com/postgres:17
+        env:
+        - name: PGDATA
+          value: /var/lib/postgresql/data/pgdata
         resources:
           requests:
             cpu: 100m
