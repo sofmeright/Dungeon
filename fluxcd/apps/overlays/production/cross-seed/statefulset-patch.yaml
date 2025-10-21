@@ -23,8 +23,7 @@ spec:
         - sh
         - -c
         - |
-          if [ ! -f /config/config.js ]; then
-            cat > /config/config.js << CONFIGEOF
+          cat > /config/config.js << CONFIGEOF
           module.exports = {
             delay: 30,
             torznab: [],
@@ -60,11 +59,8 @@ spec:
             ]
           };
           CONFIGEOF
-            chown 1000:1000 /config/config.js
-            echo "Created default config.js with inject mode"
-          else
-            echo "config.js already exists, skipping initialization"
-          fi
+          chown 1000:1000 /config/config.js
+          echo "Created config.js with inject mode and qBittorrent integration"
       volumes:
       - name: downloads
         persistentVolumeClaim:
