@@ -22,6 +22,9 @@ spec:
       containers:
       - name: jellyfin
         image: docker.jcr.pcfae.com/jellyfin/jellyfin:10.10.7
+        env:
+        - name: JELLYFIN_PublishedServerUrl
+          value: "https://jfish.optcp.com"
         volumeMounts:
         - name: temple-of-time-jellyfin-config
           mountPath: /config
