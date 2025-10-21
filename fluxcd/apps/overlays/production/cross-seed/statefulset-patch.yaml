@@ -8,12 +8,23 @@ spec:
       initContainers:
       - name: config-init
         image: docker.jcr.pcfae.com/busybox:latest
+        env:
+        - name: QBITTORRENT_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: qbittorrent-secrets
+              key: qbittorrent_user
+        - name: QBITTORRENT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: qbittorrent-secrets
+              key: qbittorrent_pass
         command:
         - sh
         - -c
         - |
           if [ ! -f /config/config.js ]; then
-            cat > /config/config.js << 'CONFIGEOF'
+            cat > /config/config.js << CONFIGEOF
           module.exports = {
             delay: 30,
             torznab: [],
@@ -23,25 +34,34 @@ spec:
             searchCadence: null,
             excludeOlder: null,
             excludeRecentSearch: null,
-            action: "save",
+            action: "inject",
             matchMode: "safe",
-            skipRecheck: false,
-            dataDirs: [],
-            maxDataDepth: 1,
-            torrentDir: "/config/torrents",
-            outputDir: "/config/output",
-            includeEpisodes: false,
-            includeSingleEpisodes: false,
+            skipRecheck: true,
+            linkType: "hardlink",
+            linkDir: "/downloads",
+            dataDirs: ["/downloads"],
+            maxDataDepth: 3,
+            torrentDir: "/downloads/qBittorrent/BT_backup",
+            outputDir: null,
+            includeEpisodes: true,
+            includeSingleEpisodes: true,
             includeNonVideos: false,
             fuzzySizeThreshold: 0.02,
-            duplicateCategories: false,
+            duplicateCategories: true,
             apiAuth: false,
             qbittorrentUrl: "http://qbittorrent:6887",
-            torrentClients: []
+            torrentClients: [
+              {
+                type: "qbittorrent",
+                url: "http://qbittorrent:6887",
+                username: "${QBITTORRENT_USERNAME}",
+                password: "${QBITTORRENT_PASSWORD}"
+              }
+            ]
           };
           CONFIGEOF
             chown 1000:1000 /config/config.js
-            echo "Created default config.js"
+            echo "Created default config.js with inject mode"
           else
             echo "config.js already exists, skipping initialization"
           fi
@@ -51,6 +71,16 @@ spec:
         env:
         - name: TZ
           value: "America/Chicago"
+        - name: QBITTORRENT_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: qbittorrent-secrets
+              key: qbittorrent_user
+        - name: QBITTORRENT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: qbittorrent-secrets
+              key: qbittorrent_pass
       - name: gluetun
         image: docker.jcr.pcfae.com/qmcgaw/gluetun:v3.40.0
         env:
