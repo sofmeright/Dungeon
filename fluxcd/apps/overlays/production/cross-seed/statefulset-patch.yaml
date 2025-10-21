@@ -37,6 +37,7 @@ spec:
           module.exports = {
             delay: 30,
             torznab: [],
+            torrentClients: ["qbittorrent:http://$QBITTORRENT_USERNAME:$QBITTORRENT_PASSWORD@qbittorrent:6887"],
             port: 2468,
             host: "0.0.0.0",
             rssCadence: null,
@@ -47,7 +48,7 @@ spec:
             matchMode: "safe",
             skipRecheck: true,
             linkType: "hardlink",
-            linkDir: "/downloads",
+            linkDirs: ["/downloads"],
             dataDirs: ["/downloads"],
             maxDataDepth: 3,
             torrentDir: "/qbittorrent-config/qBittorrent/BT_backup",
@@ -58,16 +59,7 @@ spec:
             fuzzySizeThreshold: 0.02,
             duplicateCategories: true,
             apiAuth: false,
-            useClientTorrents: true,
-            qbittorrentUrl: "http://qbittorrent:6887",
-            torrentClients: [
-              {
-                type: "qbittorrent",
-                url: "http://qbittorrent:6887",
-                username: "$QBITTORRENT_USERNAME",
-                password: "$QBITTORRENT_PASSWORD"
-              }
-            ]
+            useClientTorrents: true
           };
           CONFIGEOF
           chown 1000:1000 /config/config.js
