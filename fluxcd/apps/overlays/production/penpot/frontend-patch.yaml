@@ -19,6 +19,8 @@ spec:
   - metadata:
       name: assets
     spec:
+      accessModes:
+      - ReadWriteOnce
       storageClassName: ceph-rbd
       resources:
         requests:
