@@ -46,6 +46,7 @@ spec:
       containers:
       - name: backend
         image: PLACEHOLDER_BACKEND_IMAGE
+        command: ["tactical-backend"]
         ports:
         - containerPort: 8000
           name: http

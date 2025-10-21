@@ -36,13 +36,7 @@ spec:
       containers:
       - name: celerybeat
         image: PLACEHOLDER_CELERYBEAT_IMAGE
-        command:
-        - celery
-        - -A
-        - tacticalrmm
-        - beat
-        - -l
-        - info
+        command: ["tactical-celerybeat"]
         env:
         - name: POSTGRES_HOST
           value: "tactical-postgres"
