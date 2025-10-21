@@ -63,8 +63,8 @@ spec:
               {
                 type: "qbittorrent",
                 url: "http://qbittorrent:6887",
-                username: "${QBITTORRENT_USERNAME}",
-                password: "${QBITTORRENT_PASSWORD}"
+                username: "$QBITTORRENT_USERNAME",
+                password: "$QBITTORRENT_PASSWORD"
               }
             ]
           };
