@@ -4,5 +4,4 @@ kind: Kustomization
 resources:
   - statefulset.yaml
   - service.yaml
-  - cronjob-geoip-update.yaml
   - externalsecret.yaml
