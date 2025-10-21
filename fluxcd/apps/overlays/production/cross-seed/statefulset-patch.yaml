@@ -36,7 +36,7 @@ spec:
           cat > /config/config.js << CONFIGEOF
           module.exports = {
             delay: 30,
-            torznab: [],
+            torznab: ["http://prowlarr:9696"],
             torrentClients: ["qbittorrent:http://$QBITTORRENT_USERNAME:$QBITTORRENT_PASSWORD@qbittorrent:6887"],
             port: 2468,
             host: "0.0.0.0",
@@ -48,7 +48,7 @@ spec:
             matchMode: "safe",
             skipRecheck: true,
             linkType: "hardlink",
-            linkDirs: ["/downloads/cross-seed-links"],
+            linkDirs: [],
             dataDirs: ["/downloads"],
             maxDataDepth: 3,
             outputDir: null,
