@@ -15,7 +15,11 @@ spec:
           value: "enable-registration enable-login-with-password enable-login-with-oidc enable-oidc-registration disable-email-verification enable-insecure-register enable-smtp enable-prepl-server disable-secure-session-cookies"
         - name: PENPOT_PUBLIC_URI
           value: "https://design.pcfae.com"
-      volumes:
-      - name: assets
-        persistentVolumeClaim:
-          claimName: temple-of-time-penpot-assets-penpot-backend-0
+  volumeClaimTemplates:
+  - metadata:
+      name: assets
+    spec:
+      storageClassName: ceph-rbd
+      resources:
+        requests:
+          storage: 20Gi

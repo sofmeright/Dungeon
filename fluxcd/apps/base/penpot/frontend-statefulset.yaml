@@ -38,7 +38,13 @@ spec:
           limits:
             memory: "512Mi"
             cpu: "500m"
-      volumes:
-      - name: assets
-        persistentVolumeClaim:
-          claimName: PLACEHOLDER_ASSETS_PVC
+  volumeClaimTemplates:
+  - metadata:
+      name: assets
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      storageClassName: PLACEHOLDER_STORAGE_CLASS
+      resources:
+        requests:
+          storage: PLACEHOLDER_STORAGE_SIZE
