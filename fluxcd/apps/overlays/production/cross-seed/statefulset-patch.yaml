@@ -40,7 +40,7 @@ spec:
             linkDir: "/downloads",
             dataDirs: ["/downloads"],
             maxDataDepth: 3,
-            torrentDir: "/downloads/qBittorrent/BT_backup",
+            torrentDir: "/qbittorrent-config/qBittorrent/BT_backup",
             outputDir: null,
             includeEpisodes: true,
             includeSingleEpisodes: true,
@@ -65,12 +65,18 @@ spec:
       - name: downloads
         persistentVolumeClaim:
           claimName: swift-sail-qbittorrent-downloads-qbittorrent-0
+      - name: qbittorrent-config
+        persistentVolumeClaim:
+          claimName: swift-sail-qbittorrent-config-qbittorrent-0
       containers:
       - name: cross-seed
         image: docker.jcr.pcfae.com/crossseed/cross-seed:latest
         volumeMounts:
         - name: downloads
           mountPath: /downloads
+        - name: qbittorrent-config
+          mountPath: /qbittorrent-config
+          readOnly: true
         env:
         - name: TZ
           value: "America/Chicago"
