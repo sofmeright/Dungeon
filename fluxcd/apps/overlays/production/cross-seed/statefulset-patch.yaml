@@ -39,7 +39,7 @@ spec:
         - -c
         - |
           # Get qBittorrent pod IP from Kubernetes API via DNS
-          QBITTORRENT_IP=$(nslookup qbittorrent-0.qbittorrent.swift-sail.svc.cluster.local | grep -A1 "Name:" | tail -n1 | awk '{print $3}')
+          QBITTORRENT_IP=$(nslookup qbittorrent-0.qbittorrent.swift-sail.svc.cluster.local | grep -A1 "Name:" | tail -n1 | awk '{print $2}')
 
           cat > /config/config.js << CONFIGEOF
           module.exports = {
