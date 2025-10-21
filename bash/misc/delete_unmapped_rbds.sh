@@ -76,6 +76,7 @@ for vol in "${no_watcher_vols[@]}"; do
     # Double-check watchers right before deletion (things can change)
     if rbd status "$POOL/$vol" 2>/dev/null | grep -q "watcher="; then
         echo "  ⚠️  SKIPPING: $vol now has active watchers (mounted between scan and deletion)"
+        echo ""
         skipped=$((skipped + 1))
         continue
     fi
