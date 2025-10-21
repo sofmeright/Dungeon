@@ -58,6 +58,7 @@ spec:
             fuzzySizeThreshold: 0.02,
             duplicateCategories: true,
             apiAuth: false,
+            useClientTorrents: true,
             qbittorrentUrl: "http://qbittorrent:6887",
             torrentClients: [
               {
