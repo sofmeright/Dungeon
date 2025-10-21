@@ -36,7 +36,7 @@ spec:
           cat > /config/config.js << CONFIGEOF
           module.exports = {
             delay: 30,
-            torznab: ["http://prowlarr:9696"],
+            torznab: ["http://prowlarr:9696/api"],
             torrentClients: ["qbittorrent:http://$QBITTORRENT_USERNAME:$QBITTORRENT_PASSWORD@qbittorrent:6887"],
             port: 2468,
             host: "0.0.0.0",
