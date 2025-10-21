@@ -38,11 +38,14 @@ spec:
         - sh
         - -c
         - |
+          # Get qBittorrent pod IP from Kubernetes API via DNS
+          QBITTORRENT_IP=$(getent hosts qbittorrent-0.qbittorrent.swift-sail.svc.cluster.local | awk '{print $1}')
+
           cat > /config/config.js << CONFIGEOF
           module.exports = {
             delay: 30,
             torznab: ["http://prowlarr:9696/api?apikey=$PROWLARR_API_KEY"],
-            torrentClients: ["qbittorrent:http://$QBITTORRENT_USERNAME:$QBITTORRENT_PASSWORD@qbittorrent:6887"],
+            torrentClients: ["qbittorrent:http://$QBITTORRENT_USERNAME:$QBITTORRENT_PASSWORD@$QBITTORRENT_IP:6887"],
             port: 2468,
             host: "0.0.0.0",
             rssCadence: null,
@@ -67,7 +70,7 @@ spec:
           };
           CONFIGEOF
           chown 1000:1000 /config/config.js
-          echo "Created config.js with inject mode and qBittorrent integration"
+          echo "Created config.js with qBittorrent at $QBITTORRENT_IP:6887"
       volumes:
       - name: downloads
         persistentVolumeClaim:
