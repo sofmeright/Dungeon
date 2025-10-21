@@ -45,11 +45,11 @@ spec:
               # Use sed to add lines after WebUI\ServerDomains line or at end of [Preferences]
               if grep -q "^WebUI\\\\ServerDomains=" "$CONFIG_FILE"; then
                 sed -i "/^WebUI\\\\ServerDomains=/a WebUI\\\\Username=$QBITTORRENT_USERNAME" "$CONFIG_FILE"
-                sed -i "/^WebUI\\\\Username=/a WebUI\\\\Password_PBKDF2=\"@ByteArray($HASH)\"" "$CONFIG_FILE"
+                sed -i "/^WebUI\\\\Username=/a WebUI\\\\Password_PBKDF2=\\\"@ByteArray($HASH)\\\"" "$CONFIG_FILE"
               else
                 # Fallback: append to [Preferences] section
                 sed -i "/^\[Preferences\]/a WebUI\\\\Username=$QBITTORRENT_USERNAME" "$CONFIG_FILE"
-                sed -i "/^WebUI\\\\Username=/a WebUI\\\\Password_PBKDF2=\"@ByteArray($HASH)\"" "$CONFIG_FILE"
+                sed -i "/^WebUI\\\\Username=/a WebUI\\\\Password_PBKDF2=\\\"@ByteArray($HASH)\\\"" "$CONFIG_FILE"
               fi
             fi
           else
