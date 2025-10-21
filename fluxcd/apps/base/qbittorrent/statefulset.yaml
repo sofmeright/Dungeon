@@ -1,17 +1,17 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: gluetun-primary
+  name: qbittorrent
 spec:
-  serviceName: gluetun-primary
+  serviceName: qbittorrent
   replicas: PLACEHOLDER_REPLICAS
   selector:
     matchLabels:
-      app: gluetun-primary
+      app: qbittorrent
   template:
     metadata:
       labels:
-        app: gluetun-primary
+        app: qbittorrent
     spec:
       containers:
       # Gluetun VPN Gateway
@@ -37,12 +37,12 @@ spec:
         - name: OPENVPN_USER
           valueFrom:
             secretKeyRef:
-              name: gluetun-secrets
+              name: qbittorrent-secrets
               key: vpn_user
         - name: OPENVPN_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: gluetun-secrets
+              name: qbittorrent-secrets
               key: vpn_password
         volumeMounts:
         - name: gluetun-config
@@ -99,12 +99,12 @@ spec:
         - name: QBITTORRENT_USER
           valueFrom:
             secretKeyRef:
-              name: gluetun-secrets
+              name: qbittorrent-secrets
               key: qbittorrent_user
         - name: QBITTORRENT_PASS
           valueFrom:
             secretKeyRef:
-              name: gluetun-secrets
+              name: qbittorrent-secrets
               key: qbittorrent_pass
         - name: PORT_FORWARDED
           value: "/tmp/gluetun/forwarded_port"

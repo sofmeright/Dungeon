@@ -39,7 +39,7 @@ resources:
   - semaphore
   - roundcube-primary-gmail
   - wikijs-vegan
-  - gluetun-primary
+  - qbittorrent
   - neko-vpn
   - prowlarr
   - radarr
