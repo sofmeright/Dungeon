@@ -15,6 +15,51 @@ spec:
     spec:
       securityContext:
         fsGroup: 1000
+      initContainers:
+      - name: config-init
+        image: docker.io/busybox:latest
+        command:
+        - sh
+        - -c
+        - |
+          if [ ! -f /config/config.js ]; then
+            cat > /config/config.js << 'CONFIGEOF'
+          module.exports = {
+            delay: 30,
+            torznab: [],
+            port: 2468,
+            host: "0.0.0.0",
+            rssCadence: null,
+            searchCadence: null,
+            excludeOlder: null,
+            excludeRecentSearch: null,
+            action: "save",
+            matchMode: "safe",
+            skipRecheck: false,
+            linkType: null,
+            linkDir: null,
+            dataDirs: [],
+            maxDataDepth: 1,
+            torrentDir: "/config/torrents",
+            outputDir: "/config/output",
+            includeEpisodes: false,
+            includeSingleEpisodes: false,
+            includeNonVideos: false,
+            fuzzySizeThreshold: 0.02,
+            duplicateCategories: false,
+            apiAuth: false,
+            qbittorrentUrl: "PLACEHOLDER_QBITTORRENT_URL",
+            torrentClients: []
+          };
+          CONFIGEOF
+            chown 1000:1000 /config/config.js
+            echo "Created default config.js"
+          else
+            echo "config.js already exists, skipping initialization"
+          fi
+        volumeMounts:
+        - name: config
+          mountPath: /config
       containers:
       - name: cross-seed
         image: docker.io/crossseed/cross-seed:PLACEHOLDER_IMAGE_TAG
