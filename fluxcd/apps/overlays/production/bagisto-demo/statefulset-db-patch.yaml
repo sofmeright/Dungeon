@@ -9,6 +9,9 @@ spec:
       containers:
       - name: mysql
         image: docker.jcr.pcfae.com/mysql:5.7
+        env:
+        - name: MYSQL_DATADIR
+          value: /var/lib/mysql/data
         resources:
           requests:
             cpu: 100m
