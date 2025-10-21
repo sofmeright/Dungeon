@@ -5,6 +5,11 @@ metadata:
 spec:
   template:
     spec:
+      initContainers:
+      - name: geoip-update
+        volumeMounts:
+        - name: compass-echo-ip-data
+          mountPath: /usr/share/GeoIP
       containers:
       - name: echo-ip
         image: docker.jcr.pcfae.com/mpolden/echoip:latest
