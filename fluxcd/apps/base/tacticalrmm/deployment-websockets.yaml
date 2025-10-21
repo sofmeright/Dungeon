@@ -36,7 +36,7 @@ spec:
       containers:
       - name: websockets
         image: PLACEHOLDER_WEBSOCKETS_IMAGE
-        command: ["tactical-websockets"]
+        args: ["tactical-websockets"]
         ports:
         - containerPort: 8001
           name: http

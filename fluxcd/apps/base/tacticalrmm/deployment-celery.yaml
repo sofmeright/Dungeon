@@ -36,7 +36,7 @@ spec:
       containers:
       - name: celery
         image: PLACEHOLDER_CELERY_IMAGE
-        command: ["tactical-celery"]
+        args: ["tactical-celery"]
         env:
         - name: POSTGRES_HOST
           value: "tactical-postgres"
