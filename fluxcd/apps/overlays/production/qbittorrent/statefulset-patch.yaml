@@ -42,16 +42,16 @@ spec:
             else
               # Add credentials to existing [Preferences] section
               echo "Adding WebUI credentials to existing config"
-              # Use sed to add username, then echo to add password with preserved quotes
-              if grep -q "^WebUI\\\\ServerDomains=" "$CONFIG_FILE"; then
-                sed -i "/^WebUI\\\\ServerDomains=/a WebUI\\\\Username=$QBITTORRENT_USERNAME" "$CONFIG_FILE"
-              else
-                # Fallback: append to [Preferences] section
-                sed -i "/^\[Preferences\]/a WebUI\\\\Username=$QBITTORRENT_USERNAME" "$CONFIG_FILE"
-              fi
-              # Add password line after username using echo to preserve quotes
-              sed -i "/^WebUI\\\\Username=/a PLACEHOLDER_FOR_PASSWORD" "$CONFIG_FILE"
-              sed -i "s|PLACEHOLDER_FOR_PASSWORD|WebUI\\\\Password_PBKDF2=\"@ByteArray($HASH)\"|" "$CONFIG_FILE"
+              # Use awk to insert credentials while preserving quotes
+              awk -v user="$QBITTORRENT_USERNAME" -v hash="$HASH" '
+                /^WebUI\\ServerDomains=/ {
+                  print
+                  print "WebUI\\Username=" user
+                  print "WebUI\\Password_PBKDF2=\"@ByteArray(" hash ")\""
+                  next
+                }
+                { print }
+              ' "$CONFIG_FILE" > "$CONFIG_FILE.tmp" && mv "$CONFIG_FILE.tmp" "$CONFIG_FILE"
             fi
           else
             # Fresh install: create minimal config with standard ordering
