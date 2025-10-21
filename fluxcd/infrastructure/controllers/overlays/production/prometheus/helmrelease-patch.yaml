@@ -17,6 +17,15 @@ spec:
                 requests:
                   storage: 10Gi
 
+        # Resource limits - increased for WAL replay
+        resources:
+          requests:
+            memory: 1Gi
+            cpu: 500m
+          limits:
+            memory: 4Gi
+            cpu: "2"
+
         # Disable Prometheus compaction for Thanos compatibility
         disableCompaction: true
 
