@@ -43,13 +43,15 @@ spec:
               # Add credentials to existing [Preferences] section
               echo "Adding WebUI credentials to existing config"
               # Use sed to add lines after WebUI\ServerDomains line or at end of [Preferences]
+              # Build password line with quotes preserved
+              PASSWORD_LINE="WebUI\\\\Password_PBKDF2=\"@ByteArray($HASH)\""
               if grep -q "^WebUI\\\\ServerDomains=" "$CONFIG_FILE"; then
                 sed -i "/^WebUI\\\\ServerDomains=/a WebUI\\\\Username=$QBITTORRENT_USERNAME" "$CONFIG_FILE"
-                sed -i "/^WebUI\\\\Username=/a WebUI\\\\Password_PBKDF2=\\\"@ByteArray($HASH)\\\"" "$CONFIG_FILE"
+                sed -i "/^WebUI\\\\Username=/a $PASSWORD_LINE" "$CONFIG_FILE"
               else
                 # Fallback: append to [Preferences] section
                 sed -i "/^\[Preferences\]/a WebUI\\\\Username=$QBITTORRENT_USERNAME" "$CONFIG_FILE"
-                sed -i "/^WebUI\\\\Username=/a WebUI\\\\Password_PBKDF2=\\\"@ByteArray($HASH)\\\"" "$CONFIG_FILE"
+                sed -i "/^WebUI\\\\Username=/a $PASSWORD_LINE" "$CONFIG_FILE"
               fi
             fi
           else
