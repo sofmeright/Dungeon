@@ -118,7 +118,7 @@ spec:
         - name: FIREWALL_INPUT_PORTS
           value: "2468"
         - name: FIREWALL_OUTBOUND_SUBNETS
-          value: "10.0.0.0/8,172.16.0.0/12"
+          value: "10.0.0.0/8,172.16.0.0/12,172.22.30.0/24"
         - name: DNS_ADDRESS
           $patch: delete
         - name: OPENVPN_USER
