@@ -32,10 +32,6 @@ patches:
     target:
       kind: Deployment
       name: tactical-frontend
-  - path: job-init-patch.yaml
-    target:
-      kind: Job
-      name: tactical-init
   - path: deployment-backend-patch.yaml
     target:
       kind: Deployment
