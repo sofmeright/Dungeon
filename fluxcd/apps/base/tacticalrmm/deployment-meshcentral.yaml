@@ -46,15 +46,14 @@ spec:
       - name: tactical-init
         image: PLACEHOLDER_INIT_IMAGE
         args: ["tactical-init"]
-        env:
-        - name: MESH_WAIT_TIMEOUT
-          value: "30"
         volumeMounts:
         - name: meshcentral-data
           mountPath: /home/node/app/meshcentral-data
         - name: tactical-shared
           mountPath: /opt/tactical
         env:
+        - name: MESH_WAIT_TIMEOUT
+          value: "30"
         - name: POSTGRES_HOST
           value: "tactical-postgres"
         - name: POSTGRES_PORT
