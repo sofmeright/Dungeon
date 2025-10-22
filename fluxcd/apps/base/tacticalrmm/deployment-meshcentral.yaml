@@ -45,7 +45,22 @@ spec:
           done
       - name: tactical-init
         image: PLACEHOLDER_INIT_IMAGE
-        args: ["tactical-init"]
+        command: ["/bin/bash"]
+        args:
+        - "-c"
+        - |
+          set -e
+          echo "Running TacticalRMM initialization without meshcentral wait..."
+          cd /opt/tactical
+          # Run Django migrations
+          python manage.py migrate --no-input
+          # Collect static files
+          python manage.py collectstatic --no-input
+          # Create admin user if needed
+          python manage.py create_admin || true
+          # Generate mesh token
+          python manage.py generate_mesh_token
+          echo "Initialization complete!"
         volumeMounts:
         - name: meshcentral-data
           mountPath: /home/node/app/meshcentral-data
