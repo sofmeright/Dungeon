@@ -120,11 +120,11 @@ spec:
         - name: FIREWALL_OUTBOUND_SUBNETS
           value: "10.0.0.0/8,172.16.0.0/12,172.22.30.33/32"
         - name: DNS_ADDRESS
-          value: ""
+          value: "10.144.0.10"
         - name: DNS_KEEP_NAMESERVER
-          value: "off"
+          $patch: delete
         - name: DOT
-          value: "on"
+          $patch: delete
   volumeClaimTemplates:
   - metadata:
       name: config
