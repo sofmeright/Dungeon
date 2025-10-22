@@ -38,8 +38,16 @@ spec:
         - sh
         - -c
         - |
-          # Use qBittorrent service name for connection
-          QBITTORRENT_HOST="qbittorrent"
+          # Get qBittorrent pod IP directly (service ClusterIP routing blocked by Gluetun firewall)
+          # Both pods are co-located via podAffinity, so pod IP is reachable
+          QBITTORRENT_HOST=$(getent hosts qbittorrent-0.qbittorrent.swift-sail.svc.cluster.local | awk '{print $1}')
+
+          if [ -z "$QBITTORRENT_HOST" ]; then
+            echo "ERROR: Could not resolve qBittorrent pod IP"
+            exit 1
+          fi
+
+          echo "Resolved qBittorrent pod IP: $QBITTORRENT_HOST"
 
           cat > /config/config.js << CONFIGEOF
           module.exports = {
