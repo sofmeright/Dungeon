@@ -40,7 +40,7 @@ spec:
         - |
           # Get qBittorrent pod IP directly (service ClusterIP routing blocked by Gluetun firewall)
           # Both pods are co-located via podAffinity, so pod IP is reachable
-          QBITTORRENT_HOST=$(getent hosts qbittorrent-0.qbittorrent.swift-sail.svc.cluster.local | awk '{print $1}')
+          QBITTORRENT_HOST=$(nslookup qbittorrent-0.qbittorrent.swift-sail.svc.cluster.local | grep "Address:" | tail -1 | awk '{print $2}')
 
           if [ -z "$QBITTORRENT_HOST" ]; then
             echo "ERROR: Could not resolve qBittorrent pod IP"
