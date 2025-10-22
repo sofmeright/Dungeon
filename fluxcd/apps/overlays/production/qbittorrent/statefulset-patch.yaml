@@ -30,8 +30,8 @@ spec:
           # Create qBittorrent config directory if needed
           mkdir -p /config/qBittorrent
 
-          # Generate PBKDF2 hash for the password
-          HASH=$(python3 -c "from passlib.hash import pbkdf2_sha256; print(pbkdf2_sha256.using(rounds=100000).hash('$QBITTORRENT_PASSWORD'))")
+          # Generate PBKDF2-SHA512 hash for the password (qBittorrent uses SHA512, not SHA256)
+          HASH=$(python3 -c "from passlib.hash import pbkdf2_sha512; print(pbkdf2_sha512.using(rounds=100000).hash('$QBITTORRENT_PASSWORD'))")
 
           CONFIG_FILE="/config/qBittorrent/qBittorrent.conf"
 
