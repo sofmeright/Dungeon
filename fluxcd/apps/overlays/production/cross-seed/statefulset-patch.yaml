@@ -122,9 +122,9 @@ spec:
         - name: DNS_ADDRESS
           $patch: delete
         - name: DNS_KEEP_NAMESERVER
-          value: "on"
-        - name: DOT
           value: "off"
+        - name: DOT
+          value: "on"
   volumeClaimTemplates:
   - metadata:
       name: config
