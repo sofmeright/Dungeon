@@ -24,14 +24,22 @@ spec:
         - sh
         - -c
         - |
-          # Install passlib for PBKDF2 password hashing
-          pip install passlib --quiet 2>&1 | grep -v "WARNING" | grep -v "Requirement"
-
           # Create qBittorrent config directory if needed
           mkdir -p /config/qBittorrent
 
-          # Generate PBKDF2-SHA512 hash for the password (qBittorrent uses SHA512, not SHA256)
-          HASH=$(python3 -c "from passlib.hash import pbkdf2_sha512; print(pbkdf2_sha512.using(rounds=100000).hash('$QBITTORRENT_PASSWORD'))")
+          # Generate PBKDF2-SHA512 hash for qBittorrent WebUI
+          # qBittorrent uses base64(salt):base64(hash) format, not Modular Crypt Format
+          HASH=$(python3 -c "
+import base64
+import hashlib
+import os
+import sys
+
+password = sys.argv[1].encode()
+salt = os.urandom(16)  # 16 bytes = 128 bits
+hash_result = hashlib.pbkdf2_hmac('sha512', password, salt, 100000)
+print(f'{base64.b64encode(salt).decode()}:{base64.b64encode(hash_result).decode()}')
+" "$QBITTORRENT_PASSWORD")
 
           CONFIG_FILE="/config/qBittorrent/qBittorrent.conf"
 
