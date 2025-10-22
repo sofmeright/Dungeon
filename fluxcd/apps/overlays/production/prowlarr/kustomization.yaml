@@ -9,3 +9,4 @@ resources:
 patches:
   - path: statefulset-patch.yaml
   - path: externalsecret-patch.yaml
+  - path: service-patch.yaml

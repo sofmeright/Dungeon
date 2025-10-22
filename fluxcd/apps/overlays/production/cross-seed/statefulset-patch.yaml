@@ -38,23 +38,30 @@ spec:
         - sh
         - -c
         - |
-          # Get pod IPs directly (service ClusterIP routing blocked by Gluetun firewall)
-          # qBittorrent pod is co-located via podAffinity, Prowlarr is not but needs direct IP
-          QBITTORRENT_HOST=$(nslookup qbittorrent-0.qbittorrent.swift-sail.svc.cluster.local | grep -A 1 "Name:" | grep "Address:" | awk '{print $2}')
-          PROWLARR_HOST=$(nslookup prowlarr-0.prowlarr.swift-sail.svc.cluster.local | grep -A 1 "Name:" | grep "Address:" | awk '{print $2}')
+          # Resolve LoadBalancer service IPs with retry logic for startup order dependencies
+          # Both qBittorrent and Prowlarr share LoadBalancer IP 172.22.30.33 (great-sea)
+          MAX_RETRIES=30
+          RETRY_DELAY=10
 
-          if [ -z "$QBITTORRENT_HOST" ]; then
-            echo "ERROR: Could not resolve qBittorrent pod IP"
+          echo "Waiting for qBittorrent and Prowlarr services to be ready..."
+          for i in $(seq 1 $MAX_RETRIES); do
+            QBITTORRENT_HOST=$(nslookup qbittorrent.swift-sail.svc.cluster.local 2>/dev/null | grep -A 1 "Name:" | grep "Address:" | awk '{print $2}')
+            PROWLARR_HOST=$(nslookup prowlarr.swift-sail.svc.cluster.local 2>/dev/null | grep -A 1 "Name:" | grep "Address:" | awk '{print $2}')
+
+            if [ -n "$QBITTORRENT_HOST" ] && [ -n "$PROWLARR_HOST" ]; then
+              echo "✓ Resolved qBittorrent LoadBalancer IP: $QBITTORRENT_HOST"
+              echo "✓ Resolved Prowlarr LoadBalancer IP: $PROWLARR_HOST"
+              break
+            fi
+
+            echo "Waiting for services to be ready... (attempt $i/$MAX_RETRIES)"
+            sleep $RETRY_DELAY
+          done
+
+          if [ -z "$QBITTORRENT_HOST" ] || [ -z "$PROWLARR_HOST" ]; then
+            echo "ERROR: Failed to resolve service IPs after $MAX_RETRIES attempts"
             exit 1
           fi
-
-          if [ -z "$PROWLARR_HOST" ]; then
-            echo "ERROR: Could not resolve Prowlarr pod IP"
-            exit 1
-          fi
-
-          echo "Resolved qBittorrent pod IP: $QBITTORRENT_HOST"
-          echo "Resolved Prowlarr pod IP: $PROWLARR_HOST"
 
           cat > /config/config.js << CONFIGEOF
           module.exports = {
