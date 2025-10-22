@@ -38,21 +38,28 @@ spec:
         - sh
         - -c
         - |
-          # Get qBittorrent pod IP directly (service ClusterIP routing blocked by Gluetun firewall)
-          # Both pods are co-located via podAffinity, so pod IP is reachable
+          # Get pod IPs directly (service ClusterIP routing blocked by Gluetun firewall)
+          # qBittorrent pod is co-located via podAffinity, Prowlarr is not but needs direct IP
           QBITTORRENT_HOST=$(nslookup qbittorrent-0.qbittorrent.swift-sail.svc.cluster.local | grep "Address:" | tail -1 | awk '{print $2}')
+          PROWLARR_HOST=$(nslookup prowlarr-0.prowlarr.swift-sail.svc.cluster.local | grep "Address:" | tail -1 | awk '{print $2}')
 
           if [ -z "$QBITTORRENT_HOST" ]; then
             echo "ERROR: Could not resolve qBittorrent pod IP"
             exit 1
           fi
 
+          if [ -z "$PROWLARR_HOST" ]; then
+            echo "ERROR: Could not resolve Prowlarr pod IP"
+            exit 1
+          fi
+
           echo "Resolved qBittorrent pod IP: $QBITTORRENT_HOST"
+          echo "Resolved Prowlarr pod IP: $PROWLARR_HOST"
 
           cat > /config/config.js << CONFIGEOF
           module.exports = {
             delay: 30,
-            torznab: ["http://prowlarr:9696/api?apikey=$PROWLARR_API_KEY"],
+            torznab: ["http://$PROWLARR_HOST:9696/api?apikey=$PROWLARR_API_KEY"],
             torrentClients: ["qbittorrent:http://$QBITTORRENT_USERNAME:$QBITTORRENT_PASSWORD@$QBITTORRENT_HOST:6887"],
             port: 2468,
             host: "0.0.0.0",
