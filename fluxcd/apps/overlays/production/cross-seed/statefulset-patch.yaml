@@ -117,6 +117,16 @@ spec:
           value: "2468"
         - name: FIREWALL_OUTBOUND_SUBNETS
           value: "10.0.0.0/8,172.16.0.0/12"
+        - name: OPENVPN_USER
+          valueFrom:
+            secretKeyRef:
+              name: qbittorrent-secrets
+              key: vpn_user
+        - name: OPENVPN_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: qbittorrent-secrets
+              key: vpn_pass
         - name: DNS_KEEP_NAMESERVER
           value: "off"
         - name: DOT
