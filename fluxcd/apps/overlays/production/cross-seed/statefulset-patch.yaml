@@ -38,12 +38,12 @@ spec:
         - sh
         - -c
         - |
-          # cross-seed uses direct cluster networking to communicate with qBittorrent and Prowlarr
-          # Both services are accessible via their Kubernetes service names
-          QBITTORRENT_HOST="qbittorrent"
-          PROWLARR_HOST="prowlarr"
+          # cross-seed connects via LoadBalancer IP (172.22.30.33) shared by qBittorrent and Prowlarr
+          # This allows connectivity through Gluetun VPN network isolation
+          QBITTORRENT_HOST="172.22.30.33"
+          PROWLARR_HOST="172.22.30.33"
 
-          echo "Configuring cross-seed for direct cluster networking"
+          echo "Configuring cross-seed for LoadBalancer connectivity"
           echo "qBittorrent: $QBITTORRENT_HOST:6887"
           echo "Prowlarr: $PROWLARR_HOST:9696"
 
