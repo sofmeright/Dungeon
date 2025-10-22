@@ -73,16 +73,6 @@ spec:
             secretKeyRef:
               name: tacticalrmm-secrets
               key: MESH_PASSWORD
-        - name: TRMM_USER
-          valueFrom:
-            secretKeyRef:
-              name: tacticalrmm-secrets
-              key: TRMM_USER
-        - name: TRMM_PASS
-          valueFrom:
-            secretKeyRef:
-              name: tacticalrmm-secrets
-              key: TRMM_PASS
         - name: DJANGO_SEKRET
           valueFrom:
             secretKeyRef:
