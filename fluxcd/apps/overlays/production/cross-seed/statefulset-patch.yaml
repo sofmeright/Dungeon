@@ -113,10 +113,14 @@ spec:
           value: "private internet access"
         - name: SERVER_REGIONS
           value: "CA Vancouver"
+        - name: FIREWALL_VPN_INPUT_PORTS
+          $patch: delete
         - name: FIREWALL_INPUT_PORTS
           value: "2468"
         - name: FIREWALL_OUTBOUND_SUBNETS
           value: "10.0.0.0/8,172.16.0.0/12"
+        - name: DNS_ADDRESS
+          $patch: delete
         - name: OPENVPN_USER
           valueFrom:
             secretKeyRef:
