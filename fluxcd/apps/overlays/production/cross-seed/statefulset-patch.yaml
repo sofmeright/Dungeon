@@ -38,12 +38,12 @@ spec:
         - sh
         - -c
         - |
-          # cross-seed runs behind same Gluetun VPN as qBittorrent and Prowlarr
-          # Use localhost since all containers share the same network namespace
-          QBITTORRENT_HOST="localhost"
-          PROWLARR_HOST="localhost"
+          # cross-seed, qBittorrent, and Prowlarr each run behind their own Gluetun VPN
+          # Use LoadBalancer IP for connectivity since they're separate pods
+          QBITTORRENT_HOST="172.22.30.33"
+          PROWLARR_HOST="172.22.30.33"
 
-          echo "Configuring cross-seed to use localhost (shared Gluetun network namespace)"
+          echo "Configuring cross-seed to use LoadBalancer IP (172.22.30.33)"
 
           cat > /config/config.js << CONFIGEOF
           module.exports = {
