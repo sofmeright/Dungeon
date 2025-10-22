@@ -50,3 +50,9 @@ spec:
           value: "27017"
         - name: MESH_PERSISTENT_CONFIG
           value: "1"
+        volumeMounts:
+        - name: meshcentral-data
+          mountPath: /home/node/app/meshcentral-data
+      volumes:
+      - name: meshcentral-data
+        emptyDir: {}
