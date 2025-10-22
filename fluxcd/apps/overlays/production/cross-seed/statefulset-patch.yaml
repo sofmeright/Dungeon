@@ -38,30 +38,12 @@ spec:
         - sh
         - -c
         - |
-          # Resolve LoadBalancer service IPs with retry logic for startup order dependencies
-          # Both qBittorrent and Prowlarr share LoadBalancer IP 172.22.30.33 (great-sea)
-          MAX_RETRIES=30
-          RETRY_DELAY=10
+          # cross-seed runs behind same Gluetun VPN as qBittorrent and Prowlarr
+          # Use localhost since all containers share the same network namespace
+          QBITTORRENT_HOST="localhost"
+          PROWLARR_HOST="localhost"
 
-          echo "Waiting for qBittorrent and Prowlarr services to be ready..."
-          for i in $(seq 1 $MAX_RETRIES); do
-            QBITTORRENT_HOST=$(nslookup qbittorrent.swift-sail.svc.cluster.local 2>/dev/null | grep -A 1 "Name:" | grep "Address:" | awk '{print $2}')
-            PROWLARR_HOST=$(nslookup prowlarr.swift-sail.svc.cluster.local 2>/dev/null | grep -A 1 "Name:" | grep "Address:" | awk '{print $2}')
-
-            if [ -n "$QBITTORRENT_HOST" ] && [ -n "$PROWLARR_HOST" ]; then
-              echo "✓ Resolved qBittorrent LoadBalancer IP: $QBITTORRENT_HOST"
-              echo "✓ Resolved Prowlarr LoadBalancer IP: $PROWLARR_HOST"
-              break
-            fi
-
-            echo "Waiting for services to be ready... (attempt $i/$MAX_RETRIES)"
-            sleep $RETRY_DELAY
-          done
-
-          if [ -z "$QBITTORRENT_HOST" ] || [ -z "$PROWLARR_HOST" ]; then
-            echo "ERROR: Failed to resolve service IPs after $MAX_RETRIES attempts"
-            exit 1
-          fi
+          echo "Configuring cross-seed to use localhost (shared Gluetun network namespace)"
 
           cat > /config/config.js << CONFIGEOF
           module.exports = {
@@ -123,7 +105,26 @@ spec:
               name: qbittorrent-secrets
               key: qbittorrent_pass
       - name: gluetun
-        $patch: delete
+        image: docker.jcr.pcfae.com/qmcgaw/gluetun:latest
+        securityContext:
+          privileged: true
+        env:
+        - name: VPN_SERVICE_PROVIDER
+          value: "private internet access"
+        - name: SERVER_REGIONS
+          value: "CA Vancouver"
+        - name: FIREWALL_INPUT_PORTS
+          value: "2468"
+        - name: FIREWALL_OUTBOUND_SUBNETS
+          value: "10.0.0.0/8,172.16.0.0/12"
+        - name: DNS_KEEP_NAMESERVER
+          value: "off"
+        - name: DOT
+          value: "on"
+        - name: TZ
+          value: "Etc/UTC"
+        - name: LOG_LEVEL
+          value: "debug"
   volumeClaimTemplates:
   - metadata:
       name: config
