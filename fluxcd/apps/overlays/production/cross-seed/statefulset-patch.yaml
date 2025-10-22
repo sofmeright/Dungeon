@@ -38,12 +38,12 @@ spec:
         - sh
         - -c
         - |
-          # cross-seed uses localhost to communicate with qBittorrent and Prowlarr
-          # All three services share the same Gluetun VPN network stack
-          QBITTORRENT_HOST="localhost"
-          PROWLARR_HOST="localhost"
+          # cross-seed communicates via Kubernetes service DNS names
+          # Each service has its own Gluetun VPN with firewall rules allowing cluster network access
+          QBITTORRENT_HOST="qbittorrent"
+          PROWLARR_HOST="prowlarr"
 
-          echo "Configuring cross-seed for shared VPN network connectivity"
+          echo "Configuring cross-seed for Kubernetes service connectivity"
           echo "qBittorrent: $QBITTORRENT_HOST:6887"
           echo "Prowlarr: $PROWLARR_HOST:9696"
 
