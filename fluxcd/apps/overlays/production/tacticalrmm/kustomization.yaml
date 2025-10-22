@@ -24,14 +24,14 @@ patches:
     target:
       kind: PersistentVolumeClaim
       name: tactical-shared
-  - path: job-init-patch.yaml
-    target:
-      kind: Job
-      name: tactical-init
   - path: deployment-meshcentral-patch.yaml
     target:
       kind: Deployment
       name: tactical-meshcentral
+  - path: deployment-init-patch.yaml
+    target:
+      kind: Deployment
+      name: tactical-init
   - path: deployment-nats-patch.yaml
     target:
       kind: Deployment

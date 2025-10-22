@@ -1,0 +1,105 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tactical-init
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tactical-init
+  template:
+    metadata:
+      labels:
+        app: tactical-init
+    spec:
+      restartPolicy: Always
+      initContainers:
+      - name: wait-for-postgres
+        image: PLACEHOLDER_BUSYBOX_IMAGE
+        command:
+        - sh
+        - -c
+        - |
+          until nc -z tactical-postgres 5432; do
+            echo "Waiting for PostgreSQL..."
+            sleep 2
+          done
+      - name: wait-for-redis
+        image: PLACEHOLDER_BUSYBOX_IMAGE
+        command:
+        - sh
+        - -c
+        - |
+          until nc -z tactical-redis 6379; do
+            echo "Waiting for Redis..."
+            sleep 2
+          done
+      - name: wait-for-meshcentral
+        image: PLACEHOLDER_BUSYBOX_IMAGE
+        command:
+        - sh
+        - -c
+        - |
+          until nc -z tactical-meshcentral 4430; do
+            echo "Waiting for MeshCentral..."
+            sleep 2
+          done
+      containers:
+      - name: init
+        image: PLACEHOLDER_INIT_IMAGE
+        args: ["tactical-init"]
+        volumeMounts:
+        - name: tactical-shared
+          mountPath: /opt/tactical
+        - name: meshcentral-data
+          mountPath: /home/node/app/meshcentral-data
+        env:
+        - name: POSTGRES_HOST
+          value: "tactical-postgres"
+        - name: POSTGRES_PORT
+          value: "5432"
+        - name: POSTGRES_DB
+          value: "tacticalrmm"
+        - name: POSTGRES_USER
+          value: "tactical"
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: tacticalrmm-secrets
+              key: POSTGRES_PASSWORD
+        - name: REDIS_HOST
+          value: "tactical-redis"
+        - name: APP_HOST
+          valueFrom:
+            secretKeyRef:
+              name: tacticalrmm-secrets
+              key: APP_HOST
+        - name: API_HOST
+          valueFrom:
+            secretKeyRef:
+              name: tacticalrmm-secrets
+              key: API_HOST
+        - name: MESH_HOST
+          valueFrom:
+            secretKeyRef:
+              name: tacticalrmm-secrets
+              key: MESH_HOST
+        - name: MESH_USER
+          value: "tactical"
+        - name: MESH_PASS
+          valueFrom:
+            secretKeyRef:
+              name: tacticalrmm-secrets
+              key: MESH_PASSWORD
+        - name: DJANGO_SEKRET
+          valueFrom:
+            secretKeyRef:
+              name: tacticalrmm-secrets
+              key: DJANGO_SECRET_KEY
+      volumes:
+      - name: tactical-shared
+        persistentVolumeClaim:
+          claimName: tactical-shared
+      - name: meshcentral-data
+        persistentVolumeClaim:
+          claimName: tactical-shared

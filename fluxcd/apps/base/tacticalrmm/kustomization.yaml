@@ -5,8 +5,8 @@ resources:
   - statefulset-redis.yaml
   - statefulset-mongodb.yaml
   - pvc-tactical-shared.yaml
-  - job-init.yaml
   - deployment-meshcentral.yaml
+  - deployment-init.yaml
   - deployment-nats.yaml
   - deployment-backend.yaml
   - deployment-websockets.yaml
