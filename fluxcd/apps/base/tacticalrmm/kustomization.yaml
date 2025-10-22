@@ -4,14 +4,7 @@ resources:
   - statefulset-postgres.yaml
   - statefulset-redis.yaml
   - statefulset-mongodb.yaml
-  - deployment-nats.yaml
-  - deployment-meshcentral.yaml
-  - deployment-frontend.yaml
-  - deployment-backend.yaml
-  - deployment-websockets.yaml
-  - deployment-celery.yaml
-  - deployment-celerybeat.yaml
-  - deployment-nginx.yaml
+  - statefulset-tactical.yaml
   - service-postgres.yaml
   - service-redis.yaml
   - service-mongodb.yaml
@@ -21,4 +14,3 @@ resources:
   - service-websockets.yaml
   - service-nginx.yaml
   - externalsecret.yaml
-  - pvc-tactical-shared.yaml
