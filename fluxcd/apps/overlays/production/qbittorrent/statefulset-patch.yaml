@@ -51,19 +51,19 @@ spec:
               if grep -q '\$pbkdf2-sha512\$' "$CONFIG_FILE"; then
                 echo "Detected old MCF format password - regenerating with correct base64 format"
                 # Replace the old password line with new base64 format
-                sed -i "s|^WebUI\\\\\\\\Password_PBKDF2=.*|WebUI\\\\\\\\Password_PBKDF2=\"@ByteArray($HASH)\"|" "$CONFIG_FILE"
+                sed -i "s|^WebUI\\\\Password_PBKDF2=.*|WebUI\\\\Password_PBKDF2=@ByteArray($HASH)|" "$CONFIG_FILE"
               else
                 echo "WebUI credentials already in correct format"
               fi
             else
               # Add credentials to existing [Preferences] section
               echo "Adding WebUI credentials to existing config"
-              # Use awk to insert credentials while preserving quotes
+              # Use awk to insert credentials
               awk -v user="$QBITTORRENT_USERNAME" -v hash="$HASH" '
                 /^WebUI\\ServerDomains=/ {
                   print
                   print "WebUI\\Username=" user
-                  print "WebUI\\Password_PBKDF2=\"@ByteArray(" hash ")\""
+                  print "WebUI\\Password_PBKDF2=@ByteArray(" hash ")"
                   next
                 }
                 { print }
@@ -82,7 +82,7 @@ spec:
           WebUI\Port=6887
           WebUI\ServerDomains=*
           WebUI\Username=$QBITTORRENT_USERNAME
-          WebUI\Password_PBKDF2="@ByteArray($HASH)"
+          WebUI\Password_PBKDF2=@ByteArray($HASH)
           EOF
           fi
 
