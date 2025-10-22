@@ -29,7 +29,7 @@ spec:
 
           # Generate PBKDF2-SHA512 hash for qBittorrent WebUI
           # qBittorrent uses base64(salt):base64(hash) format, not Modular Crypt Format
-          python3 <<'PYSCRIPT' "$QBITTORRENT_PASSWORD" > /tmp/hash.txt
+          cat > /tmp/gen_hash.py <<'PYSCRIPT'
           import base64
           import hashlib
           import os
@@ -40,7 +40,7 @@ spec:
           hash_result = hashlib.pbkdf2_hmac('sha512', password, salt, 100000)
           print(f'{base64.b64encode(salt).decode()}:{base64.b64encode(hash_result).decode()}')
           PYSCRIPT
-          HASH=$(cat /tmp/hash.txt)
+          HASH=$(python3 /tmp/gen_hash.py "$QBITTORRENT_PASSWORD")
 
           CONFIG_FILE="/config/qBittorrent/qBittorrent.conf"
 
