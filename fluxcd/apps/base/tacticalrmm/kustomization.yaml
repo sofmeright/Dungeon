@@ -22,3 +22,4 @@ resources:
   - service-websockets.yaml
   - service-nginx.yaml
   - externalsecret.yaml
+  - pvc-tactical-shared.yaml

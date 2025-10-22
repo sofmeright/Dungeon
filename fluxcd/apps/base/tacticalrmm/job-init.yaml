@@ -35,6 +35,9 @@ spec:
       - name: init
         image: PLACEHOLDER_INIT_IMAGE
         args: ["tactical-init"]
+        volumeMounts:
+        - name: tactical-shared
+          mountPath: /opt/tactical
         env:
         - name: POSTGRES_HOST
           value: "tactical-postgres"
@@ -78,3 +81,7 @@ spec:
             secretKeyRef:
               name: tacticalrmm-secrets
               key: DJANGO_SECRET_KEY
+      volumes:
+      - name: tactical-shared
+        persistentVolumeClaim:
+          claimName: tactical-shared

@@ -53,10 +53,11 @@ spec:
         volumeMounts:
         - name: meshcentral-data
           mountPath: /home/node/app/meshcentral-data
-        - name: tactical-tmp
-          mountPath: /opt/tactical/tmp
+        - name: tactical-shared
+          mountPath: /opt/tactical
       volumes:
       - name: meshcentral-data
         emptyDir: {}
-      - name: tactical-tmp
-        emptyDir: {}
+      - name: tactical-shared
+        persistentVolumeClaim:
+          claimName: tactical-shared

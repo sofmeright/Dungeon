@@ -64,3 +64,7 @@ patches:
     target:
       kind: Service
       name: tactical-nginx
+  - path: pvc-tactical-shared-patch.yaml
+    target:
+      kind: PersistentVolumeClaim
+      name: tactical-shared
