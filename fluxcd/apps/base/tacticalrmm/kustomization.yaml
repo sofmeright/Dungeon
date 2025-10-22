@@ -7,6 +7,7 @@ resources:
   - deployment-nats.yaml
   - deployment-meshcentral.yaml
   - deployment-frontend.yaml
+  - job-init.yaml
   - deployment-backend.yaml
   - deployment-websockets.yaml
   - deployment-celery.yaml
