@@ -39,11 +39,11 @@ spec:
         - -c
         - |
           # cross-seed, qBittorrent, and Prowlarr each run behind their own Gluetun VPN
-          # Use LoadBalancer IP for connectivity since they're separate pods
-          QBITTORRENT_HOST="172.22.30.33"
-          PROWLARR_HOST="172.22.30.33"
+          # Use Kubernetes service DNS names for pod-to-pod connectivity
+          QBITTORRENT_HOST="qbittorrent.swift-sail.svc.cluster.local"
+          PROWLARR_HOST="prowlarr.swift-sail.svc.cluster.local"
 
-          echo "Configuring cross-seed to use LoadBalancer IP (172.22.30.33)"
+          echo "Configuring cross-seed to use Kubernetes service DNS names"
 
           cat > /config/config.js << CONFIGEOF
           module.exports = {
