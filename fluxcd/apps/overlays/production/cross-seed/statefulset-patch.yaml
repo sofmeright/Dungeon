@@ -38,12 +38,14 @@ spec:
         - sh
         - -c
         - |
-          # cross-seed, qBittorrent, and Prowlarr each run behind their own Gluetun VPN
-          # Use short service names (DNS search domain will resolve to ClusterIP)
+          # cross-seed uses direct cluster networking to communicate with qBittorrent and Prowlarr
+          # Both services are accessible via their Kubernetes service names
           QBITTORRENT_HOST="qbittorrent"
           PROWLARR_HOST="prowlarr"
 
-          echo "Configuring cross-seed to use short Kubernetes service names"
+          echo "Configuring cross-seed for direct cluster networking"
+          echo "qBittorrent: $QBITTORRENT_HOST:6887"
+          echo "Prowlarr: $PROWLARR_HOST:9696"
 
           cat > /config/config.js << CONFIGEOF
           module.exports = {
@@ -74,7 +76,7 @@ spec:
           };
           CONFIGEOF
           chown 1000:1000 /config/config.js
-          echo "Created config.js with qBittorrent at $QBITTORRENT_HOST:6887"
+          echo "Configuration complete"
       volumes:
       - name: downloads
         persistentVolumeClaim:
@@ -105,38 +107,7 @@ spec:
               name: qbittorrent-secrets
               key: qbittorrent_pass
       - name: gluetun
-        image: docker.jcr.pcfae.com/qmcgaw/gluetun:latest
-        securityContext:
-          privileged: true
-        env:
-        - name: VPN_SERVICE_PROVIDER
-          value: "private internet access"
-        - name: SERVER_REGIONS
-          value: "CA Vancouver"
-        - name: FIREWALL_VPN_INPUT_PORTS
-          $patch: delete
-        - name: FIREWALL_INPUT_PORTS
-          value: "2468"
-        - name: FIREWALL_OUTBOUND_SUBNETS
-          value: "10.0.0.0/8,172.16.0.0/12,172.22.30.0/24"
-        - name: DNS_ADDRESS
-          $patch: delete
-        - name: OPENVPN_USER
-          valueFrom:
-            secretKeyRef:
-              name: qbittorrent-secrets
-              key: vpn_user
-        - name: OPENVPN_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: qbittorrent-secrets
-              key: vpn_password
-        - name: DNS_KEEP_NAMESERVER
-          value: "on"
-        - name: TZ
-          value: "Etc/UTC"
-        - name: LOG_LEVEL
-          value: "debug"
+        $patch: delete
   volumeClaimTemplates:
   - metadata:
       name: config
