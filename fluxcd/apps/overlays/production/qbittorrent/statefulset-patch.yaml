@@ -72,6 +72,11 @@ spec:
 
           # Set ownership to match qbittorrent container user
           chown -R 1000:1000 /config/qBittorrent
+
+          # Debug: show what was actually written to the file
+          echo "=== Config file content after initContainer ==="
+          grep -E "Username|Password" "$CONFIG_FILE" || echo "No credentials found in config"
+          echo "==============================================="
           echo "qBittorrent WebUI credentials configured successfully"
         volumeMounts:
         - name: swift-sail-qbittorrent-config
