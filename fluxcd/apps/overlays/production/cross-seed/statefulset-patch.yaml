@@ -40,8 +40,8 @@ spec:
         - |
           # Get pod IPs directly (service ClusterIP routing blocked by Gluetun firewall)
           # qBittorrent pod is co-located via podAffinity, Prowlarr is not but needs direct IP
-          QBITTORRENT_HOST=$(nslookup qbittorrent-0.qbittorrent.swift-sail.svc.cluster.local | grep "Address:" | tail -1 | awk '{print $2}')
-          PROWLARR_HOST=$(nslookup prowlarr-0.prowlarr.swift-sail.svc.cluster.local | grep "Address:" | tail -1 | awk '{print $2}')
+          QBITTORRENT_HOST=$(nslookup qbittorrent-0.qbittorrent.swift-sail.svc.cluster.local | grep -A 1 "Name:" | grep "Address:" | awk '{print $2}')
+          PROWLARR_HOST=$(nslookup prowlarr-0.prowlarr.swift-sail.svc.cluster.local | grep -A 1 "Name:" | grep "Address:" | awk '{print $2}')
 
           if [ -z "$QBITTORRENT_HOST" ]; then
             echo "ERROR: Could not resolve qBittorrent pod IP"
