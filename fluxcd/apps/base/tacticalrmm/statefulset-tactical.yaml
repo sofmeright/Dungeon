@@ -14,7 +14,7 @@ spec:
         app: tactical
     spec:
       initContainers:
-      # Wait for dependencies
+      # Wait for external dependencies only
       - name: wait-for-postgres
         image: PLACEHOLDER_BUSYBOX_IMAGE
         command:
@@ -45,7 +45,50 @@ spec:
             echo "Waiting for MongoDB..."
             sleep 2
           done
-      # Run tactical-init
+      containers:
+      # MeshCentral - starts first, depends on mongodb
+      - name: meshcentral
+        image: PLACEHOLDER_MESHCENTRAL_IMAGE
+        ports:
+        - containerPort: 4430
+          name: meshcentral
+        startupProbe:
+          tcpSocket:
+            port: 4430
+          initialDelaySeconds: 10
+          periodSeconds: 5
+          failureThreshold: 60
+        readinessProbe:
+          tcpSocket:
+            port: 4430
+          periodSeconds: 5
+        env:
+        - name: MESH_USER
+          value: "tactical"
+        - name: MESH_PASS
+          valueFrom:
+            secretKeyRef:
+              name: tacticalrmm-secrets
+              key: MESH_PASSWORD
+        - name: MONGODB_USER
+          value: "tactical"
+        - name: MONGODB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: tacticalrmm-secrets
+              key: MONGODB_PASSWORD
+        - name: MONGODB_HOST
+          value: "tactical-mongodb"
+        - name: MONGODB_PORT
+          value: "27017"
+        - name: MESH_PERSISTENT_CONFIG
+          value: "1"
+        volumeMounts:
+        - name: meshcentral-data
+          mountPath: /home/node/app/meshcentral-data
+        - name: tactical-data
+          mountPath: /opt/tactical
+      # Tactical-init - runs after meshcentral is ready, sets up initial config
       - name: tactical-init
         image: PLACEHOLDER_TACTICAL_IMAGE
         args: ["tactical-init"]
@@ -97,39 +140,6 @@ spec:
             secretKeyRef:
               name: tacticalrmm-secrets
               key: DJANGO_SECRET_KEY
-      containers:
-      # MeshCentral
-      - name: meshcentral
-        image: PLACEHOLDER_MESHCENTRAL_IMAGE
-        ports:
-        - containerPort: 4430
-          name: meshcentral
-        env:
-        - name: MESH_USER
-          value: "tactical"
-        - name: MESH_PASS
-          valueFrom:
-            secretKeyRef:
-              name: tacticalrmm-secrets
-              key: MESH_PASSWORD
-        - name: MONGODB_USER
-          value: "tactical"
-        - name: MONGODB_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: tacticalrmm-secrets
-              key: MONGODB_PASSWORD
-        - name: MONGODB_HOST
-          value: "tactical-mongodb"
-        - name: MONGODB_PORT
-          value: "27017"
-        - name: MESH_PERSISTENT_CONFIG
-          value: "1"
-        volumeMounts:
-        - name: meshcentral-data
-          mountPath: /home/node/app/meshcentral-data
-        - name: tactical-data
-          mountPath: /opt/tactical
       # NATS
       - name: nats
         image: PLACEHOLDER_NATS_IMAGE
