@@ -132,8 +132,6 @@ spec:
               name: qbittorrent-secrets
               key: vpn_password
         - name: DNS_KEEP_NAMESERVER
-          value: "off"
-        - name: DOT
           value: "on"
         - name: TZ
           value: "Etc/UTC"
