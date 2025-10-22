@@ -6,7 +6,6 @@ resources:
   - statefulset-mongodb.yaml
   - pvc-tactical-shared.yaml
   - deployment-meshcentral.yaml
-  - deployment-init.yaml
   - deployment-nats.yaml
   - deployment-backend.yaml
   - deployment-websockets.yaml

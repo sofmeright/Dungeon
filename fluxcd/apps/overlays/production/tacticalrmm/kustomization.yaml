@@ -28,10 +28,6 @@ patches:
     target:
       kind: Deployment
       name: tactical-meshcentral
-  - path: deployment-init-patch.yaml
-    target:
-      kind: Deployment
-      name: tactical-init
   - path: deployment-nats-patch.yaml
     target:
       kind: Deployment
