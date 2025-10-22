@@ -101,6 +101,8 @@ spec:
   - metadata:
       name: tactical-data
     spec:
+      accessModes:
+      - ReadWriteOnce
       storageClassName: ceph-rbd
       resources:
         requests:
@@ -108,6 +110,8 @@ spec:
   - metadata:
       name: meshcentral-data
     spec:
+      accessModes:
+      - ReadWriteOnce
       storageClassName: ceph-rbd
       resources:
         requests:
