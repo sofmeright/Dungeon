@@ -75,6 +75,57 @@ spec:
           mountPath: /home/node/app/meshcentral-data
         - name: tactical-shared
           mountPath: /opt/tactical
+      - name: tactical-init
+        image: PLACEHOLDER_INIT_IMAGE
+        args: ["tactical-init"]
+        volumeMounts:
+        - name: meshcentral-data
+          mountPath: /home/node/app/meshcentral-data
+        - name: tactical-shared
+          mountPath: /opt/tactical
+        env:
+        - name: POSTGRES_HOST
+          value: "tactical-postgres"
+        - name: POSTGRES_PORT
+          value: "5432"
+        - name: POSTGRES_DB
+          value: "tacticalrmm"
+        - name: POSTGRES_USER
+          value: "tactical"
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: tacticalrmm-secrets
+              key: POSTGRES_PASSWORD
+        - name: REDIS_HOST
+          value: "tactical-redis"
+        - name: APP_HOST
+          valueFrom:
+            secretKeyRef:
+              name: tacticalrmm-secrets
+              key: APP_HOST
+        - name: API_HOST
+          valueFrom:
+            secretKeyRef:
+              name: tacticalrmm-secrets
+              key: API_HOST
+        - name: MESH_HOST
+          valueFrom:
+            secretKeyRef:
+              name: tacticalrmm-secrets
+              key: MESH_HOST
+        - name: MESH_USER
+          value: "tactical"
+        - name: MESH_PASS
+          valueFrom:
+            secretKeyRef:
+              name: tacticalrmm-secrets
+              key: MESH_PASSWORD
+        - name: DJANGO_SEKRET
+          valueFrom:
+            secretKeyRef:
+              name: tacticalrmm-secrets
+              key: DJANGO_SECRET_KEY
       volumes:
       - name: meshcentral-data
         emptyDir: {}
