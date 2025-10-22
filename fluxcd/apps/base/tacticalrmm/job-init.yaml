@@ -31,16 +31,6 @@ spec:
             echo "Waiting for Redis..."
             sleep 2
           done
-      - name: wait-for-meshcentral
-        image: PLACEHOLDER_BUSYBOX_IMAGE
-        command:
-        - sh
-        - -c
-        - |
-          until nc -z tactical-meshcentral 443; do
-            echo "Waiting for MeshCentral..."
-            sleep 2
-          done
       containers:
       - name: init
         image: PLACEHOLDER_INIT_IMAGE
