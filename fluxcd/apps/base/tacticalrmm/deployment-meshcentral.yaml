@@ -53,6 +53,10 @@ spec:
         volumeMounts:
         - name: meshcentral-data
           mountPath: /home/node/app/meshcentral-data
+        - name: tactical-tmp
+          mountPath: /opt/tactical/tmp
       volumes:
       - name: meshcentral-data
+        emptyDir: {}
+      - name: tactical-tmp
         emptyDir: {}
