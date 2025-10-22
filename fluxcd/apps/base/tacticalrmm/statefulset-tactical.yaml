@@ -13,6 +13,8 @@ spec:
       labels:
         app: tactical
     spec:
+      securityContext:
+        fsGroup: 1000
       initContainers:
       # Wait for external dependencies only
       - name: wait-for-postgres
@@ -147,6 +149,9 @@ spec:
         ports:
         - containerPort: 4222
           name: nats
+        volumeMounts:
+        - name: tactical-data
+          mountPath: /opt/tactical
       # Backend
       - name: backend
         image: PLACEHOLDER_TACTICAL_IMAGE
