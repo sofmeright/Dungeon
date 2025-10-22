@@ -38,12 +38,12 @@ spec:
         - sh
         - -c
         - |
-          # cross-seed connects via LoadBalancer IP (172.22.30.33) shared by qBittorrent and Prowlarr
-          # This allows connectivity through Gluetun VPN network isolation
-          QBITTORRENT_HOST="172.22.30.33"
-          PROWLARR_HOST="172.22.30.33"
+          # cross-seed uses localhost to communicate with qBittorrent and Prowlarr
+          # All three services share the same Gluetun VPN network stack
+          QBITTORRENT_HOST="localhost"
+          PROWLARR_HOST="localhost"
 
-          echo "Configuring cross-seed for LoadBalancer connectivity"
+          echo "Configuring cross-seed for shared VPN network connectivity"
           echo "qBittorrent: $QBITTORRENT_HOST:6887"
           echo "Prowlarr: $PROWLARR_HOST:9696"
 
@@ -107,7 +107,20 @@ spec:
               name: qbittorrent-secrets
               key: qbittorrent_pass
       - name: gluetun
-        $patch: delete
+        image: docker.jcr.pcfae.com/qmcgaw/gluetun:v3.39.1
+        env:
+        - name: VPN_SERVICE_PROVIDER
+          value: "private internet access"
+        - name: SERVER_REGIONS
+          value: "CA Vancouver"
+        - name: FIREWALL_VPN_INPUT_PORTS
+          $patch: delete
+        - name: FIREWALL_INPUT_PORTS
+          value: "2468,6887,9696"
+        - name: FIREWALL_OUTBOUND_SUBNETS
+          value: "10.0.0.0/8,172.16.0.0/12"
+        - name: DNS_KEEP_NAMESERVER
+          value: "on"
   volumeClaimTemplates:
   - metadata:
       name: config
