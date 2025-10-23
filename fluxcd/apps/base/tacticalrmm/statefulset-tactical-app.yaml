@@ -44,6 +44,7 @@ spec:
             echo "Waiting for Redis..."
             sleep 2
           done
+      containers:
       - name: tactical-init
         image: PLACEHOLDER_INIT_IMAGE
         args: ["tactical-init"]
@@ -95,7 +96,6 @@ spec:
             secretKeyRef:
               name: tacticalrmm-secrets
               key: DJANGO_SECRET_KEY
-      containers:
       - name: meshcentral
         image: PLACEHOLDER_MESHCENTRAL_IMAGE
         ports:
