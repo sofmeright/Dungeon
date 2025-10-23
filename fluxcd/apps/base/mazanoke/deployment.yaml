@@ -19,7 +19,7 @@ spec:
         image: ghcr.io/civilblur/mazanoke:latest
         ports:
         - name: http
-          containerPort: 80
+          containerPort: 3474
           protocol: TCP
         resources:
           requests:

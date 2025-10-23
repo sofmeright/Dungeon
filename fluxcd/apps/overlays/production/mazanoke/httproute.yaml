@@ -15,4 +15,4 @@ spec:
         value: /
     backendRefs:
     - name: mazanoke
-      port: 80
+      port: 3474
