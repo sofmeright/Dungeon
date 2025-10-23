@@ -3,6 +3,10 @@ kind: Service
 metadata:
   name: it-tools
   namespace: tingle-tuner
+  annotations:
+    lbipam.cilium.io/ips: "172.22.30.107"
+    lbipam.cilium.io/sharing-key: "tingle-tuner"
+    lbipam.cilium.io/sharing-cross-namespace: "*"
 spec:
   type: LoadBalancer
   ports:
