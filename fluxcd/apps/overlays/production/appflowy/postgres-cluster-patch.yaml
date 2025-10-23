@@ -41,7 +41,6 @@ spec:
 
           -- Set search_path
           ALTER USER supabase_auth_admin SET search_path = 'auth';
-      postInitTemplateLibraryVersion: "16"
 
   enableSuperuserAccess: true
 
