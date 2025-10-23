@@ -1,0 +1,12 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mazanoke
+spec:
+  template:
+    spec:
+      imagePullSecrets:
+      - name: ghcr-civilblur-pull-secret
+      containers:
+      - name: mazanoke
+        image: ghcr.jcr.pcfae.com/civilblur/mazanoke:latest
