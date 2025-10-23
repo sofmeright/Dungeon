@@ -5,5 +5,13 @@ metadata:
 spec:
   selector:
     app: ark-sa-tmc
-  ports: []
-  # Ports will be added via overlay patches for each map
+  ports:
+  - port: 7777
+    targetPort: 7777
+    protocol: TCP
+    name: game-tcp
+  - port: 7777
+    targetPort: 7777
+    protocol: UDP
+    name: game-udp
+  # Default ARK ports - map-specific services in overlays provide full port configurations
