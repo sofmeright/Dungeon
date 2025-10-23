@@ -3,6 +3,7 @@ kind: Kustomization
 namespace: tingle-tuner
 resources:
 - ../../../base/mazanoke
+- service-loadbalancer.yaml
 - httproute.yaml
 patches:
 - path: deployment-patch.yaml
