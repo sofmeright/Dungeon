@@ -1,0 +1,225 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: tactical-app
+spec:
+  replicas: 3
+  serviceName: tactical-app
+  selector:
+    matchLabels:
+      app: tactical-app
+  template:
+    metadata:
+      labels:
+        app: tactical-app
+    spec:
+      initContainers:
+      - name: wait-for-mongodb
+        image: PLACEHOLDER_BUSYBOX_IMAGE
+        command:
+        - sh
+        - -c
+        - |
+          until nc -z tactical-mongodb 27017; do
+            echo "Waiting for MongoDB..."
+            sleep 2
+          done
+      - name: wait-for-postgres
+        image: PLACEHOLDER_BUSYBOX_IMAGE
+        command:
+        - sh
+        - -c
+        - |
+          until nc -z tactical-postgres 5432; do
+            echo "Waiting for PostgreSQL..."
+            sleep 2
+          done
+      - name: wait-for-redis
+        image: PLACEHOLDER_BUSYBOX_IMAGE
+        command:
+        - sh
+        - -c
+        - |
+          until nc -z tactical-redis 6379; do
+            echo "Waiting for Redis..."
+            sleep 2
+          done
+      - name: tactical-init
+        image: PLACEHOLDER_INIT_IMAGE
+        args: ["tactical-init"]
+        volumeMounts:
+        - name: meshcentral-data
+          mountPath: /home/node/app/meshcentral-data
+        - name: hookshot-tactical-app-data
+          mountPath: /opt/tactical
+        env:
+        - name: POSTGRES_HOST
+          value: "tactical-postgres"
+        - name: POSTGRES_PORT
+          value: "5432"
+        - name: POSTGRES_DB
+          value: "tacticalrmm"
+        - name: POSTGRES_USER
+          value: "tactical"
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: tacticalrmm-secrets
+              key: POSTGRES_PASSWORD
+        - name: REDIS_HOST
+          value: "tactical-redis"
+        - name: APP_HOST
+          valueFrom:
+            secretKeyRef:
+              name: tacticalrmm-secrets
+              key: APP_HOST
+        - name: API_HOST
+          valueFrom:
+            secretKeyRef:
+              name: tacticalrmm-secrets
+              key: API_HOST
+        - name: MESH_HOST
+          valueFrom:
+            secretKeyRef:
+              name: tacticalrmm-secrets
+              key: MESH_HOST
+        - name: MESH_USER
+          value: "tactical"
+        - name: MESH_PASS
+          valueFrom:
+            secretKeyRef:
+              name: tacticalrmm-secrets
+              key: MESH_PASSWORD
+        - name: DJANGO_SEKRET
+          valueFrom:
+            secretKeyRef:
+              name: tacticalrmm-secrets
+              key: DJANGO_SECRET_KEY
+      containers:
+      - name: meshcentral
+        image: PLACEHOLDER_MESHCENTRAL_IMAGE
+        ports:
+        - containerPort: 4430
+          name: meshcentral
+        env:
+        - name: MESH_USER
+          value: "tactical"
+        - name: MESH_PASS
+          valueFrom:
+            secretKeyRef:
+              name: tacticalrmm-secrets
+              key: MESH_PASSWORD
+        - name: MONGODB_USER
+          value: "tactical"
+        - name: MONGODB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: tacticalrmm-secrets
+              key: MONGODB_PASSWORD
+        - name: MONGODB_HOST
+          value: "tactical-mongodb"
+        - name: MONGODB_PORT
+          value: "27017"
+        - name: MESH_PERSISTENT_CONFIG
+          value: "1"
+        volumeMounts:
+        - name: meshcentral-data
+          mountPath: /home/node/app/meshcentral-data
+        - name: hookshot-tactical-app-data
+          mountPath: /opt/tactical
+      - name: nats
+        image: PLACEHOLDER_NATS_IMAGE
+        ports:
+        - containerPort: 4222
+          name: nats
+        - containerPort: 8222
+          name: nats-http
+        env:
+        - name: API_HOST
+          valueFrom:
+            secretKeyRef:
+              name: tacticalrmm-secrets
+              key: API_HOST
+        volumeMounts:
+        - name: hookshot-tactical-app-data
+          mountPath: /opt/tactical
+      - name: backend
+        image: PLACEHOLDER_BACKEND_IMAGE
+        args: ["tactical-backend"]
+        ports:
+        - containerPort: 8000
+          name: backend
+        volumeMounts:
+        - name: hookshot-tactical-app-data
+          mountPath: /opt/tactical
+      - name: websockets
+        image: PLACEHOLDER_WEBSOCKETS_IMAGE
+        args: ["tactical-websockets"]
+        ports:
+        - containerPort: 8001
+          name: websockets
+        volumeMounts:
+        - name: hookshot-tactical-app-data
+          mountPath: /opt/tactical
+      - name: celery
+        image: PLACEHOLDER_CELERY_IMAGE
+        args: ["tactical-celery"]
+        volumeMounts:
+        - name: hookshot-tactical-app-data
+          mountPath: /opt/tactical
+      - name: celerybeat
+        image: PLACEHOLDER_CELERYBEAT_IMAGE
+        args: ["tactical-celerybeat"]
+        volumeMounts:
+        - name: hookshot-tactical-app-data
+          mountPath: /opt/tactical
+      - name: frontend
+        image: PLACEHOLDER_FRONTEND_IMAGE
+        env:
+        - name: API_HOST
+          valueFrom:
+            secretKeyRef:
+              name: tacticalrmm-secrets
+              key: API_HOST
+        volumeMounts:
+        - name: hookshot-tactical-app-data
+          mountPath: /opt/tactical
+      - name: nginx
+        image: PLACEHOLDER_NGINX_IMAGE
+        ports:
+        - containerPort: 80
+          name: http
+        - containerPort: 443
+          name: https
+        env:
+        - name: APP_HOST
+          valueFrom:
+            secretKeyRef:
+              name: tacticalrmm-secrets
+              key: APP_HOST
+        - name: API_HOST
+          valueFrom:
+            secretKeyRef:
+              name: tacticalrmm-secrets
+              key: API_HOST
+        - name: MESH_HOST
+          valueFrom:
+            secretKeyRef:
+              name: tacticalrmm-secrets
+              key: MESH_HOST
+        volumeMounts:
+        - name: hookshot-tactical-app-data
+          mountPath: /opt/tactical
+      volumes:
+      - name: meshcentral-data
+        emptyDir: {}
+  volumeClaimTemplates:
+  - metadata:
+      name: hookshot-tactical-app-data
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      storageClassName: PLACEHOLDER_STORAGE_CLASS
+      resources:
+        requests:
+          storage: 1Gi
