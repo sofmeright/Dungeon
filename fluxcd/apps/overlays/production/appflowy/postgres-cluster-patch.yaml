@@ -18,6 +18,15 @@ spec:
         name: appflowy-postgres-app
       postInitApplicationSQL:
         - ALTER USER appflowy WITH SUPERUSER;
+        - |
+          DO $$ BEGIN
+            IF NOT EXISTS (SELECT FROM pg_catalog.pg_roles WHERE rolname = 'supabase_auth_admin') THEN
+              CREATE USER supabase_auth_admin BYPASSRLS NOINHERIT CREATEROLE LOGIN NOREPLICATION;
+            END IF;
+          END $$;
+        - CREATE SCHEMA IF NOT EXISTS auth AUTHORIZATION supabase_auth_admin;
+        - GRANT CREATE ON DATABASE appflowy TO supabase_auth_admin;
+        - ALTER USER supabase_auth_admin SET search_path = 'auth';
 
   enableSuperuserAccess: true
 
