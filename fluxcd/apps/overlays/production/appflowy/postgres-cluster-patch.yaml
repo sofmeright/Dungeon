@@ -20,6 +20,10 @@ spec:
         secretRefs:
         - name: appflowy-postgres-init-sql
           key: init.sql
+      postInitApplicationSQLRefs:
+        secretRefs:
+        - name: appflowy-postgres-init-sql
+          key: app-init.sql
 
   enableSuperuserAccess: true
 
