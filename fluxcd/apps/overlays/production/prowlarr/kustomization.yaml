@@ -5,6 +5,7 @@ namespace: swift-sail
 
 resources:
   - ../../../base/prowlarr
+  - service-headless.yaml
 
 patches:
   - path: statefulset-patch.yaml

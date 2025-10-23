@@ -20,42 +20,10 @@ patches:
     target:
       kind: StatefulSet
       name: tactical-mongodb
-  - path: pvc-tactical-shared-patch.yaml
+  - path: statefulset-tactical-app-patch.yaml
     target:
-      kind: PersistentVolumeClaim
-      name: tactical-shared
-  - path: deployment-meshcentral-patch.yaml
-    target:
-      kind: Deployment
-      name: tactical-meshcentral
-  - path: deployment-nats-patch.yaml
-    target:
-      kind: Deployment
-      name: tactical-nats
-  - path: deployment-backend-patch.yaml
-    target:
-      kind: Deployment
-      name: tactical-backend
-  - path: deployment-websockets-patch.yaml
-    target:
-      kind: Deployment
-      name: tactical-websockets
-  - path: deployment-celery-patch.yaml
-    target:
-      kind: Deployment
-      name: tactical-celery
-  - path: deployment-celerybeat-patch.yaml
-    target:
-      kind: Deployment
-      name: tactical-celerybeat
-  - path: deployment-frontend-patch.yaml
-    target:
-      kind: Deployment
-      name: tactical-frontend
-  - path: deployment-nginx-patch.yaml
-    target:
-      kind: Deployment
-      name: tactical-nginx
+      kind: StatefulSet
+      name: tactical-app
   - path: service-meshcentral-patch.yaml
     target:
       kind: Service

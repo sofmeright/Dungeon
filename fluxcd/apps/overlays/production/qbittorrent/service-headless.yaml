@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: qbittorrent-headless
+spec:
+  type: ClusterIP
+  clusterIP: None
+  selector:
+    app: qbittorrent
+  ports:
+  - name: qbittorrent
+    port: 6887
+    targetPort: 6887
+    protocol: TCP

@@ -38,14 +38,15 @@ spec:
         - sh
         - -c
         - |
-          # cross-seed communicates via Kubernetes service DNS names
-          # Each service has its own Gluetun VPN with firewall rules allowing cluster network access
-          QBITTORRENT_HOST="qbittorrent"
-          PROWLARR_HOST="prowlarr"
+          # cross-seed uses headless Services for direct Pod IP connectivity
+          # Headless Services (clusterIP: None) allow DNS to resolve directly to Pod IPs
+          # This bypasses Cilium eBPF Service DNAT which Gluetun's iptables blocks
+          QBITTORRENT_HOST="qbittorrent-headless"
+          PROWLARR_HOST="prowlarr-headless"
 
-          echo "Configuring cross-seed for Kubernetes service connectivity"
-          echo "qBittorrent: $QBITTORRENT_HOST:6887"
-          echo "Prowlarr: $PROWLARR_HOST:9696"
+          echo "Configuring cross-seed with headless Service DNS names"
+          echo "qBittorrent headless: $QBITTORRENT_HOST:6887"
+          echo "Prowlarr headless: $PROWLARR_HOST:9696"
 
           cat > /config/config.js << CONFIGEOF
           module.exports = {

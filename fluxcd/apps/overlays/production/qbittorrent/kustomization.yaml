@@ -4,6 +4,7 @@ namespace: swift-sail
 resources:
   - ../../../base/qbittorrent
   - externalsecret-registry.yaml
+  - service-headless.yaml
 patches:
   - path: statefulset-patch.yaml
     target:
