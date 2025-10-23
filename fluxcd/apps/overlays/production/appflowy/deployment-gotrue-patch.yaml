@@ -15,6 +15,10 @@ spec:
           protocol: TCP
         env:
         # Non-secret configuration
+        - name: PORT
+          value: "9999"
+        - name: GOTRUE_LOG_LEVEL
+          value: "debug"
         - name: GOTRUE_DB_DRIVER
           value: "postgres"
         - name: GOTRUE_JWT_ADMIN_GROUP_NAME
@@ -22,9 +26,9 @@ spec:
         - name: API_EXTERNAL_URL
           value: "https://flwy.prplanit.com/gotrue"
         - name: GOTRUE_SITE_URL
-          value: "https://flwy.prplanit.com"
+          value: "appflowy-flutter://"
         - name: GOTRUE_URI_ALLOW_LIST
-          value: "https://flwy.prplanit.com"
+          value: "**"
         - name: GOTRUE_DISABLE_SIGNUP
           value: "false"
         - name: GOTRUE_JWT_EXP
