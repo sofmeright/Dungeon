@@ -17,6 +17,8 @@ spec:
         # Non-secret configuration
         - name: GOTRUE_DB_DRIVER
           value: "postgres"
+        - name: GOTRUE_JWT_ADMIN_GROUP_NAME
+          value: "supabase_admin"
         - name: API_EXTERNAL_URL
           value: "https://flwy.prplanit.com/gotrue"
         - name: GOTRUE_SITE_URL
