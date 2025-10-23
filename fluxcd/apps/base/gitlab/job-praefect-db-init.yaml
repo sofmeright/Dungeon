@@ -7,7 +7,7 @@ spec:
   template:
     metadata:
       annotations:
-        run-timestamp: "2025-10-23-02-21"
+        run-timestamp: "2025-10-23-02-33"
     spec:
       restartPolicy: OnFailure
       serviceAccountName: gitlab-praefect-db-init
@@ -30,9 +30,9 @@ spec:
 
           echo "Setting up Praefect database via PostgreSQL pod..."
 
-          # Find the primary PostgreSQL pod
-          PRIMARY_POD=$(kubectl get pods -n hyrule-castle -l cnpg.io/instanceRole=primary -o jsonpath='{.items[0].metadata.name}')
-          echo "Found primary PostgreSQL pod: $PRIMARY_POD"
+          # Find the GitLab primary PostgreSQL pod
+          PRIMARY_POD=$(kubectl get pods -n hyrule-castle -l cnpg.io/cluster=gitlab-postgresql,cnpg.io/instanceRole=primary -o jsonpath='{.items[0].metadata.name}')
+          echo "Found GitLab primary PostgreSQL pod: $PRIMARY_POD"
 
           # Replace password placeholder in SQL script and pipe directly to psql on primary
           sed "s|PLACEHOLDER_PASSWORD|$PRAEFECT_PASSWORD|g" /scripts/init-praefect.sql | \
