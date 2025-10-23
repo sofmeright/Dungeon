@@ -16,13 +16,32 @@ spec:
       owner: appflowy
       secret:
         name: appflowy-postgres-app
-      postInitApplicationSQL:
-        - ALTER USER appflowy WITH SUPERUSER
-        - CREATE USER supabase_auth_admin BYPASSRLS NOINHERIT CREATEROLE LOGIN NOREPLICATION
-        - CREATE SCHEMA IF NOT EXISTS auth AUTHORIZATION supabase_auth_admin
-        - GRANT CREATE ON DATABASE appflowy TO supabase_auth_admin
-        - ALTER USER supabase_auth_admin SET search_path = 'auth'
-        - CREATE TYPE auth.factor_type AS ENUM ('totp', 'webauthn')
+      postInitTemplateSQL:
+        - |
+          -- Make appflowy user superuser
+          ALTER USER appflowy WITH SUPERUSER;
+
+          -- Create supabase_auth_admin user with password from secret
+          DO $$
+          BEGIN
+            IF NOT EXISTS (
+              SELECT FROM pg_catalog.pg_roles WHERE rolname = 'supabase_auth_admin'
+            ) THEN
+              CREATE USER supabase_auth_admin
+                BYPASSRLS NOINHERIT CREATEROLE LOGIN NOREPLICATION
+                PASSWORD '{{ .SUPABASE_PASSWORD }}';
+            END IF;
+          END $$;
+
+          -- Create auth schema
+          CREATE SCHEMA IF NOT EXISTS auth AUTHORIZATION supabase_auth_admin;
+
+          -- Grant permissions
+          GRANT CREATE ON DATABASE appflowy TO supabase_auth_admin;
+
+          -- Set search_path
+          ALTER USER supabase_auth_admin SET search_path = 'auth';
+      postInitTemplateLibraryVersion: "16"
 
   enableSuperuserAccess: true
 
