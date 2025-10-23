@@ -16,8 +16,6 @@ spec:
       owner: appflowy
       secret:
         name: appflowy-postgres-app
-      postInitSQL:
-        - CREATE EXTENSION IF NOT EXISTS vector
       postInitSQLRefs:
         secretRefs:
         - name: appflowy-postgres-init-sql
