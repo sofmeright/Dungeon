@@ -9,7 +9,7 @@ spec:
   ports:
   - name: http
     port: 3474
-    targetPort: http
+    targetPort: 80
     protocol: TCP
   selector:
     app: mazanoke
