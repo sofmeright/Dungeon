@@ -10,6 +10,7 @@ resources:
   - hrconvert2
   - it-tools
   - lubelogger
+  - mazanoke
   - monica
   - paperless-ngx
   - podinfo
