@@ -101,6 +101,8 @@ spec:
   - metadata:
       name: hookshot-tactical-app-data
     spec:
+      accessModes:
+      - ReadWriteOnce
       storageClassName: ceph-rbd
       resources:
         requests:
