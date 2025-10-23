@@ -18,7 +18,7 @@ spec:
         namespace: flux-system
   values:
     image:
-      repository: docker.jcr.pcfae.com/mariadb-operator/mariadb-operator
+      repository: ghcr.io/mariadb-operator/mariadb-operator
       pullPolicy: IfNotPresent
     logLevel: INFO
     ha:
