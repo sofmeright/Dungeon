@@ -22,6 +22,7 @@ spec:
         - CREATE SCHEMA IF NOT EXISTS auth AUTHORIZATION supabase_auth_admin
         - GRANT CREATE ON DATABASE appflowy TO supabase_auth_admin
         - ALTER USER supabase_auth_admin SET search_path = 'auth'
+        - CREATE TYPE auth.factor_type AS ENUM ('totp', 'webauthn')
 
   enableSuperuserAccess: true
 
