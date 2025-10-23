@@ -81,6 +81,7 @@ resources:
   - guacamole
   - invoiceninja
   - joplin
+  - kimai
   - netbox
   - oauth2-proxy
   - open-webui

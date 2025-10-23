@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: kimai-loadbalancer
+  annotations:
+    lbipam.cilium.io/ips: "172.22.30.222"
+    lbipam.cilium.io/sharing-key: "song-of-time"
+    lbipam.cilium.io/sharing-cross-namespace: "*"
+  labels:
+    app: kimai
+spec:
+  type: LoadBalancer
+  ports:
+  - name: http
+    port: 8001
+    targetPort: 8001
+    protocol: TCP
+  selector:
+    app: kimai
