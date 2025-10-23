@@ -7,6 +7,9 @@ spec:
   targetNamespace: PLACEHOLDER_NAMESPACE
   install:
     createNamespace: false
+    crds: CreateReplace
+  upgrade:
+    crds: CreateReplace
   interval: 30m
   chart:
     spec:
