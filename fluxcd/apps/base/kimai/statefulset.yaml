@@ -24,7 +24,7 @@ spec:
         - sh
         - -c
         - |
-          until nc -z -v -w5 kimai-primary 3306; do
+          until nc -z -v -w5 kimai-mariadb-primary 3306; do
             echo "Waiting for MariaDB Galera cluster..."
             sleep 5
           done

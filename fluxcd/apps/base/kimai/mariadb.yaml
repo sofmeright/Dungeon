@@ -1,7 +1,7 @@
 apiVersion: k8s.mariadb.com/v1alpha1
 kind: MariaDB
 metadata:
-  name: kimai
+  name: kimai-mariadb
 spec:
   rootPasswordSecretKeyRef:
     name: kimai-mariadb
@@ -33,6 +33,11 @@ spec:
     secretName: kimai-mariadb-connection
     secretTemplate:
       key: dsn
+      databaseKey: database
+      usernameKey: username
+      passwordKey: password
+      hostKey: host
+      portKey: port
 
   # MySQL configuration
   myCnf: |
