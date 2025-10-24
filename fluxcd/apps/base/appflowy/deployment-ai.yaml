@@ -34,12 +34,7 @@ spec:
           valueFrom:
             secretKeyRef:
               name: appflowy-postgres-app
-              key: GOTRUE_JWT_SECRET
-        - name: GOTRUE_JWT_SECRET
-          valueFrom:
-            secretKeyRef:
-              name: appflowy-postgres-app
-              key: GOTRUE_JWT_SECRET
+              key: JWT_SECRET
         - name: APPFLOWY_AI_DATABASE_URL
           valueFrom:
             secretKeyRef:
