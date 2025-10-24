@@ -82,8 +82,8 @@ spec:
         - |
           # Source DATABASE_URL from file created by init container
           export $(cat /env-config/database_url)
-          # Start Apache with the original entrypoint
-          exec /opt/kimai/docker/apache/docker-entrypoint.sh apache2-foreground
+          # Execute the default entrypoint
+          exec /usr/local/bin/docker-php-entrypoint apache2-foreground
         env:
         - name: APP_SECRET
           valueFrom:
