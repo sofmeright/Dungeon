@@ -24,8 +24,8 @@ spec:
         - sh
         - -c
         - |
-          until nc -z -v -w5 localhost 3306; do
-            echo "Waiting for database connection..."
+          until nc -z -v -w5 kimai-primary 3306; do
+            echo "Waiting for MariaDB Galera cluster..."
             sleep 5
           done
       containers:
@@ -39,8 +39,8 @@ spec:
         - name: DATABASE_URL
           valueFrom:
             secretKeyRef:
-              name: kimai-secret
-              key: database-url
+              name: kimai-mariadb-connection
+              key: dsn
         - name: APP_SECRET
           valueFrom:
             secretKeyRef:
@@ -58,41 +58,6 @@ spec:
           limits:
             cpu: 1000m
             memory: 512Mi
-      - name: mysql
-        image: docker.io/mysql:8.0
-        ports:
-        - name: mysql
-          containerPort: 3306
-          protocol: TCP
-        env:
-        - name: MYSQL_DATABASE
-          value: kimai
-        - name: MYSQL_USER
-          valueFrom:
-            secretKeyRef:
-              name: kimai-secret
-              key: mysql-user
-        - name: MYSQL_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: kimai-secret
-              key: mysql-password
-        - name: MYSQL_ROOT_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: kimai-secret
-              key: mysql-root-password
-        volumeMounts:
-        - name: mysql-data
-          mountPath: /var/lib/mysql
-          subPath: mysql
-        resources:
-          requests:
-            cpu: 100m
-            memory: 256Mi
-          limits:
-            cpu: 500m
-            memory: 512Mi
   volumeClaimTemplates:
   - metadata:
       name: kimai-data
@@ -102,11 +67,3 @@ spec:
       resources:
         requests:
           storage: 5Gi
-  - metadata:
-      name: mysql-data
-    spec:
-      accessModes:
-      - ReadWriteOnce
-      resources:
-        requests:
-          storage: 10Gi

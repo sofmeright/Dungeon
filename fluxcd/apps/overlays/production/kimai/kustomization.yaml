@@ -4,5 +4,6 @@ namespace: temple-of-time
 resources:
 - ../../../base/kimai
 patches:
+- path: mariadb-patch.yaml
 - path: statefulset-patch.yaml
 - path: service-loadbalancer.yaml
