@@ -18,6 +18,7 @@ resources:
   - external-secrets
   - cloudnative-pg  # PostgreSQL operator for cloud-native database clusters
   - redis-operator  # Redis operator for cloud-native Redis clusters
+  - mariadb-operator-crds  # MariaDB operator CRDs (must be installed before operator)
   - mariadb-operator  # MariaDB operator with Galera cluster support for HA MySQL
   - zitadel
   - netbird
