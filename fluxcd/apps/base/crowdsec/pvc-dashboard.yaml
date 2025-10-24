@@ -1,0 +1,23 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: PLACEHOLDER_NAMESPACE-crowdsec-dashboard-data
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: PLACEHOLDER_STORAGE_CLASS
+  resources:
+    requests:
+      storage: PLACEHOLDER_STORAGE_SIZE
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: PLACEHOLDER_NAMESPACE-crowdsec-metabase-data
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: PLACEHOLDER_STORAGE_CLASS
+  resources:
+    requests:
+      storage: PLACEHOLDER_STORAGE_SIZE

@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: crowdsec-whitelist
+data:
+  whitelists.yaml: |
+    name: crowdsecurity/whitelists
+    description: "Whitelist events from my ip addresses"
+    whitelist:
+      reason: "Internally Trusted IPs (Public + RFC1918)"
+      ip:
+        - "127.0.0.1"         # Local Host
+      cidr:
+        - "71.24.190.217/29"  # WAN Public IPs
+        - "192.168.0.0/12"    # Local / RFC1918 IPs
+        - "10.0.0.0/8"        # Local / RFC1918 IPs
+        - "172.16.0.0/12"     # Local / RFC1918 IPs

@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: crowdsec-cloudflare-bouncer
+  labels:
+    app: crowdsec-cloudflare-bouncer
+    component: bouncer
+spec:
+  replicas: PLACEHOLDER_REPLICAS
+  selector:
+    matchLabels:
+      app: crowdsec-cloudflare-bouncer
+      component: bouncer
+  template:
+    metadata:
+      labels:
+        app: crowdsec-cloudflare-bouncer
+        component: bouncer
+    spec:
+      containers:
+      - name: cloudflare-bouncer
+        image: PLACEHOLDER_BOUNCER_IMAGE
+        ports:
+        - name: metrics
+          containerPort: 2112
+          protocol: TCP
+        volumeMounts:
+        - name: bouncer-config
+          mountPath: /etc/crowdsec/bouncers
+        env:
+        - name: CROWDSEC_LAPI_URL
+          value: "http://crowdsec:8080/"
+        - name: CROWDSEC_LAPI_KEY
+          valueFrom:
+            secretKeyRef:
+              name: crowdsec-secrets
+              key: CROWDSEC_LAPI_KEY
+        - name: CLOUDFLARE_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: crowdsec-secrets
+              key: CLOUDFLARE_TOKEN
+        resources:
+          requests:
+            cpu: PLACEHOLDER_CPU_REQUEST
+            memory: PLACEHOLDER_MEMORY_REQUEST
+          limits:
+            cpu: PLACEHOLDER_CPU_LIMIT
+            memory: PLACEHOLDER_MEMORY_LIMIT
+      volumes:
+      - name: bouncer-config
+        configMap:
+          name: crowdsec-cloudflare-bouncer

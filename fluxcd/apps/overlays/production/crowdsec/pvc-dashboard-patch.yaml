@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: lens-of-truth-crowdsec-dashboard-data
+spec:
+  storageClassName: longhorn
+  resources:
+    requests:
+      storage: 5Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: lens-of-truth-crowdsec-metabase-data
+spec:
+  storageClassName: longhorn
+  resources:
+    requests:
+      storage: 5Gi

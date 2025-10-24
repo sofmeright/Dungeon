@@ -1,0 +1,27 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: lens-of-truth
+
+resources:
+  - ../../../base/crowdsec
+
+patches:
+  # StatefulSet patches
+  - path: statefulset-patch.yaml
+  # Dashboard patches
+  - path: deployment-dashboard-patch.yaml
+  # Cloudflare bouncer patches
+  - path: deployment-cloudflare-bouncer-patch.yaml
+  # PVC patches
+  - path: pvc-dashboard-patch.yaml
+  # Service patches
+  - path: service-patch.yaml
+  # ConfigMap patches
+  - path: configmap-acquis-nginx-patch.yaml
+  - path: configmap-acquis-bitwarden-patch.yaml
+  - path: configmap-cloudflare-bouncer-patch.yaml
+  # ExternalSecret patch
+  - path: externalsecret-patch.yaml
+  # HTTPRoute patch
+  - path: httproute-patch.yaml

@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: crowdsec-acquis-bitwarden
+data:
+  20-bitwarden-loki.yaml: |
+    source: loki
+    url: PLACEHOLDER_LOKI_URL
+    limit: 1000
+    query: |
+      {service_name="bitwarden-identity"}
+    labels:
+      service: bitwarden
+      type: app-logs
+    wait_for_ready: 10s

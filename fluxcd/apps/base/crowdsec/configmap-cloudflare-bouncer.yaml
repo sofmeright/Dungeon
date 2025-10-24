@@ -1,0 +1,31 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: crowdsec-cloudflare-bouncer
+data:
+  crowdsec-cloudflare-bouncer.yaml: |
+    crowdsec_lapi_url: http://crowdsec:8080/
+    crowdsec_update_frequency: 10s
+    include_scenarios_containing: []
+    exclude_scenarios_containing: []
+    only_include_decisions_from: ["cscli", "crowdsec"]
+    cloudflare_config:
+      accounts:
+        - id: PLACEHOLDER_CLOUDFLARE_ACCOUNT_ID
+          zones: PLACEHOLDER_CLOUDFLARE_ZONES
+          token: ""  # Will be overridden by env var from secret
+          ip_list_prefix: crowdsec
+          default_action: managed_challenge
+          total_ip_list_capacity: 9900
+      update_frequency: 10s
+    daemon: false
+    log_level: info
+    log_mode: stdout
+    log_dir: /var/log/
+    prometheus:
+      enabled: true
+      listen_addr: 127.0.0.1
+      listen_port: "2112"
+    key_path: ""
+    cert_path: ""
+    ca_cert_path: ""

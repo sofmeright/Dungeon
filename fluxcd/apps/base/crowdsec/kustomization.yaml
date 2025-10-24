@@ -1,0 +1,17 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - statefulset.yaml
+  - deployment-dashboard.yaml
+  - deployment-cloudflare-bouncer.yaml
+  - pvc-dashboard.yaml
+  - service.yaml
+  - configmap-acquis-nginx.yaml
+  - configmap-acquis-bitwarden.yaml
+  - configmap-whitelist.yaml
+  - configmap-bitwarden-parser.yaml
+  - configmap-bitwarden-scenario.yaml
+  - configmap-cloudflare-bouncer.yaml
+  - externalsecret.yaml
+  - httproute.yaml

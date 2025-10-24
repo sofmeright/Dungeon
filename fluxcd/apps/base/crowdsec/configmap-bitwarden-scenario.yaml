@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: crowdsec-bitwarden-scenario
+data:
+  bitwarden-bf.yaml: |
+    type: leaky
+    name: prplanit/bitwarden-bf
+    description: "Bitwarden/Vaultwarden: ban IP after multiple failed logins"
+    filter: |
+      evt.Meta.service == 'bitwarden' &&
+      (evt.Meta.log_type == 'bitwarden_failed_auth' || evt.Meta.log_type == 'bitwarden_failed_auth_2fa') &&
+      evt.Meta.source_ip != ''
+    groupby: evt.Meta.source_ip
+    capacity: 7
+    leakspeed: 10m
+    blackhole: 5m
+    labels:
+      service: bitwarden
+      remediation: true

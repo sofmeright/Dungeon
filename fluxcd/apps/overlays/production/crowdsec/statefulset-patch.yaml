@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: crowdsec
+spec:
+  replicas: 1
+  template:
+    spec:
+      containers:
+      - name: crowdsec
+        image: ghcr.jcr.pcfae.com/crowdsecurity/crowdsec:v1.6.11
+        env:
+        - name: CUSTOM_HOSTNAME
+          value: "dungeon-k8s"
+        - name: CROWDSEC_API_PORT
+          value: "3403"
+        resources:
+          requests:
+            cpu: "250m"
+            memory: "512Mi"
+          limits:
+            cpu: "1000m"
+            memory: "2Gi"
+  volumeClaimTemplates:
+  - metadata:
+      name: lens-of-truth-crowdsec-data
+    spec:
+      storageClassName: longhorn
+      resources:
+        requests:
+          storage: 10Gi

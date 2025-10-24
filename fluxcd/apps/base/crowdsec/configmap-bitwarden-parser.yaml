@@ -1,0 +1,40 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: crowdsec-bitwarden-parser
+data:
+  bitwarden.yaml: |
+    name: prplanit/bitwarden-logs
+    description: Parse Bitwarden/Vaultwarden failed logins (identity)
+    stage: s02-parse
+    filter: "evt.Meta.service == 'bitwarden'"
+    onsuccess: next_stage
+    debug: false
+
+    pattern_syntax:
+      BW_TS: '(?:%{TIMESTAMP_ISO8601}|%{YEAR}-%{MONTHNUM}-%{MONTHDAY}[ T]%{TIME})'
+      BITWARDEN_FAILED_LOGIN: '^%{BW_TS:timestamp}.*Failed login attempt\.?\s*(?:IP:? ?)?%{IP:source_ip}.*'
+      BITWARDEN_FAILED_LOGIN_2FA: '^%{BW_TS:timestamp}.*Failed login attempt, 2FA invalid\.?\s*(?:IP:? ?)?%{IP:source_ip}.*'
+
+    nodes:
+      - grok:
+          name: BITWARDEN_FAILED_LOGIN_2FA
+          apply_on: message
+          statics:
+            - meta: log_type
+              value: bitwarden_failed_auth_2fa
+
+      - grok:
+          name: BITWARDEN_FAILED_LOGIN
+          apply_on: message
+          statics:
+            - meta: log_type
+              value: bitwarden_failed_auth
+
+    statics:
+      - meta: service
+        value: bitwarden
+      - target: evt.StrTime
+        expression: evt.Parsed.timestamp
+      - meta: source_ip
+        expression: "evt.Parsed.source_ip"

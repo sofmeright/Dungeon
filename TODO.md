@@ -60,7 +60,7 @@ CLAUDE.md specifies PVC naming pattern for StatefulSets: `<namespace>-<app>-<pur
 
 ### Remaining Applications to Template and Deploy to Kubernetes
 - [x] calcom (Cal.com) - Scheduling platform from Moor (2 containers: app + studio) - COMPLETED
-- [ ] opnform - Form builder platform from Moor (7 containers: api, scheduler, worker, client, db, ingress, redis)
+- [x] opnform - Form builder platform from Moor (7 containers: api, scheduler, worker, client, db, ingress, redis) - hyrule-castle namespace - COMPLETED
 - [ ] crowdsec - Security/IDS platform from Lighthouse (2 containers: crowdsec + dashboard)
 - [ ] anirra - Custom arr app from Pirates-WDDA
 - [ ] matrix-synapse - Matrix homeserver (federated chat)
@@ -68,11 +68,9 @@ CLAUDE.md specifies PVC naming pattern for StatefulSets: `<namespace>-<app>-<pur
 - [x] kimai - Time tracking application (https://github.com/kimai/kimai) - temple-of-time namespace - COMPLETED
 - [x] mazanoke - Image converting app (https://github.com/civilblur/mazanoke) - tingle-tuner namespace - COMPLETED
 
-**Status:** Final 5 applications remaining out of 100+ total applications inventoried across all Portainer endpoints.
+**Status:** Final 4 applications remaining out of 100+ total applications inventoried across all Portainer endpoints.
 
 **Large stacks to migrate** (not yet deployed to K8s):
-- [ ] Mailcow (18 containers) - Email stack, production critical
-- [ ] Nextcloud AIO (14 containers) - File sharing, large stack
 - [ ] ARK servers (6 instances) - Game servers on Jabu-Jabu
 - [ ] Minecraft servers (2 instances) - Game servers on Jabu-Jabu
 
@@ -85,3 +83,40 @@ CLAUDE.md specifies PVC naming pattern for StatefulSets: `<namespace>-<app>-<pur
 - [ ] yesimvegan.com - Vegan resources landing page
 - [ ] astralfocal.com - Landing page
 - [ ] homelabhelpdesk.com - Homelab resources landing page
+
+## Applications Requiring Further Review
+
+**Applications that cannot be deployed to Kubernetes in current form:**
+
+### Nextcloud AIO (All-in-One)
+**Status:** Architecture incompatible with Kubernetes
+**Reason:** Nextcloud AIO is designed specifically for Docker and Docker Compose with tight coupling to:
+- Docker socket access for managing its own containers
+- Self-managed backup system requiring specific volume structure
+- Master container pattern that dynamically creates/destroys other containers
+- Hardcoded container names that cannot be changed without breaking functionality
+- Reliance on Docker-specific networking and volume behaviors
+
+**Current deployment:** Running on Docker host at `10.30.1.123` (Moor)
+
+**Why standard Nextcloud Helm charts won't work:**
+- No support for Nextcloud apps/plugins (Collabora, OnlyOffice, Talk, etc.)
+- Missing integrated components that AIO provides (imaginary, fulltextsearch, notify_push)
+- Requires manual assembly of disparate components with complex configuration
+- No equivalent to AIO's automated backup/restore system
+- Would lose significant functionality compared to current AIO deployment
+
+**Decision:** Keep running on dedicated Docker host - AIO provides superior experience and functionality
+
+### Mailcow
+**Status:** Architecture incompatible with Kubernetes
+**Reason:** Mailcow (18 containers) is designed specifically for Docker and Docker Compose with similar issues to Nextcloud AIO:
+- Docker socket access for container management and monitoring
+- Complex inter-container dependencies with hardcoded names and network aliases
+- Integrated watchdog/monitoring system managing container lifecycle
+- Email infrastructure requires stable networking - Kubernetes pod churn would break delivery
+- Self-managed backup system tied to Docker volume structure
+
+**Current deployment:** Production email stack on dedicated Docker host
+
+**Decision:** Keep running on dedicated Docker host - email infrastructure is too critical to risk migration
