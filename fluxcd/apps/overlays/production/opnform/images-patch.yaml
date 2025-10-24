@@ -1,0 +1,87 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: opnform-postgres
+spec:
+  template:
+    spec:
+      containers:
+      - name: postgres
+        image: docker.jcr.pcfae.com/postgres:16
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: opnform-redis
+spec:
+  template:
+    spec:
+      containers:
+      - name: redis
+        image: docker.jcr.pcfae.com/redis:7
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: opnform-api
+spec:
+  template:
+    spec:
+      initContainers:
+      - name: wait-for-db
+        image: docker.jcr.pcfae.com/busybox:latest
+      - name: wait-for-redis
+        image: docker.jcr.pcfae.com/busybox:latest
+      containers:
+      - name: api
+        image: docker.jcr.pcfae.com/jhumanj/opnform-api:latest
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: opnform-api-worker
+spec:
+  template:
+    spec:
+      initContainers:
+      - name: wait-for-api
+        image: docker.jcr.pcfae.com/busybox:latest
+      containers:
+      - name: worker
+        image: docker.jcr.pcfae.com/jhumanj/opnform-api:latest
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: opnform-api-scheduler
+spec:
+  template:
+    spec:
+      initContainers:
+      - name: wait-for-api
+        image: docker.jcr.pcfae.com/busybox:latest
+      containers:
+      - name: scheduler
+        image: docker.jcr.pcfae.com/jhumanj/opnform-api:latest
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: opnform-client
+spec:
+  template:
+    spec:
+      containers:
+      - name: client
+        image: docker.jcr.pcfae.com/jhumanj/opnform-client:latest
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: opnform-ingress
+spec:
+  template:
+    spec:
+      containers:
+      - name: nginx
+        image: docker.jcr.pcfae.com/nginx:1

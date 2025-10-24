@@ -1,0 +1,19 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: opnform
+spec:
+  parentRefs:
+  - name: cell-membrane-gateway
+    namespace: king-of-red-lions
+    sectionName: https
+  hostnames:
+  - "form.prplanit.com"
+  rules:
+  - matches:
+    - path:
+        type: PathPrefix
+        value: /
+    backendRefs:
+    - name: opnform-ingress
+      port: 80
