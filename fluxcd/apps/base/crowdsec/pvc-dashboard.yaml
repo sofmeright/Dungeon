@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: PLACEHOLDER_NAMESPACE-crowdsec-dashboard-data
+  name: crowdsec-dashboard-data
 spec:
   accessModes:
     - ReadWriteOnce
@@ -13,7 +13,7 @@ spec:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: PLACEHOLDER_NAMESPACE-crowdsec-metabase-data
+  name: crowdsec-metabase-data
 spec:
   accessModes:
     - ReadWriteOnce
