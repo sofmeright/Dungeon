@@ -36,11 +36,33 @@ spec:
           containerPort: 8001
           protocol: TCP
         env:
-        - name: DATABASE_URL
+        - name: DB_HOST
           valueFrom:
             secretKeyRef:
               name: kimai-mariadb-connection
-              key: dsn
+              key: host
+        - name: DB_PORT
+          valueFrom:
+            secretKeyRef:
+              name: kimai-mariadb-connection
+              key: port
+        - name: DB_USER
+          valueFrom:
+            secretKeyRef:
+              name: kimai-mariadb-connection
+              key: username
+        - name: DB_PASS
+          valueFrom:
+            secretKeyRef:
+              name: kimai-mariadb-connection
+              key: password
+        - name: DB_NAME
+          valueFrom:
+            secretKeyRef:
+              name: kimai-mariadb-connection
+              key: database
+        - name: DATABASE_URL
+          value: "mysql://$(DB_USER):$(DB_PASS)@$(DB_HOST):$(DB_PORT)/$(DB_NAME)?charset=utf8mb4&serverVersion=mariadb-11.4.2"
         - name: APP_SECRET
           valueFrom:
             secretKeyRef:
