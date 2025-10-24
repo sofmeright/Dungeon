@@ -1,0 +1,69 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: opnform-postgres
+spec:
+  type: ClusterIP
+  selector:
+    app: opnform-postgres
+  ports:
+  - name: postgres
+    port: 5432
+    protocol: TCP
+    targetPort: 5432
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: opnform-redis
+spec:
+  type: ClusterIP
+  selector:
+    app: opnform-redis
+  ports:
+  - name: redis
+    port: 6379
+    protocol: TCP
+    targetPort: 6379
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: opnform-api
+spec:
+  type: ClusterIP
+  selector:
+    app: opnform-api
+  ports:
+  - name: http
+    port: 80
+    protocol: TCP
+    targetPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: opnform-client
+spec:
+  type: ClusterIP
+  selector:
+    app: opnform-client
+  ports:
+  - name: http
+    port: 3000
+    protocol: TCP
+    targetPort: 3000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: opnform-ingress
+spec:
+  type: PLACEHOLDER_SERVICE_TYPE
+  selector:
+    app: opnform-ingress
+  ports:
+  - name: http
+    port: 80
+    protocol: TCP
+    targetPort: 80

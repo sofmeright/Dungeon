@@ -59,16 +59,16 @@ CLAUDE.md specifies PVC naming pattern for StatefulSets: `<namespace>-<app>-<pur
 ## Application Deployment - Final Stretch
 
 ### Remaining Applications to Template and Deploy to Kubernetes
-- [ ] calcom (Cal.com) - Scheduling platform from Moor (2 containers: app + studio)
+- [x] calcom (Cal.com) - Scheduling platform from Moor (2 containers: app + studio) - COMPLETED
 - [ ] opnform - Form builder platform from Moor (7 containers: api, scheduler, worker, client, db, ingress, redis)
 - [ ] crowdsec - Security/IDS platform from Lighthouse (2 containers: crowdsec + dashboard)
 - [ ] anirra - Custom arr app from Pirates-WDDA
 - [ ] matrix-synapse - Matrix homeserver (federated chat)
 - [ ] mastodon - Federated social media platform
-- [ ] kimai - Time tracking application (https://github.com/kimai/kimai) - tingle-tuner namespace
-- [ ] mazanoke - Bookmark manager (https://github.com/civilblur/mazanoke) - tingle-tuner namespace
+- [x] kimai - Time tracking application (https://github.com/kimai/kimai) - temple-of-time namespace - COMPLETED
+- [x] mazanoke - Image converting app (https://github.com/civilblur/mazanoke) - tingle-tuner namespace - COMPLETED
 
-**Status:** Final 8 applications remaining out of 100+ total applications inventoried across all Portainer endpoints.
+**Status:** Final 5 applications remaining out of 100+ total applications inventoried across all Portainer endpoints.
 
 **Large stacks to migrate** (not yet deployed to K8s):
 - [ ] Mailcow (18 containers) - Email stack, production critical

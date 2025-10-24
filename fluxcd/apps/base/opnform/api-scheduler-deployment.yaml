@@ -1,0 +1,101 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: opnform-api-scheduler
+  labels:
+    app: opnform-api-scheduler
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: opnform-api-scheduler
+  template:
+    metadata:
+      labels:
+        app: opnform-api-scheduler
+    spec:
+      initContainers:
+      - name: wait-for-api
+        image: docker.io/busybox:latest
+        command:
+        - sh
+        - -c
+        - |
+          until nc -z -v -w5 opnform-api 80; do
+            echo "Waiting for API..."
+            sleep 5
+          done
+      containers:
+      - name: scheduler
+        image: docker.io/jhumanj/opnform-api:latest
+        command: ["php", "artisan", "schedule:work"]
+        env:
+        - name: APP_NAME
+          value: "OpnForm"
+        - name: APP_ENV
+          value: "production"
+        - name: APP_DEBUG
+          value: "false"
+        - name: APP_KEY
+          valueFrom:
+            secretKeyRef:
+              name: opnform-secret
+              key: app-key
+        - name: APP_URL
+          value: PLACEHOLDER_APP_URL
+        - name: DB_CONNECTION
+          value: "pgsql"
+        - name: DB_HOST
+          value: "opnform-postgres"
+        - name: DB_PORT
+          value: "5432"
+        - name: DB_DATABASE
+          valueFrom:
+            secretKeyRef:
+              name: opnform-postgres
+              key: database
+        - name: DB_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: opnform-postgres
+              key: username
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: opnform-postgres
+              key: password
+        - name: REDIS_HOST
+          value: "opnform-redis"
+        - name: REDIS_PORT
+          value: "6379"
+        - name: CACHE_DRIVER
+          value: "redis"
+        - name: QUEUE_CONNECTION
+          value: "redis"
+        - name: SESSION_DRIVER
+          value: "redis"
+        volumeMounts:
+        - name: storage
+          mountPath: /usr/share/nginx/html/storage
+        livenessProbe:
+          exec:
+            command:
+            - php
+            - /usr/share/nginx/html/artisan
+            - app:scheduler-status
+            - --mode=check
+            - --max-minutes=3
+          initialDelaySeconds: 70
+          periodSeconds: 60
+          timeoutSeconds: 30
+        resources:
+          requests:
+            cpu: 50m
+            memory: 128Mi
+          limits:
+            cpu: 500m
+            memory: 512Mi
+      volumes:
+      - name: storage
+        persistentVolumeClaim:
+          claimName: storage-opnform-api-0
