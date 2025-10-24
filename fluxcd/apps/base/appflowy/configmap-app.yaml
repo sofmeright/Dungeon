@@ -42,7 +42,7 @@ data:
   # SMTP Configuration (host is placeholder - override in production overlay)
   APPFLOWY_MAILER_SMTP_HOST: "PLACEHOLDER_SMTP_HOST"
   APPFLOWY_MAILER_SMTP_PORT: "587"
-  APPFLOWY_MAILER_SMTP_TLS_KIND: "StartTls"
+  APPFLOWY_MAILER_SMTP_TLS_KIND: "required"
 
   # GoTrue SMTP Configuration (host is placeholder - override in production overlay)
   GOTRUE_SMTP_HOST: "PLACEHOLDER_SMTP_HOST"
