@@ -17,24 +17,20 @@ spec:
     spec:
       securityContext:
         fsGroup: 33
+      volumes:
+      - name: env-config
+        emptyDir: {}
       initContainers:
-      - name: wait-for-db
+      - name: prepare-env
         image: docker.io/busybox:latest
         command:
         - sh
         - -c
         - |
-          until nc -z -v -w5 kimai-mariadb-primary 3306; do
-            echo "Waiting for MariaDB Galera cluster..."
-            sleep 5
-          done
-      containers:
-      - name: kimai
-        image: docker.io/kimai/kimai2:apache
-        ports:
-        - name: http
-          containerPort: 8001
-          protocol: TCP
+          # URL-encode password (replace + with %2B and other special chars)
+          ENCODED_PASS=$(echo -n "$DB_PASS" | sed 's/+/%2B/g; s/@/%40/g; s/:/%3A/g; s/\//%2F/g; s/?/%3F/g; s/#/%23/g; s/\[/%5B/g; s/\]/%5D/g; s/!/%21/g; s/\$/%24/g; s/&/%26/g; s/'\''/%27/g; s/(/%28/g; s/)/%29/g; s/\*/%2A/g; s/,/%2C/g; s/;/%3B/g; s/=/%3D/g')
+          # Write DATABASE_URL with encoded password to file
+          echo "DATABASE_URL=mysql://${DB_USER}:${ENCODED_PASS}@${DB_HOST}:${DB_PORT}/${DB_NAME}?charset=utf8mb4&serverVersion=mariadb-11.4.2" > /env-config/database_url
         env:
         - name: DB_HOST
           valueFrom:
@@ -61,8 +57,34 @@ spec:
             secretKeyRef:
               name: kimai-mariadb-connection
               key: database
-        - name: DATABASE_URL
-          value: "mysql://$(DB_USER):$(DB_PASS)@$(DB_HOST):$(DB_PORT)/$(DB_NAME)?charset=utf8mb4&serverVersion=mariadb-11.4.2"
+        volumeMounts:
+        - name: env-config
+          mountPath: /env-config
+      - name: wait-for-db
+        image: docker.io/busybox:latest
+        command:
+        - sh
+        - -c
+        - |
+          until nc -z -v -w5 kimai-mariadb-primary 3306; do
+            echo "Waiting for MariaDB Galera cluster..."
+            sleep 5
+          done
+      containers:
+      - name: kimai
+        image: docker.io/kimai/kimai2:apache
+        ports:
+        - name: http
+          containerPort: 8001
+          protocol: TCP
+        command: ["/bin/bash", "-c"]
+        args:
+        - |
+          # Source DATABASE_URL from file created by init container
+          export $(cat /env-config/database_url)
+          # Start Apache with the original entrypoint
+          exec /opt/kimai/docker/apache/docker-entrypoint.sh apache2-foreground
+        env:
         - name: APP_SECRET
           valueFrom:
             secretKeyRef:
@@ -71,6 +93,9 @@ spec:
         - name: TRUSTED_HOSTS
           value: "localhost,127.0.0.1,kimai"
         volumeMounts:
+        - name: env-config
+          mountPath: /env-config
+          readOnly: true
         - name: kimai-data
           mountPath: /opt/kimai/var
         resources:
