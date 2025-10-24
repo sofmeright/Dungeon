@@ -8,32 +8,44 @@ data:
   # Logging configuration
   RUST_LOG: "info"
 
-  # Admin Frontend URLs (internal cluster DNS)
+  # Redis Configuration (internal cluster DNS)
+  REDIS_HOST: "appflowy-redis"
+  REDIS_PORT: "6379"
+
+  # MinIO Configuration (internal cluster DNS)
+  MINIO_HOST: "appflowy-minio"
+  MINIO_PORT: "9000"
+
+  # Admin Frontend Configuration (internal cluster DNS)
   ADMIN_FRONTEND_REDIS_URL: "redis://appflowy-redis:6379"
   ADMIN_FRONTEND_GOTRUE_URL: "http://appflowy-gotrue:9999"
   ADMIN_FRONTEND_APPFLOWY_CLOUD_URL: "http://appflowy-cloud:8000"
   ADMIN_FRONTEND_PATH_PREFIX: "/admin"
 
   # AI Service Configuration
+  AI_SERVER_HOST: "appflowy-ai"
   AI_SERVER_PORT: "5001"
+  APPFLOWY_AI_SERVER_PORT: "5001"
   AI_REDIS_URL: "redis://appflowy-redis:6379"
-
-  # Worker Configuration
-  APPFLOWY_WORKER_REDIS_URL: "redis://appflowy-redis:6379"
+  APPFLOWY_AI_REDIS_URL: "redis://appflowy-redis:6379"
+  LOCAL_AI_TEST_ENABLED: "false"
 
   # S3/MinIO Configuration
   APPFLOWY_S3_USE_MINIO: "true"
   APPFLOWY_S3_MINIO_URL: "http://appflowy-minio:9000"
   APPFLOWY_S3_BUCKET: "appflowy"
   APPFLOWY_S3_REGION: "us-east-1"
+  APPFLOWY_S3_CREATE_BUCKET: "true"
+  AI_APPFLOWY_BUCKET_NAME: "appflowy"
+  AI_MINIO_URL: "http://appflowy-minio:9000"
 
-  # SMTP Configuration (non-sensitive)
-  APPFLOWY_MAILER_SMTP_HOST: "smtp.gmail.com"
+  # SMTP Configuration (host is placeholder - override in production overlay)
+  APPFLOWY_MAILER_SMTP_HOST: "PLACEHOLDER_SMTP_HOST"
   APPFLOWY_MAILER_SMTP_PORT: "587"
   APPFLOWY_MAILER_SMTP_TLS_KIND: "starttls"
 
-  # GoTrue SMTP Configuration
-  GOTRUE_SMTP_HOST: "smtp.gmail.com"
+  # GoTrue SMTP Configuration (host is placeholder - override in production overlay)
+  GOTRUE_SMTP_HOST: "PLACEHOLDER_SMTP_HOST"
   GOTRUE_SMTP_PORT: "587"
   GOTRUE_SMTP_MAX_FREQUENCY: "1ns"
 
@@ -44,24 +56,33 @@ data:
   GOTRUE_RATE_LIMIT_EMAIL_SENT: "100"
   GOTRUE_DISABLE_SIGNUP: "false"
 
-  # OAuth Configuration (disabled)
+  # GoTrue OAuth Configuration (Google)
   GOTRUE_EXTERNAL_GOOGLE_ENABLED: "false"
-  GOTRUE_EXTERNAL_GITHUB_ENABLED: "false"
-  GOTRUE_EXTERNAL_DISCORD_ENABLED: "false"
+  GOTRUE_EXTERNAL_GOOGLE_CLIENT_ID: ""
+  GOTRUE_EXTERNAL_GOOGLE_SECRET: ""
 
-  # AI Service Configuration
-  AI_SERVER_HOST: "appflowy-ai"
-  AI_SERVER_PORT: "5001"
-  APPFLOWY_AI_SERVER_PORT: "5001"
-  AI_REDIS_URL: "redis://appflowy-redis:6379"
-  APPFLOWY_AI_REDIS_URL: "redis://appflowy-redis:6379"
+  # GoTrue OAuth Configuration (GitHub)
+  GOTRUE_EXTERNAL_GITHUB_ENABLED: "false"
+  GOTRUE_EXTERNAL_GITHUB_CLIENT_ID: ""
+  GOTRUE_EXTERNAL_GITHUB_SECRET: ""
+
+  # GoTrue OAuth Configuration (Discord)
+  GOTRUE_EXTERNAL_DISCORD_ENABLED: "false"
+  GOTRUE_EXTERNAL_DISCORD_CLIENT_ID: ""
+  GOTRUE_EXTERNAL_DISCORD_SECRET: ""
+
+  # GoTrue OAuth Configuration (Apple)
+  GOTRUE_EXTERNAL_APPLE_ENABLED: "false"
+  GOTRUE_EXTERNAL_APPLE_CLIENT_ID: ""
+  GOTRUE_EXTERNAL_APPLE_SECRET: ""
 
   # Worker Configuration
+  APPFLOWY_WORKER_REDIS_URL: "redis://appflowy-redis:6379"
   APPFLOWY_WORKER_ENVIRONMENT: "production"
   APPFLOWY_WORKER_IMPORT_TICK_INTERVAL: "30"
-  APPFLOWY_ENVIRONMENT: "production"
 
-  # AppFlowy Cloud Configuration
+  # AppFlowy Environment Configuration
+  APPFLOWY_ENVIRONMENT: "production"
   APPFLOWY_ACCESS_CONTROL: "true"
   APPFLOWY_WEBSOCKET_MAILBOX_SIZE: "6000"
   APPFLOWY_DATABASE_MAX_CONNECTIONS: "40"
@@ -75,10 +96,19 @@ data:
   APPFLOWY_COLLABORATE_MULTI_THREAD: "false"
   APPFLOWY_COLLABORATE_REMOVE_BATCH_SIZE: "100"
 
-  # AppFlowy Cloud Configuration (internal cluster DNS)
+  # AppFlowy Internal URLs (cluster DNS)
   APPFLOWY_BASE_URL: "http://appflowy-cloud:8000"
   APPFLOWY_GOTRUE_BASE_URL: "http://appflowy-gotrue:9999"
+  APPFLOWY_REDIS_URI: "redis://appflowy-redis:6379"
 
   # External URLs (patched by overlay for each environment)
   APPFLOWY_WS_BASE_URL: "PLACEHOLDER_EXTERNAL_WS_URL"
+  APPFLOWY_WEB_URL: "PLACEHOLDER_EXTERNAL_WEB_URL"
+  APPFLOWY_S3_PRESIGNED_URL_ENDPOINT: "PLACEHOLDER_S3_PRESIGNED_URL"
+  APPFLOWY_GOTRUE_EXT_URL: "PLACEHOLDER_GOTRUE_EXTERNAL_URL"
   API_EXTERNAL_URL: "PLACEHOLDER_EXTERNAL_API_URL"
+  AI_APPFLOWY_HOST: "PLACEHOLDER_AI_APPFLOWY_HOST"
+  GOTRUE_EXTERNAL_GOOGLE_REDIRECT_URI: "PLACEHOLDER_GOOGLE_REDIRECT"
+  GOTRUE_EXTERNAL_GITHUB_REDIRECT_URI: "PLACEHOLDER_GITHUB_REDIRECT"
+  GOTRUE_EXTERNAL_DISCORD_REDIRECT_URI: "PLACEHOLDER_DISCORD_REDIRECT"
+  GOTRUE_EXTERNAL_APPLE_REDIRECT_URI: "PLACEHOLDER_APPLE_REDIRECT"

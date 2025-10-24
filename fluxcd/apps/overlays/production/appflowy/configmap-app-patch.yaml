@@ -4,8 +4,19 @@ metadata:
   name: appflowy-app-config
 data:
   # Production-specific external URLs
-  APPFLOWY_WS_BASE_URL: "wss://appflowy.precisionplanit.com/ws/v2"
-  API_EXTERNAL_URL: "https://appflowy.precisionplanit.com"
+  APPFLOWY_BASE_URL: "https://flwy.prplanit.com"
+  APPFLOWY_WEB_URL: "https://flwy.prplanit.com"
+  APPFLOWY_S3_PRESIGNED_URL_ENDPOINT: "https://flwy.prplanit.com/files"
+  APPFLOWY_GOTRUE_EXT_URL: "https://flwy.prplanit.com/gotrue"
+  API_EXTERNAL_URL: "https://flwy.prplanit.com/gotrue"
+  AI_APPFLOWY_HOST: "https://flwy.prplanit.com"
 
-  # Production SMTP host (if different from base defaults)
+  # OAuth redirect URIs (all disabled but provide callback URL)
+  GOTRUE_EXTERNAL_GOOGLE_REDIRECT_URI: "https://flwy.prplanit.com/gotrue/callback"
+  GOTRUE_EXTERNAL_GITHUB_REDIRECT_URI: "https://flwy.prplanit.com/gotrue/callback"
+  GOTRUE_EXTERNAL_DISCORD_REDIRECT_URI: "https://flwy.prplanit.com/gotrue/callback"
+  GOTRUE_EXTERNAL_APPLE_REDIRECT_URI: "https://flwy.prplanit.com/gotrue/callback"
+
+  # Production SMTP host
   APPFLOWY_MAILER_SMTP_HOST: "smtp.gmail.com"
+  GOTRUE_SMTP_HOST: "smtp.gmail.com"
