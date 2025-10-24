@@ -79,10 +79,10 @@ spec:
           # Source DATABASE_URL from file created by prepare-env initContainer
           export $(cat /env-config/database_url)
 
-          # Check if user exists
-          if /opt/kimai/bin/console fos:user:list | grep -q "$ADMIN_USERNAME"; then
+          # Check if user exists using kimai:user command
+          if /opt/kimai/bin/console kimai:user:list | grep -qw "$ADMIN_USERNAME"; then
             echo "User $ADMIN_USERNAME exists, updating password..."
-            echo "$ADMIN_PASSWORD" | /opt/kimai/bin/console fos:user:change-password "$ADMIN_USERNAME"
+            echo "$ADMIN_PASSWORD" | /opt/kimai/bin/console kimai:user:password "$ADMIN_USERNAME"
           else
             echo "Creating admin user $ADMIN_USERNAME..."
             /opt/kimai/bin/console kimai:user:create "$ADMIN_USERNAME" "$ADMIN_EMAIL" ROLE_SUPER_ADMIN "$ADMIN_PASSWORD"
