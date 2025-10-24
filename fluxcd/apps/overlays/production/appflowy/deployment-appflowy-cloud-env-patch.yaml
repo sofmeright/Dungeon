@@ -65,7 +65,7 @@ spec:
           valueFrom:
             secretKeyRef:
               name: appflowy-postgres-app
-              key: JWT_SECRET
+              key: GOTRUE_JWT_SECRET
         - name: APPFLOWY_GOTRUE_ADMIN_EMAIL
           valueFrom:
             secretKeyRef:
