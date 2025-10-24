@@ -5,7 +5,7 @@ metadata:
 spec:
   storage:
     size: 20Gi
-    storageClassName: longhorn
+    storageClassName: ceph-rbd
   resources:
     requests:
       cpu: 100m
