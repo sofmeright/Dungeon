@@ -4,5 +4,5 @@ resources:
 - mariadb.yaml
 - mariadb-externalsecret.yaml
 - statefulset.yaml
-- service.yaml
 - externalsecret.yaml
+- service.yaml
