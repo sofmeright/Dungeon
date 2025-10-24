@@ -7,6 +7,13 @@ spec:
     name: kimai-mariadb
     key: root-password
 
+  # Database and user configuration
+  database: kimai
+  username: kimai
+  passwordSecretKeyRef:
+    name: kimai-mariadb
+    key: user-password
+
   image: docker.io/mariadb:11.4.2
 
   # High availability with 3-replica Galera cluster
