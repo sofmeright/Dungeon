@@ -52,47 +52,40 @@ spec:
           value: "true"
         - name: APPFLOWY_S3_PRESIGNED_URL_ENDPOINT
           value: "https://flwy.prplanit.com/files"
-        - name: APPFLOWY_MAILER_SMTP_HOST
-          value: "smtp.gmail.com"
-        - name: APPFLOWY_MAILER_SMTP_PORT
-          value: "587"
-        - name: APPFLOWY_MAILER_SMTP_TLS_KIND
-          value: "starttls"
-        - name: APPFLOWY_MAILER_SMTP_EMAIL
-          value: "precisionplanit@gmail.com"
-        # Secrets from CNPG and Vault
+        # Secrets from shared secret (JWT, GoTrue admin)
         - name: APPFLOWY_GOTRUE_JWT_SECRET
           valueFrom:
             secretKeyRef:
-              name: appflowy-postgres-app
+              name: appflowy-shared-secrets
               key: GOTRUE_JWT_SECRET
         - name: APPFLOWY_GOTRUE_ADMIN_EMAIL
           valueFrom:
             secretKeyRef:
-              name: appflowy-postgres-app
+              name: appflowy-shared-secrets
               key: GOTRUE_ADMIN_EMAIL
         - name: APPFLOWY_GOTRUE_ADMIN_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: appflowy-postgres-app
+              name: appflowy-shared-secrets
               key: GOTRUE_ADMIN_PASSWORD
+        # Secrets from cloud-specific secret (MinIO, SMTP)
         - name: APPFLOWY_S3_ACCESS_KEY
           valueFrom:
             secretKeyRef:
-              name: appflowy-postgres-app
+              name: appflowy-cloud-secrets
               key: MINIO_ROOT_USER
         - name: APPFLOWY_S3_SECRET_KEY
           valueFrom:
             secretKeyRef:
-              name: appflowy-postgres-app
+              name: appflowy-cloud-secrets
               key: MINIO_ROOT_PASSWORD
         - name: APPFLOWY_MAILER_SMTP_USERNAME
           valueFrom:
             secretKeyRef:
-              name: appflowy-postgres-app
+              name: appflowy-cloud-secrets
               key: APPFLOWY_MAILER_SMTP_USERNAME
         - name: APPFLOWY_MAILER_SMTP_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: appflowy-postgres-app
+              name: appflowy-cloud-secrets
               key: APPFLOWY_MAILER_SMTP_PASSWORD

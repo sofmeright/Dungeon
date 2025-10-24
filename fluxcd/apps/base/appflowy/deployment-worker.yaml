@@ -27,40 +27,41 @@ spec:
           value: "production"
         - name: APPFLOWY_WORKER_IMPORT_TICK_INTERVAL
           value: "30"
+        # All secrets from worker-specific secret
         - name: APPFLOWY_WORKER_DATABASE_URL
           valueFrom:
             secretKeyRef:
-              name: appflowy-postgres-app
+              name: appflowy-worker-secrets
               key: APPFLOWY_WORKER_DATABASE_URL
         - name: APPFLOWY_WORKER_DATABASE_NAME
           valueFrom:
             secretKeyRef:
-              name: appflowy-postgres-app
+              name: appflowy-worker-secrets
               key: APPFLOWY_WORKER_DATABASE_NAME
         - name: APPFLOWY_S3_ACCESS_KEY
           valueFrom:
             secretKeyRef:
-              name: appflowy-postgres-app
+              name: appflowy-worker-secrets
               key: APPFLOWY_S3_ACCESS_KEY
         - name: APPFLOWY_S3_SECRET_KEY
           valueFrom:
             secretKeyRef:
-              name: appflowy-postgres-app
+              name: appflowy-worker-secrets
               key: APPFLOWY_S3_SECRET_KEY
         - name: APPFLOWY_MAILER_SMTP_USERNAME
           valueFrom:
             secretKeyRef:
-              name: appflowy-postgres-app
+              name: appflowy-worker-secrets
               key: APPFLOWY_MAILER_SMTP_USERNAME
         - name: APPFLOWY_MAILER_SMTP_EMAIL
           valueFrom:
             secretKeyRef:
-              name: appflowy-postgres-app
+              name: appflowy-worker-secrets
               key: APPFLOWY_MAILER_SMTP_EMAIL
         - name: APPFLOWY_MAILER_SMTP_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: appflowy-postgres-app
+              name: appflowy-worker-secrets
               key: APPFLOWY_MAILER_SMTP_PASSWORD
         envFrom:
         - configMapRef:

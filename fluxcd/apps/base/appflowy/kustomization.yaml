@@ -25,4 +25,10 @@ resources:
   - configmap-auth-init.yaml
   - configmap-app.yaml
   - externalsecret.yaml
+  - externalsecret-shared.yaml
+  - externalsecret-cloud.yaml
+  - externalsecret-gotrue.yaml
+  - externalsecret-worker.yaml
+  - externalsecret-ai.yaml
+  - externalsecret-minio.yaml
   - externalsecret-postgres-init.yaml
