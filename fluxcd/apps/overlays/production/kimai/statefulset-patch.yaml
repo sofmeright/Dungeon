@@ -8,14 +8,3 @@ spec:
       containers:
       - name: kimai
         image: docker.jcr.pcfae.com/kimai/kimai2:apache
-      - name: mysql
-        image: docker.jcr.pcfae.com/library/mysql:8.0
-  volumeClaimTemplates:
-  - metadata:
-      name: kimai-data
-    spec:
-      storageClassName: longhorn
-  - metadata:
-      name: mysql-data
-    spec:
-      storageClassName: longhorn
