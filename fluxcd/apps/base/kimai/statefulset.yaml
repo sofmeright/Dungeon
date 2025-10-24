@@ -70,6 +70,50 @@ spec:
             echo "Waiting for MariaDB Galera cluster..."
             sleep 5
           done
+      - name: create-admin-user
+        image: docker.io/kimai/kimai2:apache
+        command:
+        - /bin/bash
+        - -c
+        - |
+          # Source DATABASE_URL from file created by prepare-env initContainer
+          export $(cat /env-config/database_url)
+
+          # Check if user exists
+          if /opt/kimai/bin/console fos:user:list | grep -q "$ADMIN_USERNAME"; then
+            echo "User $ADMIN_USERNAME exists, updating password..."
+            echo "$ADMIN_PASSWORD" | /opt/kimai/bin/console fos:user:change-password "$ADMIN_USERNAME"
+          else
+            echo "Creating admin user $ADMIN_USERNAME..."
+            /opt/kimai/bin/console kimai:user:create "$ADMIN_USERNAME" "$ADMIN_EMAIL" ROLE_SUPER_ADMIN "$ADMIN_PASSWORD"
+          fi
+
+          echo "Admin user sync complete"
+        env:
+        - name: APP_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: kimai-secret
+              key: app-secret
+        - name: ADMIN_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: kimai-secret
+              key: admin-username
+        - name: ADMIN_EMAIL
+          valueFrom:
+            secretKeyRef:
+              name: kimai-secret
+              key: admin-email
+        - name: ADMIN_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: kimai-secret
+              key: admin-password
+        volumeMounts:
+        - name: env-config
+          mountPath: /env-config
+          readOnly: true
       containers:
       - name: kimai
         image: docker.io/kimai/kimai2:apache
