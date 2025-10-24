@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: appflowy-ai
 spec:
-  replicas: 1
+  replicas: 0  # Disabled - no OpenAI API key configured
   template:
     spec:
       containers:
