@@ -48,7 +48,7 @@ spec:
         - name: GOTRUE_SMTP_HOST
           value: "smtp.gmail.com"
         - name: GOTRUE_SMTP_PORT
-          value: "465"
+          value: "587"
         - name: GOTRUE_SMTP_MAX_FREQUENCY
           value: "1ns"
         - name: GOTRUE_SMTP_ADMIN_EMAIL
