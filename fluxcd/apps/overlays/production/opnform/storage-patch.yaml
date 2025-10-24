@@ -7,6 +7,8 @@ spec:
   - metadata:
       name: postgres-data
     spec:
+      accessModes:
+      - ReadWriteOnce
       storageClassName: ceph-rbd
       resources:
         requests:
@@ -21,6 +23,8 @@ spec:
   - metadata:
       name: redis-data
     spec:
+      accessModes:
+      - ReadWriteOnce
       storageClassName: ceph-rbd
       resources:
         requests:
@@ -35,6 +39,8 @@ spec:
   - metadata:
       name: storage
     spec:
+      accessModes:
+      - ReadWriteOnce
       storageClassName: ceph-rbd
       resources:
         requests:

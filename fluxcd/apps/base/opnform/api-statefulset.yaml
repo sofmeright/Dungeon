@@ -123,20 +123,14 @@ spec:
         - name: SHOW_OFFICIAL_TEMPLATES
           value: "true"
         - name: MAIL_MAILER
-          valueFrom:
-            secretKeyRef:
-              name: opnform-smtp
-              key: mailer
+          value: "smtp"
         - name: MAIL_HOST
           valueFrom:
             secretKeyRef:
               name: opnform-smtp
               key: host
         - name: MAIL_PORT
-          valueFrom:
-            secretKeyRef:
-              name: opnform-smtp
-              key: port
+          value: "587"
         - name: MAIL_USERNAME
           valueFrom:
             secretKeyRef:
@@ -148,10 +142,7 @@ spec:
               name: opnform-smtp
               key: password
         - name: MAIL_ENCRYPTION
-          valueFrom:
-            secretKeyRef:
-              name: opnform-smtp
-              key: encryption
+          value: "tls"
         - name: MAIL_FROM_ADDRESS
           valueFrom:
             secretKeyRef:
