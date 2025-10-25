@@ -44,7 +44,7 @@ spec:
         - name: TZ
           value: America/Los_Angeles
         - name: MAP_NAME
-          value: Valguero_P
+          value: Valguero_WP
         - name: SESSION_NAME
           value: The Master Chiefers - Valguero
         - name: SERVER_ADMIN_PASSWORD
