@@ -83,6 +83,7 @@ spec:
           WebUI\ServerDomains=*
           WebUI\Username=$QBITTORRENT_USERNAME
           WebUI\Password_PBKDF2=@ByteArray($HASH)
+          WebUI\\LocalHostAuth=false
           EOF
           fi
 
@@ -106,7 +107,7 @@ spec:
         - name: VPN_SERVICE_PROVIDER
           value: "private internet access"
         - name: SERVER_REGIONS
-          value: "CA Toronto"
+          value: "CA Vancouver"
         - name: OPENVPN_USER
           valueFrom:
             secretKeyRef:
@@ -135,6 +136,8 @@ spec:
               key: password
         - name: VPN_PORT_FORWARDING_STATUS_FILE
           value: "/tmp/gluetun/forwarded_port"
+        - name: VPN_PORT_FORWARDING_UP_COMMAND
+          value: '/bin/sh -c "wget -O- --retry-connrefused --post-data \"json={\\\"listen_port\\\":{{PORTS}}}\" http://127.0.0.1:6887/api/v2/app/setPreferences 2>&1"'
         - name: DNS_ADDRESS
           value: "10.144.0.10"
         - name: DOT
