@@ -106,7 +106,7 @@ spec:
         - name: VPN_SERVICE_PROVIDER
           value: "private internet access"
         - name: SERVER_REGIONS
-          value: "CA Vancouver"
+          value: "CA Toronto"
         - name: OPENVPN_USER
           valueFrom:
             secretKeyRef:
