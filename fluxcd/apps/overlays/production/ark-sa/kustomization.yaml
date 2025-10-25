@@ -5,3 +5,5 @@ resources:
 - externalsecret.yaml
 - theisland-statefulset.yaml
 - theisland-service.yaml
+- valguero-statefulset.yaml
+- valguero-service.yaml
