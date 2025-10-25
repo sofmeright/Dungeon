@@ -116,7 +116,7 @@ spec:
         - name: DNS_KEEP_NAMESERVER
           value: "off"
         - name: DOT
-          value: "on"
+          value: "off"
         - name: FIREWALL_OUTBOUND_SUBNETS
           value: "10.0.0.0/8,172.16.0.0/12,172.22.30.33/32,192.168.144.0/20"
         - name: FIREWALL_INPUT_PORTS
