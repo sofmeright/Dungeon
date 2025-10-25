@@ -106,9 +106,21 @@ spec:
         - name: VPN_SERVICE_PROVIDER
           value: "private internet access"
         - name: SERVER_NAMES
-          value: "ca_montreal,ca_ontario,ca_toronto,ca_vancouver"
+          value: "ca_toronto"
         - name: VPN_PORT_FORWARDING
           value: "on"
+        - name: VPN_PORT_FORWARDING_PROVIDER
+          value: "private internet access"
+        - name: VPN_PORT_FORWARDING_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: qbittorrent-pia-credentials
+              key: username
+        - name: VPN_PORT_FORWARDING_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: qbittorrent-pia-credentials
+              key: password
         - name: VPN_PORT_FORWARDING_STATUS_FILE
           value: "/tmp/gluetun/forwarded_port"
         - name: DNS_ADDRESS
