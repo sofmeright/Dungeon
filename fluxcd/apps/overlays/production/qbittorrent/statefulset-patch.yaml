@@ -113,8 +113,8 @@ spec:
           value: "on"
         - name: VPN_PORT_FORWARDING_STATUS_FILE
           value: "/tmp/gluetun/forwarded_port"
-        - name: DNS_KEEP_NAMESERVER
-          value: "off"
+        - name: DNS_ADDRESS
+          value: "10.144.0.10"
         - name: DOT
           value: "off"
         - name: FIREWALL_OUTBOUND_SUBNETS
