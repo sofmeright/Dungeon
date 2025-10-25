@@ -12,7 +12,7 @@ patches:
   # Dashboard patches
   - path: deployment-dashboard-patch.yaml
   # Cloudflare bouncer patches
-  - path: deployment-cloudflare-bouncer-patch.yaml
+  - path: statefulset-cloudflare-bouncer-patch.yaml
   # PVC patches
   - path: pvc-dashboard-patch.yaml
   # Service patches
