@@ -105,10 +105,8 @@ spec:
         env:
         - name: VPN_SERVICE_PROVIDER
           value: "private internet access"
-        - name: SERVER_REGIONS
-          $patch: delete
-        - name: PORT_FORWARD_ONLY
-          value: "true"
+        - name: SERVER_NAMES
+          value: "ca_montreal,ca_ontario,ca_toronto,ca_vancouver"
         - name: VPN_PORT_FORWARDING
           value: "on"
         - name: VPN_PORT_FORWARDING_STATUS_FILE
