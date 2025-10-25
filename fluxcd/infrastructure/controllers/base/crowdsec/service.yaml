@@ -46,7 +46,7 @@ metadata:
     app: crowdsec-cloudflare-bouncer
     component: bouncer
 spec:
-  type: ClusterIP
+  clusterIP: None
   ports:
   - name: metrics
     port: 2112

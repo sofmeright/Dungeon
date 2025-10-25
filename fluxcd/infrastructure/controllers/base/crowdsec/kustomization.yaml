@@ -5,7 +5,6 @@ resources:
   - statefulset.yaml
   - deployment-dashboard.yaml
   - statefulset-cloudflare-bouncer.yaml
-  - service-cloudflare-bouncer.yaml
   - pvc-dashboard.yaml
   - service.yaml
   - configmap-acquis-nginx.yaml
