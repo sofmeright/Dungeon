@@ -14,6 +14,12 @@ spec:
           value: "dungeon-k8s"
         - name: CROWDSEC_API_PORT
           value: "3403"
+        - name: ENROLL_KEY
+          value: "cm9ntuqmc000jjx08n5r84rtt"
+        - name: ENROLL_INSTANCE_NAME
+          value: "Dungeon"
+        - name: ENROLL_TAGS
+          value: "k8s linux production"
         volumeMounts:
         - name: lens-of-truth-crowdsec-data
           mountPath: /var/lib/crowdsec/data
