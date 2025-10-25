@@ -14,6 +14,9 @@ spec:
           value: "dungeon-k8s"
         - name: CROWDSEC_API_PORT
           value: "3403"
+        volumeMounts:
+        - name: lens-of-truth-crowdsec-data
+          mountPath: /var/lib/crowdsec/data
         resources:
           requests:
             cpu: "250m"
@@ -23,7 +26,7 @@ spec:
             memory: "2Gi"
   volumeClaimTemplates:
   - metadata:
-      name: crowdsec-data
+      name: lens-of-truth-crowdsec-data
     spec:
       storageClassName: ceph-rbd
       resources:

@@ -50,7 +50,7 @@ spec:
           periodSeconds: 30
           timeoutSeconds: 10
         volumeMounts:
-        - name: crowdsec-data
+        - name: PLACEHOLDER_NAMESPACE-crowdsec-data
           mountPath: /var/lib/crowdsec/data
         - name: acquis-nginx
           mountPath: /etc/crowdsec/acquis.d/10-nginx-loki.yaml
@@ -92,7 +92,7 @@ spec:
           name: crowdsec-bitwarden-scenario
   volumeClaimTemplates:
   - metadata:
-      name: crowdsec-data
+      name: PLACEHOLDER_NAMESPACE-crowdsec-data
     spec:
       accessModes: ["ReadWriteOnce"]
       storageClassName: PLACEHOLDER_STORAGE_CLASS

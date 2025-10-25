@@ -14,17 +14,6 @@ spec:
       labels:
         app: opnform-api-worker
     spec:
-      initContainers:
-      - name: wait-for-api
-        image: docker.io/busybox:latest
-        command:
-        - sh
-        - -c
-        - |
-          until nc -z -v -w5 opnform-api 80; do
-            echo "Waiting for API..."
-            sleep 5
-          done
       containers:
       - name: worker
         image: docker.io/jhumanj/opnform-api:latest
