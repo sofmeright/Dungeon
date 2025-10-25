@@ -61,14 +61,20 @@ CLAUDE.md specifies PVC naming pattern for StatefulSets: `<namespace>-<app>-<pur
 ### Remaining Applications to Template and Deploy to Kubernetes
 - [x] calcom (Cal.com) - Scheduling platform from Moor (2 containers: app + studio) - COMPLETED
 - [x] opnform - Form builder platform from Moor (7 containers: api, scheduler, worker, client, db, ingress, redis) - hyrule-castle namespace - COMPLETED
-- [ ] crowdsec - Security/IDS platform from Lighthouse (2 containers: crowdsec + dashboard)
+- [x] crowdsec - Security/IDS platform from Lighthouse (2 containers: crowdsec + dashboard)
 - [ ] anirra - Custom arr app from Pirates-WDDA
 - [ ] matrix-synapse - Matrix homeserver (federated chat)
 - [ ] mastodon - Federated social media platform
 - [x] kimai - Time tracking application (https://github.com/kimai/kimai) - temple-of-time namespace - COMPLETED
 - [x] mazanoke - Image converting app (https://github.com/civilblur/mazanoke) - tingle-tuner namespace - COMPLETED
 
-**Status:** Final 4 applications remaining out of 100+ total applications inventoried across all Portainer endpoints.
+**Status:** Final 3 applications remaining out of 100+ total applications inventoried across all Portainer endpoints.
+
+**Applications that would be nice to add to the stack:**
+- [ ] tinkerbell (Machine deployment automations)
+- [ ] kubevirt (hypervisor)
+- [ ] rook-ceph ~ Could potentially migrate PVE Ceph to K8s with BGP loadbalancing & disk passthrough we would lose nothing...
+- [ ] vyOS ~ could extend k8s to handling routing and setup something truly resiliant and robust as compared to pfsense.
 
 **Large stacks to migrate** (not yet deployed to K8s):
 - [ ] ARK servers (6 instances) - Game servers on Jabu-Jabu

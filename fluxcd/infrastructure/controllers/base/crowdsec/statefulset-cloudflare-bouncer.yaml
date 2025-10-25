@@ -1,11 +1,12 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: crowdsec-cloudflare-bouncer
   labels:
     app: crowdsec-cloudflare-bouncer
     component: bouncer
 spec:
+  serviceName: crowdsec-cloudflare-bouncer
   replicas: PLACEHOLDER_REPLICAS
   selector:
     matchLabels:
