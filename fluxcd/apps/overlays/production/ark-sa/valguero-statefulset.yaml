@@ -86,8 +86,8 @@ spec:
           limits:
             memory: 16Gi
           requests:
-            memory: 12Gi
-            cpu: 2000m
+            memory: 8Gi
+            cpu: 1000m
         volumeMounts:
         - name: shooting-gallery-ark-sa-tmc-valguero-serverfiles
           mountPath: /home/pok/arkserver
