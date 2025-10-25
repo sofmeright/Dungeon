@@ -12,6 +12,7 @@ data:
     cloudflare_config:
       accounts:
         - id: 2e7f5ce244fda519fd6c25bd13b58148
+          token: "${CLOUDFLARE_TOKEN}"
           zones:
             - zone_id: 29785be48310fd9a7f53331cb9cc350e  # arbitorium.com
               actions: [managed_challenge]
