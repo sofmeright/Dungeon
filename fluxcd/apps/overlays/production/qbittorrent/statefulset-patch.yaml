@@ -106,9 +106,21 @@ spec:
         - name: VPN_SERVICE_PROVIDER
           value: "private internet access"
         - name: SERVER_REGIONS
-          value: "CA Toronto"
+          value: "CA Vancouver"
+        - name: OPENVPN_USER
+          valueFrom:
+            secretKeyRef:
+              name: qbittorrent-pia-credentials
+              key: username
+        - name: OPENVPN_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: qbittorrent-pia-credentials
+              key: password
         - name: VPN_PORT_FORWARDING
           value: "on"
+        - name: PORT_FORWARD_ONLY
+          value: "true"
         - name: VPN_PORT_FORWARDING_PROVIDER
           value: "private internet access"
         - name: VPN_PORT_FORWARDING_USERNAME
