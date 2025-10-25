@@ -6,6 +6,7 @@ data:
   crowdsec-cloudflare-bouncer.yaml: |
     crowdsec_lapi_url: http://crowdsec:8080/
     crowdsec_lapi_key: ${CROWDSEC_LAPI_KEY}
+    crowdsec_insecure_skip_verify: false
     crowdsec_update_frequency: 10s
     include_scenarios_containing: []
     exclude_scenarios_containing: []
@@ -13,7 +14,6 @@ data:
     cloudflare_config:
       accounts:
         - id: 2e7f5ce244fda519fd6c25bd13b58148
-          token: "${CLOUDFLARE_TOKEN}"
           zones:
             - zone_id: 29785be48310fd9a7f53331cb9cc350e  # arbitorium.com
               actions: [managed_challenge]
@@ -61,6 +61,7 @@ data:
               actions: [managed_challenge]
             - zone_id: d9eefdb16077c04971fade22872b5bc8  # yesimvegan.com
               actions: [managed_challenge]
+          token: ${CLOUDFLARE_TOKEN}
           ip_list_prefix: crowdsec
           default_action: managed_challenge
           total_ip_list_capacity: 9900
