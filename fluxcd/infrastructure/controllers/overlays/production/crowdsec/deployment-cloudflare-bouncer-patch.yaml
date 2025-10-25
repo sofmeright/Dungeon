@@ -6,6 +6,8 @@ spec:
   replicas: 1
   template:
     spec:
+      hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet
       initContainers:
       - name: config-substitution
         image: docker.jcr.pcfae.com/alpine:latest
