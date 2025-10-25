@@ -55,8 +55,6 @@ data:
               actions: [managed_challenge]
             - zone_id: 840b179e7765ae58aa7951a22aa94df9  # thesewer.space
               actions: [managed_challenge]
-            - zone_id: d71e67f1a43c94aeb7d3982d68c91907  # tiksytoksy.com
-              actions: [managed_challenge]
             - zone_id: 8198368eeb59af3bc92146b8d40e36da  # uni2.cc
               actions: [managed_challenge]
             - zone_id: d9eefdb16077c04971fade22872b5bc8  # yesimvegan.com
