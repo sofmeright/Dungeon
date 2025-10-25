@@ -106,7 +106,7 @@ spec:
         - name: VPN_SERVICE_PROVIDER
           value: "private internet access"
         - name: SERVER_REGIONS
-          value: "CA Vancouver"
+          $patch: delete
         - name: PORT_FORWARD_ONLY
           value: "true"
         - name: VPN_PORT_FORWARDING

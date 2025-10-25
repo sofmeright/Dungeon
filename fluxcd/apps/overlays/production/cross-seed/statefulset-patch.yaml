@@ -113,7 +113,7 @@ spec:
         - name: VPN_SERVICE_PROVIDER
           value: "private internet access"
         - name: SERVER_REGIONS
-          value: "CA Vancouver"
+          $patch: delete
         - name: FIREWALL_VPN_INPUT_PORTS
           $patch: delete
         - name: FIREWALL_INPUT_PORTS
