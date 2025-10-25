@@ -5,10 +5,5 @@ metadata:
   labels:
     app.kubernetes.io/name: anirra
 data:
-  config.yaml: |
-    sonarr:
-      - url: http://sonarr:8989
-        api_key: SONARR_API_KEY_PLACEHOLDER
-    radarr:
-      - url: http://radarr:7878
-        api_key: RADARR_API_KEY_PLACEHOLDER
+  sonarr-url: "http://sonarr:8989"
+  radarr-url: "http://radarr:7878"

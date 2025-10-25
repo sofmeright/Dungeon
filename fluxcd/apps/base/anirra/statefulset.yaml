@@ -15,6 +15,47 @@ spec:
       labels:
         app.kubernetes.io/name: anirra
     spec:
+      initContainers:
+      - name: config-init
+        image: busybox:latest
+        command:
+        - sh
+        - -c
+        - |
+          cat > /config/config.yaml <<EOF
+          sonarr:
+            - url: ${SONARR_URL}
+              api_key: ${SONARR_API_KEY}
+          radarr:
+            - url: ${RADARR_URL}
+              api_key: ${RADARR_API_KEY}
+          EOF
+          echo "Generated config.yaml:"
+          cat /config/config.yaml
+        env:
+        - name: SONARR_URL
+          valueFrom:
+            configMapKeyRef:
+              name: anirra-config
+              key: sonarr-url
+        - name: RADARR_URL
+          valueFrom:
+            configMapKeyRef:
+              name: anirra-config
+              key: radarr-url
+        - name: SONARR_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: anirra-secrets
+              key: sonarr-api-key
+        - name: RADARR_API_KEY
+          valueFrom:
+            secretKeyRef:
+              name: anirra-secrets
+              key: radarr-api-key
+        volumeMounts:
+        - name: config
+          mountPath: /config
       containers:
       - name: anirra
         image: jpyles0524/anirra:latest
@@ -43,8 +84,7 @@ spec:
             memory: 512Mi
       volumes:
       - name: config
-        configMap:
-          name: anirra-config
+        emptyDir: {}
   volumeClaimTemplates:
   - metadata:
       name: data

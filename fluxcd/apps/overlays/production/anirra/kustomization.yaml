@@ -6,6 +6,7 @@ resources:
 patches:
   - path: statefulset-patch.yaml
   - path: configmap-patch.yaml
+  - path: externalsecret-patch.yaml
   - target:
       version: v1
       kind: Service

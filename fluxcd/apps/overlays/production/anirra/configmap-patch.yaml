@@ -3,10 +3,5 @@ kind: ConfigMap
 metadata:
   name: anirra-config
 data:
-  config.yaml: |
-    sonarr:
-      - url: http://sonarr.swift-sail.svc.cluster.local:8989
-        api_key: ""
-    radarr:
-      - url: http://radarr.swift-sail.svc.cluster.local:7878
-        api_key: ""
+  sonarr-url: "http://sonarr.swift-sail.svc.cluster.local:8989"
+  radarr-url: "http://radarr.swift-sail.svc.cluster.local:7878"
