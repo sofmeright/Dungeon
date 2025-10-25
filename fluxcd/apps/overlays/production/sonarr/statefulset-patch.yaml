@@ -18,6 +18,8 @@ spec:
           value: "private internet access"
         - name: SERVER_REGIONS
           value: "CA Vancouver"
+        - name: FIREWALL_VPN_INPUT_PORTS
+          $patch: delete
         - name: FIREWALL_INPUT_PORTS
           value: "8989"
         - name: FIREWALL_OUTBOUND_SUBNETS
