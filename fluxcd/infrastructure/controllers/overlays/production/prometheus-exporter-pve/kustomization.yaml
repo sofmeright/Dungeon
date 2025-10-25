@@ -5,7 +5,6 @@ resources:
   - ../../../base/prometheus-exporter-pve
 patches:
   - path: externalsecret-patch.yaml
-  - path: service-patch.yaml
   - target:
       version: v1
       kind: Deployment
@@ -26,3 +25,24 @@ patches:
       - op: replace
         path: /spec/template/spec/volumes/0/secret/secretName
         value: prometheus-exporter-pve
+  - target:
+      version: v1
+      kind: Service
+      name: prometheus-exporter-pve
+    patch: |-
+      - op: add
+        path: /spec/type
+        value: LoadBalancer
+      - op: add
+        path: /metadata/annotations
+        value:
+          lbipam.cilium.io/ips: "172.22.30.137"
+          lbipam.cilium.io/sharing-key: "gossip-stone"
+          lbipam.cilium.io/sharing-cross-namespace: "*"
+      - op: replace
+        path: /spec/ports
+        value:
+          - name: metrics
+            port: 9221
+            protocol: TCP
+            targetPort: 9221
