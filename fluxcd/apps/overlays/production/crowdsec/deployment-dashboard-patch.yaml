@@ -16,10 +16,3 @@ spec:
           limits:
             cpu: "500m"
             memory: "1Gi"
-      volumes:
-      - name: dashboard-data
-        persistentVolumeClaim:
-          claimName: lens-of-truth-crowdsec-dashboard-data
-      - name: metabase-data
-        persistentVolumeClaim:
-          claimName: lens-of-truth-crowdsec-metabase-data
