@@ -44,7 +44,7 @@ spec:
       volumes:
       - name: dashboard-data
         persistentVolumeClaim:
-          claimName: PLACEHOLDER_NAMESPACE-crowdsec-dashboard-data
+          claimName: crowdsec-dashboard-data
       - name: metabase-data
         persistentVolumeClaim:
-          claimName: PLACEHOLDER_NAMESPACE-crowdsec-metabase-data
+          claimName: crowdsec-metabase-data
