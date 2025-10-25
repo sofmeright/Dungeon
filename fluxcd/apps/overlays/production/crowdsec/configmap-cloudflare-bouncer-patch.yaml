@@ -5,6 +5,7 @@ metadata:
 data:
   crowdsec-cloudflare-bouncer.yaml: |
     crowdsec_lapi_url: http://crowdsec:8080/
+    crowdsec_lapi_key: ${CROWDSEC_LAPI_KEY}
     crowdsec_update_frequency: 10s
     include_scenarios_containing: []
     exclude_scenarios_containing: []
