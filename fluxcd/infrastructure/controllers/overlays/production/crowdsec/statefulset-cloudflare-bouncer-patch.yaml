@@ -5,6 +5,9 @@ metadata:
 spec:
   replicas: 1
   template:
+    metadata:
+      annotations:
+        ipam.cilium.io/ip-address: "192.168.153.200"
     spec:
       initContainers:
       - name: config-substitution
