@@ -74,3 +74,4 @@ spec:
           annotations:
             lbipam.cilium.io/ips: "172.22.30.137"
             lbipam.cilium.io/sharing-key: "gossip-stone"
+            lbipam.cilium.io/sharing-cross-namespace: "*"
