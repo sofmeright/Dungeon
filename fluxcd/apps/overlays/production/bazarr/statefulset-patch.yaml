@@ -19,7 +19,11 @@ spec:
         - name: SERVER_REGIONS
           value: "CA Vancouver"
         - name: FIREWALL_VPN_INPUT_PORTS
+          $patch: delete
+        - name: FIREWALL_INPUT_PORTS
           value: "6767"
+        - name: FIREWALL_OUTBOUND_SUBNETS
+          value: "10.0.0.0/8,172.16.0.0/12,172.22.30.33/32,192.168.144.0/20"
         - name: DNS_ADDRESS
           value: "10.144.0.10"
   volumeClaimTemplates:

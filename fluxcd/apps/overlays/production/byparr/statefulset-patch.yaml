@@ -18,6 +18,8 @@ spec:
           value: "private internet access"
         - name: SERVER_REGIONS
           value: "CA Vancouver"
+        - name: FIREWALL_OUTBOUND_SUBNETS
+          value: "10.0.0.0/8,172.16.0.0/12,172.22.30.33/32,192.168.144.0/20"
         - name: DNS_ADDRESS
           value: "10.144.0.10"
         - name: UPDATER_PERIOD
