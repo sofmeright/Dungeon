@@ -4,7 +4,6 @@ namespace: gossip-stone
 resources:
   - ../../../base/prometheus-exporter-eaton-ups
 patches:
-  - path: externalsecret-patch.yaml
   - target:
       version: v1
       kind: Deployment
