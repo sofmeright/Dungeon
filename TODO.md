@@ -120,3 +120,38 @@ CLAUDE.md specifies PVC naming pattern for StatefulSets: `<namespace>-<app>-<pur
 **Current deployment:** Production email stack on dedicated Docker host
 
 **Decision:** Keep running on dedicated Docker host - email infrastructure is too critical to risk migration
+
+## Infrastructure Modernization
+
+### Migrate from Traefik to Cilium Gateway API
+**Status:** Planned migration
+**Current state:** Traefik deployed as ingress controller
+**Target state:** Cilium Gateway API for unified networking stack
+
+**Benefits of migration:**
+- Unified CNI + LoadBalancer + Ingress in single component (Cilium)
+- eBPF-powered performance with lower latency and higher throughput
+- Reduced resource usage (no separate ingress controller pods)
+- Native integration with Cilium network policies
+- Simpler architecture with fewer moving parts
+- Future-proof eBPF-based networking
+
+**Migration tasks:**
+- [ ] Deploy Cilium Gateway API infrastructure (GatewayClass, Gateways)
+- [ ] Create three Gateways with IP-based isolation:
+  - [ ] xylem-gateway (172.22.30.69) - Internal-only services (*.pcfae.com)
+  - [ ] phloem-gateway (172.22.30.70) - Personal/public services (*.sofmeright.com, *.arbitorium.com, *.yesimvegan.com)
+  - [ ] cell-membrane-gateway (172.22.30.71) - Business/work services (*.precisionplanit.com, *.prplanit.com, *.optcp.com, *.ipleek.com, *.uni2.cc)
+- [ ] Configure TLS certificates for each Gateway (cert-manager + Let's Encrypt)
+- [ ] Migrate HTTPRoutes from Traefik IngressRoute to Gateway API HTTPRoute
+- [ ] Test traffic routing and TLS termination
+- [ ] Update pfSense port forwarding rules for Gateway IPs
+- [ ] Remove Traefik deployment after successful migration
+- [ ] Clean up old Traefik resources and configs
+
+**Protocol support verified:**
+- ✅ HTTP/HTTPS - Full HTTPRoute support
+- ✅ gRPC - GRPCRoute supported
+- ✅ TCP/UDP - Supported via separate Gateways (L4 vs L7 separation)
+
+**Note:** Migration can be done incrementally - keep Traefik running while deploying Cilium Gateway, migrate routes one gateway at a time, then remove Traefik when complete.
