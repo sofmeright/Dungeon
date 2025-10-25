@@ -1,0 +1,56 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: anirra
+  labels:
+    app.kubernetes.io/name: anirra
+spec:
+  serviceName: anirra
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: anirra
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: anirra
+    spec:
+      containers:
+      - name: anirra
+        image: jpyles0524/anirra:latest
+        ports:
+        - name: frontend
+          containerPort: 3000
+          protocol: TCP
+        - name: backend
+          containerPort: 8000
+          protocol: TCP
+        env:
+        - name: APP_LEVEL
+          value: "PROD"
+        volumeMounts:
+        - name: data
+          mountPath: /project/data
+        - name: config
+          mountPath: /project/config.yaml
+          subPath: config.yaml
+        resources:
+          requests:
+            cpu: 100m
+            memory: 256Mi
+          limits:
+            cpu: 500m
+            memory: 512Mi
+      volumes:
+      - name: config
+        configMap:
+          name: anirra-config
+  volumeClaimTemplates:
+  - metadata:
+      name: data
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: 5Gi

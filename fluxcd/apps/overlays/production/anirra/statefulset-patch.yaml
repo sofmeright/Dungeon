@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: anirra
+spec:
+  template:
+    spec:
+      containers:
+      - name: anirra
+        image: docker.jcr.pcfae.com/jpyles0524/anirra:latest
+  volumeClaimTemplates:
+  - metadata:
+      name: data
+    spec:
+      storageClassName: ceph-rbd
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: 5Gi

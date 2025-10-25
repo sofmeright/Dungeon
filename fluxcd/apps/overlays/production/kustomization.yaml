@@ -45,6 +45,7 @@ resources:
   - prowlarr
   - radarr
   - sonarr
+  - anirra
   - lidarr
   - jellyseerr
   - bazarr

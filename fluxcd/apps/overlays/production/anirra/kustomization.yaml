@@ -1,0 +1,29 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: swift-sail
+resources:
+  - ../../../base/anirra
+patches:
+  - path: statefulset-patch.yaml
+  - path: configmap-patch.yaml
+  - target:
+      version: v1
+      kind: Service
+      name: anirra
+    patch: |-
+      - op: replace
+        path: /spec/type
+        value: LoadBalancer
+      - op: add
+        path: /metadata/annotations
+        value:
+          lbipam.cilium.io/ips: "172.22.30.33"
+          lbipam.cilium.io/sharing-key: "great-sea"
+          lbipam.cilium.io/sharing-cross-namespace: "*"
+      - op: replace
+        path: /spec/ports
+        value:
+          - name: frontend
+            port: 3000
+            protocol: TCP
+            targetPort: frontend
