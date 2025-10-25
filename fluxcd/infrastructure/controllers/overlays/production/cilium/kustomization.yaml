@@ -5,7 +5,6 @@ namespace: flux-system
 
 resources:
   - ../../../base/cilium
-  - hubble-ui-service.yaml
 
 patches:
   - path: helmrelease-patch.yaml

@@ -65,3 +65,13 @@ spec:
 
     # Enable host routing - REQUIRED for LoadBalancer with native routing
     hostRouting: true
+
+    # Hubble UI service configuration
+    hubble:
+      ui:
+        service:
+          type: LoadBalancer
+          annotations:
+            lbipam.cilium.io/ips: "172.22.30.137"
+            lbipam.cilium.io/sharing-key: "gossip-stone"
+            lbipam.cilium.io/sharing-cross-namespace: "*"
