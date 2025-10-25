@@ -3,7 +3,7 @@ kind: PersistentVolumeClaim
 metadata:
   name: crowdsec-dashboard-data
 spec:
-  storageClassName: longhorn
+  storageClassName: ceph-rbd
   resources:
     requests:
       storage: 5Gi
@@ -13,7 +13,7 @@ kind: PersistentVolumeClaim
 metadata:
   name: crowdsec-metabase-data
 spec:
-  storageClassName: longhorn
+  storageClassName: ceph-rbd
   resources:
     requests:
       storage: 5Gi
