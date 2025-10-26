@@ -12,7 +12,7 @@ spec:
   csi:
     driver: gorons-bracelet.cephfs.csi.ceph.com
     nodeStageSecretRef:
-      name: rook-csi-cephfs-node
+      name: csi-cephfs-node
       namespace: gorons-bracelet
     volumeAttributes:
       clusterID: gorons-bracelet
@@ -47,7 +47,7 @@ spec:
   csi:
     driver: gorons-bracelet.cephfs.csi.ceph.com
     nodeStageSecretRef:
-      name: rook-csi-cephfs-node
+      name: csi-cephfs-node
       namespace: gorons-bracelet
     volumeAttributes:
       clusterID: gorons-bracelet
