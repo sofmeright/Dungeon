@@ -15,7 +15,7 @@ spec:
       name: csi-cephfs-node
       namespace: gorons-bracelet
     volumeAttributes:
-      clusterID: gorons-bracelet
+      clusterID: 0985467c-d8f3-4483-b27f-f0a512397ec2
       fsName: Seed_Bank
       staticVolume: "true"
       rootPath: /dungeon/nvme/games/ark-sa/serverfiles
@@ -50,7 +50,7 @@ spec:
       name: csi-cephfs-node
       namespace: gorons-bracelet
     volumeAttributes:
-      clusterID: gorons-bracelet
+      clusterID: 0985467c-d8f3-4483-b27f-f0a512397ec2
       fsName: Seed_Bank
       staticVolume: "true"
       rootPath: /dungeon/nvme/games/ark-sa/cluster
