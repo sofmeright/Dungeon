@@ -1,0 +1,46 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: ark-cephfs-init
+  namespace: gorons-bracelet
+spec:
+  ttlSecondsAfterFinished: 300
+  template:
+    spec:
+      restartPolicy: OnFailure
+      containers:
+      - name: init
+        image: docker.io/alpine:latest
+        command:
+        - /bin/sh
+        - -c
+        - |
+          set -e
+          echo "Creating ARK SA directory structure..."
+          mkdir -p /cephfs/dungeon/nvme/games/ark-sa/serverfiles
+          mkdir -p /cephfs/dungeon/nvme/games/ark-sa/cluster
+
+          echo "Setting permissions (UID/GID 1001)..."
+          chown -R 1001:1001 /cephfs/dungeon/nvme/games/ark-sa/
+          chmod -R 755 /cephfs/dungeon/nvme/games/ark-sa/
+
+          echo "Verifying structure..."
+          ls -la /cephfs/dungeon/nvme/games/ark-sa/
+
+          echo "ARK CephFS initialization complete!"
+        volumeMounts:
+        - name: cephfs-root
+          mountPath: /cephfs
+      volumes:
+      - name: cephfs-root
+        cephfs:
+          monitors:
+            - "[fc00:f1:ada:104e:1ace::1]:6789"
+            - "[fc00:f1:ada:104e:1ace::2]:6789"
+            - "[fc00:f1:ada:104e:1ace::3]:6789"
+            - "[fc00:f1:ada:104e:1ace::4]:6789"
+            - "[fc00:f1:ada:104e:1ace::5]:6789"
+          user: csi-cephfs-node
+          path: /
+          secretRef:
+            name: csi-cephfs-node
