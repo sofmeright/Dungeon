@@ -91,7 +91,7 @@ spec:
         volumeMounts:
         - name: serverfiles
           mountPath: /home/pok/arkserver
-        - name: saved
+        - name: shooting-gallery-ark-sa-tmc-valguero-saved
           mountPath: /home/pok/arkserver/ShooterGame/Saved
         - name: cluster
           mountPath: /home/pok/arkserver/ShooterGame/Saved/clusters
@@ -104,7 +104,7 @@ spec:
           claimName: ark-sa-cluster-pvc
   volumeClaimTemplates:
   - metadata:
-      name: saved
+      name: shooting-gallery-ark-sa-tmc-valguero-saved
     spec:
       accessModes:
       - ReadWriteOnce
