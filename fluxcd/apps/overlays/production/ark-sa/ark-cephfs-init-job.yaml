@@ -1,7 +1,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: ark-cephfs-init
+  name: ark-sa-tmc-cephfs-init
 spec:
   ttlSecondsAfterFinished: 300
   template:
