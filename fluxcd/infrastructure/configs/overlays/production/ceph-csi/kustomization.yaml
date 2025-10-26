@@ -8,4 +8,3 @@ resources:
   - ceph-secret.enc.yaml
   - storageclass.yaml
   - cephfs-storageclass-nvme.yaml
-  - ark-cephfs-init-job.yaml

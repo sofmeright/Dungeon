@@ -7,3 +7,4 @@ resources:
 - theisland-service.yaml
 - valguero-statefulset.yaml
 - valguero-service.yaml
+- ark-cephfs-init-job.yaml
