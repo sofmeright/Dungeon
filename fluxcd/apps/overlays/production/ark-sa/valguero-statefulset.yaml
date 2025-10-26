@@ -89,31 +89,22 @@ spec:
             memory: 8Gi
             cpu: 1000m
         volumeMounts:
-        - name: shooting-gallery-ark-sa-tmc-valguero-serverfiles
+        - name: serverfiles
           mountPath: /home/pok/arkserver
-        - name: shooting-gallery-ark-sa-tmc-valguero-cluster
-          mountPath: /home/pok/arkserver/ShooterGame/Saved/clusters
-        - name: shooting-gallery-ark-sa-tmc-valguero-saved
+        - name: saved
           mountPath: /home/pok/arkserver/ShooterGame/Saved
+        - name: cluster
+          mountPath: /home/pok/arkserver/ShooterGame/Saved/clusters
+      volumes:
+      - name: serverfiles
+        persistentVolumeClaim:
+          claimName: ark-sa-serverfiles-pvc
+      - name: cluster
+        persistentVolumeClaim:
+          claimName: ark-sa-cluster-pvc
   volumeClaimTemplates:
   - metadata:
-      name: shooting-gallery-ark-sa-tmc-valguero-serverfiles
-    spec:
-      accessModes:
-      - ReadWriteOnce
-      resources:
-        requests:
-          storage: 250Gi
-  - metadata:
-      name: shooting-gallery-ark-sa-tmc-valguero-cluster
-    spec:
-      accessModes:
-      - ReadWriteOnce
-      resources:
-        requests:
-          storage: 20Gi
-  - metadata:
-      name: shooting-gallery-ark-sa-tmc-valguero-saved
+      name: saved
     spec:
       accessModes:
       - ReadWriteOnce
