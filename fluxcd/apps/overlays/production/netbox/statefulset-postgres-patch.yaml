@@ -15,7 +15,6 @@ spec:
           name: PLACEHOLDER_POSTGRES_DATA
         - name: zeldas-lullaby-netbox-postgres-data
           mountPath: /var/lib/postgresql/data
-          subPath: postgres
         resources:
           requests:
             cpu: "250m"
