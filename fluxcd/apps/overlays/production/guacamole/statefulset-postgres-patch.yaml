@@ -8,12 +8,14 @@ spec:
       containers:
       - name: postgres
         image: docker.jcr.pcfae.com/postgres:15-alpine
+        env:
+        - name: PGDATA
+          value: /var/lib/postgresql/data/pgdata
         volumeMounts:
         - $patch: delete
           name: PLACEHOLDER_POSTGRES_DATA
         - name: hookshot-guacamole-postgres-data
           mountPath: /var/lib/postgresql/data
-          subPath: pgdata
         resources:
           requests:
             cpu: "250m"
