@@ -6,6 +6,7 @@ namespace: zeldas-lullaby
 resources:
   - ../../../base/netbox
   - httproute.yaml
+  - job-postgres-data-migration.yaml
 
 patches:
   - path: statefulset-postgres-patch.yaml

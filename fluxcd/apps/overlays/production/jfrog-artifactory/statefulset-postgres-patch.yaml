@@ -8,13 +8,11 @@ spec:
       containers:
       - name: postgres
         image: docker.jcr.pcfae.com/postgres:16.6-alpine
-        env:
-        - name: PGDATA
-          value: /var/lib/postgresql/data/pgdata
         volumeMounts:
         - $patch: replace
         - name: hyrule-castle-jfrog-artifactory-postgres-data
           mountPath: /var/lib/postgresql/data
+          subPath: pgdata
         resources:
           requests:
             cpu: "500m"
