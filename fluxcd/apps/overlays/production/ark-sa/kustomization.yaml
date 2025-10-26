@@ -35,7 +35,7 @@ patches:
       value: shooting-gallery
 - target:
     kind: Job
-    name: ark-cephfs-init
+    name: ark-sa-tmc-cephfs-init
   patch: |-
     - op: add
       path: /metadata/namespace
