@@ -39,4 +39,4 @@ patches:
   patch: |-
     - op: add
       path: /metadata/namespace
-      value: gorons-bracelet
+      value: shooting-gallery
