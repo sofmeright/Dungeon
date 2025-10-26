@@ -13,7 +13,6 @@ spec:
           name: PLACEHOLDER_MARIADB_DATA
         - name: hyrule-castle-dolibarr-mariadb-data
           mountPath: /var/lib/mysql
-          subPath: mysql
         resources:
           requests:
             cpu: "250m"
