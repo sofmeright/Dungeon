@@ -1,6 +1,5 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
-namespace: shooting-gallery
 resources:
 - externalsecret.yaml
 - theisland-statefulset.yaml
@@ -10,9 +9,27 @@ resources:
 - ark-cephfs-init-job.yaml
 patches:
 - target:
+    kind: ExternalSecret
+  patch: |-
+    - op: add
+      path: /metadata/namespace
+      value: shooting-gallery
+- target:
+    kind: StatefulSet
+  patch: |-
+    - op: add
+      path: /metadata/namespace
+      value: shooting-gallery
+- target:
+    kind: Service
+  patch: |-
+    - op: add
+      path: /metadata/namespace
+      value: shooting-gallery
+- target:
     kind: Job
     name: ark-cephfs-init
   patch: |-
-    - op: replace
+    - op: add
       path: /metadata/namespace
       value: gorons-bracelet
