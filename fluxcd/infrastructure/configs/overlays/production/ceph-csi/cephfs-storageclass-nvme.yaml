@@ -2,17 +2,17 @@ apiVersion: storage.k8s.io/v1
 kind: StorageClass
 metadata:
   name: cephfs-nvme
-provisioner: cephfs.csi.ceph.com
+provisioner: gorons-bracelet.cephfs.csi.ceph.com
 parameters:
-  clusterID: "0985467c-d8f3-4483-b27f-f0a512397ec2"
+  clusterID: gorons-bracelet
   fsName: Seed_Bank
   pool: dungeon-fs-nvme
   mounter: kernel
-  csi.storage.k8s.io/provisioner-secret-name: ceph-cephfs-secret
-  csi.storage.k8s.io/provisioner-secret-namespace: kube-system
-  csi.storage.k8s.io/controller-expand-secret-name: ceph-cephfs-secret
-  csi.storage.k8s.io/controller-expand-secret-namespace: kube-system
-  csi.storage.k8s.io/node-stage-secret-name: ceph-cephfs-secret
-  csi.storage.k8s.io/node-stage-secret-namespace: kube-system
+  csi.storage.k8s.io/provisioner-secret-name: rook-csi-cephfs-provisioner
+  csi.storage.k8s.io/provisioner-secret-namespace: gorons-bracelet
+  csi.storage.k8s.io/controller-expand-secret-name: rook-csi-cephfs-provisioner
+  csi.storage.k8s.io/controller-expand-secret-namespace: gorons-bracelet
+  csi.storage.k8s.io/node-stage-secret-name: rook-csi-cephfs-node
+  csi.storage.k8s.io/node-stage-secret-namespace: gorons-bracelet
 reclaimPolicy: Retain
 allowVolumeExpansion: true
