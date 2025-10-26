@@ -11,3 +11,7 @@ patches:
     target:
       kind: HelmRelease
       name: ceph-csi-rbd
+  - path: values-patch-cephfs.yaml
+    target:
+      kind: HelmRelease
+      name: ceph-csi-cephfs
