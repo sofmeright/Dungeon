@@ -11,7 +11,7 @@ spec:
         image: docker.jcr.pcfae.com/mysql:5.7
         env:
         - name: MYSQL_DATADIR
-          value: /var/lib/mysql/datadir
+          value: /var/lib/mysql
         resources:
           requests:
             cpu: 100m
