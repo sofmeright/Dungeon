@@ -22,7 +22,6 @@ spec:
         volumeMounts:
         - name: hyrule-castle-bagisto-demo-mysql
           mountPath: /var/lib/mysql
-          subPath: mysql
   volumeClaimTemplates:
   - metadata:
       name: hyrule-castle-bagisto-demo-mysql

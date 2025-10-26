@@ -15,7 +15,6 @@ spec:
           name: PLACEHOLDER_MARIADB_DATA
         - name: hyrule-castle-orangehrm-mariadb-data
           mountPath: /var/lib/mysql
-          subPath: mysql
         resources:
           requests:
             cpu: "250m"

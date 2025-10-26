@@ -19,7 +19,6 @@ spec:
           name: PLACEHOLDER_MARIADB_DATA
         - name: hyrule-castle-erpnext-mariadb-data
           mountPath: /var/lib/mysql
-          subPath: mysql
         resources:
           requests:
             cpu: "500m"

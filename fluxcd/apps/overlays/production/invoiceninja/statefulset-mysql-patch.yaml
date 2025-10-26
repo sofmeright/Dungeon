@@ -14,7 +14,6 @@ spec:
           name: PLACEHOLDER_MYSQL_DATA
         - name: hyrule-castle-invoiceninja-mysql-data
           mountPath: /var/lib/mysql
-          subPath: mysql
         resources:
           requests:
             cpu: "500m"

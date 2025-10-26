@@ -20,7 +20,6 @@ spec:
         volumeMounts:
         - name: shooting-gallery-pelican-mariadb-data
           mountPath: /var/lib/mysql
-          subPath: mysql
   volumeClaimTemplates:
   - metadata:
       name: shooting-gallery-pelican-mariadb-data
