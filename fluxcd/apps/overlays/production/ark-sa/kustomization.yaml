@@ -8,3 +8,11 @@ resources:
 - valguero-statefulset.yaml
 - valguero-service.yaml
 - ark-cephfs-init-job.yaml
+patches:
+- target:
+    kind: Job
+    name: ark-cephfs-init
+  patch: |-
+    - op: replace
+      path: /metadata/namespace
+      value: gorons-bracelet

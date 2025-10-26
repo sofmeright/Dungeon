@@ -2,7 +2,6 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   name: ark-cephfs-init
-  namespace: gorons-bracelet
 spec:
   ttlSecondsAfterFinished: 300
   template:
