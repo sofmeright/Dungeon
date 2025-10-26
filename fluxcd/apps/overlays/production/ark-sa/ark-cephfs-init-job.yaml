@@ -15,31 +15,28 @@ spec:
         - -c
         - |
           set -e
-          echo "Creating ARK SA directory structure..."
-          mkdir -p /cephfs/dungeon/nvme/games/ark-sa/serverfiles
-          mkdir -p /cephfs/dungeon/nvme/games/ark-sa/cluster
+          echo "Setting permissions on serverfiles (UID/GID 1001)..."
+          chown 1001:1001 /serverfiles
+          chmod 755 /serverfiles
 
-          echo "Setting permissions (UID/GID 1001)..."
-          chown -R 1001:1001 /cephfs/dungeon/nvme/games/ark-sa/
-          chmod -R 755 /cephfs/dungeon/nvme/games/ark-sa/
+          echo "Setting permissions on cluster (UID/GID 1001)..."
+          chown 1001:1001 /cluster
+          chmod 755 /cluster
 
           echo "Verifying structure..."
-          ls -la /cephfs/dungeon/nvme/games/ark-sa/
+          ls -la /serverfiles
+          ls -la /cluster
 
           echo "ARK CephFS initialization complete!"
         volumeMounts:
-        - name: cephfs-root
-          mountPath: /cephfs
+        - name: serverfiles
+          mountPath: /serverfiles
+        - name: cluster
+          mountPath: /cluster
       volumes:
-      - name: cephfs-root
-        cephfs:
-          monitors:
-            - "[fc00:f1:ada:104e:1ace::1]:6789"
-            - "[fc00:f1:ada:104e:1ace::2]:6789"
-            - "[fc00:f1:ada:104e:1ace::3]:6789"
-            - "[fc00:f1:ada:104e:1ace::4]:6789"
-            - "[fc00:f1:ada:104e:1ace::5]:6789"
-          user: csi-cephfs-node
-          path: /
-          secretRef:
-            name: csi-cephfs-node
+      - name: serverfiles
+        persistentVolumeClaim:
+          claimName: ark-sa-serverfiles-pvc
+      - name: cluster
+        persistentVolumeClaim:
+          claimName: ark-sa-cluster-pvc

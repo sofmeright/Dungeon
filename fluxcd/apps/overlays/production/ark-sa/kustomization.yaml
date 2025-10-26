@@ -6,6 +6,7 @@ resources:
 - theisland-service.yaml
 - valguero-statefulset.yaml
 - valguero-service.yaml
+- ark-cephfs-static-pvs.yaml
 - ark-cephfs-init-job.yaml
 patches:
 - target:
@@ -22,6 +23,12 @@ patches:
       value: shooting-gallery
 - target:
     kind: Service
+  patch: |-
+    - op: add
+      path: /metadata/namespace
+      value: shooting-gallery
+- target:
+    kind: PersistentVolumeClaim
   patch: |-
     - op: add
       path: /metadata/namespace
