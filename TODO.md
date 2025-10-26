@@ -183,3 +183,157 @@ CLAUDE.md specifies PVC naming pattern for StatefulSets: `<namespace>-<app>-<pur
 - ✅ TCP/UDP - Supported via separate Gateways (L4 vs L7 separation)
 
 **Note:** Migration can be done incrementally - keep Traefik running while deploying Cilium Gateway, migrate routes one gateway at a time, then remove Traefik when complete.
+
+## Cilium cluster-pool IPAM Migration
+
+### Overview
+Migrate from `ipam: kubernetes` to `ipam: cluster-pool` to enable static pod IP assignments and improve network segmentation through IP-based tiering.
+
+### Primary Goal
+Enable static pod IP for CrowdSec cloudflare-bouncer to prevent duplicate LAPI registrations.
+
+**Problem:** CrowdSec LAPI tracks bouncers by source IP. Each pod restart = new IP = duplicate bouncer registration.
+
+**Solution:** Static pod IP annotation (requires cluster-pool IPAM mode).
+
+### Planned IP Segmentation
+
+#### IPv4 Pod CIDR: 192.168.144.0/20 (4096 IPs total)
+
+**Tier 0: Core Infrastructure** - `192.168.144.0/22` (1024 IPs)
+- Namespaces: `kube-system`, `flux-system`, `gorons-bracelet`
+- Purpose: K8s control plane, storage operators, CSI drivers, core CNI
+
+**Tier 1: Security & Administrative** - `192.168.148.0/23` (512 IPs)
+- Namespaces: `zeldas-lullaby`, `lens-of-truth`, `wallmaster`
+- Purpose: Vault, Zitadel, External Secrets, CrowdSec, Wazuh, IDS/IPS, bot protection
+
+**Tier 2: Monitoring & Observability** - `192.168.150.0/24` (256 IPs)
+- Namespaces: `gossip-stone`
+- Purpose: Prometheus, Grafana, Loki, Alloy, Thanos
+
+**Tier 3: Networking Services** - `192.168.151.0/24` (256 IPs)
+- Namespaces: `compass`, `king-of-red-lions`
+- Purpose: DNS (AdGuard), NTP (Chrony), Traefik, cert-manager, Gateway API
+
+**Tier 4: Business/Work - Tenant A** - `192.168.152.0/22` (1024 IPs)
+- Namespaces: `hyrule-castle`
+- Purpose: GitLab, ERPNext, Dolibarr, InvoiceNinja, business applications
+
+**Tier 5: Media & Content** - `192.168.156.0/23` (512 IPs)
+- Namespaces: `temple-of-time`, `pedestal-of-time`
+- Purpose: Plex, Jellyfin, Immich, Calibre-Web, Mealie, content management
+
+**Tier 6: General Services** - `192.168.158.0/23` (512 IPs)
+- Namespaces: `lost-woods`, `tingle-tuner`, `kokiri-forest`, `delivery-bag`, `fairy-bottle`
+- Purpose: Dashboards, IT tools, file browsers, notifications, backups (Velero)
+
+**Tier 7: Isolated/VPN-routed** - `192.168.160.0/24` (256 IPs)
+- Namespaces: `swift-sail`
+- Purpose: Arr apps (Prowlarr, Radarr, Sonarr, etc.) through Gluetun VPN
+
+**Tier 8: Game Servers** - `192.168.161.0/24` (256 IPs)
+- Namespaces: `shooting-gallery`
+- Purpose: Minecraft, ARK, Pelican Panel, game hosting
+
+**Tier 9: Remote Access** - `192.168.162.0/24` (256 IPs)
+- Namespaces: `hookshot`
+- Purpose: Guacamole, TacticalRMM, MeshCentral
+
+**Static Infrastructure Assignments** - `192.168.163.0/24` (256 IPs)
+- Purpose: Reserved pool for static pod IP annotations
+- Examples: CrowdSec cloudflare-bouncer (192.168.163.200)
+
+#### IPv6 Pod CIDR: fc00:f1:d759:3053:a573::/64
+
+Mirrors IPv4 tier structure with equivalent subnet sizes:
+
+- **Tier 0**: `fc00:f1:d759:3053:a573:0::/67` - Core Infrastructure
+- **Tier 1**: `fc00:f1:d759:3053:a573:2000::/67` - Security & Admin
+- **Tier 2**: `fc00:f1:d759:3053:a573:4000::/68` - Monitoring
+- **Tier 3**: `fc00:f1:d759:3053:a573:5000::/68` - Networking Services
+- **Tier 4**: `fc00:f1:d759:3053:a573:6000::/66` - Business/Work
+- **Tier 5**: `fc00:f1:d759:3053:a573:a000::/67` - Media & Content
+- **Tier 6**: `fc00:f1:d759:3053:a573:c000::/67` - General Services
+- **Tier 7**: `fc00:f1:d759:3053:a573:e000::/68` - Isolated/VPN
+- **Tier 8**: `fc00:f1:d759:3053:a573:e100::/68` - Game Servers
+- **Tier 9**: `fc00:f1:d759:3053:a573:e200::/68` - Remote Access
+- **Static**: `fc00:f1:d759:3053:a573:e300::/68` - Static Infrastructure
+
+### Implementation
+
+**File**: `/srv/dungeon/fluxcd/infrastructure/controllers/base/cilium/helmrelease.yaml`
+
+Change from:
+```yaml
+ipam:
+  mode: kubernetes
+```
+
+To:
+```yaml
+ipam:
+  mode: cluster-pool
+  operator:
+    clusterPoolIPv4PodCIDRList:
+      - "192.168.144.0/22"    # Tier 0: Infrastructure
+      - "192.168.148.0/23"    # Tier 1: Security & Admin
+      - "192.168.150.0/24"    # Tier 2: Monitoring
+      - "192.168.151.0/24"    # Tier 3: Networking
+      - "192.168.152.0/22"    # Tier 4: Business/Work
+      - "192.168.156.0/23"    # Tier 5: Media & Content
+      - "192.168.158.0/23"    # Tier 6: General Services
+      - "192.168.160.0/24"    # Tier 7: Isolated/VPN
+      - "192.168.161.0/24"    # Tier 8: Game Servers
+      - "192.168.162.0/24"    # Tier 9: Remote Access
+      - "192.168.163.0/24"    # Static Infrastructure
+    clusterPoolIPv6PodCIDRList:
+      - "fc00:f1:d759:3053:a573:0::/67"
+      - "fc00:f1:d759:3053:a573:2000::/67"
+      - "fc00:f1:d759:3053:a573:4000::/68"
+      - "fc00:f1:d759:3053:a573:5000::/68"
+      - "fc00:f1:d759:3053:a573:6000::/66"
+      - "fc00:f1:d759:3053:a573:a000::/67"
+      - "fc00:f1:d759:3053:a573:c000::/67"
+      - "fc00:f1:d759:3053:a573:e000::/68"
+      - "fc00:f1:d759:3053:a573:e100::/68"
+      - "fc00:f1:d759:3053:a573:e200::/68"
+      - "fc00:f1:d759:3053:a573:e300::/68"
+```
+
+**Static IP Annotation** (already applied to CrowdSec cloudflare-bouncer):
+```yaml
+# File: fluxcd/infrastructure/controllers/overlays/production/crowdsec/statefulset-cloudflare-bouncer-patch.yaml
+spec:
+  template:
+    metadata:
+      annotations:
+        ipam.cilium.io/ip-address: "192.168.163.200"
+```
+
+### Migration Impact
+
+**Estimated Downtime**: 5-15 minutes rolling disruption
+
+**What Changes**:
+- All 321 pods get new IPs from cluster-pool as Cilium DaemonSet rolls out
+- Pod IPs reassigned within same overall CIDR (192.168.144.0/20)
+- Connections drop and reconnect as pods restart
+
+**What Stays Stable**:
+- Service ClusterIPs (10.144.0.0/12) - unchanged
+- LoadBalancer IPs (172.22.30.0/24) - unchanged
+- Node IPs (172.22.144.x) - unchanged
+- BGP routes - entire /20 still advertised
+
+**Risk Assessment**: Medium
+- Pods communicate via Services/DNS (not direct pod IPs) - minimal impact
+- Network policies use label selectors (not IPs) - no changes needed
+- Potential issues: Long-lived connections, WebSockets may drop temporarily
+
+### Benefits
+
+- **Static pod IPs**: Annotations enable permanent IP assignment (solves CrowdSec bouncer issue)
+- **Network segmentation**: IP-based tiers enable clearer security boundaries
+- **Multi-tenancy ready**: IP isolation supports future tenant segregation
+- **Advanced features**: Unlocks per-namespace pools, IP reservation, multi-cluster IPAM

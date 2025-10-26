@@ -12,7 +12,6 @@ spec:
         - $patch: replace
         - name: hyrule-castle-jfrog-artifactory-postgres-data
           mountPath: /var/lib/postgresql/data
-          subPath: pgdata
         resources:
           requests:
             cpu: "500m"

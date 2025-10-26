@@ -1,0 +1,37 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: jfrog-artifactory-postgres-data-migration
+  namespace: hyrule-castle
+spec:
+  template:
+    spec:
+      containers:
+      - name: migrate
+        image: docker.jcr.pcfae.com/busybox:latest
+        command:
+        - sh
+        - -c
+        - |
+          echo "Starting data migration..."
+          echo "Current contents of /data:"
+          ls -la /data/
+
+          echo "Moving data from /data/pgdata/ to /data/..."
+          mv /data/pgdata/* /data/
+          mv /data/pgdata/.* /data/ 2>/dev/null || true
+
+          echo "Removing empty pgdata directory..."
+          rmdir /data/pgdata
+
+          echo "Migration complete. New contents of /data:"
+          ls -la /data/
+        volumeMounts:
+        - name: data
+          mountPath: /data
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: hyrule-castle-jfrog-artifactory-postgres-data-jfrog-artifactory-postgres-0
+      restartPolicy: Never
+  backoffLimit: 0
