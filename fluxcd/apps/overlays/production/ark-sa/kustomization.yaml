@@ -6,9 +6,8 @@ resources:
 - theisland-service.yaml
 - valguero-statefulset.yaml
 - valguero-service.yaml
-- ark-cephfs-root-init.yaml
-- ark-cephfs-static-pvs.yaml
-- ark-cephfs-init-job.yaml
+- cephfs-init.yaml
+- cephfs-static-pvs.yaml
 patches:
 - target:
     kind: ExternalSecret
