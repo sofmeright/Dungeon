@@ -81,7 +81,7 @@ spec:
               name: ark-asa-admin
               key: public-ip
         - name: CUSTOM_SERVER_ARGS
-          value: "-ServerPlatform=ALL"
+          value: "-ServerPlatform=ALL -MultiHome=172.22.30.231 -PublicIPForEpic=71.24.190.218"
         resources:
           limits:
             memory: 16Gi
