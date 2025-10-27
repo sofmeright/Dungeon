@@ -45,7 +45,7 @@ spec:
       restartPolicy: OnFailure
       initContainers:
       - name: mkdir-structure
-        image: docker.io/alpine:latest
+        image: docker.jcr.pcfae.com/library/alpine:latest
         command:
         - /bin/sh
         - -c
@@ -67,7 +67,7 @@ spec:
           mountPath: /cephfs
       containers:
       - name: set-permissions
-        image: docker.io/alpine:latest
+        image: docker.jcr.pcfae.com/library/alpine:latest
         command:
         - /bin/sh
         - -c
