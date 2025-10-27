@@ -55,8 +55,8 @@ spec:
           mkdir -p /cephfs/dungeon/nvme/games/ark-sa/serverfiles
           mkdir -p /cephfs/dungeon/nvme/games/ark-sa/cluster
 
-          echo "Setting ownership to UID/GID 1001..."
-          chown -R 1001:1001 /cephfs/dungeon/nvme/games/ark-sa
+          echo "Setting ownership to UID/GID 7777 (pok)..."
+          chown -R 7777:7777 /cephfs/dungeon/nvme/games/ark-sa
 
           echo "Setting permissions..."
           chmod -R 755 /cephfs/dungeon/nvme/games/ark-sa
@@ -73,12 +73,12 @@ spec:
         - -c
         - |
           set -e
-          echo "Setting permissions on serverfiles (UID/GID 1001)..."
-          chown 1001:1001 /serverfiles
+          echo "Setting permissions on serverfiles (UID/GID 7777 - pok)..."
+          chown 7777:7777 /serverfiles
           chmod 755 /serverfiles
 
-          echo "Setting permissions on cluster (UID/GID 1001)..."
-          chown 1001:1001 /cluster
+          echo "Setting permissions on cluster (UID/GID 7777 - pok)..."
+          chown 7777:7777 /cluster
           chmod 755 /cluster
 
           echo "Verifying structure..."
