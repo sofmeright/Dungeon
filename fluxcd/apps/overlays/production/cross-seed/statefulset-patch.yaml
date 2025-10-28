@@ -119,7 +119,7 @@ spec:
         - name: FIREWALL_INPUT_PORTS
           value: "2468,6887,9696"
         - name: FIREWALL_OUTBOUND_SUBNETS
-          value: "10.0.0.0/8,172.16.0.0/12,172.22.30.33/32,192.168.144.0/20"
+          value: "10.144.0.0/12,172.16.0.0/12,172.22.30.33/32,192.168.144.0/20"
         - name: DNS_ADDRESS
           $patch: delete
         - name: DNS_KEEP_NAMESERVER

@@ -139,7 +139,7 @@ spec:
         - name: VPN_PORT_FORWARDING_UP_COMMAND
           value: '/bin/sh -c "wget -O- --retry-connrefused --post-data \"json={\\\"listen_port\\\":{{PORTS}}}\" http://127.0.0.1:6887/api/v2/app/setPreferences 2>&1"'
         - name: FIREWALL_OUTBOUND_SUBNETS
-          value: "172.16.0.0/12,172.22.30.33/32,192.168.144.0/20"
+          value: "10.144.0.0/12,172.16.0.0/12,172.22.30.33/32,192.168.144.0/20"
         - name: FIREWALL_INPUT_PORTS
           value: "6887"
         - name: TZ
