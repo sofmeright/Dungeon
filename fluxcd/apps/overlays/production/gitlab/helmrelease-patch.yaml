@@ -107,6 +107,20 @@ spec:
 
     # Built-in Redis with Ceph RBD storage
     redis:
+      image:
+        registry: docker.jcr.pcfae.com
+        repository: bitnami/redis
+        tag: 7.2.4-debian-12-r9
+      sentinel:
+        image:
+          registry: docker.jcr.pcfae.com
+          repository: bitnami/redis-sentinel
+          tag: 7.2.4-debian-12-r9
+      metrics:
+        image:
+          registry: docker.jcr.pcfae.com
+          repository: bitnami/redis-exporter
+          tag: 1.58.0-debian-12-r3
       master:
         persistence:
           storageClass: ceph-rbd-retain
