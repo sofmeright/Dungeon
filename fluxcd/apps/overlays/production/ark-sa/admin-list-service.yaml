@@ -1,29 +1,136 @@
 ---
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: ark-sa-tmc-admin-list-source
+spec:
+  refreshInterval: 30s
+  secretStoreRef:
+    name: vault-backend
+    kind: ClusterSecretStore
+  target:
+    name: ark-sa-tmc-admin-list-source
+    creationPolicy: Owner
+  data:
+  - secretKey: AdminListURL
+    remoteRef:
+      key: apps/ark-sa-tmc
+      property: AdminListURL
+---
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: ark-sa-tmc-admin-updater-script
+  name: ark-sa-tmc-admin-list-njs
 data:
-  update-admin-lists.sh: |
-    #!/bin/sh
-    set -e
+  admin-list.js: |
+    import fs from 'fs';
 
-    echo "Fetching admin Steam IDs from Vault..."
-    VAULT_ADDR="http://172.22.30.86:8200"
-    ADMIN_LIST_URL=$(vault kv get -mount=operationtimecapsule -field=AdminListURL apps/ark-sa-tmc 2>/dev/null || echo "")
+    function parseAdminList(text) {
+      const steamIds = new Map();
+      if (!text) return steamIds;
 
-    if [ -z "$ADMIN_LIST_URL" ]; then
-      echo "ERROR: AdminListURL not found in Vault"
-      exit 1
-    fi
+      text.split('\n').forEach(line => {
+        line = line.trim();
+        if (!line || line.startsWith('#')) return;
 
-    echo "Generating admin list files..."
-    echo "$ADMIN_LIST_URL" > /usr/share/nginx/html/AllowedCheaterSteamIDs.txt
-    echo "$ADMIN_LIST_URL" > /usr/share/nginx/html/PlayersJoinNoCheckList.txt
-    echo "$ADMIN_LIST_URL" > /usr/share/nginx/html/PlayersExclusiveJoinList.txt
+        const match = line.match(/^([0-9a-f]{32})\s*(#.*)?$/i);
+        if (match) {
+          const [, steamId, comment] = match;
+          steamIds.set(steamId.toLowerCase(), comment || '');
+        }
+      });
 
-    echo "Admin lists updated at $(date)"
-    ls -lh /usr/share/nginx/html/*.txt
+      return steamIds;
+    }
+
+    function mergeAdminLists(lists) {
+      const merged = new Map();
+      lists.forEach(list => {
+        list.forEach((comment, steamId) => {
+          if (!merged.has(steamId)) {
+            merged.set(steamId, comment);
+          }
+        });
+      });
+      return merged;
+    }
+
+    function formatAdminList(steamIds) {
+      const lines = [];
+      steamIds.forEach((comment, steamId) => {
+        lines.push(`${steamId}${comment ? ' ' + comment : ''}`);
+      });
+      return lines.join('\n') + '\n';
+    }
+
+    function assembleAdminList(r) {
+      try {
+        const secretPath = '/vault-data';
+        const files = fs.readdirSync(secretPath);
+
+        const lists = [];
+
+        files.forEach(file => {
+          try {
+            const content = fs.readFileSync(`${secretPath}/${file}`, 'utf8');
+            const parsed = parseAdminList(content);
+            if (parsed.size > 0) {
+              lists.push(parsed);
+            }
+          } catch (e) {
+            // Skip files that can't be read
+          }
+        });
+
+        const merged = mergeAdminLists(lists);
+        const output = formatAdminList(merged);
+
+        r.headersOut['Content-Type'] = 'text/plain';
+        r.return(200, output);
+      } catch (error) {
+        r.return(500, `Error: ${error.message}\n`);
+      }
+    }
+
+    export default { assembleAdminList };
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ark-sa-tmc-admin-list-nginx-conf
+data:
+  nginx.conf: |
+    load_module modules/ngx_http_js_module.so;
+
+    events {
+      worker_connections 1024;
+    }
+
+    http {
+      js_path "/etc/nginx/njs/";
+      js_import admin from admin-list.js;
+
+      server {
+        listen 80;
+        server_name _;
+
+        location /AllowedCheaterSteamIDs.txt {
+          js_content admin.assembleAdminList;
+        }
+
+        location /PlayersJoinNoCheckList.txt {
+          js_content admin.assembleAdminList;
+        }
+
+        location /PlayersExclusiveJoinList.txt {
+          js_content admin.assembleAdminList;
+        }
+
+        location / {
+          return 404 "Not Found\n";
+        }
+      }
+    }
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -38,26 +145,9 @@ spec:
     metadata:
       labels:
         app: ark-sa-tmc-admin-list-server
+      annotations:
+        vault-data-version: "1"
     spec:
-      initContainers:
-      - name: vault-init
-        image: docker.jcr.pcfae.com/hashicorp/vault:1.18.3
-        command:
-        - /bin/sh
-        - /scripts/update-admin-lists.sh
-        env:
-        - name: VAULT_ADDR
-          value: "http://172.22.30.86:8200"
-        - name: VAULT_TOKEN
-          valueFrom:
-            secretKeyRef:
-              name: vault-token
-              key: token
-        volumeMounts:
-        - name: admin-updater-script
-          mountPath: /scripts
-        - name: html
-          mountPath: /usr/share/nginx/html
       containers:
       - name: nginx
         image: docker.jcr.pcfae.com/library/nginx:alpine
@@ -65,38 +155,24 @@ spec:
         - containerPort: 80
           name: http
         volumeMounts:
-        - name: html
-          mountPath: /usr/share/nginx/html
-      - name: vault-updater
-        image: docker.jcr.pcfae.com/hashicorp/vault:1.18.3
-        command:
-        - /bin/sh
-        - -c
-        - |
-          while true; do
-            /scripts/update-admin-lists.sh
-            sleep 30
-          done
-        env:
-        - name: VAULT_ADDR
-          value: "http://172.22.30.86:8200"
-        - name: VAULT_TOKEN
-          valueFrom:
-            secretKeyRef:
-              name: vault-token
-              key: token
-        volumeMounts:
-        - name: admin-updater-script
-          mountPath: /scripts
-        - name: html
-          mountPath: /usr/share/nginx/html
+        - name: nginx-conf
+          mountPath: /etc/nginx/nginx.conf
+          subPath: nginx.conf
+        - name: njs-script
+          mountPath: /etc/nginx/njs
+        - name: vault-data
+          mountPath: /vault-data
+          readOnly: true
       volumes:
-      - name: admin-updater-script
+      - name: nginx-conf
         configMap:
-          name: ark-sa-tmc-admin-updater-script
-          defaultMode: 0755
-      - name: html
-        emptyDir: {}
+          name: ark-sa-tmc-admin-list-nginx-conf
+      - name: njs-script
+        configMap:
+          name: ark-sa-tmc-admin-list-njs
+      - name: vault-data
+        secret:
+          secretName: ark-sa-tmc-admin-list-source
 ---
 apiVersion: v1
 kind: Service
