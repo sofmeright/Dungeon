@@ -12,12 +12,12 @@ data:
     dir /data
 
     # Monitor the master - name it "gitlab-redis-master"
-    # Monitor at gitlab-redis-0.gitlab-redis-headless:6379
-    # Quorum of 2 (need 2 sentinels to agree on failover)
-    sentinel monitor gitlab-redis-master gitlab-redis-0.gitlab-redis-headless 6379 2
+    # Initially monitor localhost since Sentinel runs as sidecar
+    # Sentinels will auto-discover other instances via Pub/Sub
+    sentinel monitor gitlab-redis-master 127.0.0.1 6379 2
 
     # Authentication
-    sentinel auth-pass gitlab-redis-master REDIS_PASSWORD
+    sentinel auth-pass gitlab-redis-master PASSWORD_PLACEHOLDER
 
     # Timeouts and failover settings
     sentinel down-after-milliseconds gitlab-redis-master 5000
