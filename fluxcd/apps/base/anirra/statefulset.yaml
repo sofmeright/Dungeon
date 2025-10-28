@@ -17,7 +17,7 @@ spec:
     spec:
       initContainers:
       - name: config-init
-        image: busybox:latest
+        image: docker.jcr.pcfae.com/library/busybox:latest
         command:
         - sh
         - -c
