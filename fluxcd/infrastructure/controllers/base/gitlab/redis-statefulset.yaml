@@ -92,7 +92,7 @@ spec:
         - -c
         - |
           # Configure sentinel dynamically - replace password placeholder
-          sed -i "s/PASSWORD_PLACEHOLDER/${REDIS_PASSWORD}/g" /etc/redis/sentinel.conf
+          sed -i "s|PASSWORD_PLACEHOLDER|${REDIS_PASSWORD}|g" /etc/redis/sentinel.conf
           redis-sentinel /etc/redis/sentinel.conf
         ports:
         - name: sentinel
