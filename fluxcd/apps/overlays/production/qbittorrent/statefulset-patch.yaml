@@ -100,7 +100,7 @@ spec:
           mountPath: /config
       containers:
       - name: gluetun
-        image: docker.jcr.pcfae.com/qmcgaw/gluetun:v3.39.0
+        image: docker.jcr.pcfae.com/qmcgaw/gluetun:latest
         securityContext:
           privileged: true
         env:
