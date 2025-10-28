@@ -8,6 +8,13 @@ spec:
       containers:
       - name: anirra
         image: docker.jcr.pcfae.com/jpyles0524/anirra:latest
+        resources:
+          requests:
+            cpu: 200m
+            memory: 512Mi
+          limits:
+            cpu: 1000m
+            memory: 2Gi
   volumeClaimTemplates:
   - metadata:
       name: data
