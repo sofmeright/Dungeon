@@ -3,6 +3,7 @@ kind: Kustomization
 resources:
   - cilium
   - kube-vip
+  - gitlab  # Critical infrastructure: Git server hosting FluxCD repository
   # - metallb  # Removed - using Cilium LoadBalancer IPAM with BGP instead
   # - gpu-operator-prereqs  # Prerequisites for GPU Operator (host directory setup) - DISABLED: causing CRI-O issues
   - gpu-operator  # NVIDIA GPU Operator for GPU support
