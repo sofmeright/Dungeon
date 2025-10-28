@@ -82,6 +82,7 @@ spec:
       redis:
         host: gitlab-redis
         port: 6379
+        sentinelMasterSet: gitlab-redis
         password:
           secret: gitlab-redis-password
           key: password
