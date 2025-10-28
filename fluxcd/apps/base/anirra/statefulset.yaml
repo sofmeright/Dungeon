@@ -59,6 +59,7 @@ spec:
       containers:
       - name: anirra
         image: jpyles0524/anirra:latest
+        command: ["bash", "/start.sh"]
         ports:
         - name: frontend
           containerPort: 3000
