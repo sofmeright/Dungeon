@@ -11,18 +11,18 @@ data:
     port 26379
     dir /data
 
-    # Monitor the master - name it "gitlab-redis-master"
+    # Monitor the master - name must match GitLab's redis.host value
     # Initially monitor localhost since Sentinel runs as sidecar
     # Sentinels will auto-discover other instances via Pub/Sub
-    sentinel monitor gitlab-redis-master 127.0.0.1 6379 2
+    sentinel monitor gitlab-redis.hyrule-castle.svc.cluster.local 127.0.0.1 6379 2
 
     # Authentication
-    sentinel auth-pass gitlab-redis-master PASSWORD_PLACEHOLDER
+    sentinel auth-pass gitlab-redis.hyrule-castle.svc.cluster.local PASSWORD_PLACEHOLDER
 
     # Timeouts and failover settings
-    sentinel down-after-milliseconds gitlab-redis-master 5000
-    sentinel parallel-syncs gitlab-redis-master 1
-    sentinel failover-timeout gitlab-redis-master 10000
+    sentinel down-after-milliseconds gitlab-redis.hyrule-castle.svc.cluster.local 5000
+    sentinel parallel-syncs gitlab-redis.hyrule-castle.svc.cluster.local 1
+    sentinel failover-timeout gitlab-redis.hyrule-castle.svc.cluster.local 10000
 
     # Logging
     loglevel notice
