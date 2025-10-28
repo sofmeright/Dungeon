@@ -35,7 +35,8 @@ data:
 
         const match = line.match(/^([0-9a-f]{32})\s*(#.*)?$/i);
         if (match) {
-          const [, steamId, comment] = match;
+          const steamId = match[1];
+          const comment = match[2];
           steamIds.set(steamId.toLowerCase(), comment || '');
         }
       });
