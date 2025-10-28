@@ -26,70 +26,77 @@ data:
     import fs from 'fs';
 
     function parseAdminList(text) {
-      const steamIds = new Map();
+      var steamIds = {};
       if (!text) return steamIds;
 
-      text.split('\n').forEach(line => {
-        line = line.trim();
-        if (!line || line.startsWith('#')) return;
+      var lines = text.split('\n');
+      for (var i = 0; i < lines.length; i++) {
+        var line = lines[i].trim();
+        if (!line || line.startsWith('#')) continue;
 
-        const match = line.match(/^([0-9a-f]{32})\s*(#.*)?$/i);
+        var match = line.match(/^([0-9a-f]{32})\s*(#.*)?$/i);
         if (match) {
-          const steamId = match[1];
-          const comment = match[2];
-          steamIds.set(steamId.toLowerCase(), comment || '');
+          var steamId = match[1].toLowerCase();
+          var comment = match[2] || '';
+          steamIds[steamId] = comment;
         }
-      });
+      }
 
       return steamIds;
     }
 
     function mergeAdminLists(lists) {
-      const merged = new Map();
-      lists.forEach(list => {
-        list.forEach((comment, steamId) => {
-          if (!merged.has(steamId)) {
-            merged.set(steamId, comment);
+      var merged = {};
+      for (var i = 0; i < lists.length; i++) {
+        var list = lists[i];
+        for (var steamId in list) {
+          if (!merged[steamId]) {
+            merged[steamId] = list[steamId];
           }
-        });
-      });
+        }
+      }
       return merged;
     }
 
     function formatAdminList(steamIds) {
-      const lines = [];
-      steamIds.forEach((comment, steamId) => {
-        lines.push(`${steamId}${comment ? ' ' + comment : ''}`);
-      });
+      var lines = [];
+      for (var steamId in steamIds) {
+        var comment = steamIds[steamId];
+        lines.push(steamId + (comment ? ' ' + comment : ''));
+      }
       return lines.join('\n') + '\n';
     }
 
     function assembleAdminList(r) {
       try {
-        const secretPath = '/vault-data';
-        const files = fs.readdirSync(secretPath);
+        var secretPath = '/vault-data';
+        var files = fs.readdirSync(secretPath);
+        var lists = [];
 
-        const lists = [];
-
-        files.forEach(file => {
+        for (var i = 0; i < files.length; i++) {
           try {
-            const content = fs.readFileSync(`${secretPath}/${file}`, 'utf8');
-            const parsed = parseAdminList(content);
-            if (parsed.size > 0) {
+            var content = fs.readFileSync(secretPath + '/' + files[i], 'utf8');
+            var parsed = parseAdminList(content);
+            var hasEntries = false;
+            for (var key in parsed) {
+              hasEntries = true;
+              break;
+            }
+            if (hasEntries) {
               lists.push(parsed);
             }
           } catch (e) {
             // Skip files that can't be read
           }
-        });
+        }
 
-        const merged = mergeAdminLists(lists);
-        const output = formatAdminList(merged);
+        var merged = mergeAdminLists(lists);
+        var output = formatAdminList(merged);
 
         r.headersOut['Content-Type'] = 'text/plain';
         r.return(200, output);
       } catch (error) {
-        r.return(500, `Error: ${error.message}\n`);
+        r.return(500, 'Error: ' + error.message + '\n');
       }
     }
 
