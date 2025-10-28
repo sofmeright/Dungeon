@@ -8,6 +8,7 @@ resources:
 - valguero-service.yaml
 - cephfs-init.yaml
 - cephfs-static-pvs.yaml
+- admin-list-service.yaml
 patches:
 - target:
     kind: ExternalSecret
@@ -43,6 +44,18 @@ patches:
 - target:
     kind: Job
     name: ark-sa-tmc-cephfs-init
+  patch: |-
+    - op: add
+      path: /metadata/namespace
+      value: shooting-gallery
+- target:
+    kind: Deployment
+  patch: |-
+    - op: add
+      path: /metadata/namespace
+      value: shooting-gallery
+- target:
+    kind: ConfigMap
   patch: |-
     - op: add
       path: /metadata/namespace
