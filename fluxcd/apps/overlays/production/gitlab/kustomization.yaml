@@ -25,14 +25,6 @@ patches:
     target:
       kind: ExternalSecret
       name: gitlab-praefect-credentials
-  - path: redis-patch.yaml
-    target:
-      kind: RedisReplication
-      name: gitlab-redis
-  - path: redis-sentinel-patch.yaml
-    target:
-      kind: RedisSentinel
-      name: gitlab-redis
   - path: configmap-praefect-init-sql-patch.yaml
     target:
       kind: ConfigMap

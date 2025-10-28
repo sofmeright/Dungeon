@@ -78,21 +78,12 @@ spec:
           secret: gitlab-postgresql-credentials
           key: password
 
-      # External Redis with Sentinel (Redis Operator)
+
+      # Built-in Redis with Vault-managed password
       redis:
-        host: gitlab-redis
-        port: 6379
-        password:
-          secret: gitlab-redis-password
-          key: password
-        sentinelAuth:
-          enabled: true
-          secret: gitlab-redis-password
-          key: password
-        sentinels:
-          - host: gitlab-redis-sentinel.hyrule-castle.svc.cluster.local
-            port: 26379
-            mastername: gitlab-redis
+        auth:
+          existingSecret: gitlab-redis-password
+          existingSecretPasswordKey: password
 
       # Praefect PostgreSQL configuration
       praefect:
@@ -114,9 +105,14 @@ spec:
     postgresql:
       install: false  # Disable built-in PostgreSQL
 
-    # External Redis (Redis Operator)
+    # Built-in Redis with Ceph RBD storage
     redis:
-      install: false  # Disable built-in Redis
+      master:
+        persistence:
+          storageClass: ceph-rbd-retain
+      replica:
+        persistence:
+          storageClass: ceph-rbd-retain
 
     # GitLab Shell SSH configuration
     gitlab-shell:
