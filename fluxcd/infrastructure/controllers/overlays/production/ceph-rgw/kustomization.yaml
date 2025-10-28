@@ -5,6 +5,7 @@ resources:
   - ../../../base/ceph-rgw
   - gitlab-s3-setup-job.yaml
 patches:
+  - path: configmap-patch.yaml
   - path: statefulset-patch.yaml
   - path: service-patch.yaml
   - path: init-job-patch.yaml

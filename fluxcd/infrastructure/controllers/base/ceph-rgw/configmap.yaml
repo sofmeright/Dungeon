@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ceph-config
+data:
+  ceph.conf: |
+    [global]
+    fsid = PLACEHOLDER_FSID
+    mon_host = PLACEHOLDER_MON_HOST
