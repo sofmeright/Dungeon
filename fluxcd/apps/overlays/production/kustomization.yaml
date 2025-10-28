@@ -1,95 +1,107 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
+  # Infrastructure
   - 2fauth
-  - actualbudget
-  - dailytxt
-  - draw.io
-  - google-webfonts-helper
-  - homebox
-  - hrconvert2
-  - it-tools
-  - lubelogger
-  - mazanoke
-  - monica
-  - paperless-ngx
-  - podinfo
+  - anubis
+  - apt-cacher-ng
+  - jfrog-artifactory
+  - vaultwarden
+  - netbootxyz
+  - netbox
+  - oauth2-proxy
+  - quay
   - searxng
-  - plex
-  - plex-ms-x
+  - semaphore
+  # Monitoring, Analytics, Diagnostics
+  - beszel
+  - echo-ip
+  - frigate
+  - libretranslate
+  - netalertx
+  - shinobi
+  - speedtest-tracker
+  - umami
+  # Remote Access & Dashboards
+  - guacamole
+  - homarr
+  - kasm
+  - organizr
+  - tacticalrmm
+  # AI
+  - ollama
+  - open-webui
+  - faster-whisper
+  - stable-diffusion-webui
+  # Business Tools
+  - bagisto-demo
+  - calcom
+  - dolibarr
+  - erpnext
+  - invoiceninja
+  - kimai
+  - orangehrm
+  - opnform
+  - osticket
+  # Document & Design
+  - appflowy
+  - bookstack
+  - draw.io
+  - ghost
+  - joplin
+  - linkwarden
+  - linkstack
+  - mealie
+  - penpot
+  - projectsend
+  - wikijs-vegan
+  # Games
+  - ark-sa
+  - ark-se
+  - emulatorjs
+  - minecraft-optcp
+  - pelican
+  # Media
+  - calibre-web
+  - immich
   - jellyfin
   - photoprism
-  - calibre-web
-  - mealie
-  - linkwarden
-  - penpot
-  - linkstack
-  - ghost
-  - reactive-resume
-  - homarr
-  - minecraft-optcp
-  - umami
-  - netalertx
-  - beszel
-  - shinobi
-  - ollama
-  - libretranslate
-  - immich
-  - quay
-  - semaphore
-  - roundcube-primary-gmail
-  - wikijs-vegan
+  - plex
+  # Media Stack
   - qbittorrent
   - neko-vpn
+  - anirra
+  - bazarr
+  - byparr
+  - cross-seed
+  - jellyseerr
+  - lidarr
+  - overseerr
+  - pinchflat
+  - pyload-ng
   - prowlarr
   - radarr
   - sonarr
-  - anirra
-  - lidarr
-  - jellyseerr
-  - bazarr
-  - readarr
-  - cross-seed
-  - sabnzbd
-  - pyload-ng
-  - overseerr
-  - thelounge
-  - byparr
-  - pinchflat
-  - emulatorjs
-  - stable-diffusion-webui
   - supermicro-license-generator
-  - filebrowser
-  - code-server
-  - frigate
-  - kasm
-  - netbootxyz
-  - faster-whisper
-  - apt-cacher-ng
-  - jfrog-artifactory
-  - projectsend
-  - bagisto-demo
-  - speedtest-tracker
+  - readarr
+  - sabnzbd
+  - thelounge
+  # Personal
+  - actualbudget
+  - dailytxt
   - ferdium
-  - vaultwarden
-  - anubis
-  - appflowy
-  - bookstack
-  - dolibarr
-  - echo-ip
-  - erpnext
-  - guacamole
-  - invoiceninja
-  - joplin
-  - kimai
-  - netbox
-  - oauth2-proxy
-  - open-webui
-  - orangehrm
-  - osticket
-  - tacticalrmm
-  - pelican
-  - calcom
-  - ark-sa
-  - ark-se
-  - opnform
+  - homebox
+  - lubelogger
+  - monica
+  - paperless-ngx
+  - plex-ms-x
+  - reactive-resume
+  - roundcube-primary-gmail
+  # Utilities
+  - code-server
+  - filebrowser
+  - google-webfonts-helper
+  - hrconvert2
+  - it-tools
+  - mazanoke
+  - podinfo

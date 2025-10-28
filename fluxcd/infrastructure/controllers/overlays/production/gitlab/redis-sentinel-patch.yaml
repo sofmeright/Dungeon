@@ -1,9 +1,0 @@
-apiVersion: redis.redis.opstreelabs.in/v1beta2
-kind: RedisSentinel
-metadata:
-  name: gitlab-redis
-spec:
-  kubernetesConfig:
-    redisSecret:
-      name: gitlab-redis-password
-      key: password

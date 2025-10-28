@@ -79,11 +79,21 @@ spec:
           key: password
 
 
-      # Built-in Redis with Vault-managed password
+      # External Redis with Sentinel (official redis:7.4-alpine)
       redis:
+        host: gitlab-redis.hyrule-castle.svc.cluster.local
+        port: 6379
+        sentinels:
+        - host: gitlab-redis-0.gitlab-redis-headless.hyrule-castle.svc.cluster.local
+          port: 26379
+        - host: gitlab-redis-1.gitlab-redis-headless.hyrule-castle.svc.cluster.local
+          port: 26379
+        - host: gitlab-redis-2.gitlab-redis-headless.hyrule-castle.svc.cluster.local
+          port: 26379
         auth:
-          existingSecret: gitlab-redis-password
-          existingSecretPasswordKey: password
+          enabled: true
+          secret: gitlab-redis-password
+          key: password
 
       # Praefect PostgreSQL configuration
       praefect:
@@ -104,29 +114,6 @@ spec:
     # External PostgreSQL (CloudNativePG)
     postgresql:
       install: false  # Disable built-in PostgreSQL
-
-    # Built-in Redis with Ceph RBD storage
-    redis:
-      image:
-        registry: docker.io
-        repository: bitnami/redis
-        tag: 7.2.4-debian-12-r9
-      sentinel:
-        image:
-          registry: docker.io
-          repository: bitnami/redis-sentinel
-          tag: 7.2.4-debian-12-r9
-      metrics:
-        image:
-          registry: docker.io
-          repository: bitnami/redis-exporter
-          tag: 1.58.0-debian-12-r3
-      master:
-        persistence:
-          storageClass: ceph-rbd-retain
-      replica:
-        persistence:
-          storageClass: ceph-rbd-retain
 
     # GitLab Shell SSH configuration
     gitlab-shell:

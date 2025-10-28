@@ -71,31 +71,22 @@ spec:
           cpu: 2000m
           memory: 2Gi
 
-    # Redis HA with Sentinel
+    # External Redis with Sentinel
     redis:
-      install: true
-      architecture: replication  # Required for Sentinel
-      master:
-        persistence:
-          enabled: true
-          storageClass: PLACEHOLDER_STORAGE_CLASS
-          size: 5Gi
-      replica:
-        replicaCount: 2
-        persistence:
-          enabled: true
-          storageClass: PLACEHOLDER_STORAGE_CLASS
-          size: 5Gi
-      sentinel:
+      install: false  # Using external Redis deployment
+      host: gitlab-redis  # Service name for external Redis
+      port: 6379
+      sentinels:
+        - host: gitlab-redis-0.gitlab-redis-headless
+          port: 26379
+        - host: gitlab-redis-1.gitlab-redis-headless
+          port: 26379
+        - host: gitlab-redis-2.gitlab-redis-headless
+          port: 26379
+      auth:
         enabled: true
-        quorum: 2
-      resources:
-        requests:
-          cpu: 100m
-          memory: 256Mi
-        limits:
-          cpu: 500m
-          memory: 512Mi
+        secret: gitlab-redis-password
+        key: password
 
     # Webservice - HA
     gitlab:

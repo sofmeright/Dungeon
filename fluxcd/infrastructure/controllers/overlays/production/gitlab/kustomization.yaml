@@ -33,3 +33,7 @@ patches:
     target:
       kind: Job
       name: gitlab-praefect-db-init
+  - path: redis-statefulset-patch.yaml
+    target:
+      kind: StatefulSet
+      name: gitlab-redis

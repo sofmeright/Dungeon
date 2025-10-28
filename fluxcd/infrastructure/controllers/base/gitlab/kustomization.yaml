@@ -9,3 +9,8 @@ resources:
   - configmap-praefect-init-sql.yaml
   - serviceaccount-praefect-db-init.yaml
   - job-praefect-db-init.yaml
+  # Redis resources (official redis:7.4-alpine with Sentinel HA)
+  - redis-configmap.yaml
+  - redis-sentinel-configmap.yaml
+  - redis-service.yaml
+  - redis-statefulset.yaml

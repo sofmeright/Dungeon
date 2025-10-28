@@ -1,0 +1,29 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: gitlab-redis-sentinel-config
+  labels:
+    app: gitlab-redis
+    component: sentinel
+data:
+  sentinel.conf: |
+    # Redis Sentinel configuration for GitLab
+    port 26379
+    dir /data
+
+    # Monitor the master - name it "gitlab-redis-master"
+    # Monitor at gitlab-redis-0.gitlab-redis-headless:6379
+    # Quorum of 2 (need 2 sentinels to agree on failover)
+    sentinel monitor gitlab-redis-master gitlab-redis-0.gitlab-redis-headless 6379 2
+
+    # Authentication
+    sentinel auth-pass gitlab-redis-master REDIS_PASSWORD
+
+    # Timeouts and failover settings
+    sentinel down-after-milliseconds gitlab-redis-master 5000
+    sentinel parallel-syncs gitlab-redis-master 1
+    sentinel failover-timeout gitlab-redis-master 10000
+
+    # Logging
+    loglevel notice
+    logfile ""
