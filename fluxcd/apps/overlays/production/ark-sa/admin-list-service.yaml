@@ -61,8 +61,7 @@ data:
     function formatAdminList(steamIds) {
       var lines = [];
       for (var steamId in steamIds) {
-        var comment = steamIds[steamId];
-        lines.push(steamId + (comment ? ' ' + comment : ''));
+        lines.push(steamId);
       }
       return lines.join('\n') + '\n';
     }
