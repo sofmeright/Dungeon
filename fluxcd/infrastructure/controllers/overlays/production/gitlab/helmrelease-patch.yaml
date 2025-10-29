@@ -132,8 +132,9 @@ spec:
 
     # Container Registry HA
     registry:
-      minReplicas: 3
-      maxReplicas: 5
+      hpa:
+        minReplicas: 3
+        maxReplicas: 5
 
     # Praefect HA (Gitaly cluster coordinator)
     praefect:
