@@ -13,6 +13,8 @@ spec:
   - metadata:
       name: data
     spec:
+      accessModes:
+      - ReadWriteOnce
       storageClassName: ceph-rbd-retain
       resources:
         requests:
