@@ -14,3 +14,4 @@ resources:
   - redis-sentinel-configmap.yaml
   - redis-service.yaml
   - redis-statefulset.yaml
+  - redis-sentinel-statefulset.yaml
