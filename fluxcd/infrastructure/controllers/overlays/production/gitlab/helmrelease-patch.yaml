@@ -118,25 +118,26 @@ spec:
     # High Availability: Scale critical components to 3 replicas for 2-node failure tolerance
     gitlab:
       webservice:
-        replicaCount: 3
+        replicas: 3
       sidekiq:
-        replicaCount: 3
+        replicas: 3
       kas:
-        replicaCount: 3
+        replicas: 3
+      gitlab-shell:
+        replicas: 3
+
+    # Container Registry HA
+    registry:
+      replicas: 3
+
+    # Praefect HA (Gitaly cluster coordinator)
+    praefect:
+      replicas: 3
 
     # GitLab Shell SSH configuration
     gitlab-shell:
-      replicaCount: 3
       service:
         type: LoadBalancer
         annotations:
           lbipam.cilium.io/ips: "172.22.30.71"
           lbipam.cilium.io/sharing-key: "hyrule-castle"
-
-    # Container Registry HA
-    registry:
-      replicaCount: 3
-
-    # Praefect HA (Gitaly cluster coordinator)
-    praefect:
-      replicaCount: 3
