@@ -20,8 +20,8 @@ spec:
         - sh
         - -c
         - |
-          until nc -z osticket-mariadb 3306; do
-            echo "Waiting for MariaDB..."
+          until nc -z osticket-mariadb-primary 3306; do
+            echo "Waiting for MariaDB Galera cluster..."
             sleep 2
           done
       containers:
@@ -34,7 +34,7 @@ spec:
         - name: TZ
           value: "America/Los_Angeles"
         - name: DB_HOST
-          value: "osticket-mariadb"
+          value: "osticket-mariadb-primary"
         - name: DB_PASS
           valueFrom:
             secretKeyRef:

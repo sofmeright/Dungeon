@@ -1,0 +1,53 @@
+apiVersion: k8s.mariadb.com/v1alpha1
+kind: MariaDB
+metadata:
+  name: osticket-mariadb
+spec:
+  rootPasswordSecretKeyRef:
+    name: osticket-secrets
+    key: MYSQL_ROOT_PASSWORD
+
+  # Database and user configuration
+  database: osticket
+  username: osticket
+  passwordSecretKeyRef:
+    name: osticket-secrets
+    key: MYSQL_PASSWORD
+
+  image: PLACEHOLDER_MARIADB_IMAGE
+
+  # High availability with 3-replica Galera cluster
+  replicas: 3
+  galera:
+    enabled: true
+    sst: mariabackup
+    replicaThreads: 1
+    providerOptions:
+      gcs.fc_limit: '64'
+      gcs.fc_master_slave: 'YES'
+
+  # Storage configuration
+  storage:
+    size: PLACEHOLDER_STORAGE_SIZE
+    storageClassName: PLACEHOLDER_STORAGE_CLASS
+
+  # Service configuration
+  service:
+    type: ClusterIP
+
+  # MySQL configuration
+  myCnf: |
+    [mariadb]
+    bind-address=*
+    default_storage_engine=InnoDB
+    binlog_format=row
+    innodb_autoinc_lock_mode=2
+    max_allowed_packet=256M
+
+  # Resources
+  resources:
+    requests:
+      cpu: PLACEHOLDER_CPU_REQUEST
+      memory: PLACEHOLDER_MEMORY_REQUEST
+    limits:
+      memory: PLACEHOLDER_MEMORY_LIMIT

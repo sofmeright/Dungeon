@@ -1,0 +1,15 @@
+apiVersion: k8s.mariadb.com/v1alpha1
+kind: MariaDB
+metadata:
+  name: osticket-mariadb
+spec:
+  image: docker.jcr.pcfae.com/mariadb:11.4.2
+  storage:
+    size: 10Gi
+    storageClassName: ceph-rbd
+  resources:
+    requests:
+      cpu: 250m
+      memory: 512Mi
+    limits:
+      memory: 2Gi
