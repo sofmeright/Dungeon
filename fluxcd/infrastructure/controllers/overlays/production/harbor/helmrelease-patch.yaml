@@ -61,7 +61,7 @@ spec:
         host: harbor-postgres-rw
         port: 5432
         username: harbor
-        # password from valuesFrom
+        password: ""  # Injected by valuesFrom
         coreDatabase: registry
         notaryServerDatabase: notaryserver
         notarySignerDatabase: notarysigner
@@ -87,11 +87,13 @@ spec:
         s3:
           region: us-east-1
           bucket: harbor
-          # accesskey and secretkey from valuesFrom
+          accesskey: ""  # Injected by valuesFrom
+          secretkey: ""  # Injected by valuesFrom
           regionendpoint: http://172.22.30.101
           secure: false
 
-    # Admin password from valuesFrom
+    # Admin password (injected by valuesFrom)
+    harborAdminPassword: ""
 
     # Disable Trivy and Notary for now
     trivy:
