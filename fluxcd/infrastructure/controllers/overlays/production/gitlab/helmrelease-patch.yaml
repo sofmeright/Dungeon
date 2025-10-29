@@ -118,17 +118,22 @@ spec:
     # High Availability: Scale critical components to 3 replicas for 2-node failure tolerance
     gitlab:
       webservice:
-        replicas: 3
+        minReplicas: 3
+        maxReplicas: 10
       sidekiq:
-        replicas: 3
+        minReplicas: 3
+        maxReplicas: 10
       kas:
-        replicas: 3
+        minReplicas: 3
+        maxReplicas: 10
       gitlab-shell:
-        replicas: 3
+        minReplicas: 3
+        maxReplicas: 10
 
     # Container Registry HA
     registry:
-      replicas: 3
+      minReplicas: 3
+      maxReplicas: 10
 
     # Praefect HA (Gitaly cluster coordinator)
     praefect:
