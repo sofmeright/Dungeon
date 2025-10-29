@@ -25,9 +25,9 @@ spec:
     # External URL
     externalURL: https://cr.pcfae.com
 
-    # Use fully qualified image names via JCR proxy
+    # Use fully qualified image names - direct from Docker Hub (critical infrastructure exception)
     global:
-      imageRegistry: docker.jcr.pcfae.com/goharbor
+      imageRegistry: docker.io/goharbor
 
     # Harbor components - 3 replicas for HA
     portal:
