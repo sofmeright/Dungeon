@@ -7,8 +7,6 @@ resources:
   - ../../../base/harbor
   - httproute.yaml
   - externalsecret.yaml
-  - ../../../../configs/overlays/production/rook-ceph-external/secrets.enc.yaml
-  - rgw-setup-job.yaml
 
 patches:
   - path: postgres-cluster-patch.yaml

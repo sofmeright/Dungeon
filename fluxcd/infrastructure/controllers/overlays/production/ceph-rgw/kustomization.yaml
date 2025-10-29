@@ -4,6 +4,8 @@ namespace: gorons-bracelet
 resources:
   - ../../../base/ceph-rgw
   - gitlab-s3-setup-job.yaml
+  - harbor-credentials-externalsecret.yaml
+  - harbor-user-job.yaml
 patches:
   - path: configmap-patch.yaml
   - path: statefulset-patch.yaml
