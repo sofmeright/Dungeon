@@ -1,0 +1,23 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: harbor-postgres
+spec:
+  instances: PLACEHOLDER_INSTANCES
+
+  postgresql:
+    parameters:
+      shared_buffers: "256MB"
+      max_connections: "200"
+
+  bootstrap:
+    initdb:
+      database: registry
+      owner: harbor
+      postInitApplicationSQL:
+        - CREATE DATABASE notaryserver OWNER harbor;
+        - CREATE DATABASE notarysigner OWNER harbor;
+
+  storage:
+    storageClass: PLACEHOLDER_STORAGE_CLASS
+    size: PLACEHOLDER_STORAGE_SIZE

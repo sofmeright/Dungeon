@@ -21,6 +21,7 @@ resources:
   - redis-operator  # Redis operator for cloud-native Redis clusters
   - mariadb-operator-crds  # MariaDB operator CRDs (must be installed before operator)
   - mariadb-operator  # MariaDB operator with Galera cluster support for HA MySQL
+  - harbor  # Harbor container registry with HA configuration (cr.pcfae.com)
   - zitadel
   - netbird
   - adguard  # DNS server with network policy for proper routing

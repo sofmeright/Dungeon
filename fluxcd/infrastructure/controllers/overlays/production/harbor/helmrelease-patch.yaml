@@ -1,0 +1,85 @@
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: harbor
+spec:
+  targetNamespace: hyrule-castle
+  valuesFrom:
+  - kind: Secret
+    name: harbor-secrets
+    valuesKey: postgres_password
+    targetPath: database.external.password
+  - kind: Secret
+    name: harbor-secrets
+    valuesKey: s3_accesskey
+    targetPath: persistence.imageChartStorage.s3.accesskey
+  - kind: Secret
+    name: harbor-secrets
+    valuesKey: s3_secretkey
+    targetPath: persistence.imageChartStorage.s3.secretkey
+  - kind: Secret
+    name: harbor-secrets
+    valuesKey: admin_password
+    targetPath: harborAdminPassword
+  values:
+    # External URL
+    externalURL: https://cr.pcfae.com
+
+    # Harbor components - 3 replicas for HA
+    portal:
+      replicas: 3
+
+    core:
+      replicas: 3
+
+    jobservice:
+      replicas: 3
+
+    registry:
+      replicas: 3
+
+    # External PostgreSQL via CloudNativePG
+    database:
+      type: external
+      external:
+        host: harbor-postgres-rw
+        port: 5432
+        username: harbor
+        # password from valuesFrom
+        coreDatabase: registry
+        notaryServerDatabase: notaryserver
+        notarySignerDatabase: notarysigner
+
+    # External Redis (our 3-replica StatefulSet)
+    redis:
+      type: external
+      external:
+        addr: harbor-redis-0.harbor-redis.hyrule-castle.svc.cluster.local:6379
+
+    # Storage configuration - Ceph RGW (S3 compatible)
+    persistence:
+      enabled: true
+      persistentVolumeClaim:
+        registry:
+          storageClass: ceph-rbd-retain
+          size: 50Gi
+        jobservice:
+          storageClass: ceph-rbd-retain
+          size: 10Gi
+      imageChartStorage:
+        type: s3
+        s3:
+          region: us-east-1
+          bucket: harbor
+          # accesskey and secretkey from valuesFrom
+          regionendpoint: http://172.22.30.101
+          secure: false
+
+    # Admin password from valuesFrom
+
+    # Disable Trivy and Notary for now
+    trivy:
+      enabled: false
+
+    notary:
+      enabled: false

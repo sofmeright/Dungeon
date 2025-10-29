@@ -1,0 +1,91 @@
+apiVersion: helm.toolkit.fluxcd.io/v2beta1
+kind: HelmRelease
+metadata:
+  name: harbor
+spec:
+  releaseName: harbor
+  targetNamespace: PLACEHOLDER_NAMESPACE
+  interval: 30m
+  chart:
+    spec:
+      chart: harbor
+      version: "1.16.0"
+      sourceRef:
+        kind: HelmRepository
+        name: harbor
+      interval: 12h
+  values:
+    # External URL
+    externalURL: PLACEHOLDER_EXTERNAL_URL
+
+    # Expose service via ClusterIP (we'll use Gateway API HTTPRoute)
+    expose:
+      type: clusterIP
+      tls:
+        enabled: false  # TLS termination at gateway
+      clusterIP:
+        name: harbor
+        ports:
+          httpPort: 80
+
+    # Harbor components - use placeholder for HA settings
+    portal:
+      replicas: PLACEHOLDER_PORTAL_REPLICAS
+
+    core:
+      replicas: PLACEHOLDER_CORE_REPLICAS
+
+    jobservice:
+      replicas: PLACEHOLDER_JOBSERVICE_REPLICAS
+
+    registry:
+      replicas: PLACEHOLDER_REGISTRY_REPLICAS
+
+    # Disable internal PostgreSQL - we'll use external/operator
+    database:
+      type: external
+      external:
+        host: PLACEHOLDER_POSTGRES_HOST
+        port: 5432
+        username: PLACEHOLDER_POSTGRES_USER
+        password: PLACEHOLDER_POSTGRES_PASSWORD
+        coreDatabase: PLACEHOLDER_CORE_DB
+        notaryServerDatabase: PLACEHOLDER_NOTARY_SERVER_DB
+        notarySignerDatabase: PLACEHOLDER_NOTARY_SIGNER_DB
+
+    # Disable internal Redis - we'll use external HA Redis
+    redis:
+      type: external
+      external:
+        addr: PLACEHOLDER_REDIS_ADDR
+
+    # Storage configuration - S3 compatible (MinIO/Ceph RGW)
+    persistence:
+      enabled: true
+      persistentVolumeClaim:
+        registry:
+          storageClass: PLACEHOLDER_STORAGE_CLASS
+          size: PLACEHOLDER_REGISTRY_STORAGE_SIZE
+        jobservice:
+          storageClass: PLACEHOLDER_STORAGE_CLASS
+          size: PLACEHOLDER_JOBSERVICE_STORAGE_SIZE
+      imageChartStorage:
+        type: s3
+        s3:
+          region: PLACEHOLDER_S3_REGION
+          bucket: PLACEHOLDER_S3_BUCKET
+          accesskey: PLACEHOLDER_S3_ACCESS_KEY
+          secretkey: PLACEHOLDER_S3_SECRET_KEY
+          regionendpoint: PLACEHOLDER_S3_ENDPOINT
+          secure: false
+
+    # Admin password
+    harborAdminPassword: PLACEHOLDER_ADMIN_PASSWORD
+
+    # Disable Trivy by default (can enable later)
+    trivy:
+      enabled: false
+
+    # Disable notary by default (can enable later)
+    notary:
+      enabled: false

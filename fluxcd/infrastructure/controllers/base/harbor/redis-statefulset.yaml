@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: harbor-redis
+spec:
+  serviceName: harbor-redis
+  replicas: PLACEHOLDER_REPLICAS
+  selector:
+    matchLabels:
+      app: harbor-redis
+  template:
+    metadata:
+      labels:
+        app: harbor-redis
+    spec:
+      containers:
+      - name: redis
+        image: PLACEHOLDER_REDIS_IMAGE
+        ports:
+        - containerPort: 6379
+          name: redis
+        volumeMounts:
+        - name: data
+          mountPath: /data
+  volumeClaimTemplates:
+  - metadata:
+      name: data
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      storageClassName: PLACEHOLDER_STORAGE_CLASS
+      resources:
+        requests:
+          storage: PLACEHOLDER_STORAGE_SIZE
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: harbor-redis
+spec:
+  type: ClusterIP
+  clusterIP: None
+  ports:
+  - port: 6379
+    targetPort: 6379
+    name: redis
+  selector:
+    app: harbor-redis
