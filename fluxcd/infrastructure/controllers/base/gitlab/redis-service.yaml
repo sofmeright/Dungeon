@@ -5,7 +5,6 @@ metadata:
   name: gitlab-redis
   labels:
     app: gitlab-redis
-    component: redis
 spec:
   type: ClusterIP
   ports:
@@ -13,13 +12,8 @@ spec:
     port: 6379
     targetPort: redis
     protocol: TCP
-  - name: sentinel
-    port: 26379
-    targetPort: sentinel
-    protocol: TCP
   selector:
     app: gitlab-redis
-    component: redis
 ---
 apiVersion: v1
 kind: Service
@@ -27,7 +21,6 @@ metadata:
   name: gitlab-redis-headless
   labels:
     app: gitlab-redis
-    component: redis
 spec:
   type: ClusterIP
   clusterIP: None
@@ -36,10 +29,38 @@ spec:
     port: 6379
     targetPort: redis
     protocol: TCP
+  selector:
+    app: gitlab-redis
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: gitlab-sentinel
+  labels:
+    app: gitlab-sentinel
+spec:
+  type: ClusterIP
+  ports:
   - name: sentinel
     port: 26379
     targetPort: sentinel
     protocol: TCP
   selector:
-    app: gitlab-redis
-    component: redis
+    app: gitlab-sentinel
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: gitlab-sentinel-headless
+  labels:
+    app: gitlab-sentinel
+spec:
+  type: ClusterIP
+  clusterIP: None
+  ports:
+  - name: sentinel
+    port: 26379
+    targetPort: sentinel
+    protocol: TCP
+  selector:
+    app: gitlab-sentinel

@@ -3,26 +3,15 @@ kind: ConfigMap
 metadata:
   name: gitlab-redis-sentinel-config
   labels:
-    app: gitlab-redis
-    component: sentinel
+    app: gitlab-sentinel
 data:
   sentinel.conf: |
     # Redis Sentinel configuration for GitLab
     port 26379
     dir /data
 
-    # Monitor the master - name must match GitLab's redis.host value
-    # Monitor via service name so GitLab can resolve the master correctly
-    # Sentinels will auto-discover other instances via Pub/Sub
-    sentinel monitor gitlab-redis.hyrule-castle.svc.cluster.local gitlab-redis.hyrule-castle.svc.cluster.local 6379 2
-
-    # Authentication
-    sentinel auth-pass gitlab-redis.hyrule-castle.svc.cluster.local PASSWORD_PLACEHOLDER
-
-    # Timeouts and failover settings
-    sentinel down-after-milliseconds gitlab-redis.hyrule-castle.svc.cluster.local 5000
-    sentinel parallel-syncs gitlab-redis.hyrule-castle.svc.cluster.local 1
-    sentinel failover-timeout gitlab-redis.hyrule-castle.svc.cluster.local 10000
+    # Master monitoring configuration will be added by initContainer
+    # Placeholder for dynamic configuration
 
     # Logging
     loglevel notice

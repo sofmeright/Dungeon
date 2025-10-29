@@ -37,3 +37,7 @@ patches:
     target:
       kind: StatefulSet
       name: gitlab-redis
+  - path: redis-sentinel-patch.yaml
+    target:
+      kind: StatefulSet
+      name: gitlab-sentinel

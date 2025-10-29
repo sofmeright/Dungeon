@@ -4,40 +4,49 @@ metadata:
   name: gitlab-redis
   labels:
     app: gitlab-redis
-    component: redis
 spec:
   serviceName: gitlab-redis-headless
   replicas: 3
   selector:
     matchLabels:
       app: gitlab-redis
-      component: redis
   template:
     metadata:
       labels:
         app: gitlab-redis
-        component: redis
     spec:
       initContainers:
-      - name: init-redis
+      - name: config
         image: docker.io/redis:7.4-alpine
         command:
         - sh
         - -c
         - |
-          set -e
-          # Copy redis config template
-          cp /tmp/redis-config/redis.conf /etc/redis/redis.conf
-          # Copy sentinel config template
-          cp /tmp/sentinel-config/sentinel.conf /etc/redis/sentinel.conf
-          # Set ownership
-          chown -R redis:redis /etc/redis
-          chmod 644 /etc/redis/*.conf
+          set -ex
+          # Copy base config
+          cp /tmp/redis/redis.conf /etc/redis/redis.conf
+
+          # Determine master FQDN - redis-0 is always the initial master
+          MASTER_FDQN="gitlab-redis-0.gitlab-redis-headless.NAMESPACE_PLACEHOLDER.svc.cluster.local"
+
+          # If this is not redis-0, configure as replica
+          if [ "$(hostname)" != "gitlab-redis-0" ]; then
+            # Check if Sentinel is available and knows the master
+            if [ "$(redis-cli -h gitlab-sentinel -p 26379 ping 2>/dev/null)" = "PONG" ]; then
+              # Query Sentinel for current master
+              SENTINEL_MASTER=$(redis-cli -h gitlab-sentinel -p 26379 sentinel get-master-addr-by-name gitlab-redis 2>/dev/null | head -n1)
+              if [ -n "$SENTINEL_MASTER" ]; then
+                MASTER_FDQN="$SENTINEL_MASTER"
+              fi
+            fi
+            echo "replicaof $MASTER_FDQN 6379" >> /etc/redis/redis.conf
+          fi
+
+          echo "Configuration complete for $(hostname)"
+          cat /etc/redis/redis.conf
         volumeMounts:
         - name: redis-config-template
-          mountPath: /tmp/redis-config
-        - name: sentinel-config-template
-          mountPath: /tmp/sentinel-config
+          mountPath: /tmp/redis
         - name: config
           mountPath: /etc/redis
       containers:
@@ -85,57 +94,11 @@ spec:
             - redis-cli -a "$REDIS_PASSWORD" ping | grep -q PONG
           initialDelaySeconds: 5
           periodSeconds: 5
-      - name: sentinel
-        image: docker.io/redis:7.4-alpine
-        command:
-        - sh
-        - -c
-        - |
-          # Configure sentinel dynamically - replace password placeholder
-          sed -i "s|PASSWORD_PLACEHOLDER|${REDIS_PASSWORD}|g" /etc/redis/sentinel.conf
-          redis-sentinel /etc/redis/sentinel.conf
-        ports:
-        - name: sentinel
-          containerPort: 26379
-          protocol: TCP
-        env:
-        - name: REDIS_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: gitlab-redis-password
-              key: password
-        volumeMounts:
-        - name: config
-          mountPath: /etc/redis
-        - name: sentinel-data
-          mountPath: /data
-        resources:
-          requests:
-            cpu: 50m
-            memory: 128Mi
-          limits:
-            cpu: 200m
-            memory: 256Mi
-        livenessProbe:
-          tcpSocket:
-            port: sentinel
-          initialDelaySeconds: 30
-          periodSeconds: 10
-        readinessProbe:
-          tcpSocket:
-            port: sentinel
-          initialDelaySeconds: 5
-          periodSeconds: 5
       volumes:
       - name: redis-config-template
         configMap:
           name: gitlab-redis-config
-      - name: sentinel-config-template
-        configMap:
-          name: gitlab-redis-sentinel-config
       - name: config
-        emptyDir: {}
-      - name: sentinel-data
         emptyDir: {}
   volumeClaimTemplates:
   - metadata:

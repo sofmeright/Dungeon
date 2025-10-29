@@ -3,6 +3,36 @@ kind: StatefulSet
 metadata:
   name: gitlab-redis
 spec:
+  template:
+    spec:
+      initContainers:
+      - name: config
+        command:
+        - sh
+        - -c
+        - |
+          set -ex
+          # Copy base config
+          cp /tmp/redis/redis.conf /etc/redis/redis.conf
+
+          # Determine master FQDN - redis-0 is always the initial master
+          MASTER_FDQN="gitlab-redis-0.gitlab-redis-headless.hyrule-castle.svc.cluster.local"
+
+          # If this is not redis-0, configure as replica
+          if [ "$(hostname)" != "gitlab-redis-0" ]; then
+            # Check if Sentinel is available and knows the master
+            if [ "$(redis-cli -h gitlab-sentinel -p 26379 ping 2>/dev/null)" = "PONG" ]; then
+              # Query Sentinel for current master
+              SENTINEL_MASTER=$(redis-cli -h gitlab-sentinel -p 26379 sentinel get-master-addr-by-name gitlab-redis 2>/dev/null | head -n1)
+              if [ -n "$SENTINEL_MASTER" ]; then
+                MASTER_FDQN="$SENTINEL_MASTER"
+              fi
+            fi
+            echo "replicaof $MASTER_FDQN 6379" >> /etc/redis/redis.conf
+          fi
+
+          echo "Configuration complete for $(hostname)"
+          cat /etc/redis/redis.conf
   volumeClaimTemplates:
   - metadata:
       name: data
