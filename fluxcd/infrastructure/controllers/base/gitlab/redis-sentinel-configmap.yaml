@@ -12,9 +12,9 @@ data:
     dir /data
 
     # Monitor the master - name must match GitLab's redis.host value
-    # Initially monitor localhost since Sentinel runs as sidecar
+    # Monitor via service name so GitLab can resolve the master correctly
     # Sentinels will auto-discover other instances via Pub/Sub
-    sentinel monitor gitlab-redis.hyrule-castle.svc.cluster.local 127.0.0.1 6379 2
+    sentinel monitor gitlab-redis.hyrule-castle.svc.cluster.local gitlab-redis.hyrule-castle.svc.cluster.local 6379 2
 
     # Authentication
     sentinel auth-pass gitlab-redis.hyrule-castle.svc.cluster.local PASSWORD_PLACEHOLDER
