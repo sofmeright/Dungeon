@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: osticket-db
+  name: osticket-mariadb
 spec:
   template:
     spec:
