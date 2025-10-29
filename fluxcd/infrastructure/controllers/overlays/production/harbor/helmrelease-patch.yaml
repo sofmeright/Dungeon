@@ -23,7 +23,7 @@ spec:
     targetPath: harborAdminPassword
   values:
     # External URL
-    externalURL: https://cr.pcfae.com
+    externalURL: https://172.22.30.71:9483
 
     # Harbor components - 3 replicas for HA with fully qualified images
     portal:
@@ -53,6 +53,9 @@ spec:
     nginx:
       image:
         repository: docker.io/goharbor/nginx-photon
+      tls:
+        enabled: true
+        certSource: auto
 
     # External PostgreSQL via CloudNativePG
     database:
