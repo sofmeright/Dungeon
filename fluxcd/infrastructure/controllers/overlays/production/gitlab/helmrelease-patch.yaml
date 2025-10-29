@@ -119,21 +119,21 @@ spec:
     gitlab:
       webservice:
         minReplicas: 3
-        maxReplicas: 10
+        maxReplicas: 5
       sidekiq:
         minReplicas: 3
-        maxReplicas: 10
+        maxReplicas: 5
       kas:
         minReplicas: 3
-        maxReplicas: 10
+        maxReplicas: 5
       gitlab-shell:
         minReplicas: 3
-        maxReplicas: 10
+        maxReplicas: 5
 
     # Container Registry HA
     registry:
       minReplicas: 3
-      maxReplicas: 10
+      maxReplicas: 5
 
     # Praefect HA (Gitaly cluster coordinator)
     praefect:
