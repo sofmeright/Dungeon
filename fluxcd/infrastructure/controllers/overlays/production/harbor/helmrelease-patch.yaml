@@ -95,6 +95,10 @@ spec:
     # Admin password (injected by valuesFrom)
     harborAdminPassword: ""
 
+    # Disable CSRF protection for local access
+    core:
+      csrf: false
+
     # Disable Trivy and Notary for now
     trivy:
       enabled: false
