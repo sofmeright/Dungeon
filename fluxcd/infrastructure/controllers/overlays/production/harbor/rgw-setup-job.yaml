@@ -9,14 +9,24 @@ spec:
       restartPolicy: OnFailure
       containers:
       - name: setup
-        image: docker.jcr.pcfae.com/minio/mc:latest
+        image: docker.jcr.pcfae.com/curlimages/curl:latest
         env:
-        - name: S3_ACCESSKEY
+        - name: ADMIN_ACCESSKEY
+          valueFrom:
+            secretKeyRef:
+              name: rgw-admin-ops-user
+              key: accessKey
+        - name: ADMIN_SECRETKEY
+          valueFrom:
+            secretKeyRef:
+              name: rgw-admin-ops-user
+              key: secretKey
+        - name: HARBOR_ACCESSKEY
           valueFrom:
             secretKeyRef:
               name: harbor-secrets
               key: s3_accesskey
-        - name: S3_SECRETKEY
+        - name: HARBOR_SECRETKEY
           valueFrom:
             secretKeyRef:
               name: harbor-secrets
@@ -26,21 +36,42 @@ spec:
         - -c
         - |
           set -e
-          echo "Configuring MinIO client for Ceph RGW..."
-          mc alias set ceph-rgw http://172.22.30.101 "$S3_ACCESSKEY" "$S3_SECRETKEY"
+          RGW_ENDPOINT="http://ceph-rgw.gorons-bracelet.svc.cluster.local:80"
 
-          echo "Creating harbor bucket if it doesn't exist..."
-          if ! mc ls ceph-rgw/harbor 2>/dev/null; then
-            mc mb ceph-rgw/harbor
-            echo "Bucket 'harbor' created successfully"
+          echo "Creating Harbor RGW user via Admin API..."
+
+          # Create user with Harbor credentials
+          RESPONSE=$(curl -s -w "\n%{http_code}" \
+            "${RGW_ENDPOINT}/admin/user?uid=harbor&display-name=Harbor+Container+Registry&access-key=${HARBOR_ACCESSKEY}&secret-key=${HARBOR_SECRETKEY}" \
+            -H "Authorization: AWS ${ADMIN_ACCESSKEY}:$(echo -n "PUT\n\n\n\n/admin/user" | openssl dgst -sha1 -hmac "${ADMIN_SECRETKEY}" -binary | base64)")
+
+          HTTP_CODE=$(echo "$RESPONSE" | tail -n1)
+          BODY=$(echo "$RESPONSE" | head -n-1)
+
+          if [ "$HTTP_CODE" = "200" ]; then
+            echo "✓ Harbor RGW user created successfully"
+          elif echo "$BODY" | grep -q "UserAlreadyExists"; then
+            echo "✓ Harbor RGW user already exists"
           else
-            echo "Bucket 'harbor' already exists"
+            echo "✗ Failed to create user (HTTP $HTTP_CODE): $BODY"
+            exit 1
           fi
 
-          echo "Setting bucket permissions..."
-          mc anonymous set none ceph-rgw/harbor
+          echo "Creating harbor bucket with Harbor user credentials..."
 
-          echo "Verifying bucket..."
-          mc ls ceph-rgw/harbor
+          # Now use mc with Harbor credentials to create bucket
+          apk add --no-cache minio-client
 
-          echo "Setup complete!"
+          mc alias set harbor-rgw "${RGW_ENDPOINT}" "${HARBOR_ACCESSKEY}" "${HARBOR_SECRETKEY}"
+
+          if ! mc ls harbor-rgw/harbor 2>/dev/null; then
+            mc mb harbor-rgw/harbor
+            echo "✓ Bucket 'harbor' created successfully"
+          else
+            echo "✓ Bucket 'harbor' already exists"
+          fi
+
+          mc anonymous set none harbor-rgw/harbor
+          mc ls harbor-rgw/harbor
+
+          echo "✓ Setup complete!"
