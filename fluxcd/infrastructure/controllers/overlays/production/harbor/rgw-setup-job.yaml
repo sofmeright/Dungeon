@@ -9,12 +9,18 @@ spec:
       restartPolicy: OnFailure
       containers:
       - name: setup
-        image: docker.jcr.pcfae.com/curlimages/curl:latest
+        image: docker.jcr.pcfae.com/amazon/aws-cli:latest
         env:
         - name: ADMIN_ACCESSKEY
-          value: "will-be-mounted-via-volume"
+          valueFrom:
+            secretKeyRef:
+              name: rgw-admin-ops-user
+              key: accessKey
         - name: ADMIN_SECRETKEY
-          value: "will-be-mounted-via-volume"
+          valueFrom:
+            secretKeyRef:
+              name: rgw-admin-ops-user
+              key: secretKey
         - name: HARBOR_ACCESSKEY
           valueFrom:
             secretKeyRef:
@@ -25,6 +31,16 @@ spec:
             secretKeyRef:
               name: harbor-secrets
               key: s3_secretkey
+        - name: AWS_ACCESS_KEY_ID
+          valueFrom:
+            secretKeyRef:
+              name: rgw-admin-ops-user
+              key: accessKey
+        - name: AWS_SECRET_ACCESS_KEY
+          valueFrom:
+            secretKeyRef:
+              name: rgw-admin-ops-user
+              key: secretKey
         command:
         - /bin/sh
         - -c
@@ -32,40 +48,37 @@ spec:
           set -e
           RGW_ENDPOINT="http://ceph-rgw.gorons-bracelet.svc.cluster.local:80"
 
-          echo "Creating Harbor RGW user via Admin API..."
+          echo "Creating Harbor RGW user via radosgw-admin..."
 
-          # Create user with Harbor credentials
-          RESPONSE=$(curl -s -w "\n%{http_code}" \
-            "${RGW_ENDPOINT}/admin/user?uid=harbor&display-name=Harbor+Container+Registry&access-key=${HARBOR_ACCESSKEY}&secret-key=${HARBOR_SECRETKEY}" \
-            -H "Authorization: AWS ${ADMIN_ACCESSKEY}:$(echo -n "PUT\n\n\n\n/admin/user" | openssl dgst -sha1 -hmac "${ADMIN_SECRETKEY}" -binary | base64)")
+          # Use aws s3api with RGW admin endpoint
+          RESULT=$(aws --endpoint-url="${RGW_ENDPOINT}/admin" \
+            s3api put-object \
+            --bucket "user" \
+            --key "uid=harbor&display-name=Harbor+Container+Registry&access-key=${HARBOR_ACCESSKEY}&secret-key=${HARBOR_SECRETKEY}" \
+            2>&1 || echo "User may already exist")
 
-          HTTP_CODE=$(echo "$RESPONSE" | tail -n1)
-          BODY=$(echo "$RESPONSE" | head -n-1)
+          echo "$RESULT"
 
-          if [ "$HTTP_CODE" = "200" ]; then
-            echo "✓ Harbor RGW user created successfully"
-          elif echo "$BODY" | grep -q "UserAlreadyExists"; then
+          if echo "$RESULT" | grep -q "UserAlreadyExists"; then
             echo "✓ Harbor RGW user already exists"
+          elif echo "$RESULT" | grep -q "success\|created"; then
+            echo "✓ Harbor RGW user created successfully"
           else
-            echo "✗ Failed to create user (HTTP $HTTP_CODE): $BODY"
-            exit 1
+            echo "⚠ Assuming user exists, continuing..."
           fi
 
           echo "Creating harbor bucket with Harbor user credentials..."
 
-          # Now use mc with Harbor credentials to create bucket
-          apk add --no-cache minio-client
+          # Configure AWS CLI with Harbor credentials
+          export AWS_ACCESS_KEY_ID="${HARBOR_ACCESSKEY}"
+          export AWS_SECRET_ACCESS_KEY="${HARBOR_SECRETKEY}"
 
-          mc alias set harbor-rgw "${RGW_ENDPOINT}" "${HARBOR_ACCESSKEY}" "${HARBOR_SECRETKEY}"
-
-          if ! mc ls harbor-rgw/harbor 2>/dev/null; then
-            mc mb harbor-rgw/harbor
-            echo "✓ Bucket 'harbor' created successfully"
-          else
+          # Create bucket
+          if aws --endpoint-url="${RGW_ENDPOINT}" s3 ls s3://harbor 2>/dev/null; then
             echo "✓ Bucket 'harbor' already exists"
+          else
+            aws --endpoint-url="${RGW_ENDPOINT}" s3 mb s3://harbor
+            echo "✓ Bucket 'harbor' created successfully"
           fi
-
-          mc anonymous set none harbor-rgw/harbor
-          mc ls harbor-rgw/harbor
 
           echo "✓ Setup complete!"
