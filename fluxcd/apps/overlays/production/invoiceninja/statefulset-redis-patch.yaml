@@ -5,6 +5,8 @@ metadata:
 spec:
   template:
     spec:
+      securityContext:
+        fsGroup: 999  # Redis user in official redis:alpine image
       containers:
       - name: redis
         image: docker.jcr.pcfae.com/redis:alpine
