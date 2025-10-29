@@ -12,15 +12,9 @@ spec:
         image: docker.jcr.pcfae.com/curlimages/curl:latest
         env:
         - name: ADMIN_ACCESSKEY
-          valueFrom:
-            secretKeyRef:
-              name: rgw-admin-ops-user
-              key: accessKey
+          value: "will-be-mounted-via-volume"
         - name: ADMIN_SECRETKEY
-          valueFrom:
-            secretKeyRef:
-              name: rgw-admin-ops-user
-              key: secretKey
+          value: "will-be-mounted-via-volume"
         - name: HARBOR_ACCESSKEY
           valueFrom:
             secretKeyRef:
