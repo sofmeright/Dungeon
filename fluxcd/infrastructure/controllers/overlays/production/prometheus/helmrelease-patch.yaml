@@ -15,7 +15,7 @@ spec:
               storageClassName: ceph-rbd-retain
               resources:
                 requests:
-                  storage: 10Gi
+                  storage: 30Gi
 
         # Resource limits - increased for WAL replay
         resources:
