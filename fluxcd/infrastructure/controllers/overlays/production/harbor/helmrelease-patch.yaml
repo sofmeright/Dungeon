@@ -25,22 +25,34 @@ spec:
     # External URL
     externalURL: https://cr.pcfae.com
 
-    # Use fully qualified image names - direct from Docker Hub (critical infrastructure exception)
-    global:
-      imageRegistry: docker.io/goharbor
-
-    # Harbor components - 3 replicas for HA
+    # Harbor components - 3 replicas for HA with fully qualified images
     portal:
       replicas: 3
+      image:
+        repository: docker.io/goharbor/harbor-portal
 
     core:
       replicas: 3
+      image:
+        repository: docker.io/goharbor/harbor-core
 
     jobservice:
       replicas: 3
+      image:
+        repository: docker.io/goharbor/harbor-jobservice
 
     registry:
       replicas: 3
+      registry:
+        image:
+          repository: docker.io/goharbor/registry-photon
+      controller:
+        image:
+          repository: docker.io/goharbor/harbor-registryctl
+
+    nginx:
+      image:
+        repository: docker.io/goharbor/nginx-photon
 
     # External PostgreSQL via CloudNativePG
     database:
