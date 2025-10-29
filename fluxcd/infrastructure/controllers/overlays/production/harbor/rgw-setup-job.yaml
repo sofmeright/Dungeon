@@ -1,0 +1,46 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: harbor-rgw-setup
+spec:
+  ttlSecondsAfterFinished: 600
+  template:
+    spec:
+      restartPolicy: OnFailure
+      containers:
+      - name: setup
+        image: docker.jcr.pcfae.com/minio/mc:latest
+        env:
+        - name: S3_ACCESSKEY
+          valueFrom:
+            secretKeyRef:
+              name: harbor-secrets
+              key: s3_accesskey
+        - name: S3_SECRETKEY
+          valueFrom:
+            secretKeyRef:
+              name: harbor-secrets
+              key: s3_secretkey
+        command:
+        - /bin/sh
+        - -c
+        - |
+          set -e
+          echo "Configuring MinIO client for Ceph RGW..."
+          mc alias set ceph-rgw http://172.22.30.101 "$S3_ACCESSKEY" "$S3_SECRETKEY"
+
+          echo "Creating harbor bucket if it doesn't exist..."
+          if ! mc ls ceph-rgw/harbor 2>/dev/null; then
+            mc mb ceph-rgw/harbor
+            echo "Bucket 'harbor' created successfully"
+          else
+            echo "Bucket 'harbor' already exists"
+          fi
+
+          echo "Setting bucket permissions..."
+          mc anonymous set none ceph-rgw/harbor
+
+          echo "Verifying bucket..."
+          mc ls ceph-rgw/harbor
+
+          echo "Setup complete!"

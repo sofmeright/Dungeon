@@ -7,6 +7,7 @@ resources:
   - ../../../base/harbor
   - httproute.yaml
   - externalsecret.yaml
+  - rgw-setup-job.yaml
 
 patches:
   - path: postgres-cluster-patch.yaml
