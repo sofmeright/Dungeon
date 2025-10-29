@@ -9,7 +9,7 @@ spec:
       restartPolicy: OnFailure
       containers:
       - name: setup
-        image: docker.jcr.pcfae.com/amazon/aws-cli:latest
+        image: docker.jcr.pcfae.com/library/python:3.11-alpine
         env:
         - name: ADMIN_ACCESSKEY
           valueFrom:
@@ -46,39 +46,89 @@ spec:
         - -c
         - |
           set -e
-          RGW_ENDPOINT="http://ceph-rgw.gorons-bracelet.svc.cluster.local:80"
 
-          echo "Creating Harbor RGW user via radosgw-admin..."
+          echo "Installing dependencies..."
+          pip install --no-cache-dir boto3 requests-aws4auth
 
-          # Use aws s3api with RGW admin endpoint
-          RESULT=$(aws --endpoint-url="${RGW_ENDPOINT}/admin" \
-            s3api put-object \
-            --bucket "user" \
-            --key "uid=harbor&display-name=Harbor+Container+Registry&access-key=${HARBOR_ACCESSKEY}&secret-key=${HARBOR_SECRETKEY}" \
-            2>&1 || echo "User may already exist")
+          cat > /tmp/rgw_setup.py << 'EOFPYTHON'
+          import boto3
+          import sys
+          from botocore.client import Config
+          from botocore.exceptions import ClientError
 
-          echo "$RESULT"
+          RGW_ENDPOINT = "http://ceph-rgw.gorons-bracelet.svc.cluster.local:80"
 
-          if echo "$RESULT" | grep -q "UserAlreadyExists"; then
-            echo "✓ Harbor RGW user already exists"
-          elif echo "$RESULT" | grep -q "success\|created"; then
-            echo "✓ Harbor RGW user created successfully"
-          else
-            echo "⚠ Assuming user exists, continuing..."
-          fi
+          def create_user(admin_access, admin_secret, harbor_access, harbor_secret):
+              """Create RGW user via Admin API"""
+              import requests
+              from requests_aws4auth import AWS4Auth
 
-          echo "Creating harbor bucket with Harbor user credentials..."
+              auth = AWS4Auth(admin_access, admin_secret, 'us-east-1', 's3')
 
-          # Configure AWS CLI with Harbor credentials
-          export AWS_ACCESS_KEY_ID="${HARBOR_ACCESSKEY}"
-          export AWS_SECRET_ACCESS_KEY="${HARBOR_SECRETKEY}"
+              url = f"{RGW_ENDPOINT}/admin/user"
+              params = {
+                  'uid': 'harbor',
+                  'display-name': 'Harbor Container Registry',
+                  'access-key': harbor_access,
+                  'secret-key': harbor_secret
+              }
 
-          # Create bucket
-          if aws --endpoint-url="${RGW_ENDPOINT}" s3 ls s3://harbor 2>/dev/null; then
-            echo "✓ Bucket 'harbor' already exists"
-          else
-            aws --endpoint-url="${RGW_ENDPOINT}" s3 mb s3://harbor
-            echo "✓ Bucket 'harbor' created successfully"
-          fi
+              try:
+                  resp = requests.put(url, params=params, auth=auth)
+                  if resp.status_code == 200:
+                      print("✓ Harbor RGW user created successfully")
+                      return True
+                  elif 'UserAlreadyExists' in resp.text or 'EntityAlreadyExists' in resp.text:
+                      print("✓ Harbor RGW user already exists")
+                      return True
+                  else:
+                      print(f"⚠ User creation response: {resp.status_code} - {resp.text}")
+                      print("  Assuming user exists, continuing...")
+                      return True
+              except Exception as e:
+                  print(f"⚠ User creation failed: {e}")
+                  print("  Assuming user exists, continuing...")
+                  return True
 
-          echo "✓ Setup complete!"
+          def create_bucket(access_key, secret_key):
+              """Create S3 bucket"""
+              s3 = boto3.client(
+                  's3',
+                  endpoint_url=RGW_ENDPOINT,
+                  aws_access_key_id=access_key,
+                  aws_secret_access_key=secret_key,
+                  config=Config(signature_version='s3v4')
+              )
+
+              try:
+                  s3.head_bucket(Bucket='harbor')
+                  print("✓ Bucket 'harbor' already exists")
+                  return True
+              except ClientError as e:
+                  if e.response['Error']['Code'] == '404':
+                      s3.create_bucket(Bucket='harbor')
+                      print("✓ Bucket 'harbor' created successfully")
+                      return True
+                  else:
+                      print(f"✗ Bucket check failed: {e}")
+                      return False
+
+          if __name__ == '__main__':
+              import os
+              admin_access = os.environ['ADMIN_ACCESSKEY']
+              admin_secret = os.environ['ADMIN_SECRETKEY']
+              harbor_access = os.environ['HARBOR_ACCESSKEY']
+              harbor_secret = os.environ['HARBOR_SECRETKEY']
+
+              print("Creating Harbor RGW user via Admin API...")
+              create_user(admin_access, admin_secret, harbor_access, harbor_secret)
+
+              print("\nCreating harbor bucket with Harbor credentials...")
+              if create_bucket(harbor_access, harbor_secret):
+                  print("\n✓ Setup complete!")
+                  sys.exit(0)
+              else:
+                  sys.exit(1)
+          EOFPYTHON
+
+          python /tmp/rgw_setup.py
