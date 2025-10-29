@@ -16,5 +16,5 @@ spec:
         type: PathPrefix
         value: /
     backendRefs:
-    - name: osticket
-      port: 8184
+    - name: osticket-app
+      port: 80

@@ -1,17 +1,17 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: osticket-db
+  name: osticket-mariadb
 spec:
-  serviceName: osticket-db
+  serviceName: osticket-mariadb
   replicas: 1
   selector:
     matchLabels:
-      app: osticket-db
+      app: osticket-mariadb
   template:
     metadata:
       labels:
-        app: osticket-db
+        app: osticket-mariadb
     spec:
       containers:
       - name: mariadb

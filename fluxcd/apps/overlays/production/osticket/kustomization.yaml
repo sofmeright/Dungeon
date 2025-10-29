@@ -9,9 +9,9 @@ resources:
 
 patches:
   - path: statefulset-mariadb-patch.yaml
-  - path: deployment-osticket-patch.yaml
+  - path: statefulset-app-patch.yaml
   - path: service-patch.yaml
     target:
       kind: Service
-      name: osticket
+      name: osticket-app
   - path: externalsecret-patch.yaml

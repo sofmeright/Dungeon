@@ -1,16 +1,17 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
-  name: osticket
+  name: osticket-app
 spec:
-  replicas: 1
+  serviceName: osticket-app
+  replicas: 3
   selector:
     matchLabels:
-      app: osticket
+      app: osticket-app
   template:
     metadata:
       labels:
-        app: osticket
+        app: osticket-app
     spec:
       initContainers:
       - name: wait-for-db
@@ -19,7 +20,7 @@ spec:
         - sh
         - -c
         - |
-          until nc -z osticket-db 3306; do
+          until nc -z osticket-mariadb 3306; do
             echo "Waiting for MariaDB..."
             sleep 2
           done
@@ -33,7 +34,7 @@ spec:
         - name: TZ
           value: "America/Los_Angeles"
         - name: DB_HOST
-          value: "osticket-db"
+          value: "osticket-mariadb"
         - name: DB_PASS
           valueFrom:
             secretKeyRef:
