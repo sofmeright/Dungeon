@@ -3,24 +3,6 @@ kind: Kustomization
 resources:
   - ../../../base/istio
 patches:
-  # LoadBalancer IP patches
-  - path: gateway-xylem-patch.yaml
-    target:
-      kind: Gateway
-      name: xylem-gateway
-  - path: gateway-phloem-patch.yaml
-    target:
-      kind: Gateway
-      name: phloem-gateway
-  - path: gateway-cell-membrane-patch.yaml
-    target:
-      kind: Gateway
-      name: cell-membrane-gateway
-  # TLS certificate patches (includes all listeners)
-  - path: gateway-cell-membrane-tls-patch.yaml
-    target:
-      kind: Gateway
-      name: cell-membrane-gateway
   # Set namespace for HelmReleases to flux-system
   - patch: |-
       - op: add
@@ -28,27 +10,3 @@ patches:
         value: flux-system
     target:
       kind: HelmRelease
-  # Set namespace for xylem-gateway to arylls-lookout
-  - patch: |-
-      - op: add
-        path: /metadata/namespace
-        value: arylls-lookout
-    target:
-      kind: Gateway
-      name: xylem-gateway
-  # Set namespace for phloem-gateway to kokiri-forest
-  - patch: |-
-      - op: add
-        path: /metadata/namespace
-        value: kokiri-forest
-    target:
-      kind: Gateway
-      name: phloem-gateway
-  # Set namespace for cell-membrane-gateway to hyrule-castle
-  - patch: |-
-      - op: add
-        path: /metadata/namespace
-        value: hyrule-castle
-    target:
-      kind: Gateway
-      name: cell-membrane-gateway

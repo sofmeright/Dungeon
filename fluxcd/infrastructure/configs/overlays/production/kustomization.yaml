@@ -18,6 +18,7 @@ resources:
   - prometheus-exporter-eaton-ups  # Eaton UPS exporter credentials
   - prometheus-exporter-pve  # Proxmox VE exporter credentials
   # - gateways  # Gateway resources for Traefik routing - REMOVED: migrated to Istio gateways
+  - istio  # Istio Gateway resources with TLS certificates
   - cert-manager  # TLS certificates and Cloudflare credentials
   - registries/cr.pcfae.com-admin  # Container registry pull credentials
   - registries/docker.jcr.pcfae.com-dungeon  # JFrog Docker Hub cache pull credentials (hyrule-castle only)

@@ -1,0 +1,25 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: phloem-gateway
+  annotations:
+    lbipam.cilium.io/ips: "172.22.30.70"
+    lbipam.cilium.io/sharing-key: "kokiri-forest"
+    lbipam.cilium.io/sharing-cross-namespace: "*"
+spec:
+  listeners:
+    - name: https-sofmeright
+      tls:
+        certificateRefs:
+          - kind: Secret
+            name: sofmeright-com-tls
+    - name: https-arbitorium
+      tls:
+        certificateRefs:
+          - kind: Secret
+            name: arbitorium-com-tls
+    - name: https-yesimvegan
+      tls:
+        certificateRefs:
+          - kind: Secret
+            name: yesimvegan-com-tls

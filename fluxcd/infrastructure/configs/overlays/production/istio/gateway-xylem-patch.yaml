@@ -3,7 +3,13 @@ kind: Gateway
 metadata:
   name: xylem-gateway
   annotations:
-    # Cilium LoadBalancer IPAM
     lbipam.cilium.io/ips: "172.22.30.69"
     lbipam.cilium.io/sharing-key: "arylls-lookout"
     lbipam.cilium.io/sharing-cross-namespace: "*"
+spec:
+  listeners:
+    - name: https-pcfae
+      tls:
+        certificateRefs:
+          - kind: Secret
+            name: pcfae-com-tls

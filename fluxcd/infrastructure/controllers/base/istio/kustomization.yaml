@@ -6,6 +6,3 @@ resources:
   - helmrelease-istiod.yaml
   - helmrelease-cni.yaml
   - helmrelease-ztunnel.yaml
-  - gateway-xylem.yaml
-  - gateway-phloem.yaml
-  - gateway-cell-membrane.yaml

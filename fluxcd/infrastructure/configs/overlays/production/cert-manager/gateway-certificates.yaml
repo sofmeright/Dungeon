@@ -76,3 +76,42 @@ spec:
   dnsNames:
     - "*.pcfae.com"
     - "pcfae.com"
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: sofmeright-com-tls
+spec:
+  secretName: sofmeright-com-tls
+  issuerRef:
+    name: letsencrypt-production
+    kind: ClusterIssuer
+  dnsNames:
+    - "*.sofmeright.com"
+    - "sofmeright.com"
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: arbitorium-com-tls
+spec:
+  secretName: arbitorium-com-tls
+  issuerRef:
+    name: letsencrypt-production
+    kind: ClusterIssuer
+  dnsNames:
+    - "*.arbitorium.com"
+    - "arbitorium.com"
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: yesimvegan-com-tls
+spec:
+  secretName: yesimvegan-com-tls
+  issuerRef:
+    name: letsencrypt-production
+    kind: ClusterIssuer
+  dnsNames:
+    - "*.yesimvegan.com"
+    - "yesimvegan.com"
