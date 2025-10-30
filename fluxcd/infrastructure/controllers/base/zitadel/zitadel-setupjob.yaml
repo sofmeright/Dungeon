@@ -48,7 +48,6 @@ spec:
         - /config/zitadel-config.yaml
         - --masterkeyFromEnv
         - --init-projections=true
-        - --steps.firstinstance=true
         volumeMounts:
         - name: zitadel-config
           mountPath: /config
