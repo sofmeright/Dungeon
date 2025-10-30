@@ -58,9 +58,6 @@ spec:
           value: "/machine-creds/pat"
         - name: ZITADEL_FIRSTINSTANCE_MACHINEKEYPATH
           value: "/machine-creds/machinekey"
-        volumeMounts:
-        - name: machine-creds
-          mountPath: /machine-creds
         command:
         - /app/zitadel
         - setup
@@ -72,6 +69,8 @@ spec:
         - name: zitadel-config
           mountPath: /config
           readOnly: true
+        - name: machine-creds
+          mountPath: /machine-creds
         resources:
           requests:
             memory: "256Mi"
