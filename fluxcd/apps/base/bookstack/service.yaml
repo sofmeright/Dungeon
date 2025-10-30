@@ -7,7 +7,7 @@ spec:
   selector:
     app: bookstack
   ports:
-  - port: 443
+  - port: 6875
     targetPort: 443
     protocol: TCP
     name: https
