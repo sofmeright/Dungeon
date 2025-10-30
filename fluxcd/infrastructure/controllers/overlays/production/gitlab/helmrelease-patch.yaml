@@ -15,8 +15,8 @@ spec:
       hosts:
         domain: prplanit.com
         gitlab:
-          name: gitlab.prplanit.com
-        ssh: gitlab.prplanit.com
+          name: git.prplanit.com
+        ssh: git.prplanit.com
 
       shell:
         port: 2424  # SSH port for git operations
