@@ -14,10 +14,67 @@ patches:
         value: king-of-red-lions
     target:
       kind: ExternalSecret
-  # Set namespace for gateway certificates to hyrule-castle
+  # Set namespaces for gateway certificates to match their gateway locations
+  - patch: |-
+      - op: add
+        path: /metadata/namespace
+        value: arylls-lookout
+    target:
+      kind: Certificate
+      name: pcfae-com-tls
+  - patch: |-
+      - op: add
+        path: /metadata/namespace
+        value: kokiri-forest
+    target:
+      kind: Certificate
+      name: sofmeright-com-tls
+  - patch: |-
+      - op: add
+        path: /metadata/namespace
+        value: kokiri-forest
+    target:
+      kind: Certificate
+      name: arbitorium-com-tls
+  - patch: |-
+      - op: add
+        path: /metadata/namespace
+        value: kokiri-forest
+    target:
+      kind: Certificate
+      name: yesimvegan-com-tls
   - patch: |-
       - op: add
         path: /metadata/namespace
         value: hyrule-castle
     target:
       kind: Certificate
+      name: prplanit-com-tls
+  - patch: |-
+      - op: add
+        path: /metadata/namespace
+        value: hyrule-castle
+    target:
+      kind: Certificate
+      name: precisionplanit-com-tls
+  - patch: |-
+      - op: add
+        path: /metadata/namespace
+        value: hyrule-castle
+    target:
+      kind: Certificate
+      name: optcp-com-tls
+  - patch: |-
+      - op: add
+        path: /metadata/namespace
+        value: hyrule-castle
+    target:
+      kind: Certificate
+      name: ipleek-com-tls
+  - patch: |-
+      - op: add
+        path: /metadata/namespace
+        value: hyrule-castle
+    target:
+      kind: Certificate
+      name: uni2-cc-tls
