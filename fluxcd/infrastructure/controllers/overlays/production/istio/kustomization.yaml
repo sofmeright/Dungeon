@@ -21,6 +21,13 @@ patches:
     target:
       kind: Gateway
       name: cell-membrane-gateway
+  # Remove generic https listener (conflicts with hostname-specific listeners)
+  - patch: |-
+      - op: remove
+        path: /spec/listeners/1
+    target:
+      kind: Gateway
+      name: cell-membrane-gateway
   # Set namespace for HelmReleases to flux-system
   - patch: |-
       - op: add
