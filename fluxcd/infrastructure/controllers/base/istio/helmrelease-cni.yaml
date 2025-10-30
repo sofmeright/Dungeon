@@ -30,6 +30,10 @@ spec:
       # Ambient mode requires privileged CNI
       privileged: true
 
+      # Ambient mode configuration
+      ambient:
+        enabled: true
+
       # Log level
       logLevel: info
 
