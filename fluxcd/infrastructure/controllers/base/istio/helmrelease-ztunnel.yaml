@@ -4,7 +4,7 @@ metadata:
   name: ztunnel
 spec:
   releaseName: ztunnel
-  targetNamespace: istio-system
+  targetNamespace: king-of-red-lions
   interval: 30m
   dependsOn:
     - name: istio-base

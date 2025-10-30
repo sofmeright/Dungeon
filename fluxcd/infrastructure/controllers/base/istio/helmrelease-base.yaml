@@ -4,7 +4,7 @@ metadata:
   name: istio-base
 spec:
   releaseName: istio-base
-  targetNamespace: istio-system
+  targetNamespace: king-of-red-lions
   interval: 30m
   chart:
     spec:

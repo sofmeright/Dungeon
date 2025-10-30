@@ -4,7 +4,7 @@ metadata:
   name: istio-cni
 spec:
   releaseName: istio-cni
-  targetNamespace: istio-system
+  targetNamespace: king-of-red-lions
   interval: 30m
   dependsOn:
     - name: istio-base
@@ -33,7 +33,7 @@ spec:
 
       # Exclude namespaces from Istio CNI
       excludeNamespaces:
-        - istio-system
+        - king-of-red-lions
         - kube-system
         - kube-public
         - kube-node-lease
