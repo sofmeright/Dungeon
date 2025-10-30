@@ -4,6 +4,8 @@ metadata:
   name: harbor
 spec:
   targetNamespace: hyrule-castle
+  install:
+    timeout: 15m
   valuesFrom:
   - kind: Secret
     name: harbor-secrets
@@ -17,10 +19,6 @@ spec:
     name: harbor-secrets
     valuesKey: s3_secretkey
     targetPath: persistence.imageChartStorage.s3.secretkey
-  - kind: Secret
-    name: harbor-secrets
-    valuesKey: admin_password
-    targetPath: harborAdminPassword
   values:
     # External URL
     externalURL: https://172.22.30.71:9483
@@ -101,8 +99,9 @@ spec:
           regionendpoint: http://172.22.30.101
           secure: false
 
-    # Admin password (injected by valuesFrom)
-    harborAdminPassword: ""
+    # Admin password from existing secret
+    existingSecretAdminPassword: harbor-secrets
+    existingSecretAdminPasswordKey: admin_password
 
     # Disable CSRF protection for local access
     core:
