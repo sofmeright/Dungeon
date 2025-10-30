@@ -49,12 +49,6 @@ spec:
           value: "/machine-creds/pat"
         - name: ZITADEL_FIRSTINSTANCE_MACHINEKEYPATH
           value: "/machine-creds/machinekey"
-        volumeMounts:
-        - name: machine-creds
-          mountPath: /machine-creds
-      volumes:
-      - name: machine-creds
-        emptyDir: {}
 ---
 apiVersion: batch/v1
 kind: Job

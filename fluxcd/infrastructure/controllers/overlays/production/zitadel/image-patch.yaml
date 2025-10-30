@@ -37,8 +37,6 @@ spec:
       containers:
       - name: zitadel-setup
         image: ghcr.io/zitadel/zitadel:v4.6.1
-      - name: create-secret
-        image: docker.io/alpine:3.21
 ---
 apiVersion: batch/v1
 kind: Job

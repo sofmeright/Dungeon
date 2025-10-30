@@ -42,16 +42,44 @@ spec:
               name: zitadel-postgres-superuser
               key: password
         command:
-        - /app/zitadel
-        - setup
-        - --config
-        - /config/zitadel-config.yaml
-        - --masterkeyFromEnv
-        - --init-projections=true
+        - sh
+        - -c
+        - |
+          set -e
+          echo "Running Zitadel setup..."
+          /app/zitadel setup \
+            --config /config/zitadel-config.yaml \
+            --masterkeyFromEnv \
+            --init-projections=true
+
+          echo "Setup completed. Checking for PAT file..."
+          if [ -f /machine-creds/pat ]; then
+            echo "PAT file found! Creating Kubernetes secret..."
+
+            # Install kubectl
+            apt-get update && apt-get install -y curl
+            curl -LO "https://dl.k8s.io/release/v1.34.0/bin/linux/amd64/kubectl"
+            chmod +x kubectl
+            mv kubectl /usr/local/bin/
+
+            # Read PAT from file
+            PAT=$(cat /machine-creds/pat)
+
+            # Create Kubernetes secret
+            kubectl create secret generic zitadel-k8s-admin-sa \
+              --from-literal=token="$PAT" \
+              --dry-run=client -o yaml | kubectl apply -f -
+
+            echo "Secret zitadel-k8s-admin-sa created successfully!"
+          else
+            echo "No PAT file found - first instance may not have machine user configured"
+          fi
         volumeMounts:
         - name: zitadel-config
           mountPath: /config
           readOnly: true
+        - name: machine-creds
+          mountPath: /machine-creds
         resources:
           requests:
             memory: "256Mi"
@@ -63,3 +91,5 @@ spec:
       - name: zitadel-config
         configMap:
           name: zitadel-config
+      - name: machine-creds
+        emptyDir: {}
