@@ -30,6 +30,31 @@ spec:
           done
           echo "Waiting additional 10s for init job to complete..."
           sleep 10
+      containers:
+      - name: zitadel-setup
+        env:
+        - name: ZITADEL_FIRSTINSTANCE_INSTANCENAME
+          value: "PrecisionPlanIT"
+        - name: ZITADEL_FIRSTINSTANCE_DEFAULTLANGUAGE
+          value: "en"
+        - name: ZITADEL_FIRSTINSTANCE_ORG_NAME
+          value: "PrecisionPlanIT"
+        - name: ZITADEL_FIRSTINSTANCE_ORG_MACHINE_MACHINE_USERNAME
+          value: "zitadel-admin-sa"
+        - name: ZITADEL_FIRSTINSTANCE_ORG_MACHINE_MACHINE_NAME
+          value: "Admin Service Account"
+        - name: ZITADEL_FIRSTINSTANCE_ORG_MACHINE_PAT_EXPIRATIONDATE
+          value: "2099-12-31T23:59:59Z"
+        - name: ZITADEL_FIRSTINSTANCE_PATPATH
+          value: "/machine-creds/pat"
+        - name: ZITADEL_FIRSTINSTANCE_MACHINEKEYPATH
+          value: "/machine-creds/machinekey"
+        volumeMounts:
+        - name: machine-creds
+          mountPath: /machine-creds
+      volumes:
+      - name: machine-creds
+        emptyDir: {}
 ---
 apiVersion: batch/v1
 kind: Job

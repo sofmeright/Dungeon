@@ -8,7 +8,7 @@ spec:
     spec:
       containers:
       - name: zitadel
-        image: ghcr.io/zitadel/zitadel:v4.3.0
+        image: ghcr.io/zitadel/zitadel:v4.6.1
 ---
 apiVersion: batch/v1
 kind: Job
@@ -22,7 +22,7 @@ spec:
         image: docker.io/postgres:16-alpine
       containers:
       - name: zitadel-init
-        image: ghcr.io/zitadel/zitadel:v4.3.0
+        image: ghcr.io/zitadel/zitadel:v4.6.1
 ---
 apiVersion: batch/v1
 kind: Job
@@ -36,7 +36,7 @@ spec:
         image: docker.io/postgres:16-alpine
       containers:
       - name: zitadel-setup
-        image: ghcr.io/zitadel/zitadel:v4.3.0
+        image: ghcr.io/zitadel/zitadel:v4.6.1
       - name: create-secret
         image: docker.io/alpine:3.21
 ---
