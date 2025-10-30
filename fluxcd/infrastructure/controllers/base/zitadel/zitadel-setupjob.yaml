@@ -79,7 +79,7 @@ spec:
             memory: "512Mi"
             cpu: "500m"
       - name: create-secret
-        image: PLACEHOLDER_KUBECTL_IMAGE
+        image: PLACEHOLDER_ALPINE_IMAGE
         volumeMounts:
         - name: machine-creds
           mountPath: /machine-creds
@@ -95,6 +95,12 @@ spec:
 
           echo "Reading PAT from file..."
           PAT=$(cat /machine-creds/pat)
+
+          echo "Installing kubectl..."
+          apk add --no-cache curl
+          curl -LO "https://dl.k8s.io/release/v1.34.0/bin/linux/amd64/kubectl"
+          chmod +x kubectl
+          mv kubectl /usr/local/bin/
 
           echo "Creating Kubernetes secret zitadel-k8s-admin-sa..."
           kubectl create secret generic zitadel-k8s-admin-sa \
