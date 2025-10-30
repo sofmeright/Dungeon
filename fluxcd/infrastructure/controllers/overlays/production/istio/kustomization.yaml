@@ -16,15 +16,8 @@ patches:
     target:
       kind: Gateway
       name: cell-membrane-gateway
-  # TLS certificate patches
+  # TLS certificate patches (includes all listeners)
   - path: gateway-cell-membrane-tls-patch.yaml
-    target:
-      kind: Gateway
-      name: cell-membrane-gateway
-  # Remove generic https listener (conflicts with hostname-specific listeners)
-  - patch: |-
-      - op: remove
-        path: /spec/listeners/1
     target:
       kind: Gateway
       name: cell-membrane-gateway
