@@ -34,7 +34,7 @@ resources:
   - loki  # Log aggregation and storage
   - alloy  # Unified observability collector (scrapes K8s + Docker)
   - istio  # Istio Ambient service mesh with Gateway API support
-  - traefik  # Gateway API controller for ingress routing (to be removed after Istio migration)
+  # - traefik  # Gateway API controller for ingress routing - REMOVED: migrated to Istio
   - stunner  # STUNner WebRTC gateway for TURN/STUN services
   - cert-manager  # TLS certificate management with Let's Encrypt
   - uptime-kuma  # Service uptime monitoring
