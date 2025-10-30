@@ -6,6 +6,8 @@ spec:
   releaseName: istio-cni
   targetNamespace: king-of-red-lions
   interval: 30m
+  install:
+    timeout: 10m
   dependsOn:
     - name: istio-base
   chart:
