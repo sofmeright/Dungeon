@@ -1,0 +1,78 @@
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: prplanit-com-tls
+spec:
+  secretName: prplanit-com-tls
+  issuerRef:
+    name: letsencrypt-production
+    kind: ClusterIssuer
+  dnsNames:
+    - "*.prplanit.com"
+    - "prplanit.com"
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: precisionplanit-com-tls
+spec:
+  secretName: precisionplanit-com-tls
+  issuerRef:
+    name: letsencrypt-production
+    kind: ClusterIssuer
+  dnsNames:
+    - "*.precisionplanit.com"
+    - "precisionplanit.com"
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: optcp-com-tls
+spec:
+  secretName: optcp-com-tls
+  issuerRef:
+    name: letsencrypt-production
+    kind: ClusterIssuer
+  dnsNames:
+    - "*.optcp.com"
+    - "optcp.com"
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: ipleek-com-tls
+spec:
+  secretName: ipleek-com-tls
+  issuerRef:
+    name: letsencrypt-production
+    kind: ClusterIssuer
+  dnsNames:
+    - "*.ipleek.com"
+    - "ipleek.com"
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: uni2-cc-tls
+spec:
+  secretName: uni2-cc-tls
+  issuerRef:
+    name: letsencrypt-production
+    kind: ClusterIssuer
+  dnsNames:
+    - "*.uni2.cc"
+    - "uni2.cc"
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: pcfae-com-tls
+spec:
+  secretName: pcfae-com-tls
+  issuerRef:
+    name: letsencrypt-production
+    kind: ClusterIssuer
+  dnsNames:
+    - "*.pcfae.com"
+    - "pcfae.com"
