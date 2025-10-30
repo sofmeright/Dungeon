@@ -3,6 +3,7 @@ kind: Kustomization
 resources:
   - ../../../base/istio
 patches:
+  # LoadBalancer IP patches
   - path: gateway-xylem-patch.yaml
     target:
       kind: Gateway
@@ -22,10 +23,27 @@ patches:
         value: flux-system
     target:
       kind: HelmRelease
-  # Set namespace for Gateways to king-of-red-lions
+  # Set namespace for xylem-gateway to arylls-lookout
   - patch: |-
       - op: add
         path: /metadata/namespace
-        value: king-of-red-lions
+        value: arylls-lookout
     target:
       kind: Gateway
+      name: xylem-gateway
+  # Set namespace for phloem-gateway to kokiri-forest
+  - patch: |-
+      - op: add
+        path: /metadata/namespace
+        value: kokiri-forest
+    target:
+      kind: Gateway
+      name: phloem-gateway
+  # Set namespace for cell-membrane-gateway to hyrule-castle
+  - patch: |-
+      - op: add
+        path: /metadata/namespace
+        value: hyrule-castle
+    target:
+      kind: Gateway
+      name: cell-membrane-gateway
