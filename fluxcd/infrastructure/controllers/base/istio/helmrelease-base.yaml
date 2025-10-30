@@ -20,3 +20,7 @@ spec:
   values:
     # Minimal base configuration
     defaultRevision: default
+
+    # Override namespace to king-of-red-lions instead of istio-system
+    global:
+      istioNamespace: king-of-red-lions

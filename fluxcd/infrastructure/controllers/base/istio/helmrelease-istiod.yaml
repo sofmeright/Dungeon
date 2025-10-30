@@ -21,6 +21,10 @@ spec:
     # Ambient mode configuration
     profile: ambient
 
+    # Override namespace to king-of-red-lions instead of istio-system
+    global:
+      istioNamespace: king-of-red-lions
+
     # Pilot (istiod) configuration
     pilot:
       env:
