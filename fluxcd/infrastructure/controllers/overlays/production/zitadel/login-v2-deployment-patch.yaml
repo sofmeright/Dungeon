@@ -1,0 +1,13 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: zitadel-login-v2
+spec:
+  template:
+    spec:
+      containers:
+      - name: login-v2
+        image: docker.jcr.pcfae.com/zitadel/zitadel-login:v4.3.0
+        env:
+        - name: ZITADEL_EXTERNAL_DOMAIN
+          value: "sso.prplanit.com"

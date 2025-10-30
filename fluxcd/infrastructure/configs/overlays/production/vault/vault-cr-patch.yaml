@@ -51,6 +51,14 @@ spec:
           path "pedestal-of-time/metadata/*" {
             capabilities = ["read", "list"]
           }
+      - name: zitadel-provisioner
+        rules: |
+          path "zeldas-letter/data/apps/zitadel" {
+            capabilities = ["create", "update", "read", "patch"]
+          }
+          path "zeldas-letter/metadata/apps/zitadel" {
+            capabilities = ["read", "list"]
+          }
     auth:
       - type: kubernetes
         config:
@@ -62,6 +70,11 @@ spec:
             bound_service_account_namespaces: ["zeldas-lullaby"]
             policies: ["external-secrets"]
             ttl: 24h
+          - name: zitadel-vault-sync
+            bound_service_account_names: ["zitadel"]
+            bound_service_account_namespaces: ["zeldas-lullaby"]
+            policies: ["zitadel-provisioner"]
+            ttl: 1h
     secrets:
       - path: operationtimecapsule
         type: kv

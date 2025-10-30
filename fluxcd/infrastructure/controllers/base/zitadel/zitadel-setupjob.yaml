@@ -48,20 +48,19 @@ spec:
           value: "PLACEHOLDER_DEFAULT_LANGUAGE"
         - name: ZITADEL_FIRSTINSTANCE_ORG_NAME
           value: "PLACEHOLDER_ORG_NAME"
-        - name: ZITADEL_FIRSTINSTANCE_ORG_HUMAN_USERNAME
-          value: "PLACEHOLDER_ADMIN_USERNAME"
-        - name: ZITADEL_FIRSTINSTANCE_ORG_HUMAN_FIRSTNAME
-          value: "PLACEHOLDER_ADMIN_FIRSTNAME"
-        - name: ZITADEL_FIRSTINSTANCE_ORG_HUMAN_LASTNAME
-          value: "PLACEHOLDER_ADMIN_LASTNAME"
-        - name: ZITADEL_FIRSTINSTANCE_ORG_HUMAN_EMAIL_ADDRESS
-          value: "PLACEHOLDER_ADMIN_EMAIL"
-        - name: ZITADEL_FIRSTINSTANCE_ORG_HUMAN_EMAIL_VERIFIED
-          value: "PLACEHOLDER_EMAIL_VERIFIED"
-        - name: ZITADEL_FIRSTINSTANCE_ORG_HUMAN_PASSWORD
-          value: "PLACEHOLDER_ADMIN_PASSWORD"
-        - name: ZITADEL_FIRSTINSTANCE_ORG_HUMAN_PASSWORDCHANGEREQUIRED
-          value: "PLACEHOLDER_PASSWORD_CHANGE_REQUIRED"
+        - name: ZITADEL_FIRSTINSTANCE_ORG_MACHINE_MACHINE_USERNAME
+          value: "PLACEHOLDER_MACHINE_USERNAME"
+        - name: ZITADEL_FIRSTINSTANCE_ORG_MACHINE_MACHINE_NAME
+          value: "PLACEHOLDER_MACHINE_NAME"
+        - name: ZITADEL_FIRSTINSTANCE_ORG_MACHINE_PAT_EXPIRATIONDATE
+          value: "PLACEHOLDER_PAT_EXPIRATION"
+        - name: ZITADEL_FIRSTINSTANCE_PATPATH
+          value: "/machine-creds/pat"
+        - name: ZITADEL_FIRSTINSTANCE_MACHINEKEYPATH
+          value: "/machine-creds/machinekey"
+        volumeMounts:
+        - name: machine-creds
+          mountPath: /machine-creds
         command:
         - /app/zitadel
         - setup
@@ -80,7 +79,33 @@ spec:
           limits:
             memory: "512Mi"
             cpu: "500m"
+      - name: create-secret
+        image: PLACEHOLDER_KUBECTL_IMAGE
+        volumeMounts:
+        - name: machine-creds
+          mountPath: /machine-creds
+        command:
+        - sh
+        - -c
+        - |
+          set -e
+          echo "Waiting for setup to complete and write credentials..."
+          while [ ! -f /machine-creds/pat ]; do
+            sleep 2
+          done
+
+          echo "Reading PAT from file..."
+          PAT=$(cat /machine-creds/pat)
+
+          echo "Creating Kubernetes secret zitadel-k8s-admin-sa..."
+          kubectl create secret generic zitadel-k8s-admin-sa \
+            --from-literal=token="$PAT" \
+            --dry-run=client -o yaml | kubectl apply -f -
+
+          echo "Secret created successfully!"
       volumes:
       - name: zitadel-config
         configMap:
           name: zitadel-config
+      - name: machine-creds
+        emptyDir: {}

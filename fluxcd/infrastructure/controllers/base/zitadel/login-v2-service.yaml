@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: zitadel-login-v2
+  labels:
+    app: zitadel-login-v2
+spec:
+  type: ClusterIP
+  selector:
+    app: zitadel-login-v2
+  ports:
+  - name: http
+    port: 3000
+    targetPort: 3000
+    protocol: TCP
+    appProtocol: kubernetes.io/http

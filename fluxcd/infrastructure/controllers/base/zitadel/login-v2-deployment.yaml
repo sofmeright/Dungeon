@@ -1,0 +1,66 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: zitadel-login-v2
+  labels:
+    app: zitadel-login-v2
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: zitadel-login-v2
+  template:
+    metadata:
+      labels:
+        app: zitadel-login-v2
+    spec:
+      serviceAccountName: zitadel
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        fsGroup: 1000
+      containers:
+      - name: login-v2
+        image: ghcr.io/zitadel/zitadel-login:v4.3.0
+        imagePullPolicy: IfNotPresent
+        ports:
+        - name: http
+          containerPort: 3000
+          protocol: TCP
+        env:
+        - name: ZITADEL_API_URL
+          value: "http://zitadel:8174"
+        - name: ZITADEL_EXTERNAL_DOMAIN
+          value: "PLACEHOLDER_DOMAIN"
+        - name: ZITADEL_EXTERNAL_SECURE
+          value: "true"
+        - name: ZITADEL_ACCESS_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: zitadel-login-client
+              key: token
+        securityContext:
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: true
+          capabilities:
+            drop:
+            - ALL
+        resources:
+          requests:
+            cpu: 100m
+            memory: 128Mi
+          limits:
+            cpu: 500m
+            memory: 512Mi
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: http
+          initialDelaySeconds: 10
+          periodSeconds: 5
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: http
+          initialDelaySeconds: 5
+          periodSeconds: 5

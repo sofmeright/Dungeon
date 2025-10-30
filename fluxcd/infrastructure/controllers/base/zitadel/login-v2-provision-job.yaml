@@ -1,0 +1,136 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: zitadel-login-v2-provision
+spec:
+  ttlSecondsAfterFinished: 3600
+  backoffLimit: 3
+  template:
+    spec:
+      serviceAccountName: zitadel
+      restartPolicy: OnFailure
+      initContainers:
+      - name: wait-for-zitadel
+        image: PLACEHOLDER_CURL_IMAGE
+        command:
+        - sh
+        - -c
+        - |
+          echo "Waiting for Zitadel to be ready..."
+          until curl -sf PLACEHOLDER_ZITADEL_URL/debug/ready; do
+            echo "Zitadel not ready yet, waiting..."
+            sleep 5
+          done
+          echo "Zitadel is ready!"
+      containers:
+      - name: provision-login-client
+        image: PLACEHOLDER_CURL_IMAGE
+        env:
+        - name: ZITADEL_URL
+          value: "PLACEHOLDER_ZITADEL_URL"
+        - name: ZITADEL_ADMIN_TOKEN
+          valueFrom:
+            secretKeyRef:
+              name: zitadel-k8s-admin-sa
+              key: token
+        - name: VAULT_ADDR
+          value: "http://vault.zeldas-lullaby.svc.cluster.local:8200"
+        command:
+        - sh
+        - -c
+        - |
+          set -e
+
+          echo "=== Zitadel Login V2 Machine User Provisioning ==="
+
+          # Check if machine user already exists
+          echo "Checking if login-v2-client machine user exists..."
+          USER_CHECK=$(curl -sf "${ZITADEL_URL}/management/v1/users/_search" \
+            -H "Authorization: Bearer ${ZITADEL_ADMIN_TOKEN}" \
+            -H "Content-Type: application/json" \
+            -d '{"queries":[{"userNameQuery":{"userName":"login-v2-client","method":"TEXT_QUERY_METHOD_EQUALS"}}]}' \
+            | grep -o '"userId":"[^"]*"' | head -1 || echo "")
+
+          if [ -n "$USER_CHECK" ]; then
+            echo "Machine user already exists, extracting user ID..."
+            USER_ID=$(echo "$USER_CHECK" | cut -d'"' -f4)
+            echo "Found existing user ID: $USER_ID"
+          else
+            echo "Creating machine user login-v2-client..."
+            CREATE_RESPONSE=$(curl -sf "${ZITADEL_URL}/management/v1/users/machine" \
+              -H "Authorization: Bearer ${ZITADEL_ADMIN_TOKEN}" \
+              -H "Content-Type: application/json" \
+              -d '{
+                "userName": "login-v2-client",
+                "name": "Login V2 Client",
+                "description": "Machine user for Login V2 application",
+                "accessTokenType": "ACCESS_TOKEN_TYPE_JWT"
+              }')
+
+            USER_ID=$(echo "$CREATE_RESPONSE" | grep -o '"userId":"[^"]*"' | cut -d'"' -f4)
+            echo "Created machine user with ID: $USER_ID"
+
+            # Grant IAM_OWNER role to the machine user (required for login client)
+            echo "Granting IAM_OWNER role to machine user..."
+            curl -sf "${ZITADEL_URL}/admin/v1/members" \
+              -H "Authorization: Bearer ${ZITADEL_ADMIN_TOKEN}" \
+              -H "Content-Type: application/json" \
+              -d "{
+                \"userId\": \"$USER_ID\",
+                \"roles\": [\"IAM_OWNER\"]
+              }" || echo "Role grant may have failed or user already has role"
+          fi
+
+          # Generate Personal Access Token
+          echo "Generating Personal Access Token..."
+          PAT_RESPONSE=$(curl -sf "${ZITADEL_URL}/management/v1/users/${USER_ID}/tokens" \
+            -H "Authorization: Bearer ${ZITADEL_ADMIN_TOKEN}" \
+            -H "Content-Type: application/json" \
+            -d '{
+              "expirationDate": "2099-12-31T23:59:59Z"
+            }')
+
+          PAT=$(echo "$PAT_RESPONSE" | grep -o '"token":"[^"]*"' | cut -d'"' -f4)
+
+          if [ -z "$PAT" ]; then
+            echo "ERROR: Failed to generate PAT"
+            echo "Response: $PAT_RESPONSE"
+            exit 1
+          fi
+
+          echo "PAT generated successfully (length: ${#PAT})"
+
+          # Authenticate to Vault
+          echo "Authenticating to Vault..."
+          SA_TOKEN=$(cat /var/run/secrets/kubernetes.io/serviceaccount/token)
+          VAULT_LOGIN=$(curl -sf "${VAULT_ADDR}/v1/auth/kubernetes/login" \
+            -d "{\"jwt\": \"${SA_TOKEN}\", \"role\": \"zitadel-vault-sync\"}")
+          VAULT_TOKEN=$(echo "$VAULT_LOGIN" | grep -o '"client_token":"[^"]*"' | cut -d'"' -f4)
+
+          if [ -z "$VAULT_TOKEN" ]; then
+            echo "ERROR: Failed to authenticate to Vault"
+            exit 1
+          fi
+
+          # Store in Vault at zeldas-letter/apps/zitadel with key login-v2-token
+          echo "Storing Login V2 credentials in Vault at zeldas-letter/apps/zitadel..."
+          curl -sf -X PATCH "${VAULT_ADDR}/v1/zeldas-letter/data/apps/zitadel" \
+            -H "X-Vault-Token: ${VAULT_TOKEN}" \
+            -H "Content-Type: application/merge-patch+json" \
+            -d "{
+              \"data\": {
+                \"login-v2-token\": \"$PAT\",
+                \"login-v2-userId\": \"$USER_ID\"
+              }
+            }"
+
+          # Create Kubernetes secret with the PAT
+          echo "Creating Kubernetes secret zitadel-login-client..."
+          kubectl create secret generic zitadel-login-client \
+            --from-literal=token="$PAT" \
+            --from-literal=userId="$USER_ID" \
+            --dry-run=client -o yaml | kubectl apply -f -
+
+          echo "=== Provisioning completed successfully ==="
+          echo "Machine User ID: $USER_ID"
+          echo "Credentials stored in Vault and K8s secret"

@@ -39,17 +39,50 @@ spec:
           value: "en"
         - name: ZITADEL_FIRSTINSTANCE_ORG_NAME
           value: "PrecisionPlanIT"
-        - name: ZITADEL_FIRSTINSTANCE_ORG_HUMAN_USERNAME
-          value: "kai"
-        - name: ZITADEL_FIRSTINSTANCE_ORG_HUMAN_FIRSTNAME
-          value: "Kai"
-        - name: ZITADEL_FIRSTINSTANCE_ORG_HUMAN_LASTNAME
-          value: "H."
-        - name: ZITADEL_FIRSTINSTANCE_ORG_HUMAN_EMAIL_ADDRESS
-          value: "kai.hamil@gmail.com"
-        - name: ZITADEL_FIRSTINSTANCE_ORG_HUMAN_EMAIL_VERIFIED
-          value: "true"
-        - name: ZITADEL_FIRSTINSTANCE_ORG_HUMAN_PASSWORD
-          value: "i7cTuvs79uKQ!"
-        - name: ZITADEL_FIRSTINSTANCE_ORG_HUMAN_PASSWORDCHANGEREQUIRED
-          value: "true"
+        - name: ZITADEL_FIRSTINSTANCE_ORG_MACHINE_MACHINE_USERNAME
+          value: "zitadel-admin-sa"
+        - name: ZITADEL_FIRSTINSTANCE_ORG_MACHINE_MACHINE_NAME
+          value: "Admin Service Account"
+        - name: ZITADEL_FIRSTINSTANCE_ORG_MACHINE_PAT_EXPIRATIONDATE
+          value: "2099-12-31T23:59:59Z"
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: zitadel-admin-sa-to-vault
+spec:
+  template:
+    spec:
+      initContainers:
+      - name: wait-for-secret
+        command:
+        - sh
+        - -c
+        - |
+          echo "Waiting for zitadel-k8s-admin-sa secret..."
+          until kubectl get secret zitadel-k8s-admin-sa -n zeldas-lullaby 2>/dev/null; do
+            sleep 5
+          done
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: zitadel-login-v2-provision
+spec:
+  template:
+    spec:
+      initContainers:
+      - name: wait-for-zitadel
+        command:
+        - sh
+        - -c
+        - |
+          echo "Waiting for Zitadel..."
+          until curl -sf http://zitadel:8174/debug/ready; do
+            sleep 5
+          done
+      containers:
+      - name: provision-login-client
+        env:
+        - name: ZITADEL_URL
+          value: "http://zitadel:8174"

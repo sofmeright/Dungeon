@@ -6,6 +6,7 @@ namespace: zeldas-lullaby
 resources:
   - ../../../base/zitadel
   - httproute.yaml
+  - login-v2-httproute.yaml
 
 patches:
   - path: image-patch.yaml
@@ -22,3 +23,7 @@ patches:
     target:
       kind: Service
       name: zitadel
+  - path: login-v2-deployment-patch.yaml
+    target:
+      kind: Deployment
+      name: zitadel-login-v2

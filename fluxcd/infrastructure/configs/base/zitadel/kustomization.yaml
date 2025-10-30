@@ -3,3 +3,5 @@ kind: Kustomization
 
 resources:
   - zitadel-config.yaml  # Non-sensitive config only
+  - admin-sa-externalsecret.yaml  # Admin SA PAT from Vault
+  - login-v2-externalsecret.yaml  # Login V2 PAT from Vault

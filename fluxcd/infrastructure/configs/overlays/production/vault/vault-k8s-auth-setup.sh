@@ -53,4 +53,21 @@ kubectl exec -n ${VAULT_NAMESPACE} ${VAULT_POD} -- sh -c "VAULT_ADDR=http://127.
     policies=external-secrets \
     ttl=24h"
 
+# Create a policy for zitadel-provisioner with write access
+kubectl exec -n ${VAULT_NAMESPACE} ${VAULT_POD} -- sh -c "VAULT_ADDR=http://127.0.0.1:8200 VAULT_TOKEN=${VAULT_ROOT_TOKEN} vault policy write zitadel-provisioner - <<EOF
+path \"precisionplanit/data/apps/zitadel-login-v2\" {
+  capabilities = [\"create\", \"update\", \"read\"]
+}
+path \"precisionplanit/metadata/apps/zitadel-login-v2\" {
+  capabilities = [\"read\", \"list\"]
+}
+EOF"
+
+# Create role for zitadel provisioner (write access to sync secrets to Vault)
+kubectl exec -n ${VAULT_NAMESPACE} ${VAULT_POD} -- sh -c "VAULT_ADDR=http://127.0.0.1:8200 VAULT_TOKEN=${VAULT_ROOT_TOKEN} vault write auth/kubernetes/role/zitadel-vault-sync \
+    bound_service_account_names=zitadel \
+    bound_service_account_namespaces=${VAULT_NAMESPACE} \
+    policies=zitadel-provisioner \
+    ttl=1h"
+
 echo "Vault Kubernetes authentication configured successfully!"
