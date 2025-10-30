@@ -9,7 +9,7 @@ data:
 
     Port: 8080
     ExternalPort: 443
-    ExternalDomain: zitadel.precisionplan.it
+    ExternalDomain: sso.prplanit.com
     ExternalSecure: true
 
     Database:
@@ -44,7 +44,7 @@ data:
     SystemDefaults:
       SecretGenerators:
         PasswordSaltCost: 14
-      Domain: zitadel.precisionplan.it
+      Domain: sso.prplanit.com
       ZitadelDocs:
         Enabled: true
         ExternalDomain: docs.zitadel.com

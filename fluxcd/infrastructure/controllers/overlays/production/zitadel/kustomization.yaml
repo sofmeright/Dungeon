@@ -5,6 +5,7 @@ namespace: zeldas-lullaby
 
 resources:
   - ../../../base/zitadel
+  - httproute.yaml
 
 patches:
   - path: image-patch.yaml
