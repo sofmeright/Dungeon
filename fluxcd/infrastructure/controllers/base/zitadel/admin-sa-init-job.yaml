@@ -29,27 +29,26 @@ spec:
             exit 0
           fi
 
-          echo "Waiting for setup job to complete..."
-          until kubectl get job zitadel-setup -o jsonpath='{.status.succeeded}' 2>/dev/null | grep -q "1"; do
-            echo "Waiting for zitadel-setup job to complete..."
+          echo "Waiting for Zitadel pod to be ready..."
+          until kubectl get pod zitadel-0 -o jsonpath='{.status.phase}' 2>/dev/null | grep -q "Running"; do
+            echo "Waiting for zitadel-0 pod to be running..."
             sleep 10
           done
 
-          echo "Setup job completed! Finding setup pod..."
-          SETUP_POD=$(kubectl get pods -l job-name=zitadel-setup -o jsonpath='{.items[0].metadata.name}')
+          echo "Zitadel pod is running! Waiting for it to be ready..."
+          until kubectl get pod zitadel-0 -o jsonpath='{.status.containerStatuses[0].ready}' 2>/dev/null | grep -q "true"; do
+            echo "Waiting for zitadel-0 container to be ready..."
+            sleep 5
+          done
 
-          if [ -z "$SETUP_POD" ]; then
-            echo "ERROR: Could not find setup job pod"
-            exit 1
-          fi
+          echo "Zitadel is ready! Waiting 30s for FIRSTINSTANCE processing..."
+          sleep 30
 
-          echo "Found setup pod: $SETUP_POD"
-          echo "Checking for PAT file in setup pod..."
-
-          # Try to read PAT file from setup job pod
-          if kubectl exec $SETUP_POD -- cat /machine-creds/pat 2>/dev/null; then
+          echo "Checking for PAT file in zitadel-0..."
+          # Use kubectl cp to copy the file since cat doesn't exist in distroless image
+          if kubectl cp zitadel-0:/machine-creds/pat /tmp/pat 2>/dev/null; then
             echo "PAT file found! Reading credentials..."
-            PAT=$(kubectl exec $SETUP_POD -- cat /machine-creds/pat)
+            PAT=$(cat /tmp/pat)
 
             if [ -n "$PAT" ]; then
               echo "Creating Kubernetes secret zitadel-k8s-admin-sa..."
@@ -58,14 +57,16 @@ spec:
                 --dry-run=client -o yaml | kubectl apply -f -
 
               echo "Secret created successfully!"
+              rm -f /tmp/pat
               exit 0
             else
               echo "ERROR: PAT file is empty"
+              rm -f /tmp/pat
               exit 1
             fi
           else
-            echo "WARNING: PAT file not found in setup pod"
-            echo "Machine user may not have been created during setup"
-            echo "Check if FIRSTINSTANCE env vars are properly configured"
+            echo "WARNING: PAT file not found in zitadel-0 pod"
+            echo "Machine user may not have been created during first startup"
+            echo "Check if FIRSTINSTANCE env vars are properly configured on StatefulSet"
             exit 1
           fi
