@@ -2,8 +2,11 @@ apiVersion: gateway.networking.k8s.io/v1
 kind: Gateway
 metadata:
   name: phloem-gateway
+  annotations:
+    lbipam.cilium.io/ips: "172.22.30.70"
+    lbipam.cilium.io/sharing-key: "kokiri-forest"
+    lbipam.cilium.io/sharing-cross-namespace: "*"
 spec:
-  gatewayClassName: istio
   listeners:
     - name: http
       protocol: HTTP
@@ -22,7 +25,7 @@ spec:
         mode: Terminate
         certificateRefs:
           - kind: Secret
-            name: PLACEHOLDER_TLS_SECRET
+            name: sofmeright-com-tls
     - name: https-arbitorium
       protocol: HTTPS
       port: 443
@@ -34,7 +37,7 @@ spec:
         mode: Terminate
         certificateRefs:
           - kind: Secret
-            name: PLACEHOLDER_TLS_SECRET
+            name: arbitorium-com-tls
     - name: https-yesimvegan
       protocol: HTTPS
       port: 443
@@ -46,4 +49,4 @@ spec:
         mode: Terminate
         certificateRefs:
           - kind: Secret
-            name: PLACEHOLDER_TLS_SECRET
+            name: yesimvegan-com-tls
