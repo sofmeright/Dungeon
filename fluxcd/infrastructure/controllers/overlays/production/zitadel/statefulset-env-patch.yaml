@@ -20,3 +20,7 @@ spec:
           value: "Admin Service Account"
         - name: ZITADEL_FIRSTINSTANCE_ORG_MACHINE_PAT_EXPIRATIONDATE
           value: "2099-12-31T23:59:59Z"
+        - name: ZITADEL_FIRSTINSTANCE_PATPATH
+          value: "/machine-creds/pat"
+        - name: ZITADEL_FIRSTINSTANCE_MACHINEKEYPATH
+          value: "/machine-creds/machinekey"
