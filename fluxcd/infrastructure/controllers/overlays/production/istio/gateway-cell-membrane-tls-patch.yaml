@@ -1,0 +1,19 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: cell-membrane-gateway
+spec:
+  listeners:
+    - name: https
+      tls:
+        certificateRefs:
+          - kind: Secret
+            name: precisionplanit-com-tls
+          - kind: Secret
+            name: prplanit-com-tls
+          - kind: Secret
+            name: optcp-com-tls
+          - kind: Secret
+            name: ipleek-com-tls
+          - kind: Secret
+            name: uni2-cc-tls

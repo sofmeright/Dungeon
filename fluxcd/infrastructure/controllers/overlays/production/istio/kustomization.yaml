@@ -16,6 +16,11 @@ patches:
     target:
       kind: Gateway
       name: cell-membrane-gateway
+  # TLS certificate patches
+  - path: gateway-cell-membrane-tls-patch.yaml
+    target:
+      kind: Gateway
+      name: cell-membrane-gateway
   # Set namespace for HelmReleases to flux-system
   - patch: |-
       - op: add
