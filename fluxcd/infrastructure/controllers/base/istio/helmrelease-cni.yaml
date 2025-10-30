@@ -1,0 +1,40 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: istio-cni
+spec:
+  releaseName: istio-cni
+  targetNamespace: istio-system
+  interval: 30m
+  dependsOn:
+    - name: istio-base
+  chart:
+    spec:
+      chart: cni
+      version: "1.24.2"
+      sourceRef:
+        kind: HelmRepository
+        name: istio
+        namespace: flux-system
+      interval: 12h
+  values:
+    # CNI configuration for Ambient mode
+    cni:
+      # Use Cilium's CNI chaining
+      cniBinDir: /opt/cni/bin
+      cniConfDir: /etc/cni/net.d
+      cniConfFileName: 05-istio-cni.conf
+
+      # Ambient mode requires privileged CNI
+      privileged: true
+
+      # Log level
+      logLevel: info
+
+      # Exclude namespaces from Istio CNI
+      excludeNamespaces:
+        - istio-system
+        - kube-system
+        - kube-public
+        - kube-node-lease
+        - flux-system

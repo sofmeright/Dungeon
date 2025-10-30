@@ -33,7 +33,8 @@ resources:
   - thanos-query  # Unified querying across Prometheus replicas with deduplication
   - loki  # Log aggregation and storage
   - alloy  # Unified observability collector (scrapes K8s + Docker)
-  - traefik  # Gateway API controller for ingress routing
+  - istio  # Istio Ambient service mesh with Gateway API support
+  - traefik  # Gateway API controller for ingress routing (to be removed after Istio migration)
   - stunner  # STUNner WebRTC gateway for TURN/STUN services
   - cert-manager  # TLS certificate management with Let's Encrypt
   - uptime-kuma  # Service uptime monitoring
