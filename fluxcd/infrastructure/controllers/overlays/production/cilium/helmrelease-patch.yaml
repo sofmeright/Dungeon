@@ -57,7 +57,12 @@ spec:
 
     # Additional performance optimizations
     bpfClockProbe: true
-    bpfLBSockHostnsOnly: false
+    # Enable socket LB only in host namespace for Istio Ambient compatibility
+    bpfLBSockHostnsOnly: true
+
+    # CNI configuration for Istio Ambient mode compatibility
+    cni:
+      exclusive: false
 
     # Enable endpoint routes for better performance
     endpointRoutes:
