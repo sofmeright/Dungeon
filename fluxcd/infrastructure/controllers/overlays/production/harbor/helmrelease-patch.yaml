@@ -56,6 +56,8 @@ spec:
       tls:
         enabled: true
         certSource: auto
+        auto:
+          commonName: "172.22.30.71"
 
     nginx:
       image:
