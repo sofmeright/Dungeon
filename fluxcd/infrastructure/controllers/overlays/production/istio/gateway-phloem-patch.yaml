@@ -1,0 +1,9 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: Gateway
+metadata:
+  name: phloem-gateway
+  annotations:
+    # Cilium LoadBalancer IPAM
+    lbipam.cilium.io/ips: "172.22.30.70"
+    lbipam.cilium.io/sharing-key: "kokiri-forest"
+    lbipam.cilium.io/sharing-cross-namespace: "*"
