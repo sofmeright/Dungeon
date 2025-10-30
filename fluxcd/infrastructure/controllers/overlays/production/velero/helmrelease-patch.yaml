@@ -92,6 +92,9 @@ spec:
             - persistentvolumeclaims/photoprism-originals
             - persistentvolumeclaims/calibre-web-books-pvc
             - persistentvolumeclaims/transcode-plex-0
+            # Exclude ARK server binaries and CephFS mounts (handled by rsync)
+            - persistentvolumeclaims/ark-sa-serverfiles-pvc
+            - persistentvolumeclaims/cephfs-root-temp-pvc
           storageLocation: default
           volumeSnapshotLocations:
             - default
