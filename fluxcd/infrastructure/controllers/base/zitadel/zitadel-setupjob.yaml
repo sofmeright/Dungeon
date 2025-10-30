@@ -41,23 +41,6 @@ spec:
             secretKeyRef:
               name: zitadel-postgres-superuser
               key: password
-        # First instance configuration
-        - name: ZITADEL_FIRSTINSTANCE_INSTANCENAME
-          value: "PLACEHOLDER_INSTANCE_NAME"
-        - name: ZITADEL_FIRSTINSTANCE_DEFAULTLANGUAGE
-          value: "PLACEHOLDER_DEFAULT_LANGUAGE"
-        - name: ZITADEL_FIRSTINSTANCE_ORG_NAME
-          value: "PLACEHOLDER_ORG_NAME"
-        - name: ZITADEL_FIRSTINSTANCE_ORG_MACHINE_MACHINE_USERNAME
-          value: "PLACEHOLDER_MACHINE_USERNAME"
-        - name: ZITADEL_FIRSTINSTANCE_ORG_MACHINE_MACHINE_NAME
-          value: "PLACEHOLDER_MACHINE_NAME"
-        - name: ZITADEL_FIRSTINSTANCE_ORG_MACHINE_PAT_EXPIRATIONDATE
-          value: "PLACEHOLDER_PAT_EXPIRATION"
-        - name: ZITADEL_FIRSTINSTANCE_PATPATH
-          value: "/machine-creds/pat"
-        - name: ZITADEL_FIRSTINSTANCE_MACHINEKEYPATH
-          value: "/machine-creds/machinekey"
         command:
         - /app/zitadel
         - setup
@@ -69,8 +52,6 @@ spec:
         - name: zitadel-config
           mountPath: /config
           readOnly: true
-        - name: machine-creds
-          mountPath: /machine-creds
         resources:
           requests:
             memory: "256Mi"
@@ -78,39 +59,7 @@ spec:
           limits:
             memory: "512Mi"
             cpu: "500m"
-      - name: create-secret
-        image: PLACEHOLDER_ALPINE_IMAGE
-        volumeMounts:
-        - name: machine-creds
-          mountPath: /machine-creds
-        command:
-        - sh
-        - -c
-        - |
-          set -e
-          echo "Waiting for setup to complete and write credentials..."
-          while [ ! -f /machine-creds/pat ]; do
-            sleep 2
-          done
-
-          echo "Reading PAT from file..."
-          PAT=$(cat /machine-creds/pat)
-
-          echo "Installing kubectl..."
-          apk add --no-cache curl
-          curl -LO "https://dl.k8s.io/release/v1.34.0/bin/linux/amd64/kubectl"
-          chmod +x kubectl
-          mv kubectl /usr/local/bin/
-
-          echo "Creating Kubernetes secret zitadel-k8s-admin-sa..."
-          kubectl create secret generic zitadel-k8s-admin-sa \
-            --from-literal=token="$PAT" \
-            --dry-run=client -o yaml | kubectl apply -f -
-
-          echo "Secret created successfully!"
       volumes:
       - name: zitadel-config
         configMap:
           name: zitadel-config
-      - name: machine-creds
-        emptyDir: {}

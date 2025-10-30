@@ -46,6 +46,23 @@ spec:
             secretKeyRef:
               name: zitadel-secrets
               key: SMTP_PASSWORD
+        # First instance configuration (machine user)
+        - name: ZITADEL_FIRSTINSTANCE_INSTANCENAME
+          value: "PLACEHOLDER_INSTANCE_NAME"
+        - name: ZITADEL_FIRSTINSTANCE_DEFAULTLANGUAGE
+          value: "PLACEHOLDER_DEFAULT_LANGUAGE"
+        - name: ZITADEL_FIRSTINSTANCE_ORG_NAME
+          value: "PLACEHOLDER_ORG_NAME"
+        - name: ZITADEL_FIRSTINSTANCE_ORG_MACHINE_MACHINE_USERNAME
+          value: "PLACEHOLDER_MACHINE_USERNAME"
+        - name: ZITADEL_FIRSTINSTANCE_ORG_MACHINE_MACHINE_NAME
+          value: "PLACEHOLDER_MACHINE_NAME"
+        - name: ZITADEL_FIRSTINSTANCE_ORG_MACHINE_PAT_EXPIRATIONDATE
+          value: "PLACEHOLDER_PAT_EXPIRATION"
+        - name: ZITADEL_FIRSTINSTANCE_PATPATH
+          value: "/machine-creds/pat"
+        - name: ZITADEL_FIRSTINSTANCE_MACHINEKEYPATH
+          value: "/machine-creds/machinekey"
         # Kubernetes integration
         - name: KUBERNETES_SERVICE_HOST
           value: "kubernetes.default.svc"
@@ -71,6 +88,8 @@ spec:
         - name: zitadel-config
           mountPath: /config
           readOnly: true
+        - name: machine-creds
+          mountPath: /machine-creds
         resources:
           requests:
             memory: "512Mi"
@@ -94,3 +113,5 @@ spec:
       - name: zitadel-config
         configMap:
           name: zitadel-config
+      - name: machine-creds
+        emptyDir: {}

@@ -18,6 +18,10 @@ patches:
     target:
       kind: StatefulSet
       name: zitadel
+  - path: statefulset-env-patch.yaml
+    target:
+      kind: StatefulSet
+      name: zitadel
   - path: jobs-env-patch.yaml
   - path: service-patch.yaml
     target:

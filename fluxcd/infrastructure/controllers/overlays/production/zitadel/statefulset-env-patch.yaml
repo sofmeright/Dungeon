@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: zitadel
+spec:
+  template:
+    spec:
+      containers:
+      - name: zitadel
+        env:
+        - name: ZITADEL_FIRSTINSTANCE_INSTANCENAME
+          value: "PrecisionPlanIT"
+        - name: ZITADEL_FIRSTINSTANCE_DEFAULTLANGUAGE
+          value: "en"
+        - name: ZITADEL_FIRSTINSTANCE_ORG_NAME
+          value: "PrecisionPlanIT"
+        - name: ZITADEL_FIRSTINSTANCE_ORG_MACHINE_MACHINE_USERNAME
+          value: "zitadel-admin-sa"
+        - name: ZITADEL_FIRSTINSTANCE_ORG_MACHINE_MACHINE_NAME
+          value: "Admin Service Account"
+        - name: ZITADEL_FIRSTINSTANCE_ORG_MACHINE_PAT_EXPIRATIONDATE
+          value: "2099-12-31T23:59:59Z"
