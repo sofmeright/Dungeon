@@ -9,7 +9,14 @@ metadata:
 spec:
   listeners:
     - name: https-pcfae
+      protocol: HTTPS
+      port: 443
+      hostname: "*.pcfae.com"
+      allowedRoutes:
+        namespaces:
+          from: All
       tls:
+        mode: Terminate
         certificateRefs:
           - kind: Secret
             name: pcfae-com-tls

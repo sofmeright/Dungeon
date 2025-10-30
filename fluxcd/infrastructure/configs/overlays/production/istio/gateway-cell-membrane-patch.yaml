@@ -9,27 +9,62 @@ metadata:
 spec:
   listeners:
     - name: https-prplanit
+      protocol: HTTPS
+      port: 443
+      hostname: "*.prplanit.com"
+      allowedRoutes:
+        namespaces:
+          from: All
       tls:
+        mode: Terminate
         certificateRefs:
           - kind: Secret
             name: prplanit-com-tls
     - name: https-precisionplanit
+      protocol: HTTPS
+      port: 443
+      hostname: "*.precisionplanit.com"
+      allowedRoutes:
+        namespaces:
+          from: All
       tls:
+        mode: Terminate
         certificateRefs:
           - kind: Secret
             name: precisionplanit-com-tls
     - name: https-optcp
+      protocol: HTTPS
+      port: 443
+      hostname: "*.optcp.com"
+      allowedRoutes:
+        namespaces:
+          from: All
       tls:
+        mode: Terminate
         certificateRefs:
           - kind: Secret
             name: optcp-com-tls
     - name: https-ipleek
+      protocol: HTTPS
+      port: 443
+      hostname: "*.ipleek.com"
+      allowedRoutes:
+        namespaces:
+          from: All
       tls:
+        mode: Terminate
         certificateRefs:
           - kind: Secret
             name: ipleek-com-tls
     - name: https-uni2
+      protocol: HTTPS
+      port: 443
+      hostname: "*.uni2.cc"
+      allowedRoutes:
+        namespaces:
+          from: All
       tls:
+        mode: Terminate
         certificateRefs:
           - kind: Secret
             name: uni2-cc-tls

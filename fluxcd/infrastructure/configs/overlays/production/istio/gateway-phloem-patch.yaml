@@ -9,17 +9,38 @@ metadata:
 spec:
   listeners:
     - name: https-sofmeright
+      protocol: HTTPS
+      port: 443
+      hostname: "*.sofmeright.com"
+      allowedRoutes:
+        namespaces:
+          from: All
       tls:
+        mode: Terminate
         certificateRefs:
           - kind: Secret
             name: sofmeright-com-tls
     - name: https-arbitorium
+      protocol: HTTPS
+      port: 443
+      hostname: "*.arbitorium.com"
+      allowedRoutes:
+        namespaces:
+          from: All
       tls:
+        mode: Terminate
         certificateRefs:
           - kind: Secret
             name: arbitorium-com-tls
     - name: https-yesimvegan
+      protocol: HTTPS
+      port: 443
+      hostname: "*.yesimvegan.com"
+      allowedRoutes:
+        namespaces:
+          from: All
       tls:
+        mode: Terminate
         certificateRefs:
           - kind: Secret
             name: yesimvegan-com-tls
