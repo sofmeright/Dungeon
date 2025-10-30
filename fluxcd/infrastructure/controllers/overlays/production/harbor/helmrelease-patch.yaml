@@ -50,12 +50,16 @@ spec:
         image:
           repository: docker.io/goharbor/harbor-registryctl
 
-    nginx:
-      image:
-        repository: docker.io/goharbor/nginx-photon
+    # Expose settings for TLS with nodePort
+    expose:
+      type: nodePort
       tls:
         enabled: true
         certSource: auto
+
+    nginx:
+      image:
+        repository: docker.io/goharbor/nginx-photon
 
     # External PostgreSQL via CloudNativePG
     database:
