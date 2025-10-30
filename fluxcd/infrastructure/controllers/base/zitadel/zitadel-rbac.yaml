@@ -7,9 +7,16 @@ rules:
   - apiGroups: [""]
     resources: ["secrets"]
     verbs: ["get", "create", "update", "patch"]
-  # For pod information/discovery
+  # For pod information/discovery and exec
   - apiGroups: [""]
     resources: ["pods"]
+    verbs: ["get", "list"]
+  - apiGroups: [""]
+    resources: ["pods/exec"]
+    verbs: ["create"]
+  # For checking job status
+  - apiGroups: ["batch"]
+    resources: ["jobs"]
     verbs: ["get", "list"]
   # For service account token creation (K8s auth)
   - apiGroups: [""]
