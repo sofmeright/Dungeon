@@ -28,6 +28,9 @@ spec:
       # Use higher number than Cilium (05) to chain after it
       cniConfFileName: 10-istio-cni.conflist
 
+      # Explicitly disable chained mode - write our own config
+      chained: false
+
       # Ambient mode requires privileged CNI
       privileged: true
 
