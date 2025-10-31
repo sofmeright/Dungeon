@@ -33,19 +33,8 @@ data:
     Telemetry:
       Enabled: false
 
-    FirstInstance:
-      InstanceName: PrecisionPlanIT
-      DefaultLanguage: en
-      Org:
-        Name: PrecisionPlanIT
-        Machine:
-          Machine:
-            Username: zitadel-admin-sa
-            Name: Admin Service Account
-          Pat:
-            ExpirationDate: 2099-12-31T23:59:59Z
-      PatPath: /machine-creds/pat
-      MachineKeyPath: /machine-creds/machinekey
+    # FirstInstance removed from config - configured via env vars in zitadel-0 pod only
+    # to prevent multiple processes from racing to create instances
 
     DefaultInstance:
       SMTPConfiguration:
