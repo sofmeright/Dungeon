@@ -1,6 +1,6 @@
 ---
 # Patch init job init container command with actual Postgres hostname
-# and add --masterkeyFromEnv flag to main container command
+# Base already has correct 'zitadel init' command (reads ZITADEL_MASTERKEY env automatically)
 apiVersion: batch/v1
 kind: Job
 metadata:
@@ -14,14 +14,6 @@ spec:
         - sh
         - -c
         - until pg_isready -h zitadel-postgres-rw.zeldas-lullaby.svc.cluster.local -p 5432 -U postgres; do echo waiting for postgres; sleep 2; done
-      containers:
-      - name: zitadel-init
-        command:
-        - /app/zitadel
-        - init
-        - --config
-        - /config/zitadel-config.yaml
-        - --masterkeyFromEnv
 ---
 # Patch admin-sa-provision job with actual namespace
 apiVersion: batch/v1
