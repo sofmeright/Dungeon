@@ -10,18 +10,17 @@ spec:
       serviceAccountName: zitadel
       initContainers:
       - name: wait-for-db
-        image: PLACEHOLDER_POSTGRES_IMAGE
+        image: PLACEHOLDER_KUBECTL_IMAGE
         command:
         - sh
         - -c
         - |
-          echo "Waiting for PostgreSQL to be ready..."
-          until pg_isready -h PLACEHOLDER_POSTGRES_HOST -p 5432 -U postgres; do
-            echo "Waiting for postgres..."
-            sleep 2
+          echo "Waiting for init job to complete first..."
+          until [ "$(kubectl get job zitadel-init -n PLACEHOLDER_NAMESPACE -o jsonpath='{.status.succeeded}' 2>/dev/null)" = "1" ]; do
+            echo "Init job not complete yet, waiting..."
+            sleep 5
           done
-          echo "Waiting additional 10s for init job to complete..."
-          sleep 10
+          echo "Init job completed! Setup can proceed."
       containers:
       - name: zitadel-setup
         image: PLACEHOLDER_IMAGE
