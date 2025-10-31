@@ -5,6 +5,19 @@ metadata:
 spec:
   template:
     spec:
+      initContainers:
+      - name: wait-for-db
+        command:
+        - sh
+        - -c
+        - |
+          echo "Waiting for PostgreSQL to be ready..."
+          until pg_isready -h zitadel-postgres-rw.zeldas-lullaby.svc.cluster.local -p 5432 -U postgres; do
+            echo "Waiting for postgres..."
+            sleep 2
+          done
+          echo "Waiting additional 10s for init job to complete..."
+          sleep 10
       containers:
       - name: zitadel-setup
         env:
