@@ -90,4 +90,4 @@ spec:
       - name: zitadel-login-v2
         env:
         - name: ZITADEL_ISSUER
-          value: "https://zitadel.pcfae.com"
+          value: "https://sso.prplanit.com"
