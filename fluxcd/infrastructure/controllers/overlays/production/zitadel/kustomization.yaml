@@ -11,6 +11,10 @@ resources:
 patches:
   - path: image-patch.yaml
   - path: command-patches.yaml
+  - path: statefulset-patch.yaml
+    target:
+      kind: StatefulSet
+      name: zitadel
   - path: postgres-cluster-patch.yaml
     target:
       kind: Cluster
