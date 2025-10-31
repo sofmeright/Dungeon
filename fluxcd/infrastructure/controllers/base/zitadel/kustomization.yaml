@@ -8,8 +8,9 @@ resources:
   - zitadel-clusterrole.yaml
   - zitadel-statefulset.yaml
   - zitadel-service.yaml
-  - zitadel-initjob.yaml
-  - zitadel-setupjob.yaml
+  # Init and setup jobs disabled - start-from-init handles everything
+  # - zitadel-initjob.yaml
+  # - zitadel-setupjob.yaml
   - admin-sa-init-job.yaml
   - admin-sa-provision-job.yaml
   - login-v2-deployment.yaml
