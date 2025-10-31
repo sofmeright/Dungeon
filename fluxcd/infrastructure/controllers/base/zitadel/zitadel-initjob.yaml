@@ -34,7 +34,6 @@ spec:
         command:
         - /app/zitadel
         - init
-        - zitadel
         - --config
         - /config/zitadel-config.yaml
         volumeMounts:
