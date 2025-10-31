@@ -3,7 +3,7 @@ kind: Job
 metadata:
   name: zitadel-setup
 spec:
-  backoffLimit: 20
+  backoffLimit: 0
   template:
     spec:
       initContainers:
@@ -18,22 +18,3 @@ spec:
             sleep 5
           done
           echo "Init job completed! Setup can proceed."
-      containers:
-      - name: zitadel-setup
-        env:
-        - name: ZITADEL_FIRSTINSTANCE_INSTANCENAME
-          value: "PrecisionPlanIT"
-        - name: ZITADEL_FIRSTINSTANCE_DEFAULTLANGUAGE
-          value: "en"
-        - name: ZITADEL_FIRSTINSTANCE_ORG_NAME
-          value: "PrecisionPlanIT"
-        - name: ZITADEL_FIRSTINSTANCE_ORG_MACHINE_MACHINE_USERNAME
-          value: "zitadel-admin-sa"
-        - name: ZITADEL_FIRSTINSTANCE_ORG_MACHINE_MACHINE_NAME
-          value: "Admin Service Account"
-        - name: ZITADEL_FIRSTINSTANCE_ORG_MACHINE_PAT_EXPIRATIONDATE
-          value: "2099-12-31T23:59:59Z"
-        - name: ZITADEL_FIRSTINSTANCE_PATPATH
-          value: "/machine-creds/pat"
-        - name: ZITADEL_FIRSTINSTANCE_MACHINEKEYPATH
-          value: "/machine-creds/machinekey"
