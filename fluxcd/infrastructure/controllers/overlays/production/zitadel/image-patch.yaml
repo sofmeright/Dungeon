@@ -13,12 +13,12 @@ spec:
         - sh
         - -c
         - |
-          echo "Waiting for setup job to complete and create admin service account secret..."
-          until kubectl get secret zitadel-k8s-admin-sa -n zeldas-lullaby 2>/dev/null; do
-            echo "Secret zitadel-k8s-admin-sa not found yet, waiting..."
+          echo "Waiting for setup job to complete..."
+          until [ "$(kubectl get job zitadel-setup -n zeldas-lullaby -o jsonpath='{.status.succeeded}' 2>/dev/null)" = "1" ]; do
+            echo "Setup job not complete yet, waiting..."
             sleep 5
           done
-          echo "Setup complete! Secret zitadel-k8s-admin-sa exists."
+          echo "Setup job completed! Starting Zitadel..."
       containers:
       - name: zitadel
         image: ghcr.io/zitadel/zitadel:v4.6.1
