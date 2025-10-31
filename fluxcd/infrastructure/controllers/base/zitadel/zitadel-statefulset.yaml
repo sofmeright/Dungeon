@@ -78,7 +78,7 @@ spec:
               fieldPath: status.podIP
         command:
         - /app/zitadel
-        - start
+        - start-from-init
         - --config
         - /config/zitadel-config.yaml
         - --masterkeyFromEnv
