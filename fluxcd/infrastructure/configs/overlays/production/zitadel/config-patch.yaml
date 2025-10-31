@@ -33,8 +33,26 @@ data:
     Telemetry:
       Enabled: false
 
-    # FirstInstance removed from config - configured via env vars in zitadel-0 pod only
-    # to prevent multiple processes from racing to create instances
+    # FirstInstance configuration for initial instance bootstrap
+    # Processed by setup job which creates credentials in emptyDir volumes
+    # Sidecar containers extract credentials and create Kubernetes secrets
+    FirstInstance:
+      Org:
+        Machine:
+          Machine:
+            Username: k8s-admin
+            Name: Kubernetes Admin Service Account
+          MachineKey:
+            ExpirationDate: '2029-01-01T00:00:00Z'
+            Type: 1  # JWT
+          Pat:
+            ExpirationDate: '2029-01-01T00:00:00Z'
+        LoginClient:
+          Machine:
+            Username: login-client
+            Name: Login UI Client Service Account
+          Pat:
+            ExpirationDate: '2029-01-01T00:00:00Z'
 
     DefaultInstance:
       SMTPConfiguration:

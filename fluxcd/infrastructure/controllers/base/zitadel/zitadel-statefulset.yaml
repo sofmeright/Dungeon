@@ -91,8 +91,6 @@ spec:
         - name: zitadel-config
           mountPath: /config
           readOnly: true
-        - name: machine-creds
-          mountPath: /machine-creds
         resources:
           requests:
             memory: "512Mi"
@@ -116,5 +114,3 @@ spec:
       - name: zitadel-config
         configMap:
           name: zitadel-config
-      - name: machine-creds
-        emptyDir: {}
