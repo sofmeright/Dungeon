@@ -7,7 +7,7 @@ spec:
     spec:
       containers:
       - name: zitadel-login-v2
-        image: docker.jcr.pcfae.com/zitadel/zitadel-login:v4.6.1
+        image: ghcr.io/zitadel/zitadel-login:v4.6.1
         env:
         - name: ZITADEL_EXTERNAL_DOMAIN
           value: "sso.prplanit.com"

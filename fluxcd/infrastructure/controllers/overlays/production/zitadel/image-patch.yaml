@@ -75,17 +75,6 @@ spec:
       - name: sync-to-vault
         image: docker.jcr.pcfae.com/curlimages/curl:8.16.0
 ---
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: zitadel-login-v2
-spec:
-  template:
-    spec:
-      containers:
-      - name: zitadel-login-v2
-        image: ghcr.io/zitadel/zitadel-login:v4.6.1
----
 apiVersion: batch/v1
 kind: Job
 metadata:
