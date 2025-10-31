@@ -44,6 +44,8 @@ spec:
           value: "/machinekey/sa.json"
         - name: ZITADEL_FIRSTINSTANCE_PATPATH
           value: "/machinekey/pat"
+        - name: ZITADEL_FIRSTINSTANCE_LOGINCLIENTPATPATH
+          value: "/login-client/pat"
         command:
         - /app/zitadel
         - setup
@@ -57,6 +59,8 @@ spec:
           readOnly: true
         - name: machinekey
           mountPath: /machinekey
+        - name: login-client
+          mountPath: /login-client
         resources:
           requests:
             memory: "256Mi"
@@ -112,9 +116,35 @@ spec:
         - name: machinekey
           mountPath: /machinekey
           readOnly: true
+      - name: login-client-pat-writer
+        image: PLACEHOLDER_KUBECTL_IMAGE
+        env:
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        command:
+        - sh
+        - -c
+        - |
+          echo "Waiting for setup container to terminate..."
+          until [ ! -z "$(kubectl get pod ${POD_NAME} -n PLACEHOLDER_NAMESPACE -o jsonpath="{.status.containerStatuses[?(@.name=='zitadel-setup')].state.terminated}" 2>/dev/null)" ]; do
+            sleep 5
+          done
+          echo "Setup container terminated. Extracting login client PAT..."
+          kubectl create secret generic zitadel-login-client \
+            --from-file=pat=/login-client/pat \
+            --dry-run=client -o yaml | kubectl apply -f -
+          echo "Secret zitadel-login-client created successfully!"
+        volumeMounts:
+        - name: login-client
+          mountPath: /login-client
+          readOnly: true
       volumes:
       - name: zitadel-config
         configMap:
           name: zitadel-config
       - name: machinekey
+        emptyDir: {}
+      - name: login-client
         emptyDir: {}
