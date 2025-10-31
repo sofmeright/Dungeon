@@ -1,0 +1,93 @@
+---
+# Patch init job init container command with actual Postgres hostname
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: zitadel-init
+spec:
+  template:
+    spec:
+      initContainers:
+      - name: wait-for-postgres
+        command:
+        - sh
+        - -c
+        - until pg_isready -h zitadel-postgres-rw.zeldas-lullaby.svc.cluster.local -p 5432 -U postgres; do echo waiting for postgres; sleep 2; done
+---
+# Patch admin-sa-provision job with actual namespace
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: zitadel-admin-sa-to-vault
+spec:
+  template:
+    spec:
+      initContainers:
+      - name: wait-for-secret
+        command:
+        - sh
+        - -c
+        - |
+          echo "Waiting for zitadel-k8s-admin-sa secret..."
+          until kubectl get secret zitadel-k8s-admin-sa -n zeldas-lullaby 2>/dev/null; do
+            echo "Secret not found yet, waiting..."
+            sleep 5
+          done
+          echo "Secret found!"
+      containers:
+      - name: sync-to-vault
+        command:
+        - sh
+        - -c
+        - |
+          set -e
+          echo "Extracting credentials from secret..."
+          PAT=$(kubectl get secret zitadel-k8s-admin-sa -n zeldas-lullaby -o jsonpath='{.data.pat}' | base64 -d)
+
+          echo "Writing credentials to Vault..."
+          curl -sf -X POST \
+            -H "X-Vault-Token: ${VAULT_TOKEN}" \
+            -d "{\"data\":{\"pat\":\"${PAT}\"}}" \
+            http://vault.zeldas-lullaby.svc.cluster.local:8200/v1/operationtimecapsule/data/zitadel/admin-sa
+
+          echo "Credentials successfully synced to Vault!"
+---
+# Patch login-v2-provision job with actual Zitadel URL
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: zitadel-login-v2-provision
+spec:
+  template:
+    spec:
+      initContainers:
+      - name: wait-for-zitadel
+        command:
+        - sh
+        - -c
+        - |
+          echo "Waiting for Zitadel to be ready..."
+          until curl -sf http://zitadel.zeldas-lullaby.svc.cluster.local:8080/debug/ready; do
+            echo "Zitadel not ready yet, waiting..."
+            sleep 10
+          done
+          echo "Zitadel is ready!"
+      containers:
+      - name: provision-login-client
+        env:
+        - name: ZITADEL_URL
+          value: "http://zitadel.zeldas-lullaby.svc.cluster.local:8080"
+---
+# Patch login-v2-deployment with actual domain
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: zitadel-login-v2
+spec:
+  template:
+    spec:
+      containers:
+      - name: zitadel-login-v2
+        env:
+        - name: ZITADEL_ISSUER
+          value: "https://zitadel.pcfae.com"

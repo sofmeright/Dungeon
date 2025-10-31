@@ -10,6 +10,7 @@ resources:
 
 patches:
   - path: image-patch.yaml
+  - path: command-patches.yaml
   - path: postgres-cluster-patch.yaml
     target:
       kind: Cluster
