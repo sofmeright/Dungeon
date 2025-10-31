@@ -15,10 +15,6 @@ patches:
     target:
       kind: StatefulSet
       name: zitadel
-  - path: statefulset-firstinstance-patch.yaml
-    target:
-      kind: StatefulSet
-      name: zitadel
   - path: postgres-cluster-patch.yaml
     target:
       kind: Cluster

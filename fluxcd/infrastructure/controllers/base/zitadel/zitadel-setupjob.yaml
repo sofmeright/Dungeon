@@ -40,6 +40,10 @@ spec:
             secretKeyRef:
               name: zitadel-postgres-superuser
               key: password
+        - name: ZITADEL_FIRSTINSTANCE_MACHINEKEYPATH
+          value: "/machinekey/sa.json"
+        - name: ZITADEL_FIRSTINSTANCE_PATPATH
+          value: "/machinekey/pat"
         command:
         - /app/zitadel
         - setup
@@ -51,6 +55,8 @@ spec:
         - name: zitadel-config
           mountPath: /config
           readOnly: true
+        - name: machinekey
+          mountPath: /machinekey
         resources:
           requests:
             memory: "256Mi"
@@ -58,7 +64,57 @@ spec:
           limits:
             memory: "512Mi"
             cpu: "500m"
+      - name: machinekey-writer
+        image: PLACEHOLDER_KUBECTL_IMAGE
+        env:
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        command:
+        - sh
+        - -c
+        - |
+          echo "Waiting for setup container to terminate..."
+          until [ ! -z "$(kubectl get pod ${POD_NAME} -n PLACEHOLDER_NAMESPACE -o jsonpath="{.status.containerStatuses[?(@.name=='zitadel-setup')].state.terminated}" 2>/dev/null)" ]; do
+            sleep 5
+          done
+          echo "Setup container terminated. Extracting sa.json..."
+          kubectl create secret generic zitadel-admin-sa \
+            --from-file=zitadel-admin-sa.json=/machinekey/sa.json \
+            --dry-run=client -o yaml | kubectl apply -f -
+          echo "Secret zitadel-admin-sa created successfully!"
+        volumeMounts:
+        - name: machinekey
+          mountPath: /machinekey
+          readOnly: true
+      - name: machine-pat-writer
+        image: PLACEHOLDER_KUBECTL_IMAGE
+        env:
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        command:
+        - sh
+        - -c
+        - |
+          echo "Waiting for setup container to terminate..."
+          until [ ! -z "$(kubectl get pod ${POD_NAME} -n PLACEHOLDER_NAMESPACE -o jsonpath="{.status.containerStatuses[?(@.name=='zitadel-setup')].state.terminated}" 2>/dev/null)" ]; do
+            sleep 5
+          done
+          echo "Setup container terminated. Extracting PAT..."
+          kubectl create secret generic zitadel-k8s-admin-sa \
+            --from-file=pat=/machinekey/pat \
+            --dry-run=client -o yaml | kubectl apply -f -
+          echo "Secret zitadel-k8s-admin-sa created successfully!"
+        volumeMounts:
+        - name: machinekey
+          mountPath: /machinekey
+          readOnly: true
       volumes:
       - name: zitadel-config
         configMap:
           name: zitadel-config
+      - name: machinekey
+        emptyDir: {}
