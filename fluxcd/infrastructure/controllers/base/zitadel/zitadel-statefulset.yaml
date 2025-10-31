@@ -21,12 +21,12 @@ spec:
         - sh
         - -c
         - |
-          echo "Waiting for setup job to complete and create admin service account secret..."
-          until kubectl get secret zitadel-k8s-admin-sa -n PLACEHOLDER_NAMESPACE 2>/dev/null; do
-            echo "Secret zitadel-k8s-admin-sa not found yet, waiting..."
+          echo "Waiting for setup job to complete..."
+          until [ "$(kubectl get job zitadel-setup -n PLACEHOLDER_NAMESPACE -o jsonpath='{.status.succeeded}' 2>/dev/null)" = "1" ]; do
+            echo "Setup job not complete yet, waiting..."
             sleep 5
           done
-          echo "Setup complete! Secret zitadel-k8s-admin-sa exists."
+          echo "Setup job completed! Starting Zitadel..."
         resources:
           requests:
             memory: "32Mi"
@@ -91,6 +91,8 @@ spec:
         - name: zitadel-config
           mountPath: /config
           readOnly: true
+        - name: machine-creds
+          mountPath: /machine-creds
         resources:
           requests:
             memory: "512Mi"
@@ -114,3 +116,5 @@ spec:
       - name: zitadel-config
         configMap:
           name: zitadel-config
+      - name: machine-creds
+        emptyDir: {}

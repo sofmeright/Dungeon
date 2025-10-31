@@ -52,8 +52,6 @@ spec:
         - name: zitadel-config
           mountPath: /config
           readOnly: true
-        - name: machine-creds
-          mountPath: /machine-creds
         resources:
           requests:
             memory: "256Mi"
@@ -61,56 +59,7 @@ spec:
           limits:
             memory: "512Mi"
             cpu: "500m"
-      - name: pat-extractor
-        image: registry.k8s.io/kubectl:v1.34.0
-        env:
-        - name: POD_NAME
-          valueFrom:
-            fieldRef:
-              fieldPath: metadata.name
-        command:
-        - sh
-        - -c
-        - |
-          set -e
-          echo "Waiting for setup container to complete..."
-          # Wait for setup container to finish
-          while ! test -f /tmp/setup-done 2>/dev/null; do
-            if kubectl get pod $POD_NAME -o jsonpath='{.status.containerStatuses[?(@.name=="zitadel-setup")].state.terminated}' | grep -q "."; then
-              break
-            fi
-            sleep 5
-          done
-
-          echo "Setup completed, checking for PAT file..."
-          if [ -f /machine-creds/pat ]; then
-            echo "PAT file found! Creating Kubernetes secret..."
-            kubectl create secret generic zitadel-k8s-admin-sa \
-              --from-file=pat=/machine-creds/pat \
-              --dry-run=client -o yaml | \
-            kubectl label -f - --dry-run=client -o yaml \
-              app.kubernetes.io/managed-by=zitadel \
-              app.kubernetes.io/component=machine-user | \
-            kubectl apply -f -
-            echo "Secret zitadel-k8s-admin-sa created successfully!"
-          else
-            echo "ERROR: PAT file not found at /machine-creds/pat"
-            exit 1
-          fi
-        volumeMounts:
-        - name: machine-creds
-          mountPath: /machine-creds
-          readOnly: true
-        resources:
-          requests:
-            memory: "64Mi"
-            cpu: "50m"
-          limits:
-            memory: "128Mi"
-            cpu: "100m"
       volumes:
       - name: zitadel-config
         configMap:
           name: zitadel-config
-      - name: machine-creds
-        emptyDir: {}
