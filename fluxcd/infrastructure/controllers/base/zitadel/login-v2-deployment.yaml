@@ -20,7 +20,7 @@ spec:
         runAsUser: 1000
         fsGroup: 1000
       containers:
-      - name: login-v2
+      - name: zitadel-login-v2
         image: ghcr.io/zitadel/zitadel-login:v4.3.0
         imagePullPolicy: IfNotPresent
         ports:

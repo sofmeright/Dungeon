@@ -87,7 +87,7 @@ spec:
   template:
     spec:
       containers:
-      - name: login-v2
+      - name: zitadel-login-v2
         env:
         - name: ZITADEL_ISSUER
           value: "https://zitadel.pcfae.com"

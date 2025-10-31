@@ -6,7 +6,7 @@ spec:
   template:
     spec:
       containers:
-      - name: login-v2
+      - name: zitadel-login-v2
         image: docker.jcr.pcfae.com/zitadel/zitadel-login:v4.6.1
         env:
         - name: ZITADEL_EXTERNAL_DOMAIN
