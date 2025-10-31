@@ -63,6 +63,11 @@ spec:
             cpu: "500m"
       - name: pat-extractor
         image: registry.k8s.io/kubectl:v1.34.0
+        env:
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
         command:
         - sh
         - -c
@@ -71,7 +76,7 @@ spec:
           echo "Waiting for setup container to complete..."
           # Wait for setup container to finish
           while ! test -f /tmp/setup-done 2>/dev/null; do
-            if kubectl get pod $HOSTNAME -o jsonpath='{.status.containerStatuses[?(@.name=="zitadel-setup")].state.terminated}' | grep -q "."; then
+            if kubectl get pod $POD_NAME -o jsonpath='{.status.containerStatuses[?(@.name=="zitadel-setup")].state.terminated}' | grep -q "."; then
               break
             fi
             sleep 5
