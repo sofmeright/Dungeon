@@ -14,6 +14,26 @@ spec:
         app: zitadel
     spec:
       serviceAccountName: zitadel
+      initContainers:
+      - name: wait-for-setup
+        image: PLACEHOLDER_KUBECTL_IMAGE
+        command:
+        - sh
+        - -c
+        - |
+          echo "Waiting for setup job to complete and create admin service account secret..."
+          until kubectl get secret zitadel-k8s-admin-sa -n PLACEHOLDER_NAMESPACE 2>/dev/null; do
+            echo "Secret zitadel-k8s-admin-sa not found yet, waiting..."
+            sleep 5
+          done
+          echo "Setup complete! Secret zitadel-k8s-admin-sa exists."
+        resources:
+          requests:
+            memory: "32Mi"
+            cpu: "10m"
+          limits:
+            memory: "64Mi"
+            cpu: "50m"
       containers:
       - name: zitadel
         image: PLACEHOLDER_IMAGE

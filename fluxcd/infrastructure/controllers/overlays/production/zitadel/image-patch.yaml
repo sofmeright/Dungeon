@@ -6,6 +6,19 @@ metadata:
 spec:
   template:
     spec:
+      initContainers:
+      - name: wait-for-setup
+        image: docker.io/alpine/k8s:1.34.0
+        command:
+        - sh
+        - -c
+        - |
+          echo "Waiting for setup job to complete and create admin service account secret..."
+          until kubectl get secret zitadel-k8s-admin-sa -n zeldas-lullaby 2>/dev/null; do
+            echo "Secret zitadel-k8s-admin-sa not found yet, waiting..."
+            sleep 5
+          done
+          echo "Setup complete! Secret zitadel-k8s-admin-sa exists."
       containers:
       - name: zitadel
         image: ghcr.io/zitadel/zitadel:v4.6.1
