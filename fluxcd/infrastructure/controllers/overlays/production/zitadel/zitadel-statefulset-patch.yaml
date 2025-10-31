@@ -4,3 +4,20 @@ metadata:
   name: zitadel
 spec:
   replicas: 3  # Init container will wait for setup job to complete
+  template:
+    spec:
+      containers:
+      - name: zitadel
+        env:
+        - name: ZITADEL_FIRSTINSTANCE_ORG_NAME
+          value: "PrecisionPlanIT"
+        - name: ZITADEL_FIRSTINSTANCE_ORG_MACHINE_MACHINE_USERNAME
+          value: "zitadel-admin-sa"
+        - name: ZITADEL_FIRSTINSTANCE_ORG_MACHINE_MACHINE_NAME
+          value: "Admin Service Account"
+        - name: ZITADEL_FIRSTINSTANCE_ORG_MACHINE_PAT_EXPIRATIONDATE
+          value: "2099-12-31T23:59:59Z"
+        - name: ZITADEL_FIRSTINSTANCE_ORG_MACHINE_MACHINEKEY_PATH
+          value: "/machine-creds/machinekey"
+        - name: ZITADEL_FIRSTINSTANCE_ORG_MACHINE_PAT_PATH
+          value: "/machine-creds/pat"
