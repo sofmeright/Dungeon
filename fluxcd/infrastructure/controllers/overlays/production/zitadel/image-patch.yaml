@@ -54,7 +54,7 @@ spec:
     spec:
       initContainers:
       - name: wait-for-db
-        image: docker.io/postgres:16-alpine
+        image: docker.io/alpine/k8s:1.34.0
       containers:
       - name: zitadel-setup
         image: ghcr.io/zitadel/zitadel:v4.6.1
