@@ -10,7 +10,6 @@ resources:
   - zitadel-service.yaml
   - zitadel-initjob.yaml
   - zitadel-setupjob.yaml
-  - admin-sa-init-job.yaml
   - admin-sa-provision-job.yaml
   - login-v2-deployment.yaml
   - login-v2-service.yaml
