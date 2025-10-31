@@ -10,7 +10,35 @@ spec:
       - name: zitadel
         image: ghcr.io/zitadel/zitadel:v4.6.1
 ---
-# Init and setup job patches removed - jobs disabled in base
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: zitadel-init
+spec:
+  template:
+    spec:
+      initContainers:
+      - name: wait-for-postgres
+        image: docker.io/postgres:16-alpine
+      containers:
+      - name: zitadel-init
+        image: ghcr.io/zitadel/zitadel:v4.6.1
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: zitadel-setup
+spec:
+  template:
+    spec:
+      initContainers:
+      - name: wait-for-db
+        image: docker.io/postgres:16-alpine
+      containers:
+      - name: zitadel-setup
+        image: ghcr.io/zitadel/zitadel:v4.6.1
+      - name: pat-extractor
+        image: registry.k8s.io/kubectl:v1.34.0
 ---
 apiVersion: batch/v1
 kind: Job
