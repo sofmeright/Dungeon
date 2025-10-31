@@ -67,7 +67,7 @@ spec:
         - -c
         - |
           echo "Waiting for Zitadel to be ready..."
-          until curl -sf http://zitadel.zeldas-lullaby.svc.cluster.local:8080/debug/ready; do
+          until curl -sf http://zitadel.zeldas-lullaby.svc.cluster.local:8174/debug/ready; do
             echo "Zitadel not ready yet, waiting..."
             sleep 10
           done
@@ -76,7 +76,7 @@ spec:
       - name: provision-login-client
         env:
         - name: ZITADEL_URL
-          value: "http://zitadel.zeldas-lullaby.svc.cluster.local:8080"
+          value: "http://zitadel.zeldas-lullaby.svc.cluster.local:8174"
 ---
 # Patch login-v2-deployment with actual domain
 apiVersion: apps/v1
