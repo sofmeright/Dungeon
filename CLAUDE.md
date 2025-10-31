@@ -4,7 +4,7 @@
   - **Git Commits**: Only sign commits as sofmeright@gmail.com / SoFMeRight. No anthropic attribution comments in commits.
 
 - Image-Based Tool Standards:
-  - **kubectl**: Use `alpine/k8s` image (e.g., `alpine/k8s:1.34.0`) - includes shell and kubectl for job sidecars and init containers
+  - **kubectl**: Use `docker.io/alpine/k8s` image (e.g., `docker.io/alpine/k8s:1.34.0`) - includes shell and kubectl for job sidecars and init containers
 
 - CRITICAL RULES:
   - Prefer using flux to reconcile resources from source. We are GitOps native, we use kubectl commands to adjust state only when it is otherwise impossible!!!!!
