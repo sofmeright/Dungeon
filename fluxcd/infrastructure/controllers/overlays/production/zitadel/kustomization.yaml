@@ -22,7 +22,8 @@ patches:
     target:
       kind: StatefulSet
       name: zitadel
-  - path: jobs-env-patch.yaml
+  # jobs-env-patch.yaml disabled - init/setup jobs removed
+  # - path: jobs-env-patch.yaml
   - path: service-patch.yaml
     target:
       kind: Service
