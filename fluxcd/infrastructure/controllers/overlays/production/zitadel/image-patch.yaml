@@ -58,8 +58,6 @@ spec:
       containers:
       - name: zitadel-setup
         image: ghcr.io/zitadel/zitadel:v4.6.1
-      - name: pat-extractor
-        image: docker.io/alpine/k8s:1.34.0
 ---
 apiVersion: batch/v1
 kind: Job
