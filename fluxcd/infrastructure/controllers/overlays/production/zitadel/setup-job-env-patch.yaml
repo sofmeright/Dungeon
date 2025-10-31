@@ -3,6 +3,7 @@ kind: Job
 metadata:
   name: zitadel-setup
 spec:
+  backoffLimit: 20
   template:
     spec:
       initContainers:
