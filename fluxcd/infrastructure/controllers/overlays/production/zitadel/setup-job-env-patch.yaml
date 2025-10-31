@@ -1,3 +1,5 @@
+# Setup job only runs database migrations via 'zitadel setup' command
+# FIRSTINSTANCE processing happens in the StatefulSet when 'zitadel start' runs
 apiVersion: batch/v1
 kind: Job
 metadata:
@@ -19,88 +21,3 @@ spec:
             sleep 5
           done
           echo "Init job completed! Setup can proceed."
-      containers:
-      - name: zitadel-setup
-        env:
-        - name: ZITADEL_FIRSTINSTANCE_ORG_NAME
-          value: "PrecisionPlanIT"
-        - name: ZITADEL_FIRSTINSTANCE_ORG_MACHINE_MACHINE_USERNAME
-          value: "zitadel-admin-sa"
-        - name: ZITADEL_FIRSTINSTANCE_ORG_MACHINE_MACHINE_NAME
-          value: "Admin Service Account"
-        - name: ZITADEL_FIRSTINSTANCE_ORG_MACHINE_PAT_EXPIRATIONDATE
-          value: "2099-12-31T23:59:59Z"
-        - name: ZITADEL_FIRSTINSTANCE_ORG_MACHINE_MACHINEKEY_PATH
-          value: "/machinekey/machinekey"
-        - name: ZITADEL_FIRSTINSTANCE_ORG_MACHINE_PAT_PATH
-          value: "/machinekey/pat"
-        volumeMounts:
-        - name: machinekey
-          mountPath: /machinekey
-      - name: zitadel-machinekey-extractor
-        image: docker.io/alpine/k8s:1.34.0
-        command:
-        - sh
-        - -c
-        - |
-          echo "Waiting for zitadel-setup container to terminate..."
-          until [ ! -z $(kubectl get pod ${POD_NAME} -n zeldas-lullaby -o jsonpath="{.status.containerStatuses[?(@.name=='zitadel-setup')].state.terminated}") ]; do
-            echo "Setup container still running, waiting..."
-            sleep 5
-          done
-          echo "Setup container terminated!"
-
-          if [ -f /machinekey/machinekey ]; then
-            echo "Creating machine key secret..."
-            kubectl create secret generic zitadel-admin-sa-machinekey \
-              --from-file=machinekey=/machinekey/machinekey \
-              --dry-run=client -o yaml | \
-            kubectl apply -f -
-            echo "Machine key secret created!"
-          else
-            echo "WARNING: Machine key file not found at /machinekey/machinekey"
-          fi
-        env:
-        - name: POD_NAME
-          valueFrom:
-            fieldRef:
-              fieldPath: metadata.name
-        volumeMounts:
-        - name: machinekey
-          mountPath: /machinekey
-          readOnly: true
-      - name: zitadel-pat-extractor
-        image: docker.io/alpine/k8s:1.34.0
-        command:
-        - sh
-        - -c
-        - |
-          echo "Waiting for zitadel-setup container to terminate..."
-          until [ ! -z $(kubectl get pod ${POD_NAME} -n zeldas-lullaby -o jsonpath="{.status.containerStatuses[?(@.name=='zitadel-setup')].state.terminated}") ]; do
-            echo "Setup container still running, waiting..."
-            sleep 5
-          done
-          echo "Setup container terminated!"
-
-          if [ -f /machinekey/pat ]; then
-            echo "Creating PAT secret..."
-            kubectl create secret generic zitadel-k8s-admin-sa \
-              --from-file=pat=/machinekey/pat \
-              --dry-run=client -o yaml | \
-            kubectl apply -f -
-            echo "PAT secret created!"
-          else
-            echo "WARNING: PAT file not found at /machinekey/pat"
-          fi
-        env:
-        - name: POD_NAME
-          valueFrom:
-            fieldRef:
-              fieldPath: metadata.name
-        volumeMounts:
-        - name: machinekey
-          mountPath: /machinekey
-          readOnly: true
-      volumes:
-      - name: machinekey
-        emptyDir: {}
