@@ -8,5 +8,7 @@ spec:
       containers:
       - name: zitadel-login-v2
         env:
+        - name: ZITADEL_API_URL
+          value: "http://sso.prplanit.com"
         - name: ZITADEL_EXTERNAL_DOMAIN
           value: "sso.prplanit.com"
