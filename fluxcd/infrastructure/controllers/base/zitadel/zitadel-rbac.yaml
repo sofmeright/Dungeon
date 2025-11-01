@@ -18,6 +18,10 @@ rules:
   - apiGroups: ["batch"]
     resources: ["jobs"]
     verbs: ["get", "list"]
+  # For checking StatefulSet readiness in init containers
+  - apiGroups: ["apps"]
+    resources: ["statefulsets"]
+    verbs: ["get"]
   # For service account token creation (K8s auth)
   - apiGroups: [""]
     resources: ["serviceaccounts/token"]
