@@ -14,12 +14,6 @@ spec:
     - path:
         type: PathPrefix
         value: /ui/v2/login
-    filters:
-    - type: URLRewrite
-      urlRewrite:
-        path:
-          type: ReplacePrefixMatch
-          replacePrefixMatch: /
     backendRefs:
     - name: zitadel-login-v2
       port: 3000
