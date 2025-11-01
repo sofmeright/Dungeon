@@ -46,6 +46,7 @@ spec:
           # Check if machine user already exists
           echo "Checking if login-v2-client machine user exists..."
           USER_CHECK=$(curl -sf "${ZITADEL_URL}/management/v1/users/_search" \
+            -H "Host: sso.prplanit.com" \
             -H "Authorization: Bearer ${ZITADEL_ADMIN_TOKEN}" \
             -H "Content-Type: application/json" \
             -d '{"queries":[{"userNameQuery":{"userName":"login-v2-client","method":"TEXT_QUERY_METHOD_EQUALS"}}]}' \
@@ -58,6 +59,7 @@ spec:
           else
             echo "Creating machine user login-v2-client..."
             CREATE_RESPONSE=$(curl -sf "${ZITADEL_URL}/management/v1/users/machine" \
+              -H "Host: sso.prplanit.com" \
               -H "Authorization: Bearer ${ZITADEL_ADMIN_TOKEN}" \
               -H "Content-Type: application/json" \
               -d '{
@@ -73,6 +75,7 @@ spec:
             # Grant IAM_OWNER role to the machine user (required for login client)
             echo "Granting IAM_OWNER role to machine user..."
             curl -sf "${ZITADEL_URL}/admin/v1/members" \
+              -H "Host: sso.prplanit.com" \
               -H "Authorization: Bearer ${ZITADEL_ADMIN_TOKEN}" \
               -H "Content-Type: application/json" \
               -d "{
@@ -84,6 +87,7 @@ spec:
           # Generate Personal Access Token
           echo "Generating Personal Access Token..."
           PAT_RESPONSE=$(curl -sf "${ZITADEL_URL}/management/v1/users/${USER_ID}/tokens" \
+            -H "Host: sso.prplanit.com" \
             -H "Authorization: Bearer ${ZITADEL_ADMIN_TOKEN}" \
             -H "Content-Type: application/json" \
             -d '{
