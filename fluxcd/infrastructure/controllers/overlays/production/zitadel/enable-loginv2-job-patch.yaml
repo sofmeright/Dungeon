@@ -1,0 +1,69 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: zitadel-enable-loginv2
+spec:
+  template:
+    spec:
+      initContainers:
+      - name: wait-for-zitadel
+        image: docker.io/alpine/k8s:1.34.0
+        command:
+        - sh
+        - -c
+        - |
+          echo "Waiting for Zitadel StatefulSet to be ready..."
+          until kubectl get statefulset zitadel -n zeldas-lullaby -o jsonpath='{.status.readyReplicas}' 2>/dev/null | grep -q "1"; do
+            echo "StatefulSet not ready yet, waiting..."
+            sleep 5
+          done
+          echo "Zitadel StatefulSet is ready!"
+
+          echo "Waiting for admin PAT secret to exist..."
+          until kubectl get secret zitadel-k8s-admin-sa -n zeldas-lullaby 2>/dev/null; do
+            echo "Secret not found yet, waiting..."
+            sleep 5
+          done
+          echo "Admin PAT secret found!"
+      containers:
+      - name: enable-loginv2
+        image: docker.jcr.pcfae.com/curlimages/curl:8.16.0
+        command:
+        - sh
+        - -c
+        - |
+          set -e
+
+          echo "=== Enabling Zitadel loginV2 Feature ==="
+
+          # Get the admin PAT from the Kubernetes secret
+          echo "Retrieving admin PAT from secret..."
+          PAT=$(kubectl get secret zitadel-k8s-admin-sa -n zeldas-lullaby -o jsonpath='{.data.pat}' | base64 -d)
+
+          if [ -z "$PAT" ]; then
+            echo "ERROR: Failed to retrieve PAT from secret"
+            exit 1
+          fi
+
+          echo "PAT retrieved successfully"
+
+          # Enable the loginV2 feature via Admin API
+          echo "Calling Zitadel Admin API to enable loginV2 feature..."
+
+          # The API endpoint for instance features in Zitadel v4.6.1
+          RESPONSE=$(curl -sf -X PUT \
+            "${ZITADEL_API_URL}/admin/v1/instance/features/login_v2" \
+            -H "Authorization: Bearer ${PAT}" \
+            -H "Content-Type: application/json" \
+            -d '{"enabled": true}' 2>&1)
+
+          if [ $? -eq 0 ]; then
+            echo "✓ Successfully enabled loginV2 feature!"
+            echo "Response: $RESPONSE"
+          else
+            echo "ERROR: Failed to enable loginV2 feature"
+            echo "Response: $RESPONSE"
+            exit 1
+          fi
+
+          echo "=== loginV2 Feature Enabled Successfully ==="
