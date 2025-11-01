@@ -32,7 +32,7 @@ spec:
           valueFrom:
             secretKeyRef:
               name: zitadel-k8s-admin-sa
-              key: token
+              key: pat
         - name: VAULT_ADDR
           value: "http://vault.zeldas-lullaby.svc.cluster.local:8200"
         command:
