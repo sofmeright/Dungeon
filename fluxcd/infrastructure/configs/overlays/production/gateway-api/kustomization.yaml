@@ -3,15 +3,15 @@ kind: Kustomization
 resources:
   - ../../../base/gateway-api
 patches:
-  - path: gateway-xylem-patch.yaml
+  - path: gateway-patch-xylem.yaml
     target:
       kind: Gateway
       name: xylem-gateway
-  - path: gateway-phloem-patch.yaml
+  - path: gateway-patch-phloem.yaml
     target:
       kind: Gateway
       name: phloem-gateway
-  - path: gateway-cell-membrane-patch.yaml
+  - path: gateway-patch-cell-membrane.yaml
     target:
       kind: Gateway
       name: cell-membrane-gateway

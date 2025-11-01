@@ -4,4 +4,4 @@ namespace: hyrule-castle
 resources:
   - ../../../base/gateways
 patches:
-  - path: cell-membrane-gateway-patch.yaml
+  - path: gateway-patch-cell-membrane.yaml

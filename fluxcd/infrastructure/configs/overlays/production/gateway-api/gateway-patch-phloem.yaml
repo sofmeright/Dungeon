@@ -6,6 +6,7 @@ metadata:
     lbipam.cilium.io/ips: "172.22.30.70"
     lbipam.cilium.io/sharing-key: "kokiri-forest"
     lbipam.cilium.io/sharing-cross-namespace: "*"
+    service.cilium.io/loadbalancer-mode: "dsr"
 spec:
   listeners:
     - name: http
