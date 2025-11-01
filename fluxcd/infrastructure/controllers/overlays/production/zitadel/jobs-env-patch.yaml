@@ -67,26 +67,3 @@ spec:
           until kubectl get secret zitadel-k8s-admin-sa -n zeldas-lullaby 2>/dev/null; do
             sleep 5
           done
----
-apiVersion: batch/v1
-kind: Job
-metadata:
-  name: zitadel-login-v2-provision
-spec:
-  template:
-    spec:
-      initContainers:
-      - name: wait-for-zitadel
-        command:
-        - sh
-        - -c
-        - |
-          echo "Waiting for Zitadel..."
-          until curl -sf http://zitadel:8174/debug/ready; do
-            sleep 5
-          done
-      containers:
-      - name: provision-login-client
-        env:
-        - name: ZITADEL_URL
-          value: "http://zitadel:8174"

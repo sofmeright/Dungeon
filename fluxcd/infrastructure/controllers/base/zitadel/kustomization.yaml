@@ -13,4 +13,3 @@ resources:
   - admin-sa-provision-job.yaml
   - login-v2-deployment.yaml
   - login-v2-service.yaml
-  - login-v2-provision-job.yaml

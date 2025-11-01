@@ -78,17 +78,3 @@ spec:
       containers:
       - name: sync-to-vault
         image: docker.jcr.pcfae.com/curlimages/curl:8.16.0
----
-apiVersion: batch/v1
-kind: Job
-metadata:
-  name: zitadel-login-v2-provision
-spec:
-  template:
-    spec:
-      initContainers:
-      - name: wait-for-zitadel
-        image: docker.jcr.pcfae.com/curlimages/curl:8.16.0
-      containers:
-      - name: provision-login-client
-        image: docker.jcr.pcfae.com/curlimages/curl:8.16.0

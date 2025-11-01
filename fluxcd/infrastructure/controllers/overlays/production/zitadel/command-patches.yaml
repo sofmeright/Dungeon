@@ -53,32 +53,6 @@ spec:
 
           echo "Credentials successfully synced to Vault!"
 ---
-# Patch login-v2-provision job with actual Zitadel URL
-apiVersion: batch/v1
-kind: Job
-metadata:
-  name: zitadel-login-v2-provision
-spec:
-  template:
-    spec:
-      initContainers:
-      - name: wait-for-zitadel
-        command:
-        - sh
-        - -c
-        - |
-          echo "Waiting for Zitadel to be ready..."
-          until curl -sf http://zitadel.zeldas-lullaby.svc.cluster.local:8174/debug/ready; do
-            echo "Zitadel not ready yet, waiting..."
-            sleep 10
-          done
-          echo "Zitadel is ready!"
-      containers:
-      - name: provision-login-client
-        env:
-        - name: ZITADEL_URL
-          value: "http://zitadel.zeldas-lullaby.svc.cluster.local:8174"
----
 # Patch setup job sidecar containers to replace PLACEHOLDER_NAMESPACE with actual namespace
 apiVersion: batch/v1
 kind: Job
