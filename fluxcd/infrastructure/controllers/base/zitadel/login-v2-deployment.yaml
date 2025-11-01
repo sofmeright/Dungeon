@@ -38,7 +38,7 @@ spec:
           valueFrom:
             secretKeyRef:
               name: zitadel-login-client
-              key: token
+              key: pat
         securityContext:
           allowPrivilegeEscalation: false
           readOnlyRootFilesystem: true
