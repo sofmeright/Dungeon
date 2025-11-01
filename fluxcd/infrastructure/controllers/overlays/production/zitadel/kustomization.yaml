@@ -23,10 +23,6 @@ patches:
     target:
       kind: Job
       name: zitadel-setup
-  - path: enable-loginv2-job-patch.yaml
-    target:
-      kind: Job
-      name: zitadel-enable-loginv2
   - path: service-patch.yaml
     target:
       kind: Service

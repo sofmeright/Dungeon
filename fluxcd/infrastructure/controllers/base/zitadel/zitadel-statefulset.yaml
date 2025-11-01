@@ -66,6 +66,11 @@ spec:
             secretKeyRef:
               name: zitadel-secrets
               key: SMTP_PASSWORD
+        # LoginV2 feature configuration
+        - name: ZITADEL_DEFAULTINSTANCE_FEATURES_LOGINV2_REQUIRED
+          value: "true"
+        - name: ZITADEL_DEFAULTINSTANCE_FEATURES_LOGINV2_BASEURI
+          value: "http://zitadel-login-v2:3000"
         # Kubernetes integration
         - name: KUBERNETES_SERVICE_HOST
           value: "kubernetes.default.svc"

@@ -11,6 +11,5 @@ resources:
   - zitadel-initjob.yaml
   - zitadel-setupjob.yaml
   - admin-sa-provision-job.yaml
-  - enable-loginv2-job.yaml
   - login-v2-deployment.yaml
   - login-v2-service.yaml
