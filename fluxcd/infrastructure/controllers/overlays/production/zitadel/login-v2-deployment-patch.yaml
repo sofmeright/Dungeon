@@ -10,3 +10,7 @@ spec:
         env:
         - name: ZITADEL_EXTERNAL_DOMAIN
           value: "sso.prplanit.com"
+        - name: CUSTOM_REQUEST_HEADERS
+          value: "Host:sso.prplanit.com"
+        - name: NEXT_PUBLIC_BASE_PATH
+          value: "/ui/v2/login"
