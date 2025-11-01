@@ -34,7 +34,7 @@ spec:
           value: "PLACEHOLDER_DOMAIN"
         - name: ZITADEL_EXTERNAL_SECURE
           value: "true"
-        - name: ZITADEL_ACCESS_TOKEN
+        - name: ZITADEL_SERVICE_USER_TOKEN
           valueFrom:
             secretKeyRef:
               name: zitadel-login-client
