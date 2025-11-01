@@ -29,7 +29,7 @@ spec:
           protocol: TCP
         env:
         - name: ZITADEL_API_URL
-          value: "http://zitadel:8080"
+          value: "http://zitadel:8174"
         - name: ZITADEL_EXTERNAL_DOMAIN
           value: "PLACEHOLDER_DOMAIN"
         - name: ZITADEL_EXTERNAL_SECURE
