@@ -49,10 +49,11 @@ spec:
         command:
         - /app/zitadel
         - setup
+        - --masterkeyFromEnv
         - --config
         - /config/zitadel-config.yaml
-        - --masterkeyFromEnv
-        - --init-projections=true
+        - --steps
+        - /config/zitadel-config.yaml
         volumeMounts:
         - name: zitadel-config
           mountPath: /config
