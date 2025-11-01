@@ -19,7 +19,7 @@ spec:
       urlRewrite:
         path:
           type: ReplacePrefixMatch
-          replacePrefixMatch: /login
+          replacePrefixMatch: /
     backendRefs:
     - name: zitadel-login-v2
       port: 3000
