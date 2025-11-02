@@ -59,29 +59,8 @@ spec:
           blockAutoCreatedUsers: false
           autoLinkUser: ['openid_connect']
           providers:
-            - name: openid_connect
-              label: 'PrecisionPlanIT.com'
-              icon: 'https://sso.prplanit.com/ui/console/assets/icons/favicon-32x32.png'
-              args:
-                name: openid_connect
-                scope: ['openid', 'profile', 'email']
-                response_type: code
-                issuer:
-                  secret: gitlab-smtp-oidc
-                  key: oidc_issuer
-                discovery: true
-                client_auth_method: query
-                uid_field: sub
-                client_options:
-                  identifier:
-                    secret: gitlab-smtp-oidc
-                    key: oidc_client_id
-                  secret:
-                    secret: gitlab-smtp-oidc
-                    key: oidc_client_secret
-                  redirect_uri:
-                    secret: gitlab-smtp-oidc
-                    key: oidc_redirect_uri
+            - secret: gitlab-smtp-oidc
+              key: provider
 
         lfs:
           enabled: true
