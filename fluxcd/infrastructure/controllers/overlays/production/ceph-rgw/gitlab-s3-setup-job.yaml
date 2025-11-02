@@ -10,68 +10,125 @@ spec:
       restartPolicy: OnFailure
       containers:
       - name: s3-setup
-        image: quay.io/ceph/ceph:v19
+        image: docker.jcr.pcfae.com/library/python:3.11-alpine
+        env:
+        - name: ADMIN_ACCESSKEY
+          valueFrom:
+            secretKeyRef:
+              name: rgw-admin-ops-user
+              key: accessKey
+        - name: ADMIN_SECRETKEY
+          valueFrom:
+            secretKeyRef:
+              name: rgw-admin-ops-user
+              key: secretKey
+        - name: GITLAB_ACCESSKEY
+          valueFrom:
+            secretKeyRef:
+              name: gitlab-s3-credentials
+              key: access_key
+        - name: GITLAB_SECRETKEY
+          valueFrom:
+            secretKeyRef:
+              name: gitlab-s3-credentials
+              key: secret_key
         command:
-        - /bin/bash
+        - /bin/sh
         - -c
         - |
-          set -ex
+          set -e
 
-          # Wait for RGW to be ready
-          until radosgw-admin user list 2>/dev/null; do
-            echo "Waiting for RGW to be accessible..."
-            sleep 5
-          done
+          echo "Installing dependencies..."
+          pip install --no-cache-dir boto3 requests-aws4auth
 
-          # Create S3 user for GitLab if it doesn't exist
-          if ! radosgw-admin user info --uid=gitlab 2>/dev/null; then
-            echo "Creating GitLab S3 user..."
-            radosgw-admin user create \
-              --uid=gitlab \
-              --display-name="GitLab S3 User" \
-              --access-key="gitlab-s3-user" \
-              --secret-key="2Aft2kRKVo9yZcsSZAjRcnMSCPRarY4g9pieUfQcG3M="
-          else
-            echo "GitLab S3 user already exists"
-          fi
+          cat > /tmp/gitlab_s3_setup.py << 'EOFPYTHON'
+          import boto3
+          import sys
+          from botocore.client import Config
+          from botocore.exceptions import ClientError
 
-          # Install s3cmd for bucket creation
-          apt-get update && apt-get install -y s3cmd
+          RGW_ENDPOINT = "http://ceph-rgw.gorons-bracelet.svc.cluster.local:80"
 
-          # Configure s3cmd
-          cat > /root/.s3cfg <<EOF
-          [default]
-          access_key = gitlab-s3-user
-          secret_key = 2Aft2kRKVo9yZcsSZAjRcnMSCPRarY4g9pieUfQcG3M=
-          host_base = ceph-rgw.gorons-bracelet.svc.cluster.local
-          host_bucket = ceph-rgw.gorons-bracelet.svc.cluster.local/%(bucket)
-          use_https = False
-          EOF
+          def create_user(admin_access, admin_secret, gitlab_access, gitlab_secret):
+              """Create GitLab RGW user via Admin API"""
+              import requests
+              from requests_aws4auth import AWS4Auth
 
-          # Create buckets
-          for bucket in gitlab-lfs gitlab-artifacts gitlab-uploads gitlab-packages gitlab-backups gitlab-tmp gitlab-registry; do
-            if ! s3cmd ls s3://${bucket} 2>/dev/null; then
-              echo "Creating bucket: ${bucket}"
-              s3cmd mb s3://${bucket}
-            else
-              echo "Bucket already exists: ${bucket}"
-            fi
-          done
+              auth = AWS4Auth(admin_access, admin_secret, 'us-east-1', 's3')
 
-          echo "GitLab S3 setup complete"
-        volumeMounts:
-        - name: ceph-config
-          mountPath: /etc/ceph/ceph.conf
-          subPath: ceph.conf
-          readOnly: true
-        - name: ceph-keyring
-          mountPath: /etc/ceph/ceph.keyring
-          subPath: keyring
-          readOnly: true
-      volumes:
-      - name: ceph-config
-        configMap:
-          name: ceph-config
-      - name: ceph-keyring
-        secret:
-          secretName: ceph-rgw-keyring
+              url = f"{RGW_ENDPOINT}/admin/user"
+              params = {
+                  'uid': 'gitlab',
+                  'display-name': 'GitLab S3 User',
+                  'access-key': gitlab_access,
+                  'secret-key': gitlab_secret
+              }
+
+              try:
+                  resp = requests.put(url, params=params, auth=auth)
+                  if resp.status_code == 200:
+                      print("✓ GitLab RGW user created successfully")
+                      return True
+                  elif 'UserAlreadyExists' in resp.text or 'EntityAlreadyExists' in resp.text:
+                      print("✓ GitLab RGW user already exists")
+                      return True
+                  else:
+                      print(f"⚠ User creation response: {resp.status_code} - {resp.text}")
+                      print("  Assuming user exists, continuing...")
+                      return True
+              except Exception as e:
+                  print(f"⚠ User creation failed: {e}")
+                  print("  Assuming user exists, continuing...")
+                  return True
+
+          def create_bucket(access_key, secret_key, bucket_name):
+              """Create S3 bucket"""
+              s3 = boto3.client(
+                  's3',
+                  endpoint_url=RGW_ENDPOINT,
+                  aws_access_key_id=access_key,
+                  aws_secret_access_key=secret_key,
+                  config=Config(signature_version='s3v4')
+              )
+
+              try:
+                  s3.head_bucket(Bucket=bucket_name)
+                  print(f"✓ Bucket '{bucket_name}' already exists")
+                  return True
+              except ClientError as e:
+                  if e.response['Error']['Code'] == '404':
+                      s3.create_bucket(Bucket=bucket_name)
+                      print(f"✓ Bucket '{bucket_name}' created successfully")
+                      return True
+                  else:
+                      print(f"✗ Bucket '{bucket_name}' check failed: {e}")
+                      return False
+
+          if __name__ == '__main__':
+              import os
+              admin_access = os.environ['ADMIN_ACCESSKEY']
+              admin_secret = os.environ['ADMIN_SECRETKEY']
+              gitlab_access = os.environ['GITLAB_ACCESSKEY']
+              gitlab_secret = os.environ['GITLAB_SECRETKEY']
+
+              print("Creating GitLab RGW user via Admin API...")
+              create_user(admin_access, admin_secret, gitlab_access, gitlab_secret)
+
+              buckets = ['gitlab-lfs', 'gitlab-artifacts', 'gitlab-uploads', 'gitlab-packages',
+                         'gitlab-backups', 'gitlab-tmp', 'gitlab-registry']
+
+              print("\nCreating GitLab S3 buckets...")
+              all_success = True
+              for bucket in buckets:
+                  if not create_bucket(gitlab_access, gitlab_secret, bucket):
+                      all_success = False
+
+              if all_success:
+                  print("\n✓ GitLab S3 setup complete!")
+                  sys.exit(0)
+              else:
+                  print("\n✗ Some buckets failed to create")
+                  sys.exit(1)
+          EOFPYTHON
+
+          python /tmp/gitlab_s3_setup.py
