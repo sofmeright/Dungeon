@@ -30,6 +30,38 @@ spec:
       appConfig:
         initialDefaults:
           signupEnabled: false  # Disable public signups
+
+        # SMTP Configuration
+        smtp:
+          enabled: true
+          address: smtp.gmail.com
+          port: 587
+          user_name: precisionplanit@gmail.com
+          password:
+            secret: gitlab-smtp-oidc
+            key: smtp_password
+          domain: smtp.gmail.com
+          authentication: login
+          starttls_auto: true
+          tls: false
+          openssl_verify_mode: peer
+
+        # Email settings
+        email_from: precisionplanit@gmail.com
+        email_display_name: GitLab
+        email_reply_to: precisionplanit@gmail.com
+        email_subject_suffix: ""
+
+        # OmniAuth / OIDC Configuration
+        omniauth:
+          enabled: true
+          allowSingleSignOn: ['openid_connect']
+          blockAutoCreatedUsers: false
+          autoLinkUser: ['openid_connect']
+          providers:
+            - secret: gitlab-smtp-oidc
+              key: provider
+
         lfs:
           enabled: true
           proxy_download: true
@@ -114,6 +146,26 @@ spec:
     # External PostgreSQL (CloudNativePG)
     postgresql:
       install: false  # Disable built-in PostgreSQL
+
+    # Workhorse - increased upload limits
+    gitlab-workhorse:
+      workhorse:
+        maxUploadSize: 2048m
+
+    # NGINX - increased limits and custom headers
+    nginx-ingress:
+      enabled: false
+
+    # Configure global nginx settings (affects webservice nginx)
+    global:
+      nginx:
+        clientMaxBodySize: "2048m"
+        proxyReadTimeout: 3600
+        proxyConnectTimeout: 300
+        proxySendTimeout: 300
+        customHeaders:
+          Content-Security-Policy: ""
+          X-Frame-Options: ""
 
     # High Availability: Scale critical components to 3 replicas for 2-node failure tolerance
     gitlab:

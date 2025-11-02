@@ -24,3 +24,4 @@ resources:
   - registries/jcr-pcfae-dungeon-shared  # JFrog Docker Hub cache pull credentials (shared across namespaces)
   - registries/docker.io-prplanit  # Docker Hub pull credentials (temple-of-time)
   - registries/docker-io-shared  # Docker Hub pull credentials (shared across namespaces)
+  - gitlab  # GitLab SMTP and OIDC credentials
