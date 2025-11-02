@@ -10,7 +10,7 @@ spec:
       restartPolicy: OnFailure
       containers:
       - name: s3-setup
-        image: quay.io/ceph/ceph:v18.2.0
+        image: quay.io/ceph/ceph:v19
         command:
         - /bin/bash
         - -c

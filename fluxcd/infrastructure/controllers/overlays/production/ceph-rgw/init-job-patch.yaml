@@ -7,7 +7,7 @@ spec:
     spec:
       containers:
       - name: init
-        image: quay.io/ceph/ceph:v18
+        image: quay.io/ceph/ceph:v19
         command:
         - /bin/bash
         - -c

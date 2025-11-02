@@ -8,7 +8,7 @@ spec:
     spec:
       containers:
       - name: rgw
-        image: quay.io/ceph/ceph:v18
+        image: quay.io/ceph/ceph:v19
         args:
         - --foreground
         - --rgw-frontends=beast port=8080
