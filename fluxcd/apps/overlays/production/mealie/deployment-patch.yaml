@@ -13,7 +13,7 @@ spec:
         command: ["/opt/mealie/bin/python3"]
         args:
           - "/opt/mealie/bin/mealie"
-          - "--forwarded-allow-ips=172.22.144.0/24,192.168.144.0/20,10.144.0.0/12"
+          - "--forwarded-allow-ips=172.22.30.0/24,172.22.144.0/24,192.168.144.0/20,10.144.0.0/12"
         env:
         - name: BASE_URL
           value: "https://mealie.yesimvegan.com"
