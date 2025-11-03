@@ -55,9 +55,6 @@ spec:
         - name: AUTH_OIDC_FORCE_USERINFO
           value: "false"
   volumeClaimTemplates:
-  - $patch: delete
-    metadata:
-      name: lost-woods-homarr-sqlite
   - metadata:
       name: lost-woods-homarr-images
     spec:
