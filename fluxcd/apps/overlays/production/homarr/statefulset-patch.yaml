@@ -21,6 +21,17 @@ spec:
               key: password
         - name: DATABASE_URL
           value: "postgresql://homarr:$(POSTGRES_PASSWORD)@homarr-postgres-rw.lost-woods.svc.cluster.local:5432/homarr"
+        - name: REDIS_IS_EXTERNAL
+          value: "true"
+        - name: REDIS_HOST
+          value: "homarr-redis.lost-woods.svc.cluster.local"
+        - name: REDIS_PORT
+          value: "6379"
+        - name: REDIS_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: homarr-redis-password
+              key: password
         - name: NEXTAUTH_URL
           value: "http://172.22.30.223:7575"
         - name: AUTH_PROVIDERS
