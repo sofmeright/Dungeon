@@ -6,6 +6,7 @@ namespace: temple-of-time
 resources:
   - ../../../base/open-webui
   - httproute.yaml
+  - migration-job.yaml
 
 patches:
   - path: statefulset-patch.yaml
