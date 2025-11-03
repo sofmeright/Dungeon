@@ -19,6 +19,8 @@ spec:
             secretKeyRef:
               name: open-webui-redis-password
               key: password
+        - name: OLLAMA_BASE_URLS
+          value: "http://glicynia:11434,http://wisteria:11434,http://dock:11434,http://Leaf-Cutter:11434,http://anchorage:11434,http://172.22.30.107:11434"
         - name: DATABASE_URL
           value: "postgresql://openwebui:$(POSTGRES_PASSWORD)@open-webui-postgres-rw.temple-of-time.svc.cluster.local:5432/openwebui"
         - name: REDIS_URL

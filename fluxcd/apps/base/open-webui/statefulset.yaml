@@ -32,7 +32,7 @@ spec:
         - name: OLLAMA_BASE_URL
           value: ""
         - name: OLLAMA_BASE_URLS
-          value: "http://172.22.22.143:11434,http://172.22.22.144:11434"
+          value: ""
         - name: AIOHTTP_CLIENT_TIMEOUT
           value: "600"
         - name: ENABLE_OAUTH_SIGNUP
