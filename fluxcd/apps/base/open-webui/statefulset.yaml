@@ -30,7 +30,7 @@ spec:
         - name: OLLAMA_ORIGINS
           value: "*"
         - name: OLLAMA_BASE_URL
-          value: ""
+          value: "http://glicynia:11434"
         - name: OLLAMA_BASE_URLS
           value: ""
         - name: AIOHTTP_CLIENT_TIMEOUT
