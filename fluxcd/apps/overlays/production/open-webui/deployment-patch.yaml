@@ -25,11 +25,15 @@ spec:
         - name: REDIS_URL
           value: "redis://:$(REDIS_PASSWORD)@open-webui-redis:6379/0"
         - name: REDIS_SENTINEL_HOSTS
-          value: "open-webui-sentinel-0.open-webui-sentinel-headless.temple-of-time.svc.cluster.local:26379,open-webui-sentinel-1.open-webui-sentinel-headless.temple-of-time.svc.cluster.local:26379,open-webui-sentinel-2.open-webui-sentinel-headless.temple-of-time.svc.cluster.local:26379"
+          value: "open-webui-sentinel-0.open-webui-sentinel-headless.temple-of-time.svc.cluster.local,open-webui-sentinel-1.open-webui-sentinel-headless.temple-of-time.svc.cluster.local,open-webui-sentinel-2.open-webui-sentinel-headless.temple-of-time.svc.cluster.local"
+        - name: REDIS_SENTINEL_PORT
+          value: "26379"
         - name: WEBSOCKET_REDIS_URL
           value: "redis://:$(REDIS_PASSWORD)@open-webui-redis:6379/0"
         - name: WEBSOCKET_SENTINEL_HOSTS
-          value: "open-webui-sentinel-0.open-webui-sentinel-headless.temple-of-time.svc.cluster.local:26379,open-webui-sentinel-1.open-webui-sentinel-headless.temple-of-time.svc.cluster.local:26379,open-webui-sentinel-2.open-webui-sentinel-headless.temple-of-time.svc.cluster.local:26379"
+          value: "open-webui-sentinel-0.open-webui-sentinel-headless.temple-of-time.svc.cluster.local,open-webui-sentinel-1.open-webui-sentinel-headless.temple-of-time.svc.cluster.local,open-webui-sentinel-2.open-webui-sentinel-headless.temple-of-time.svc.cluster.local"
+        - name: WEBSOCKET_SENTINEL_PORT
+          value: "26379"
         - name: ENABLE_WEBSOCKET_SUPPORT
           value: "true"
         - name: WEBSOCKET_MANAGER
