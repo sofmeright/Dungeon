@@ -1,0 +1,22 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: open-webui-postgres
+spec:
+  instances: PLACEHOLDER_INSTANCES
+
+  postgresql:
+    parameters:
+      shared_buffers: "PLACEHOLDER_SHARED_BUFFERS"
+      max_connections: "PLACEHOLDER_MAX_CONNECTIONS"
+
+  bootstrap:
+    initdb:
+      database: PLACEHOLDER_DB_NAME
+      owner: PLACEHOLDER_DB_USER
+      secret:
+        name: open-webui-postgres-credentials
+
+  storage:
+    storageClass: PLACEHOLDER_STORAGE_CLASS
+    size: PLACEHOLDER_STORAGE_SIZE

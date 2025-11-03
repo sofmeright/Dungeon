@@ -14,3 +14,8 @@ patches:
       kind: Service
       name: open-webui
   - path: externalsecret-patch.yaml
+  - path: postgres-cluster-patch.yaml
+  - path: externalsecret-postgres-patch.yaml
+  - path: redis-statefulset-patch.yaml
+  - path: redis-sentinel-patch.yaml
+  - path: externalsecret-redis-patch.yaml

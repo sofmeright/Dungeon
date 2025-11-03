@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: open-webui-redis
+spec:
+  replicas: 3
+  template:
+    spec:
+      initContainers:
+      - name: config
+        image: docker.io/redis:7.4-alpine
+        command:
+        - sh
+        - -c
+        - |
+          set -ex
+          # Copy base config
+          cp /tmp/redis/redis.conf /etc/redis/redis.conf
+
+          # Determine master FQDN - redis-0 is always the initial master
+          MASTER_FDQN="open-webui-redis-0.open-webui-redis-headless.temple-of-time.svc.cluster.local"
+
+          # If this is not redis-0, configure as replica
+          if [ "$(hostname)" != "open-webui-redis-0" ]; then
+            # Check if Sentinel is available and knows the master
+            if [ "$(redis-cli -h open-webui-sentinel -p 26379 ping 2>/dev/null)" = "PONG" ]; then
+              # Query Sentinel for current master
+              SENTINEL_MASTER=$(redis-cli -h open-webui-sentinel -p 26379 sentinel get-master-addr-by-name open-webui-redis 2>/dev/null | head -n1)
+              if [ -n "$SENTINEL_MASTER" ]; then
+                MASTER_FDQN="$SENTINEL_MASTER"
+              fi
+            fi
+            echo "replicaof $MASTER_FDQN 6379" >> /etc/redis/redis.conf
+          fi
+
+          echo "Configuration complete for $(hostname)"
+          cat /etc/redis/redis.conf
+      containers:
+      - name: redis
+        image: docker.io/redis:7.4-alpine
+  volumeClaimTemplates:
+  - metadata:
+      name: data
+    spec:
+      storageClassName: ceph-rbd
+      resources:
+        requests:
+          storage: 2Gi
