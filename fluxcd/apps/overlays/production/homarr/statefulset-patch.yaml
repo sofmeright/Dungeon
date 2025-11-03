@@ -3,18 +3,24 @@ kind: StatefulSet
 metadata:
   name: homarr
 spec:
+  replicas: 3
   template:
     spec:
       containers:
       - name: homarr
         volumeMounts:
-        - name: lost-woods-homarr-sqlite
-          mountPath: /appdata/db
+        - $patch: delete
+          name: lost-woods-homarr-sqlite
         - name: lost-woods-homarr-images
           mountPath: /images
         env:
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: homarr-postgres-credentials
+              key: password
         - name: DATABASE_URL
-          value: "file:/appdata/db/homarr.db"
+          value: "postgresql://homarr:$(POSTGRES_PASSWORD)@homarr-postgres-rw.lost-woods.svc.cluster.local:5432/homarr"
         - name: NEXTAUTH_URL
           value: "http://172.22.30.223:7575"
         - name: AUTH_PROVIDERS
@@ -38,15 +44,9 @@ spec:
         - name: AUTH_OIDC_FORCE_USERINFO
           value: "false"
   volumeClaimTemplates:
-  - metadata:
+  - $patch: delete
+    metadata:
       name: lost-woods-homarr-sqlite
-    spec:
-      accessModes:
-      - ReadWriteOnce
-      storageClassName: ceph-rbd-retain
-      resources:
-        requests:
-          storage: 100Mi
   - metadata:
       name: lost-woods-homarr-images
     spec:

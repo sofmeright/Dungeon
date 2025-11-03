@@ -16,3 +16,11 @@ patches:
     target:
       kind: Service
       name: homarr
+  - path: postgres-cluster-patch.yaml
+    target:
+      kind: Cluster
+      name: homarr-postgres
+  - path: externalsecret-postgres-patch.yaml
+    target:
+      kind: ExternalSecret
+      name: homarr-postgres-credentials

@@ -1,0 +1,22 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: homarr-postgres
+spec:
+  instances: 3
+
+  postgresql:
+    parameters:
+      shared_buffers: "128MB"
+      max_connections: "50"
+
+  bootstrap:
+    initdb:
+      database: homarr
+      owner: homarr
+
+  enableSuperuserAccess: true
+
+  storage:
+    storageClass: ceph-rbd
+    size: 5Gi
