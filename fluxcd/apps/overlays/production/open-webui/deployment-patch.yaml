@@ -11,7 +11,7 @@ spec:
         image: ghcr.io/open-webui/open-webui:latest
         env:
         - name: DATABASE_URL
-          value: "postgresql+asyncpg://openwebui:$(POSTGRES_PASSWORD)@open-webui-postgres-rw.temple-of-time.svc.cluster.local:5432/openwebui"
+          value: "postgresql://openwebui:$(POSTGRES_PASSWORD)@open-webui-postgres-rw.temple-of-time.svc.cluster.local:5432/openwebui"
         - name: REDIS_URL
           value: "redis://:$(REDIS_PASSWORD)@open-webui-sentinel.temple-of-time.svc.cluster.local:26379/0?sentinel=open-webui-redis&sentinel_fallback=open-webui-sentinel-0.open-webui-sentinel-headless.temple-of-time.svc.cluster.local:26379,open-webui-sentinel-1.open-webui-sentinel-headless.temple-of-time.svc.cluster.local:26379,open-webui-sentinel-2.open-webui-sentinel-headless.temple-of-time.svc.cluster.local:26379"
         - name: WEBSOCKET_REDIS_URL
