@@ -19,3 +19,10 @@ patches:
     target:
       kind: ExternalSecret
       name: grafana-postgres-credentials
+  - target:
+      kind: PersistentVolumeClaim
+      name: gossip-stone-grafana-plugins
+    patch: |-
+      - op: add
+        path: /metadata/namespace
+        value: gossip-stone
