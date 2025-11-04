@@ -1,0 +1,41 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: grafana-postgres
+spec:
+  instances: 3
+
+  # Fast failover optimizations
+  switchoverDelay: 30  # Reduced from default 3600s for faster planned switchovers
+
+  # Optimize failure detection and recovery
+  startDelay: 10       # Reduced from default 3600s
+  stopDelay: 10        # Reduced from default 1800s
+  livenessProbeTimeout: 5
+
+  postgresql:
+    # Enable synchronous replication for zero data loss and fast failover
+    synchronous:
+      method: any      # Any 1 replica can acknowledge
+      number: 1        # At least 1 replica must confirm writes
+
+    parameters:
+      shared_buffers: "128MB"
+      max_connections: "50"
+      # Faster detection of primary failure
+      wal_receiver_timeout: "5s"
+
+  # Enable monitoring
+  monitoring:
+    enablePodMonitor: true
+
+  bootstrap:
+    initdb:
+      database: grafana
+      owner: grafana
+
+  enableSuperuserAccess: true
+
+  storage:
+    storageClass: ceph-rbd
+    size: 5Gi

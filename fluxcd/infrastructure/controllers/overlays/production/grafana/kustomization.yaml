@@ -1,6 +1,6 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
-namespace: flux-system
+namespace: gossip-stone
 
 resources:
   - ../../../base/grafana
@@ -10,3 +10,11 @@ patches:
     target:
       kind: HelmRelease
       name: grafana
+  - path: postgres-cluster-patch.yaml
+    target:
+      kind: Cluster
+      name: grafana-postgres
+  - path: externalsecret-postgres-patch.yaml
+    target:
+      kind: ExternalSecret
+      name: grafana-postgres-credentials
