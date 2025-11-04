@@ -42,8 +42,7 @@ spec:
     # Add RWX volume for shared plugins
     extraVolumes:
       - name: grafana-plugins-shared
-        persistentVolumeClaim:
-          claimName: gossip-stone-grafana-plugins
+        existingClaim: gossip-stone-grafana-plugins
 
     extraVolumeMounts:
       - name: grafana-plugins-shared
