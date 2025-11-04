@@ -14,6 +14,8 @@ spec:
         - name: lost-woods-homarr-images
           mountPath: /images
         env:
+        - name: DATABASE_URL
+          value: ""
         - name: POSTGRES_PASSWORD
           valueFrom:
             secretKeyRef:
