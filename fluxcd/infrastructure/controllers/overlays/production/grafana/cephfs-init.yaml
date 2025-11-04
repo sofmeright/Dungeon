@@ -65,28 +65,15 @@ spec:
         - name: cephfs-root
           mountPath: /cephfs
       containers:
-      - name: set-permissions
+      - name: completion
         image: docker.jcr.pcfae.com/library/alpine:latest
         command:
         - /bin/sh
         - -c
         - |
-          set -e
-          echo "Setting permissions on plugins (UID/GID 472 - grafana)..."
-          chown 472:472 /plugins
-          chmod 755 /plugins
-
-          echo "Verifying structure..."
-          ls -la /plugins
-
           echo "Grafana CephFS initialization complete!"
-        volumeMounts:
-        - name: plugins
-          mountPath: /plugins
+          exit 0
       volumes:
       - name: cephfs-root
         persistentVolumeClaim:
           claimName: cephfs-root-temp-grafana-pvc
-      - name: plugins
-        persistentVolumeClaim:
-          claimName: gossip-stone-grafana-plugins
