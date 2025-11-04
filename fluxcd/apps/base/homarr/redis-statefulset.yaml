@@ -91,9 +91,11 @@ spec:
             command:
             - sh
             - -c
-            - redis-cli -a "$REDIS_PASSWORD" ping | grep -q PONG
+            - |
+              redis-cli -a "$REDIS_PASSWORD" info replication | grep -q 'role:master'
           initialDelaySeconds: 5
           periodSeconds: 5
+          failureThreshold: 3
       volumes:
       - name: redis-config-template
         configMap:

@@ -24,7 +24,7 @@ spec:
         - name: REDIS_IS_EXTERNAL
           value: "true"
         - name: REDIS_HOST
-          value: "homarr-redis.lost-woods.svc.cluster.local"
+          value: "homarr-redis-master.lost-woods.svc.cluster.local"
         - name: REDIS_PORT
           value: "6379"
         - name: REDIS_PASSWORD

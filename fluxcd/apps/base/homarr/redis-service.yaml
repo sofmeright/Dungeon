@@ -18,6 +18,24 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
+  name: homarr-redis-master
+  labels:
+    app: homarr-redis
+    role: master
+spec:
+  type: ClusterIP
+  publishNotReadyAddresses: false
+  ports:
+  - name: redis
+    port: 6379
+    targetPort: redis
+    protocol: TCP
+  selector:
+    app: homarr-redis
+---
+apiVersion: v1
+kind: Service
+metadata:
   name: homarr-redis-headless
   labels:
     app: homarr-redis
