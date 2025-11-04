@@ -33,14 +33,20 @@ spec:
           name: grafana-postgres-credentials
           key: password
 
+    # Override default plugins volume with RWX PVC
+    # sidecar is used to override the default emptyDir plugins volume
+    sidecar:
+      plugins:
+        enabled: false  # Disable sidecar plugin loader to avoid conflicts
+
     # Add RWX volume for shared plugins
     extraVolumes:
-      - name: plugins
+      - name: grafana-plugins-shared
         persistentVolumeClaim:
           claimName: gossip-stone-grafana-plugins
 
     extraVolumeMounts:
-      - name: plugins
+      - name: grafana-plugins-shared
         mountPath: /var/lib/grafana/plugins
 
     service:
