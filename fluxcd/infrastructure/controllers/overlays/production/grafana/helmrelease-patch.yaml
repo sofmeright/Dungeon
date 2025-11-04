@@ -4,13 +4,53 @@ metadata:
   name: grafana
 spec:
   values:
-    persistence:
-      storageClassName: ceph-rbd
+    # HA configuration
+    replicas: 3
 
+    # Disable built-in persistence - using PostgreSQL instead
+    persistence:
+      enabled: false
+
+    # Configure PostgreSQL database
     grafana.ini:
       server:
         root_url: "https://grafana.pcfae.com"
         serve_from_sub_path: false
+      database:
+        type: postgres
+        host: grafana-postgres-rw.gossip-stone.svc.cluster.local:5432
+        name: grafana
+        user: $__env{GF_DATABASE_USER}
+        password: $__env{GF_DATABASE_PASSWORD}
+        ssl_mode: disable
+
+    # Environment variables for database credentials
+    envFrom:
+      - secretRef:
+          name: grafana-postgres-credentials
+
+    # Map secret keys to Grafana env vars
+    env:
+      GF_DATABASE_USER:
+        valueFrom:
+          secretKeyRef:
+            name: grafana-postgres-credentials
+            key: username
+      GF_DATABASE_PASSWORD:
+        valueFrom:
+          secretKeyRef:
+            name: grafana-postgres-credentials
+            key: password
+
+    # Add RWX volume for shared plugins
+    extraVolumes:
+      - name: plugins
+        persistentVolumeClaim:
+          claimName: gossip-stone-grafana-plugins
+
+    extraVolumeMounts:
+      - name: plugins
+        mountPath: /var/lib/grafana/plugins
 
     service:
       annotations:
