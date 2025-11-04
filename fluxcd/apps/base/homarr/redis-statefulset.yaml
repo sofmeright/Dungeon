@@ -92,7 +92,8 @@ spec:
             - sh
             - -c
             - |
-              redis-cli -a "$REDIS_PASSWORD" info replication | grep -q 'role:master'
+              # Check if Redis is responding and either master or replica
+              redis-cli -a "$REDIS_PASSWORD" ping | grep -q PONG
           initialDelaySeconds: 5
           periodSeconds: 5
           failureThreshold: 3
