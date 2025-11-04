@@ -19,12 +19,16 @@ spec:
             secretKeyRef:
               name: homarr-postgres-credentials
               key: password
-        - name: DATABASE_URL
-          value: "postgresql://homarr:$(POSTGRES_PASSWORD)@homarr-postgres-rw.lost-woods.svc.cluster.local:5432/homarr"
+        - name: DB_DRIVER
+          value: "node-postgres"
+        - name: DB_DIALECT
+          value: "postgresql"
+        - name: DB_URL
+          value: "postgresql://homarr:$(POSTGRES_PASSWORD)@homarr-postgres-rw:5432/homarr"
         - name: REDIS_IS_EXTERNAL
           value: "true"
         - name: REDIS_HOST
-          value: "homarr-redis-rw.lost-woods.svc.cluster.local"
+          value: "homarr-redis-rw"
         - name: REDIS_PORT
           value: "6379"
         - name: REDIS_PASSWORD
