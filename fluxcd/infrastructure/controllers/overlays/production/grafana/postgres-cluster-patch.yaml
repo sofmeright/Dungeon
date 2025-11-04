@@ -2,6 +2,7 @@ apiVersion: postgresql.cnpg.io/v1
 kind: Cluster
 metadata:
   name: grafana-postgres
+  namespace: gossip-stone
 spec:
   instances: 3
 
