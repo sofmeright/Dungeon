@@ -23,8 +23,19 @@ spec:
           value: "node-postgres"
         - name: DB_DIALECT
           value: "postgresql"
-        - name: DB_URL
-          value: "postgresql://homarr:$(POSTGRES_PASSWORD)@homarr-postgres-rw:5432/homarr"
+        - name: DB_HOST
+          value: "homarr-postgres-rw"
+        - name: DB_PORT
+          value: "5432"
+        - name: DB_NAME
+          value: "homarr"
+        - name: DB_USER
+          value: "homarr"
+        - name: DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: homarr-postgres-credentials
+              key: password
         - name: REDIS_IS_EXTERNAL
           value: "true"
         - name: REDIS_HOST
