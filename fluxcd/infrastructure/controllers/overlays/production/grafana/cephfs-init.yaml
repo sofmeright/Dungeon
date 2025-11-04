@@ -1,0 +1,92 @@
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: cephfs-root-temp-grafana
+spec:
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  csi:
+    driver: gorons-bracelet.cephfs.csi.ceph.com
+    nodeStageSecretRef:
+      name: csi-cephfs-node
+      namespace: gorons-bracelet
+    volumeAttributes:
+      clusterID: 0985467c-d8f3-4483-b27f-f0a512397ec2
+      fsName: Seed_Bank
+      staticVolume: "true"
+      rootPath: /
+    volumeHandle: cephfs-root-temp-grafana
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: cephfs-root-temp-grafana-pvc
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Gi
+  volumeName: cephfs-root-temp-grafana
+  storageClassName: ""
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: grafana-cephfs-init
+spec:
+  ttlSecondsAfterFinished: 300
+  template:
+    spec:
+      restartPolicy: OnFailure
+      initContainers:
+      - name: mkdir-structure
+        image: docker.jcr.pcfae.com/library/alpine:latest
+        command:
+        - /bin/sh
+        - -c
+        - |
+          set -e
+          echo "Creating directory structure in CephFS..."
+          mkdir -p /cephfs/dungeon/nvme/apps/grafana/plugins
+
+          echo "Setting ownership to UID/GID 472 (grafana)..."
+          chown -R 472:472 /cephfs/dungeon/nvme/apps/grafana
+
+          echo "Setting permissions..."
+          chmod -R 755 /cephfs/dungeon/nvme/apps/grafana
+
+          echo "Directory structure created successfully!"
+        volumeMounts:
+        - name: cephfs-root
+          mountPath: /cephfs
+      containers:
+      - name: set-permissions
+        image: docker.jcr.pcfae.com/library/alpine:latest
+        command:
+        - /bin/sh
+        - -c
+        - |
+          set -e
+          echo "Setting permissions on plugins (UID/GID 472 - grafana)..."
+          chown 472:472 /plugins
+          chmod 755 /plugins
+
+          echo "Verifying structure..."
+          ls -la /plugins
+
+          echo "Grafana CephFS initialization complete!"
+        volumeMounts:
+        - name: plugins
+          mountPath: /plugins
+      volumes:
+      - name: cephfs-root
+        persistentVolumeClaim:
+          claimName: cephfs-root-temp-grafana-pvc
+      - name: plugins
+        persistentVolumeClaim:
+          claimName: gossip-stone-grafana-plugins
