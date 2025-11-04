@@ -33,6 +33,20 @@ patches:
         path: /metadata/namespace
         value: flux-system
   - target:
+      kind: Cluster
+      name: grafana-postgres
+    patch: |-
+      - op: add
+        path: /metadata/namespace
+        value: gossip-stone
+  - target:
+      kind: ExternalSecret
+      name: grafana-postgres-credentials
+    patch: |-
+      - op: add
+        path: /metadata/namespace
+        value: gossip-stone
+  - target:
       kind: PersistentVolumeClaim
       name: gossip-stone-grafana-plugins
     patch: |-
