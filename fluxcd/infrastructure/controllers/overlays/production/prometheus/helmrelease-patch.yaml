@@ -5,6 +5,14 @@ metadata:
 spec:
   targetNamespace: gossip-stone
   values:
+    # Scale prometheus-operator for HA
+    prometheusOperator:
+      replicas: 2
+
+    # Scale kube-state-metrics for HA
+    kube-state-metrics:
+      replicas: 2
+
     prometheus:
       prometheusSpec:
         # Enable HA with 3 replicas
