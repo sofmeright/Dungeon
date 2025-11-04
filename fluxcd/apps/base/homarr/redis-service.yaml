@@ -18,10 +18,10 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: homarr-redis-master
+  name: homarr-redis-rw
   labels:
     app: homarr-redis
-    role: master
+    role: rw
 spec:
   type: ClusterIP
   publishNotReadyAddresses: false
