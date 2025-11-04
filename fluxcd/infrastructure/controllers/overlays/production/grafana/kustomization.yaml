@@ -4,6 +4,7 @@ namespace: flux-system
 
 resources:
   - ../../../base/grafana
+  - cephfs-static-pv.yaml
 
 patches:
   - path: helmrelease-patch.yaml
