@@ -27,6 +27,8 @@ spec:
         enabled: true
         size: 100Gi
         storageClass: ceph-rbd-retain
+      extraArgs:
+        - -config.expand-env=true
       extraEnvFrom:
         - secretRef:
             name: loki-s3
