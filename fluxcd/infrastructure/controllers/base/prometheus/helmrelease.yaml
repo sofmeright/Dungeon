@@ -16,6 +16,7 @@ spec:
       interval: 12h
   values:
     fullnameOverride: "prometheus"
+    cleanPrometheusOperatorObjectNames: true
 
     # Disable components we don't need
     alertmanager:
