@@ -37,17 +37,17 @@ spec:
             - SYS_RAWIO
             - MKNOD
         volumeMounts:
-        - name: logs
+        - name: gossip-stone-nutify-logs
           mountPath: /app/nutify/logs
-        - name: instance
+        - name: gossip-stone-nutify-instance
           mountPath: /app/nutify/instance
-        - name: ssl
+        - name: gossip-stone-nutify-ssl
           mountPath: /app/ssl
-        - name: nut-config
+        - name: gossip-stone-nutify-nut-config
           mountPath: /etc/nut
-        - name: ssh
+        - name: gossip-stone-nutify-ssh
           mountPath: /root/.ssh
-        - name: script
+        - name: gossip-stone-nutify-script
           mountPath: /root/script
         - name: dev
           mountPath: /dev
