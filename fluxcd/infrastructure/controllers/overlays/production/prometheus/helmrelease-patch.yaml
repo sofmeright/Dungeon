@@ -19,6 +19,8 @@ spec:
         replicas: 3
         storageSpec:
           volumeClaimTemplate:
+            metadata:
+              name: gossip-stone-prometheus-db
             spec:
               storageClassName: ceph-rbd-retain
               resources:
