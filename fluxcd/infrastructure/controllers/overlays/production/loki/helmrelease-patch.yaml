@@ -12,6 +12,7 @@ spec:
           region: default
           s3ForcePathStyle: true
           insecure: true
+          signatureVersion: s3v4
           accessKeyId: ${S3_ACCESS_KEY}
           secretAccessKey: ${S3_SECRET_KEY}
     sidecar:
