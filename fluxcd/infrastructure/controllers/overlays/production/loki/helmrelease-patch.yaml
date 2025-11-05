@@ -5,10 +5,6 @@ metadata:
 spec:
   targetNamespace: gossip-stone
   values:
-    global:
-      extraEnvFrom:
-        - secretRef:
-            name: loki-s3
     loki:
       storage:
         s3:
@@ -31,6 +27,9 @@ spec:
         enabled: true
         size: 100Gi
         storageClass: ceph-rbd-retain
+      extraEnvFrom:
+        - secretRef:
+            name: loki-s3
     gateway:
       replicas: 3
     write:
