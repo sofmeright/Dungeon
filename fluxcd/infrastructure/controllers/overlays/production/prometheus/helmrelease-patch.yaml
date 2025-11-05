@@ -20,7 +20,7 @@ spec:
         storageSpec:
           volumeClaimTemplate:
             metadata:
-              name: gossip-stone-prometheus-db
+              name: gossip-stone
             spec:
               storageClassName: ceph-rbd-retain
               resources:

@@ -15,8 +15,7 @@ spec:
         name: prometheus-community
       interval: 12h
   values:
-    fullnameOverride: "prometheus"
-    cleanPrometheusOperatorObjectNames: true
+    fullnameOverride: "db"
 
     # Disable components we don't need
     alertmanager:
