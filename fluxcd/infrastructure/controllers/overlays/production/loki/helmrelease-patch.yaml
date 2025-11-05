@@ -13,8 +13,6 @@ spec:
           s3ForcePathStyle: true
           insecure: true
           signatureVersion: v4
-          accessKeyId: ${S3_ACCESS_KEY}
-          secretAccessKey: ${S3_SECRET_KEY}
     sidecar:
       image:
         repository: docker.io/kiwigrid/k8s-sidecar
