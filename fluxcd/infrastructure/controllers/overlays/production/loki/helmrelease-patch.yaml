@@ -5,6 +5,10 @@ metadata:
 spec:
   targetNamespace: gossip-stone
   values:
+    global:
+      extraEnvFrom:
+        - secretRef:
+            name: loki-s3
     loki:
       storage:
         s3:
@@ -35,12 +39,3 @@ spec:
       replicas: 0
     backend:
       replicas: 0
-  valuesFrom:
-    - kind: Secret
-      name: loki-s3
-      valuesKey: s3_access_key
-      targetPath: loki.storage.s3.accessKeyId
-    - kind: Secret
-      name: loki-s3
-      valuesKey: s3_secret_key
-      targetPath: loki.storage.s3.secretAccessKey
