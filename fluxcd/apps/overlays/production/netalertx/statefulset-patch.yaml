@@ -25,7 +25,7 @@ spec:
         volumeMounts:
         - name: gossip-stone-netalertx-config
           mountPath: /app/config
-        - name: gossip-stone-netalertx-db
+        - name: gossip-stone-netalertx-sqlite
           mountPath: /app/db
         - name: api-tmpfs
           mountPath: /app/api
@@ -46,10 +46,10 @@ spec:
         requests:
           storage: 1Gi
   - metadata:
-      name: gossip-stone-netalertx-db
+      name: gossip-stone-netalertx-sqlite
     spec:
       accessModes: ["ReadWriteOnce"]
       storageClassName: ceph-rbd-retain
       resources:
         requests:
-          storage: 5Gi
+          storage: 2Gi

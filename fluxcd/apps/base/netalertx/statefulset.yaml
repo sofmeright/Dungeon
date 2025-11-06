@@ -36,7 +36,7 @@ spec:
         volumeMounts:
         - name: config
           mountPath: /app/config
-        - name: db
+        - name: sqlite
           mountPath: /app/db
         - name: api-tmpfs
           mountPath: /app/api
@@ -61,10 +61,10 @@ spec:
         requests:
           storage: PLACEHOLDER_CONFIG_STORAGE_SIZE
   - metadata:
-      name: db
+      name: sqlite
     spec:
       accessModes: ["ReadWriteOnce"]
       storageClassName: PLACEHOLDER_STORAGE_CLASS
       resources:
         requests:
-          storage: PLACEHOLDER_DB_STORAGE_SIZE
+          storage: PLACEHOLDER_SQLITE_STORAGE_SIZE
