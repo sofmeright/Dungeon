@@ -4,4 +4,3 @@ namespace: gorons-bracelet
 resources:
   - ceph-cephfs-secret.enc.yaml
   - root-access
-  - static-volumes

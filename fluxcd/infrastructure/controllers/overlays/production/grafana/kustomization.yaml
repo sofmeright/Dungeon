@@ -3,6 +3,7 @@ kind: Kustomization
 
 resources:
   - ../../../base/grafana
+  - cephfs-plugins-pv.yaml
 
 patches:
   - path: helmrelease-patch.yaml
@@ -51,4 +52,11 @@ patches:
     patch: |-
       - op: add
         path: /metadata/namespace
+        value: gossip-stone
+  - target:
+      kind: PersistentVolume
+      name: gossip-stone-grafana-plugins
+    patch: |-
+      - op: add
+        path: /spec/claimRef/namespace
         value: gossip-stone
