@@ -1,13 +1,15 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-  - ../../base/storage  # Storage classes with proper reclaim policies
+  - storage  # Production storage classes (Ceph RBD + CephFS)
   - cilium
   # - metallb  # Disabled - replaced by Cilium LoadBalancer IPAM
   - weave-gitops
-  - ceph-csi
+  - ceph-rbd  # Ceph RBD connection config and secrets
+  - ceph-cephfs  # CephFS root access + static volumes
   - ceph-rgw  # Ceph RGW keyring for S3 object storage
   - rook-ceph-external  # Rook external Ceph cluster connection secrets
+  - volume-snapshot-class  # VolumeSnapshotClass (requires snapshot-controller CRDs)
   - vault  # Bank-Vaults with SOPS-encrypted keys
   - velero  # Backup and disaster recovery credentials
   - zitadel  # Identity and Access Management

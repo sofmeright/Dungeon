@@ -3,7 +3,6 @@ kind: Kustomization
 
 resources:
   - ../../../base/grafana
-  - cephfs-init.yaml
 
 patches:
   - path: helmrelease-patch.yaml
@@ -49,20 +48,6 @@ patches:
   - target:
       kind: PersistentVolumeClaim
       name: gossip-stone-grafana-plugins
-    patch: |-
-      - op: add
-        path: /metadata/namespace
-        value: gossip-stone
-  - target:
-      kind: PersistentVolumeClaim
-      name: cephfs-root-temp-grafana-pvc
-    patch: |-
-      - op: add
-        path: /metadata/namespace
-        value: gossip-stone
-  - target:
-      kind: Job
-      name: grafana-cephfs-init
     patch: |-
       - op: add
         path: /metadata/namespace

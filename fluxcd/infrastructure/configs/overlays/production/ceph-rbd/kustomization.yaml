@@ -6,5 +6,3 @@ namespace: kube-system
 resources:
   - ceph-config.yaml
   - ceph-secret.enc.yaml
-  - storageclass.yaml
-  - cephfs-storageclass-nvme.yaml
