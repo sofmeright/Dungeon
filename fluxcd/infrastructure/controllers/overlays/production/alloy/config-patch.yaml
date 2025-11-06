@@ -29,10 +29,10 @@ data:
       role = "ingress"
     }
 
-    // Prometheus Remote Write - Thanos Query (unified HA endpoint)
+    // Prometheus Remote Write - Direct to Prometheus HA StatefulSet
     prometheus.remote_write "default" {
       endpoint {
-        url = "http://thanos-query.gossip-stone.svc.cluster.local:9090/api/v1/write"
+        url = "http://prom-stack-prometheus.gossip-stone.svc.cluster.local:9090/api/v1/write"
       }
     }
 

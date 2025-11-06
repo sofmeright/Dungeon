@@ -29,7 +29,7 @@ data:
       role = "ingress"
     }
 
-    // Prometheus Remote Write
+    // Prometheus Remote Write - Placeholder (override in overlay)
     prometheus.remote_write "default" {
       endpoint {
         url = "PLACEHOLDER_PROMETHEUS_URL"
