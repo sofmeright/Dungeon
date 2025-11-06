@@ -4,4 +4,3 @@ namespace: gorons-bracelet
 resources:
   - secrets.enc.yaml
   - ceph-csi-config.yaml
-  - ../../../../controllers/overlays/production/rook-ceph-cluster
