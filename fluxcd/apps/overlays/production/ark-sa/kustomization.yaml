@@ -45,9 +45,3 @@ patches:
     - op: add
       path: /metadata/namespace
       value: shooting-gallery
-- target:
-    kind: PersistentVolume
-  patch: |-
-    - op: add
-      path: /spec/claimRef/namespace
-      value: shooting-gallery
