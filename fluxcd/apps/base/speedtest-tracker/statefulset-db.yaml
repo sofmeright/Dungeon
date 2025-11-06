@@ -1,17 +1,17 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: speedtest-tracker-db
+  name: speedtest-tracker-postgres
 spec:
-  serviceName: speedtest-tracker-db
+  serviceName: speedtest-tracker-postgres
   replicas: PLACEHOLDER_REPLICAS
   selector:
     matchLabels:
-      app: speedtest-tracker-db
+      app: speedtest-tracker-postgres
   template:
     metadata:
       labels:
-        app: speedtest-tracker-db
+        app: speedtest-tracker-postgres
     spec:
       initContainers:
       - name: init-permissions
