@@ -17,6 +17,9 @@ spec:
       prometheusSpec:
         # Enable HA with 3 replicas
         replicas: 3
+
+        # Enable remote write receiver for Alloy
+        enableRemoteWriteReceiver: true
         storageSpec:
           volumeClaimTemplate:
             metadata:
