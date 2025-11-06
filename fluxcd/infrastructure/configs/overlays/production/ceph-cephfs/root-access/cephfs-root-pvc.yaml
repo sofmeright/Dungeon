@@ -1,0 +1,41 @@
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: gorons-bracelet-cephfs-root-pv
+spec:
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  claimRef:
+    apiVersion: v1
+    kind: PersistentVolumeClaim
+    name: gorons-bracelet-cephfs-root
+    namespace: gorons-bracelet
+  csi:
+    driver: gorons-bracelet.cephfs.csi.ceph.com
+    nodeStageSecretRef:
+      name: csi-cephfs-node
+      namespace: gorons-bracelet
+    volumeAttributes:
+      clusterID: 0985467c-d8f3-4483-b27f-f0a512397ec2
+      fsName: Seed_Bank
+      staticVolume: "true"
+      rootPath: /
+    volumeHandle: gorons-bracelet-cephfs-root
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: gorons-bracelet-cephfs-root
+  namespace: gorons-bracelet
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Gi
+  volumeName: gorons-bracelet-cephfs-root-pv
+  storageClassName: ""

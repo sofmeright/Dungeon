@@ -1,0 +1,46 @@
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: cephfs-init-ark-sa
+  namespace: gorons-bracelet
+spec:
+  ttlSecondsAfterFinished: 300
+  template:
+    spec:
+      restartPolicy: OnFailure
+      initContainers:
+      - name: mkdir-structure
+        image: docker.jcr.pcfae.com/library/alpine:latest
+        command:
+        - /bin/sh
+        - -c
+        - |
+          set -e
+          echo "Creating directory structure in CephFS..."
+          mkdir -p /cephfs/dungeon/nvme/games/ark-sa/serverfiles
+          mkdir -p /cephfs/dungeon/nvme/games/ark-sa/cluster
+
+          echo "Setting ownership to UID/GID 7777 (pok)..."
+          chown -R 7777:7777 /cephfs/dungeon/nvme/games/ark-sa
+
+          echo "Setting permissions..."
+          chmod -R 755 /cephfs/dungeon/nvme/games/ark-sa
+
+          echo "Directory structure created successfully!"
+        volumeMounts:
+        - name: cephfs-root
+          mountPath: /cephfs
+      containers:
+      - name: completion
+        image: docker.jcr.pcfae.com/library/alpine:latest
+        command:
+        - /bin/sh
+        - -c
+        - |
+          echo "ARK CephFS initialization complete!"
+          exit 0
+      volumes:
+      - name: cephfs-root
+        persistentVolumeClaim:
+          claimName: gorons-bracelet-cephfs-root

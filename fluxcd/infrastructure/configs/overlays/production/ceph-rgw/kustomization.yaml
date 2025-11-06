@@ -4,3 +4,6 @@ namespace: gorons-bracelet
 resources:
   - ceph-rgw-keyring.enc.yaml
   - ceph-rgw-gitlab-user.enc.yaml
+  - gitlab-s3-setup-job.yaml
+  - harbor-credentials-externalsecret.yaml
+  - harbor-user-job.yaml

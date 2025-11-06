@@ -9,7 +9,8 @@ resources:
   - gpu-operator  # NVIDIA GPU Operator for GPU support
   - weave-gitops
   - ceph-csi
-  - rook-ceph-operator  # Rook operator for Ceph orchestration
+  - rook-ceph/operator  # Rook operator for Ceph orchestration
+  - rook-ceph/external-cluster  # Rook CephCluster CRD for external Ceph cluster
   - ceph-rgw  # Ceph RGW S3 gateway for object storage
   - snapshot-controller  # CSI snapshot controller for volume snapshots
   - ../../../configs/overlays/production/volume-snapshot-class  # VolumeSnapshotClass (needs snapshot-controller CRDs)

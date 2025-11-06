@@ -1,0 +1,45 @@
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: cephfs-init-grafana
+  namespace: gorons-bracelet
+spec:
+  ttlSecondsAfterFinished: 300
+  template:
+    spec:
+      restartPolicy: OnFailure
+      initContainers:
+      - name: mkdir-structure
+        image: docker.jcr.pcfae.com/library/alpine:latest
+        command:
+        - /bin/sh
+        - -c
+        - |
+          set -e
+          echo "Creating directory structure in CephFS..."
+          mkdir -p /cephfs/dungeon/nvme/apps/grafana/plugins
+
+          echo "Setting ownership to UID/GID 472 (grafana)..."
+          chown -R 472:472 /cephfs/dungeon/nvme/apps/grafana
+
+          echo "Setting permissions..."
+          chmod -R 755 /cephfs/dungeon/nvme/apps/grafana
+
+          echo "Directory structure created successfully!"
+        volumeMounts:
+        - name: cephfs-root
+          mountPath: /cephfs
+      containers:
+      - name: completion
+        image: docker.jcr.pcfae.com/library/alpine:latest
+        command:
+        - /bin/sh
+        - -c
+        - |
+          echo "Grafana CephFS initialization complete!"
+          exit 0
+      volumes:
+      - name: cephfs-root
+        persistentVolumeClaim:
+          claimName: gorons-bracelet-cephfs-root
