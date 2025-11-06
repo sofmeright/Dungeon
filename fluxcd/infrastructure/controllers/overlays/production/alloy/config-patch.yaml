@@ -63,10 +63,77 @@ data:
       }
     }
 
-    // Collect logs from Kubernetes pods
+    // Relabel pod targets for better log organization
+    discovery.relabel "pods_logs" {
+      targets = discovery.kubernetes.pods.targets
+
+      // Keep namespace
+      rule {
+        source_labels = ["__meta_kubernetes_namespace"]
+        target_label  = "namespace"
+      }
+
+      // Keep pod name
+      rule {
+        source_labels = ["__meta_kubernetes_pod_name"]
+        target_label  = "pod"
+      }
+
+      // Keep container name
+      rule {
+        source_labels = ["__meta_kubernetes_pod_container_name"]
+        target_label  = "container"
+      }
+
+      // Add app label from pod label app.kubernetes.io/name or app
+      rule {
+        source_labels = ["__meta_kubernetes_pod_label_app_kubernetes_io_name"]
+        target_label  = "app"
+      }
+      rule {
+        source_labels = ["__meta_kubernetes_pod_label_app"]
+        target_label  = "app"
+      }
+
+      // Add job label (use app or fallback to namespace/pod)
+      rule {
+        source_labels = ["app"]
+        target_label  = "job"
+      }
+      rule {
+        source_labels = ["namespace", "pod"]
+        separator     = "/"
+        target_label  = "job"
+        regex         = "^$"  // Only if job is empty
+      }
+
+      // Keep node name
+      rule {
+        source_labels = ["__meta_kubernetes_pod_node_name"]
+        target_label  = "node"
+      }
+    }
+
+    // Collect logs from Kubernetes pods with proper labels
     loki.source.kubernetes "pods" {
-      targets    = discovery.kubernetes.pods.targets
+      targets    = discovery.relabel.pods_logs.output
+      forward_to = [loki.process.add_labels.receiver]
+    }
+
+    // Add additional processing and labels
+    loki.process "add_labels" {
       forward_to = [loki.write.default.receiver]
+
+      // Extract log level from common patterns
+      stage.regex {
+        expression = "(?i)(?P<level>debug|info|warn|warning|error|fatal|critical)"
+      }
+
+      stage.labels {
+        values = {
+          level = "",
+        }
+      }
     }
 
     // Remote scrape targets (lighthouse Docker host @ 10.55.6.137)
