@@ -4,3 +4,8 @@ metadata:
   name: alloy
 spec:
   targetNamespace: gossip-stone
+  values:
+    alloy:
+      configMap:
+        create: false
+        name: "alloy-config"
