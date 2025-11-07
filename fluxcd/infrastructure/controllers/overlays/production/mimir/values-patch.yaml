@@ -32,7 +32,11 @@ spec:
 
     # Image registry - use direct upstream for critical infrastructure
     # (avoiding JCR pull-through cache to prevent circular dependencies)
-    # Note: Using chart default image configuration (docker.io/grafana/mimir with chart version tag)
+    # CRI-O requires fully qualified image names in short-name enforcement mode
+    image:
+      registry: docker.io
+      repository: grafana/mimir
+      # tag: use chart default (inherits from chart version)
 
     # Service annotations for metrics scraping
     serviceMonitor:

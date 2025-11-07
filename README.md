@@ -1,14 +1,8 @@
-[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/T6T41IT163)
-
-
-# 🏰 Ad Arbitorium (Datacenter) — Private GitOps Repository
+![Banner](./docs/assets/dungeon-banner.png)
 
 > _"When the cluster's down, and the world is on fire, at least you can still run Ansible."_ 🔥
 
-Welcome to the heart of Ad Arbitorium; a GitOps repository describing the active configuration of our homelab/datacenter. This repo aims to be the source of truth for system state, automation routines, and backup strategies.
-
-
----
+This repository seeks to be the source of truth regarding the active state of my Kubernetes cluster "Dungeon" and my Proxmox Cluster "Ad_Arbitorium". All system state, automation routines, and backup strategies should be declared within this repository. This Dungeon must be cleared, so we can advance to the next one!
 
 > Maintained by [SoFMeRight](https://github.com/sofmeright) for [PrPlanIT](https://prplanit.com) — Real world results for your real world expectations.
 
@@ -168,6 +162,8 @@ The datacenter is powered by Proxmox VE and consists of five clustered nodes:
 
 ## 🤓 Want to contribute or improve the stack?
 This is a private lab, but feedback, discussion, and memes are always welcome. ✉️
+
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/T6T41IT163)
 
 ## ⚠️ Disclaimer
 
