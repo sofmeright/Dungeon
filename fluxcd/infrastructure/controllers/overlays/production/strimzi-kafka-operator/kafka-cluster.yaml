@@ -1,0 +1,111 @@
+# KafkaNodePool - defines the node pool for Kafka brokers with dual roles (controller + broker)
+# Using KRaft mode (ZooKeeper-less) with 3 replicas for quorum
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaNodePool
+metadata:
+  name: mimir-kafka-pool
+  labels:
+    strimzi.io/cluster: mimir-kafka
+spec:
+  replicas: 3
+  # Dual-role nodes: both broker and controller (eliminates ZooKeeper dependency)
+  roles:
+    - controller
+    - broker
+  storage:
+    type: jbod
+    volumes:
+      - id: 0
+        type: persistent-claim
+        size: 20Gi
+        deleteClaim: false
+        class: ceph-rbd
+        # KRaft metadata stored on each node
+        kraftMetadata: shared
+  resources:
+    requests:
+      cpu: 500m
+      memory: 2Gi
+    limits:
+      cpu: 2
+      memory: 4Gi
+---
+# Kafka cluster resource - main configuration
+apiVersion: kafka.strimzi.io/v1beta2
+kind: Kafka
+metadata:
+  name: mimir-kafka
+  annotations:
+    # Enable KRaft mode (ZooKeeper-less Kafka)
+    strimzi.io/kraft: enabled
+    # Enable KafkaNodePool usage
+    strimzi.io/node-pools: enabled
+spec:
+  kafka:
+    # Kafka version - using recent stable version with KRaft support
+    version: 3.9.0
+    # Metadata version for KRaft compatibility
+    metadataVersion: 3.9-IV0
+    # Listeners for client connections
+    listeners:
+      - name: plain
+        port: 9092
+        type: internal
+        tls: false
+      - name: tls
+        port: 9093
+        type: internal
+        tls: true
+    # Kafka configuration
+    config:
+      # Replication settings
+      offsets.topic.replication.factor: 3
+      transaction.state.log.replication.factor: 3
+      transaction.state.log.min.isr: 2
+      # Default replication for new topics
+      default.replication.factor: 3
+      min.insync.replicas: 2
+      # Log retention for Mimir ingest storage (48 hours recommended)
+      log.retention.hours: 48
+      # Log segment size
+      log.segment.bytes: 1073741824  # 1GB segments
+      # Compression
+      compression.type: producer
+      # Auto-create topics (Mimir will create its own topics)
+      auto.create.topics.enable: true
+    # Metrics configuration
+    metricsConfig:
+      type: jmxPrometheusExporter
+      valueFrom:
+        configMapKeyRef:
+          name: mimir-kafka-metrics
+          key: kafka-metrics-config.yaml
+  # Entity Operator manages topics and users
+  entityOperator:
+    topicOperator:
+      resources:
+        requests:
+          cpu: 100m
+          memory: 256Mi
+        limits:
+          cpu: 500m
+          memory: 512Mi
+    userOperator:
+      resources:
+        requests:
+          cpu: 100m
+          memory: 256Mi
+        limits:
+          cpu: 500m
+          memory: 512Mi
+  # Kafka Exporter for metrics
+  kafkaExporter:
+    topicRegex: ".*"
+    groupRegex: ".*"
+    resources:
+      requests:
+        cpu: 100m
+        memory: 128Mi
+      limits:
+        cpu: 200m
+        memory: 256Mi

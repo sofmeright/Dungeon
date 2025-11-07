@@ -1,0 +1,52 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: strimzi-kafka-operator
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: strimzi-kafka-operator
+      version: 0.48.x
+      sourceRef:
+        kind: HelmRepository
+        name: strimzi
+        namespace: flux-system
+      interval: 12h
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    remediation:
+      retries: 3
+  values:
+    # Default replica count for HA
+    replicas: 2
+
+    # Image configuration will be overridden in overlay for CRI-O compatibility
+    # Base chart uses quay.io/strimzi/* images by default
+
+    # Resource limits for operator
+    resources:
+      requests:
+        cpu: 200m
+        memory: 384Mi
+      limits:
+        cpu: 1
+        memory: 768Mi
+
+    # Leader election for HA
+    leaderElection:
+      enabled: true
+
+    # Log level
+    logLevel: INFO
+
+    # Feature gates (enable KRaft support)
+    featureGates: "+UseKRaft,+KafkaNodePools"
+
+    # Generate network policies
+    generateNetworkPolicy: false
+
+    # Service account
+    createGlobalResources: true

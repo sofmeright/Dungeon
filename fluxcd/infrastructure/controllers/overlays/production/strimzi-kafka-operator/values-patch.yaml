@@ -1,0 +1,96 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: strimzi-kafka-operator
+spec:
+  values:
+    # Watch the gorons-bracelet namespace where Kafka clusters will be deployed
+    # The namespace where the operator is deployed is always watched automatically
+    watchNamespaces: []  # Empty since we deploy to gorons-bracelet and only watch that namespace
+
+    # Image configuration - use direct upstream for critical infrastructure
+    # (avoiding JCR pull-through cache to prevent circular dependencies)
+    # CRI-O requires fully qualified image names in short-name enforcement mode
+    image:
+      registry: quay.io
+      repository: strimzi/operator
+      # tag: use chart default (inherits from chart version)
+
+    # Kafka image configuration
+    kafka:
+      image:
+        registry: quay.io
+        repository: strimzi/kafka
+        # tag: use chart default
+
+    # Kafka Bridge image
+    kafkaBridge:
+      image:
+        registry: quay.io
+        repository: strimzi/kafka-bridge
+        # tag: use chart default
+
+    # Kafka Exporter image
+    kafkaExporter:
+      image:
+        registry: quay.io
+        repository: strimzi/kafka
+        # tag: use chart default
+
+    # Cruise Control image
+    cruiseControl:
+      image:
+        registry: quay.io
+        repository: strimzi/kafka
+        # tag: use chart default
+
+    # Topic Operator image
+    topicOperator:
+      image:
+        registry: quay.io
+        repository: strimzi/operator
+        # tag: use chart default
+
+    # User Operator image
+    userOperator:
+      image:
+        registry: quay.io
+        repository: strimzi/operator
+        # tag: use chart default
+
+    # Kafka Init image
+    kafkaInit:
+      image:
+        registry: quay.io
+        repository: strimzi/operator
+        # tag: use chart default
+
+    # TLS Sidecar image
+    tlsSidecarEntityOperator:
+      image:
+        registry: quay.io
+        repository: strimzi/kafka
+        # tag: use chart default
+
+    # Production resource limits
+    resources:
+      requests:
+        cpu: 200m
+        memory: 512Mi
+      limits:
+        cpu: 1
+        memory: 1Gi
+
+    # Pod anti-affinity to spread replicas across nodes
+    affinity:
+      podAntiAffinity:
+        preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                  - key: app.kubernetes.io/name
+                    operator: In
+                    values:
+                      - strimzi-cluster-operator
+              topologyKey: kubernetes.io/hostname

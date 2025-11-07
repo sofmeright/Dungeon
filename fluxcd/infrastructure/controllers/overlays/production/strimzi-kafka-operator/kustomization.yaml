@@ -1,0 +1,12 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: gorons-bracelet
+resources:
+  - ../../../base/strimzi-kafka-operator
+  - kafka-metrics-configmap.yaml
+  - kafka-cluster.yaml
+patches:
+  - path: values-patch.yaml
+    target:
+      kind: HelmRelease
+      name: strimzi-kafka-operator

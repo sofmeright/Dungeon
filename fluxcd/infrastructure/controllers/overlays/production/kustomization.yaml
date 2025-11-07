@@ -31,6 +31,7 @@ resources:
   - grafana  # Grafana visualization dashboard
   # - prometheus  # Metrics storage and query engine - REMOVED: Replaced by pure Thanos architecture
   - kube-state-metrics  # Kubernetes object state metrics exporter
+  - strimzi-kafka-operator  # Strimzi operator for Kafka cluster management (provides Kafka for Mimir ingest storage)
   - thanos  # Pure Thanos architecture: Receive ingests metrics, Query provides unified querying
   - mimir  # Grafana Mimir: Modern scalable metrics storage (migrating from Thanos)
   - loki  # Log aggregation and storage

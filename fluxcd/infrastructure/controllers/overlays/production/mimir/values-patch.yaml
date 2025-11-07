@@ -7,7 +7,7 @@ spec:
     # Production-specific storage class configuration
     ingester:
       persistentVolume:
-        storageClass: ceph-block
+        storageClass: ceph-rbd
       # Pod anti-affinity to spread across nodes
       affinity:
         podAntiAffinity:
@@ -24,11 +24,11 @@ spec:
 
     store_gateway:
       persistentVolume:
-        storageClass: ceph-block
+        storageClass: ceph-rbd
 
     compactor:
       persistentVolume:
-        storageClass: ceph-block
+        storageClass: ceph-rbd
 
     # Image configuration - use direct upstream for critical infrastructure
     # (avoiding JCR pull-through cache to prevent circular dependencies)
@@ -37,54 +37,69 @@ spec:
       repository: docker.io/grafana/mimir
       # tag: use chart default (inherits from chart version)
 
-    # Service annotations for metrics scraping
     serviceMonitor:
-      enabled: false  # We'll use Alloy service discovery instead
+      enabled: false  # Using Alloy service discovery instead
 
-    # Mimir configuration overrides for production
+    # Ingest Storage configuration - use external Kafka cluster
+    ingest_storage:
+      enabled: true
+      kafka:
+        # Disable demo Kafka deployed by chart
+        enabled: false
+        # External Kafka configuration
+        address: mimir-kafka-kafka-bootstrap.gorons-bracelet.svc.cluster.local:9092
+        topic: mimir-ingest
+
     mimir:
       structuredConfig:
-        # Distributor configuration
         distributor:
           ring:
             kvstore:
               store: memberlist
 
-        # Ingester configuration for production
+        # Ingest Storage configuration for production
+        ingest_storage:
+          enabled: true
+          kafka:
+            address: mimir-kafka-kafka-bootstrap.gorons-bracelet.svc.cluster.local:9092
+            topic: mimir-ingest
+            # Consumer group for load balancing across ingesters
+            consumer_group: mimir-ingest-storage
+            # Auto-create topic if it doesn't exist
+            auto_create_topic_enabled: true
+            # Replication factor for Kafka topic
+            auto_create_topic_default_replication_factor: 3
+            # Number of partitions for better parallelism
+            auto_create_topic_default_partitions: 100
+            # Produce timeout
+            produce_timeout: 2s
+            # Consume from latest offset on first start
+            consume_from_latest: true
+
         ingester:
           ring:
             kvstore:
               store: memberlist
             replication_factor: 3
             zone_awareness_enabled: false
-          # Data retention in ingester memory before flushing to storage
-          # blocks_storage:
-          #   tsdb:
-          #     retention_period: 24h
 
-        # Store-gateway configuration
         store_gateway:
           sharding_ring:
             kvstore:
               store: memberlist
             replication_factor: 1
 
-        # Compactor configuration
         compactor:
           sharding_ring:
             kvstore:
               store: memberlist
 
-        # Memberlist configuration for service discovery
         memberlist:
           join_members:
             - dns+mimir-gossip-ring.gossip-stone.svc.cluster.local:7946
 
-        # Query limits for production
         limits:
-          # Increase limits for production workload
-          max_global_series_per_user: 0  # Unlimited
-          ingestion_rate: 100000  # 100k samples/sec
-          ingestion_burst_size: 200000  # 200k samples burst
-          # Query limits
+          max_global_series_per_user: 0
+          ingestion_rate: 100000
+          ingestion_burst_size: 200000
           max_query_parallelism: 32
