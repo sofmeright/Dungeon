@@ -29,10 +29,11 @@ data:
       role = "ingress"
     }
 
-    // Prometheus Remote Write - Direct to Prometheus HA StatefulSet
+    // Prometheus Remote Write - Direct to Thanos Receive
+    // Pure Thanos architecture: Alloy → Thanos Receive → Object Storage → Thanos Query
     prometheus.remote_write "default" {
       endpoint {
-        url = "http://prom-stack-prometheus.gossip-stone.svc.cluster.local:9090/api/v1/write"
+        url = "http://thanos-receive.gossip-stone.svc.cluster.local:19291/api/v1/receive"
       }
     }
 

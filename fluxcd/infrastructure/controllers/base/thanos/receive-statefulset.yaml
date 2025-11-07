@@ -1,0 +1,80 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: thanos-receive
+  labels:
+    app.kubernetes.io/name: thanos-receive
+    app.kubernetes.io/component: receive
+spec:
+  replicas: PLACEHOLDER_REPLICAS
+  serviceName: thanos-receive
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: thanos-receive
+      app.kubernetes.io/component: receive
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: thanos-receive
+        app.kubernetes.io/component: receive
+    spec:
+      containers:
+        - name: thanos-receive
+          image: quay.io/thanos/thanos:v0.40.1
+          args:
+            - receive
+            - --log.level=info
+            - --log.format=logfmt
+            - --grpc-address=0.0.0.0:10901
+            - --http-address=0.0.0.0:10902
+            - --remote-write.address=0.0.0.0:19291
+            - --tsdb.path=/var/thanos/receive
+            - --tsdb.retention=15d
+            - --label=receive_replica="$(POD_NAME)"
+            # Object storage config will be added in overlay
+          ports:
+            - name: http
+              containerPort: 10902
+              protocol: TCP
+            - name: grpc
+              containerPort: 10901
+              protocol: TCP
+            - name: remote-write
+              containerPort: 19291
+              protocol: TCP
+          env:
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+          volumeMounts:
+            - name: data
+              mountPath: /var/thanos/receive
+          livenessProbe:
+            httpGet:
+              path: /-/healthy
+              port: http
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /-/ready
+              port: http
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: 1000m
+              memory: 2Gi
+  volumeClaimTemplates:
+    - metadata:
+        name: PLACEHOLDER_PVC_NAME
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        storageClassName: PLACEHOLDER_STORAGE_CLASS
+        resources:
+          requests:
+            storage: PLACEHOLDER_STORAGE_SIZE

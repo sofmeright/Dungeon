@@ -14,7 +14,6 @@ spec:
             - --log.format=logfmt
             - --grpc-address=0.0.0.0:10901
             - --http-address=0.0.0.0:10902
-            - --query.replica-label=prometheus_replica
-            - --query.replica-label=rule_replica
-            # Connect to all Prometheus Thanos sidecars
-            - --endpoint=dnssrv+_grpc._tcp.prom-stack-thanos-discovery.gossip-stone.svc.cluster.local
+            - --query.replica-label=receive_replica
+            # Connect to Thanos Receive instances
+            - --endpoint=dnssrv+_grpc._tcp.thanos-receive-discovery.gossip-stone.svc.cluster.local

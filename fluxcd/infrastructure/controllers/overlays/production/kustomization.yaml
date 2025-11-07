@@ -29,10 +29,10 @@ resources:
   - chrony  # NTP time synchronization server
   - velero  # Backup and disaster recovery
   - grafana  # Grafana visualization dashboard
-  - prometheus  # Metrics storage and query engine
-  - thanos-query  # Unified querying across Prometheus replicas with deduplication
+  # - prometheus  # Metrics storage and query engine - REMOVED: Replaced by pure Thanos architecture
+  - thanos  # Pure Thanos architecture: Receive ingests metrics, Query provides unified querying
   - loki  # Log aggregation and storage
-  - alloy  # Unified observability collector (scrapes K8s + Docker)
+  - alloy  # Unified observability collector (scrapes K8s + Docker, remote writes to Thanos Receive)
   - istio  # Istio Ambient service mesh with Gateway API support
   # - traefik  # Gateway API controller for ingress routing - REMOVED: migrated to Istio
   - stunner  # STUNner WebRTC gateway for TURN/STUN services

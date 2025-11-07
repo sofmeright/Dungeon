@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: thanos-receive
+spec:
+  replicas: 3
+  template:
+    spec:
+      containers:
+        - name: thanos-receive
+          args:
+            - receive
+            - --log.level=info
+            - --log.format=logfmt
+            - --grpc-address=0.0.0.0:10901
+            - --http-address=0.0.0.0:10902
+            - --remote-write.address=0.0.0.0:19291
+            - --tsdb.path=/var/thanos/receive
+            - --tsdb.retention=15d
+            - --label=receive_replica="$(POD_NAME)"
+            - --objstore.config-file=/etc/thanos/objstore/objstore.yml
+          volumeMounts:
+            - name: data
+              mountPath: /var/thanos/receive
+            - name: thanos-objstore-config
+              mountPath: /etc/thanos/objstore
+              readOnly: true
+      volumes:
+        - name: thanos-objstore-config
+          secret:
+            secretName: thanos-objstore
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        storageClassName: ceph-rbd-retain
+        resources:
+          requests:
+            storage: 100Gi
