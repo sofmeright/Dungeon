@@ -2,6 +2,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: mimir-kafka-metrics
+  namespace: gorons-bracelet
 data:
   kafka-metrics-config.yaml: |
     # Kafka metrics configuration for JMX Prometheus Exporter

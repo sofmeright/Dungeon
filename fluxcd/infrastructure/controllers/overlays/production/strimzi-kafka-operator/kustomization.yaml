@@ -3,8 +3,6 @@ kind: Kustomization
 namespace: gorons-bracelet
 resources:
   - ../../../base/strimzi-kafka-operator
-  - kafka-metrics-configmap.yaml
-  - kafka-cluster.yaml
 patches:
   - path: values-patch.yaml
     target:

@@ -4,6 +4,7 @@ apiVersion: kafka.strimzi.io/v1beta2
 kind: KafkaNodePool
 metadata:
   name: mimir-kafka-pool
+  namespace: gorons-bracelet
   labels:
     strimzi.io/cluster: mimir-kafka
 spec:
@@ -35,6 +36,7 @@ apiVersion: kafka.strimzi.io/v1beta2
 kind: Kafka
 metadata:
   name: mimir-kafka
+  namespace: gorons-bracelet
   annotations:
     # Enable KRaft mode (ZooKeeper-less Kafka)
     strimzi.io/kraft: enabled
