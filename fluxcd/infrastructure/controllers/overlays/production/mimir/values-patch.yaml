@@ -32,10 +32,7 @@ spec:
 
     # Image registry - use direct upstream for critical infrastructure
     # (avoiding JCR pull-through cache to prevent circular dependencies)
-    image:
-      registry: docker.io
-      repository: grafana/mimir
-      tag: ""  # Use chart default
+    # Note: Using chart default image configuration (docker.io/grafana/mimir with chart version tag)
 
     # Service annotations for metrics scraping
     serviceMonitor:
