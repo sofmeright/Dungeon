@@ -4,9 +4,9 @@ metadata:
   name: strimzi-kafka-operator
 spec:
   values:
-    # Watch the gorons-bracelet namespace where Kafka clusters will be deployed
-    # The namespace where the operator is deployed is always watched automatically
-    watchNamespaces: []  # Empty since we deploy to gorons-bracelet and only watch that namespace
+    # Watch all namespaces (empty list = watch all)
+    # Kafka clusters can be deployed in any namespace (currently: gossip-stone for Mimir)
+    watchNamespaces: []  # Empty = watch all namespaces
 
     # Image configuration - use direct upstream for critical infrastructure
     # (avoiding JCR pull-through cache to prevent circular dependencies)

@@ -50,16 +50,26 @@ If the cluster fails, we can recover from a local repo clone on `leaf-cutter`:
 
 ```bash
 docker run --rm \
-  -v /srv/gitops/ad-arbitorium-private:/srv/gitops/ad-arbitorium-private \
-  -v ~/.ssh/id_rsa:/root/.ssh/id_rsa \
-  cr.pcfae.com/prplanit/ansible:2.18.6 \
+    -v ~/.ssh/id_rsa:/root/.ssh/id_rsa:ro \
+    -v /srv/gitops/ad-arbitorium-private:/srv/gitops/ad-arbitorium-private:ro \
+    cr.pcfae.com/prplanit/ansible:2.18.6 \
   ansible-playbook --private-key /root/.ssh/id_rsa \
   -i /srv/gitops/ad-arbitorium-private/ansible/inventory \
   /srv/gitops/ad-arbitorium-private/ansible/infrastructure/qemu-guest-agent-debian.yaml
 ```
 ##### WinRM Example:
-```
-docker run -v ./playbook.yaml:/root/playbook.yaml -v /srv/gitops/ad-arbitorium-private:/srv/gitops/ad-arbitorium-private -v ~/.ssh/id_rsa:/root/.ssh/id_rsa --rm cr.pcfae.com/prplanit/ansible:2.18.6 ansible-playbook --private-key /root/.ssh/id_rsa -i /srv/gitops/ad-arbitorium-private/ansible/inventory /root/playbook.yaml -e ansible_windows_password=$WINDOWS_ANSIBLE_PASSWORD
+
+```bash
+docker run --rm \
+    -v ~/.ssh/id_rsa:/root/.ssh/id_rsa:ro \
+    -v /srv/gitops/ad-arbitorium-private:/srv/gitops/ad-arbitorium-private:ro \
+    -v ./playbook.yaml:/root/playbook.yaml:ro \
+    cr.pcfae.com/prplanit/ansible:2.18.6 \
+  ansible-playbook \
+    --private-key /root/.ssh/id_rsa \
+    -i /srv/gitops/ad-arbitorium-private/ansible/inventory \
+    /root/playbook.yaml \
+    -e ansible_windows_password="${WINDOWS_ANSIBLE_PASSWORD}"
 ```
 
 ## 📅 Backup Schedule
@@ -72,9 +82,9 @@ Our peak hours are typically 6:00AM – 10:00PM PST. Backups are scheduled to mi
 | Mon, Fri      | 22:00 | NAS & PBS → local-zfs backup                     |
 | Tue, Thu, Fri | 23:00 | All other core/essential VMs → Flashy-Fuscia-SSD |
 
-## 🖥️ Hardware Overview 20 x Intel(R) Xeon(R) CPU E5-2618L v4 @ 2.20GHz (2 Sockets
+## 🖥️ Hardware Overview
 
-The datacenter is powered by Proxmox VE and consists of five clustered nodes:
+### Proxmox VE Cluster
 
 | Host           | CPU                                         | RAM                |
 | -------------- | ------------------------------------------- | ------------------ |
@@ -84,33 +94,40 @@ The datacenter is powered by Proxmox VE and consists of five clustered nodes:
 | 🐉 Dragonfruit | AMD Ryzen 7 2700X (8C/16T) 3.7–4.35GHz      | 64GB (2×32GB ECC)  |
 | 🍆 Eggplant    | 2× Xeon E5-2618L v4 (20C/40T) 2.20–3.20 GHz | 128GB (16×8GB ECC) |
 
-#### 🪲 leaf-cutter (Unclustered automation node)
-- CPU: Intel i7-4720HQ (8 threads @ 3.6GHz)
-- RAM: 16GB (2×8GB DDR3)
-- This node runs critical automation if the cluster fails. Think of it as "ant-parade's stunt double."
+####  Unclustered automation node
+
+| Host               | CPU                                         | RAM                | Purpose                                                                                             |
+| ------------------ | ------------------------------------------- | ------------------ | --------------------------------------------------------------------------------------------------- |
+| 🪲 leaf-cutter     | Intel i7-4720HQ (8 threads @ 3.6GHz)        | 16GB (2×8GB DDR3) | This node runs critical automation if the cluster fails. Think of it as "ant-parade's stunt double." |
+
+I provide more in-depth Hardware information [HERE](./docs/Hardware.md) if you are interested in that.
 
 ## 🧠 Observability & Monitoring
-- Grafana + Loki + Mimir for metrics & logs
-- Crowdsec for IDS/IPS and pfsense integration
-- Beszel alternative option for metrics
-- Wazuh
-- Weave-Gitops, FreeLens, Portainer for container management dashboards
 
-## 🌐 Networking Overview
+| Technology           | Purpose Used                                                                 |
+| -------------------- | ---------------------------------------------------------------------------- |
+| Grafana              | Amazing dashboard for Metrics, Logs, Tracing, Security, many other usecases! |
+| Loki                 | Logging, collection and aggregation                                          |
+| Mimir                | Metrics                                                                      |
+| Crowdsec             | Open Source Crowd Based Threat Detection and Prevention System, with pfsense & other integrations |
+| Beszel               | alternative option for viewing some metrics                                  |
+| Wazuh                | SIEM, I haven't had the chance to get as familiar with this one              |
 
-##### Firewall / Routing: 
-- Dual HA/CARP pfSense VMs on Avocado & Bamboo
+Some Dashboards and UIs I frequently use to manage / observe Containerized Environments:
+- Weave-Gitops
+- FreeLens 
+- Portainer
 
-##### Networking:
+## 🌐 Networking
 
-| Technology           | Purpose Used                                                     |
-| -------------------- | ---------------------------------------------------------------- |
-| OSPFv6               | Proxmox/Ceph private/internal network                            |
-| BGP                  | Kubernetes Load Balancers (Cillim peers with 2 pfsense routers). |
-| kube-vip             | Kubernetes API Load balancing                                    |
-| Istio                | The chosen cluster mesh.                                         |
+| Technology           | Purpose Used                                                         |
+| -------------------- | -------------------------------------------------------------------- |
+| pfSense              | 2 VMs running on Avocado & Bamboo Highly Available routing via CARP. |
+| OSPFv6               | Proxmox/Ceph private/internal network                                |
+| BGP                  | Kubernetes Load Balancers (Cillim peers with pfsense).               |
+| kube-vip             | Kubernetes API Load balancing                                        |
+| Istio                | The chosen cluster mesh.                                             |
 | AdGuardHome          | DNS Server & Highly Available with 1 master and 1 replica, likely migrating to Technitium  or Gravity soon. |
-
 
 ##### Reverse Proxies:
 
@@ -119,7 +136,11 @@ The datacenter is powered by Proxmox VE and consists of five clustered nodes:
 - In the process of migrating most of the nginx configs to a Istio + Gateway API solution.
 
 ## 📞 Remote Access Tools
-- rustdesk, moonlight, sunshine, tactical-rmm
+| Technology           | Purpose Used                                                         |
+| -------------------- | -------------------------------------------------------------------- |
+| Moonlight/Sunshine   | Remote Desktop. Sunshine is the Server, Moonlight is the Client. Gaming friendly and they package clients for most every device. |
+| Rustdesk             | Its basically self hosted AnyDesk. It works. |
+| Tactical-RMM         | Full featured Remote Monitoring & Management system. |
 
 ## 🧱 Core Workloads
 - PVE – Bare metal Proxmox hosts

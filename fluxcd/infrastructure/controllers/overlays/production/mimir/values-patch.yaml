@@ -47,7 +47,7 @@ spec:
         # Disable demo Kafka deployed by chart
         enabled: false
         # External Kafka configuration
-        address: mimir-kafka-kafka-bootstrap.gorons-bracelet.svc.cluster.local:9092
+        address: mimir-kafka-kafka-bootstrap.gossip-stone.svc.cluster.local:9092
         topic: mimir-ingest
 
     mimir:
@@ -61,7 +61,7 @@ spec:
         ingest_storage:
           enabled: true
           kafka:
-            address: mimir-kafka-kafka-bootstrap.gorons-bracelet.svc.cluster.local:9092
+            address: mimir-kafka-kafka-bootstrap.gossip-stone.svc.cluster.local:9092
             topic: mimir-ingest
             # Consumer group for load balancing across ingesters
             consumer_group: mimir-ingest-storage

@@ -3,8 +3,8 @@ kind: Kustomization
 namespace: gossip-stone
 resources:
   - ../../../base/mimir
-  - kafka-metrics-configmap.yaml  # Mimir's Kafka metrics config (deploys to gorons-bracelet)
-  - kafka-cluster.yaml  # Mimir's dedicated Kafka cluster (deploys to gorons-bracelet)
+  - kafka-metrics-configmap.yaml  # Mimir's Kafka metrics config
+  - kafka-cluster.yaml  # Mimir's dedicated Kafka cluster
 patches:
   - path: values-patch.yaml
     target:
