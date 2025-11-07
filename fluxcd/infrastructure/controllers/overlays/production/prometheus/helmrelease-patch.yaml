@@ -18,10 +18,9 @@ spec:
         # Enable HA with 3 replicas
         replicas: 3
 
-        # Enable remote write receiver for Alloy (manual workaround via additionalArgs)
-        additionalArgs:
-          - name: web.enable-remote-write-receiver
-            value: ""
+        # Enable remote write receiver for Alloy metrics ingestion
+        enableRemoteWriteReceiver: true
+
         storageSpec:
           volumeClaimTemplate:
             metadata:
