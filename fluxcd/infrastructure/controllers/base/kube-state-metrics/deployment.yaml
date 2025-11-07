@@ -33,13 +33,13 @@ spec:
               protocol: TCP
           livenessProbe:
             httpGet:
-              path: /livez
+              path: /healthz
               port: telemetry
             initialDelaySeconds: 5
             timeoutSeconds: 5
           readinessProbe:
             httpGet:
-              path: /readyz
+              path: /healthz
               port: telemetry
             initialDelaySeconds: 5
             timeoutSeconds: 5
