@@ -86,6 +86,5 @@ spec:
           max_global_series_per_user: 0  # Unlimited
           ingestion_rate: 100000  # 100k samples/sec
           ingestion_burst_size: 200000  # 200k samples burst
-          # Query timeouts
-          query_timeout: 5m
+          # Query limits
           max_query_parallelism: 32

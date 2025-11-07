@@ -164,4 +164,3 @@ spec:
           ingestion_burst_size: 200000
           # Query limits
           max_query_lookback: 0
-          max_query_length: 0
