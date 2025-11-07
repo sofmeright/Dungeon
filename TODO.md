@@ -59,14 +59,8 @@ CLAUDE.md specifies PVC naming pattern for StatefulSets: `<namespace>-<app>-<pur
 ## Application Deployment - Final Stretch
 
 ### Remaining Applications to Template and Deploy to Kubernetes
-- [x] calcom (Cal.com) - Scheduling platform from Moor (2 containers: app + studio) - COMPLETED
-- [x] opnform - Form builder platform from Moor (7 containers: api, scheduler, worker, client, db, ingress, redis) - hyrule-castle namespace - COMPLETED
-- [x] crowdsec - Security/IDS platform from Lighthouse (2 containers: crowdsec + dashboard)
-- [ ] anirra - Custom arr app from Pirates-WDDA
 - [ ] matrix-synapse - Matrix homeserver (federated chat)
 - [ ] mastodon - Federated social media platform
-- [x] kimai - Time tracking application (https://github.com/kimai/kimai) - temple-of-time namespace - COMPLETED
-- [x] mazanoke - Image converting app (https://github.com/civilblur/mazanoke) - tingle-tuner namespace - COMPLETED
 
 **Status:** Final 3 applications remaining out of 100+ total applications inventoried across all Portainer endpoints.
 
@@ -150,39 +144,6 @@ CLAUDE.md specifies PVC naming pattern for StatefulSets: `<namespace>-<app>-<pur
 - [ ] Clean up old provisioner resources after migration
 
 **Note:** This will cause downtime for applications using RBD PVCs during migration. Plan carefully.
-
-### Migrate from Traefik to Cilium Gateway API
-**Status:** Planned migration
-**Current state:** Traefik deployed as ingress controller
-**Target state:** Cilium Gateway API for unified networking stack
-
-**Benefits of migration:**
-- Unified CNI + LoadBalancer + Ingress in single component (Cilium)
-- eBPF-powered performance with lower latency and higher throughput
-- Reduced resource usage (no separate ingress controller pods)
-- Native integration with Cilium network policies
-- Simpler architecture with fewer moving parts
-- Future-proof eBPF-based networking
-
-**Migration tasks:**
-- [ ] Deploy Cilium Gateway API infrastructure (GatewayClass, Gateways)
-- [ ] Create three Gateways with IP-based isolation:
-  - [ ] xylem-gateway (172.22.30.69) - Internal-only services (*.pcfae.com)
-  - [ ] phloem-gateway (172.22.30.70) - Personal/public services (*.sofmeright.com, *.arbitorium.com, *.yesimvegan.com)
-  - [ ] cell-membrane-gateway (172.22.30.71) - Business/work services (*.precisionplanit.com, *.prplanit.com, *.optcp.com, *.ipleek.com, *.uni2.cc)
-- [ ] Configure TLS certificates for each Gateway (cert-manager + Let's Encrypt)
-- [ ] Migrate HTTPRoutes from Traefik IngressRoute to Gateway API HTTPRoute
-- [ ] Test traffic routing and TLS termination
-- [ ] Update pfSense port forwarding rules for Gateway IPs
-- [ ] Remove Traefik deployment after successful migration
-- [ ] Clean up old Traefik resources and configs
-
-**Protocol support verified:**
-- ✅ HTTP/HTTPS - Full HTTPRoute support
-- ✅ gRPC - GRPCRoute supported
-- ✅ TCP/UDP - Supported via separate Gateways (L4 vs L7 separation)
-
-**Note:** Migration can be done incrementally - keep Traefik running while deploying Cilium Gateway, migrate routes one gateway at a time, then remove Traefik when complete.
 
 ## Cilium cluster-pool IPAM Migration
 

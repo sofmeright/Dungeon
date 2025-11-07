@@ -103,7 +103,7 @@ The datacenter is powered by Proxmox VE and consists of five clustered nodes:
 
 | Component | Part | Purchase Date | Cost | Notes |
 |-----------|------|---------------|------|-------|
-| **Chassis** | 2U 12 Bay TruNas SAS3 Server | Jan 4, 2025 | $448.77 | Intel Xeon 16 core, 64GB RAM, HBA included |
+| **Chassis** | SuperChassis 826BE1C-R920LPB | Jan 4, 2025 | $448.77 | 2U 12 Bay, SAS3 12gbps |
 | **NIC** | Intel X520-DA2 | Sep 21, 2023 | $24.21 | Dual Port SFP+, Low Profile |
 | **Ceph SSD** | Samsung F320 NVMe 3.2TB (MZ-PLK3T20) | Jun 20, 2024 | $157.39 | PCIe 3.0 x8 |
 

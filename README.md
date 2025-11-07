@@ -9,10 +9,10 @@ This repository seeks to be the source of truth regarding the active state of my
 ---
 
 ## See Also:
-- [Ansible (Gitlab Component)](https://gitlab.prplanit.com/components/ansible)
-- [Ansible OCI](https://gitlab.prplanit.com/precisionplanit/ansible-oci) – Docker runtime image for Ansible workflows
-- [StageFreight GitLab Component](https://gitlab.prplanit.com/components/stagefreight) – GitLab component that provides CI pipeline orchestration for releases
-- [StageFreight OCI (Docker Image)](https://gitlab.prplanit.com/precisionplanit/stagefreight-oci) – A general-purpose DevOps automation image built to accelerate CI/CD pipelines.
+- [Ansible (Gitlab Component)](https://github.com/sofmeright/ansible-glc)
+- [Ansible OCI](https://github.com/sofmeright/ansible-oci) – Docker runtime image for Ansible workflows
+- [StageFreight GitLab Component](https://github.com/sofmeright/stagefreight-glc) – GitLab component that provides CI pipeline orchestration for releases
+- [StageFreight OCI (Docker Image)](https://github.com/sofmeright/stagefreight-oci) – A general-purpose DevOps automation image built to accelerate CI/CD pipelines.
 
 ---
 
@@ -165,7 +165,7 @@ Some Dashboards and UIs I frequently use to manage / observe Containerized Envir
 
 ## Kubernetes Deployments
 
-A list of all my kubernetes deployments is not formatted neatly at this time as I am under rapid construction right now. But everything I have deployed is visible within "fluxcd" as before mentioned... Cheers!
+[A list of all my kubernetes deployments](./docs/Apps_&_Services-Overview.md) is not formatted neatly at this time as I am under rapid construction right now. But everything I have deployed is visible within "fluxcd" as before mentioned... Cheers!
 
 ## 🤓 Want to contribute or improve the stack?
 This is a private lab, but feedback, discussion, and memes are always welcome. ✉️
