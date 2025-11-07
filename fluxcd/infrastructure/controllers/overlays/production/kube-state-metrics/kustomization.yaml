@@ -1,0 +1,13 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: gossip-stone
+resources:
+  - ../../../base/kube-state-metrics
+patches:
+  - target:
+      kind: ClusterRoleBinding
+      name: kube-state-metrics
+    patch: |-
+      - op: replace
+        path: /subjects/0/namespace
+        value: gossip-stone

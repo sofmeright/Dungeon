@@ -45,6 +45,33 @@ data:
       clustering {
         enabled = false
       }
+
+      // Add namespace, pod, container labels
+      relabel {
+        source_labels = ["__meta_kubernetes_namespace"]
+        target_label  = "namespace"
+      }
+      relabel {
+        source_labels = ["__meta_kubernetes_pod_name"]
+        target_label  = "pod"
+      }
+      relabel {
+        source_labels = ["__meta_kubernetes_pod_container_name"]
+        target_label  = "container"
+      }
+      relabel {
+        source_labels = ["__meta_kubernetes_pod_node_name"]
+        target_label  = "node"
+      }
+      relabel {
+        source_labels = ["__meta_kubernetes_pod_label_app_kubernetes_io_name"]
+        target_label  = "app"
+      }
+      relabel {
+        source_labels = ["__meta_kubernetes_pod_label_app"]
+        regex         = "^$"
+        target_label  = "app"
+      }
     }
 
     // Scrape Kubernetes Services with prometheus.io/scrape annotation
@@ -54,6 +81,20 @@ data:
 
       clustering {
         enabled = false
+      }
+
+      // Add namespace and service labels
+      relabel {
+        source_labels = ["__meta_kubernetes_namespace"]
+        target_label  = "namespace"
+      }
+      relabel {
+        source_labels = ["__meta_kubernetes_service_name"]
+        target_label  = "service"
+      }
+      relabel {
+        source_labels = ["__meta_kubernetes_service_label_app_kubernetes_io_name"]
+        target_label  = "app"
       }
     }
 

@@ -30,6 +30,7 @@ resources:
   - velero  # Backup and disaster recovery
   - grafana  # Grafana visualization dashboard
   # - prometheus  # Metrics storage and query engine - REMOVED: Replaced by pure Thanos architecture
+  - kube-state-metrics  # Kubernetes object state metrics exporter
   - thanos  # Pure Thanos architecture: Receive ingests metrics, Query provides unified querying
   - loki  # Log aggregation and storage
   - alloy  # Unified observability collector (scrapes K8s + Docker, remote writes to Thanos Receive)
