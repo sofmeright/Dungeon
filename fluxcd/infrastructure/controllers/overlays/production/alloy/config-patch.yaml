@@ -37,6 +37,20 @@ data:
       }
     }
 
+    // Built-in Node Exporter - exposes host metrics from each K8s node
+    prometheus.exporter.unix "node_metrics" {
+      // Use default collectors (CPU, memory, disk, network, filesystem, etc.)
+    }
+
+    // Scrape local node metrics from unix exporter
+    prometheus.scrape "node_exporter" {
+      targets    = prometheus.exporter.unix.node_metrics.targets
+      forward_to = [prometheus.remote_write.default.receiver]
+
+      scrape_interval = "30s"
+      scrape_timeout  = "10s"
+    }
+
     // Scrape Kubernetes Pods with prometheus.io annotations
     prometheus.scrape "kubernetes_pods" {
       targets = discovery.kubernetes.pods.targets
