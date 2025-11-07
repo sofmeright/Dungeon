@@ -18,6 +18,8 @@ spec:
         app.kubernetes.io/name: thanos-receive
         app.kubernetes.io/component: receive
     spec:
+      securityContext:
+        fsGroup: 1001
       containers:
         - name: thanos-receive
           image: quay.io/thanos/thanos:v0.40.1
