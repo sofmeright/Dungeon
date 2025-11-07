@@ -32,6 +32,7 @@ resources:
   # - prometheus  # Metrics storage and query engine - REMOVED: Replaced by pure Thanos architecture
   - kube-state-metrics  # Kubernetes object state metrics exporter
   - thanos  # Pure Thanos architecture: Receive ingests metrics, Query provides unified querying
+  - mimir  # Grafana Mimir: Modern scalable metrics storage (migrating from Thanos)
   - loki  # Log aggregation and storage
   - alloy  # Unified observability collector (scrapes K8s + Docker, remote writes to Thanos Receive)
   - istio  # Istio Ambient service mesh with Gateway API support

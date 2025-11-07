@@ -37,6 +37,15 @@ data:
       }
     }
 
+    // Prometheus Remote Write - Direct to Mimir Distributor
+    // Mimir architecture: Alloy → Mimir Distributor → Mimir Ingester → Filesystem/S3
+    // Dual-write to both Thanos and Mimir during migration
+    prometheus.remote_write "mimir" {
+      endpoint {
+        url = "http://mimir-distributor.gossip-stone.svc.cluster.local:8080/api/v1/push"
+      }
+    }
+
     // Built-in Node Exporter - exposes host metrics from each K8s node
     prometheus.exporter.unix "node_metrics" {
       // Use default collectors (CPU, memory, disk, network, filesystem, etc.)
@@ -45,7 +54,7 @@ data:
     // Scrape local node metrics from unix exporter
     prometheus.scrape "node_exporter" {
       targets    = prometheus.exporter.unix.node_metrics.targets
-      forward_to = [prometheus.remote_write.default.receiver]
+      forward_to = [prometheus.remote_write.default.receiver, prometheus.remote_write.mimir.receiver]
 
       scrape_interval = "30s"
       scrape_timeout  = "10s"
@@ -54,7 +63,7 @@ data:
     // Scrape Kubernetes Pods with prometheus.io annotations
     prometheus.scrape "kubernetes_pods" {
       targets = discovery.kubernetes.pods.targets
-      forward_to = [prometheus.remote_write.default.receiver]
+      forward_to = [prometheus.remote_write.default.receiver, prometheus.remote_write.mimir.receiver]
 
       clustering {
         enabled = false
@@ -91,7 +100,7 @@ data:
     // Scrape Kubernetes Services with prometheus.io/scrape annotation
     prometheus.scrape "kubernetes_services" {
       targets = discovery.kubernetes.services.targets
-      forward_to = [prometheus.remote_write.default.receiver]
+      forward_to = [prometheus.remote_write.default.receiver, prometheus.remote_write.mimir.receiver]
 
       clustering {
         enabled = false
@@ -220,7 +229,7 @@ data:
 
     prometheus.scrape "lighthouse_exporters" {
       targets    = discovery.relabel.lighthouse_exporters.output
-      forward_to = [prometheus.remote_write.default.receiver]
+      forward_to = [prometheus.remote_write.default.receiver, prometheus.remote_write.mimir.receiver]
 
       scrape_interval = "30s"
       scrape_timeout  = "10s"

@@ -1,0 +1,91 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: mimir
+spec:
+  values:
+    # Production-specific storage class configuration
+    ingester:
+      persistentVolume:
+        storageClass: ceph-block
+      # Pod anti-affinity to spread across nodes
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchExpressions:
+                    - key: app.kubernetes.io/component
+                      operator: In
+                      values:
+                        - ingester
+                topologyKey: kubernetes.io/hostname
+
+    store_gateway:
+      persistentVolume:
+        storageClass: ceph-block
+
+    compactor:
+      persistentVolume:
+        storageClass: ceph-block
+
+    # Image registry - use direct upstream for critical infrastructure
+    # (avoiding JCR pull-through cache to prevent circular dependencies)
+    image:
+      registry: docker.io
+      repository: grafana/mimir
+      tag: ""  # Use chart default
+
+    # Service annotations for metrics scraping
+    serviceMonitor:
+      enabled: false  # We'll use Alloy service discovery instead
+
+    # Mimir configuration overrides for production
+    mimir:
+      structuredConfig:
+        # Distributor configuration
+        distributor:
+          ring:
+            kvstore:
+              store: memberlist
+
+        # Ingester configuration for production
+        ingester:
+          ring:
+            kvstore:
+              store: memberlist
+            replication_factor: 3
+            zone_awareness_enabled: false
+          # Data retention in ingester memory before flushing to storage
+          # blocks_storage:
+          #   tsdb:
+          #     retention_period: 24h
+
+        # Store-gateway configuration
+        store_gateway:
+          sharding_ring:
+            kvstore:
+              store: memberlist
+            replication_factor: 1
+
+        # Compactor configuration
+        compactor:
+          sharding_ring:
+            kvstore:
+              store: memberlist
+
+        # Memberlist configuration for service discovery
+        memberlist:
+          join_members:
+            - dns+mimir-gossip-ring.gossip-stone.svc.cluster.local:7946
+
+        # Query limits for production
+        limits:
+          # Increase limits for production workload
+          max_global_series_per_user: 0  # Unlimited
+          ingestion_rate: 100000  # 100k samples/sec
+          ingestion_burst_size: 200000  # 200k samples burst
+          # Query timeouts
+          query_timeout: 5m
+          max_query_parallelism: 32

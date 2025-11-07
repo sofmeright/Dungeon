@@ -1,0 +1,167 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: mimir
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: mimir-distributed
+      version: 5.5.x
+      sourceRef:
+        kind: HelmRepository
+        name: grafana
+        namespace: flux-system
+      interval: 12h
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    remediation:
+      retries: 3
+  values:
+    fullnameOverride: mimir
+
+    # Microservices mode components configuration
+    distributor:
+      replicas: 2
+      resources:
+        requests:
+          cpu: 200m
+          memory: 512Mi
+        limits:
+          cpu: 1
+          memory: 1Gi
+
+    ingester:
+      replicas: 3
+      resources:
+        requests:
+          cpu: 500m
+          memory: 2Gi
+        limits:
+          cpu: 2
+          memory: 4Gi
+      persistentVolume:
+        enabled: true
+        size: 10Gi
+      zoneAwareReplication:
+        enabled: false
+
+    querier:
+      replicas: 2
+      resources:
+        requests:
+          cpu: 200m
+          memory: 512Mi
+        limits:
+          cpu: 1
+          memory: 2Gi
+
+    query_frontend:
+      replicas: 2
+      resources:
+        requests:
+          cpu: 200m
+          memory: 512Mi
+        limits:
+          cpu: 1
+          memory: 1Gi
+
+    store_gateway:
+      replicas: 1
+      resources:
+        requests:
+          cpu: 200m
+          memory: 1Gi
+        limits:
+          cpu: 1
+          memory: 2Gi
+      persistentVolume:
+        enabled: true
+        size: 50Gi
+      zoneAwareReplication:
+        enabled: false
+
+    compactor:
+      replicas: 1
+      resources:
+        requests:
+          cpu: 200m
+          memory: 1Gi
+        limits:
+          cpu: 1
+          memory: 2Gi
+      persistentVolume:
+        enabled: true
+        size: 50Gi
+
+    # Ruler disabled for now (can enable later for recording/alerting rules)
+    ruler:
+      enabled: false
+
+    # MinIO disabled - we'll use filesystem backend
+    minio:
+      enabled: false
+
+    # Grafana Enterprise Metrics features disabled
+    enterprise:
+      enabled: false
+
+    # Nginx gateway for unified query endpoint (optional but recommended)
+    nginx:
+      enabled: true
+      replicas: 2
+      resources:
+        requests:
+          cpu: 50m
+          memory: 128Mi
+        limits:
+          cpu: 200m
+          memory: 256Mi
+
+    # Mimir configuration
+    mimir:
+      structuredConfig:
+        # Multi-tenancy disabled for simplicity
+        multitenancy_enabled: false
+
+        # Filesystem storage backend (will migrate to S3 later)
+        common:
+          storage:
+            backend: filesystem
+            filesystem:
+              dir: /data/blocks
+
+        # Blocks storage configuration
+        blocks_storage:
+          backend: filesystem
+          filesystem:
+            dir: /data/blocks
+          tsdb:
+            dir: /data/tsdb
+          bucket_store:
+            sync_dir: /data/tsdb-sync
+
+        # Ingester configuration
+        ingester:
+          ring:
+            replication_factor: 3
+            zone_awareness_enabled: false
+
+        # Compactor configuration
+        compactor:
+          data_dir: /data/compactor
+          compaction_interval: 30m
+          deletion_delay: 2h
+
+        # Limits configuration
+        limits:
+          # Max series per user (unlimited since multi-tenancy is disabled)
+          max_global_series_per_user: 0
+          # Ingestion rate limit (metrics/sec)
+          ingestion_rate: 100000
+          ingestion_burst_size: 200000
+          # Query limits
+          max_query_lookback: 0
+          max_query_length: 0
