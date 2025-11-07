@@ -9,13 +9,17 @@ spec:
   chart:
     spec:
       chart: kube-prometheus-stack
-      version: "67.4.0"
+      version: "79.2.1"
       sourceRef:
         kind: HelmRepository
         name: prometheus-community
       interval: 12h
   values:
     fullnameOverride: "prom-stack"
+
+    # Enable CRD upgrade job for major version upgrades
+    crds:
+      enabled: true
 
     # Disable components we don't need
     alertmanager:
