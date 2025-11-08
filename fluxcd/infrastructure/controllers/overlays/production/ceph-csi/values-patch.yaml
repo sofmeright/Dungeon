@@ -4,6 +4,69 @@ metadata:
   name: ceph-csi-rbd
   namespace: flux-system
 spec:
+  postRenderers:
+    - kustomize:
+        patches:
+          - target:
+              kind: DaemonSet
+              name: ceph-csi-rbd-nodeplugin
+            patch: |
+              - op: replace
+                path: /spec/template/spec/volumes
+                value:
+                  - name: socket-dir
+                    hostPath:
+                      path: /var/lib/kubelet/plugins/rbd.csi.ceph.com
+                      type: DirectoryOrCreate
+                  - name: registration-dir
+                    hostPath:
+                      path: /var/lib/kubelet/plugins_registry
+                      type: Directory
+                  - name: plugin-dir
+                    hostPath:
+                      path: /var/lib/kubelet/plugins
+                      type: Directory
+                  - name: mountpoint-dir
+                    hostPath:
+                      path: /var/lib/kubelet/pods
+                      type: DirectoryOrCreate
+                  - name: ceph-logdir
+                    hostPath:
+                      path: /var/log/ceph
+                      type: DirectoryOrCreate
+                  - name: host-dev
+                    hostPath:
+                      path: /dev
+                  - name: host-mount
+                    hostPath:
+                      path: /run/mount
+                  - name: host-sys
+                    hostPath:
+                      path: /sys
+                  - name: etc-selinux
+                    hostPath:
+                      path: /etc/selinux
+                  - name: lib-modules
+                    hostPath:
+                      path: /lib/modules
+                  - name: ceph-config
+                    emptyDir: {}
+                  - name: ceph-csi-config
+                    configMap:
+                      name: ceph-csi-config
+                  - name: ceph-csi-encryption-kms-config
+                    configMap:
+                      name: ceph-csi-encryption-kms-config
+                  - name: keys-tmp-dir
+                    emptyDir:
+                      medium: Memory
+                  - name: oidc-token
+                    projected:
+                      sources:
+                        - serviceAccountToken:
+                            path: oidc-token
+                            expirationSeconds: 3600
+                            audience: ceph-csi-kms
   values:
     provisioner:
       enableHostNetwork: true
@@ -18,6 +81,6 @@ spec:
           - "[fc00:f1:ada:104e:1ace::3]:6789"
           - "[fc00:f1:ada:104e:1ace::4]:6789"
           - "[fc00:f1:ada:104e:1ace::5]:6789"
-    # Removed cephconf field - cluster config provided via csiConfig above
-    # ceph-config volume changed from ConfigMap to emptyDir via daemonset-patch.yaml
-    # ConfigMaps are read-only and cause driver to fail writing /etc/ceph/keyring
+    # Cluster config provided via csiConfig above (not cephconf)
+    # ceph-config volume changed from ConfigMap to emptyDir via postRenderers
+    # ConfigMaps are read-only, preventing driver from writing /etc/ceph/keyring
