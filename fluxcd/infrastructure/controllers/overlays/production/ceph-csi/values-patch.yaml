@@ -18,6 +18,6 @@ spec:
           - "[fc00:f1:ada:104e:1ace::3]:6789"
           - "[fc00:f1:ada:104e:1ace::4]:6789"
           - "[fc00:f1:ada:104e:1ace::5]:6789"
-    # Removed cephconf field - using ceph-config ConfigMap instead
-    # The cephconf field causes the driver to try writing to /etc/ceph/keyring
-    # which fails because /etc/ceph/ is read-only when mounted from ConfigMap
+    # Removed cephconf field - cluster config provided via csiConfig above
+    # ceph-config volume changed from ConfigMap to emptyDir via daemonset-patch.yaml
+    # ConfigMaps are read-only and cause driver to fail writing /etc/ceph/keyring

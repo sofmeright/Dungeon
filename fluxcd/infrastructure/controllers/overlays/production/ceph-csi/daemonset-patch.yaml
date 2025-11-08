@@ -1,0 +1,10 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: ceph-csi-rbd-nodeplugin
+spec:
+  template:
+    spec:
+      volumes:
+        - name: ceph-config
+          emptyDir: {}

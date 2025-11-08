@@ -11,3 +11,7 @@ patches:
     target:
       kind: HelmRelease
       name: ceph-csi-rbd
+  - path: daemonset-patch.yaml
+    target:
+      kind: DaemonSet
+      name: ceph-csi-rbd-nodeplugin
