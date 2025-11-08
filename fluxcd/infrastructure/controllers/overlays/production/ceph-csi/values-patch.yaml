@@ -67,6 +67,43 @@ spec:
                             path: oidc-token
                             expirationSeconds: 3600
                             audience: ceph-csi-kms
+          - target:
+              kind: Deployment
+              name: ceph-csi-rbd-provisioner
+            patch: |
+              - op: replace
+                path: /spec/template/spec/volumes
+                value:
+                  - name: socket-dir
+                    emptyDir:
+                      medium: Memory
+                  - name: host-dev
+                    hostPath:
+                      path: /dev
+                  - name: host-sys
+                    hostPath:
+                      path: /sys
+                  - name: lib-modules
+                    hostPath:
+                      path: /lib/modules
+                  - name: ceph-config
+                    emptyDir: {}
+                  - name: ceph-csi-config
+                    configMap:
+                      name: ceph-csi-config
+                  - name: ceph-csi-encryption-kms-config
+                    configMap:
+                      name: ceph-csi-encryption-kms-config
+                  - name: keys-tmp-dir
+                    emptyDir:
+                      medium: Memory
+                  - name: oidc-token
+                    projected:
+                      sources:
+                        - serviceAccountToken:
+                            path: oidc-token
+                            expirationSeconds: 3600
+                            audience: ceph-csi-kms
   values:
     provisioner:
       enableHostNetwork: true
