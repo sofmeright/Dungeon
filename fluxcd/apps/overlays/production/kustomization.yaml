@@ -4,7 +4,6 @@ resources:
   # Infrastructure
   - 2fauth
   - anubis
-  - apt-cacher-ng
   - jfrog-artifactory
   - vaultwarden
   - netbootxyz
