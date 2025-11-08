@@ -4,7 +4,6 @@ kind: Kustomization
 namespace: gossip-stone
 
 resources:
-  - ../../../../configs/overlays/production/loki  # Loki S3 credentials ExternalSecret
   - ../../../../base/loki
 
 patches:
