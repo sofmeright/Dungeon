@@ -4,13 +4,9 @@ resources:
   # Infrastructure
   - 2fauth
   - anubis
-  - jfrog-artifactory
-  - vaultwarden
   - netbootxyz
   - netbox
   - oauth2-proxy
-  - quay
-  - searxng
   - semaphore
   # Monitoring, Analytics, Diagnostics
   - beszel
