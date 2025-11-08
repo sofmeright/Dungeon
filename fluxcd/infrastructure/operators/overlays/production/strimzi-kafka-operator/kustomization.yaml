@@ -1,17 +1,17 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
-namespace: gorons-bracelet
 resources:
   - ../../../base/strimzi-kafka-operator
+  - ../../../base/strimzi-kafka-operator/helmrepository.yaml
 patches:
   - path: values-patch.yaml
     target:
       kind: HelmRelease
       name: strimzi-kafka-operator
   - target:
-      kind: HelmRepository
-      name: strimzi
+      kind: HelmRelease
+      name: strimzi-kafka-operator
     patch: |-
       - op: replace
         path: /metadata/namespace
-        value: flux-system
+        value: gorons-bracelet
