@@ -48,6 +48,8 @@ spec:
     version: 3.9.0
     # Metadata version for KRaft compatibility
     metadataVersion: 3.9-IV0
+    # Kafka image - use JCR pull-through cache for bandwidth efficiency
+    image: quay.jcr.pcfae.com/strimzi/kafka:0.48.0-kafka-3.9.0
     # Listeners for client connections
     listeners:
       - name: plain
