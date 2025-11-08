@@ -1,0 +1,23 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - ./alloy
+  - ./crowdsec
+  - ./grafana
+  - ./graphite-exporter-truenas
+  - ./kube-state-metrics
+  - ./loki
+  - ./mimir
+  - ./netbird
+  - ./ntfy
+  - ./nutify
+  - ./prometheus-exporter-eaton-ups
+  - ./prometheus-exporter-pve
+  - ./searxng
+  - ./stunner
+  - ./thanos
+  - ./uptime-kuma
+  - ./vaultwarden
+  - ./wazuh
+  - ./weave-gitops

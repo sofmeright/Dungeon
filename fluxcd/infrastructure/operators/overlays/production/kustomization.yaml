@@ -1,0 +1,18 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - ./bank-vaults
+  - ./ceph-rook-ceph
+  - ./cert-manager
+  - ./cilium
+  - ./cloudnative-pg
+  - ./external-secrets
+  - ./gpu-operator
+  - ./istio
+  - ./mariadb-operator-crds
+  - ./mariadb-operator
+  - ./redis-operator
+  - ./snapshot-controller
+  - ./strimzi-kafka-operator
+  - ./velero

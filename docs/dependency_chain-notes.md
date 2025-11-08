@@ -327,14 +327,29 @@ The following were moved from `apps/` to `infrastructure/services/phase-04-platf
 
 ---
 
+## Legacy Components (Graveyard)
+
+The following legacy components have been moved to `overlays/production/zz-graveyard/` for reference:
+
+| Component | Superseded By | Reason | Moved Date |
+|-----------|---------------|--------|------------|
+| prometheus | Mimir + kube-prometheus-stack | Standalone Prometheus replaced by Grafana Mimir with Kafka-based ingest storage | 2025-11-07 |
+| traefik | Istio + Gateway API | Migration to service mesh architecture with Kubernetes Gateway API | 2025-11-07 |
+| pihole | AdGuard Home | Better DNS filtering, HTTPS DNS-over-TLS, improved UI/management | 2025-11-07 |
+
+**Note**: These components are NOT deployed by FluxCD. They are preserved for reference only.
+
+---
+
 ## Next Steps
 
 1. ✅ Define three-tier structure (Controllers/Operators/Services)
-2. ⬜ Create directory structure with git mv (preserve history)
-3. ⬜ Create kustomization.yaml for each tier/phase
-4. ⬜ Update infrastructure.yaml with new FluxCD kustomizations
-5. ⬜ Commit three-tier infrastructure structure
-6. ⬜ Test deployment with `flux reconcile`
-7. ⬜ Verify Strimzi operator installs Kafka CRDs (Tier 2)
-8. ⬜ Verify Mimir + Kafka cluster deploys successfully (Phase-04)
-9. ⬜ Test metrics flow: Alloy → Mimir → Kafka
+2. ✅ Move legacy components to graveyard
+3. ⬜ Create directory structure with git mv (preserve history)
+4. ⬜ Create kustomization.yaml for each tier/phase
+5. ⬜ Update infrastructure.yaml with new FluxCD kustomizations
+6. ⬜ Commit three-tier infrastructure structure
+7. ⬜ Test deployment with `flux reconcile`
+8. ⬜ Verify Strimzi operator installs Kafka CRDs (Tier 2)
+9. ⬜ Verify Mimir + Kafka cluster deploys successfully (Phase-04)
+10. ⬜ Test metrics flow: Alloy → Mimir → Kafka

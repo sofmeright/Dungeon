@@ -18,11 +18,96 @@ spec:
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: infra-configs
+  name: infra-operators
   namespace: flux-system
 spec:
   dependsOn:
     - name: infra-controllers
+  interval: 1h
+  retryInterval: 1m
+  timeout: 5m
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  path: ./fluxcd/infrastructure/operators/overlays/production
+  prune: true
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: infra-services-phase-01
+  namespace: flux-system
+spec:
+  dependsOn:
+    - name: infra-operators
+  interval: 1h
+  retryInterval: 1m
+  timeout: 5m
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  path: ./fluxcd/infrastructure/services/overlays/production/phase-01-storage
+  prune: true
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: infra-services-phase-02
+  namespace: flux-system
+spec:
+  dependsOn:
+    - name: infra-services-phase-01
+  interval: 1h
+  retryInterval: 1m
+  timeout: 5m
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  path: ./fluxcd/infrastructure/services/overlays/production/phase-02-critical
+  prune: true
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: infra-services-phase-03
+  namespace: flux-system
+spec:
+  dependsOn:
+    - name: infra-services-phase-02
+  interval: 1h
+  retryInterval: 1m
+  timeout: 5m
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  path: ./fluxcd/infrastructure/services/overlays/production/phase-03-core
+  prune: true
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: infra-services-phase-04
+  namespace: flux-system
+spec:
+  dependsOn:
+    - name: infra-services-phase-03
+  interval: 1h
+  retryInterval: 1m
+  timeout: 5m
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  path: ./fluxcd/infrastructure/services/overlays/production/phase-04-platform
+  prune: true
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: infra-configs
+  namespace: flux-system
+spec:
+  dependsOn:
+    - name: infra-services-phase-04
   interval: 1h
   retryInterval: 1m
   timeout: 5m
