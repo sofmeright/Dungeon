@@ -8,3 +8,10 @@ patches:
     target:
       kind: HelmRelease
       name: strimzi-kafka-operator
+  - target:
+      kind: HelmRepository
+      name: strimzi
+    patch: |-
+      - op: replace
+        path: /metadata/namespace
+        value: flux-system
