@@ -1,50 +1,8 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
+
 resources:
-  - cilium
   - kube-vip
-  - gitlab  # Critical infrastructure: Git server hosting FluxCD repository
-  # - metallb  # Removed - using Cilium LoadBalancer IPAM with BGP instead
-  # - gpu-operator-prereqs  # Prerequisites for GPU Operator (host directory setup) - DISABLED: causing CRI-O issues
-  - gpu-operator  # NVIDIA GPU Operator for GPU support
-  - weave-gitops
   - ceph-csi
-  - ceph-rook-ceph/operator  # Rook operator for Ceph orchestration
-  - ceph-rook-ceph/external-cluster  # Rook CephCluster CRD for external Ceph cluster
-  - ceph-rgw  # Ceph RGW S3 gateway for object storage
-  - snapshot-controller  # CSI snapshot controller for volume snapshots
   - cifs-csi
-  - vault
-  - bank-vaults
-  - external-secrets
-  - cloudnative-pg  # PostgreSQL operator for cloud-native database clusters
-  - redis-operator  # Redis operator for cloud-native Redis clusters
-  - mariadb-operator-crds  # MariaDB operator CRDs (must be installed before operator)
-  - mariadb-operator  # MariaDB operator with Galera cluster support for HA MySQL
-  - harbor  # Harbor container registry with HA configuration (cr.pcfae.com)
-  - zitadel
-  - netbird
-  - adguard  # DNS server with network policy for proper routing
-  - ../../../configs/overlays/production/chrony  # Chrony NTP server ConfigMap
-  - chrony  # NTP time synchronization server
-  - velero  # Backup and disaster recovery
-  - grafana  # Grafana visualization dashboard
-  # - prometheus  # Metrics storage and query engine - REMOVED: Replaced by pure Thanos architecture
-  - kube-state-metrics  # Kubernetes object state metrics exporter
-  - strimzi-kafka-operator  # Strimzi operator for Kafka cluster management (provides Kafka for Mimir ingest storage)
-  - thanos  # Pure Thanos architecture: Receive ingests metrics, Query provides unified querying
-  - mimir  # Grafana Mimir: Modern scalable metrics storage with dedicated Kafka cluster (migrating from Thanos)
-  - loki  # Log aggregation and storage
-  - alloy  # Unified observability collector (scrapes K8s + Docker, remote writes to Thanos Receive)
-  - istio  # Istio Ambient service mesh with Gateway API support
-  # - traefik  # Gateway API controller for ingress routing - REMOVED: migrated to Istio
-  - stunner  # STUNner WebRTC gateway for TURN/STUN services
-  - cert-manager  # TLS certificate management with Let's Encrypt
-  - uptime-kuma  # Service uptime monitoring
-  - ntfy  # Notification delivery service
-  - graphite-exporter-truenas  # Graphite metrics exporter for TrueNAS
-  - prometheus-exporter-eaton-ups  # Prometheus exporter for Eaton UPS metrics
-  - prometheus-exporter-pve  # Prometheus exporter for Proxmox VE metrics
-  - wazuh  # Wazuh SIEM for security monitoring and threat detection
-  - crowdsec  # CrowdSec IDS/IPS for collaborative security and ban decisions
-  - nutify  # UPS monitoring and power management
+  - snapshot-controller
