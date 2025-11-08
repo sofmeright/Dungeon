@@ -5,4 +5,3 @@ resources:
   - kube-vip
   - ceph-csi
   - cifs-csi
-  - snapshot-controller
