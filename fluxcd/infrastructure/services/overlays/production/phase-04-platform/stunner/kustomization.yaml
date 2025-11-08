@@ -4,7 +4,7 @@ kind: Kustomization
 namespace: king-of-red-lions
 
 resources:
-  - ../../../base/stunner
+  - ../../../../base/stunner
 
 patches:
   - path: helmrelease-patch.yaml

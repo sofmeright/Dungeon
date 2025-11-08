@@ -4,7 +4,7 @@ kind: Kustomization
 namespace: gossip-stone
 
 resources:
-  - ../../../base/alloy
+  - ../../../../base/alloy
 
 patches:
   - path: config-patch.yaml

@@ -5,7 +5,7 @@ namespace: gossip-stone
 
 resources:
   - ../../../../configs/overlays/production/loki  # Loki S3 credentials ExternalSecret
-  - ../../../base/loki
+  - ../../../../base/loki
 
 patches:
   - path: helmrelease-patch.yaml

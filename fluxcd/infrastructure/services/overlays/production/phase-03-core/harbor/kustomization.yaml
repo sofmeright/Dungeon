@@ -4,7 +4,7 @@ kind: Kustomization
 namespace: hyrule-castle
 
 resources:
-  - ../../../base/harbor
+  - ../../../../base/harbor
   - httproute.yaml
   - externalsecret.yaml
   - postgres-credentials-externalsecret.yaml

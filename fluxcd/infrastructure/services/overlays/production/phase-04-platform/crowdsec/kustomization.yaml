@@ -4,7 +4,7 @@ kind: Kustomization
 namespace: lens-of-truth
 
 resources:
-  - ../../../base/crowdsec
+  - ../../../../base/crowdsec
 
 patches:
   # StatefulSet patches

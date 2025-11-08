@@ -4,7 +4,7 @@ kind: Kustomization
 namespace: zeldas-lullaby
 
 resources:
-  - ../../../base/zitadel
+  - ../../../../base/zitadel
   - httproute.yaml
   - login-v2-httproute.yaml
 

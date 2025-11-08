@@ -2,7 +2,7 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 namespace: gossip-stone
 resources:
-  - ../../../base/uptime-kuma
+  - ../../../../base/uptime-kuma
 patches:
   - path: statefulset-patch.yaml
   - path: httproute-patch.yaml

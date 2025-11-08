@@ -3,7 +3,7 @@ kind: Kustomization
 namespace: flux-system
 
 resources:
-  - ../../../base/weave-gitops
+  - ../../../../base/weave-gitops
   - rbac-patch.yaml
 
 patches:
