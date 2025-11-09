@@ -44,12 +44,12 @@ metadata:
     strimzi.io/node-pools: enabled
 spec:
   kafka:
-    # Kafka version - using recent stable version with KRaft support
-    version: 3.9.0
+    # Kafka version - using Strimzi 0.48.x supported version with KRaft support
+    version: 4.1.0
     # Metadata version for KRaft compatibility
-    metadataVersion: 3.9-IV0
+    metadataVersion: 4.1-IV0
     # Kafka image - use JCR pull-through cache for bandwidth efficiency
-    image: quay.jcr.pcfae.com/strimzi/kafka:0.48.0-kafka-3.9.0
+    image: quay.jcr.pcfae.com/strimzi/kafka:0.48.0-kafka-4.1.0
     # Listeners for client connections
     listeners:
       - name: plain
