@@ -14,7 +14,7 @@ spec:
           - mountPath: /target
             name: plugins
       - name: velero-plugin-for-csi
-        image: docker.io/velero/velero-plugin-for-csi:v0.8.0
+        image: docker.jcr.pcfae.com/velero/velero-plugin-for-csi:v0.8.0
         imagePullPolicy: IfNotPresent
         volumeMounts:
           - mountPath: /target
