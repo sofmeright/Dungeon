@@ -8,11 +8,11 @@ parameters:
   fsName: Seed_Bank
   pool: dungeon-fs-nvme
   mounter: kernel
-  csi.storage.k8s.io/provisioner-secret-name: rook-csi-cephfs-provisioner
+  csi.storage.k8s.io/provisioner-secret-name: csi-cephfs-provisioner
   csi.storage.k8s.io/provisioner-secret-namespace: gorons-bracelet
-  csi.storage.k8s.io/controller-expand-secret-name: rook-csi-cephfs-provisioner
+  csi.storage.k8s.io/controller-expand-secret-name: csi-cephfs-provisioner
   csi.storage.k8s.io/controller-expand-secret-namespace: gorons-bracelet
-  csi.storage.k8s.io/node-stage-secret-name: rook-csi-cephfs-node
+  csi.storage.k8s.io/node-stage-secret-name: csi-cephfs-node
   csi.storage.k8s.io/node-stage-secret-namespace: gorons-bracelet
 reclaimPolicy: Retain
 allowVolumeExpansion: true
