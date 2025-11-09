@@ -152,11 +152,13 @@ spec:
             - persistentvolumeclaims/output-stable-diffusion-webui-0
             # Frigate NVR storage
             - persistentvolumeclaims/storage-frigate-0
-            # ARK server binaries and game files
+            # ARK server binaries and game files (NOT save data)
             - persistentvolumeclaims/ark-sa-serverfiles-pvc
             - persistentvolumeclaims/shooting-gallery-ark-se-tmc-theisland-serverfiles-ark-se-tmc-theisland-0
-            # CephFS mounts (handled by external backup)
+            # CephFS infrastructure mounts (handled by external backup)
             - persistentvolumeclaims/cephfs-root-temp-pvc
+            - persistentvolumeclaims/gorons-bracelet-cephfs-root
+            - persistentvolumeclaims/gossip-stone-grafana-plugins
           storageLocation: default
           volumeSnapshotLocations:
             - default
