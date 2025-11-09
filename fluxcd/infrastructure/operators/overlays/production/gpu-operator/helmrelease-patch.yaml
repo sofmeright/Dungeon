@@ -31,8 +31,9 @@ spec:
       usePreinstalledDrivers: false
       # Use precompiled driver containers with signed kernel modules
       # Ubuntu 24.04 officially supported with R580 precompiled drivers
+      # Using specific version tag to avoid kernel-specific image requirements
       usePrecompiled: true
-      version: "580"
+      version: "580.95.05"
 
       # Upgrade policy - disable automatic upgrades to avoid driver reload issues
       upgradePolicy:
