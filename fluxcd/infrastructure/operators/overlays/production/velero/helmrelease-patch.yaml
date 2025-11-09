@@ -63,12 +63,42 @@ spec:
         template:
           ttl: "720h0m0s"
           includedNamespaces:
+            # Administrative services (vault, weave, zitadel)
             - zeldas-lullaby
+            # Archival/Content Management & Media Servers
             - temple-of-time
+            # Discovery & Dashboards
             - lost-woods
+            # Monitoring services
             - gossip-stone
+            # IDS/IPS/SIEM security monitoring
             - lens-of-truth
+            # Game servers
             - shooting-gallery
+            # Gateway for internal-only services
+            - arylls-lookout
+            # Gateway for personal/public services
+            - kokiri-forest
+            # Gateway for business/work services (GitLab!)
+            - hyrule-castle
+            # Routing & Gateway infrastructure
+            - king-of-red-lions
+            # RDP/remote control services
+            - hookshot
+            # Arr apps & downloaders
+            - swift-sail
+            # Restricted/privileged services
+            - pedestal-of-time
+            # Mail services
+            - delivery-bag
+            # Bot protection & security services
+            - wallmaster
+            # Tools w/o userdata
+            - tingle-tuner
+            # Storage services
+            - gorons-bracelet
+            # DNS & NTP services
+            - compass
           excludedResources:
             - events
             - events.events.k8s.io
