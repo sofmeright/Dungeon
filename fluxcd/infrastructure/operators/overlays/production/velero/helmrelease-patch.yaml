@@ -6,6 +6,9 @@ metadata:
 spec:
   targetNamespace: fairy-bottle
   values:
+    image:
+      pullSecrets:
+        - jcr-pcfae-dungeon-pull-secret
     initContainers:
       - name: velero-plugin-for-aws
         image: docker.io/velero/velero-plugin-for-aws:v1.13.0
