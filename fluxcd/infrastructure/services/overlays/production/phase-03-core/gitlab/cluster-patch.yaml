@@ -5,6 +5,24 @@ metadata:
 spec:
   storage:
     storageClass: ceph-rbd-retain
+  # Temporarily use recovery bootstrap to adopt existing Nov 1 PV data
+  # This replaces bootstrap.initdb from base to prevent data destruction
+  bootstrap:
+    recovery:
+      source: existing-cluster
+  # Define recovery source pointing to backup location
+  externalClusters:
+    - name: existing-cluster
+      barmanObjectStore:
+        destinationPath: s3://gitlab-backups/postgresql
+        endpointURL: http://ceph-rgw.gorons-bracelet.svc.cluster.local
+        s3Credentials:
+          accessKeyId:
+            name: gitlab-s3-credentials
+            key: ACCESS_KEY_ID
+          secretAccessKey:
+            name: gitlab-s3-credentials
+            key: SECRET_ACCESS_KEY
   backup:
     barmanObjectStore:
       endpointURL: http://ceph-rgw.gorons-bracelet.svc.cluster.local
