@@ -4,9 +4,10 @@ metadata:
   name: strimzi-kafka-operator
 spec:
   values:
-    # Watch all namespaces
+    # Watch specific namespaces
     # Kafka clusters can be deployed in any namespace (currently: gossip-stone for Mimir)
-    watchNamespaces: ['*']
+    watchNamespaces:
+      - gossip-stone
 
     # Image configuration - use JCR pull-through cache for bandwidth efficiency
     # CRI-O requires fully qualified image names in short-name enforcement mode
