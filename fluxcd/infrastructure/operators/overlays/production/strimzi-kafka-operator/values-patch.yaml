@@ -6,8 +6,7 @@ spec:
   values:
     # Watch all namespaces
     # Kafka clusters can be deployed in any namespace (currently: gossip-stone for Mimir)
-    watchNamespaces:
-      - '*'
+    watchNamespaces: ['*']
 
     # Image configuration - use JCR pull-through cache for bandwidth efficiency
     # CRI-O requires fully qualified image names in short-name enforcement mode
