@@ -5,9 +5,6 @@ metadata:
 spec:
   storage:
     storageClass: ceph-rbd-retain
-  # Remove bootstrap section to adopt existing PostgreSQL data in PVCs
-  # Setting to null overrides base bootstrap.initdb configuration
-  bootstrap: null
   backup:
     barmanObjectStore:
       endpointURL: http://ceph-rgw.gorons-bracelet.svc.cluster.local
