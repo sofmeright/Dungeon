@@ -41,6 +41,11 @@ spec:
         repository: docker.jcr.pcfae.com/grafana/rollout-operator
         # tag: use chart default
 
+    rolloutOperator:
+      image:
+        repository: docker.jcr.pcfae.com/grafana/rollout-operator
+        # tag: use chart default
+
     gateway:
       image:
         repository: docker.jcr.pcfae.com/nginxinc/nginx-unprivileged
