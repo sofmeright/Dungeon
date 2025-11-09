@@ -104,12 +104,12 @@ spec:
             - dns+mimir-gossip-ring.gossip-stone.svc.cluster.local:7946
 
         alertmanager:
-          data_dir: /alertmanager-data
+          data_dir: /data/alertmanager
 
         alertmanager_storage:
           backend: filesystem
           filesystem:
-            dir: /alertmanager-storage
+            dir: /data/blocks
 
         limits:
           max_global_series_per_user: 0
