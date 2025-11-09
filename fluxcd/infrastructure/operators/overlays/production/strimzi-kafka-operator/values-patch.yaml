@@ -34,7 +34,7 @@ spec:
     kafkaExporter:
       image:
         registry: quay.jcr.pcfae.com
-        repository: strimzi/kafka
+        repository: strimzi
         # tag: use chart default
 
     # Cruise Control image
