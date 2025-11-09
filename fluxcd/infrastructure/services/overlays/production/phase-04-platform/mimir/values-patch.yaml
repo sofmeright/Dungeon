@@ -103,6 +103,14 @@ spec:
           join_members:
             - dns+mimir-gossip-ring.gossip-stone.svc.cluster.local:7946
 
+        alertmanager:
+          data_dir: /data/alertmanager
+
+        alertmanager_storage:
+          backend: filesystem
+          filesystem:
+            dir: /data/alertmanager-storage
+
         limits:
           max_global_series_per_user: 0
           ingestion_rate: 100000
