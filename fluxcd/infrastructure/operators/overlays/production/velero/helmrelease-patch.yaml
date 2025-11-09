@@ -124,9 +124,38 @@ spec:
             - persistentvolumeclaims/photoprism-import
             - persistentvolumeclaims/photoprism-originals
             - persistentvolumeclaims/calibre-web-books-pvc
+            # Plex transcoding cache
             - persistentvolumeclaims/transcode-plex-0
-            # Exclude ARK server binaries and CephFS mounts (handled by rsync)
+            - persistentvolumeclaims/temple-of-time-plex-transcode-plex-0
+            # Arr apps media libraries (50Ti+ each - too large to backup)
+            - persistentvolumeclaims/radarr-movies
+            - persistentvolumeclaims/sonarr-tv-shows
+            - persistentvolumeclaims/lidarr-music
+            - persistentvolumeclaims/readarr-books
+            - persistentvolumeclaims/bazarr-movies
+            - persistentvolumeclaims/bazarr-tv-shows
+            - persistentvolumeclaims/pinchflat-downloads
+            - persistentvolumeclaims/pyload-ng-downloads
+            # Downloader working directories
+            - persistentvolumeclaims/swift-sail-qbittorrent-downloads-qbittorrent-0
+            - persistentvolumeclaims/swift-sail-gluetun-primary-downloads-gluetun-primary-0
+            - persistentvolumeclaims/swift-sail-gluetun-primary-downloads-qbittorrent-0
+            - persistentvolumeclaims/downloads-radarr-0
+            - persistentvolumeclaims/downloads-sonarr-0
+            # Immich photo library
+            - persistentvolumeclaims/library-immich-0
+            - persistentvolumeclaims/temple-of-time-immich-library-immich-0
+            # Plex MS-X media (pedestal-of-time)
+            - persistentvolumeclaims/plex-ms-x-media-movies
+            - persistentvolumeclaims/plex-ms-x-media-photos
+            # AI/ML output and models
+            - persistentvolumeclaims/output-stable-diffusion-webui-0
+            # Frigate NVR storage
+            - persistentvolumeclaims/storage-frigate-0
+            # ARK server binaries and game files
             - persistentvolumeclaims/ark-sa-serverfiles-pvc
+            - persistentvolumeclaims/shooting-gallery-ark-se-tmc-theisland-serverfiles-ark-se-tmc-theisland-0
+            # CephFS mounts (handled by external backup)
             - persistentvolumeclaims/cephfs-root-temp-pvc
           storageLocation: default
           volumeSnapshotLocations:
