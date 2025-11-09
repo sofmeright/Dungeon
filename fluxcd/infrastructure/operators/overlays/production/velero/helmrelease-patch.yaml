@@ -127,6 +127,17 @@ spec:
             # Plex transcoding cache
             - persistentvolumeclaims/transcode-plex-0
             - persistentvolumeclaims/temple-of-time-plex-transcode-plex-0
+            # Jellyfin metadata cache
+            - persistentvolumeclaims/temple-of-time-jellyfin-cache-jellyfin-0
+            # APT cacher logs and cache
+            - persistentvolumeclaims/hyrule-castle-apt-cacher-ng-logs-apt-cacher-ng-0
+            - persistentvolumeclaims/hyrule-castle-apt-cacher-ng-cache-apt-cacher-ng-0
+            # InvoiceNinja application cache
+            - persistentvolumeclaims/hyrule-castle-invoiceninja-app-cache-invoiceninja-app-0
+            # Gluetun VPN temporary files
+            - persistentvolumeclaims/swift-sail-gluetun-primary-gluetun-tmp-gluetun-primary-0
+            - persistentvolumeclaims/swift-sail-gluetun-primary-gluetun-tmp-qbittorrent-0
+            - persistentvolumeclaims/swift-sail-qbittorrent-gluetun-tmp-qbittorrent-0
             # Arr apps media libraries (50Ti+ each - too large to backup)
             - persistentvolumeclaims/radarr-movies
             - persistentvolumeclaims/sonarr-tv-shows
