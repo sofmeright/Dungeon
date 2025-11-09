@@ -77,18 +77,9 @@ spec:
           kafka:
             address: mimir-kafka-kafka-bootstrap.gossip-stone.svc.cluster.local:9092
             topic: mimir-ingest
-            # Consumer group for load balancing across ingesters
             consumer_group: mimir-ingest-storage
-            # Auto-create topic if it doesn't exist
             auto_create_topic_enabled: true
-            # Replication factor for Kafka topic
-            auto_create_topic_default_replication_factor: 3
-            # Number of partitions for better parallelism
             auto_create_topic_default_partitions: 100
-            # Produce timeout
-            produce_timeout: 2s
-            # Consume from latest offset on first start
-            consume_from_latest: true
 
         ingester:
           ring:

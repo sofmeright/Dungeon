@@ -42,8 +42,8 @@ spec:
     # Log level
     logLevel: INFO
 
-    # Feature gates (enable KRaft support)
-    featureGates: "+UseKRaft,+KafkaNodePools"
+    # Feature gates
+    featureGates: "+KafkaNodePools"
 
     # Generate network policies
     generateNetworkPolicy: false
