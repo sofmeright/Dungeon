@@ -42,9 +42,6 @@ spec:
     # Log level
     logLevel: INFO
 
-    # Feature gates
-    featureGates: "+KafkaNodePools"
-
     # Generate network policies
     generateNetworkPolicy: false
 
