@@ -30,8 +30,10 @@ spec:
   monitoring:
     enablePodMonitor: true
 
-  # Bootstrap set to null to adopt existing PVC data from Nov 4
-  bootstrap: null
+  bootstrap:
+    initdb:
+      database: grafana
+      owner: grafana
 
   enableSuperuserAccess: true
 
