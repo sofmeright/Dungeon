@@ -12,7 +12,7 @@ spec:
     # CRI-O requires fully qualified image names in short-name enforcement mode
     image:
       registry: quay.jcr.pcfae.com
-      repository: strimzi/operator
+      repository: strimzi
       # tag: use chart default (inherits from chart version)
 
     # Kafka image configuration
@@ -47,21 +47,21 @@ spec:
     topicOperator:
       image:
         registry: quay.jcr.pcfae.com
-        repository: strimzi/operator
+        repository: strimzi
         # tag: use chart default
 
     # User Operator image
     userOperator:
       image:
         registry: quay.jcr.pcfae.com
-        repository: strimzi/operator
+        repository: strimzi
         # tag: use chart default
 
     # Kafka Init image
     kafkaInit:
       image:
         registry: quay.jcr.pcfae.com
-        repository: strimzi/operator
+        repository: strimzi
         # tag: use chart default
 
     # TLS Sidecar image
