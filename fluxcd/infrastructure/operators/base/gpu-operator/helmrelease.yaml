@@ -36,8 +36,9 @@ spec:
       enabled: true
       # Use pre-installed drivers if available, otherwise container will install
       usePreinstalledDrivers: false
-      # Driver 570.172.08+ supports both GTX 980 Ti and A2000 GPUs
-      version: "570.172.08"
+      # Driver 580+ supports both GTX 980 Ti and A2000 GPUs
+      # Using 580.95.05 for precompiled driver support with kernel 6.8.0-86-generic
+      version: "580.95.05"
 
     # Toolkit configuration
     toolkit:

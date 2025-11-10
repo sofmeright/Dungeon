@@ -298,3 +298,81 @@ spec:
 - **Network segmentation**: IP-based tiers enable clearer security boundaries
 - **Multi-tenancy ready**: IP isolation supports future tenant segregation
 - **Advanced features**: Unlocks per-namespace pools, IP reservation, multi-cluster IPAM
+
+## GPU Infrastructure
+
+### Kernel Version Pinning for dungeon-chest-004
+
+**Status:** Active - Kernel pinned at 6.8.0-86-generic
+
+**Node:** dungeon-chest-004 (172.22.144.173)
+
+**Reason:**
+- NVIDIA GPU Operator requires precompiled driver containers for Secure Boot compatibility
+- Current kernel 6.8.0-86-generic has available precompiled driver: `nvcr.io/nvidia/driver:580-6.8.0-86-generic-ubuntu24.04`
+- Newer kernel 6.8.0-87-generic does NOT have precompiled driver available yet (as of 2025-11-10)
+- Runtime driver compilation is incompatible with Secure Boot (requires MOK key enrollment - unacceptable for production)
+
+**Held Packages:**
+```bash
+linux-image-6.8.0-86-generic
+linux-headers-6.8.0-86-generic
+linux-modules-6.8.0-86-generic
+linux-modules-extra-6.8.0-86-generic
+linux-image-generic
+linux-headers-generic
+```
+
+**Upgrade Conditions:**
+- [ ] Wait for NVIDIA to publish precompiled driver container for kernel 6.8.0-87-generic or newer
+- [ ] Verify new driver tag exists in NGC catalog before upgrading kernel
+- [ ] Test GPU Operator with new kernel version before holding new kernel
+
+**How to Check for New Precompiled Drivers:**
+
+Visit NGC catalog: https://catalog.ngc.nvidia.com/orgs/nvidia/containers/driver
+
+Look for tags matching pattern: `580-<kernel-version>-ubuntu24.04`
+- Example current working version: `580-6.8.0-86-generic-ubuntu24.04`
+- Example future version: `580-6.8.0-87-generic-ubuntu24.04`
+
+**How to Upgrade When Available:**
+
+1. Verify precompiled driver exists in NGC catalog for target kernel version
+2. SSH to dungeon-chest-004 and unhold kernel packages:
+   ```bash
+   ssh dungeon-chest-004 "sudo apt-mark unhold linux-image-generic linux-headers-generic linux-image-6.8.0-86-generic linux-headers-6.8.0-86-generic linux-modules-6.8.0-86-generic linux-modules-extra-6.8.0-86-generic"
+   ```
+3. Upgrade system packages:
+   ```bash
+   ssh dungeon-chest-004 "sudo apt update && sudo apt upgrade -y"
+   ```
+4. Reboot node to load new kernel:
+   ```bash
+   ssh dungeon-chest-004 "sudo reboot"
+   ```
+5. Wait for node to come back online and verify new kernel:
+   ```bash
+   ssh dungeon-chest-004 "uname -r"
+   ```
+6. Verify GPU Operator driver pod starts successfully:
+   ```bash
+   kubectl get pods -n gpu-operator -l app=nvidia-driver-daemonset
+   kubectl logs -n gpu-operator -l app=nvidia-driver-daemonset --tail=50
+   ```
+7. Verify GPU is available in Kubernetes:
+   ```bash
+   kubectl get nodes -o custom-columns=NAME:.metadata.name,GPU:.status.allocatable.'nvidia\.com/gpu'
+   ```
+8. If successful, hold new kernel packages (replace version number):
+   ```bash
+   ssh dungeon-chest-004 "sudo apt-mark hold linux-image-6.8.0-XX-generic linux-headers-6.8.0-XX-generic linux-modules-6.8.0-XX-generic linux-modules-extra-6.8.0-XX-generic linux-image-generic linux-headers-generic"
+   ```
+9. If unsuccessful, downgrade to 6.8.0-86-generic and re-hold
+
+**Related Documentation:**
+- NVIDIA Precompiled Drivers: https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/latest/precompiled-drivers.html
+- GPU Operator Platform Support: https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/latest/platform-support.html
+- NGC Driver Catalog: https://catalog.ngc.nvidia.com/orgs/nvidia/containers/driver
+
+**Last Updated:** 2025-11-10
