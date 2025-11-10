@@ -31,14 +31,12 @@ spec:
       defaultRuntime: crio
       runtimeClass: nvidia
 
-    # Driver configuration
+    # Driver configuration - using host-installed drivers from Ubuntu repos
     driver:
-      enabled: true
-      # Use pre-installed drivers if available, otherwise container will install
-      usePreinstalledDrivers: false
-      # Driver 580+ supports both GTX 980 Ti and A2000 GPUs
-      # Using 580.95.05 for precompiled driver support with kernel 6.8.0-86-generic
-      version: "580.95.05"
+      enabled: false
+      # Host-installed nvidia-driver-580 from Ubuntu repositories (Canonical-signed)
+      # This approach allows using latest kernel with Secure Boot enabled
+      # GPU Operator manages device plugin, monitoring, CDI, etc. without managing drivers
 
     # Toolkit configuration
     toolkit:

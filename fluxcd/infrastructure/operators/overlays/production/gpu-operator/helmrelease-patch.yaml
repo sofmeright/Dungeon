@@ -26,23 +26,9 @@ spec:
       updateStrategy: OnDelete
 
     # Driver configuration for production
+    # Using host-installed drivers - no containerized driver configuration needed
     driver:
-      enabled: true
-
-      # Use precompiled drivers when available, fall back to runtime compilation
-      usePrecompiled: true
-
-      # Upgrade policy - disable automatic upgrades to avoid driver reload issues
-      upgradePolicy:
-        autoUpgrade: false
-        drain:
-          enable: false
-        podDeletion:
-          force: false
-
-      # Node selector for driver daemonset
-      nodeSelector:
-        kubernetes.io/hostname: dungeon-chest-004
+      enabled: false
 
     # Toolkit node selector
     toolkit:
