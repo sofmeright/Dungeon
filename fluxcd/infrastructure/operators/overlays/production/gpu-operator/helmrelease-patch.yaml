@@ -25,15 +25,12 @@ spec:
       # Driver pods will only update when manually deleted
       updateStrategy: OnDelete
 
-    # Driver configuration for production with Secure Boot
+    # Driver configuration for production
     driver:
       enabled: true
-      usePreinstalledDrivers: false
-      # Use precompiled driver containers with signed kernel modules
-      # Ubuntu 24.04 officially supported with R580 precompiled drivers
-      # Using specific version tag to avoid kernel-specific image requirements
+
+      # Use precompiled drivers when available, fall back to runtime compilation
       usePrecompiled: true
-      version: "580.95.05"
 
       # Upgrade policy - disable automatic upgrades to avoid driver reload issues
       upgradePolicy:
