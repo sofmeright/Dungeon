@@ -62,6 +62,9 @@ spec:
         schedule: "0 2 * * *"
         template:
           ttl: "720h0m0s"
+          # CRITICAL: Enable file-level backups to MinIO instead of relying on CSI snapshots
+          # This ensures backups are independent of the Ceph storage backend
+          defaultVolumesToFsBackup: true
           includedNamespaces:
             # Administrative services (vault, weave, zitadel)
             - zeldas-lullaby
