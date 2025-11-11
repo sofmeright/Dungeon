@@ -1,5 +1,51 @@
 # TODO
 
+## CRITICAL: Velero Backup Failure - Nov 6-11, 2025
+
+**Issue:** Velero was misconfigured with `defaultVolumesToFsBackup: false`, causing catastrophic data loss during Ceph migration.
+
+**Impact:**
+- All backups from Oct 12 - Nov 10 were **unusable**
+- Backups only stored Kubernetes resource metadata + CSI snapshot references in MinIO
+- Actual volume data remained in Ceph CSI snapshots (not in MinIO)
+- During Nov 7-8 infrastructure refactor, Ceph RBD images were deleted
+- This destroyed all CSI snapshots, making backups unrestorable
+- **Permanent data loss:**
+  - Grafana dashboards, panels, datasources (since Nov 4)
+  - plex-ms-x libraries and configuration
+  - Any other applications relying on Nov 6-10 backups
+
+**Root Cause:**
+- Velero defaults to CSI snapshots when `defaultVolumesToFsBackup` is not set
+- CSI snapshots are stored in the same storage backend being backed up (Ceph)
+- This creates a dependency on the infrastructure being protected
+- Backups were not truly independent or disaster-proof
+
+**Fix Applied (Nov 11, 2025):**
+- Set `defaultVolumesToFsBackup: true` in daily backup schedule
+- File-level backups now use node-agent (restic/kopia) to copy data to MinIO
+- Backups are now independent of Ceph storage backend
+- Can survive complete storage infrastructure failure
+- Change: commit 581354f8 "Fix critical Velero backup misconfiguration"
+
+**Verification:**
+- ✅ node-agent DaemonSet running (5/5 pods)
+- ✅ Backup schedule updated with `defaultVolumesToFsBackup: true`
+- ✅ Velero deployment restarted to apply changes
+- ⏳ Next automatic backup: 2:00 AM (will use file-level backup to MinIO)
+
+**Lessons Learned:**
+- Always verify backup restoration works **before** depending on backups
+- CSI snapshots are not true backups - they're storage-level features
+- Backup systems must be independent of the infrastructure they protect
+- Test restore procedures regularly
+
+**Action Items:**
+- [ ] Monitor Nov 12 2am backup to confirm file-level backup works
+- [ ] Verify backup data appears in MinIO with actual volume files
+- [ ] Document backup verification/restore testing procedures
+- [ ] Consider implementing automated backup restore tests
+
 ## PVC Naming Standard Alignment
 
 CLAUDE.md specifies PVC naming pattern for StatefulSets: `<namespace>-<app>-<purpose>-<app>-<ordinal>`
