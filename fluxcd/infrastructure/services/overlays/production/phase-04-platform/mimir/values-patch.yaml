@@ -116,3 +116,4 @@ spec:
           ingestion_rate: 100000
           ingestion_burst_size: 200000
           max_query_parallelism: 32
+          max_label_names_per_series: 50  # Increased from default 30 to support Docker Compose labels
