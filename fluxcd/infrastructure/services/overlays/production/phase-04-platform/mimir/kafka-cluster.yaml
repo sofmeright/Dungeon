@@ -18,7 +18,7 @@ spec:
     volumes:
       - id: 0
         type: persistent-claim
-        size: 20Gi
+        size: 100Gi
         deleteClaim: false
         class: ceph-rbd
         # KRaft metadata stored on each node
