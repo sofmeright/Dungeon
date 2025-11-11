@@ -60,65 +60,95 @@ data:
       scrape_timeout  = "10s"
     }
 
-    // Scrape Kubernetes Pods with prometheus.io annotations
-    prometheus.scrape "kubernetes_pods" {
+    // Relabel pod metrics targets for better organization
+    discovery.relabel "pods_metrics" {
       targets = discovery.kubernetes.pods.targets
-      forward_to = [prometheus.remote_write.default.receiver, prometheus.remote_write.mimir.receiver]
 
-      clustering {
-        enabled = false
-      }
-
-      // Add namespace, pod, container labels
-      relabel {
+      // Add namespace label
+      rule {
         source_labels = ["__meta_kubernetes_namespace"]
         target_label  = "namespace"
       }
-      relabel {
+
+      // Add pod name
+      rule {
         source_labels = ["__meta_kubernetes_pod_name"]
         target_label  = "pod"
       }
-      relabel {
+
+      // Add container name
+      rule {
         source_labels = ["__meta_kubernetes_pod_container_name"]
         target_label  = "container"
       }
-      relabel {
+
+      // Add node name
+      rule {
         source_labels = ["__meta_kubernetes_pod_node_name"]
         target_label  = "node"
       }
-      relabel {
+
+      // Add app label from app.kubernetes.io/name
+      rule {
         source_labels = ["__meta_kubernetes_pod_label_app_kubernetes_io_name"]
         target_label  = "app"
       }
-      relabel {
+
+      // Fallback: add app label from pod label app
+      rule {
         source_labels = ["__meta_kubernetes_pod_label_app"]
         regex         = "^$"
         target_label  = "app"
       }
     }
 
-    // Scrape Kubernetes Services with prometheus.io/scrape annotation
-    prometheus.scrape "kubernetes_services" {
-      targets = discovery.kubernetes.services.targets
+    // Scrape Kubernetes Pods with prometheus.io annotations
+    prometheus.scrape "kubernetes_pods" {
+      targets = discovery.relabel.pods_metrics.output
       forward_to = [prometheus.remote_write.default.receiver, prometheus.remote_write.mimir.receiver]
 
       clustering {
         enabled = false
       }
 
-      // Add namespace and service labels
-      relabel {
+      scrape_interval = "30s"
+      scrape_timeout  = "10s"
+    }
+
+    // Relabel service metrics targets for better organization
+    discovery.relabel "services_metrics" {
+      targets = discovery.kubernetes.services.targets
+
+      // Add namespace label
+      rule {
         source_labels = ["__meta_kubernetes_namespace"]
         target_label  = "namespace"
       }
-      relabel {
+
+      // Add service name
+      rule {
         source_labels = ["__meta_kubernetes_service_name"]
         target_label  = "service"
       }
-      relabel {
+
+      // Add app label
+      rule {
         source_labels = ["__meta_kubernetes_service_label_app_kubernetes_io_name"]
         target_label  = "app"
       }
+    }
+
+    // Scrape Kubernetes Services with prometheus.io/scrape annotation
+    prometheus.scrape "kubernetes_services" {
+      targets = discovery.relabel.services_metrics.output
+      forward_to = [prometheus.remote_write.default.receiver, prometheus.remote_write.mimir.receiver]
+
+      clustering {
+        enabled = false
+      }
+
+      scrape_interval = "30s"
+      scrape_timeout  = "10s"
     }
 
     // Loki Log Collection - Local K8s Loki
