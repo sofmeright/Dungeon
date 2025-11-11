@@ -54,6 +54,16 @@ spec:
     serviceMonitor:
       enabled: false  # Using Alloy service discovery instead
 
+    # Distributor resource limits - increased for high-cardinality metrics
+    distributor:
+      resources:
+        requests:
+          cpu: 200m
+          memory: 1Gi
+        limits:
+          cpu: 1
+          memory: 2Gi
+
     # Ingest Storage configuration - use external Kafka cluster
     ingest_storage:
       enabled: true
