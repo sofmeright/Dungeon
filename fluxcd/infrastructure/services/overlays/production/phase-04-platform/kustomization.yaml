@@ -16,7 +16,6 @@ resources:
   - ./prometheus-exporter-pve
   - ./searxng
   - ./stunner
-  - ./thanos
   - ./uptime-kuma
   - ./vaultwarden
   - ./wazuh

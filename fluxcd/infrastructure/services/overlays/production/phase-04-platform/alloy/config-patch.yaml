@@ -29,18 +29,9 @@ data:
       role = "ingress"
     }
 
-    // Prometheus Remote Write - Direct to Thanos Receive
-    // Pure Thanos architecture: Alloy → Thanos Receive → Object Storage → Thanos Query
-    prometheus.remote_write "default" {
-      endpoint {
-        url = "http://thanos-receive.gossip-stone.svc.cluster.local:19291/api/v1/receive"
-      }
-    }
-
     // Prometheus Remote Write - Direct to Mimir Distributor
-    // Mimir architecture: Alloy → Mimir Distributor → Mimir Ingester → Filesystem/S3
-    // Dual-write to both Thanos and Mimir during migration
-    prometheus.remote_write "mimir" {
+    // Mimir architecture: Alloy → Mimir Distributor → Mimir Ingester → Object Storage
+    prometheus.remote_write "default" {
       endpoint {
         url = "http://mimir-distributor.gossip-stone.svc.cluster.local:8080/api/v1/push"
       }
@@ -54,7 +45,7 @@ data:
     // Scrape local node metrics from unix exporter
     prometheus.scrape "node_exporter" {
       targets    = prometheus.exporter.unix.node_metrics.targets
-      forward_to = [prometheus.remote_write.default.receiver, prometheus.remote_write.mimir.receiver]
+      forward_to = [prometheus.remote_write.default.receiver]
 
       scrape_interval = "30s"
       scrape_timeout  = "10s"
@@ -105,7 +96,7 @@ data:
     // Scrape Kubernetes Pods with prometheus.io annotations
     prometheus.scrape "kubernetes_pods" {
       targets = discovery.relabel.pods_metrics.output
-      forward_to = [prometheus.remote_write.default.receiver, prometheus.remote_write.mimir.receiver]
+      forward_to = [prometheus.remote_write.default.receiver]
 
       clustering {
         enabled = false
@@ -141,7 +132,7 @@ data:
     // Scrape Kubernetes Services with prometheus.io/scrape annotation
     prometheus.scrape "kubernetes_services" {
       targets = discovery.relabel.services_metrics.output
-      forward_to = [prometheus.remote_write.default.receiver, prometheus.remote_write.mimir.receiver]
+      forward_to = [prometheus.remote_write.default.receiver]
 
       clustering {
         enabled = false
@@ -259,7 +250,7 @@ data:
 
     prometheus.scrape "lighthouse_exporters" {
       targets    = discovery.relabel.lighthouse_exporters.output
-      forward_to = [prometheus.remote_write.default.receiver, prometheus.remote_write.mimir.receiver]
+      forward_to = [prometheus.remote_write.default.receiver]
 
       scrape_interval = "30s"
       scrape_timeout  = "10s"
