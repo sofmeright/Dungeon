@@ -254,10 +254,46 @@ data:
     prometheus.relabel "lighthouse_drop_labels" {
       forward_to = [prometheus.remote_write.default.receiver]
 
+      // Step 1: Rename labels we want to keep to temporary names
       rule {
-        // Drop all container_label_* EXCEPT compose_project and compose_service
+        source_labels = ["container_label_com_docker_compose_project"]
+        target_label  = "compose_project_temp"
+        regex         = "(.*)"
+        replacement   = "$1"
+      }
+
+      rule {
+        source_labels = ["container_label_com_docker_compose_service"]
+        target_label  = "compose_service_temp"
+        regex         = "(.*)"
+        replacement   = "$1"
+      }
+
+      // Step 2: Drop ALL container_label_* labels
+      rule {
         action = "labeldrop"
-        regex  = "container_label_(?!com_docker_compose_project|com_docker_compose_service).*"
+        regex  = "container_label_.*"
+      }
+
+      // Step 3: Rename temp labels back to proper names
+      rule {
+        source_labels = ["compose_project_temp"]
+        target_label  = "compose_project"
+        regex         = "(.*)"
+        replacement   = "$1"
+      }
+
+      rule {
+        source_labels = ["compose_service_temp"]
+        target_label  = "compose_service"
+        regex         = "(.*)"
+        replacement   = "$1"
+      }
+
+      // Step 4: Drop temp labels
+      rule {
+        action = "labeldrop"
+        regex  = "compose_(project|service)_temp"
       }
     }
 
