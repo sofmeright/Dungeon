@@ -254,4 +254,15 @@ data:
 
       scrape_interval = "30s"
       scrape_timeout  = "10s"
+
+      // Drop bloated cAdvisor container labels to reduce metric size from 11MB to ~1MB
+      // Keep only: name, image, id (standard), compose_project, compose_service (useful for dashboards)
+      // Drop: 32+ other container_label_* fields (build_version, config_hash, portainer, opencontainers, etc.)
+      metric_relabel_configs = [
+        {
+          // Drop all container_label_* EXCEPT compose_project and compose_service
+          regex  = "container_label_(?!com_docker_compose_project|com_docker_compose_service).*"
+          action = "labeldrop"
+        },
+      ]
     }
