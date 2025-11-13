@@ -37,6 +37,56 @@ data:
       }
     }
 
+    // Global metric relabeling - drop bloated cAdvisor container labels from ALL sources
+    // Mimir's Kafka ingest has 16MB message limit, bloated labels exceed this
+    // Reduces metric size by dropping 32+ useless container_label_* fields
+    // Keeps: name, image, id (standard), compose_project, compose_service (useful for dashboards)
+    prometheus.relabel "drop_container_labels" {
+      forward_to = [prometheus.remote_write.default.receiver]
+
+      // Step 1: Rename labels we want to keep to temporary names
+      rule {
+        source_labels = ["container_label_com_docker_compose_project"]
+        target_label  = "compose_project_temp"
+        regex         = "(.*)"
+        replacement   = "$1"
+      }
+
+      rule {
+        source_labels = ["container_label_com_docker_compose_service"]
+        target_label  = "compose_service_temp"
+        regex         = "(.*)"
+        replacement   = "$1"
+      }
+
+      // Step 2: Drop ALL container_label_* labels
+      rule {
+        action = "labeldrop"
+        regex  = "container_label_.*"
+      }
+
+      // Step 3: Rename temp labels back to proper names
+      rule {
+        source_labels = ["compose_project_temp"]
+        target_label  = "compose_project"
+        regex         = "(.*)"
+        replacement   = "$1"
+      }
+
+      rule {
+        source_labels = ["compose_service_temp"]
+        target_label  = "compose_service"
+        regex         = "(.*)"
+        replacement   = "$1"
+      }
+
+      // Step 4: Drop temp labels
+      rule {
+        action = "labeldrop"
+        regex  = "compose_(project|service)_temp"
+      }
+    }
+
     // Built-in Node Exporter - exposes host metrics from each K8s node
     prometheus.exporter.unix "node_metrics" {
       // Use default collectors (CPU, memory, disk, network, filesystem, etc.)
@@ -45,7 +95,7 @@ data:
     // Scrape local node metrics from unix exporter
     prometheus.scrape "node_exporter" {
       targets    = prometheus.exporter.unix.node_metrics.targets
-      forward_to = [prometheus.remote_write.default.receiver]
+      forward_to = [prometheus.relabel.drop_container_labels.receiver]
 
       scrape_interval = "30s"
       scrape_timeout  = "10s"
@@ -96,7 +146,7 @@ data:
     // Scrape Kubernetes Pods with prometheus.io annotations
     prometheus.scrape "kubernetes_pods" {
       targets = discovery.relabel.pods_metrics.output
-      forward_to = [prometheus.remote_write.default.receiver]
+      forward_to = [prometheus.relabel.drop_container_labels.receiver]
 
       clustering {
         enabled = false
@@ -132,7 +182,7 @@ data:
     // Scrape Kubernetes Services with prometheus.io/scrape annotation
     prometheus.scrape "kubernetes_services" {
       targets = discovery.relabel.services_metrics.output
-      forward_to = [prometheus.remote_write.default.receiver]
+      forward_to = [prometheus.relabel.drop_container_labels.receiver]
 
       clustering {
         enabled = false
@@ -248,58 +298,9 @@ data:
       ]
     }
 
-    // Drop bloated cAdvisor container labels from lighthouse metrics
-    // Reduces metric size from 11MB to ~1MB by dropping 32+ useless container_label_* fields
-    // Keeps: name, image, id (standard), compose_project, compose_service (useful for dashboards)
-    prometheus.relabel "lighthouse_drop_labels" {
-      forward_to = [prometheus.remote_write.default.receiver]
-
-      // Step 1: Rename labels we want to keep to temporary names
-      rule {
-        source_labels = ["container_label_com_docker_compose_project"]
-        target_label  = "compose_project_temp"
-        regex         = "(.*)"
-        replacement   = "$1"
-      }
-
-      rule {
-        source_labels = ["container_label_com_docker_compose_service"]
-        target_label  = "compose_service_temp"
-        regex         = "(.*)"
-        replacement   = "$1"
-      }
-
-      // Step 2: Drop ALL container_label_* labels
-      rule {
-        action = "labeldrop"
-        regex  = "container_label_.*"
-      }
-
-      // Step 3: Rename temp labels back to proper names
-      rule {
-        source_labels = ["compose_project_temp"]
-        target_label  = "compose_project"
-        regex         = "(.*)"
-        replacement   = "$1"
-      }
-
-      rule {
-        source_labels = ["compose_service_temp"]
-        target_label  = "compose_service"
-        regex         = "(.*)"
-        replacement   = "$1"
-      }
-
-      // Step 4: Drop temp labels
-      rule {
-        action = "labeldrop"
-        regex  = "compose_(project|service)_temp"
-      }
-    }
-
     prometheus.scrape "lighthouse_exporters" {
       targets    = discovery.relabel.lighthouse_exporters.output
-      forward_to = [prometheus.relabel.lighthouse_drop_labels.receiver]
+      forward_to = [prometheus.relabel.drop_container_labels.receiver]
 
       scrape_interval = "30s"
       scrape_timeout  = "10s"
