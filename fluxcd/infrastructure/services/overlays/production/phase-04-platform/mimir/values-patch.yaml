@@ -80,6 +80,8 @@ spec:
           ring:
             kvstore:
               store: memberlist
+          # Increase remote timeout for Kafka backend (recommended for ingest storage)
+          remote_timeout: 5s
 
         # Ingest Storage configuration for production
         ingest_storage:
