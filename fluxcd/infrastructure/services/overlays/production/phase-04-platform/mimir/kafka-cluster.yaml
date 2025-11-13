@@ -69,10 +69,13 @@ spec:
       # Default replication for new topics
       default.replication.factor: 3
       min.insync.replicas: 2
-      # Log retention for Mimir ingest storage (48 hours recommended)
-      log.retention.hours: 48
-      # Log segment size
-      log.segment.bytes: 1073741824  # 1GB segments
+      # Log retention for Mimir ingest storage (reduced to 12h to prevent disk exhaustion)
+      log.retention.hours: 12
+      # Log segment size (reduced for more frequent cleanup opportunities)
+      log.segment.bytes: 536870912  # 512MB segments
+      # Enable aggressive log cleanup
+      log.cleanup.policy: delete
+      log.retention.check.interval.ms: 300000  # Check every 5 minutes
       # Compression
       compression.type: producer
       # Auto-create topics (Mimir will create its own topics)
