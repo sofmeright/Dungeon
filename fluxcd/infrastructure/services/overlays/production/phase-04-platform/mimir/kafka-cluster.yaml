@@ -8,7 +8,7 @@ metadata:
   labels:
     strimzi.io/cluster: mimir-kafka
 spec:
-  replicas: 3
+  replicas: 5  # Scale to 5 brokers to match control plane architecture
   # Dual-role nodes: both broker and controller (eliminates ZooKeeper dependency)
   roles:
     - controller
@@ -25,11 +25,11 @@ spec:
         kraftMetadata: shared
   resources:
     requests:
-      cpu: 500m
-      memory: 2Gi
+      cpu: 1500m  # 1.5 cores - sufficient for Grafana's 100-partition default
+      memory: 3Gi  # Increased for 100-partition workload
     limits:
-      cpu: 2
-      memory: 4Gi
+      cpu: 3
+      memory: 6Gi
 ---
 # Kafka cluster resource - main configuration
 apiVersion: kafka.strimzi.io/v1beta2

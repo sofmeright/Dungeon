@@ -91,7 +91,7 @@ spec:
             topic: mimir-ingest
             consumer_group: mimir-ingest-storage
             auto_create_topic_enabled: true
-            auto_create_topic_default_partitions: 12
+            auto_create_topic_default_partitions: 100  # Grafana production default
 
         ingester:
           ring:
