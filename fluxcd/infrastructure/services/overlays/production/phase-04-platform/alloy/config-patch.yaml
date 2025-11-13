@@ -38,9 +38,9 @@ data:
     }
 
     // Global metric relabeling - drop bloated cAdvisor container labels from ALL sources
-    // Mimir's Kafka ingest has 16MB message limit, bloated labels exceed this
-    // Reduces metric size by dropping 32+ useless container_label_* fields
-    // Keeps: name, image, id (standard), compose_project, compose_service (useful for dashboards)
+    // Mimir's Kafka ingest has 10MB message limit, bloated labels exceed this
+    // Reduces metric size by dropping 28+ useless container_label_* fields
+    // Keeps: compose_project, compose_service, config_hash, container_number, image, working_dir
     prometheus.relabel "drop_container_labels" {
       forward_to = [prometheus.remote_write.default.receiver]
 
@@ -55,6 +55,34 @@ data:
       rule {
         source_labels = ["container_label_com_docker_compose_service"]
         target_label  = "compose_service_temp"
+        regex         = "(.*)"
+        replacement   = "$1"
+      }
+
+      rule {
+        source_labels = ["container_label_com_docker_compose_config_hash"]
+        target_label  = "compose_config_hash_temp"
+        regex         = "(.*)"
+        replacement   = "$1"
+      }
+
+      rule {
+        source_labels = ["container_label_com_docker_compose_container_number"]
+        target_label  = "compose_container_number_temp"
+        regex         = "(.*)"
+        replacement   = "$1"
+      }
+
+      rule {
+        source_labels = ["container_label_com_docker_compose_image"]
+        target_label  = "compose_image_temp"
+        regex         = "(.*)"
+        replacement   = "$1"
+      }
+
+      rule {
+        source_labels = ["container_label_com_docker_compose_project_working_dir"]
+        target_label  = "compose_working_dir_temp"
         regex         = "(.*)"
         replacement   = "$1"
       }
@@ -80,10 +108,38 @@ data:
         replacement   = "$1"
       }
 
+      rule {
+        source_labels = ["compose_config_hash_temp"]
+        target_label  = "compose_config_hash"
+        regex         = "(.*)"
+        replacement   = "$1"
+      }
+
+      rule {
+        source_labels = ["compose_container_number_temp"]
+        target_label  = "compose_container_number"
+        regex         = "(.*)"
+        replacement   = "$1"
+      }
+
+      rule {
+        source_labels = ["compose_image_temp"]
+        target_label  = "compose_image"
+        regex         = "(.*)"
+        replacement   = "$1"
+      }
+
+      rule {
+        source_labels = ["compose_working_dir_temp"]
+        target_label  = "compose_working_dir"
+        regex         = "(.*)"
+        replacement   = "$1"
+      }
+
       // Step 4: Drop temp labels
       rule {
         action = "labeldrop"
-        regex  = "compose_(project|service)_temp"
+        regex  = "compose_(project|service|config_hash|container_number|image|working_dir)_temp"
       }
     }
 
