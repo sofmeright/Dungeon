@@ -20,30 +20,12 @@ paths = [
 ]
 
 # Ignore example/placeholder values and known safe patterns
-[[allowlist.regexes]]
-regex = '''PLACEHOLDER_'''
-description = "Template placeholder values"
-
-[[allowlist.regexes]]
-regex = '''example\.com'''
-description = "Example domains"
-
-[[allowlist.regexes]]
-regex = '''changeme'''
-description = "Placeholder passwords"
-
-[[allowlist.regexes]]
-regex = '''your-.*-here'''
-description = "Placeholder strings"
-
-[[allowlist.regexes]]
-regex = '''0985467c-d8f3-4483-b27f-f0a512397ec2'''
-description = "Ceph cluster FSID (public identifier, not a secret)"
-
-[[allowlist.regexes]]
-regex = '''a3ViZXJuZXRlcw=='''
-description = "Example Kubernetes token"
-
-[[allowlist.regexes]]
-regex = '''age1[a-z0-9]{58}'''
-description = "SOPS age public keys (safe to commit)"
+regexes = [
+  '''PLACEHOLDER_''',  # Template placeholder values
+  '''example\.com''',  # Example domains
+  '''changeme''',  # Placeholder passwords
+  '''your-.*-here''',  # Placeholder strings
+  '''0985467c-d8f3-4483-b27f-f0a512397ec2''',  # Ceph cluster FSID (public identifier)
+  '''a3ViZXJuZXRlcw==''',  # Example Kubernetes token
+  '''age1[a-z0-9]{58}''',  # SOPS age public keys (safe to commit)
+]
