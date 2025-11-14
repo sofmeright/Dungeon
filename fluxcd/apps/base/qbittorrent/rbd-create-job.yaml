@@ -1,0 +1,53 @@
+# One-time Job to create named RBD images for qBittorrent
+# Uses Ceph toolbox to create RBDs with our custom naming pattern
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: qbittorrent-create-rbds
+spec:
+  backoffLimit: 3
+  template:
+    spec:
+      restartPolicy: OnFailure
+      containers:
+      - name: create-rbds
+        image: quay.io/ceph/ceph:v18
+        command:
+        - /bin/bash
+        - -c
+        - |
+          # Create Ceph config
+          cat > /etc/ceph/ceph.conf <<EOF
+          [global]
+          mon_host = [fc00:f1:ada:104e:1ace::1],[fc00:f1:ada:104e:1ace::2],[fc00:f1:ada:104e:1ace::3],[fc00:f1:ada:104e:1ace::4],[fc00:f1:ada:104e:1ace::5]
+          fsid = 0985467c-d8f3-4483-b27f-f0a512397ec2
+          EOF
+
+          # Create keyring from secret
+          echo "[client.${CEPH_USER}]" > /etc/ceph/keyring
+          echo "  key = ${CEPH_KEY}" >> /etc/ceph/keyring
+
+          # Create RBD images if they don't exist (idempotent)
+          rbd create dungeon/swift-sail-qbittorrent-gluetun-config-0 --size 64M --image-feature layering || echo "gluetun-config already exists"
+          rbd create dungeon/swift-sail-qbittorrent-config-0 --size 64M --image-feature layering || echo "config already exists"
+          rbd create dungeon/swift-sail-qbittorrent-downloads-0 --size 256G --image-feature layering || echo "downloads already exists"
+
+          # Verify creation
+          echo "Verifying RBD images:"
+          rbd ls dungeon | grep swift-sail-qbittorrent
+
+          echo "RBD images created successfully!"
+        env:
+        - name: CEPH_USER
+          valueFrom:
+            secretKeyRef:
+              name: ceph-secret-user
+              key: userID
+        - name: CEPH_KEY
+          valueFrom:
+            secretKeyRef:
+              name: ceph-secret-user
+              key: userKey
+        - name: CEPH_ARGS
+          value: "--id=$(CEPH_USER)"

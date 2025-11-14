@@ -20,6 +20,7 @@ spec:
     volumeAttributes:
       clusterID: "0985467c-d8f3-4483-b27f-f0a512397ec2"  # Your Ceph FSID
       pool: dungeon
+      staticVolume: "true"
       imageName: swift-sail-qbittorrent-gluetun-config-0  # RBD image name in Ceph
       imageFeatures: layering
     nodeStageSecretRef:
@@ -44,6 +45,7 @@ spec:
     volumeAttributes:
       clusterID: "0985467c-d8f3-4483-b27f-f0a512397ec2"
       pool: dungeon
+      staticVolume: "true"
       imageName: swift-sail-qbittorrent-config-0
       imageFeatures: layering
     nodeStageSecretRef:
@@ -68,6 +70,7 @@ spec:
     volumeAttributes:
       clusterID: "0985467c-d8f3-4483-b27f-f0a512397ec2"
       pool: dungeon
+      staticVolume: "true"
       imageName: swift-sail-qbittorrent-downloads-0
       imageFeatures: layering
     nodeStageSecretRef:

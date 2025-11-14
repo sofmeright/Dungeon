@@ -23,3 +23,7 @@ patches:
       kind: ExternalSecret
       name: qbittorrent-smb-secret
   - path: smb-volumes-patch.yaml
+  - path: rbd-job-namespace-patch.yaml
+    target:
+      kind: Job
+      name: qbittorrent-create-rbds
