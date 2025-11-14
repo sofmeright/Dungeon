@@ -25,6 +25,7 @@ spec:
       source: PLACEHOLDER_SMB_TV_SEEDING_SOURCE
     nodeStageSecretRef:
       name: qbittorrent-smb-secret
+      namespace: PLACEHOLDER_NAMESPACE
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -63,6 +64,7 @@ spec:
       source: PLACEHOLDER_SMB_MOVIES_SEEDING_SOURCE
     nodeStageSecretRef:
       name: qbittorrent-smb-secret
+      namespace: PLACEHOLDER_NAMESPACE
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -101,6 +103,7 @@ spec:
       source: PLACEHOLDER_SMB_DOWNLOADS_SOURCE
     nodeStageSecretRef:
       name: qbittorrent-smb-secret
+      namespace: PLACEHOLDER_NAMESPACE
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim

@@ -23,7 +23,7 @@ spec:
       staticVolume: "true"
       imageFeatures: layering
     nodeStageSecretRef:
-      name: ceph-rbd-secret
+      name: ceph-secret-user
       namespace: kube-system
 ---
 apiVersion: v1
@@ -47,7 +47,7 @@ spec:
       staticVolume: "true"
       imageFeatures: layering
     nodeStageSecretRef:
-      name: ceph-rbd-secret
+      name: ceph-secret-user
       namespace: kube-system
 ---
 apiVersion: v1
@@ -71,5 +71,5 @@ spec:
       staticVolume: "true"
       imageFeatures: layering
     nodeStageSecretRef:
-      name: ceph-rbd-secret
+      name: ceph-secret-user
       namespace: kube-system

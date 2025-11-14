@@ -9,6 +9,8 @@ spec:
     volumeHandle: qbittorrent-tv-shows-seeding-gringotts-media-tv
     volumeAttributes:
       source: "//gringotts/media/TV_Shows/Automated-Seeding"
+    nodeStageSecretRef:
+      namespace: swift-sail
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -26,6 +28,8 @@ spec:
     volumeHandle: qbittorrent-movies-seeding-gringotts-media-movies
     volumeAttributes:
       source: "//gringotts/media/Movies/2D-Automated-Seeding"
+    nodeStageSecretRef:
+      namespace: swift-sail
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -43,6 +47,8 @@ spec:
     volumeHandle: qbittorrent-downloads-gringotts-timecapsule-downloads
     volumeAttributes:
       source: "//gringotts/timecapsule/Media/Download/__qbittorrent"
+    nodeStageSecretRef:
+      namespace: swift-sail
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
