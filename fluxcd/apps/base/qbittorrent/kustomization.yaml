@@ -6,3 +6,5 @@ resources:
   - vault-secret.yaml
   - persistent-volumes.yaml
   - persistent-volume-claims.yaml
+  - smb-volumes.yaml
+  - externalsecret-smb.yaml

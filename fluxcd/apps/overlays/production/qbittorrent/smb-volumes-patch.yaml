@@ -1,0 +1,52 @@
+# SMB volume patches for production qBittorrent
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: qbittorrent-tv-shows-seeding
+spec:
+  csi:
+    volumeHandle: qbittorrent-tv-shows-seeding-gringotts-media-tv
+    volumeAttributes:
+      source: "//gringotts/media/TV_Shows/Automated-Seeding"
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: qbittorrent-tv-shows-seeding
+spec:
+  storageClassName: ""
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: qbittorrent-movies-seeding
+spec:
+  csi:
+    volumeHandle: qbittorrent-movies-seeding-gringotts-media-movies
+    volumeAttributes:
+      source: "//gringotts/media/Movies/2D-Automated-Seeding"
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: qbittorrent-movies-seeding
+spec:
+  storageClassName: ""
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: qbittorrent-downloads
+spec:
+  csi:
+    volumeHandle: qbittorrent-downloads-gringotts-timecapsule-downloads
+    volumeAttributes:
+      source: "//gringotts/timecapsule/Media/Download/__qbittorrent"
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: qbittorrent-downloads
+spec:
+  storageClassName: ""

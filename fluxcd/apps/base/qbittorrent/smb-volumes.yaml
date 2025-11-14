@@ -1,0 +1,116 @@
+# SMB/CIFS volumes for qBittorrent seeding and completed downloads
+# Note: CIFS CSI doesn't enforce capacity - actual limits are on the SMB server
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: qbittorrent-tv-shows-seeding
+spec:
+  capacity:
+    storage: 16Ti
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  mountOptions:
+    - vers=2.1
+    - uid=1000
+    - gid=1000
+    - file_mode=0777
+    - dir_mode=0777
+  csi:
+    driver: smb.csi.k8s.io
+    readOnly: false
+    volumeHandle: qbittorrent-tv-shows-seeding
+    volumeAttributes:
+      source: PLACEHOLDER_SMB_TV_SEEDING_SOURCE
+    nodeStageSecretRef:
+      name: qbittorrent-smb-secret
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: qbittorrent-tv-shows-seeding
+spec:
+  storageClassName: PLACEHOLDER_STORAGE_CLASS
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 16Ti
+  volumeName: qbittorrent-tv-shows-seeding
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: qbittorrent-movies-seeding
+spec:
+  capacity:
+    storage: 16Ti
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  mountOptions:
+    - vers=2.1
+    - uid=1000
+    - gid=1000
+    - file_mode=0777
+    - dir_mode=0777
+  csi:
+    driver: smb.csi.k8s.io
+    readOnly: false
+    volumeHandle: qbittorrent-movies-seeding
+    volumeAttributes:
+      source: PLACEHOLDER_SMB_MOVIES_SEEDING_SOURCE
+    nodeStageSecretRef:
+      name: qbittorrent-smb-secret
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: qbittorrent-movies-seeding
+spec:
+  storageClassName: PLACEHOLDER_STORAGE_CLASS
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 16Ti
+  volumeName: qbittorrent-movies-seeding
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: qbittorrent-downloads
+spec:
+  capacity:
+    storage: 2Ti
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  mountOptions:
+    - vers=2.1
+    - uid=1000
+    - gid=1000
+    - file_mode=0777
+    - dir_mode=0777
+  csi:
+    driver: smb.csi.k8s.io
+    readOnly: false
+    volumeHandle: qbittorrent-downloads
+    volumeAttributes:
+      source: PLACEHOLDER_SMB_DOWNLOADS_SOURCE
+    nodeStageSecretRef:
+      name: qbittorrent-smb-secret
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: qbittorrent-downloads
+spec:
+  storageClassName: PLACEHOLDER_STORAGE_CLASS
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 2Ti
+  volumeName: qbittorrent-downloads

@@ -18,3 +18,8 @@ patches:
     target:
       kind: ExternalSecret
       name: qbittorrent-secrets
+  - path: externalsecret-smb-patch.yaml
+    target:
+      kind: ExternalSecret
+      name: qbittorrent-smb-secret
+  - path: smb-volumes-patch.yaml
