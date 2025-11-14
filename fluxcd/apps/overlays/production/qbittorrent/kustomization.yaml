@@ -5,11 +5,10 @@ resources:
   - ../../../base/qbittorrent
   - externalsecret-registry.yaml
   - externalsecret-pia.yaml
-  - service-headless.yaml
 patches:
-  - path: statefulset-patch.yaml
+  - path: deployment-patch.yaml
     target:
-      kind: StatefulSet
+      kind: Deployment
       name: qbittorrent
   - path: service-patch.yaml
     target:

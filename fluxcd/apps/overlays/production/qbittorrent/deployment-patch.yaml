@@ -1,0 +1,186 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: qbittorrent
+spec:
+  replicas: 1
+  template:
+    spec:
+      initContainers:
+      - name: webui-config
+        image: docker.jcr.pcfae.com/python:3.11-alpine
+        env:
+        - name: QBITTORRENT_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: qbittorrent-secrets
+              key: qbittorrent_user
+        - name: QBITTORRENT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: qbittorrent-secrets
+              key: qbittorrent_pass
+        command:
+        - sh
+        - -c
+        - |
+          # Create qBittorrent config directory if needed
+          mkdir -p /config/qBittorrent
+
+          # Generate PBKDF2-SHA512 hash for qBittorrent WebUI
+          # qBittorrent uses base64(salt):base64(hash) format, not Modular Crypt Format
+          cat > /tmp/gen_hash.py <<'PYSCRIPT'
+          import base64
+          import hashlib
+          import os
+          import sys
+
+          password = sys.argv[1].encode()
+          salt = os.urandom(16)
+          hash_result = hashlib.pbkdf2_hmac('sha512', password, salt, 100000)
+          print(f'{base64.b64encode(salt).decode()}:{base64.b64encode(hash_result).decode()}')
+          PYSCRIPT
+          HASH=$(python3 /tmp/gen_hash.py "$QBITTORRENT_PASSWORD")
+
+          CONFIG_FILE="/config/qBittorrent/qBittorrent.conf"
+
+          if [ -f "$CONFIG_FILE" ]; then
+            # Existing config: check if credentials exist and are in correct format
+            if grep -q "^WebUI\\\\Username=" "$CONFIG_FILE"; then
+              # Check if password is in old MCF format (needs regeneration)
+              if grep -q '\$pbkdf2-sha512\$' "$CONFIG_FILE"; then
+                echo "Detected old MCF format password - regenerating with correct base64 format"
+                # Replace the old password line with new base64 format
+                sed -i "s|^WebUI\\\\Password_PBKDF2=.*|WebUI\\\\Password_PBKDF2=@ByteArray($HASH)|" "$CONFIG_FILE"
+              else
+                echo "WebUI credentials already in correct format"
+              fi
+            else
+              # Add credentials to existing [Preferences] section
+              echo "Adding WebUI credentials to existing config"
+              # Use awk to insert credentials
+              awk -v user="$QBITTORRENT_USERNAME" -v hash="$HASH" '
+                /^WebUI\\ServerDomains=/ {
+                  print
+                  print "WebUI\\Username=" user
+                  print "WebUI\\Password_PBKDF2=@ByteArray(" hash ")"
+                  next
+                }
+                { print }
+              ' "$CONFIG_FILE" > "$CONFIG_FILE.tmp" && mv "$CONFIG_FILE.tmp" "$CONFIG_FILE"
+            fi
+          else
+            # Fresh install: create minimal config with standard ordering
+            echo "Creating fresh qBittorrent config with credentials"
+            cat > "$CONFIG_FILE" <<EOF
+          [Preferences]
+          Connection\PortRangeMin=6881
+          Connection\UPnP=false
+          Downloads\SavePath=/downloads/
+          Downloads\TempPath=/downloads/incomplete/
+          WebUI\Address=*
+          WebUI\Port=6887
+          WebUI\ServerDomains=*
+          WebUI\Username=$QBITTORRENT_USERNAME
+          WebUI\Password_PBKDF2=@ByteArray($HASH)
+          WebUI\\LocalHostAuth=false
+          EOF
+          fi
+
+          # Set ownership to match qbittorrent container user
+          chown -R 1000:1000 /config/qBittorrent
+
+          # Debug: show what was actually written to the file
+          echo "=== Config file content after initContainer ==="
+          grep -E "Username|Password" "$CONFIG_FILE" || echo "No credentials found in config"
+          echo "==============================================="
+          echo "qBittorrent WebUI credentials configured successfully"
+        volumeMounts:
+        - name: config
+          mountPath: /config
+      containers:
+      - name: gluetun
+        image: docker.jcr.pcfae.com/qmcgaw/gluetun:latest
+        securityContext:
+          privileged: true
+        env:
+        - name: VPN_SERVICE_PROVIDER
+          value: "private internet access"
+        - name: SERVER_REGIONS
+          value: "CA Vancouver"
+        - name: OPENVPN_USER
+          valueFrom:
+            secretKeyRef:
+              name: qbittorrent-pia-credentials
+              key: username
+        - name: OPENVPN_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: qbittorrent-pia-credentials
+              key: password
+        - name: VPN_PORT_FORWARDING
+          value: "on"
+        - name: PORT_FORWARD_ONLY
+          value: "true"
+        - name: VPN_PORT_FORWARDING_PROVIDER
+          value: "private internet access"
+        - name: VPN_PORT_FORWARDING_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: qbittorrent-pia-credentials
+              key: username
+        - name: VPN_PORT_FORWARDING_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: qbittorrent-pia-credentials
+              key: password
+        - name: VPN_PORT_FORWARDING_STATUS_FILE
+          value: "/tmp/gluetun/forwarded_port"
+        - name: VPN_PORT_FORWARDING_UP_COMMAND
+          value: '/bin/sh -c "wget -O- --retry-connrefused --post-data \"json={\\\"listen_port\\\":{{PORTS}}}\" http://127.0.0.1:6887/api/v2/app/setPreferences 2>&1"'
+        - name: FIREWALL_OUTBOUND_SUBNETS
+          value: "10.144.0.0/12,172.16.0.0/12,172.22.30.33/32,192.168.144.0/20"
+        - name: FIREWALL_INPUT_PORTS
+          value: "6887"
+        - name: TZ
+          value: "Etc/UTC"
+        - name: LOG_LEVEL
+          value: "debug"
+        - name: HEALTH_VPN_DURATION_INITIAL
+          value: "60s"
+        - name: DNS_KEEP_NAMESERVER
+          $patch: delete
+        - name: DNS_ADDRESS
+          value: "10.144.0.10"
+        volumeMounts:
+        - name: gluetun-config
+          mountPath: /gluetun
+        - name: gluetun-tmp
+          mountPath: /tmp/gluetun
+      - name: qbittorrent
+        image: lscr.io/linuxserver/qbittorrent:latest
+        env:
+        - name: TZ
+          value: "Etc/UTC"
+        volumeMounts:
+        - name: config
+          mountPath: /config
+        - name: downloads
+          mountPath: /downloads
+      - name: port-manager
+        image: docker.jcr.pcfae.com/prplanit/qbittorrent-port-manager:1.3
+        volumeMounts:
+        - name: gluetun-tmp
+          mountPath: /tmp/gluetun
+      volumes:
+      - name: gluetun-config
+        persistentVolumeClaim:
+          claimName: swift-sail-qbittorrent-gluetun-config
+      - name: config
+        persistentVolumeClaim:
+          claimName: swift-sail-qbittorrent-config
+      - name: downloads
+        persistentVolumeClaim:
+          claimName: swift-sail-qbittorrent-downloads
+      - name: gluetun-tmp
+        emptyDir: {}

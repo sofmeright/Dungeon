@@ -1,0 +1,75 @@
+# Static PersistentVolumes for swift-sail named RBDs
+# These reference exact RBD image names in Ceph
+# CSI automatically creates RBDs if volumeHandle doesn't exist (idempotent)
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: swift-sail-qbittorrent-gluetun-config-0
+spec:
+  capacity:
+    storage: 64Mi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain  # CRITICAL: Protects RBD from deletion
+  storageClassName: ceph-rbd-static
+  csi:
+    driver: rbd.csi.ceph.com
+    fsType: ext4
+    volumeHandle: swift-sail-qbittorrent-gluetun-config-0  # Matches RBD image name in Ceph
+    volumeAttributes:
+      clusterID: "0985467c-d8f3-4483-b27f-f0a512397ec2"  # Your Ceph FSID
+      pool: dungeon
+      staticVolume: "true"
+      imageFeatures: layering
+    nodeStageSecretRef:
+      name: ceph-rbd-secret
+      namespace: kube-system
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: swift-sail-qbittorrent-config-0
+spec:
+  capacity:
+    storage: 64Mi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: ceph-rbd-static
+  csi:
+    driver: rbd.csi.ceph.com
+    fsType: ext4
+    volumeHandle: swift-sail-qbittorrent-config-0
+    volumeAttributes:
+      clusterID: "0985467c-d8f3-4483-b27f-f0a512397ec2"
+      pool: dungeon
+      staticVolume: "true"
+      imageFeatures: layering
+    nodeStageSecretRef:
+      name: ceph-rbd-secret
+      namespace: kube-system
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: swift-sail-qbittorrent-downloads-0
+spec:
+  capacity:
+    storage: 256Gi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: ceph-rbd-static
+  csi:
+    driver: rbd.csi.ceph.com
+    fsType: ext4
+    volumeHandle: swift-sail-qbittorrent-downloads-0  # Easy to find: rbd ls dungeon | grep swift-sail
+    volumeAttributes:
+      clusterID: "0985467c-d8f3-4483-b27f-f0a512397ec2"
+      pool: dungeon
+      staticVolume: "true"
+      imageFeatures: layering
+    nodeStageSecretRef:
+      name: ceph-rbd-secret
+      namespace: kube-system

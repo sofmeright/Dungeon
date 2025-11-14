@@ -3,3 +3,4 @@ kind: Kustomization
 resources:
   - ceph-rbd-delete-storageclass.yaml
   - ceph-rbd-retain-storageclass.yaml
+  - ceph-rbd-static-storageclass.yaml
