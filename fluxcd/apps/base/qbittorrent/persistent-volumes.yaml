@@ -16,10 +16,11 @@ spec:
   csi:
     driver: rbd.csi.ceph.com
     fsType: ext4
-    volumeHandle: swift-sail-qbittorrent-gluetun-config-0  # Matches RBD image name in Ceph
+    volumeHandle: swift-sail-qbittorrent-gluetun-config-0  # Unique ID
     volumeAttributes:
       clusterID: "0985467c-d8f3-4483-b27f-f0a512397ec2"  # Your Ceph FSID
       pool: dungeon
+      imageName: swift-sail-qbittorrent-gluetun-config-0  # RBD image name in Ceph
       imageFeatures: layering
     nodeStageSecretRef:
       name: ceph-secret-user
@@ -43,6 +44,7 @@ spec:
     volumeAttributes:
       clusterID: "0985467c-d8f3-4483-b27f-f0a512397ec2"
       pool: dungeon
+      imageName: swift-sail-qbittorrent-config-0
       imageFeatures: layering
     nodeStageSecretRef:
       name: ceph-secret-user
@@ -66,6 +68,7 @@ spec:
     volumeAttributes:
       clusterID: "0985467c-d8f3-4483-b27f-f0a512397ec2"
       pool: dungeon
+      imageName: swift-sail-qbittorrent-downloads-0
       imageFeatures: layering
     nodeStageSecretRef:
       name: ceph-secret-user
