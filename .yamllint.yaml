@@ -1,0 +1,42 @@
+# yamllint configuration for Kubernetes manifests
+extends: default
+
+rules:
+  # Line length - Kubernetes manifests can be long
+  line-length:
+    max: 200
+    level: warning
+
+  # Indentation - 2 spaces (Kubernetes standard)
+  indentation:
+    spaces: 2
+    indent-sequences: true
+
+  # Allow multiple documents in one file (common in K8s)
+  document-start: disable
+
+  # Comments - allow flexibility
+  comments:
+    min-spaces-from-content: 1
+
+  # Truthy values - allow yes/no/on/off (common in K8s)
+  truthy:
+    allowed-values: ['true', 'false', 'yes', 'no', 'on', 'off']
+    check-keys: false
+
+  # Allow duplicate keys in some cases (for patches)
+  key-duplicates: enable
+
+  # Brackets - be flexible
+  brackets:
+    max-spaces-inside: 1
+
+  # Empty values - allow (common in K8s patches)
+  empty-values:
+    forbid-in-block-mappings: false
+    forbid-in-flow-mappings: false
+
+ignore: |
+  .git/
+  docs/
+  **/templates/

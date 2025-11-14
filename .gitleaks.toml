@@ -1,0 +1,43 @@
+# Gitleaks configuration for secret scanning
+# https://github.com/gitleaks/gitleaks
+
+title = "Gitleaks Config for Dungeon K8s Cluster"
+
+# Extend default gitleaks config
+[extend]
+useDefault = true
+
+# Allowlist for false positives
+[allowlist]
+description = "Allowlisted files and patterns"
+
+# Ignore example/placeholder values
+regexes = [
+  '''PLACEHOLDER_''',
+  '''example\.com''',
+  '''changeme''',
+  '''your-.*-here''',
+]
+
+# Ignore specific paths that are known safe
+paths = [
+  '''\.md$''',
+  '''docs/''',
+  '''\.sops\.yaml$''',  # SOPS encrypted files
+  '''\.enc\.yaml$''',   # SOPS encrypted files
+]
+
+# Ignore Ceph FSID (not a secret, it's a cluster identifier)
+[[allowlist.regexes]]
+regex = '''0985467c-d8f3-4483-b27f-f0a512397ec2'''
+description = "Ceph cluster FSID (public identifier, not a secret)"
+
+# Ignore example Kubernetes service account tokens (base64 of 'kubernetes')
+[[allowlist.regexes]]
+regex = '''a3ViZXJuZXRlcw=='''
+description = "Example Kubernetes token"
+
+# Ignore SOPS age public keys (public keys are safe to commit)
+[[allowlist.regexes]]
+regex = '''age1[a-z0-9]{58}'''
+description = "SOPS age public keys (safe to commit)"

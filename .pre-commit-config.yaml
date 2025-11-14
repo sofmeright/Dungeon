@@ -1,0 +1,68 @@
+# Pre-commit hooks for secret scanning and validation
+# Install: pre-commit install
+# Run manually: pre-commit run --all-files
+# Update: pre-commit autoupdate
+
+repos:
+  # TruffleHog - Find verified secrets in code
+  - repo: local
+    hooks:
+      - id: trufflehog
+        name: TruffleHog Secret Scanner (verified secrets only)
+        entry: bash -c 'docker run --rm -v "$(pwd):/workdir" -w /workdir trufflesecurity/trufflehog:latest git file://. --since-commit HEAD --only-verified --fail --no-update'
+        language: system
+        pass_filenames: false
+        stages: [commit]
+
+  # Gitleaks - Detect hardcoded secrets (all patterns)
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.21.2
+    hooks:
+      - id: gitleaks
+        name: Gitleaks Secret Scanner
+
+  # YAML linting
+  - repo: https://github.com/adrienverge/yamllint
+    rev: v1.35.1
+    hooks:
+      - id: yamllint
+        args: [--strict, -c, .yamllint.yaml]
+        exclude: ^docs/
+
+  # General file checks
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: check-added-large-files
+        args: ['--maxkb=500']
+      - id: check-case-conflict
+      - id: check-merge-conflict
+      - id: check-yaml
+        args: [--allow-multiple-documents]
+        exclude: ^(fluxcd/.*helm.*|.*template.*\.yaml)$
+      - id: detect-private-key
+      - id: end-of-file-fixer
+        exclude: ^docs/
+      - id: trailing-whitespace
+        exclude: ^docs/
+      - id: mixed-line-ending
+        args: [--fix=lf]
+
+  # Kubernetes manifest validation
+  - repo: https://github.com/Lucas-C/pre-commit-hooks
+    rev: v1.5.5
+    hooks:
+      - id: forbid-crlf
+      - id: remove-crlf
+      - id: forbid-tabs
+        exclude: ^(Makefile|.*\.mk|.*\.go)$
+
+  # Kustomize validation
+  - repo: local
+    hooks:
+      - id: kustomize-build
+        name: Validate Kustomize builds
+        entry: bash -c 'for dir in $(find fluxcd -name kustomization.yaml -type f -exec dirname {} \;); do echo "Validating $dir..."; kustomize build "$dir" > /dev/null || exit 1; done'
+        language: system
+        pass_filenames: false
+        files: \.yaml$
