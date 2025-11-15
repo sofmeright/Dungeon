@@ -53,6 +53,20 @@ spec:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
+  name: qbittorrent-tv-shows-seeding
+spec:
+  storageClassName: ""
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: qbittorrent-movies-seeding
+spec:
+  storageClassName: ""
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
   name: qbittorrent-downloads
 spec:
   storageClassName: ""
