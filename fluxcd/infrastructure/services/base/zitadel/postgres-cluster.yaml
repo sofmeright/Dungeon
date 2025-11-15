@@ -16,9 +16,8 @@ spec:
 
   enableSuperuserAccess: true
 
-  storage:
-    storageClass: PLACEHOLDER_STORAGE_CLASS
-    size: 10Gi
+  # storage section intentionally omitted - using static PVCs with named RBDs
+  # CloudNativePG will use existing PVCs: {clusterName}-{instanceNumber}
 
   postgresql:
     parameters:
