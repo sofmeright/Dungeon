@@ -16,8 +16,16 @@ spec:
 
   enableSuperuserAccess: true
 
-  # storage section intentionally omitted - using static PVCs with named RBDs
-  # CloudNativePG will use existing PVCs: {clusterName}-{instanceNumber}
+  # pvcTemplate for static PVCs with named RBDs
+  # If PVCs already exist, CloudNativePG will use them instead of creating new ones
+  storage:
+    pvcTemplate:
+      accessModes:
+        - ReadWriteOnce
+      resources:
+        requests:
+          storage: PLACEHOLDER_STORAGE_SIZE
+      storageClassName: PLACEHOLDER_STORAGE_CLASS
 
   postgresql:
     parameters:

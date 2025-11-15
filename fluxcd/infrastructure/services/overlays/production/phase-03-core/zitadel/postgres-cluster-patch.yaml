@@ -3,10 +3,16 @@ kind: Cluster
 metadata:
   name: zitadel-postgres
 spec:
-  # storage section removed - using pre-created static PVCs with named RBDs
-  # CloudNativePG will automatically use existing PVCs: zitadel-postgres-1, zitadel-postgres-2, zitadel-postgres-3
+  # pvcTemplate with 12Gi for static PVCs with named RBDs
+  # CloudNativePG will use existing PVCs: zitadel-postgres-1, zitadel-postgres-2, zitadel-postgres-3
   storage:
-    $patch: delete
+    pvcTemplate:
+      accessModes:
+        - ReadWriteOnce
+      resources:
+        requests:
+          storage: 12Gi
+      storageClassName: ceph-rbd-retain
 
   postgresql:
     parameters:
