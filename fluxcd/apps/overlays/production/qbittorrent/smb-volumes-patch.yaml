@@ -8,7 +8,7 @@ spec:
   csi:
     volumeHandle: qbittorrent-tv-shows-seeding-gringotts-media-tv
     volumeAttributes:
-      source: "//gringotts/Media/TV_Shows/Automated-Seeding"
+      source: "//gringotts/timecapsule/Media/TV_Shows/Automated-Seeding"
     nodeStageSecretRef:
       namespace: swift-sail
 ---
@@ -27,7 +27,7 @@ spec:
   csi:
     volumeHandle: qbittorrent-movies-seeding-gringotts-media-movies
     volumeAttributes:
-      source: "//gringotts/Media/Movies/2D-Automated-Seeding"
+      source: "//gringotts/timecapsule/Media/Movies/2D-Automated-Seeding"
     nodeStageSecretRef:
       namespace: swift-sail
 ---
