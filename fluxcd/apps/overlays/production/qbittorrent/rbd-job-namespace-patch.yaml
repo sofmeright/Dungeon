@@ -1,7 +1,0 @@
-# Run RBD creation Job in kube-system where Ceph secret lives
----
-apiVersion: batch/v1
-kind: Job
-metadata:
-  name: qbittorrent-create-rbds
-  namespace: kube-system

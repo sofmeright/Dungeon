@@ -8,4 +8,3 @@ resources:
   - persistent-volume-claims.yaml
   - smb-volumes.yaml
   - externalsecret-smb.yaml
-  - rbd-create-job.yaml
