@@ -106,8 +106,8 @@ spec:
               endpoint: ceph-rgw.gorons-bracelet.svc.cluster.local:80
               region: default
               bucket_name: gossip-stone-mimir
-              access_key_id: ${S3_ACCESS_KEY}
-              secret_access_key: ${S3_SECRET_KEY}
+              access_key_id: ${s3_access_key}
+              secret_access_key: ${s3_secret_key}
               insecure: true
 
         blocks_storage:
@@ -116,8 +116,8 @@ spec:
             endpoint: ceph-rgw.gorons-bracelet.svc.cluster.local:80
             region: default
             bucket_name: gossip-stone-mimir
-            access_key_id: ${S3_ACCESS_KEY}
-            secret_access_key: ${S3_SECRET_KEY}
+            access_key_id: ${s3_access_key}
+            secret_access_key: ${s3_secret_key}
             insecure: true
           tsdb:
             dir: /data/tsdb
