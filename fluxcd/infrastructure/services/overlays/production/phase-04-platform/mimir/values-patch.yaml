@@ -96,7 +96,7 @@ spec:
             topic: mimir-ingest
             consumer_group: mimir-ingest-storage
             auto_create_topic_enabled: true
-            auto_create_topic_default_partitions: 100  # Grafana production default
+            auto_create_topic_default_partitions: 3  # Match ingester replica count (was 100 - only used 3)
 
         ingester:
           ring:
