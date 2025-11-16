@@ -55,7 +55,6 @@ resources:
   - ark-se
   - emulatorjs
   - minecraft-optcp
-  - pelican
   # Media
   - calibre-web
   - immich
