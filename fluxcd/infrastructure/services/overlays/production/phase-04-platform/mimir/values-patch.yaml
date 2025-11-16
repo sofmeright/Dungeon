@@ -8,6 +8,12 @@ spec:
     ingester:
       persistentVolume:
         storageClass: ceph-rbd
+      # Mount S3 credentials for block uploads
+      extraArgs:
+        -config.expand-env: true
+      extraEnvFrom:
+        - secretRef:
+            name: mimir-s3
       # Pod anti-affinity to spread across nodes
       affinity:
         podAntiAffinity:
@@ -25,10 +31,22 @@ spec:
     store_gateway:
       persistentVolume:
         storageClass: ceph-rbd
+      # Mount S3 credentials for block queries
+      extraArgs:
+        -config.expand-env: true
+      extraEnvFrom:
+        - secretRef:
+            name: mimir-s3
 
     compactor:
       persistentVolume:
         storageClass: ceph-rbd
+      # Mount S3 credentials for block compaction
+      extraArgs:
+        -config.expand-env: true
+      extraEnvFrom:
+        - secretRef:
+            name: mimir-s3
 
     # Global imagePullSecrets for all Mimir pods
     global:
@@ -69,15 +87,9 @@ spec:
           cpu: 1
           memory: 2Gi
 
-    # Ingest Storage configuration - use external Kafka cluster
+    # Ingest Storage DISABLED - using classic mode with direct S3 writes
     ingest_storage:
-      enabled: true
-      kafka:
-        # Disable demo Kafka deployed by chart
-        enabled: false
-        # External Kafka configuration
-        address: mimir-kafka-kafka-bootstrap.gossip-stone.svc.cluster.local:9092
-        topic: mimir-ingest
+      enabled: false
 
     mimir:
       structuredConfig:
@@ -85,18 +97,32 @@ spec:
           ring:
             kvstore:
               store: memberlist
-          # Increase remote timeout for Kafka backend (recommended for ingest storage)
-          remote_timeout: 5s
 
-        # Ingest Storage configuration for production
-        ingest_storage:
-          enabled: true
-          kafka:
-            address: mimir-kafka-kafka-bootstrap.gossip-stone.svc.cluster.local:9092
-            topic: mimir-ingest
-            consumer_group: mimir-ingest-storage
-            auto_create_topic_enabled: true
-            auto_create_topic_default_partitions: 3  # Match ingester replica count (was 100 - only used 3)
+        # S3 blocks storage configuration - using Ceph RGW
+        common:
+          storage:
+            backend: s3
+            s3:
+              endpoint: ceph-rgw.gorons-bracelet.svc.cluster.local:80
+              region: default
+              bucket_name: gossip-stone-mimir
+              access_key_id: ${S3_ACCESS_KEY}
+              secret_access_key: ${S3_SECRET_KEY}
+              insecure: true
+
+        blocks_storage:
+          backend: s3
+          s3:
+            endpoint: ceph-rgw.gorons-bracelet.svc.cluster.local:80
+            region: default
+            bucket_name: gossip-stone-mimir
+            access_key_id: ${S3_ACCESS_KEY}
+            secret_access_key: ${S3_SECRET_KEY}
+            insecure: true
+          tsdb:
+            dir: /data/tsdb
+          bucket_store:
+            sync_dir: /data/tsdb-sync
 
         ingester:
           ring:

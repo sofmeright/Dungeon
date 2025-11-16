@@ -3,8 +3,7 @@ kind: Kustomization
 namespace: gossip-stone
 resources:
   - ../../../../base/mimir
-  - kafka-metrics-configmap.yaml  # Mimir's Kafka metrics config
-  - kafka-cluster.yaml  # Mimir's dedicated Kafka cluster
+  - externalsecret-s3.yaml  # S3 credentials for Ceph RGW
 patches:
   - path: values-patch.yaml
     target:
