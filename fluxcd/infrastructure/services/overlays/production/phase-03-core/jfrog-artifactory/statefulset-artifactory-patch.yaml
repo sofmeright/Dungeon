@@ -67,6 +67,9 @@ spec:
         - $patch: replace
         - name: hyrule-castle-jfrog-artifactory-data
           mountPath: /var/opt/jfrog/artifactory
+        - name: system-yaml
+          mountPath: /opt/jfrog/artifactory/var/etc/system.yaml
+          subPath: system.yaml
         resources:
           requests:
             cpu: "1000m"
@@ -74,6 +77,10 @@ spec:
           limits:
             cpu: "4000m"
             memory: "8Gi"
+      volumes:
+      - name: system-yaml
+        configMap:
+          name: jfrog-artifactory-system-yaml
   volumeClaimTemplates:
   - metadata:
       name: hyrule-castle-jfrog-artifactory-data

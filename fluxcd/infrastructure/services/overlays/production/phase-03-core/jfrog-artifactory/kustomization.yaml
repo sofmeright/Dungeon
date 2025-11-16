@@ -4,6 +4,7 @@ namespace: hyrule-castle
 resources:
   - ../../../../base/jfrog-artifactory
   - httproute.yaml
+  - configmap-system-yaml.yaml
 patches:
   - path: statefulset-postgres-patch.yaml
   - path: statefulset-artifactory-patch.yaml

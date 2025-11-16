@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: jfrog-artifactory-system-yaml
+data:
+  system.yaml: |
+    configVersion: 1
+    shared: {}
+    access: {}
+    observability:
+      consumption:
+        allow: ""
