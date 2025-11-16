@@ -38,7 +38,7 @@ sudo kubeadm config images pull --kubernetes-version="$KUBERNETES_VERSION" --cri
 sudo kubeadm init \
   --cri-socket="unix:///var/run/crio/crio.sock" \
   --control-plane-endpoint="$MASTER_PUBLIC_IP" \
-  --apiserver-cert-extra-sans="$MASTER_PUBLIC_IP" \
+  --apiserver-cert-extra-sans="127.0.0.1,localhost,$MASTER_PUBLIC_IP" \
   --pod-network-cidr="$POD_CIDR" \
   --service-cidr="$SERVICE_CIDR" \
   --kubernetes-version="$KUBERNETES_VERSION" \
