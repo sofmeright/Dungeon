@@ -61,8 +61,6 @@ spec:
           value: "dungeon-artifactory"
         - name: JF_SHARED_NODE_NAME
           value: "dungeon-artifactory"
-        - name: JF_OBSERVABILITY_METRICS_ENABLED
-          value: "false"
         volumeMounts:
         - $patch: replace
         - name: hyrule-castle-jfrog-artifactory-data
