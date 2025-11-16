@@ -13,9 +13,14 @@ spec:
           s3ForcePathStyle: true
           insecure: true
           signatureVersion: v4
+    # Global imagePullSecrets for all Loki pods
+    global:
+      imagePullSecrets:
+        - name: jcr-pcfae-dungeon-pull-secret
+        - name: docker-io-pull-secret
     sidecar:
       image:
-        repository: docker.io/kiwigrid/k8s-sidecar
+        repository: docker.jcr.pcfae.com/kiwigrid/k8s-sidecar  # Use JCR cache to avoid Docker Hub rate limits
         tag: 1.28.0
     chunksCache:
       enabled: false

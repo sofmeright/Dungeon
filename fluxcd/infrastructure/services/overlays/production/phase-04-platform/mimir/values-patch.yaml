@@ -30,6 +30,11 @@ spec:
       persistentVolume:
         storageClass: ceph-rbd
 
+    # Global imagePullSecrets for all Mimir pods
+    global:
+      imagePullSecrets:
+        - name: jcr-pcfae-dungeon-pull-secret
+
     # Image configuration - use JCR pull-through cache for bandwidth efficiency
     # CRI-O requires fully qualified image names in short-name enforcement mode
     image:

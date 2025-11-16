@@ -18,7 +18,7 @@ spec:
     volumes:
       - id: 0
         type: persistent-claim
-        size: 100Gi
+        size: 200Gi  # Increased from 100Gi - disk full in <3 days, investigating retention
         deleteClaim: false
         class: ceph-rbd
         # KRaft metadata stored on each node
