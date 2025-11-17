@@ -72,9 +72,9 @@
     - All cluster nodes have CRI-O registry mirrors pre-configured at `/etc/containers/registries.conf.d/jcr-mirrors.conf`
     - **Transparent redirection**: Images can be requested using original registry names (e.g., `docker.io/redis:alpine`) and CRI-O automatically pulls through JCR mirrors
     - **Automatic fallback**: If JCR is unavailable, CRI-O falls back to upstream registries
-    - **Mirrored registries**: docker.io, ghcr.io, lscr.io, quay.io
+    - **Mirrored registries**: docker.io → docker.jcr.pcfae.com, ghcr.io → ghcr.jcr.pcfae.com, lscr.io → lscr.jcr.pcfae.com, quay.io → quay.jcr.pcfae.com
     - **Benefits**: Reduces bandwidth, avoids rate limits, caches images, no manifest changes required
-    - **Re-apply configuration**: Run `/srv/dungeon/bash/_importing_from_sibling_repo/configure-registry-mirrors.sh` from any control plane node
+    - **Re-apply configuration**: Run [configure-registry-mirrors.sh](bash/_importing_from_sibling_repo/configure-registry-mirrors.sh) from any control plane node
   - **Image Pull Strategy**:
     - **Critical Infrastructure** (JFrog itself, Vault, Zitadel, External Secrets, etc.): Pull directly from upstream source registries (docker.io, ghcr.io, quay.io, etc.) to avoid circular dependencies - CRI-O mirrors handle automatic JCR routing
     - **All Other Applications**: Can use either original registry names (docker.io, ghcr.io, etc.) which automatically route through JCR via CRI-O mirrors, OR explicitly use `*.jcr.pcfae.com` registries
