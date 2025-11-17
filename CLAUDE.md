@@ -76,14 +76,15 @@
     - **Benefits**: Reduces bandwidth, avoids rate limits, caches images, no manifest changes required
     - **Re-apply configuration**: Run [configure-registry-mirrors.sh](bash/_importing_from_sibling_repo/configure-registry-mirrors.sh) from any control plane node
   - **Image Pull Strategy**:
-    - **Critical Infrastructure** (JFrog itself, Vault, Zitadel, External Secrets, etc.): Pull directly from upstream source registries (docker.io, ghcr.io, quay.io, etc.) to avoid circular dependencies - CRI-O mirrors handle automatic JCR routing
-    - **All Other Applications**: Can use either original registry names (docker.io, ghcr.io, etc.) which automatically route through JCR via CRI-O mirrors, OR explicitly use `*.jcr.pcfae.com` registries
+    - **All Applications**: Always use original upstream registry names (docker.io, ghcr.io, quay.io, lscr.io) - CRI-O mirrors automatically route through JCR with transparent fallback
+    - **No need to explicitly reference `*.jcr.pcfae.com`**: CRI-O handles the routing automatically, no manifest changes required
   - **Pull Secret**: `jcr-pcfae-dungeon-pull-secret` deployed to all namespaces with label `jcr-pull-secret: "enabled"`
-  - **Image Naming Examples**:
-    - Infrastructure: `docker.io/hashicorp/vault:1.15.0` (automatically routes through docker.jcr.pcfae.com via CRI-O mirror)
-    - Apps: `docker.jcr.pcfae.com/appflowyinc/appflowy_cloud:latest` (explicit JCR reference)
-    - Apps: `ghcr.io/linuxserver/jellyfin:latest` (automatically routes through ghcr.jcr.pcfae.com via CRI-O mirror)
-    - Apps: `quay.io/prometheus/prometheus:v2.45.0` (automatically routes through quay.jcr.pcfae.com via CRI-O mirror)
+  - **Image Naming Examples** (all automatically route through JCR mirrors):
+    - `docker.io/hashicorp/vault:1.15.0` (automatically routes through docker.jcr.pcfae.com)
+    - `docker.io/redis:7.4-alpine` (automatically routes through docker.jcr.pcfae.com)
+    - `ghcr.io/linuxserver/jellyfin:latest` (automatically routes through ghcr.jcr.pcfae.com)
+    - `quay.io/prometheus/prometheus:v2.45.0` (automatically routes through quay.jcr.pcfae.com)
+    - `lscr.io/linuxserver/plex:latest` (automatically routes through lscr.jcr.pcfae.com)
 
 - FluxCD App Structure:
   - `fluxcd/apps/base/<app>/` contains TEMPLATED Kubernetes resources WITHOUT any environment-specific values including: no hardcoded namespaces, image tags, replicas, storage classes, LoadBalancer IPs, cluster-specific annotations (lbipam.cilium.io/*), domain names, URLs, etc. These are reusable templates across environments.
