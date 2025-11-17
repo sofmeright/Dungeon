@@ -8,9 +8,11 @@ spec:
   template:
     spec:
       restartPolicy: OnFailure
+      imagePullSecrets:
+      - name: jcr-pcfae-dungeon-pull-secret
       containers:
       - name: create-bucket
-        image: docker.io/minio/mc:latest
+        image: docker.jcr.pcfae.com/minio/mc:latest
         command:
         - /bin/sh
         - -c
