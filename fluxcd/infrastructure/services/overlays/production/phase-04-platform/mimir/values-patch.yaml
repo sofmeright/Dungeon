@@ -69,11 +69,12 @@ spec:
         repository: docker.jcr.pcfae.com/grafana/rollout-operator
         # tag: use chart default
 
-    nginx:
-      image:
-        registry: docker.jcr.pcfae.com
-        repository: nginxinc/nginx-unprivileged
-        # tag: use chart default
+    gateway:
+      nginx:
+        image:
+          registry: docker.jcr.pcfae.com
+          repository: nginxinc/nginx-unprivileged
+          # tag: use chart default
 
     serviceMonitor:
       enabled: false  # Using Alloy service discovery instead
