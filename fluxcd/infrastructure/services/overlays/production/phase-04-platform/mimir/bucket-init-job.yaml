@@ -1,0 +1,51 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: mimir-bucket-init
+  namespace: gossip-stone
+spec:
+  ttlSecondsAfterFinished: 86400
+  template:
+    spec:
+      restartPolicy: OnFailure
+      containers:
+      - name: create-bucket
+        image: docker.io/minio/mc:latest
+        command:
+        - /bin/sh
+        - -c
+        - |
+          set -ex
+
+          # Configure mc alias with Ceph RGW endpoint
+          mc alias set ceph http://ceph-rgw.gorons-bracelet.svc.cluster.local:80 ${S3_ACCESS_KEY} ${S3_SECRET_KEY}
+
+          # Check if bucket exists
+          if mc ls ceph/gossip-stone-mimir 2>/dev/null; then
+            echo "Bucket gossip-stone-mimir already exists"
+            exit 0
+          fi
+
+          # Bucket doesn't exist, attempt to create
+          echo "Creating bucket gossip-stone-mimir..."
+          mc mb ceph/gossip-stone-mimir
+
+          # Verify bucket was created
+          if mc ls ceph/gossip-stone-mimir 2>/dev/null; then
+            echo "Bucket gossip-stone-mimir created successfully"
+            exit 0
+          else
+            echo "Failed to create bucket gossip-stone-mimir"
+            exit 1
+          fi
+        env:
+        - name: S3_ACCESS_KEY
+          valueFrom:
+            secretKeyRef:
+              name: mimir-s3
+              key: s3_access_key
+        - name: S3_SECRET_KEY
+          valueFrom:
+            secretKeyRef:
+              name: mimir-s3
+              key: s3_secret_key

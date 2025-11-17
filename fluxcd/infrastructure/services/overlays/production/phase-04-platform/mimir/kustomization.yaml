@@ -4,6 +4,7 @@ namespace: gossip-stone
 resources:
   - ../../../../base/mimir
   - externalsecret-s3.yaml  # S3 credentials for Ceph RGW
+  - bucket-init-job.yaml  # Create gossip-stone-mimir S3 bucket
 patches:
   - path: values-patch.yaml
     target:
