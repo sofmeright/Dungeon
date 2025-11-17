@@ -79,12 +79,6 @@
     - **All Applications**: Always use original upstream registry names (docker.io, ghcr.io, quay.io, lscr.io) - CRI-O mirrors automatically route through JCR with transparent fallback
     - **No need to explicitly reference `*.jcr.pcfae.com`**: CRI-O handles the routing automatically, no manifest changes required
   - **Pull Secret**: `jcr-pcfae-dungeon-pull-secret` deployed to all namespaces with label `jcr-pull-secret: "enabled"`
-  - **Image Naming Examples** (all automatically route through JCR mirrors):
-    - `docker.io/hashicorp/vault:1.15.0` (automatically routes through docker.jcr.pcfae.com)
-    - `docker.io/redis:7.4-alpine` (automatically routes through docker.jcr.pcfae.com)
-    - `ghcr.io/linuxserver/jellyfin:latest` (automatically routes through ghcr.jcr.pcfae.com)
-    - `quay.io/prometheus/prometheus:v2.45.0` (automatically routes through quay.jcr.pcfae.com)
-    - `lscr.io/linuxserver/plex:latest` (automatically routes through lscr.jcr.pcfae.com)
 
 - FluxCD App Structure:
   - `fluxcd/apps/base/<app>/` contains TEMPLATED Kubernetes resources WITHOUT any environment-specific values including: no hardcoded namespaces, image tags, replicas, storage classes, LoadBalancer IPs, cluster-specific annotations (lbipam.cilium.io/*), domain names, URLs, etc. These are reusable templates across environments.
