@@ -157,6 +157,86 @@ data:
       scrape_timeout  = "10s"
     }
 
+    // Relabel nodes for kubelet scraping
+    discovery.relabel "kubelet" {
+      targets = discovery.kubernetes.nodes.targets
+
+      // Target kubelet metrics endpoint
+      rule {
+        source_labels = ["__meta_kubernetes_node_name"]
+        target_label  = "__address__"
+        replacement   = "$1:10250"
+      }
+
+      // Set metrics path to kubelet endpoint
+      rule {
+        replacement  = "/metrics"
+        target_label = "__metrics_path__"
+      }
+
+      // Add node label
+      rule {
+        source_labels = ["__meta_kubernetes_node_name"]
+        target_label  = "node"
+      }
+    }
+
+    // Scrape kubelet metrics (kubelet-specific metrics)
+    prometheus.scrape "kubelet" {
+      targets    = discovery.relabel.kubelet.output
+      forward_to = [prometheus.relabel.drop_container_labels.receiver]
+
+      scheme          = "https"
+      bearer_token_file = "/var/run/secrets/kubernetes.io/serviceaccount/token"
+
+      tls_config {
+        insecure_skip_verify = true
+      }
+
+      scrape_interval = "30s"
+      scrape_timeout  = "10s"
+    }
+
+    // Relabel nodes for cAdvisor scraping
+    discovery.relabel "cadvisor" {
+      targets = discovery.kubernetes.nodes.targets
+
+      // Target kubelet cAdvisor metrics endpoint
+      rule {
+        source_labels = ["__meta_kubernetes_node_name"]
+        target_label  = "__address__"
+        replacement   = "$1:10250"
+      }
+
+      // Set metrics path to cAdvisor endpoint
+      rule {
+        replacement  = "/metrics/cadvisor"
+        target_label = "__metrics_path__"
+      }
+
+      // Add node label
+      rule {
+        source_labels = ["__meta_kubernetes_node_name"]
+        target_label  = "node"
+      }
+    }
+
+    // Scrape cAdvisor metrics (container metrics from kubelet)
+    prometheus.scrape "cadvisor" {
+      targets    = discovery.relabel.cadvisor.output
+      forward_to = [prometheus.relabel.drop_container_labels.receiver]
+
+      scheme          = "https"
+      bearer_token_file = "/var/run/secrets/kubernetes.io/serviceaccount/token"
+
+      tls_config {
+        insecure_skip_verify = true
+      }
+
+      scrape_interval = "30s"
+      scrape_timeout  = "10s"
+    }
+
     // Relabel pod metrics targets for better organization
     discovery.relabel "pods_metrics" {
       targets = discovery.kubernetes.pods.targets
