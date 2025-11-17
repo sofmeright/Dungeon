@@ -71,7 +71,8 @@ spec:
 
     nginx:
       image:
-        repository: docker.jcr.pcfae.com/nginxinc/nginx-unprivileged
+        registry: docker.jcr.pcfae.com
+        repository: nginxinc/nginx-unprivileged
         # tag: use chart default
 
     serviceMonitor:
