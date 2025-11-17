@@ -48,6 +48,14 @@ spec:
         - secretRef:
             name: mimir-s3
 
+    querier:
+      # Mount S3 credentials for querying blocks from storage
+      extraArgs:
+        -config.expand-env: true
+      extraEnvFrom:
+        - secretRef:
+            name: mimir-s3
+
     # Global imagePullSecrets for all Mimir pods
     global:
       imagePullSecrets:
