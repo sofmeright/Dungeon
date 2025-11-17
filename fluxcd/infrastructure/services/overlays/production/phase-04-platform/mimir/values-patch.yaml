@@ -93,6 +93,10 @@ spec:
 
     mimir:
       structuredConfig:
+        # Explicitly disable ingest storage in structured config
+        ingest_storage:
+          enabled: false
+
         distributor:
           ring:
             kvstore:
