@@ -79,15 +79,15 @@ spec:
     serviceMonitor:
       enabled: false  # Using Alloy service discovery instead
 
-    # Distributor resource limits - increased for high-cardinality metrics and backlog processing
+    # Distributor resource limits - increased for high-cardinality metrics
     distributor:
       resources:
         requests:
           cpu: 200m
-          memory: 2Gi
+          memory: 1Gi
         limits:
-          cpu: 2
-          memory: 4Gi
+          cpu: 1
+          memory: 2Gi
 
     # Ingest Storage DISABLED - using classic mode with direct S3 writes
     ingest_storage:
