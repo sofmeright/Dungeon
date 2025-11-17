@@ -68,15 +68,22 @@
     - `ghcr.jcr.pcfae.com` - GitHub Container Registry (ghcr.io) pull-through cache
     - `quay.jcr.pcfae.com` - Quay.io (quay.io) pull-through cache
     - `lscr.jcr.pcfae.com` - LinuxServer.io (lscr.io) pull-through cache
+  - **CRI-O Registry Mirrors (Automatic)**:
+    - All cluster nodes have CRI-O registry mirrors pre-configured at `/etc/containers/registries.conf.d/jcr-mirrors.conf`
+    - **Transparent redirection**: Images can be requested using original registry names (e.g., `docker.io/redis:alpine`) and CRI-O automatically pulls through JCR mirrors
+    - **Automatic fallback**: If JCR is unavailable, CRI-O falls back to upstream registries
+    - **Mirrored registries**: docker.io, ghcr.io, lscr.io, quay.io
+    - **Benefits**: Reduces bandwidth, avoids rate limits, caches images, no manifest changes required
+    - **Re-apply configuration**: Run `/srv/dungeon/bash/_importing_from_sibling_repo/configure-registry-mirrors.sh` from any control plane node
   - **Image Pull Strategy**:
-    - **Critical Infrastructure** (JFrog itself, Vault, Zitadel, External Secrets, etc.): Pull directly from upstream source registries (docker.io, ghcr.io, quay.io, etc.) to avoid circular dependencies
-    - **All Other Applications**: Pull through JFrog caching proxies using `*.jcr.pcfae.com` registries for bandwidth efficiency, rate limit avoidance, and image caching
+    - **Critical Infrastructure** (JFrog itself, Vault, Zitadel, External Secrets, etc.): Pull directly from upstream source registries (docker.io, ghcr.io, quay.io, etc.) to avoid circular dependencies - CRI-O mirrors handle automatic JCR routing
+    - **All Other Applications**: Can use either original registry names (docker.io, ghcr.io, etc.) which automatically route through JCR via CRI-O mirrors, OR explicitly use `*.jcr.pcfae.com` registries
   - **Pull Secret**: `jcr-pcfae-dungeon-pull-secret` deployed to all namespaces with label `jcr-pull-secret: "enabled"`
   - **Image Naming Examples**:
-    - Infrastructure: `docker.io/hashicorp/vault:1.15.0` (direct from Docker Hub)
-    - Apps: `docker.jcr.pcfae.com/appflowyinc/appflowy_cloud:latest` (via JCR cache)
-    - Apps: `ghcr.jcr.pcfae.com/linuxserver/jellyfin:latest` (via JCR cache)
-    - Apps: `quay.jcr.pcfae.com/prometheus/prometheus:v2.45.0` (via JCR cache)
+    - Infrastructure: `docker.io/hashicorp/vault:1.15.0` (automatically routes through docker.jcr.pcfae.com via CRI-O mirror)
+    - Apps: `docker.jcr.pcfae.com/appflowyinc/appflowy_cloud:latest` (explicit JCR reference)
+    - Apps: `ghcr.io/linuxserver/jellyfin:latest` (automatically routes through ghcr.jcr.pcfae.com via CRI-O mirror)
+    - Apps: `quay.io/prometheus/prometheus:v2.45.0` (automatically routes through quay.jcr.pcfae.com via CRI-O mirror)
 
 - FluxCD App Structure:
   - `fluxcd/apps/base/<app>/` contains TEMPLATED Kubernetes resources WITHOUT any environment-specific values including: no hardcoded namespaces, image tags, replicas, storage classes, LoadBalancer IPs, cluster-specific annotations (lbipam.cilium.io/*), domain names, URLs, etc. These are reusable templates across environments.
