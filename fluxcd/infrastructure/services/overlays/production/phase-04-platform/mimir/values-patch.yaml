@@ -129,6 +129,7 @@ spec:
             sync_dir: /data/tsdb-sync
 
         ingester:
+          push_grpc_method_enabled: true  # Required when ingest_storage is disabled
           ring:
             kvstore:
               store: memberlist
