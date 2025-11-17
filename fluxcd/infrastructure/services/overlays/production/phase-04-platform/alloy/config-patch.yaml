@@ -161,6 +161,13 @@ data:
     discovery.relabel "kubelet" {
       targets = discovery.kubernetes.nodes.targets
 
+      // Keep only the local node (filter by HOSTNAME env var)
+      rule {
+        source_labels = ["__meta_kubernetes_node_name"]
+        regex         = env("HOSTNAME")
+        action        = "keep"
+      }
+
       // Target kubelet metrics endpoint
       rule {
         source_labels = ["__meta_kubernetes_node_name"]
@@ -200,6 +207,13 @@ data:
     // Relabel nodes for cAdvisor scraping
     discovery.relabel "cadvisor" {
       targets = discovery.kubernetes.nodes.targets
+
+      // Keep only the local node (filter by HOSTNAME env var)
+      rule {
+        source_labels = ["__meta_kubernetes_node_name"]
+        regex         = env("HOSTNAME")
+        action        = "keep"
+      }
 
       // Target kubelet cAdvisor metrics endpoint
       rule {
