@@ -1,5 +1,5 @@
 #!/bin/bash
-set -euxo pipefail
+set -euo pipefail
 
 # ===================================================================
 # CRI-O REGISTRY MIRROR CONFIGURATION
@@ -58,7 +58,7 @@ set -euo pipefail
 sudo mkdir -p /etc/containers/registries.conf.d
 
 # Configure all JCR pull-through cache mirrors
-cat <<EOF | sudo tee /etc/containers/registries.conf.d/jcr-mirrors.conf
+cat <<EOF | sudo tee /etc/containers/registries.conf.d/jcr-mirrors.conf >/dev/null
 # JFrog Artifactory pull-through caches
 # This reduces bandwidth usage and avoids registry rate limits
 # Falls back to upstream registry if JCR is unavailable
@@ -114,10 +114,10 @@ fi
 ENDSSH
   then
     echo "✓ Successfully configured $node"
-    ((SUCCESS_COUNT++))
+    SUCCESS_COUNT=$((SUCCESS_COUNT+1))
   else
     echo "✗ Failed to configure $node"
-    ((FAIL_COUNT++))
+    FAIL_COUNT=$((FAIL_COUNT+1))
   fi
   echo ""
 done
