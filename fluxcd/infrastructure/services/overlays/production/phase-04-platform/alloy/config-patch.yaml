@@ -391,9 +391,9 @@ data:
       scrape_timeout  = "10s"
     }
 
-    // Relabel control plane services (API server, scheduler, controller-manager)
+    // Relabel control plane static pods (API server, scheduler, controller-manager)
     discovery.relabel "control_plane" {
-      targets = discovery.kubernetes.endpoints.targets
+      targets = discovery.kubernetes.pods.targets
 
       // Keep only kube-system namespace
       rule {
@@ -402,23 +402,52 @@ data:
         action        = "keep"
       }
 
-      // Keep only control plane services
+      // Keep only control plane tier
       rule {
-        source_labels = ["__meta_kubernetes_service_name"]
+        source_labels = ["__meta_kubernetes_pod_label_tier"]
+        regex         = "control-plane"
+        action        = "keep"
+      }
+
+      // Keep only control plane components
+      rule {
+        source_labels = ["__meta_kubernetes_pod_label_component"]
         regex         = "(kube-apiserver|kube-scheduler|kube-controller-manager)"
         action        = "keep"
       }
 
-      // Add service label
+      // Set address for scheduler and controller-manager (port 10259)
       rule {
-        source_labels = ["__meta_kubernetes_service_name"]
-        target_label  = "service"
+        source_labels = ["__meta_kubernetes_pod_ip", "__meta_kubernetes_pod_label_component"]
+        regex         = "(.+);(kube-scheduler|kube-controller-manager)"
+        target_label  = "__address__"
+        replacement   = "$1:10259"
+      }
+
+      // Set address for API server (port 6443)
+      rule {
+        source_labels = ["__meta_kubernetes_pod_ip", "__meta_kubernetes_pod_label_component"]
+        regex         = "(.+);kube-apiserver"
+        target_label  = "__address__"
+        replacement   = "$1:6443"
+      }
+
+      // Add component label
+      rule {
+        source_labels = ["__meta_kubernetes_pod_label_component"]
+        target_label  = "component"
       }
 
       // Add namespace label
       rule {
         source_labels = ["__meta_kubernetes_namespace"]
         target_label  = "namespace"
+      }
+
+      // Add node label
+      rule {
+        source_labels = ["__meta_kubernetes_pod_node_name"]
+        target_label  = "node"
       }
     }
 
