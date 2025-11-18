@@ -4,10 +4,10 @@ metadata:
   name: mimir
 spec:
   values:
-    # Production-specific storage class configuration
+    # Production-specific storage class configuration - using static CephFS PVCs
     ingester:
       persistentVolume:
-        storageClass: ceph-rbd
+        storageClass: ""  # Use existing static PVCs (CephFS)
       # Mount S3 credentials for block uploads
       extraArgs:
         -config.expand-env: true
@@ -30,7 +30,7 @@ spec:
 
     store_gateway:
       persistentVolume:
-        storageClass: ceph-rbd
+        storageClass: ""  # Use existing static PVCs (CephFS)
       # Mount S3 credentials for block queries
       extraArgs:
         -config.expand-env: true
@@ -40,7 +40,7 @@ spec:
 
     compactor:
       persistentVolume:
-        storageClass: ceph-rbd
+        storageClass: ""  # Use existing static PVCs (CephFS)
       # Mount S3 credentials for block compaction
       extraArgs:
         -config.expand-env: true

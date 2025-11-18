@@ -1,0 +1,246 @@
+---
+# Ingester-0 PV/PVC
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: mimir-ingester-0-pv
+spec:
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  claimRef:
+    apiVersion: v1
+    kind: PersistentVolumeClaim
+    name: storage-mimir-ingester-0
+    namespace: gossip-stone
+  csi:
+    driver: gorons-bracelet.cephfs.csi.ceph.com
+    nodeStageSecretRef:
+      name: csi-cephfs-node
+      namespace: gorons-bracelet
+    volumeAttributes:
+      clusterID: 0985467c-d8f3-4483-b27f-f0a512397ec2
+      fsName: Seed_Bank
+      staticVolume: "true"
+      rootPath: /dungeon/nvme/apps/mimir/ingester-0
+    volumeHandle: mimir-ingester-0-static
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: storage-mimir-ingester-0
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 10Gi
+  volumeName: mimir-ingester-0-pv
+  storageClassName: ""
+---
+# Ingester-1 PV/PVC
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: mimir-ingester-1-pv
+spec:
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  claimRef:
+    apiVersion: v1
+    kind: PersistentVolumeClaim
+    name: storage-mimir-ingester-1
+    namespace: gossip-stone
+  csi:
+    driver: gorons-bracelet.cephfs.csi.ceph.com
+    nodeStageSecretRef:
+      name: csi-cephfs-node
+      namespace: gorons-bracelet
+    volumeAttributes:
+      clusterID: 0985467c-d8f3-4483-b27f-f0a512397ec2
+      fsName: Seed_Bank
+      staticVolume: "true"
+      rootPath: /dungeon/nvme/apps/mimir/ingester-1
+    volumeHandle: mimir-ingester-1-static
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: storage-mimir-ingester-1
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 10Gi
+  volumeName: mimir-ingester-1-pv
+  storageClassName: ""
+---
+# Ingester-2 PV/PVC
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: mimir-ingester-2-pv
+spec:
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  claimRef:
+    apiVersion: v1
+    kind: PersistentVolumeClaim
+    name: storage-mimir-ingester-2
+    namespace: gossip-stone
+  csi:
+    driver: gorons-bracelet.cephfs.csi.ceph.com
+    nodeStageSecretRef:
+      name: csi-cephfs-node
+      namespace: gorons-bracelet
+    volumeAttributes:
+      clusterID: 0985467c-d8f3-4483-b27f-f0a512397ec2
+      fsName: Seed_Bank
+      staticVolume: "true"
+      rootPath: /dungeon/nvme/apps/mimir/ingester-2
+    volumeHandle: mimir-ingester-2-static
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: storage-mimir-ingester-2
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 10Gi
+  volumeName: mimir-ingester-2-pv
+  storageClassName: ""
+---
+# Store-Gateway-0 PV/PVC
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: mimir-store-gateway-0-pv
+spec:
+  capacity:
+    storage: 50Gi
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  claimRef:
+    apiVersion: v1
+    kind: PersistentVolumeClaim
+    name: storage-mimir-store-gateway-0
+    namespace: gossip-stone
+  csi:
+    driver: gorons-bracelet.cephfs.csi.ceph.com
+    nodeStageSecretRef:
+      name: csi-cephfs-node
+      namespace: gorons-bracelet
+    volumeAttributes:
+      clusterID: 0985467c-d8f3-4483-b27f-f0a512397ec2
+      fsName: Seed_Bank
+      staticVolume: "true"
+      rootPath: /dungeon/nvme/apps/mimir/store-gateway-0
+    volumeHandle: mimir-store-gateway-0-static
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: storage-mimir-store-gateway-0
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 50Gi
+  volumeName: mimir-store-gateway-0-pv
+  storageClassName: ""
+---
+# Compactor-0 PV/PVC
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: mimir-compactor-0-pv
+spec:
+  capacity:
+    storage: 50Gi
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  claimRef:
+    apiVersion: v1
+    kind: PersistentVolumeClaim
+    name: storage-mimir-compactor-0
+    namespace: gossip-stone
+  csi:
+    driver: gorons-bracelet.cephfs.csi.ceph.com
+    nodeStageSecretRef:
+      name: csi-cephfs-node
+      namespace: gorons-bracelet
+    volumeAttributes:
+      clusterID: 0985467c-d8f3-4483-b27f-f0a512397ec2
+      fsName: Seed_Bank
+      staticVolume: "true"
+      rootPath: /dungeon/nvme/apps/mimir/compactor-0
+    volumeHandle: mimir-compactor-0-static
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: storage-mimir-compactor-0
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 50Gi
+  volumeName: mimir-compactor-0-pv
+  storageClassName: ""
+---
+# Alertmanager-0 PV/PVC
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: mimir-alertmanager-0-pv
+spec:
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  claimRef:
+    apiVersion: v1
+    kind: PersistentVolumeClaim
+    name: storage-mimir-alertmanager-0
+    namespace: gossip-stone
+  csi:
+    driver: gorons-bracelet.cephfs.csi.ceph.com
+    nodeStageSecretRef:
+      name: csi-cephfs-node
+      namespace: gorons-bracelet
+    volumeAttributes:
+      clusterID: 0985467c-d8f3-4483-b27f-f0a512397ec2
+      fsName: Seed_Bank
+      staticVolume: "true"
+      rootPath: /dungeon/nvme/apps/mimir/alertmanager-0
+    volumeHandle: mimir-alertmanager-0-static
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: storage-mimir-alertmanager-0
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Gi
+  volumeName: mimir-alertmanager-0-pv
+  storageClassName: ""

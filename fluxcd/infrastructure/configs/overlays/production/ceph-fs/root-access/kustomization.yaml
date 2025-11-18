@@ -5,3 +5,4 @@ resources:
   - cephfs-root-pvc.yaml
   - cephfs-init-grafana.yaml
   - cephfs-init-ark-sa.yaml
+  - cephfs-init-mimir.yaml
