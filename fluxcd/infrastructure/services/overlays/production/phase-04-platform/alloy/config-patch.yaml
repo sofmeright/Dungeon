@@ -251,6 +251,240 @@ data:
       scrape_timeout  = "10s"
     }
 
+    // Relabel nodes for resource metrics scraping (includes volume stats when enabled)
+    discovery.relabel "kubelet_resource" {
+      targets = discovery.kubernetes.nodes.targets
+
+      // Keep only the local node (filter by HOSTNAME env var)
+      rule {
+        source_labels = ["__meta_kubernetes_node_name"]
+        regex         = env("HOSTNAME")
+        action        = "keep"
+      }
+
+      // Target kubelet resource metrics endpoint
+      rule {
+        source_labels = ["__meta_kubernetes_node_name"]
+        target_label  = "__address__"
+        replacement   = "$1:10250"
+      }
+
+      // Set metrics path to resource endpoint
+      rule {
+        replacement  = "/metrics/resource"
+        target_label = "__metrics_path__"
+      }
+
+      // Add node label
+      rule {
+        source_labels = ["__meta_kubernetes_node_name"]
+        target_label  = "node"
+      }
+    }
+
+    // Scrape kubelet resource metrics (volume stats, pod resource metrics)
+    prometheus.scrape "kubelet_resource" {
+      targets    = discovery.relabel.kubelet_resource.output
+      forward_to = [prometheus.relabel.drop_container_labels.receiver]
+
+      scheme          = "https"
+      bearer_token_file = "/var/run/secrets/kubernetes.io/serviceaccount/token"
+
+      tls_config {
+        insecure_skip_verify = true
+      }
+
+      scrape_interval = "30s"
+      scrape_timeout  = "10s"
+    }
+
+    // Relabel nodes for probes metrics scraping
+    discovery.relabel "kubelet_probes" {
+      targets = discovery.kubernetes.nodes.targets
+
+      // Keep only the local node (filter by HOSTNAME env var)
+      rule {
+        source_labels = ["__meta_kubernetes_node_name"]
+        regex         = env("HOSTNAME")
+        action        = "keep"
+      }
+
+      // Target kubelet probes metrics endpoint
+      rule {
+        source_labels = ["__meta_kubernetes_node_name"]
+        target_label  = "__address__"
+        replacement   = "$1:10250"
+      }
+
+      // Set metrics path to probes endpoint
+      rule {
+        replacement  = "/metrics/probes"
+        target_label = "__metrics_path__"
+      }
+
+      // Add node label
+      rule {
+        source_labels = ["__meta_kubernetes_node_name"]
+        target_label  = "node"
+      }
+    }
+
+    // Scrape kubelet probes metrics (liveness/readiness probe metrics)
+    prometheus.scrape "kubelet_probes" {
+      targets    = discovery.relabel.kubelet_probes.output
+      forward_to = [prometheus.relabel.drop_container_labels.receiver]
+
+      scheme          = "https"
+      bearer_token_file = "/var/run/secrets/kubernetes.io/serviceaccount/token"
+
+      tls_config {
+        insecure_skip_verify = true
+      }
+
+      scrape_interval = "30s"
+      scrape_timeout  = "10s"
+    }
+
+    // Relabel kube-state-metrics for scraping
+    discovery.relabel "kube_state_metrics" {
+      targets = discovery.kubernetes.services.targets
+
+      // Keep only kube-state-metrics service
+      rule {
+        source_labels = ["__meta_kubernetes_service_name"]
+        regex         = "kube-state-metrics"
+        action        = "keep"
+      }
+
+      // Keep only gossip-stone namespace
+      rule {
+        source_labels = ["__meta_kubernetes_namespace"]
+        regex         = "gossip-stone"
+        action        = "keep"
+      }
+
+      // Use service port
+      rule {
+        source_labels = ["__meta_kubernetes_service_name", "__meta_kubernetes_endpoint_port_name"]
+        regex         = "kube-state-metrics;http-metrics"
+        action        = "keep"
+      }
+
+      // Add service and namespace labels
+      rule {
+        source_labels = ["__meta_kubernetes_service_name"]
+        target_label  = "service"
+      }
+
+      rule {
+        source_labels = ["__meta_kubernetes_namespace"]
+        target_label  = "namespace"
+      }
+    }
+
+    // Scrape kube-state-metrics (Kubernetes object state)
+    prometheus.scrape "kube_state_metrics" {
+      targets    = discovery.relabel.kube_state_metrics.output
+      forward_to = [prometheus.relabel.drop_container_labels.receiver]
+
+      scrape_interval = "30s"
+      scrape_timeout  = "10s"
+    }
+
+    // Relabel control plane services (API server, scheduler, controller-manager)
+    discovery.relabel "control_plane" {
+      targets = discovery.kubernetes.endpoints.targets
+
+      // Keep only kube-system namespace
+      rule {
+        source_labels = ["__meta_kubernetes_namespace"]
+        regex         = "kube-system"
+        action        = "keep"
+      }
+
+      // Keep only control plane services
+      rule {
+        source_labels = ["__meta_kubernetes_service_name"]
+        regex         = "(kube-apiserver|kube-scheduler|kube-controller-manager)"
+        action        = "keep"
+      }
+
+      // Add service label
+      rule {
+        source_labels = ["__meta_kubernetes_service_name"]
+        target_label  = "service"
+      }
+
+      // Add namespace label
+      rule {
+        source_labels = ["__meta_kubernetes_namespace"]
+        target_label  = "namespace"
+      }
+    }
+
+    // Scrape control plane metrics
+    prometheus.scrape "control_plane" {
+      targets    = discovery.relabel.control_plane.output
+      forward_to = [prometheus.relabel.drop_container_labels.receiver]
+
+      scheme          = "https"
+      bearer_token_file = "/var/run/secrets/kubernetes.io/serviceaccount/token"
+
+      tls_config {
+        insecure_skip_verify = true
+      }
+
+      scrape_interval = "30s"
+      scrape_timeout  = "10s"
+    }
+
+    // Relabel CoreDNS for scraping
+    discovery.relabel "coredns" {
+      targets = discovery.kubernetes.endpoints.targets
+
+      // Keep only kube-system namespace
+      rule {
+        source_labels = ["__meta_kubernetes_namespace"]
+        regex         = "kube-system"
+        action        = "keep"
+      }
+
+      // Keep only coredns service or kube-dns
+      rule {
+        source_labels = ["__meta_kubernetes_service_name"]
+        regex         = "(coredns|kube-dns)"
+        action        = "keep"
+      }
+
+      // Keep only metrics port
+      rule {
+        source_labels = ["__meta_kubernetes_endpoint_port_name"]
+        regex         = "metrics"
+        action        = "keep"
+      }
+
+      // Add service label
+      rule {
+        source_labels = ["__meta_kubernetes_service_name"]
+        target_label  = "service"
+      }
+
+      // Add namespace label
+      rule {
+        source_labels = ["__meta_kubernetes_namespace"]
+        target_label  = "namespace"
+      }
+    }
+
+    // Scrape CoreDNS metrics
+    prometheus.scrape "coredns" {
+      targets    = discovery.relabel.coredns.output
+      forward_to = [prometheus.relabel.drop_container_labels.receiver]
+
+      scrape_interval = "30s"
+      scrape_timeout  = "10s"
+    }
+
     // Relabel pod metrics targets for better organization
     discovery.relabel "pods_metrics" {
       targets = discovery.kubernetes.pods.targets
