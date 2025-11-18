@@ -181,3 +181,4 @@ spec:
           ingestion_burst_size: 400000
           max_query_parallelism: 32
           max_label_names_per_series: 50  # Increased from default 30 to support Docker Compose labels
+          out_of_order_time_window: 10m  # Allow out-of-order samples to recover from power outage S3 timestamp skew
