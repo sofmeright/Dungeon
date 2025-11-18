@@ -9,3 +9,9 @@ spec:
       configMap:
         create: false
         name: "alloy-config"
+
+      # Enable host network to scrape control plane components (scheduler, controller-manager)
+      # These components bind to 127.0.0.1 and are only accessible from host network
+      # This is the standard approach used by Prometheus for control plane monitoring
+      hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet
