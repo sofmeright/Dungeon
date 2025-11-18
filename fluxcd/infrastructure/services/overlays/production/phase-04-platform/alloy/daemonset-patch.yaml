@@ -1,0 +1,13 @@
+---
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: alloy
+spec:
+  template:
+    spec:
+      # Enable host network to access control plane components on 127.0.0.1
+      # Scheduler and controller-manager bind to localhost for security
+      # This is the standard Prometheus monitoring approach
+      hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet
