@@ -416,12 +416,20 @@ data:
         action        = "keep"
       }
 
-      // Set address for scheduler and controller-manager (port 10259)
+      // Set address for scheduler (port 10259)
       rule {
         source_labels = ["__meta_kubernetes_pod_ip", "__meta_kubernetes_pod_label_component"]
-        regex         = "(.+);(kube-scheduler|kube-controller-manager)"
+        regex         = "(.+);kube-scheduler"
         target_label  = "__address__"
         replacement   = "$1:10259"
+      }
+
+      // Set address for controller-manager (port 10257)
+      rule {
+        source_labels = ["__meta_kubernetes_pod_ip", "__meta_kubernetes_pod_label_component"]
+        regex         = "(.+);kube-controller-manager"
+        target_label  = "__address__"
+        replacement   = "$1:10257"
       }
 
       // Set address for API server (port 6443)
