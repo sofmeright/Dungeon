@@ -15,7 +15,3 @@ patches:
     target:
       kind: HelmRelease
       name: alloy
-  - path: daemonset-patch.yaml
-    target:
-      kind: DaemonSet
-      name: alloy

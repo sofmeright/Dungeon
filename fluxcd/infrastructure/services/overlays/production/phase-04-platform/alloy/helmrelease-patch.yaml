@@ -4,15 +4,24 @@ metadata:
   name: alloy
 spec:
   targetNamespace: gossip-stone
+  postRenderers:
+    - kustomize:
+        patches:
+          - target:
+              kind: DaemonSet
+              name: alloy
+            patch: |-
+              apiVersion: apps/v1
+              kind: DaemonSet
+              metadata:
+                name: alloy
+              spec:
+                template:
+                  spec:
+                    hostNetwork: true
+                    dnsPolicy: ClusterFirstWithHostNet
   values:
     alloy:
       configMap:
         create: false
         name: "alloy-config"
-
-    # Enable host network to scrape control plane components (scheduler, controller-manager)
-    # These components bind to 127.0.0.1 and are only accessible from host network
-    # This is the standard approach used by Prometheus for control plane monitoring
-    alloy-daemonset:
-      hostNetwork: true
-      dnsPolicy: ClusterFirstWithHostNet
