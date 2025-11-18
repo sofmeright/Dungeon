@@ -5,7 +5,7 @@ resources:
   - ../../../../base/mimir
   - externalsecret-s3.yaml  # S3 credentials for Ceph RGW
   - bucket-init-job.yaml  # Create gossip-stone-mimir S3 bucket
-  - cephfs-storage-pvs.yaml  # Static PVs/PVCs for CephFS storage
+  # cephfs-storage-pvs.yaml removed - using dynamic RBD provisioning instead
 patches:
   - path: values-patch.yaml
     target:
