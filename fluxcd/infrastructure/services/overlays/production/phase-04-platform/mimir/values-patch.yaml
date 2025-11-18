@@ -27,6 +27,14 @@ spec:
                       values:
                         - ingester
                 topologyKey: kubernetes.io/hostname
+      # Resource limits - increased memory for CephFS write performance
+      resources:
+        requests:
+          cpu: 200m
+          memory: 2Gi
+        limits:
+          cpu: 1
+          memory: 4Gi
 
     store_gateway:
       persistentVolume:
