@@ -234,6 +234,12 @@ data:
         target_label = "__metrics_path__"
       }
 
+      // Add job label for cAdvisor metrics
+      rule {
+        replacement  = "cadvisor"
+        target_label = "job"
+      }
+
       // Add node label
       rule {
         source_labels = ["__meta_kubernetes_node_name"]
@@ -281,6 +287,12 @@ data:
         target_label = "__metrics_path__"
       }
 
+      // Add job label for kubelet resource metrics
+      rule {
+        replacement  = "kubelet"
+        target_label = "job"
+      }
+
       // Add node label
       rule {
         source_labels = ["__meta_kubernetes_node_name"]
@@ -326,6 +338,12 @@ data:
       rule {
         replacement  = "/metrics/probes"
         target_label = "__metrics_path__"
+      }
+
+      // Add job label for kubelet probes metrics
+      rule {
+        replacement  = "kubelet"
+        target_label = "job"
       }
 
       // Add node label
@@ -385,6 +403,12 @@ data:
       rule {
         source_labels = ["__meta_kubernetes_namespace"]
         target_label  = "namespace"
+      }
+
+      // Add job label for kube-state-metrics
+      rule {
+        replacement  = "kube-state-metrics"
+        target_label = "job"
       }
     }
 
@@ -463,6 +487,12 @@ data:
         source_labels = ["__meta_kubernetes_pod_node_name"]
         target_label  = "node"
       }
+
+      // Add job label from component
+      rule {
+        source_labels = ["__meta_kubernetes_pod_label_component"]
+        target_label  = "job"
+      }
     }
 
     // Scrape control plane metrics
@@ -516,6 +546,12 @@ data:
       rule {
         source_labels = ["__meta_kubernetes_namespace"]
         target_label  = "namespace"
+      }
+
+      // Add job label for coredns
+      rule {
+        replacement  = "coredns"
+        target_label = "job"
       }
     }
 
