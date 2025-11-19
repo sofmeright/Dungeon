@@ -4,10 +4,10 @@ metadata:
   name: mimir
 spec:
   values:
-    # Production-specific storage class configuration - using static CephFS PVCs
+    # Production-specific storage class configuration - using RBD for TSDB performance
     ingester:
       persistentVolume:
-        storageClass: ""  # Use existing static PVCs (CephFS)
+        storageClass: ceph-rbd  # Fast block storage for TSDB writes
       # Mount S3 credentials for block uploads
       extraArgs:
         -config.expand-env: true
@@ -38,7 +38,7 @@ spec:
 
     store_gateway:
       persistentVolume:
-        storageClass: ""  # Use existing static PVCs (CephFS)
+        storageClass: ceph-rbd  # Fast block storage for block index cache
       # Mount S3 credentials for block queries
       extraArgs:
         -config.expand-env: true
@@ -48,7 +48,7 @@ spec:
 
     compactor:
       persistentVolume:
-        storageClass: ""  # Use existing static PVCs (CephFS)
+        storageClass: ceph-rbd  # Fast block storage for compaction work
       # Mount S3 credentials for block compaction
       extraArgs:
         -config.expand-env: true
@@ -86,11 +86,9 @@ spec:
         # tag: use chart default
 
     gateway:
-      nginx:
-        image:
-          registry: docker.jcr.pcfae.com
-          repository: nginxinc/nginx-unprivileged
-          # tag: use chart default
+      image:
+        repository: docker.jcr.pcfae.com/nginxinc/nginx-unprivileged
+        # tag: use chart default
 
     serviceMonitor:
       enabled: false  # Using Alloy service discovery instead
