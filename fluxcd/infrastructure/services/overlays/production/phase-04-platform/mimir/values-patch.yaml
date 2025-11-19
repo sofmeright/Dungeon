@@ -120,6 +120,7 @@ spec:
           enabled: false
 
         distributor:
+          remote_timeout: 10s  # Increased from default 2s to tolerate slower writes under load
           ring:
             kvstore:
               store: memberlist
