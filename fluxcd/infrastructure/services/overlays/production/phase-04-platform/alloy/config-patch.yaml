@@ -181,6 +181,12 @@ data:
         target_label = "__metrics_path__"
       }
 
+      // Add job label for kubelet metrics
+      rule {
+        replacement  = "kubelet"
+        target_label = "job"
+      }
+
       // Add node label
       rule {
         source_labels = ["__meta_kubernetes_node_name"]
