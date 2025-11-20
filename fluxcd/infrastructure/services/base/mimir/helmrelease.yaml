@@ -44,7 +44,7 @@ spec:
           memory: 4Gi
       persistentVolume:
         enabled: true
-        size: 10Gi
+        # size: defined in overlay
       zoneAwareReplication:
         enabled: false
 
@@ -79,7 +79,7 @@ spec:
           memory: 2Gi
       persistentVolume:
         enabled: true
-        size: 50Gi
+        # size: defined in overlay
       zoneAwareReplication:
         enabled: false
 
@@ -94,7 +94,7 @@ spec:
           memory: 2Gi
       persistentVolume:
         enabled: true
-        size: 50Gi
+        # size: defined in overlay
 
     # Ruler disabled for now (can enable later for recording/alerting rules)
     ruler:
