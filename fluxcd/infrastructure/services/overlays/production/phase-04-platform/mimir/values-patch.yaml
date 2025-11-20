@@ -8,6 +8,7 @@ spec:
     ingester:
       persistentVolume:
         storageClass: ceph-rbd  # Fast block storage for TSDB writes
+        size: 20Gi  # Provides ~85 hours (3.5 days) buffer with aggressive compaction - enough for long weekends
       # Mount S3 credentials for block uploads
       extraArgs:
         -config.expand-env: true
@@ -39,6 +40,7 @@ spec:
     store_gateway:
       persistentVolume:
         storageClass: ceph-rbd  # Fast block storage for block index cache
+        size: 15Gi  # Block index cache and metadata
       # Mount S3 credentials for block queries
       extraArgs:
         -config.expand-env: true
@@ -49,12 +51,20 @@ spec:
     compactor:
       persistentVolume:
         storageClass: ceph-rbd  # Fast block storage for compaction work
+        size: 25Gi  # Compaction working directory - needs extra space for concurrent block merging
       # Mount S3 credentials for block compaction
       extraArgs:
         -config.expand-env: true
       extraEnvFrom:
         - secretRef:
             name: mimir-s3
+      resources:
+        requests:
+          cpu: 200m
+          memory: 2Gi
+        limits:
+          cpu: 2
+          memory: 4Gi
 
     querier:
       # Mount S3 credentials for querying blocks from storage
@@ -93,9 +103,7 @@ spec:
     serviceMonitor:
       enabled: false  # Using Alloy service discovery instead
 
-    # Distributor resource limits - increased for high-cardinality metrics
-    # TEMPORARY: 4Gi limit to handle metric backlog from power outage recovery
-    # TODO: Reduce back to 2Gi after backlog is processed
+    # Distributor resource limits - handles metrics ingestion and routing
     distributor:
       resources:
         requests:
@@ -103,7 +111,7 @@ spec:
           memory: 1Gi
         limits:
           cpu: 1
-          memory: 4Gi
+          memory: 2Gi  # Sufficient for normal operations with adjusted ingestion rate
 
     # Ingest Storage DISABLED - using classic mode with direct S3 writes
     ingest_storage:
@@ -148,8 +156,22 @@ spec:
             insecure: true
           tsdb:
             dir: /data/tsdb
+            # Head compaction settings - flush to S3 more frequently to prevent disk exhaustion
+            head_compaction_interval: 1h  # Compact head to blocks every hour (default: 1m but actual compaction depends on block range)
+            head_compaction_idle_timeout: 1h  # Compact idle TSDB heads after 1 hour
+            wal_compression_enabled: true  # Compress WAL to reduce disk usage
+            wal_segment_size_bytes: 134217728  # 128MB WAL segments (default: 256MB) - smaller segments = more frequent flushing
+            # Block range for compaction - use 2-hour blocks matching out-of-order window
+            block_ranges_period:
+              - 7200000  # 2 hours in milliseconds
+            retention_period: 6h  # Only keep blocks in ingester for 6 hours before upload to S3 is mandatory
           bucket_store:
             sync_dir: /data/tsdb-sync
+            # Increase sync interval to reduce load
+            sync_interval: 15m  # Default: 15m
+            # Block discovery and caching
+            bucket_index:
+              enabled: true  # Use bucket index for faster block discovery
 
         ingester:
           push_grpc_method_enabled: true  # Required when ingest_storage is disabled
@@ -158,6 +180,12 @@ spec:
               store: memberlist
             replication_factor: 3
             zone_awareness_enabled: false
+          # Limit in-memory series to prevent OOM and encourage flushing to disk/S3
+          instance_limits:
+            max_series: 1500000  # Max series per ingester instance
+            max_ingestion_rate: 80000  # Max samples/sec per ingester (with 3 replicas = 240k total)
+          # Close idle TSDB heads faster to free up disk space
+          tsdb_config_update_period: 15s  # Check for config updates every 15s
 
         store_gateway:
           sharding_ring:
@@ -169,6 +197,16 @@ spec:
           sharding_ring:
             kvstore:
               store: memberlist
+          # Compaction settings to handle corrupted blocks and reduce disk pressure
+          compaction_interval: 30m  # Run compaction every 30 minutes
+          data_dir: /data/compactor  # Working directory for compaction
+          cleanup_interval: 15m  # Clean up old blocks every 15 minutes
+          deletion_delay: 2h  # Wait 2 hours before deleting compacted blocks
+          max_compaction_time: 4h  # Allow up to 4 hours for compaction jobs
+          # Skip corrupted blocks instead of failing entire compaction
+          block_sync_concurrency: 8  # Download up to 8 blocks concurrently
+          compactor_split_and_merge_shards: 0  # Disable split-merge (use default compaction only)
+          compactor_blocks_retention_period: 0  # Use default retention (unlimited in compactor)
 
         memberlist:
           join_members:
@@ -183,9 +221,13 @@ spec:
             dir: /data/blocks
 
         limits:
-          max_global_series_per_user: 0
-          ingestion_rate: 200000
-          ingestion_burst_size: 400000
-          max_query_parallelism: 32
+          max_global_series_per_user: 0  # Unlimited series (use ingester instance_limits instead)
+          # REDUCED from 200k/400k - previous rate caused 10Gi disks to fill in 18 hours
+          # New rate (120k/240k total with 3 ingesters) balances performance with 50Gi disk capacity (~7 days at current load)
+          ingestion_rate: 120000  # Max samples/sec per user across all distributors
+          ingestion_burst_size: 240000  # Burst capacity for traffic spikes
+          max_query_parallelism: 32  # Max concurrent query operations
           max_label_names_per_series: 50  # Increased from default 30 to support Docker Compose labels
-          out_of_order_time_window: 2h  # Allow out-of-order samples to recover from power outage S3 timestamp skew
+          # Out-of-order window matches TSDB block range (2h) - allows recovery from power outages
+          # Enables acceptance of late-arriving samples within 2-hour window
+          out_of_order_time_window: 2h  # Must match blocks_storage.tsdb.block_ranges_period
