@@ -1,7 +1,7 @@
 apiVersion: postgresql.cnpg.io/v1
 kind: Cluster
 metadata:
-  name: kai-appflowy-postgres
+  name: appflowy-postgres
 spec:
   instances: PLACEHOLDER_INSTANCES
 
@@ -18,16 +18,5 @@ spec:
         name: appflowy-secrets
 
   storage:
-    pvcTemplate:
-      accessModes:
-        - ReadWriteOnce
-      resources:
-        requests:
-          storage: PLACEHOLDER_STORAGE_SIZE
-      storageClassName: ""
-      selector:
-        matchLabels:
-          owner: kai
-          app: appflowy
-          purpose: postgres
-          provisioning: static
+    storageClass: PLACEHOLDER_STORAGE_CLASS
+    size: PLACEHOLDER_STORAGE_SIZE

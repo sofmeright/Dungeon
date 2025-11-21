@@ -1,9 +1,0 @@
-apiVersion: v1
-kind: PersistentVolume
-metadata:
-  name: kai-appflowy-postgres-2
-spec:
-  capacity:
-    storage: 20Gi
-  csi:
-    volumeHandle: 0001-0024-0985467c-d8f3-4483-b27f-f0a512397ec2-000000000000000c-afc7a8b3-1c5f-44ec-ad9d-66a62e28c45a
