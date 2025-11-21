@@ -156,9 +156,7 @@ spec:
             insecure: true
           tsdb:
             dir: /data/tsdb
-            # Head compaction settings - flush to S3 more frequently to prevent disk exhaustion
-            head_compaction_interval: 1h  # Compact head to blocks every hour (default: 1m but actual compaction depends on block range)
-            head_compaction_idle_timeout: 1h  # Compact idle TSDB heads after 1 hour
+            # WAL settings - compress WAL to reduce disk usage
             wal_compression_enabled: true  # Compress WAL to reduce disk usage
             wal_segment_size_bytes: 134217728  # 128MB WAL segments (default: 256MB) - smaller segments = more frequent flushing
             # Block range for compaction - use 2-hour blocks matching out-of-order window
