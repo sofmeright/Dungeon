@@ -10,6 +10,7 @@
   - Prefer using flux to reconcile resources from source. We are GitOps native, we use kubectl commands to adjust state only when it is otherwise impossible!!!!!
   - When working with files in source control, make clean moves that dont create a headache of files!!!!
   - STAY ON TASK when following directions. NO BAND AID, NO FUCKING WORK AROUNDS. IF YOU THINK WE NEED TO GIVE UP or regroup and re-evaluate. ASK. DONT MAKE THE CALL ON YOUR OWN to find alternative solutions or FIND A SHORTCUT. I CAN FIND MY OWN WAYS TO BASTARDIZE THINGS I DONT NEED YOUR FUCKING HELP. I want things done exactly how I ask. If I am to be offered an alternative, conversation should stop till I tell you if I agree/disagree with the alternative proposed.
+  - **NEVER drain nodes or force delete database pods without explicit permission** - causes unrecoverable PostgreSQL/MariaDB WAL corruption and RBD data loss. Safe procedure: cordon → audit stateful workloads → migrate database primaries gracefully → drain with --grace-period=300.
 
 - FluxCD Infrastructure Structure:
   - `fluxcd/infrastructure/controllers/base` should contain TEMPLATED infrastructure resources WITHOUT any environment-specific values including: no hardcoded namespaces, image tags, replicas, storage classes, LoadBalancer IPs, cluster-specific annotations (lbipam.cilium.io/*), domain names, URLs, etc.
