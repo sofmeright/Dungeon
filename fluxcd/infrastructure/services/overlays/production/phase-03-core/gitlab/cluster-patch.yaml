@@ -5,6 +5,7 @@ metadata:
 spec:
   storage:
     storageClass: ceph-rbd-retain
+    size: 50Gi
   backup:
     barmanObjectStore:
       endpointURL: http://ceph-rgw.gorons-bracelet.svc.cluster.local
