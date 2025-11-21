@@ -100,6 +100,16 @@ spec:
       minio:
         enabled: false  # Using external Ceph RGW
 
+      # NGINX configuration (affects webservice nginx)
+      nginx:
+        clientMaxBodySize: "2048m"
+        proxyReadTimeout: 3600
+        proxyConnectTimeout: 300
+        proxySendTimeout: 300
+        customHeaders:
+          Content-Security-Policy: ""
+          X-Frame-Options: ""
+
       # External PostgreSQL (CloudNativePG)
       psql:
         host: gitlab-postgresql-rw.hyrule-castle.svc.cluster.local
@@ -116,12 +126,12 @@ spec:
         host: gitlab-redis  # Master name monitored by Sentinel
         port: 6379
         sentinels:
-        - host: gitlab-sentinel-0.gitlab-sentinel-headless.hyrule-castle.svc.cluster.local
-          port: 26379
-        - host: gitlab-sentinel-1.gitlab-sentinel-headless.hyrule-castle.svc.cluster.local
-          port: 26379
-        - host: gitlab-sentinel-2.gitlab-sentinel-headless.hyrule-castle.svc.cluster.local
-          port: 26379
+          - host: gitlab-sentinel-0.gitlab-sentinel-headless.hyrule-castle.svc.cluster.local
+            port: 26379
+          - host: gitlab-sentinel-1.gitlab-sentinel-headless.hyrule-castle.svc.cluster.local
+            port: 26379
+          - host: gitlab-sentinel-2.gitlab-sentinel-headless.hyrule-castle.svc.cluster.local
+            port: 26379
         auth:
           enabled: true
           secret: gitlab-redis-password
@@ -156,22 +166,15 @@ spec:
     nginx-ingress:
       enabled: false
 
-    # Configure global nginx settings (affects webservice nginx)
-    global:
-      nginx:
-        clientMaxBodySize: "2048m"
-        proxyReadTimeout: 3600
-        proxyConnectTimeout: 300
-        proxySendTimeout: 300
-        customHeaders:
-          Content-Security-Policy: ""
-          X-Frame-Options: ""
-
     # High Availability: Scale critical components to 3 replicas for 2-node failure tolerance
     gitlab:
       webservice:
         minReplicas: 3
         maxReplicas: 5
+        # Trust proxies to extract real client IP for CSRF protection
+        trustedProxies:
+          - "10.144.0.0/12"  # Service CIDR
+          - "192.168.144.0/20"  # Pod CIDR
       sidekiq:
         minReplicas: 3
         maxReplicas: 5
