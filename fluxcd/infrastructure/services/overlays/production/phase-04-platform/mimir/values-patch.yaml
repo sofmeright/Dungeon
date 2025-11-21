@@ -162,16 +162,12 @@ spec:
             wal_compression_enabled: true  # Compress WAL to reduce disk usage
             wal_segment_size_bytes: 134217728  # 128MB WAL segments (default: 256MB) - smaller segments = more frequent flushing
             # Block range for compaction - use 2-hour blocks matching out-of-order window
-            block_ranges_period:
-              - 7200000  # 2 hours in milliseconds
+            block_ranges_period: ["2h"]  # 2 hours - must match out_of_order_time_window
             retention_period: 6h  # Only keep blocks in ingester for 6 hours before upload to S3 is mandatory
           bucket_store:
             sync_dir: /data/tsdb-sync
             # Increase sync interval to reduce load
             sync_interval: 15m  # Default: 15m
-            # Block discovery and caching
-            bucket_index:
-              enabled: true  # Use bucket index for faster block discovery
 
         ingester:
           push_grpc_method_enabled: true  # Required when ingest_storage is disabled
@@ -205,8 +201,6 @@ spec:
           max_compaction_time: 4h  # Allow up to 4 hours for compaction jobs
           # Skip corrupted blocks instead of failing entire compaction
           block_sync_concurrency: 8  # Download up to 8 blocks concurrently
-          compactor_split_and_merge_shards: 0  # Disable split-merge (use default compaction only)
-          compactor_blocks_retention_period: 0  # Use default retention (unlimited in compactor)
 
         memberlist:
           join_members:
