@@ -6,6 +6,12 @@ resources:
   - httproute.yaml
 patches:
   - path: postgres-cluster-patch.yaml
+  - path: persistentvolume-postgres-1-patch.yaml
+  - path: persistentvolume-postgres-2-patch.yaml
+  - path: persistentvolume-postgres-3-patch.yaml
+  - path: persistentvolumeclaim-postgres-1-patch.yaml
+  - path: persistentvolumeclaim-postgres-2-patch.yaml
+  - path: persistentvolumeclaim-postgres-3-patch.yaml
   - path: statefulset-redis-patch.yaml
   - path: statefulset-minio-patch.yaml
   - path: deployment-gotrue-patch.yaml

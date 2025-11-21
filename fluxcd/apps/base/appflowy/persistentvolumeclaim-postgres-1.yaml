@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: kai-appflowy-postgres-1
+  labels:
+    owner: kai
+    app: appflowy
+    purpose: postgres
+    instance: "1"
+    provisioning: static
+spec:
+  accessModes:
+    - ReadWriteOnce
+  volumeMode: Filesystem
+  resources:
+    requests:
+      storage: PLACEHOLDER_STORAGE_SIZE
+  storageClassName: ""
+  selector:
+    matchLabels:
+      owner: kai
+      app: appflowy
+      purpose: postgres
+      instance: "1"
+      provisioning: static

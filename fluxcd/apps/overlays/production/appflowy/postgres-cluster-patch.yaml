@@ -1,7 +1,7 @@
 apiVersion: postgresql.cnpg.io/v1
 kind: Cluster
 metadata:
-  name: appflowy-postgres
+  name: kai-appflowy-postgres
 spec:
   instances: 3
 
@@ -18,15 +18,17 @@ spec:
         name: appflowy-postgres-app
       postInitSQLRefs:
         secretRefs:
-        - name: appflowy-postgres-init-sql
-          key: init.sql
+          - name: appflowy-postgres-init-sql
+            key: init.sql
       postInitApplicationSQLRefs:
         secretRefs:
-        - name: appflowy-postgres-init-sql
-          key: app-init.sql
+          - name: appflowy-postgres-init-sql
+            key: app-init.sql
 
   enableSuperuserAccess: true
 
   storage:
-    storageClass: ceph-rbd
-    size: 20Gi
+    pvcTemplate:
+      resources:
+        requests:
+          storage: 20Gi
