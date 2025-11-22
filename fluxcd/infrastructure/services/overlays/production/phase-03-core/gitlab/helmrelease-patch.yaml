@@ -176,6 +176,7 @@ spec:
           trusted_proxies:
             - "10.144.0.0/12"  # Service CIDR
             - "192.168.144.0/20"  # Pod CIDR
+            - "172.22.30.0/24"  # LoadBalancer CIDR (BGP)
         sidekiq:
           minReplicas: 3
           maxReplicas: 5
