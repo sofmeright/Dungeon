@@ -110,12 +110,6 @@ spec:
           Content-Security-Policy: ""
           X-Frame-Options: ""
 
-      # Webservice configuration - trust Gateway proxy for CSRF protection
-      webservice:
-        trustedProxies:
-          - "10.144.0.0/12"  # Service CIDR
-          - "192.168.144.0/20"  # Pod CIDR
-
       # External PostgreSQL (CloudNativePG)
       psql:
         host: gitlab-postgresql-rw.hyrule-castle.svc.cluster.local
@@ -177,6 +171,10 @@ spec:
       webservice:
         minReplicas: 3
         maxReplicas: 5
+        # Trust Gateway proxy to extract real client IP for CSRF protection
+        trusted_proxies:
+          - "10.144.0.0/12"  # Service CIDR
+          - "192.168.144.0/20"  # Pod CIDR
       sidekiq:
         minReplicas: 3
         maxReplicas: 5
