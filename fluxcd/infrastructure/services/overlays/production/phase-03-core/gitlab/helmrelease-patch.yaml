@@ -168,24 +168,23 @@ spec:
 
     # High Availability: Scale critical components to 3 replicas for 2-node failure tolerance
     gitlab:
-      gitlab:
-        webservice:
-          minReplicas: 3
-          maxReplicas: 5
-          # Trust Gateway proxy to extract real client IP for CSRF protection
-          trusted_proxies:
-            - "10.144.0.0/12"  # Service CIDR
-            - "192.168.144.0/20"  # Pod CIDR
-            - "172.22.30.0/24"  # LoadBalancer CIDR (BGP)
-        sidekiq:
-          minReplicas: 3
-          maxReplicas: 5
-        kas:
-          minReplicas: 3
-          maxReplicas: 5
-        gitlab-shell:
-          minReplicas: 3
-          maxReplicas: 5
+      webservice:
+        minReplicas: 3
+        maxReplicas: 5
+        # Trust Gateway proxy to extract real client IP for CSRF protection
+        trusted_proxies:
+          - "10.144.0.0/12"  # Service CIDR
+          - "192.168.144.0/20"  # Pod CIDR
+          - "172.22.30.0/24"  # LoadBalancer CIDR (BGP)
+      sidekiq:
+        minReplicas: 3
+        maxReplicas: 5
+      kas:
+        minReplicas: 3
+        maxReplicas: 5
+      gitlab-shell:
+        minReplicas: 3
+        maxReplicas: 5
 
     # Container Registry HA
     registry:
