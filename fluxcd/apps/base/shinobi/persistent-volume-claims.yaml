@@ -1,0 +1,29 @@
+# Static PersistentVolumeClaims for Shinobi
+# These explicitly bind to named PVs (no auto-generation, no orphans)
+# Namespace added by overlay kustomization.yaml
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: kai-shinobi-app
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: ceph-rbd-static
+  volumeName: kai-shinobi-app-0
+  resources:
+    requests:
+      storage: 10Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: kai-shinobi-streams
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: ceph-rbd-static
+  volumeName: kai-shinobi-streams-0
+  resources:
+    requests:
+      storage: 50Gi
