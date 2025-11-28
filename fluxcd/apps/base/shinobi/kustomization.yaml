@@ -5,6 +5,7 @@ resources:
   - persistent-volume-claims.yaml
   - postgres-cluster.yaml
   - externalsecret-postgres.yaml
+  - configmap-init.yaml
   - statefulset.yaml
   - service.yaml
   - externalsecret.yaml

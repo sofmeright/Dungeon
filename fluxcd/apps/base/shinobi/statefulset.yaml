@@ -55,6 +55,9 @@ spec:
           mountPath: /dev/shm/streams
         - name: app
           mountPath: /home/Shinobi
+        - name: init-script
+          mountPath: /opt/shinobi/Docker/init.sh
+          subPath: init.sh
       volumes:
       - name: streams
         persistentVolumeClaim:
@@ -62,3 +65,7 @@ spec:
       - name: app
         persistentVolumeClaim:
           claimName: kai-shinobi-app
+      - name: init-script
+        configMap:
+          name: shinobi-init-script
+          defaultMode: 0755
