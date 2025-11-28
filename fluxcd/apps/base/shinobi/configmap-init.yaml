@@ -10,7 +10,7 @@ data:
     if [ "$DB_TYPE" = "pg" ]; then
         DB_PORT="${DB_PORT:-5432}"
         echo "Using PostgreSQL at $DB_HOST:$DB_PORT"
-        until nc -z "$DB_HOST" "$DB_PORT" 2>/dev/null; do
+        until timeout 2 bash -c "echo > /dev/tcp/$DB_HOST/$DB_PORT" 2>/dev/null; do
             echo "PostgreSQL is currently unavailable - retrying..."
             sleep 2
         done
