@@ -7,3 +7,40 @@ spec:
     spec:
       imagePullSecrets:
       - name: cr-pcfae-admin-pull-secret
+  volumeClaimTemplates:
+  - metadata:
+      name: streams
+      labels:
+        app: shinobi
+        volume-type: streams
+    spec:
+      storageClassName: ceph-rbd
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: 50Gi
+  - metadata:
+      name: app
+      labels:
+        app: shinobi
+        volume-type: app
+    spec:
+      storageClassName: ceph-rbd
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: 10Gi
+  - metadata:
+      name: mysql
+      labels:
+        app: shinobi
+        volume-type: mysql
+    spec:
+      storageClassName: ceph-rbd
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: 20Gi

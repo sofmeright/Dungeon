@@ -10,11 +10,3 @@ patches:
     target:
       kind: StatefulSet
       name: shinobi
-  - path: postgres-cluster-patch.yaml
-    target:
-      kind: Cluster
-      name: shinobi-postgres
-  - path: externalsecret-postgres-patch.yaml
-    target:
-      kind: ExternalSecret
-      name: shinobi-postgres-credentials

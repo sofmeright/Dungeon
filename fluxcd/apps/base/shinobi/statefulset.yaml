@@ -22,10 +22,8 @@ spec:
         env:
         - name: HOME
           value: /home/Shinobi
-        - name: DB_TYPE
-          value: pg
         - name: DB_HOST
-          value: shinobi-postgres-rw
+          value: localhost
         - name: DB_DATABASE
           valueFrom:
             secretKeyRef:
@@ -55,17 +53,57 @@ spec:
           mountPath: /dev/shm/streams
         - name: app
           mountPath: /home/Shinobi
-        - name: init-script
-          mountPath: /entrypoint.sh
-          subPath: entrypoint.sh
-      volumes:
-      - name: streams
-        persistentVolumeClaim:
-          claimName: kai-shinobi-streams
-      - name: app
-        persistentVolumeClaim:
-          claimName: kai-shinobi-app
-      - name: init-script
-        configMap:
-          name: shinobi-init-script
-          defaultMode: 0755
+      - name: mysql
+        image: docker.io/library/mysql:5.7
+        env:
+        - name: MYSQL_DATABASE
+          valueFrom:
+            secretKeyRef:
+              name: shinobi-db
+              key: database
+        - name: MYSQL_USER
+          valueFrom:
+            secretKeyRef:
+              name: shinobi-db
+              key: username
+        - name: MYSQL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: shinobi-db
+              key: password
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: shinobi-db
+              key: root-password
+        ports:
+        - containerPort: 3306
+          name: mysql
+        volumeMounts:
+        - name: mysql
+          mountPath: /var/lib/mysql
+  volumeClaimTemplates:
+  - metadata:
+      name: streams
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: 10Gi
+  - metadata:
+      name: app
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: 5Gi
+  - metadata:
+      name: mysql
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: 10Gi
