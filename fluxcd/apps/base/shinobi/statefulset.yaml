@@ -82,28 +82,13 @@ spec:
         volumeMounts:
         - name: mysql
           mountPath: /var/lib/mysql
-  volumeClaimTemplates:
-  - metadata:
-      name: streams
-    spec:
-      accessModes:
-      - ReadWriteOnce
-      resources:
-        requests:
-          storage: 10Gi
-  - metadata:
-      name: app
-    spec:
-      accessModes:
-      - ReadWriteOnce
-      resources:
-        requests:
-          storage: 5Gi
-  - metadata:
-      name: mysql
-    spec:
-      accessModes:
-      - ReadWriteOnce
-      resources:
-        requests:
-          storage: 10Gi
+      volumes:
+      - name: streams
+        persistentVolumeClaim:
+          claimName: kai-shinobi-streams
+      - name: app
+        persistentVolumeClaim:
+          claimName: kai-shinobi-app
+      - name: mysql
+        persistentVolumeClaim:
+          claimName: kai-shinobi-mysql
