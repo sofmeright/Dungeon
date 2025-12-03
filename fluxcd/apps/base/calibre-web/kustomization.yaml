@@ -6,4 +6,4 @@ resources:
   - smb-volumes.yaml
   - deployment.yaml
   - service.yaml
-  - pvc-config.yaml
+  # pvc-config.yaml removed - production uses static RBD provisioning
