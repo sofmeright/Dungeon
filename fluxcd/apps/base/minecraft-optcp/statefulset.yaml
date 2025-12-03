@@ -24,7 +24,7 @@ spec:
             - name: TYPE
               value: PAPER
             - name: VERSION
-              value: "1.21.4"
+              value: "1.21.10"
             - name: EULA
               value: "TRUE"
             - name: SERVER_PORT
