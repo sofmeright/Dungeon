@@ -14,40 +14,38 @@ spec:
         app: minecraft
     spec:
       containers:
-      - name: minecraft
-        image: docker.io/itzg/minecraft-server:latest
-        ports:
-        - containerPort: 35566
-          name: minecraft
-          protocol: TCP
-        env:
-        - name: TYPE
-          value: PAPER
-        - name: VERSION
-          value: "1.19.2"
-        - name: PAPER_BUILD
-          value: "134"
-        - name: EULA
-          value: "TRUE"
-        - name: SERVER_PORT
-          value: "35566"
-        - name: INIT_MEMORY
-          value: 2G
-        - name: MAX_MEMORY
-          value: 9G
-        - name: USE_AIKAR_FLAGS
-          value: "true"
-        volumeMounts:
-        - name: data
-          mountPath: /data
-        stdin: true
-        tty: true
+        - name: minecraft
+          image: docker.io/itzg/minecraft-server:latest
+          ports:
+            - containerPort: 35566
+              name: minecraft
+              protocol: TCP
+          env:
+            - name: TYPE
+              value: PAPER
+            - name: VERSION
+              value: "1.21.4"
+            - name: EULA
+              value: "TRUE"
+            - name: SERVER_PORT
+              value: "35566"
+            - name: INIT_MEMORY
+              value: 2G
+            - name: MAX_MEMORY
+              value: 9G
+            - name: USE_AIKAR_FLAGS
+              value: "true"
+          volumeMounts:
+            - name: data
+              mountPath: /data
+          stdin: true
+          tty: true
   volumeClaimTemplates:
-  - metadata:
-      name: data
-    spec:
-      accessModes: ["ReadWriteOnce"]
-      storageClassName: PLACEHOLDER_STORAGE_CLASS
-      resources:
-        requests:
-          storage: 10Gi
+    - metadata:
+        name: data
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        storageClassName: PLACEHOLDER_STORAGE_CLASS
+        resources:
+          requests:
+            storage: 10Gi
