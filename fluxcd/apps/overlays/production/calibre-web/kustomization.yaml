@@ -5,6 +5,8 @@ namespace: temple-of-time
 
 resources:
   - ../../../base/calibre-web
+  - persistent-volumes.yaml
+  - persistent-volume-claims.yaml
 
 patches:
   - path: service-patch.yaml

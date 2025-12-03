@@ -9,3 +9,7 @@ spec:
       containers:
       - name: calibre-web
         image: lscr.io/linuxserver/calibre-web:latest
+      volumes:
+      - name: config
+        persistentVolumeClaim:
+          claimName: optcp-calibre-web-config

@@ -1,0 +1,14 @@
+# Static PersistentVolumeClaims for Calibre-Web (temple-of-time)
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: optcp-calibre-web-config
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: ceph-rbd-static
+  volumeName: optcp-calibre-web-config-0
+  resources:
+    requests:
+      storage: 1Gi
