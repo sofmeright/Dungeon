@@ -23,6 +23,7 @@ spec:
       source: "//gringotts/timecapsule/Media/systemadm/McAfee Antivirus/Studio/Movies"
     nodeStageSecretRef:
       name: plex-ms-x-smb-secret
+      namespace: pedestal-of-time
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -61,6 +62,7 @@ spec:
       source: "//gringotts/timecapsule/Media/systemadm/McAfee Antivirus/Studio/Photos"
     nodeStageSecretRef:
       name: plex-ms-x-smb-secret
+      namespace: pedestal-of-time
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
