@@ -1,0 +1,27 @@
+# Static PersistentVolumeClaims for Plex MS-X (pedestal-of-time)
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: kai-plex-ms-x-config
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: ceph-rbd-static
+  volumeName: kai-plex-ms-x-config-0
+  resources:
+    requests:
+      storage: 200Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: kai-plex-ms-x-transcode
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: ceph-rbd-static
+  volumeName: kai-plex-ms-x-transcode-0
+  resources:
+    requests:
+      storage: 100Gi

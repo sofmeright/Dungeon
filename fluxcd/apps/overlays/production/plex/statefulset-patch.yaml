@@ -15,26 +15,14 @@ spec:
         - name: ADVERTISE_IP
           value: "http://172.22.30.123:32400/,https://plex.temple-of-time.com/"
         volumeMounts:
-        - name: temple-of-time-plex-config
+        - name: config
           mountPath: /config
-        - name: temple-of-time-plex-transcode
+        - name: transcode
           mountPath: /transcode
-  volumeClaimTemplates:
-  - metadata:
-      name: temple-of-time-plex-config
-    spec:
-      accessModes:
-        - ReadWriteOnce
-      storageClassName: ceph-rbd-retain
-      resources:
-        requests:
-          storage: 200Gi
-  - metadata:
-      name: temple-of-time-plex-transcode
-    spec:
-      accessModes:
-        - ReadWriteOnce
-      storageClassName: ceph-rbd-retain
-      resources:
-        requests:
-          storage: 100Gi
+      volumes:
+      - name: config
+        persistentVolumeClaim:
+          claimName: kai-plex-config
+      - name: transcode
+        persistentVolumeClaim:
+          claimName: kai-plex-transcode

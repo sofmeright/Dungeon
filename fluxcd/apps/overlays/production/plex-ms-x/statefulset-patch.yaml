@@ -13,26 +13,14 @@ spec:
         - name: ADVERTISE_IP
           value: "http://172.22.30.124:32419/"
         volumeMounts:
-        - name: pedestal-of-time-plex-ms-x-config
+        - name: config
           mountPath: /config
-        - name: pedestal-of-time-plex-ms-x-transcode
+        - name: transcode
           mountPath: /transcode
-  volumeClaimTemplates:
-  - metadata:
-      name: pedestal-of-time-plex-ms-x-config
-    spec:
-      accessModes:
-        - ReadWriteOnce
-      storageClassName: ceph-rbd-retain
-      resources:
-        requests:
-          storage: 200Gi
-  - metadata:
-      name: pedestal-of-time-plex-ms-x-transcode
-    spec:
-      accessModes:
-        - ReadWriteOnce
-      storageClassName: ceph-rbd-retain
-      resources:
-        requests:
-          storage: 100Gi
+      volumes:
+      - name: config
+        persistentVolumeClaim:
+          claimName: kai-plex-ms-x-config
+      - name: transcode
+        persistentVolumeClaim:
+          claimName: kai-plex-ms-x-transcode

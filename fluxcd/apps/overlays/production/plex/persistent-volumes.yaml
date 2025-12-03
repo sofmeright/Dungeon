@@ -1,0 +1,51 @@
+# Static PersistentVolumes for Plex (temple-of-time)
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: kai-plex-config-0
+spec:
+  capacity:
+    storage: 200Gi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: ceph-rbd-static
+  csi:
+    driver: rbd.csi.ceph.com
+    fsType: ext4
+    volumeHandle: kai-plex-config-0
+    volumeAttributes:
+      clusterID: "0985467c-d8f3-4483-b27f-f0a512397ec2"
+      pool: dungeon
+      staticVolume: "true"
+      imageName: kai-plex-config-0
+      imageFeatures: layering
+    nodeStageSecretRef:
+      name: ceph-secret-user
+      namespace: kube-system
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: kai-plex-transcode-0
+spec:
+  capacity:
+    storage: 100Gi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: ceph-rbd-static
+  csi:
+    driver: rbd.csi.ceph.com
+    fsType: ext4
+    volumeHandle: kai-plex-transcode-0
+    volumeAttributes:
+      clusterID: "0985467c-d8f3-4483-b27f-f0a512397ec2"
+      pool: dungeon
+      staticVolume: "true"
+      imageName: kai-plex-transcode-0
+      imageFeatures: layering
+    nodeStageSecretRef:
+      name: ceph-secret-user
+      namespace: kube-system

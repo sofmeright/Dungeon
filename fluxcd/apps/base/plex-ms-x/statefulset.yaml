@@ -88,20 +88,3 @@ spec:
       - name: media-photos
         persistentVolumeClaim:
           claimName: plex-ms-x-media-photos
-  volumeClaimTemplates:
-  - metadata:
-      name: config
-    spec:
-      accessModes: [ "ReadWriteOnce" ]
-      storageClassName: PLACEHOLDER_STORAGE_CLASS
-      resources:
-        requests:
-          storage: 200Gi
-  - metadata:
-      name: transcode
-    spec:
-      accessModes: [ "ReadWriteOnce" ]
-      storageClassName: PLACEHOLDER_STORAGE_CLASS
-      resources:
-        requests:
-          storage: 100Gi
