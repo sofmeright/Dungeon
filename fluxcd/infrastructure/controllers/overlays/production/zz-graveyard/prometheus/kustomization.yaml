@@ -3,11 +3,12 @@ kind: Kustomization
 
 namespace: gossip-stone
 
-resources:
-  - ../../../base/prometheus
+# Commented out - base no longer exists, retained for reference
+# resources:
+#   - ../../../base/prometheus
 
-patches:
-  - path: helmrelease-patch.yaml
-    target:
-      kind: HelmRelease
-      name: prometheus
+# patches:
+#   - path: helmrelease-patch.yaml
+#     target:
+#       kind: HelmRelease
+#       name: prometheus

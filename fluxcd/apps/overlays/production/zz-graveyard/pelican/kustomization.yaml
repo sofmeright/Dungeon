@@ -3,58 +3,59 @@ kind: Kustomization
 
 namespace: shooting-gallery
 
-resources:
-- ../../../base/pelican
-- httproute.yaml
+# Commented out - base no longer exists, retained for reference
+# resources:
+#   - ../../../base/pelican
+#   - httproute.yaml
 
-patches:
-- path: mariadb-patch.yaml
-- path: redis-patch.yaml
-- path: panel-patch.yaml
-- path: wings-patch.yaml
-- patch: |-
-    - op: replace
-      path: /spec/type
-      value: LoadBalancer
-    - op: add
-      path: /metadata/annotations
-      value:
-        lbipam.cilium.io/ips: "172.22.30.231"
-        lbipam.cilium.io/sharing-key: "shooting-gallery"
-    - op: replace
-      path: /spec/ports
-      value:
-      - port: 8443
-        targetPort: 8000
-        protocol: TCP
-        name: https
-      - port: 8000
-        targetPort: 8000
-        protocol: TCP
-        name: http
-  target:
-    kind: Service
-    name: pelican-panel
-- patch: |-
-    - op: replace
-      path: /spec/type
-      value: LoadBalancer
-    - op: add
-      path: /metadata/annotations
-      value:
-        lbipam.cilium.io/ips: "172.22.30.231"
-        lbipam.cilium.io/sharing-key: "shooting-gallery"
-    - op: replace
-      path: /spec/ports
-      value:
-      - port: 8080
-        targetPort: 8080
-        protocol: TCP
-        name: wings-api
-      - port: 2022
-        targetPort: 2022
-        protocol: TCP
-        name: sftp
-  target:
-    kind: Service
-    name: pelican-wings
+# patches:
+#   - path: mariadb-patch.yaml
+#   - path: redis-patch.yaml
+#   - path: panel-patch.yaml
+#   - path: wings-patch.yaml
+#   - patch: |-
+#       - op: replace
+#         path: /spec/type
+#         value: LoadBalancer
+#       - op: add
+#         path: /metadata/annotations
+#         value:
+#           lbipam.cilium.io/ips: "172.22.30.231"
+#           lbipam.cilium.io/sharing-key: "shooting-gallery"
+#       - op: replace
+#         path: /spec/ports
+#         value:
+#         - port: 8443
+#           targetPort: 8000
+#           protocol: TCP
+#           name: https
+#         - port: 8000
+#           targetPort: 8000
+#           protocol: TCP
+#           name: http
+#     target:
+#       kind: Service
+#       name: pelican-panel
+#   - patch: |-
+#       - op: replace
+#         path: /spec/type
+#         value: LoadBalancer
+#       - op: add
+#         path: /metadata/annotations
+#         value:
+#           lbipam.cilium.io/ips: "172.22.30.231"
+#           lbipam.cilium.io/sharing-key: "shooting-gallery"
+#       - op: replace
+#         path: /spec/ports
+#         value:
+#         - port: 8080
+#           targetPort: 8080
+#           protocol: TCP
+#           name: wings-api
+#         - port: 2022
+#           targetPort: 2022
+#           protocol: TCP
+#           name: sftp
+#     target:
+#       kind: Service
+#       name: pelican-wings

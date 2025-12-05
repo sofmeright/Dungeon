@@ -4,10 +4,10 @@ kind: Kustomization
 namespace: zeldas-lullaby
 
 resources:
-- ../../../base/unifi
+  - ../../../base/unifi
+  - externalsecret.yaml
 
 patches:
-- path: statefulset-app-patch.yaml
-- path: statefulset-db-patch.yaml
-- path: service-patch.yaml
-- path: externalsecret.yaml
+  - path: statefulset-app-patch.yaml
+  - path: statefulset-db-patch.yaml
+  - path: service-patch.yaml

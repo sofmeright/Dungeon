@@ -4,10 +4,10 @@ kind: Kustomization
 namespace: tingle-tuner
 
 resources:
-- ../../../base/lenpaste
+  - ../../../base/lenpaste
+  - externalsecret.yaml
 
 patches:
-- path: statefulset-app-patch.yaml
-- path: statefulset-postgres-patch.yaml
-- path: service-patch.yaml
-- path: externalsecret.yaml
+  - path: statefulset-app-patch.yaml
+  - path: statefulset-postgres-patch.yaml
+  - path: service-patch.yaml

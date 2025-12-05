@@ -4,11 +4,11 @@ kind: Kustomization
 namespace: temple-of-time
 
 resources:
-- ../../../base/shlink
+  - ../../../base/shlink
+  - externalsecret.yaml
 
 patches:
-- path: statefulset-app-patch.yaml
-- path: statefulset-db-patch.yaml
-- path: deployment-web-client-patch.yaml
-- path: service-patch.yaml
-- path: externalsecret.yaml
+  - path: statefulset-app-patch.yaml
+  - path: statefulset-db-patch.yaml
+  - path: deployment-web-client-patch.yaml
+  - path: service-patch.yaml

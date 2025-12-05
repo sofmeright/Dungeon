@@ -4,9 +4,9 @@ kind: Kustomization
 namespace: swift-sail
 
 resources:
-- ../../../base/whisparr
+  - ../../../base/whisparr
+  - externalsecret.yaml
 
 patches:
-- path: statefulset-patch.yaml
-- path: pvc-smb-xxx-media-patch.yaml
-- path: externalsecret.yaml
+  - path: statefulset-patch.yaml
+  - path: pvc-smb-xxx-media-patch.yaml

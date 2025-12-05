@@ -1,0 +1,27 @@
+# Static PersistentVolumeClaims for Photoprism (temple-of-time)
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: kai-photoprism-storage
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: ceph-rbd-static
+  volumeName: kai-photoprism-storage-0
+  resources:
+    requests:
+      storage: 50Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: kai-photoprism-mariadb
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: ceph-rbd-static
+  volumeName: kai-photoprism-mariadb-0
+  resources:
+    requests:
+      storage: 10Gi

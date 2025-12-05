@@ -4,12 +4,12 @@ kind: Kustomization
 namespace: hyrule-castle
 
 resources:
-- ../../../base/twenty
+  - ../../../base/twenty
+  - externalsecret.yaml
 
 patches:
-- path: statefulset-app-patch.yaml
-- path: statefulset-worker-patch.yaml
-- path: statefulset-postgres-patch.yaml
-- path: statefulset-redis-patch.yaml
-- path: service-patch.yaml
-- path: externalsecret.yaml
+  - path: statefulset-app-patch.yaml
+  - path: statefulset-worker-patch.yaml
+  - path: statefulset-postgres-patch.yaml
+  - path: statefulset-redis-patch.yaml
+  - path: service-patch.yaml

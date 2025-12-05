@@ -3,10 +3,11 @@ kind: Kustomization
 
 namespace: compass
 
-resources:
-- ../../../base/pihole(disabled)
+# Commented out - base no longer exists, retained for reference
+# resources:
+#   - ../../../base/pihole(disabled)
 
-patches:
-- path: statefulset-patch.yaml
-- path: service-patch.yaml
-- path: externalsecret.yaml
+# patches:
+#   - path: statefulset-patch.yaml
+#   - path: service-patch.yaml
+#   - path: externalsecret.yaml

@@ -4,9 +4,9 @@ kind: Kustomization
 namespace: tingle-tuner
 
 resources:
-- ../../../base/convertx
+  - ../../../base/convertx
+  - externalsecret.yaml
 
 patches:
-- path: statefulset-patch.yaml
-- path: service-patch.yaml
-- path: externalsecret.yaml
+  - path: statefulset-patch.yaml
+  - path: service-patch.yaml

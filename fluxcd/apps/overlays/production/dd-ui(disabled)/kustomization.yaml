@@ -3,12 +3,13 @@ kind: Kustomization
 
 namespace: hookshot
 
-resources:
-- ../../../base/dd-ui
-- externalsecret.yaml
-- httproute.yaml
-- loadbalancer-service.yaml
+# Commented out - base no longer exists, retained for reference
+# resources:
+#   - ../../../base/dd-ui
+#   - externalsecret.yaml
+#   - httproute.yaml
+#   - loadbalancer-service.yaml
 
-patches:
-- path: postgres-patch.yaml
-- path: app-patch.yaml
+# patches:
+#   - path: postgres-patch.yaml
+#   - path: app-patch.yaml

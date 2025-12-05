@@ -1,29 +1,31 @@
+# Patch to add static RBD volumes (volumeClaimTemplates removed via JSON patch)
+# Note: originals and import volumes are SMB and defined in base - not touched here
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: photoprism
 spec:
-  volumeClaimTemplates:
-  - metadata:
-      name: storage
+  template:
     spec:
-      accessModes: ["ReadWriteOnce"]
-      storageClassName: ceph-rbd-retain
-      resources:
-        requests:
-          storage: 50Gi
+      volumes:
+        - name: storage
+          persistentVolumeClaim:
+            claimName: kai-photoprism-storage
+        - name: originals
+          persistentVolumeClaim:
+            claimName: photoprism-originals
+        - name: import
+          persistentVolumeClaim:
+            claimName: photoprism-import
 ---
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: photoprism-mariadb
 spec:
-  volumeClaimTemplates:
-  - metadata:
-      name: database
+  template:
     spec:
-      accessModes: ["ReadWriteOnce"]
-      storageClassName: ceph-rbd-retain
-      resources:
-        requests:
-          storage: 10Gi
+      volumes:
+        - name: database
+          persistentVolumeClaim:
+            claimName: kai-photoprism-mariadb

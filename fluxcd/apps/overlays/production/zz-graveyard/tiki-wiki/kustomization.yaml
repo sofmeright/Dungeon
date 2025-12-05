@@ -3,11 +3,12 @@ kind: Kustomization
 
 namespace: temple-of-time
 
-resources:
-- ../../../base/tiki-wiki(disabled)
+# Commented out - base no longer exists, retained for reference
+# resources:
+#   - ../../../base/tiki-wiki(disabled)
+#   - externalsecret.yaml
 
-patches:
-- path: statefulset-app-patch.yaml
-- path: statefulset-db-patch.yaml
-- path: service-patch.yaml
-- path: externalsecret.yaml
+# patches:
+#   - path: statefulset-app-patch.yaml
+#   - path: statefulset-db-patch.yaml
+#   - path: service-patch.yaml
