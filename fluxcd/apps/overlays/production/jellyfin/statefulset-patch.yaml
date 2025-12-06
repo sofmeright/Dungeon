@@ -1,3 +1,4 @@
+# Patch to use static RBD volumes (volumeClaimTemplates removed via JSON patch)
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
@@ -19,9 +20,9 @@ spec:
           chown -R 1000:1000 /config
           chown -R 1000:1000 /cache
         volumeMounts:
-        - name: temple-of-time-jellyfin-config
+        - name: config
           mountPath: /config
-        - name: temple-of-time-jellyfin-cache
+        - name: cache
           mountPath: /cache
       containers:
       - name: jellyfin
@@ -30,24 +31,26 @@ spec:
         - name: JELLYFIN_PublishedServerUrl
           value: "https://jfish.optcp.com"
         volumeMounts:
-        - name: temple-of-time-jellyfin-config
+        - name: config
           mountPath: /config
-        - name: temple-of-time-jellyfin-cache
+        - name: cache
           mountPath: /cache
-  volumeClaimTemplates:
-  - metadata:
-      name: temple-of-time-jellyfin-config
-    spec:
-      accessModes: ["ReadWriteOnce"]
-      storageClassName: ceph-rbd-retain
-      resources:
-        requests:
-          storage: 150Gi
-  - metadata:
-      name: temple-of-time-jellyfin-cache
-    spec:
-      accessModes: ["ReadWriteOnce"]
-      storageClassName: ceph-rbd-retain
-      resources:
-        requests:
-          storage: 10Gi
+      volumes:
+      - name: config
+        persistentVolumeClaim:
+          claimName: optcp-jellyfin-config
+      - name: cache
+        persistentVolumeClaim:
+          claimName: optcp-jellyfin-cache
+      - name: media-movies
+        persistentVolumeClaim:
+          claimName: jellyfin-media-movies
+      - name: media-tv
+        persistentVolumeClaim:
+          claimName: jellyfin-media-tv
+      - name: media-music
+        persistentVolumeClaim:
+          claimName: jellyfin-media-music
+      - name: media-photos
+        persistentVolumeClaim:
+          claimName: jellyfin-media-photos

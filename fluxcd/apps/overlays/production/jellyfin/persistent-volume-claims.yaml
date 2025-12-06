@@ -1,0 +1,27 @@
+# Static PersistentVolumeClaims for Jellyfin (temple-of-time)
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: optcp-jellyfin-config
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: ceph-rbd-static
+  volumeName: optcp-jellyfin-config-0
+  resources:
+    requests:
+      storage: 150Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: optcp-jellyfin-cache
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: ceph-rbd-static
+  volumeName: optcp-jellyfin-cache-0
+  resources:
+    requests:
+      storage: 10Gi

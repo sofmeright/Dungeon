@@ -1,0 +1,51 @@
+# Static PersistentVolumes for Jellyfin (temple-of-time)
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: optcp-jellyfin-config-0
+spec:
+  capacity:
+    storage: 150Gi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: ceph-rbd-static
+  csi:
+    driver: rbd.csi.ceph.com
+    fsType: ext4
+    volumeHandle: optcp-jellyfin-config-0
+    volumeAttributes:
+      clusterID: "0985467c-d8f3-4483-b27f-f0a512397ec2"
+      pool: dungeon
+      staticVolume: "true"
+      imageName: optcp-jellyfin-config-0
+      imageFeatures: layering
+    nodeStageSecretRef:
+      name: ceph-secret-user
+      namespace: kube-system
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: optcp-jellyfin-cache-0
+spec:
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: ceph-rbd-static
+  csi:
+    driver: rbd.csi.ceph.com
+    fsType: ext4
+    volumeHandle: optcp-jellyfin-cache-0
+    volumeAttributes:
+      clusterID: "0985467c-d8f3-4483-b27f-f0a512397ec2"
+      pool: dungeon
+      staticVolume: "true"
+      imageName: optcp-jellyfin-cache-0
+      imageFeatures: layering
+    nodeStageSecretRef:
+      name: ceph-secret-user
+      namespace: kube-system

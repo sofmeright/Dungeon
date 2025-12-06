@@ -3,6 +3,8 @@ kind: Kustomization
 namespace: temple-of-time
 resources:
   - ../../../base/jellyfin
+  - persistent-volumes.yaml
+  - persistent-volume-claims.yaml
 patches:
   - path: service-patch.yaml
     target:
@@ -14,3 +16,9 @@ patches:
     target:
       kind: StatefulSet
       name: jellyfin
+  - target:
+      kind: StatefulSet
+      name: jellyfin
+    patch: |-
+      - op: remove
+        path: /spec/volumeClaimTemplates
