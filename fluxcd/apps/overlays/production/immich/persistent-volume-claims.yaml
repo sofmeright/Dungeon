@@ -1,0 +1,40 @@
+# Static PersistentVolumeClaims for Immich (temple-of-time)
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: optcp-immich-library
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: ceph-rbd-static
+  volumeName: optcp-immich-library-0
+  resources:
+    requests:
+      storage: 500Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: optcp-immich-model-cache
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: ceph-rbd-static
+  volumeName: optcp-immich-model-cache-0
+  resources:
+    requests:
+      storage: 20Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: optcp-immich-postgres
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: ceph-rbd-static
+  volumeName: optcp-immich-postgres-0
+  resources:
+    requests:
+      storage: 50Gi

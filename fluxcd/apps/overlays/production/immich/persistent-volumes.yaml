@@ -1,0 +1,76 @@
+# Static PersistentVolumes for Immich (temple-of-time)
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: optcp-immich-library-0
+spec:
+  capacity:
+    storage: 500Gi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: ceph-rbd-static
+  csi:
+    driver: rbd.csi.ceph.com
+    fsType: ext4
+    volumeHandle: optcp-immich-library-0
+    volumeAttributes:
+      clusterID: "0985467c-d8f3-4483-b27f-f0a512397ec2"
+      pool: dungeon
+      staticVolume: "true"
+      imageName: optcp-immich-library-0
+      imageFeatures: layering
+    nodeStageSecretRef:
+      name: ceph-secret-user
+      namespace: kube-system
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: optcp-immich-model-cache-0
+spec:
+  capacity:
+    storage: 20Gi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: ceph-rbd-static
+  csi:
+    driver: rbd.csi.ceph.com
+    fsType: ext4
+    volumeHandle: optcp-immich-model-cache-0
+    volumeAttributes:
+      clusterID: "0985467c-d8f3-4483-b27f-f0a512397ec2"
+      pool: dungeon
+      staticVolume: "true"
+      imageName: optcp-immich-model-cache-0
+      imageFeatures: layering
+    nodeStageSecretRef:
+      name: ceph-secret-user
+      namespace: kube-system
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: optcp-immich-postgres-0
+spec:
+  capacity:
+    storage: 50Gi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: ceph-rbd-static
+  csi:
+    driver: rbd.csi.ceph.com
+    fsType: ext4
+    volumeHandle: optcp-immich-postgres-0
+    volumeAttributes:
+      clusterID: "0985467c-d8f3-4483-b27f-f0a512397ec2"
+      pool: dungeon
+      staticVolume: "true"
+      imageName: optcp-immich-postgres-0
+      imageFeatures: layering
+    nodeStageSecretRef:
+      name: ceph-secret-user
+      namespace: kube-system

@@ -9,7 +9,7 @@ repos:
     hooks:
       - id: trufflehog
         name: TruffleHog Secret Scanner (verified secrets only)
-        entry: bash -c 'docker run --rm -v "$(pwd):/workdir" -w /workdir trufflesecurity/trufflehog:latest git file://. --since-commit HEAD --only-verified --fail --no-update'
+        entry: bash -c 'trufflehog git file://. --since-commit HEAD --only-verified --fail --no-update'
         language: system
         pass_filenames: false
         stages: [commit]

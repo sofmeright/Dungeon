@@ -5,8 +5,16 @@ resources:
   - ../../../base/immich
   - httproute.yaml
   - service-loadbalancer.yaml
+  - persistent-volumes.yaml
+  - persistent-volume-claims.yaml
 patches:
   - path: statefulset-patch.yaml
     target:
       kind: StatefulSet
       name: immich
+  - target:
+      kind: StatefulSet
+      name: immich
+    patch: |-
+      - op: remove
+        path: /spec/volumeClaimTemplates

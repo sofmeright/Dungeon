@@ -1,3 +1,4 @@
+# Patch to use static RBD volumes (volumeClaimTemplates removed via JSON patch)
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
@@ -6,61 +7,50 @@ spec:
   template:
     spec:
       initContainers:
-      - name: fix-library-permissions
-        volumeMounts:
-        - name: temple-of-time-immich-library
-          mountPath: /usr/src/app/upload
-      - name: fix-postgres-permissions
-        volumeMounts:
-        - name: temple-of-time-immich-postgres
-          mountPath: /var/lib/postgresql/data
+        - name: fix-library-permissions
+          image: docker.io/library/busybox:latest
+          securityContext:
+            runAsUser: 0
+            runAsGroup: 0
+          command:
+            - sh
+            - -c
+            - chown -R 1000:1000 /usr/src/app/upload && chmod -R 755 /usr/src/app/upload || true
+          volumeMounts:
+            - name: library
+              mountPath: /usr/src/app/upload
+        - name: fix-postgres-permissions
+          image: docker.io/library/busybox:latest
+          securityContext:
+            runAsUser: 0
+            runAsGroup: 0
+          command:
+            - sh
+            - -c
+            - chown -R 999:999 /var/lib/postgresql/data && chmod -R 700 /var/lib/postgresql/data || true
+          volumeMounts:
+            - name: postgres
+              mountPath: /var/lib/postgresql/data
       containers:
-      - name: immich-server
-        volumeMounts:
-        - name: temple-of-time-immich-library
-          mountPath: /usr/src/app/upload
-      - name: immich-machine-learning
-        volumeMounts:
-        - name: temple-of-time-immich-model-cache
-          mountPath: /cache
-      - name: postgres
-        volumeMounts:
-        - name: temple-of-time-immich-postgres
-          mountPath: /var/lib/postgresql/data
-  volumeClaimTemplates:
-  - metadata:
-      name: temple-of-time-immich-library
-      labels:
-        app: immich
-        volume-type: library
-    spec:
-      storageClassName: ceph-rbd
-      accessModes:
-      - ReadWriteOnce
-      resources:
-        requests:
-          storage: 500Gi
-  - metadata:
-      name: temple-of-time-immich-model-cache
-      labels:
-        app: immich
-        volume-type: model-cache
-    spec:
-      storageClassName: ceph-rbd
-      accessModes:
-      - ReadWriteOnce
-      resources:
-        requests:
-          storage: 20Gi
-  - metadata:
-      name: temple-of-time-immich-postgres
-      labels:
-        app: immich
-        volume-type: postgres
-    spec:
-      storageClassName: ceph-rbd
-      accessModes:
-      - ReadWriteOnce
-      resources:
-        requests:
-          storage: 50Gi
+        - name: immich-server
+          volumeMounts:
+            - name: library
+              mountPath: /usr/src/app/upload
+        - name: immich-machine-learning
+          volumeMounts:
+            - name: model-cache
+              mountPath: /cache
+        - name: postgres
+          volumeMounts:
+            - name: postgres
+              mountPath: /var/lib/postgresql/data
+      volumes:
+        - name: library
+          persistentVolumeClaim:
+            claimName: optcp-immich-library
+        - name: model-cache
+          persistentVolumeClaim:
+            claimName: optcp-immich-model-cache
+        - name: postgres
+          persistentVolumeClaim:
+            claimName: optcp-immich-postgres
