@@ -3,10 +3,12 @@ kind: StatefulSet
 metadata:
   name: linkwarden-meilisearch
 spec:
+  replicas: 1
   template:
     spec:
       containers:
         - name: meilisearch
+          image: docker.jcr.pcfae.com/getmeili/meilisearch:v1.6
           resources:
             limits:
               cpu: "1"
@@ -14,3 +16,10 @@ spec:
             requests:
               cpu: 100m
               memory: 512Mi
+          volumeMounts:
+            - name: meilisearch
+              mountPath: /meili_data
+      volumes:
+        - name: meilisearch
+          persistentVolumeClaim:
+            claimName: optcp-linkwarden-meilisearch

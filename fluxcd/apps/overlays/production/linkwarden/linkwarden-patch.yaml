@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: linkwarden
+spec:
+  replicas: 1
+  template:
+    spec:
+      initContainers:
+        - name: wait-for-postgres
+          image: docker.jcr.pcfae.com/library/postgres:16-alpine
+        - name: wait-for-meilisearch
+          image: docker.jcr.pcfae.com/curlimages/curl:8.5.0
+      containers:
+        - name: linkwarden
+          image: ghcr.io/linkwarden/linkwarden:latest
+          volumeMounts:
+            - name: data
+              mountPath: /data/data
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: optcp-linkwarden-data

@@ -1,26 +1,31 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
-
 namespace: temple-of-time
-
 resources:
   - ../../../base/linkwarden
   - persistent-volumes.yaml
   - persistent-volume-claims.yaml
-
 patches:
   - path: configmap-patch.yaml
     target:
       kind: ConfigMap
       name: linkwarden-config
-  - path: storage-patch.yaml
-  - path: image-patch.yaml
-  - path: replicas-patch.yaml
-  - path: meilisearch-resources-patch.yaml
   - path: service-patch.yaml
     target:
       kind: Service
       name: linkwarden
+  - path: linkwarden-patch.yaml
+    target:
+      kind: StatefulSet
+      name: linkwarden
+  - path: postgres-patch.yaml
+    target:
+      kind: StatefulSet
+      name: linkwarden-postgres
+  - path: meilisearch-patch.yaml
+    target:
+      kind: StatefulSet
+      name: linkwarden-meilisearch
   - target:
       kind: StatefulSet
       name: linkwarden
