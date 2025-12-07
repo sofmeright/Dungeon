@@ -1,0 +1,25 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: optcp-mealie-data
+spec:
+  storageClassName: ceph-rbd-static
+  volumeName: optcp-mealie-data-0
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: optcp-mealie-postgres
+spec:
+  storageClassName: ceph-rbd-static
+  volumeName: optcp-mealie-postgres-0
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 20Gi

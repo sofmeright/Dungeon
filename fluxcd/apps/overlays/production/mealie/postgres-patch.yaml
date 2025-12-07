@@ -1,0 +1,18 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mealie-postgres
+spec:
+  replicas: 1
+  template:
+    spec:
+      containers:
+        - name: postgres
+          image: docker.jcr.pcfae.com/library/postgres:15
+          volumeMounts:
+            - name: postgres-data
+              mountPath: /var/lib/postgresql/data
+      volumes:
+        - name: postgres-data
+          persistentVolumeClaim:
+            claimName: optcp-mealie-postgres

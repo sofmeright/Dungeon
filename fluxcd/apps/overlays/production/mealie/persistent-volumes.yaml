@@ -1,0 +1,47 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: optcp-mealie-data-0
+spec:
+  storageClassName: ceph-rbd-static
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  csi:
+    driver: rbd.csi.ceph.com
+    fsType: ext4
+    volumeHandle: optcp-mealie-data-0
+    nodeStageSecretRef:
+      name: ceph-secret-user
+      namespace: kube-system
+    volumeAttributes:
+      clusterID: 0985467c-d8f3-4483-b27f-f0a512397ec2
+      pool: dungeon
+      staticVolume: "true"
+      imageName: optcp-mealie-data-0
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: optcp-mealie-postgres-0
+spec:
+  storageClassName: ceph-rbd-static
+  capacity:
+    storage: 20Gi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  csi:
+    driver: rbd.csi.ceph.com
+    fsType: ext4
+    volumeHandle: optcp-mealie-postgres-0
+    nodeStageSecretRef:
+      name: ceph-secret-user
+      namespace: kube-system
+    volumeAttributes:
+      clusterID: 0985467c-d8f3-4483-b27f-f0a512397ec2
+      pool: dungeon
+      staticVolume: "true"
+      imageName: optcp-mealie-postgres-0

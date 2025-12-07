@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mealie
+spec:
+  replicas: 1
+  template:
+    spec:
+      containers:
+        - name: mealie
+          image: ghcr.io/mealie-recipes/mealie:nightly
+          env:
+            - name: BASE_URL
+              value: "https://mealie.yesimvegan.com"
+            - name: OIDC_PROVIDER_NAME
+              value: "PrPlanIT.com"
+            - name: OIDC_CONFIGURATION_URL
+              value: "https://sso.prplanit.com/.well-known/openid-configuration"
+          volumeMounts:
+            - name: mealie-data
+              mountPath: /app/data
+      volumes:
+        - name: mealie-data
+          persistentVolumeClaim:
+            claimName: optcp-mealie-data
