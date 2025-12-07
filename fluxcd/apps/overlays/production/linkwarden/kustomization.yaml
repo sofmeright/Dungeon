@@ -5,6 +5,8 @@ namespace: temple-of-time
 
 resources:
   - ../../../base/linkwarden
+  - persistent-volumes.yaml
+  - persistent-volume-claims.yaml
 
 patches:
   - path: configmap-patch.yaml
@@ -18,3 +20,21 @@ patches:
     target:
       kind: Service
       name: linkwarden
+  - target:
+      kind: StatefulSet
+      name: linkwarden
+    patch: |-
+      - op: remove
+        path: /spec/volumeClaimTemplates
+  - target:
+      kind: StatefulSet
+      name: linkwarden-postgres
+    patch: |-
+      - op: remove
+        path: /spec/volumeClaimTemplates
+  - target:
+      kind: StatefulSet
+      name: linkwarden-meilisearch
+    patch: |-
+      - op: remove
+        path: /spec/volumeClaimTemplates

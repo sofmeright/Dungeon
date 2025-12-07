@@ -1,3 +1,5 @@
+# Patch to use static RBD volumes (volumeClaimTemplates removed via JSON patch)
+---
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
@@ -8,17 +10,12 @@ spec:
       containers:
         - name: linkwarden
           volumeMounts:
-            - name: temple-of-time-linkwarden-data
+            - name: data
               mountPath: /data/data
-  volumeClaimTemplates:
-  - metadata:
-      name: temple-of-time-linkwarden-data
-    spec:
-      accessModes: [ "ReadWriteOnce" ]
-      storageClassName: ceph-rbd-retain
-      resources:
-        requests:
-          storage: 5Gi
+      volumes:
+        - name: data
+          persistentVolumeClaim:
+            claimName: optcp-linkwarden-data
 ---
 apiVersion: apps/v1
 kind: StatefulSet
@@ -30,17 +27,12 @@ spec:
       containers:
         - name: postgres
           volumeMounts:
-            - name: temple-of-time-linkwarden-postgres
+            - name: postgres
               mountPath: /var/lib/postgresql/data
-  volumeClaimTemplates:
-  - metadata:
-      name: temple-of-time-linkwarden-postgres
-    spec:
-      accessModes: [ "ReadWriteOnce" ]
-      storageClassName: ceph-rbd-retain
-      resources:
-        requests:
-          storage: 10Gi
+      volumes:
+        - name: postgres
+          persistentVolumeClaim:
+            claimName: optcp-linkwarden-postgres
 ---
 apiVersion: apps/v1
 kind: StatefulSet
@@ -52,14 +44,9 @@ spec:
       containers:
         - name: meilisearch
           volumeMounts:
-            - name: temple-of-time-linkwarden-meilisearch
+            - name: meilisearch
               mountPath: /meili_data
-  volumeClaimTemplates:
-  - metadata:
-      name: temple-of-time-linkwarden-meilisearch
-    spec:
-      accessModes: [ "ReadWriteOnce" ]
-      storageClassName: ceph-rbd-retain
-      resources:
-        requests:
-          storage: 2Gi
+      volumes:
+        - name: meilisearch
+          persistentVolumeClaim:
+            claimName: optcp-linkwarden-meilisearch

@@ -1,0 +1,40 @@
+# Static PersistentVolumeClaims for Linkwarden (temple-of-time)
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: optcp-linkwarden-data
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: ceph-rbd-static
+  volumeName: optcp-linkwarden-data-0
+  resources:
+    requests:
+      storage: 5Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: optcp-linkwarden-meilisearch
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: ceph-rbd-static
+  volumeName: optcp-linkwarden-meilisearch-0
+  resources:
+    requests:
+      storage: 2Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: optcp-linkwarden-postgres
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: ceph-rbd-static
+  volumeName: optcp-linkwarden-postgres-0
+  resources:
+    requests:
+      storage: 10Gi

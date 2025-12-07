@@ -1,0 +1,76 @@
+# Static PersistentVolumes for Linkwarden (temple-of-time)
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: optcp-linkwarden-data-0
+spec:
+  capacity:
+    storage: 5Gi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: ceph-rbd-static
+  csi:
+    driver: rbd.csi.ceph.com
+    fsType: ext4
+    volumeHandle: optcp-linkwarden-data-0
+    volumeAttributes:
+      clusterID: "0985467c-d8f3-4483-b27f-f0a512397ec2"
+      pool: dungeon
+      staticVolume: "true"
+      imageName: optcp-linkwarden-data-0
+      imageFeatures: layering
+    nodeStageSecretRef:
+      name: ceph-secret-user
+      namespace: kube-system
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: optcp-linkwarden-meilisearch-0
+spec:
+  capacity:
+    storage: 2Gi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: ceph-rbd-static
+  csi:
+    driver: rbd.csi.ceph.com
+    fsType: ext4
+    volumeHandle: optcp-linkwarden-meilisearch-0
+    volumeAttributes:
+      clusterID: "0985467c-d8f3-4483-b27f-f0a512397ec2"
+      pool: dungeon
+      staticVolume: "true"
+      imageName: optcp-linkwarden-meilisearch-0
+      imageFeatures: layering
+    nodeStageSecretRef:
+      name: ceph-secret-user
+      namespace: kube-system
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: optcp-linkwarden-postgres-0
+spec:
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: ceph-rbd-static
+  csi:
+    driver: rbd.csi.ceph.com
+    fsType: ext4
+    volumeHandle: optcp-linkwarden-postgres-0
+    volumeAttributes:
+      clusterID: "0985467c-d8f3-4483-b27f-f0a512397ec2"
+      pool: dungeon
+      staticVolume: "true"
+      imageName: optcp-linkwarden-postgres-0
+      imageFeatures: layering
+    nodeStageSecretRef:
+      name: ceph-secret-user
+      namespace: kube-system
