@@ -1,0 +1,38 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: lost-woods-homarr-images-homarr-0
+spec:
+  storageClassName: ceph-rbd-static
+  volumeName: prplanit-homarr-images-0
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: lost-woods-homarr-images-homarr-1
+spec:
+  storageClassName: ceph-rbd-static
+  volumeName: prplanit-homarr-images-1
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: lost-woods-homarr-images-homarr-2
+spec:
+  storageClassName: ceph-rbd-static
+  volumeName: prplanit-homarr-images-2
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi

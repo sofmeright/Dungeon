@@ -7,77 +7,77 @@ spec:
   template:
     spec:
       containers:
-      - name: homarr
-        volumeMounts:
-        - $patch: delete
-          name: lost-woods-homarr-sqlite
-        - name: lost-woods-homarr-images
-          mountPath: /images
-        env:
-        - name: DATABASE_URL
-          value: ""
-        - name: POSTGRES_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: homarr-postgres-credentials
-              key: password
-        - name: DB_DRIVER
-          value: "node-postgres"
-        - name: DB_DIALECT
-          value: "postgresql"
-        - name: DB_HOST
-          value: "homarr-postgres-rw"
-        - name: DB_PORT
-          value: "5432"
-        - name: DB_NAME
-          value: "homarr"
-        - name: DB_USER
-          value: "homarr"
-        - name: DB_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: homarr-postgres-credentials
-              key: password
-        - name: REDIS_IS_EXTERNAL
-          value: "true"
-        - name: REDIS_HOST
-          value: "homarr-redis-rw"
-        - name: REDIS_PORT
-          value: "6379"
-        - name: REDIS_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: homarr-redis-password
-              key: password
-        - name: NEXTAUTH_URL
-          value: "http://172.22.30.223:7575"
-        - name: AUTH_PROVIDERS
-          value: "credentials,oidc"
-        - name: AUTH_LOGOUT_REDIRECT_URL
-          value: "https://apptray.pcfae.com"
-        - name: AUTH_SESSION_EXPIRY_TIME
-          value: "30d"
-        - name: AUTH_OIDC_ISSUER
-          value: "https://sso.prplanit.com"
-        - name: AUTH_OIDC_CLIENT_NAME
-          value: "PrecisionPlanIT.com SSO"
-        - name: AUTH_OIDC_AUTO_LOGIN
-          value: "false"
-        - name: AUTH_OIDC_SCOPE_OVERWRITE
-          value: "openid email profile groups"
-        - name: AUTH_OIDC_GROUPS_ATTRIBUTE
-          value: "roles"
-        - name: AUTH_OIDC_NAME_ATTRIBUTE_OVERWRITE
-          value: "email"
-        - name: AUTH_OIDC_FORCE_USERINFO
-          value: "false"
+        - name: homarr
+          volumeMounts:
+            - $patch: delete
+              name: lost-woods-homarr-sqlite
+            - name: lost-woods-homarr-images
+              mountPath: /images
+          env:
+            - name: DATABASE_URL
+              value: ""
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: homarr-postgres-credentials
+                  key: password
+            - name: DB_DRIVER
+              value: "node-postgres"
+            - name: DB_DIALECT
+              value: "postgresql"
+            - name: DB_HOST
+              value: "homarr-postgres-rw"
+            - name: DB_PORT
+              value: "5432"
+            - name: DB_NAME
+              value: "homarr"
+            - name: DB_USER
+              value: "homarr"
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: homarr-postgres-credentials
+                  key: password
+            - name: REDIS_IS_EXTERNAL
+              value: "true"
+            - name: REDIS_HOST
+              value: "homarr-redis-rw"
+            - name: REDIS_PORT
+              value: "6379"
+            - name: REDIS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: homarr-redis-password
+                  key: password
+            - name: NEXTAUTH_URL
+              value: "http://172.22.30.223:7575"
+            - name: AUTH_PROVIDERS
+              value: "credentials,oidc"
+            - name: AUTH_LOGOUT_REDIRECT_URL
+              value: "https://apptray.pcfae.com"
+            - name: AUTH_SESSION_EXPIRY_TIME
+              value: "30d"
+            - name: AUTH_OIDC_ISSUER
+              value: "https://sso.prplanit.com"
+            - name: AUTH_OIDC_CLIENT_NAME
+              value: "PrecisionPlanIT.com SSO"
+            - name: AUTH_OIDC_AUTO_LOGIN
+              value: "false"
+            - name: AUTH_OIDC_SCOPE_OVERWRITE
+              value: "openid email profile groups"
+            - name: AUTH_OIDC_GROUPS_ATTRIBUTE
+              value: "roles"
+            - name: AUTH_OIDC_NAME_ATTRIBUTE_OVERWRITE
+              value: "email"
+            - name: AUTH_OIDC_FORCE_USERINFO
+              value: "false"
   volumeClaimTemplates:
-  - metadata:
-      name: lost-woods-homarr-images
-    spec:
-      accessModes:
-      - ReadWriteOnce
-      storageClassName: ceph-rbd-retain
-      resources:
-        requests:
-          storage: 2Gi
+    - metadata:
+        name: lost-woods-homarr-images
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        storageClassName: ceph-rbd-static
+        resources:
+          requests:
+            storage: 2Gi
