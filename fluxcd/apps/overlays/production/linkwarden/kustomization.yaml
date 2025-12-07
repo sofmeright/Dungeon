@@ -16,6 +16,7 @@ patches:
   - path: storage-patch.yaml
   - path: image-patch.yaml
   - path: replicas-patch.yaml
+  - path: meilisearch-resources-patch.yaml
   - path: service-patch.yaml
     target:
       kind: Service
