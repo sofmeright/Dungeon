@@ -6,8 +6,6 @@ namespace: lost-woods
 resources:
   - ../../../base/homarr
   - externalsecret.yaml
-  - persistent-volumes.yaml
-  - persistent-volume-claims.yaml
 
 patches:
   - path: statefulset-patch.yaml

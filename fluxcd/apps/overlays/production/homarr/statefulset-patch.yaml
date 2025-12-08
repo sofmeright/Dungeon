@@ -77,7 +77,7 @@ spec:
       spec:
         accessModes:
           - ReadWriteOnce
-        storageClassName: ceph-rbd-static
+        storageClassName: ceph-rbd-templated
         resources:
           requests:
             storage: 2Gi

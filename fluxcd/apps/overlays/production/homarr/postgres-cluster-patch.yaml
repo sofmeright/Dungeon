@@ -29,13 +29,10 @@ spec:
   monitoring:
     enablePodMonitor: true
 
-  bootstrap:
-    initdb:
-      database: homarr
-      owner: homarr
+  # No bootstrap section - using pre-existing PVCs restored from Velero snapshots
 
   enableSuperuserAccess: true
 
   storage:
-    storageClass: ceph-rbd-static
+    storageClass: ceph-rbd-templated
     size: 5Gi
