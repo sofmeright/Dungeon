@@ -3,4 +3,5 @@ kind: Kustomization
 resources:
   - ../../../base/storage  # Inherit ceph-rbd-delete and ceph-rbd-retain
   - ceph-rbd.yaml
+  - ceph-rbd-templated.yaml
   - cephfs-nvme.yaml
