@@ -29,7 +29,10 @@ spec:
   monitoring:
     enablePodMonitor: true
 
-  # No bootstrap section - using pre-existing PVCs restored from Velero snapshots
+  bootstrap:
+    recovery:
+      database: homarr
+      owner: homarr
 
   enableSuperuserAccess: true
 
