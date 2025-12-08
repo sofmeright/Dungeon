@@ -1,6 +1,45 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
+  name: homarr-postgres-1
+spec:
+  storageClassName: ceph-rbd-static
+  volumeName: prplanit-homarr-postgres-1
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: homarr-postgres-2
+spec:
+  storageClassName: ceph-rbd-static
+  volumeName: prplanit-homarr-postgres-2
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: homarr-postgres-3
+spec:
+  storageClassName: ceph-rbd-static
+  volumeName: prplanit-homarr-postgres-3
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
   name: lost-woods-homarr-images-homarr-0
 spec:
   storageClassName: ceph-rbd-static

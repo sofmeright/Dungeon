@@ -37,5 +37,5 @@ spec:
   enableSuperuserAccess: true
 
   storage:
-    storageClass: ceph-rbd
+    storageClass: ceph-rbd-static
     size: 5Gi
