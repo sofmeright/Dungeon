@@ -19,6 +19,6 @@ parameters:
   external-reprovisioner.anoxape.org/volume-name-template: ${pvc.name}
 reclaimPolicy: Retain
 allowVolumeExpansion: true
-volumeBindingMode: WaitForFirstConsumer
+volumeBindingMode: Immediate
 mountOptions:
   - discard
