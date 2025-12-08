@@ -30,8 +30,7 @@ spec:
     enablePodMonitor: true
 
   bootstrap:
-    $patch: replace
-    recovery:
+    initdb:
       database: homarr
       owner: homarr
 
