@@ -14,8 +14,6 @@ spec:
             - name: lost-woods-homarr-images
               mountPath: /images
           env:
-            - name: HOSTNAME
-              value: "127.0.0.1"
             - name: DATABASE_URL
               value: ""
             - name: POSTGRES_PASSWORD
