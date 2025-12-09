@@ -76,6 +76,8 @@ spec:
                 secretKeyRef:
                   name: homarr-postgres-credentials
                   key: password
+            - name: AUTH_TRUST_HOST
+              value: "true"
   volumeClaimTemplates:
     - metadata:
         name: lost-woods-homarr-images
