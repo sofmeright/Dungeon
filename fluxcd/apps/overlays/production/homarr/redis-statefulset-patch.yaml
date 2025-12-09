@@ -7,44 +7,95 @@ spec:
   template:
     spec:
       initContainers:
-      - name: config
-        image: docker.io/redis:7.4-alpine
-        command:
-        - sh
-        - -c
-        - |
-          set -ex
-          # Copy base config
-          cp /tmp/redis/redis.conf /etc/redis/redis.conf
+        - name: config
+          image: docker.io/redis:7.4-alpine
+          env:
+            - name: REDIS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: homarr-redis-password
+                  key: password
+          command:
+            - sh
+            - -c
+            - |
+              set -ex
+              # Copy base config
+              cp /tmp/redis/redis.conf /etc/redis/redis.conf
 
-          # Determine master FQDN - redis-0 is always the initial master
-          MASTER_FDQN="homarr-redis-0.homarr-redis-headless.lost-woods.svc.cluster.local"
+              NAMESPACE="lost-woods"
+              MY_HOSTNAME=$(hostname)
+              SENTINEL_HOST="homarr-sentinel.${NAMESPACE}.svc.cluster.local"
 
-          # If this is not redis-0, configure as replica
-          if [ "$(hostname)" != "homarr-redis-0" ]; then
-            # Check if Sentinel is available and knows the master
-            if [ "$(redis-cli -h homarr-sentinel -p 26379 ping 2>/dev/null)" = "PONG" ]; then
-              # Query Sentinel for current master
-              SENTINEL_MASTER=$(redis-cli -h homarr-sentinel -p 26379 sentinel get-master-addr-by-name homarr-redis 2>/dev/null | head -n1)
-              if [ -n "$SENTINEL_MASTER" ]; then
-                MASTER_FDQN="$SENTINEL_MASTER"
+              # All Redis pod names
+              nodes="homarr-redis-0 homarr-redis-1 homarr-redis-2"
+
+              # Try to get master from sentinel first
+              MASTER_IP=""
+              if redis-cli -h "$SENTINEL_HOST" -p 26379 ping 2>/dev/null | grep -q PONG; then
+                echo "Sentinel is reachable, querying for master..."
+                MASTER_INFO=$(redis-cli -h "$SENTINEL_HOST" -p 26379 SENTINEL get-master-addr-by-name homarr-redis 2>/dev/null || echo "")
+                if [ -n "$MASTER_INFO" ]; then
+                  MASTER_IP=$(echo "$MASTER_INFO" | head -1)
+                  echo "Sentinel reports master at $MASTER_IP"
+                fi
               fi
-            fi
-            echo "replicaof $MASTER_FDQN 6379" >> /etc/redis/redis.conf
-          fi
 
-          echo "Configuration complete for $(hostname)"
-          cat /etc/redis/redis.conf
+              # Find which pod is the master by resolving IPs
+              MASTER_POD=""
+              if [ -n "$MASTER_IP" ]; then
+                for pod in $nodes; do
+                  POD_FQDN="${pod}.homarr-redis-headless.${NAMESPACE}.svc.cluster.local"
+                  POD_IP=$(getent hosts "$POD_FQDN" 2>/dev/null | awk '{print $1}' || echo "")
+                  if [ "$POD_IP" = "$MASTER_IP" ]; then
+                    MASTER_POD=$pod
+                    echo "Master IP $MASTER_IP resolves to pod $MASTER_POD"
+                    break
+                  fi
+                done
+              fi
+
+              # If sentinel didn't help, probe each node directly
+              if [ -z "$MASTER_POD" ]; then
+                echo "Probing nodes directly to find master..."
+                for pod in $nodes; do
+                  POD_FQDN="${pod}.homarr-redis-headless.${NAMESPACE}.svc.cluster.local"
+                  ROLE=$(redis-cli -h "$POD_FQDN" -a "$REDIS_PASSWORD" --no-auth-warning info replication 2>/dev/null | grep "role:" | cut -d: -f2 | tr -d '\r\n' || echo "")
+                  if [ "$ROLE" = "master" ]; then
+                    MASTER_POD=$pod
+                    echo "Found master at $MASTER_POD via direct probe"
+                    break
+                  fi
+                done
+              fi
+
+              # If still no master (fresh cluster), redis-0 becomes initial master
+              if [ -z "$MASTER_POD" ]; then
+                MASTER_POD="homarr-redis-0"
+                echo "No master found (fresh cluster), defaulting to $MASTER_POD"
+              fi
+
+              # Configure as replica if we're not the master
+              if [ "$MY_HOSTNAME" != "$MASTER_POD" ]; then
+                MASTER_FQDN="${MASTER_POD}.homarr-redis-headless.${NAMESPACE}.svc.cluster.local"
+                echo "replicaof $MASTER_FQDN 6379" >> /etc/redis/redis.conf
+                echo "Configured as replica of $MASTER_FQDN"
+              else
+                echo "This node ($MY_HOSTNAME) is the master"
+              fi
+
+              echo "Configuration complete for $MY_HOSTNAME"
+              cat /etc/redis/redis.conf
       containers:
-      - name: redis
-        image: docker.io/redis:7.4-alpine
+        - name: redis
+          image: docker.io/redis:7.4-alpine
   volumeClaimTemplates:
-  - metadata:
-      name: data
-    spec:
-      accessModes:
-      - ReadWriteOnce
-      storageClassName: ceph-rbd
-      resources:
-        requests:
-          storage: 2Gi
+    - metadata:
+        name: data
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        storageClassName: ceph-rbd
+        resources:
+          requests:
+            storage: 2Gi
