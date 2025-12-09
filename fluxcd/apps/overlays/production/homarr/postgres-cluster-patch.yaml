@@ -21,7 +21,7 @@ spec:
 
     parameters:
       shared_buffers: "128MB"
-      max_connections: "50"
+      max_connections: "150"
       # Faster detection of primary failure
       wal_receiver_timeout: "5s"
 
