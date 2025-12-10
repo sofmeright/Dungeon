@@ -5,7 +5,7 @@ metadata:
 spec:
   clusterSize: 3
   kubernetesConfig:
-    image: quay.io/opstree/redis-sentinel:v7.4.1
+    image: quay.io/opstree/redis-sentinel:v7.4.7
     imagePullPolicy: IfNotPresent
     redisSecret:
       name: homarr-redis-password
