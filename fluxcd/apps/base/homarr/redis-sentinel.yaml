@@ -4,6 +4,10 @@ metadata:
   name: homarr-sentinel
 spec:
   clusterSize: 3
+  podSecurityContext:
+    runAsUser: 1000
+    runAsGroup: 1000
+    fsGroup: 1000
   kubernetesConfig:
     image: quay.io/opstree/redis-sentinel:v7.4.7
     imagePullPolicy: IfNotPresent
