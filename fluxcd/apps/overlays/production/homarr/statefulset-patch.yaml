@@ -45,7 +45,7 @@ spec:
             - name: REDIS_IS_EXTERNAL
               value: "true"
             - name: REDIS_HOST
-              value: "homarr-redis-leader"
+              value: "homarr-redis-master"
             - name: REDIS_PORT
               value: "6379"
             - name: REDIS_PASSWORD
