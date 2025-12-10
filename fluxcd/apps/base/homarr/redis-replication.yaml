@@ -1,0 +1,30 @@
+apiVersion: redis.redis.opstreelabs.in/v1beta2
+kind: RedisReplication
+metadata:
+  name: homarr-redis
+spec:
+  clusterSize: 3
+  kubernetesConfig:
+    image: redis:7.4-alpine
+    imagePullPolicy: IfNotPresent
+    redisSecret:
+      name: homarr-redis-password
+      key: password
+    resources:
+      requests:
+        cpu: 100m
+        memory: 128Mi
+      limits:
+        cpu: 500m
+        memory: 256Mi
+  storage:
+    volumeClaimTemplate:
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        storageClassName: PLACEHOLDER_STORAGE_CLASS
+        resources:
+          requests:
+            storage: PLACEHOLDER_STORAGE_SIZE
+  redisConfig:
+    additionalRedisConfig: homarr-redis-config

@@ -1,0 +1,27 @@
+apiVersion: redis.redis.opstreelabs.in/v1beta2
+kind: RedisSentinel
+metadata:
+  name: homarr-sentinel
+spec:
+  clusterSize: 3
+  kubernetesConfig:
+    image: redis:7.4-alpine
+    imagePullPolicy: IfNotPresent
+    redisSecret:
+      name: homarr-redis-password
+      key: password
+    resources:
+      requests:
+        cpu: 50m
+        memory: 64Mi
+      limits:
+        cpu: 200m
+        memory: 128Mi
+  redisSentinelConfig:
+    redisReplicationName: homarr-redis
+    masterGroupName: homarr-redis
+    redisPort: "6379"
+    quorum: "2"
+    parallelSyncs: "1"
+    failoverTimeout: "180000"
+    downAfterMilliseconds: "30000"

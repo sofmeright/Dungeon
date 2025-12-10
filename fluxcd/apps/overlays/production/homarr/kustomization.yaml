@@ -24,14 +24,10 @@ patches:
     target:
       kind: ExternalSecret
       name: homarr-postgres-credentials
-  - path: redis-statefulset-patch.yaml
+  - path: redis-replication-patch.yaml
     target:
-      kind: StatefulSet
+      kind: RedisReplication
       name: homarr-redis
-  - path: redis-sentinel-patch.yaml
-    target:
-      kind: StatefulSet
-      name: homarr-sentinel
   - path: externalsecret-redis-patch.yaml
     target:
       kind: ExternalSecret

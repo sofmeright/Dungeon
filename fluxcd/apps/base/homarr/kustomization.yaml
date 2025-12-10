@@ -7,8 +7,6 @@ resources:
   - postgres-cluster.yaml
   - externalsecret-postgres.yaml
   - redis-configmap.yaml
-  - redis-statefulset.yaml
-  - redis-service.yaml
-  - redis-sentinel-configmap.yaml
-  - redis-sentinel-statefulset.yaml
+  - redis-replication.yaml
+  - redis-sentinel.yaml
   - externalsecret-redis.yaml
