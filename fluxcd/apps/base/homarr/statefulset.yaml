@@ -14,72 +14,74 @@ spec:
         app: homarr
     spec:
       containers:
-      - name: homarr
-        image: ghcr.io/homarr-labs/homarr:latest
-        ports:
-        - name: http
-          containerPort: 7575
-          protocol: TCP
-        env:
-        - name: DATABASE_URL
-          value: PLACEHOLDER_DATABASE_URL
-        - name: NEXTAUTH_URL
-          value: PLACEHOLDER_NEXTAUTH_URL
-        - name: AUTH_PROVIDERS
-          value: PLACEHOLDER_AUTH_PROVIDERS
-        - name: AUTH_OIDC_URI
-          value: PLACEHOLDER_AUTH_OIDC_URI
-        - name: AUTH_OIDC_ISSUER
-          value: PLACEHOLDER_AUTH_OIDC_ISSUER
-        - name: AUTH_OIDC_CLIENT_NAME
-          value: PLACEHOLDER_AUTH_OIDC_CLIENT_NAME
-        - name: AUTH_OIDC_AUTO_LOGIN
-          value: PLACEHOLDER_AUTH_OIDC_AUTO_LOGIN
-        envFrom:
-        - secretRef:
-            name: homarr-secrets
-        volumeMounts:
-        - name: PLACEHOLDER_NAMESPACE-homarr-sqlite
-          mountPath: /appdata/db
-        - name: PLACEHOLDER_NAMESPACE-homarr-images
-          mountPath: /images
-        livenessProbe:
-          httpGet:
-            path: /api/health/live
-            port: http
-          initialDelaySeconds: 10
-          timeoutSeconds: 5
-          periodSeconds: 10
-        readinessProbe:
-          httpGet:
-            path: /api/health/ready
-            port: http
-          initialDelaySeconds: 5
-          timeoutSeconds: 5
-          periodSeconds: 5
+        - name: homarr
+          image: ghcr.io/homarr-labs/homarr:latest
+          ports:
+            - name: http
+              containerPort: 7575
+              protocol: TCP
+          env:
+            - name: PORT
+              value: "7575"
+            - name: DATABASE_URL
+              value: PLACEHOLDER_DATABASE_URL
+            - name: NEXTAUTH_URL
+              value: PLACEHOLDER_NEXTAUTH_URL
+            - name: AUTH_PROVIDERS
+              value: PLACEHOLDER_AUTH_PROVIDERS
+            - name: AUTH_OIDC_URI
+              value: PLACEHOLDER_AUTH_OIDC_URI
+            - name: AUTH_OIDC_ISSUER
+              value: PLACEHOLDER_AUTH_OIDC_ISSUER
+            - name: AUTH_OIDC_CLIENT_NAME
+              value: PLACEHOLDER_AUTH_OIDC_CLIENT_NAME
+            - name: AUTH_OIDC_AUTO_LOGIN
+              value: PLACEHOLDER_AUTH_OIDC_AUTO_LOGIN
+          envFrom:
+            - secretRef:
+                name: homarr-secrets
+          volumeMounts:
+            - name: PLACEHOLDER_NAMESPACE-homarr-sqlite
+              mountPath: /appdata/db
+            - name: PLACEHOLDER_NAMESPACE-homarr-images
+              mountPath: /images
+          livenessProbe:
+            httpGet:
+              path: /api/health/live
+              port: http
+            initialDelaySeconds: 10
+            timeoutSeconds: 5
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /api/health/ready
+              port: http
+            initialDelaySeconds: 5
+            timeoutSeconds: 5
+            periodSeconds: 5
+          resources:
+            requests:
+              memory: 256Mi
+              cpu: 100m
+            limits:
+              memory: 1Gi
+              cpu: 1000m
+  volumeClaimTemplates:
+    - metadata:
+        name: PLACEHOLDER_NAMESPACE-homarr-sqlite
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        storageClassName: PLACEHOLDER_STORAGE_CLASS
         resources:
           requests:
-            memory: 256Mi
-            cpu: 100m
-          limits:
-            memory: 1Gi
-            cpu: 1000m
-  volumeClaimTemplates:
-  - metadata:
-      name: PLACEHOLDER_NAMESPACE-homarr-sqlite
-    spec:
-      accessModes:
-      - ReadWriteOnce
-      storageClassName: PLACEHOLDER_STORAGE_CLASS
-      resources:
-        requests:
-          storage: PLACEHOLDER_DATABASE_SIZE
-  - metadata:
-      name: PLACEHOLDER_NAMESPACE-homarr-images
-    spec:
-      accessModes:
-      - ReadWriteOnce
-      storageClassName: PLACEHOLDER_STORAGE_CLASS
-      resources:
-        requests:
-          storage: PLACEHOLDER_IMAGES_SIZE
+            storage: PLACEHOLDER_DATABASE_SIZE
+    - metadata:
+        name: PLACEHOLDER_NAMESPACE-homarr-images
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        storageClassName: PLACEHOLDER_STORAGE_CLASS
+        resources:
+          requests:
+            storage: PLACEHOLDER_IMAGES_SIZE
