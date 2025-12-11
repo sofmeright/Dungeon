@@ -29,3 +29,7 @@ spec:
     parallelSyncs: "1"
     failoverTimeout: "180000"
     downAfterMilliseconds: "30000"
+    redisReplicationPassword:
+      secretKeyRef:
+        name: homarr-redis-password
+        key: password
