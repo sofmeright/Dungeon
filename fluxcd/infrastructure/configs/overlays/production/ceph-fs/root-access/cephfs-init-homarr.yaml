@@ -1,0 +1,45 @@
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: cephfs-init-homarr
+  namespace: gorons-bracelet
+spec:
+  ttlSecondsAfterFinished: 300
+  template:
+    spec:
+      restartPolicy: OnFailure
+      initContainers:
+        - name: mkdir-structure
+          image: docker.jcr.pcfae.com/library/alpine:latest
+          command:
+            - /bin/sh
+            - -c
+            - |
+              set -e
+              echo "Creating directory structure in CephFS..."
+              mkdir -p /cephfs/dungeon/nvme/apps/homarr/images
+
+              echo "Setting ownership to UID/GID 1000 (homarr)..."
+              chown -R 1000:1000 /cephfs/dungeon/nvme/apps/homarr
+
+              echo "Setting permissions..."
+              chmod -R 755 /cephfs/dungeon/nvme/apps/homarr
+
+              echo "Directory structure created successfully!"
+          volumeMounts:
+            - name: cephfs-root
+              mountPath: /cephfs
+      containers:
+        - name: completion
+          image: docker.jcr.pcfae.com/library/alpine:latest
+          command:
+            - /bin/sh
+            - -c
+            - |
+              echo "Homarr CephFS initialization complete!"
+              exit 0
+      volumes:
+        - name: cephfs-root
+          persistentVolumeClaim:
+            claimName: gorons-bracelet-cephfs-root

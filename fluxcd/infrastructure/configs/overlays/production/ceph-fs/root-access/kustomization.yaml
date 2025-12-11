@@ -6,3 +6,4 @@ resources:
   - cephfs-init-grafana.yaml
   - cephfs-init-ark-sa.yaml
   - cephfs-init-mimir.yaml
+  - cephfs-init-homarr.yaml

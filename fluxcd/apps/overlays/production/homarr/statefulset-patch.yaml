@@ -11,7 +11,9 @@ spec:
           volumeMounts:
             - $patch: delete
               name: lost-woods-homarr-sqlite
-            - name: lost-woods-homarr-images
+            - $patch: delete
+              name: lost-woods-homarr-images
+            - name: homarr-images-shared
               mountPath: /images
           env:
             - name: HOSTNAME
@@ -82,13 +84,7 @@ spec:
                   key: password
             - name: AUTH_TRUST_HOST
               value: "true"
-  volumeClaimTemplates:
-    - metadata:
-        name: lost-woods-homarr-images
-      spec:
-        accessModes:
-          - ReadWriteOnce
-        storageClassName: ceph-rbd-templated
-        resources:
-          requests:
-            storage: 2Gi
+      volumes:
+        - name: homarr-images-shared
+          persistentVolumeClaim:
+            claimName: homarr-images
