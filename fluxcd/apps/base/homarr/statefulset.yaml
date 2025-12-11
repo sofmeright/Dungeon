@@ -38,11 +38,7 @@ spec:
           envFrom:
             - secretRef:
                 name: homarr-secrets
-          volumeMounts:
-            - name: PLACEHOLDER_NAMESPACE-homarr-sqlite
-              mountPath: /appdata/db
-            - name: PLACEHOLDER_NAMESPACE-homarr-images
-              mountPath: /images
+          volumeMounts: []
           livenessProbe:
             httpGet:
               path: /api/health/live
@@ -66,22 +62,3 @@ spec:
             limits:
               memory: 1Gi
               cpu: 1000m
-  volumeClaimTemplates:
-    - metadata:
-        name: PLACEHOLDER_NAMESPACE-homarr-sqlite
-      spec:
-        accessModes:
-          - ReadWriteOnce
-        storageClassName: PLACEHOLDER_STORAGE_CLASS
-        resources:
-          requests:
-            storage: PLACEHOLDER_DATABASE_SIZE
-    - metadata:
-        name: PLACEHOLDER_NAMESPACE-homarr-images
-      spec:
-        accessModes:
-          - ReadWriteOnce
-        storageClassName: PLACEHOLDER_STORAGE_CLASS
-        resources:
-          requests:
-            storage: PLACEHOLDER_IMAGES_SIZE

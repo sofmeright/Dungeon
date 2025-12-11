@@ -9,10 +9,6 @@ spec:
       containers:
         - name: homarr
           volumeMounts:
-            - $patch: delete
-              name: lost-woods-homarr-sqlite
-            - $patch: delete
-              name: lost-woods-homarr-images
             - name: homarr-images-shared
               mountPath: /images
           env:
