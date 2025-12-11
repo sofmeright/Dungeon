@@ -21,8 +21,6 @@ spec:
               containerPort: 7575
               protocol: TCP
           env:
-            - name: PORT
-              value: "7575"
             - name: DATABASE_URL
               value: PLACEHOLDER_DATABASE_URL
             - name: NEXTAUTH_URL
