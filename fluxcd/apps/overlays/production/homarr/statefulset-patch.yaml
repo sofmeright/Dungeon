@@ -15,7 +15,9 @@ spec:
               mountPath: /images
           env:
             - name: HOSTNAME
-              value: "127.0.0.1"
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
             - name: DATABASE_URL
               value: ""
             - name: POSTGRES_PASSWORD
