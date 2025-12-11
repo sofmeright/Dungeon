@@ -15,7 +15,7 @@ spec:
               mountPath: /images
           env:
             - name: HOSTNAME
-              value: "0.0.0.0"
+              value: "127.0.0.1"
             - name: DATABASE_URL
               value: ""
             - name: POSTGRES_PASSWORD
