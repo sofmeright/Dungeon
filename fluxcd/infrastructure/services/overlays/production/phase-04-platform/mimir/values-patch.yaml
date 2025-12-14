@@ -220,6 +220,7 @@ spec:
           ingestion_burst_size: 240000  # Burst capacity for traffic spikes
           max_query_parallelism: 32  # Max concurrent query operations
           max_label_names_per_series: 50  # Increased from default 30 to support Docker Compose labels
-          # Out-of-order window matches TSDB block range (2h) - allows recovery from power outages
-          # Enables acceptance of late-arriving samples within 2-hour window
-          out_of_order_time_window: 2h  # Must match blocks_storage.tsdb.block_ranges_period
+          # Out-of-order window - allows acceptance of late-arriving samples
+          # Increased to 6h to handle metric pipeline backlog and Alloy queue delays
+          # See: https://github.com/grafana/mimir/discussions/10830
+          out_of_order_time_window: 6h
