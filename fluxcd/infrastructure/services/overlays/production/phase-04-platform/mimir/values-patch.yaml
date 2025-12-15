@@ -177,7 +177,7 @@ spec:
           # Limit in-memory series to prevent OOM and encourage flushing to disk/S3
           instance_limits:
             max_series: 1500000  # Max series per ingester instance
-            max_ingestion_rate: 80000  # Max samples/sec per ingester (with 3 replicas = 240k total)
+            max_ingestion_rate: 200000  # Max samples/sec per ingester (increased from 80k for initial data load)
           # Close idle TSDB heads faster to free up disk space
           tsdb_config_update_period: 15s  # Check for config updates every 15s
 
@@ -216,8 +216,8 @@ spec:
           max_global_series_per_user: 0  # Unlimited series (use ingester instance_limits instead)
           # REDUCED from 200k/400k - previous rate caused 10Gi disks to fill in 18 hours
           # New rate (120k/240k total with 3 ingesters) balances performance with 50Gi disk capacity (~7 days at current load)
-          ingestion_rate: 120000  # Max samples/sec per user across all distributors
-          ingestion_burst_size: 240000  # Burst capacity for traffic spikes
+          ingestion_rate: 500000  # Max samples/sec per user across all distributors (increased for initial load)
+          ingestion_burst_size: 1000000  # Burst capacity for traffic spikes (increased)
           max_query_parallelism: 32  # Max concurrent query operations
           max_label_names_per_series: 50  # Increased from default 30 to support Docker Compose labels
           # Out-of-order window - allows acceptance of late-arriving samples
