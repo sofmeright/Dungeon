@@ -108,10 +108,10 @@ spec:
       resources:
         requests:
           cpu: 200m
-          memory: 1Gi
+          memory: 2Gi
         limits:
-          cpu: 1
-          memory: 2Gi  # Sufficient for normal operations with adjusted ingestion rate
+          cpu: 2
+          memory: 4Gi  # Increased for handling large sample backlogs during recovery
 
     # Ingest Storage DISABLED - using classic mode with direct S3 writes
     ingest_storage:
