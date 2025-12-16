@@ -581,6 +581,14 @@ data:
     discovery.relabel "pods_metrics" {
       targets = discovery.kubernetes.pods.targets
 
+      // Drop Mimir pods - they use memberlist and get overwhelmed by HTTP scrape attempts on port 7946
+      // Mimir exposes metrics via ServiceMonitor which is handled separately
+      rule {
+        source_labels = ["__meta_kubernetes_pod_label_app_kubernetes_io_name"]
+        regex         = "mimir"
+        action        = "drop"
+      }
+
       // Add namespace label
       rule {
         source_labels = ["__meta_kubernetes_namespace"]
@@ -635,6 +643,13 @@ data:
     // Relabel service metrics targets for better organization
     discovery.relabel "services_metrics" {
       targets = discovery.kubernetes.services.targets
+
+      // Drop Mimir services - they use memberlist and have their own scraping setup
+      rule {
+        source_labels = ["__meta_kubernetes_service_label_app_kubernetes_io_name"]
+        regex         = "mimir"
+        action        = "drop"
+      }
 
       // Add namespace label
       rule {
