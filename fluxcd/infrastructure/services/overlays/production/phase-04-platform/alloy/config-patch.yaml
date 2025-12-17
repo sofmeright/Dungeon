@@ -35,16 +35,16 @@ data:
       endpoint {
         url = "http://mimir-distributor.gossip-stone.svc.cluster.local:8080/api/v1/push"
 
-        // Queue config to reduce out-of-order sample issues
-        // See: https://github.com/grafana/mimir/discussions/10830
+        // Queue config tuned for stability
+        // Reduced parallelism to prevent overwhelming Mimir distributors
         queue_config {
-          capacity          = 10000
-          max_shards        = 50
+          capacity          = 5000
+          max_shards        = 10
           min_shards        = 1
-          max_samples_per_send = 2000
-          batch_send_deadline  = "5s"
-          min_backoff       = "30ms"
-          max_backoff       = "5s"
+          max_samples_per_send = 1000
+          batch_send_deadline  = "10s"
+          min_backoff       = "100ms"
+          max_backoff       = "10s"
           retry_on_http_429 = true
         }
       }
