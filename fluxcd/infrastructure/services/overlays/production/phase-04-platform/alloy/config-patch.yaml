@@ -35,16 +35,16 @@ data:
       endpoint {
         url = "http://mimir-distributor.gossip-stone.svc.cluster.local:8080/api/v1/push"
 
-        // Queue config tuned for stability
-        // Reduced parallelism to prevent overwhelming Mimir distributors
+        // Queue config tuned for stability - minimal parallelism
+        // Distributors have limited memory, keep load gentle
         queue_config {
-          capacity          = 5000
-          max_shards        = 10
+          capacity          = 2500
+          max_shards        = 4
           min_shards        = 1
-          max_samples_per_send = 1000
-          batch_send_deadline  = "10s"
-          min_backoff       = "100ms"
-          max_backoff       = "10s"
+          max_samples_per_send = 500
+          batch_send_deadline  = "15s"
+          min_backoff       = "500ms"
+          max_backoff       = "30s"
           retry_on_http_429 = true
         }
       }

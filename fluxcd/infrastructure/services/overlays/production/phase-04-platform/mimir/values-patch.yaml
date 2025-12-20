@@ -28,14 +28,15 @@ spec:
                       values:
                         - ingester
                 topologyKey: kubernetes.io/hostname
-      # Resource limits - increased memory to prevent GC pressure during high cardinality ingestion
+      # Resource limits for ingestion
+      # With out_of_order_time_window at 1h, 8Gi needed for current cardinality
       resources:
         requests:
           cpu: 200m
-          memory: 3Gi
+          memory: 4Gi
         limits:
           cpu: 2
-          memory: 6Gi
+          memory: 8Gi
 
     store_gateway:
       persistentVolume:
@@ -104,14 +105,15 @@ spec:
       enabled: false  # Using Alloy service discovery instead
 
     # Distributor resource limits - handles metrics ingestion and routing
+    # Memory increased to 8Gi - OOMKilled at 4Gi and 6Gi under heavy Alloy load
     distributor:
       resources:
         requests:
           cpu: 200m
-          memory: 2Gi
+          memory: 4Gi
         limits:
           cpu: 2
-          memory: 4Gi  # Increased for handling large sample backlogs during recovery
+          memory: 8Gi
 
     # Ingest Storage DISABLED - using classic mode with direct S3 writes
     ingest_storage:
@@ -221,6 +223,5 @@ spec:
           max_query_parallelism: 32  # Max concurrent query operations
           max_label_names_per_series: 50  # Increased from default 30 to support Docker Compose labels
           # Out-of-order window - allows acceptance of late-arriving samples
-          # Increased to 6h to handle metric pipeline backlog and Alloy queue delays
-          # See: https://github.com/grafana/mimir/discussions/10830
-          out_of_order_time_window: 6h
+          # Reduced to 1h - 6h caused ingesters to OOM (needed 18Gi+ memory)
+          out_of_order_time_window: 1h

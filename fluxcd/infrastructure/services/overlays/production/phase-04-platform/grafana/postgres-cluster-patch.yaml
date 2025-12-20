@@ -25,6 +25,9 @@ spec:
       max_connections: "50"
       # Faster detection of primary failure
       wal_receiver_timeout: "5s"
+      # WAL retention limits - prevent disk from filling
+      wal_keep_size: "128MB"  # Reduced from 512MB default
+      max_slot_wal_keep_size: "512MB"  # Invalidate dead replica slots before disk fills
 
   # Enable monitoring
   monitoring:
