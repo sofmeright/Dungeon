@@ -3,16 +3,19 @@ kind: StatefulSet
 metadata:
   name: libretranslate
 spec:
-  volumeClaimTemplates:
-  - metadata:
-      name: models
-      labels:
-        app: libretranslate
-        volume-type: models
+  template:
     spec:
-      storageClassName: ceph-rbd
-      accessModes:
-      - ReadWriteOnce
-      resources:
-        requests:
-          storage: 20Gi
+      runtimeClassName: nvidia
+  volumeClaimTemplates:
+    - metadata:
+        name: models
+        labels:
+          app: libretranslate
+          volume-type: models
+      spec:
+        storageClassName: ceph-rbd
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 20Gi
