@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: precisionplanit-site
+spec:
+  selector:
+    app: precisionplanit-site
+  ports:
+    - port: 80
+      targetPort: http
+      name: http

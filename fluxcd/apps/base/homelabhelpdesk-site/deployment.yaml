@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: homelabhelpdesk-site
+  labels:
+    app: homelabhelpdesk-site
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: homelabhelpdesk-site
+  template:
+    metadata:
+      labels:
+        app: homelabhelpdesk-site
+    spec:
+      containers:
+        - name: homelabhelpdesk-site
+          image: PLACEHOLDER_IMAGE
+          ports:
+            - containerPort: 80
+              name: http
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "10m"
+            limits:
+              memory: "128Mi"
+              cpu: "100m"

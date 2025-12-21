@@ -1,0 +1,12 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: astralfocal-site
+spec:
+  template:
+    spec:
+      imagePullSecrets:
+        - name: cr-pcfae-admin-pull-secret
+      containers:
+        - name: astralfocal-site
+          image: cr.pcfae.com/prplanit/astralfocal.com:latest

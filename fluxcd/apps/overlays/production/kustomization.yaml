@@ -99,3 +99,13 @@ resources:
   - it-tools
   - mazanoke
   - podinfo
+  # Static Sites
+  - fairer-pages
+  - astralfocal-site
+  - enamorafoto-site
+  - etherealclique-site
+  - homelabhelpdesk-site
+  - kai-hamilton-site
+  - sofmeright-site
+  - precisionplanit-site
+  - yesimvegan-site

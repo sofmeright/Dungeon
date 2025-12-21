@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: yesimvegan-site
+  labels:
+    app: yesimvegan-site
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: yesimvegan-site
+  template:
+    metadata:
+      labels:
+        app: yesimvegan-site
+    spec:
+      containers:
+        - name: yesimvegan-site
+          image: PLACEHOLDER_IMAGE
+          ports:
+            - containerPort: 80
+              name: http
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "10m"
+            limits:
+              memory: "128Mi"
+              cpu: "100m"

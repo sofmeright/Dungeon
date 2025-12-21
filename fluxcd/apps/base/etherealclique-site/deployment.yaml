@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: etherealclique-site
+  labels:
+    app: etherealclique-site
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: etherealclique-site
+  template:
+    metadata:
+      labels:
+        app: etherealclique-site
+    spec:
+      containers:
+        - name: etherealclique-site
+          image: PLACEHOLDER_IMAGE
+          ports:
+            - containerPort: 80
+              name: http
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "10m"
+            limits:
+              memory: "128Mi"
+              cpu: "100m"

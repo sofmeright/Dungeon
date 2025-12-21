@@ -1,0 +1,12 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: homelabhelpdesk-site
+spec:
+  template:
+    spec:
+      imagePullSecrets:
+        - name: cr-pcfae-admin-pull-secret
+      containers:
+        - name: homelabhelpdesk-site
+          image: cr.pcfae.com/prplanit/homelabhelpdesk.com:latest

@@ -1,0 +1,12 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kai-hamilton-site
+spec:
+  template:
+    spec:
+      imagePullSecrets:
+        - name: cr-pcfae-admin-pull-secret
+      containers:
+        - name: kai-hamilton-site
+          image: cr.pcfae.com/prplanit/kai-hamilton.com:latest

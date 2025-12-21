@@ -1,0 +1,12 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: yesimvegan-site
+spec:
+  template:
+    spec:
+      imagePullSecrets:
+        - name: cr-pcfae-admin-pull-secret
+      containers:
+        - name: yesimvegan-site
+          image: cr.pcfae.com/prplanit/yesimvegan.com:latest

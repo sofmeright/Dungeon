@@ -1,0 +1,12 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: enamorafoto-site
+spec:
+  template:
+    spec:
+      imagePullSecrets:
+        - name: cr-pcfae-admin-pull-secret
+      containers:
+        - name: enamorafoto-site
+          image: cr.pcfae.com/prplanit/enamorafoto.com:latest
