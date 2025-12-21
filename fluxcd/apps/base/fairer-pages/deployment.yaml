@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: fairer-pages
-          image: prplanit/fairer-pages:latest
+          image: docker.io/prplanit/fairer-pages:latest
           ports:
             - containerPort: 80
               name: http
