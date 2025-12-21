@@ -19,8 +19,8 @@ spec:
               cpu: 100m
               memory: 256Mi
             limits:
-              cpu: 1000m
-              memory: 1Gi
+              cpu: 2000m
+              memory: 4Gi
   volumeClaimTemplates:
     - metadata:
         name: gossip-stone-uptime-kuma-data
