@@ -11,3 +11,7 @@ patches:
     target:
       kind: Deployment
       name: kai-hamilton-site
+  - path: service-patch.yaml
+    target:
+      kind: Service
+      name: kai-hamilton-site

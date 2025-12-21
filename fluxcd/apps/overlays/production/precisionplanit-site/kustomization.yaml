@@ -11,3 +11,7 @@ patches:
     target:
       kind: Deployment
       name: precisionplanit-site
+  - path: service-patch.yaml
+    target:
+      kind: Service
+      name: precisionplanit-site

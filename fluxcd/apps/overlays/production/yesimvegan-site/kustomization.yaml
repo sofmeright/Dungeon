@@ -11,3 +11,7 @@ patches:
     target:
       kind: Deployment
       name: yesimvegan-site
+  - path: service-patch.yaml
+    target:
+      kind: Service
+      name: yesimvegan-site

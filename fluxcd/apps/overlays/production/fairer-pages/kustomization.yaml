@@ -5,3 +5,9 @@ namespace: tingle-tuner
 
 resources:
   - ../../../base/fairer-pages
+
+patches:
+  - path: service-patch.yaml
+    target:
+      kind: Service
+      name: fairer-pages

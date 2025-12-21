@@ -11,3 +11,7 @@ patches:
     target:
       kind: Deployment
       name: sofmeright-site
+  - path: service-patch.yaml
+    target:
+      kind: Service
+      name: sofmeright-site

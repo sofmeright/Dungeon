@@ -11,3 +11,7 @@ patches:
     target:
       kind: Deployment
       name: homelabhelpdesk-site
+  - path: service-patch.yaml
+    target:
+      kind: Service
+      name: homelabhelpdesk-site

@@ -11,3 +11,7 @@ patches:
     target:
       kind: Deployment
       name: etherealclique-site
+  - path: service-patch.yaml
+    target:
+      kind: Service
+      name: etherealclique-site

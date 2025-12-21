@@ -11,3 +11,7 @@ patches:
     target:
       kind: Deployment
       name: enamorafoto-site
+  - path: service-patch.yaml
+    target:
+      kind: Service
+      name: enamorafoto-site
