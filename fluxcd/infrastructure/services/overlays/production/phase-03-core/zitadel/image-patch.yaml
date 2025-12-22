@@ -7,21 +7,21 @@ spec:
   template:
     spec:
       initContainers:
-      - name: wait-for-setup
-        image: docker.io/alpine/k8s:1.34.0
-        command:
-        - sh
-        - -c
-        - |
-          echo "Waiting for setup job to complete..."
-          until [ "$(kubectl get job zitadel-setup -n zeldas-lullaby -o jsonpath='{.status.succeeded}' 2>/dev/null)" = "1" ]; do
-            echo "Setup job not complete yet, waiting..."
-            sleep 5
-          done
-          echo "Setup job completed! Starting Zitadel..."
+        - name: wait-for-setup
+          image: docker.io/alpine/k8s:1.34.0
+          command:
+            - sh
+            - -c
+            - |
+              echo "Waiting for setup job to complete..."
+              until [ "$(kubectl get job zitadel-setup -n zeldas-lullaby -o jsonpath='{.status.succeeded}' 2>/dev/null)" = "1" ]; do
+                echo "Setup job not complete yet, waiting..."
+                sleep 5
+              done
+              echo "Setup job completed! Starting Zitadel..."
       containers:
-      - name: zitadel
-        image: ghcr.io/zitadel/zitadel:v4.6.1
+        - name: zitadel
+          image: ghcr.io/zitadel/zitadel:v4.7.2
 ---
 apiVersion: batch/v1
 kind: Job
@@ -31,19 +31,19 @@ spec:
   template:
     spec:
       initContainers:
-      - name: wait-for-postgres
-        image: docker.io/postgres:16-alpine
-        command:
-        - sh
-        - -c
-        - |
-          until pg_isready -h zitadel-postgres-rw.zeldas-lullaby.svc.cluster.local -p 5432 -U postgres; do
-            echo "waiting for postgres"
-            sleep 2
-          done
+        - name: wait-for-postgres
+          image: docker.io/postgres:16-alpine
+          command:
+            - sh
+            - -c
+            - |
+              until pg_isready -h zitadel-postgres-rw.zeldas-lullaby.svc.cluster.local -p 5432 -U postgres; do
+                echo "waiting for postgres"
+                sleep 2
+              done
       containers:
-      - name: zitadel-init
-        image: ghcr.io/zitadel/zitadel:v4.6.1
+        - name: zitadel-init
+          image: ghcr.io/zitadel/zitadel:v4.7.2
 ---
 apiVersion: batch/v1
 kind: Job
@@ -53,17 +53,17 @@ spec:
   template:
     spec:
       initContainers:
-      - name: wait-for-db
-        image: docker.io/alpine/k8s:1.34.0
+        - name: wait-for-db
+          image: docker.io/alpine/k8s:1.34.0
       containers:
-      - name: zitadel-setup
-        image: ghcr.io/zitadel/zitadel:v4.6.1
-      - name: machinekey-writer
-        image: docker.io/alpine/k8s:1.34.0
-      - name: machine-pat-writer
-        image: docker.io/alpine/k8s:1.34.0
-      - name: login-client-pat-writer
-        image: docker.io/alpine/k8s:1.34.0
+        - name: zitadel-setup
+          image: ghcr.io/zitadel/zitadel:v4.7.2
+        - name: machinekey-writer
+          image: docker.io/alpine/k8s:1.34.0
+        - name: machine-pat-writer
+          image: docker.io/alpine/k8s:1.34.0
+        - name: login-client-pat-writer
+          image: docker.io/alpine/k8s:1.34.0
 ---
 apiVersion: batch/v1
 kind: Job
@@ -73,8 +73,8 @@ spec:
   template:
     spec:
       initContainers:
-      - name: wait-for-secret
-        image: registry.k8s.io/kubectl:v1.34.0
+        - name: wait-for-secret
+          image: registry.k8s.io/kubectl:v1.34.0
       containers:
-      - name: sync-to-vault
-        image: docker.jcr.pcfae.com/curlimages/curl:8.16.0
+        - name: sync-to-vault
+          image: docker.jcr.pcfae.com/curlimages/curl:8.16.0
