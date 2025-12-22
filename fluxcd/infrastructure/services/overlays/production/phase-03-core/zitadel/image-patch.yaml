@@ -77,4 +77,4 @@ spec:
           image: docker.io/alpine/k8s:1.34.0
       containers:
         - name: sync-to-vault
-          image: docker.jcr.pcfae.com/curlimages/curl:8.16.0
+          image: docker.io/alpine/k8s:1.34.0
