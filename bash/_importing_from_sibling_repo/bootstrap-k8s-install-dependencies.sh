@@ -66,6 +66,11 @@ net.ipv4.ip_forward                 = 1
 # IPv6 settings for dual-stack
 net.ipv6.conf.all.forwarding        = 1
 net.ipv6.conf.default.forwarding    = 1
+
+# inotify limits for Kubernetes workloads (Istio CNI, file watchers, etc.)
+# Default max_user_instances=128 is too low and causes "too many open files" errors
+fs.inotify.max_user_instances       = 8192
+fs.inotify.max_user_watches         = 1048576
 EOF
 
 # Apply sysctl params without reboot
