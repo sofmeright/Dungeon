@@ -1,5 +1,5 @@
-# Static PersistentVolumeClaims for Shinobi
-# These explicitly bind to named PVs
+# Dynamic PersistentVolumeClaims for Shinobi
+# Uses ceph-rbd-templated to create RBD images named after the PVC
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
@@ -8,8 +8,7 @@ metadata:
 spec:
   accessModes:
     - ReadWriteOnce
-  storageClassName: ceph-rbd-static
-  volumeName: kai-shinobi-app-0
+  storageClassName: ceph-rbd-templated
   resources:
     requests:
       storage: 10Gi
@@ -21,8 +20,7 @@ metadata:
 spec:
   accessModes:
     - ReadWriteOnce
-  storageClassName: ceph-rbd-static
-  volumeName: kai-shinobi-streams-0
+  storageClassName: ceph-rbd-templated
   resources:
     requests:
       storage: 50Gi
@@ -34,8 +32,7 @@ metadata:
 spec:
   accessModes:
     - ReadWriteOnce
-  storageClassName: ceph-rbd-static
-  volumeName: kai-shinobi-mysql-0
+  storageClassName: ceph-rbd-templated
   resources:
     requests:
       storage: 20Gi
