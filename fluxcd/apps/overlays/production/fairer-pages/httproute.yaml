@@ -7,6 +7,15 @@ spec:
   parentRefs:
     - name: phloem-gateway
       namespace: kokiri-forest
+  hostnames:
+    - "*.sofmeright.com"
+    - "*.arbitorium.com"
+    - "*.yesimvegan.com"
+    - "sofmeright.com"
+    - "arbitorium.com"
+    - "yesimvegan.com"
+    - "astralfocal.com"
+    - "kai-hamilton.com"
   rules:
     - matches:
         - path:
