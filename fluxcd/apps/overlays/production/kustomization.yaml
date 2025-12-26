@@ -99,6 +99,8 @@ resources:
   - it-tools
   - mazanoke
   - podinfo
+  # External Services
+  - home-assistant-external
   # Static Sites
   - fairer-pages
   - astralfocal-site

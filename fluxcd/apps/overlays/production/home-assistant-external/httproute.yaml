@@ -1,27 +1,19 @@
 apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
 metadata:
-  name: fairer-pages
+  name: home-assistant
   namespace: tingle-tuner
 spec:
   parentRefs:
     - name: phloem-gateway
       namespace: kokiri-forest
   hostnames:
-    - "*.sofmeright.com"
-    - "*.arbitorium.com"
-    - "*.yesimvegan.com"
-    - "sofmeright.com"
-    - "arbitorium.com"
-    - "yesimvegan.com"
-    - "astralfocal.com"
-    - "kai-hamilton.com"
     - "hass.arbitorium.com"
   rules:
     - matches:
         - path:
             type: PathPrefix
-            value: /fairer-pages/
+            value: /
       backendRefs:
-        - name: fairer-pages
-          port: 8023
+        - name: home-assistant-external
+          port: 8123
