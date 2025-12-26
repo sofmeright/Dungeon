@@ -8,25 +8,7 @@ spec:
     labels:
       gateway.networking.k8s.io/gateway-name: phloem-gateway
   configPatches:
-    # Add cluster for fairer-pages service
-    - applyTo: CLUSTER
-      patch:
-        operation: ADD
-        value:
-          name: fairer-pages-cluster
-          type: STRICT_DNS
-          connect_timeout: 5s
-          lb_policy: ROUND_ROBIN
-          load_assignment:
-            cluster_name: fairer-pages-cluster
-            endpoints:
-              - lb_endpoints:
-                  - endpoint:
-                      address:
-                        socket_address:
-                          address: fairer-pages.tingle-tuner.svc.cluster.local
-                          port_value: 8023
-    # Add custom_response filter for error interception
+    # Add Lua filter for error interception
     - applyTo: HTTP_FILTER
       match:
         context: GATEWAY
@@ -39,34 +21,32 @@ spec:
       patch:
         operation: INSERT_BEFORE
         value:
-          name: envoy.filters.http.custom_response
+          name: envoy.filters.http.lua
           typed_config:
-            "@type": type.googleapis.com/envoy.extensions.filters.http.custom_response.v3.CustomResponse
-            custom_response_matcher:
-              matcher_list:
-                matchers:
-                  # 4xx errors
-                  - predicate:
-                      or_matcher:
-                        predicate:
-                          - single_predicate:
-                              input:
-                                name: status_code
-                                typed_config:
-                                  "@type": type.googleapis.com/envoy.type.matcher.v3.HttpResponseStatusCodeClassMatchInput
-                              value_match:
-                                exact: "4xx"
-                          - single_predicate:
-                              input:
-                                name: status_code
-                                typed_config:
-                                  "@type": type.googleapis.com/envoy.type.matcher.v3.HttpResponseStatusCodeClassMatchInput
-                              value_match:
-                                exact: "5xx"
-                    on_match:
-                      action:
-                        name: redirect_to_fairer_pages
-                        typed_config:
-                          "@type": type.googleapis.com/envoy.extensions.http.custom_response.redirect_policy.v3.RedirectPolicy
-                          status_code: 302
-                          uri: "/fairer-pages/random/%RESPONSE_CODE%.html"
+            "@type": type.googleapis.com/envoy.extensions.filters.http.lua.v3.Lua
+            defaultSourceCode:
+              inlineString: |
+                function envoy_on_response(response_handle)
+                  local status = response_handle:headers():get(":status")
+                  local status_num = tonumber(status)
+                  local path = response_handle:headers():get(":path") or ""
+
+                  -- Skip if already fetching error page
+                  if string.match(path, "^/fairer%-pages/") then
+                    return
+                  end
+
+                  -- Error codes to intercept
+                  local error_codes = {
+                    [400] = true, [401] = true, [403] = true, [404] = true,
+                    [405] = true, [408] = true, [410] = true, [429] = true,
+                    [500] = true, [502] = true, [503] = true, [504] = true
+                  }
+
+                  if error_codes[status_num] then
+                    -- Redirect to fairer-pages error page
+                    response_handle:headers():replace(":status", "302")
+                    response_handle:headers():add("location", "/fairer-pages/random/" .. status .. ".html")
+                    response_handle:headers():add("x-original-status", status)
+                  end
+                end
