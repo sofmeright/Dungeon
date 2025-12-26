@@ -5,6 +5,7 @@ namespace: lost-woods
 
 resources:
   - ../../../base/yesimvegan-site
+  - httproute.yaml
 
 patches:
   - path: deployment-patch.yaml

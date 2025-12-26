@@ -5,6 +5,7 @@ resources:
   - ../../../base/mealie
   - persistent-volumes.yaml
   - persistent-volume-claims.yaml
+  - httproute.yaml
 patches:
   - path: mealie-patch.yaml
     target:

@@ -6,6 +6,7 @@ namespace: lost-woods
 resources:
   - ../../../base/astralfocal-site
   - externalsecret-registry.yaml
+  - httproute.yaml
 
 patches:
   - path: deployment-patch.yaml

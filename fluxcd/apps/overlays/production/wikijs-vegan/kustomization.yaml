@@ -3,6 +3,7 @@ kind: Kustomization
 namespace: temple-of-time
 resources:
   - ../../../base/wikijs-vegan
+  - httproute.yaml
 patches:
   - path: statefulset-db-patch.yaml
     target:

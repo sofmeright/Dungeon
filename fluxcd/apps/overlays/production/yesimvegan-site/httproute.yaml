@@ -1,0 +1,18 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: yesimvegan-site
+spec:
+  parentRefs:
+    - name: phloem-gateway
+      namespace: kokiri-forest
+  hostnames:
+    - "yesimvegan.com"
+  rules:
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /
+      backendRefs:
+        - name: yesimvegan-site
+          port: 4022

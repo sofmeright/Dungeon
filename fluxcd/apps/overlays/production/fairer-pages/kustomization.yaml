@@ -5,6 +5,7 @@ namespace: tingle-tuner
 
 resources:
   - ../../../base/fairer-pages
+  - httproute.yaml
 
 patches:
   - path: service-patch.yaml

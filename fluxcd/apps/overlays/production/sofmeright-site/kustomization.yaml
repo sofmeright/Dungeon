@@ -5,6 +5,7 @@ namespace: lost-woods
 
 resources:
   - ../../../base/sofmeright-site
+  - httproute.yaml
 
 patches:
   - path: deployment-patch.yaml

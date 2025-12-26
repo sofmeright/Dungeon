@@ -1,0 +1,72 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: EnvoyFilter
+metadata:
+  name: fairer-pages-error-handler
+  namespace: kokiri-forest
+spec:
+  workloadSelector:
+    labels:
+      gateway.networking.k8s.io/gateway-name: phloem-gateway
+  configPatches:
+    # Add cluster for fairer-pages service
+    - applyTo: CLUSTER
+      patch:
+        operation: ADD
+        value:
+          name: fairer-pages-cluster
+          type: STRICT_DNS
+          connect_timeout: 5s
+          lb_policy: ROUND_ROBIN
+          load_assignment:
+            cluster_name: fairer-pages-cluster
+            endpoints:
+              - lb_endpoints:
+                  - endpoint:
+                      address:
+                        socket_address:
+                          address: fairer-pages.tingle-tuner.svc.cluster.local
+                          port_value: 8023
+    # Add custom_response filter for error interception
+    - applyTo: HTTP_FILTER
+      match:
+        context: GATEWAY
+        listener:
+          filterChain:
+            filter:
+              name: envoy.filters.network.http_connection_manager
+              subFilter:
+                name: envoy.filters.http.router
+      patch:
+        operation: INSERT_BEFORE
+        value:
+          name: envoy.filters.http.custom_response
+          typed_config:
+            "@type": type.googleapis.com/envoy.extensions.filters.http.custom_response.v3.CustomResponse
+            custom_response_matcher:
+              matcher_list:
+                matchers:
+                  # 4xx errors
+                  - predicate:
+                      or_matcher:
+                        predicate:
+                          - single_predicate:
+                              input:
+                                name: status_code
+                                typed_config:
+                                  "@type": type.googleapis.com/envoy.type.matcher.v3.HttpResponseStatusCodeClassMatchInput
+                              value_match:
+                                exact: "4xx"
+                          - single_predicate:
+                              input:
+                                name: status_code
+                                typed_config:
+                                  "@type": type.googleapis.com/envoy.type.matcher.v3.HttpResponseStatusCodeClassMatchInput
+                              value_match:
+                                exact: "5xx"
+                    on_match:
+                      action:
+                        name: redirect_to_fairer_pages
+                        typed_config:
+                          "@type": type.googleapis.com/envoy.extensions.http.custom_response.redirect_policy.v3.RedirectPolicy
+                          status_code: 302
+                          uri: "/fairer-pages/random/%RESPONSE_CODE%.html"
