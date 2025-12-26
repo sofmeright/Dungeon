@@ -26,15 +26,23 @@ spec:
             "@type": type.googleapis.com/envoy.extensions.filters.http.lua.v3.Lua
             defaultSourceCode:
               inlineString: |
-                function envoy_on_response(response_handle)
-                  local status = response_handle:headers():get(":status")
-                  local status_num = tonumber(status)
-                  local path = response_handle:headers():get(":path") or ""
-
-                  -- Skip if already fetching error page
+                function envoy_on_request(request_handle)
+                  local path = request_handle:headers():get(":path") or ""
+                  -- Mark fairer-pages requests to skip error handling
                   if string.match(path, "^/fairer%-pages/") then
+                    request_handle:streamInfo():dynamicMetadata():set("fairer_pages", "skip", "true")
+                  end
+                end
+
+                function envoy_on_response(response_handle)
+                  -- Skip if this is a fairer-pages request
+                  local skip = response_handle:streamInfo():dynamicMetadata():get("fairer_pages")
+                  if skip and skip["skip"] == "true" then
                     return
                   end
+
+                  local status = response_handle:headers():get(":status")
+                  local status_num = tonumber(status)
 
                   -- Error codes to intercept
                   local error_codes = {
