@@ -1,5 +1,4 @@
-# Service for external Home Assistant
-# The actual routing is handled by ServiceEntry
+# Headless service for external Home Assistant
 apiVersion: v1
 kind: Service
 metadata:
@@ -11,3 +10,16 @@ spec:
       targetPort: 8123
       protocol: TCP
       name: http
+---
+# Manual Endpoints pointing to external Home Assistant IP
+apiVersion: v1
+kind: Endpoints
+metadata:
+  name: home-assistant-external
+  namespace: tingle-tuner
+subsets:
+  - addresses:
+      - ip: 10.55.6.149
+    ports:
+      - port: 8123
+        name: http
