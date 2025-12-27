@@ -4,3 +4,4 @@ namespace: tingle-tuner
 resources:
   - service.yaml
   - httproute.yaml
+  - destinationrule.yaml
