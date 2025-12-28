@@ -11,3 +11,4 @@ patches:
   - path: externalsecret-patch.yaml
   - path: pv-smb-patch.yaml
   - path: storageclass-patch.yaml
+  - path: service-patch.yaml
