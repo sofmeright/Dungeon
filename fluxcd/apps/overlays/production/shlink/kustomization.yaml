@@ -13,3 +13,4 @@ patches:
   - path: statefulset-db-patch.yaml
   - path: deployment-web-client-patch.yaml
   - path: service-patch.yaml
+  - path: pvc-patch.yaml
