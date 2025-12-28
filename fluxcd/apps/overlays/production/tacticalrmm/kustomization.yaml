@@ -3,6 +3,7 @@ kind: Kustomization
 namespace: hookshot
 resources:
   - ../../../base/tacticalrmm
+  - httproute.yaml
 patches:
   - path: externalsecret-patch.yaml
     target:

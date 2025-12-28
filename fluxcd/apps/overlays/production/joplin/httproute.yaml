@@ -1,0 +1,19 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: joplin
+  namespace: temple-of-time
+spec:
+  parentRefs:
+    - name: cell-membrane-gateway
+      namespace: hyrule-castle
+  hostnames:
+    - "joplin.optcp.com"
+  rules:
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /
+      backendRefs:
+        - name: joplin-app
+          port: 22300

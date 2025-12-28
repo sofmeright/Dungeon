@@ -115,3 +115,29 @@ spec:
   dnsNames:
     - "*.yesimvegan.com"
     - "yesimvegan.com"
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: homelabhelpdesk-com-tls
+spec:
+  secretName: homelabhelpdesk-com-tls
+  issuerRef:
+    name: letsencrypt-production
+    kind: ClusterIssuer
+  dnsNames:
+    - "*.homelabhelpdesk.com"
+    - "homelabhelpdesk.com"
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: operationtimecapsule-com-tls
+spec:
+  secretName: operationtimecapsule-com-tls
+  issuerRef:
+    name: letsencrypt-production
+    kind: ClusterIssuer
+  dnsNames:
+    - "*.operationtimecapsule.com"
+    - "operationtimecapsule.com"

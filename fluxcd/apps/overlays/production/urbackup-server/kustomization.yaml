@@ -4,8 +4,9 @@ kind: Kustomization
 namespace: fairy-bottle
 
 resources:
-- ../../../base/urbackup-server
+  - ../../../base/urbackup-server
+  - httproute-xylem.yaml
 
 patches:
-- path: statefulset-patch.yaml
-- path: service-patch.yaml
+  - path: statefulset-patch.yaml
+  - path: service-patch.yaml

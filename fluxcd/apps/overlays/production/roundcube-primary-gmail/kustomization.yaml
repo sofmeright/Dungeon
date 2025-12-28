@@ -3,6 +3,7 @@ kind: Kustomization
 namespace: pedestal-of-time
 resources:
   - ../../../base/roundcube-primary-gmail
+  - httproute-xylem.yaml
 patches:
   - path: statefulset-db-patch.yaml
     target:

@@ -5,6 +5,7 @@ namespace: swift-sail
 
 resources:
   - ../../../base/readarr
+  - httproute-xylem.yaml
 
 patches:
   - path: statefulset-patch.yaml

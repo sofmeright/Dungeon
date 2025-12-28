@@ -5,6 +5,7 @@ namespace: tingle-tuner
 
 resources:
   - ../../../../base/searxng
+  - httproute-xylem.yaml
 
 patches:
   - path: service-patch.yaml

@@ -1,0 +1,19 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: vaultwarden
+  namespace: zeldas-lullaby
+spec:
+  parentRefs:
+    - name: cell-membrane-gateway
+      namespace: hyrule-castle
+  hostnames:
+    - "bw.prplanit.com"
+  rules:
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /
+      backendRefs:
+        - name: vaultwarden
+          port: 80

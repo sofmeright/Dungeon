@@ -3,6 +3,7 @@ kind: Kustomization
 namespace: pedestal-of-time
 resources:
   - ../../../base/dailytxt
+  - httproute-xylem.yaml
 patches:
   - path: statefulset-patch.yaml
     target:

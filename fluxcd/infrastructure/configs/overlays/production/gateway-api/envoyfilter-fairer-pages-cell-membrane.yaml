@@ -1,0 +1,55 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: EnvoyFilter
+metadata:
+  name: fairer-pages-error-handler-cell-membrane
+  namespace: hyrule-castle
+spec:
+  workloadSelector:
+    labels:
+      gateway.networking.k8s.io/gateway-name: cell-membrane-gateway
+  configPatches:
+    - applyTo: HTTP_FILTER
+      match:
+        context: GATEWAY
+        listener:
+          filterChain:
+            filter:
+              name: envoy.filters.network.http_connection_manager
+              subFilter:
+                name: envoy.filters.http.router
+      patch:
+        operation: INSERT_BEFORE
+        value:
+          name: envoy.filters.http.lua
+          typed_config:
+            "@type": type.googleapis.com/envoy.extensions.filters.http.lua.v3.Lua
+            defaultSourceCode:
+              inlineString: |
+                function envoy_on_request(request_handle)
+                  local path = request_handle:headers():get(":path") or ""
+                  if string.match(path, "^/fairer%-pages/") then
+                    request_handle:streamInfo():dynamicMetadata():set("fairer_pages", "skip", "true")
+                  end
+                end
+
+                function envoy_on_response(response_handle)
+                  local skip = response_handle:streamInfo():dynamicMetadata():get("fairer_pages")
+                  if skip and skip["skip"] == "true" then
+                    return
+                  end
+
+                  local status = response_handle:headers():get(":status")
+                  local status_num = tonumber(status)
+
+                  local error_codes = {
+                    [400] = true, [401] = true, [403] = true, [404] = true,
+                    [405] = true, [408] = true, [410] = true, [429] = true,
+                    [500] = true, [502] = true, [503] = true, [504] = true
+                  }
+
+                  if error_codes[status_num] then
+                    response_handle:headers():replace(":status", "302")
+                    response_handle:headers():add("location", "/fairer-pages/random/" .. status .. ".html")
+                    response_handle:headers():add("x-original-status", status)
+                  end
+                end

@@ -3,6 +3,8 @@ kind: Kustomization
 resources:
   - ../../../base/gateway-api
   - envoyfilter-fairer-pages.yaml
+  - envoyfilter-fairer-pages-cell-membrane.yaml
+  - envoyfilter-fairer-pages-xylem.yaml
 patches:
   - path: gateway-patch-xylem.yaml
     target:

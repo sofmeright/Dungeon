@@ -63,6 +63,18 @@ spec:
         certificateRefs:
           - kind: Secret
             name: ipleek-com-tls
+    - name: https-ipleek-apex
+      protocol: HTTPS
+      port: 443
+      hostname: "ipleek.com"
+      allowedRoutes:
+        namespaces:
+          from: All
+      tls:
+        mode: Terminate
+        certificateRefs:
+          - kind: Secret
+            name: ipleek-com-tls
     - name: https-uni2
       protocol: HTTPS
       port: 443
@@ -75,3 +87,51 @@ spec:
         certificateRefs:
           - kind: Secret
             name: uni2-cc-tls
+    - name: https-homelabhelpdesk
+      protocol: HTTPS
+      port: 443
+      hostname: "*.homelabhelpdesk.com"
+      allowedRoutes:
+        namespaces:
+          from: All
+      tls:
+        mode: Terminate
+        certificateRefs:
+          - kind: Secret
+            name: homelabhelpdesk-com-tls
+    - name: https-homelabhelpdesk-apex
+      protocol: HTTPS
+      port: 443
+      hostname: "homelabhelpdesk.com"
+      allowedRoutes:
+        namespaces:
+          from: All
+      tls:
+        mode: Terminate
+        certificateRefs:
+          - kind: Secret
+            name: homelabhelpdesk-com-tls
+    - name: https-operationtimecapsule
+      protocol: HTTPS
+      port: 443
+      hostname: "*.operationtimecapsule.com"
+      allowedRoutes:
+        namespaces:
+          from: All
+      tls:
+        mode: Terminate
+        certificateRefs:
+          - kind: Secret
+            name: operationtimecapsule-com-tls
+    - name: https-operationtimecapsule-apex
+      protocol: HTTPS
+      port: 443
+      hostname: "operationtimecapsule.com"
+      allowedRoutes:
+        namespaces:
+          from: All
+      tls:
+        mode: Terminate
+        certificateRefs:
+          - kind: Secret
+            name: operationtimecapsule-com-tls

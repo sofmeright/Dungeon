@@ -3,6 +3,7 @@ kind: Kustomization
 namespace: kokiri-forest
 resources:
   - ../../../base/linkstack
+  - httproute-xylem.yaml
 patches:
   - path: statefulset-patch.yaml
     target:

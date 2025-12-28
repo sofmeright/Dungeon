@@ -3,6 +3,7 @@ kind: Kustomization
 namespace: wallmaster
 resources:
   - ../../../base/anubis
+  - httproute-xylem.yaml
 patches:
   - path: deployment-anubis-patch.yaml
   - path: service-anubis-patch.yaml

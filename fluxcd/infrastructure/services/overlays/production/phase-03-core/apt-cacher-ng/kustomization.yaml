@@ -3,6 +3,7 @@ kind: Kustomization
 namespace: hyrule-castle
 resources:
   - ../../../../base/apt-cacher-ng
+  - httproute-xylem.yaml
 patches:
   - path: service-patch.yaml
     target:

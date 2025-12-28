@@ -5,6 +5,7 @@ resources:
   - ../../../base/qbittorrent
   - externalsecret-registry.yaml
   - externalsecret-pia.yaml
+  - httproute-xylem.yaml
 patches:
   - path: deployment-patch.yaml
     target:

@@ -60,6 +60,7 @@ resources:
   - immich
   - jellyfin
   - photoprism
+  - photoprism-x
   - plex
   # Media Stack
   - qbittorrent
@@ -93,6 +94,7 @@ resources:
   - roundcube-primary-gmail
   # Utilities
   - code-server
+  - shlink
   - filebrowser
   - google-webfonts-helper
   - hrconvert2
@@ -100,7 +102,10 @@ resources:
   - mazanoke
   - podinfo
   # External Services
+  - fusionpbx-external
   - home-assistant-external
+  - mailcow-external
+  - nextcloud-external
   # Static Sites
   - fairer-pages
   - astralfocal-site

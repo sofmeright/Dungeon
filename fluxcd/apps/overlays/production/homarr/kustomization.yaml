@@ -7,6 +7,7 @@ resources:
   - ../../../base/homarr
   - externalsecret.yaml
   - cephfs-images-pv.yaml
+  - httproute-xylem.yaml
 
 patches:
   - path: statefulset-patch.yaml

@@ -3,6 +3,7 @@ kind: Kustomization
 namespace: zeldas-lullaby
 resources:
   - ../../../base/2fauth
+  - httproute-xylem.yaml
 patches:
   - path: statefulset-patch.yaml
     target:

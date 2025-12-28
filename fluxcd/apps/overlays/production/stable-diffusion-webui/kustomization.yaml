@@ -3,6 +3,7 @@ kind: Kustomization
 namespace: tingle-tuner
 resources:
   - ../../../base/stable-diffusion-webui
+  - httproute-xylem.yaml
 patches:
   - path: statefulset-patch.yaml
     target:

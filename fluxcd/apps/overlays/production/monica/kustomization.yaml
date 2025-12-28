@@ -3,6 +3,7 @@ kind: Kustomization
 namespace: pedestal-of-time
 resources:
   - ../../../base/monica
+  - httproute-xylem.yaml
 patches:
   - path: statefulset-app-patch.yaml
     target:

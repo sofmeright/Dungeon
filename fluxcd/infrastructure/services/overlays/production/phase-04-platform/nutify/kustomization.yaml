@@ -3,6 +3,7 @@ kind: Kustomization
 namespace: gossip-stone
 resources:
   - ../../../../base/nutify
+  - httproute-xylem.yaml
 patches:
   - path: service-patch.yaml
     target:

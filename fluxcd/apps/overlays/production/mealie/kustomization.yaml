@@ -6,6 +6,7 @@ resources:
   - persistent-volumes.yaml
   - persistent-volume-claims.yaml
   - httproute.yaml
+  - httproute-xylem.yaml
 patches:
   - path: mealie-patch.yaml
     target:

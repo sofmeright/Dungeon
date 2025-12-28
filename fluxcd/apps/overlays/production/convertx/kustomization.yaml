@@ -6,6 +6,7 @@ namespace: tingle-tuner
 resources:
   - ../../../base/convertx
   - externalsecret.yaml
+  - httproute-xylem.yaml
 
 patches:
   - path: statefulset-patch.yaml

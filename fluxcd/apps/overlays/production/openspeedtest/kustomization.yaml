@@ -3,6 +3,7 @@ kind: Kustomization
 namespace: compass
 resources:
   - ../../../base/openspeedtest
+  - httproute-xylem.yaml
 patches:
   - path: deployment-patch.yaml
   - path: externalsecret-patch.yaml

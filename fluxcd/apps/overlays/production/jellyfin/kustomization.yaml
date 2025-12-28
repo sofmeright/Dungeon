@@ -5,6 +5,7 @@ resources:
   - ../../../base/jellyfin
   - persistent-volumes.yaml
   - persistent-volume-claims.yaml
+  - httproute.yaml
 patches:
   - path: service-patch.yaml
     target:

@@ -5,6 +5,7 @@ namespace: compass
 
 resources:
   - ../../../base/echo-ip
+  - httproute.yaml
 
 patches:
   - path: statefulset-patch.yaml

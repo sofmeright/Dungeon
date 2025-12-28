@@ -1,0 +1,18 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: organizr-xylem
+spec:
+  parentRefs:
+    - name: xylem-gateway
+      namespace: arylls-lookout
+  hostnames:
+    - "apps.pcfae.com"
+  rules:
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /
+      backendRefs:
+        - name: organizr
+          port: 80

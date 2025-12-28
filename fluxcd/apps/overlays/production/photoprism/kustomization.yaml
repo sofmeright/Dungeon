@@ -5,6 +5,7 @@ resources:
   - ../../../base/photoprism
   - persistent-volumes.yaml
   - persistent-volume-claims.yaml
+  - httproute-xylem.yaml
 patches:
   - path: service-patch.yaml
     target:

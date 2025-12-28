@@ -3,6 +3,7 @@ kind: Kustomization
 namespace: tingle-tuner
 resources:
   - ../../../base/kasm
+  - httproute-xylem.yaml
 patches:
   - path: service-patch.yaml
     target:

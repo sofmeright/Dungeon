@@ -3,6 +3,8 @@ kind: Kustomization
 namespace: lost-woods
 resources:
   - ../../../base/organizr
+  - httproute.yaml
+  - httproute-xylem.yaml
 patches:
   - path: statefulset-patch.yaml
     target:

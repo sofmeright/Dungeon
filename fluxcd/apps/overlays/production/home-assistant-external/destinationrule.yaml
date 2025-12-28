@@ -2,9 +2,8 @@ apiVersion: networking.istio.io/v1
 kind: DestinationRule
 metadata:
   name: home-assistant-external
-  namespace: tingle-tuner
 spec:
-  host: home-assistant-external.tingle-tuner.svc.cluster.local
+  host: home-assistant-external.gossip-stone.svc.cluster.local
   trafficPolicy:
     tls:
       mode: DISABLE

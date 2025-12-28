@@ -1,0 +1,10 @@
+apiVersion: networking.istio.io/v1
+kind: DestinationRule
+metadata:
+  name: fusionpbx-external
+spec:
+  host: bluebell.prplanit.internal
+  trafficPolicy:
+    tls:
+      mode: SIMPLE
+      sni: bluebell.prplanit.internal

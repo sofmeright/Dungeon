@@ -3,6 +3,7 @@ kind: Kustomization
 namespace: gossip-stone
 resources:
   - ../../../../base/uptime-kuma
+  - httproute-xylem.yaml
 patches:
   - path: statefulset-patch.yaml
   - path: httproute-patch.yaml

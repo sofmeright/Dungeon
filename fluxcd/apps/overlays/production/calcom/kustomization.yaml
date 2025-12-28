@@ -5,6 +5,7 @@ namespace: hyrule-castle
 
 resources:
   - ../../../base/calcom
+  - httproute.yaml
 
 patches:
   - path: deployment-patch.yaml

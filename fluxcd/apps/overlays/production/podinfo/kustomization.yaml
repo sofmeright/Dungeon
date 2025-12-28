@@ -5,6 +5,7 @@ namespace: tingle-tuner
 
 resources:
   - ../../../base/podinfo
+  - httproute-xylem.yaml
 
 patches:
   - path: release.yaml

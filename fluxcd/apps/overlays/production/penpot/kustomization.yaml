@@ -4,6 +4,7 @@ namespace: temple-of-time
 resources:
   - ../../../base/penpot
   - httproute.yaml
+  - httproute-cell-membrane.yaml
 patches:
   - path: postgres-patch.yaml
     target:

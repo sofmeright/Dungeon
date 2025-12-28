@@ -3,6 +3,7 @@ kind: Kustomization
 namespace: swift-sail
 resources:
   - ../../../base/supermicro-license-generator
+  - httproute-xylem.yaml
 patches:
   - path: deployment-patch.yaml
     target:

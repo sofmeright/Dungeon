@@ -1,0 +1,18 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: hrconvert2-xylem
+spec:
+  parentRefs:
+    - name: xylem-gateway
+      namespace: arylls-lookout
+  hostnames:
+    - "hrconvert2.pcfae.com"
+  rules:
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /
+      backendRefs:
+        - name: hrconvert2
+          port: 8085

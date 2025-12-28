@@ -3,6 +3,7 @@ kind: Kustomization
 namespace: gossip-stone
 resources:
   - ../../../base/speedtest-tracker
+  - httproute-xylem.yaml
 patches:
   - path: statefulset-patch.yaml
     target:

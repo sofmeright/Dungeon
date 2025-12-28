@@ -5,6 +5,8 @@ resources:
   - ../../../base/linkwarden
   - persistent-volumes.yaml
   - persistent-volume-claims.yaml
+  - httproute.yaml
+  - httproute-xylem.yaml
 patches:
   - path: configmap-patch.yaml
     target:

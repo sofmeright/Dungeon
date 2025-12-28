@@ -6,6 +6,7 @@ namespace: hyrule-castle
 resources:
   - ../../../base/osticket
   - httproute.yaml
+  - httproute-xylem.yaml
 
 patches:
   - path: mariadb-operator-patch.yaml

@@ -5,6 +5,7 @@ namespace: hyrule-castle
 
 resources:
   - ../../../base/bookstack
+  - httproute.yaml
 
 patches:
   - path: statefulset-patch.yaml

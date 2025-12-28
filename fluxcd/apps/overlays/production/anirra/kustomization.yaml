@@ -3,6 +3,7 @@ kind: Kustomization
 namespace: swift-sail
 resources:
   - ../../../base/anirra
+  - httproute-xylem.yaml
 patches:
   - path: statefulset-patch.yaml
   - path: configmap-patch.yaml

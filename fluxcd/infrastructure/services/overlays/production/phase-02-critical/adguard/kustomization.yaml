@@ -6,6 +6,7 @@ namespace: compass
 resources:
   - ../../../../base/adguard
   - cilium-network-policy.yaml
+  - httproute-xylem.yaml
 
 patches:
   - path: configmap-patch.yaml

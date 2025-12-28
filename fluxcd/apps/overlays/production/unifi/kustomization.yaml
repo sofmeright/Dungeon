@@ -6,6 +6,7 @@ namespace: zeldas-lullaby
 resources:
   - ../../../base/unifi
   - externalsecret.yaml
+  - httproute-xylem.yaml
 
 patches:
   - path: statefulset-app-patch.yaml

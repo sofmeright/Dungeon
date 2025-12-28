@@ -4,6 +4,7 @@ namespace: temple-of-time
 resources:
   - ../../../base/appflowy
   - httproute.yaml
+  - httproute-xylem.yaml
 patches:
   - path: postgres-cluster-patch.yaml
   - path: statefulset-redis-patch.yaml

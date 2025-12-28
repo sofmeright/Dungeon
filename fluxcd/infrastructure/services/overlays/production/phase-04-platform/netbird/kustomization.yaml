@@ -5,6 +5,7 @@ namespace: zeldas-lullaby
 
 resources:
   - ../../../../base/netbird
+  - httproute.yaml
 
 patches:
   - patch: |-

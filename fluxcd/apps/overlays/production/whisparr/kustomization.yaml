@@ -6,6 +6,7 @@ namespace: swift-sail
 resources:
   - ../../../base/whisparr
   - externalsecret.yaml
+  - httproute-xylem.yaml
 
 patches:
   - path: statefulset-patch.yaml

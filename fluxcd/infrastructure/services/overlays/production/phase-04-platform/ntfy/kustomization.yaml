@@ -3,6 +3,7 @@ kind: Kustomization
 namespace: delivery-bag
 resources:
   - ../../../../base/ntfy
+  - httproute-xylem.yaml
 patches:
   - path: statefulset-patch.yaml
   - path: httproute-patch.yaml

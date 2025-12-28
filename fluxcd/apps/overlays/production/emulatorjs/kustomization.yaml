@@ -3,6 +3,7 @@ kind: Kustomization
 namespace: shooting-gallery
 resources:
   - ../../../base/emulatorjs
+  - httproute-xylem.yaml
 patches:
   - path: statefulset-patch.yaml
     target:

@@ -6,6 +6,7 @@ namespace: temple-of-time
 resources:
   - ../../../base/shlink
   - externalsecret.yaml
+  - httproute.yaml
 
 patches:
   - path: statefulset-app-patch.yaml

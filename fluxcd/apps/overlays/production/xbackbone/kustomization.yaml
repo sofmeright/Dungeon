@@ -4,8 +4,9 @@ kind: Kustomization
 namespace: tingle-tuner
 
 resources:
-- ../../../base/xbackbone
+  - ../../../base/xbackbone
+  - httproute-xylem.yaml
 
 patches:
-- path: statefulset-patch.yaml
-- path: service-patch.yaml
+  - path: statefulset-patch.yaml
+  - path: service-patch.yaml

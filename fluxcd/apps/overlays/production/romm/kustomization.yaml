@@ -6,6 +6,7 @@ namespace: shooting-gallery
 resources:
   - ../../../base/romm
   - externalsecret.yaml
+  - httproute-xylem.yaml
 
 patches:
   - path: statefulset-app-patch.yaml

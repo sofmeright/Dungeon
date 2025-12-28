@@ -1,0 +1,22 @@
+# Patch SMB PVs with production paths and namespace
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: photoprism-x-originals
+spec:
+  csi:
+    volumeAttributes:
+      source: "//gringotts.prplanit.internal/timecapsule/Media/systemadm/McAfee Antivirus/Home/Photos/Library"
+    nodeStageSecretRef:
+      namespace: pedestal-of-time
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: photoprism-x-import
+spec:
+  csi:
+    volumeAttributes:
+      source: "//gringotts.prplanit.internal/timecapsule/Media/systemadm/McAfee Antivirus/Home/Photos/Import"
+    nodeStageSecretRef:
+      namespace: pedestal-of-time

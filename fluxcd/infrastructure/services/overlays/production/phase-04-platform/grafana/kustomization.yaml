@@ -4,6 +4,7 @@ kind: Kustomization
 resources:
   - ../../../../base/grafana
   - cephfs-plugins-pv.yaml
+  - httproute-xylem.yaml
 
 patches:
   - path: helmrelease-patch.yaml

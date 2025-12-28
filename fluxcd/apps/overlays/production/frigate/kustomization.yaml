@@ -3,6 +3,7 @@ kind: Kustomization
 namespace: lens-of-truth
 resources:
   - ../../../base/frigate
+  - httproute-xylem.yaml
 patches:
   - path: service-patch.yaml
     target:

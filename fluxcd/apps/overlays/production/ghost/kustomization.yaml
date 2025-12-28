@@ -4,6 +4,7 @@ namespace: temple-of-time
 resources:
   - ../../../base/ghost
   - httproute.yaml
+  - httproute-xylem.yaml
 patches:
   - path: statefulset-ghost-patch.yaml
   - path: statefulset-mysql-patch.yaml

@@ -6,6 +6,7 @@ namespace: tingle-tuner
 resources:
   - ../../../base/lenpaste
   - externalsecret.yaml
+  - httproute-xylem.yaml
 
 patches:
   - path: statefulset-app-patch.yaml
