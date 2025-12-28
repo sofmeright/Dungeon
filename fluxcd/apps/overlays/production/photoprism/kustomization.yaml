@@ -3,15 +3,13 @@ kind: Kustomization
 namespace: temple-of-time
 resources:
   - ../../../base/photoprism
-  - persistent-volumes.yaml
-  - persistent-volume-claims.yaml
   - httproute-xylem.yaml
 patches:
   - path: service-patch.yaml
     target:
       kind: Service
       name: photoprism
-  - path: storage-patch.yaml
+  - path: storageclass-patch.yaml
   - path: pv-secretref-patch.yaml
   - target:
       kind: StatefulSet
@@ -20,11 +18,3 @@ patches:
       - op: replace
         path: /spec/template/spec/containers/0/env/8/value
         value: "https://photos.optcp.com"
-      - op: remove
-        path: /spec/volumeClaimTemplates
-  - target:
-      kind: StatefulSet
-      name: photoprism-mariadb
-    patch: |-
-      - op: remove
-        path: /spec/volumeClaimTemplates
