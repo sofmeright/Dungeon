@@ -22,4 +22,37 @@
 
 ## Future Infrastructure Items
 
+### Gateway Access Tiering
+Reorganize gateways from domain-based to access-level separation:
+
+**Target Architecture:**
+- **Cell-membrane (public)** - No auth, world-accessible
+  - Landing pages, public sites
+  - Public APIs, webhooks
+  - Marketing sites
+- **Phloem (privileged)** - Requires auth/SSO
+  - Personal dashboards, productivity apps
+  - Business apps behind SSO
+  - Media servers (Plex, Jellyfin, Nextcloud)
+- **Xylem (internal)** - Network-restricted
+  - Admin panels (*arr stack, NVR)
+  - Infrastructure tools
+  - Sensitive configs
+
+**Benefits:**
+- Different rate limits per tier
+- SSO enforcement on phloem (Zitadel/OAuth2 proxy)
+- IP allowlisting on xylem
+- Different WAF rules per exposure level
+
+**Migration Tasks:**
+- [ ] Audit all HTTPRoutes and categorize by access level
+- [ ] Plan certificate changes (which domains on which gateway)
+- [ ] Update fairer-pages HTTPRoutes for new structure
+- [ ] Implement SSO requirement on phloem gateway
+- [ ] Implement IP allowlisting on xylem gateway
+- [ ] Migrate services incrementally by tier
+- [ ] Update DNS as needed
+- [ ] Document new access model
+
 *Add additional infrastructure tasks here as they come up*
