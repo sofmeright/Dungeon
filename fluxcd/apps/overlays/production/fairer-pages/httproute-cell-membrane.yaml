@@ -8,6 +8,7 @@ spec:
     - name: cell-membrane-gateway
       namespace: hyrule-castle
   hostnames:
+    # Wildcards
     - "*.prplanit.com"
     - "*.precisionplanit.com"
     - "*.optcp.com"
@@ -15,9 +16,44 @@ spec:
     - "*.uni2.cc"
     - "*.homelabhelpdesk.com"
     - "*.operationtimecapsule.com"
+    # Apex domains
     - "ipleek.com"
     - "homelabhelpdesk.com"
     - "operationtimecapsule.com"
+    # Explicit optcp.com subdomains (override wildcard precedence)
+    - "plex.optcp.com"
+    - "flix.optcp.com"
+    - "jseer.optcp.com"
+    - "books.optcp.com"
+    - "joplin.optcp.com"
+    - "lwd.optcp.com"
+    - "ncloud.optcp.com"
+    # Explicit prplanit.com subdomains
+    - "ntfy.prplanit.com"
+    - "analytics.prplanit.com"
+    - "trmm.prplanit.com"
+    - "cal.prplanit.com"
+    - "dolibarr.prplanit.com"
+    - "erpnext.prplanit.com"
+    - "pbx.prplanit.com"
+    - "git.prplanit.com"
+    - "invoiceninja.prplanit.com"
+    - "form.prplanit.com"
+    - "orangehrm.prplanit.com"
+    - "osticket.prplanit.com"
+    - "quay.prplanit.com"
+    - "apps.prplanit.com"
+    - "flwy.prplanit.com"
+    - "penpot.prplanit.com"
+    - "netbox.prplanit.com"
+    - "sso.prplanit.com"
+    # Explicit precisionplanit.com subdomains
+    - "kb.precisionplanit.com"
+    - "mail.precisionplanit.com"
+    - "autodiscover.precisionplanit.com"
+    - "autoconfig.precisionplanit.com"
+    # Explicit ipleek.com subdomains
+    - "www.ipleek.com"
   rules:
     - matches:
         - path:
