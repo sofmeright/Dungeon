@@ -10,6 +10,19 @@ spec:
   hostnames:
     - "plex.optcp.com"
   rules:
+    # Redirect root to /web/
+    - matches:
+        - path:
+            type: Exact
+            value: /
+      filters:
+        - type: RequestRedirect
+          requestRedirect:
+            path:
+              type: ReplaceFullPath
+              replaceFullPath: /web/
+            statusCode: 302
+    # Serve all other paths from Plex
     - matches:
         - path:
             type: PathPrefix
