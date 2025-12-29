@@ -6,6 +6,7 @@ namespace: pedestal-of-time
 resources:
   - ../../../base/photoprism-x
   - httproute-xylem.yaml
+  - destinationrule.yaml
 
 patches:
   - path: externalsecret-patch.yaml
