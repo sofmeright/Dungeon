@@ -54,3 +54,10 @@ patches:
       - op: add
         path: /metadata/namespace
         value: gossip-stone
+  - target:
+      kind: HTTPRoute
+      name: grafana-xylem
+    patch: |-
+      - op: add
+        path: /metadata/namespace
+        value: gossip-stone

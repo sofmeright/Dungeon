@@ -27,3 +27,4 @@ resources:
   - registries/docker.io-prplanit  # Docker Hub pull credentials (temple-of-time)
   - registries/docker-io-shared  # Docker Hub pull credentials (shared across namespaces)
   - gitlab  # GitLab SMTP and OIDC credentials
+  - chrony  # NTP server configuration

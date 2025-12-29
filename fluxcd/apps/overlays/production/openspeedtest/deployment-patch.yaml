@@ -5,18 +5,16 @@ metadata:
 spec:
   template:
     spec:
-      imagePullSecrets:
-        - name: jcr-pcfae-dungeon-pull-secret
       containers:
-      - name: openspeedtest
-        image: docker.jcr.pcfae.com/openspeedtest/latest:latest
-        resources:
-          requests:
-            cpu: 100m
-            memory: 128Mi
-          limits:
-            cpu: 500m
-            memory: 512Mi
-        envFrom:
-        - secretRef:
-            name: openspeedtest-secrets
+        - name: openspeedtest
+          image: docker.io/openspeedtest/latest:latest
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
+          envFrom:
+            - secretRef:
+                name: openspeedtest-secrets

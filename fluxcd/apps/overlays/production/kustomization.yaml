@@ -16,6 +16,8 @@ resources:
   - netalertx
   - shinobi
   - speedtest-tracker
+  - librespeed-speedtest
+  - openspeedtest
   - umami
   # Remote Access & Dashboards
   - guacamole
