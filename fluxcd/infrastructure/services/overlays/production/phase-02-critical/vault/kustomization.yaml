@@ -6,6 +6,7 @@ namespace: zeldas-lullaby
 resources:
   - ../../../../base/vault
   - vault-lb.yaml
+  - httproute-xylem.yaml
 
 patches:
   - path: pvc-patch.yaml
