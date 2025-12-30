@@ -58,7 +58,7 @@ metadata:
   name: swift-sail-qbittorrent-downloads-0
 spec:
   capacity:
-    storage: 256Gi
+    storage: 500Gi
   accessModes:
     - ReadWriteOnce
   persistentVolumeReclaimPolicy: Retain
@@ -66,10 +66,10 @@ spec:
   csi:
     driver: rbd.csi.ceph.com
     fsType: ext4
-    volumeHandle: swift-sail-qbittorrent-downloads-0  # Easy to find: rbd ls dungeon | grep swift-sail
+    volumeHandle: swift-sail-qbittorrent-downloads-0
     volumeAttributes:
       clusterID: "0985467c-d8f3-4483-b27f-f0a512397ec2"
-      pool: dungeon
+      pool: dungeon_hdd
       staticVolume: "true"
       imageName: swift-sail-qbittorrent-downloads-0
       imageFeatures: layering

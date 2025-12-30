@@ -39,4 +39,4 @@ spec:
   volumeName: swift-sail-qbittorrent-downloads-0
   resources:
     requests:
-      storage: 256Gi
+      storage: 500Gi
