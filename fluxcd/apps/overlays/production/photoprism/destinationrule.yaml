@@ -1,0 +1,9 @@
+apiVersion: networking.istio.io/v1
+kind: DestinationRule
+metadata:
+  name: photoprism
+spec:
+  host: photoprism.temple-of-time.svc.cluster.local
+  trafficPolicy:
+    tls:
+      mode: SIMPLE
