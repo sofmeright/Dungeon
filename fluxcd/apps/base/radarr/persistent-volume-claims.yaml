@@ -1,0 +1,14 @@
+# Static PersistentVolumeClaims for radarr
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: swift-sail-radarr-config
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: ceph-rbd-static
+  volumeName: swift-sail-radarr-config-0
+  resources:
+    requests:
+      storage: 5Gi
