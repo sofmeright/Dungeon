@@ -1,0 +1,153 @@
+# Static RBD volumes for downloadarrs
+---
+# qBittorrent Config
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: swift-sail-qbittorrent-config-0
+spec:
+  capacity:
+    storage: 5Gi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: ceph-rbd-static
+  csi:
+    driver: rbd.csi.ceph.com
+    fsType: ext4
+    volumeHandle: swift-sail-qbittorrent-config-0
+    volumeAttributes:
+      clusterID: "0985467c-d8f3-4483-b27f-f0a512397ec2"
+      pool: "dungeon"
+      imageName: "swift-sail-qbittorrent-config-0"
+      staticVolume: "true"
+    nodeStageSecretRef:
+      name: ceph-secret-user
+      namespace: kube-system
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: swift-sail-qbittorrent-config
+spec:
+  storageClassName: ceph-rbd-static
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+  volumeName: swift-sail-qbittorrent-config-0
+---
+# qBittorrent Downloads (HDD)
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: swift-sail-qbittorrent-downloads-0
+spec:
+  capacity:
+    storage: 500Gi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: ceph-rbd-static
+  csi:
+    driver: rbd.csi.ceph.com
+    fsType: ext4
+    volumeHandle: swift-sail-qbittorrent-downloads-0
+    volumeAttributes:
+      clusterID: "0985467c-d8f3-4483-b27f-f0a512397ec2"
+      pool: "dungeon_hdd"
+      imageName: "swift-sail-qbittorrent-downloads-0"
+      staticVolume: "true"
+    nodeStageSecretRef:
+      name: ceph-secret-user
+      namespace: kube-system
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: swift-sail-qbittorrent-downloads
+spec:
+  storageClassName: ceph-rbd-static
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 500Gi
+  volumeName: swift-sail-qbittorrent-downloads-0
+---
+# qBittorrent Gluetun Config
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: swift-sail-qbittorrent-gluetun-config-0
+spec:
+  capacity:
+    storage: 64Mi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: ceph-rbd-static
+  csi:
+    driver: rbd.csi.ceph.com
+    fsType: ext4
+    volumeHandle: swift-sail-qbittorrent-gluetun-config-0
+    volumeAttributes:
+      clusterID: "0985467c-d8f3-4483-b27f-f0a512397ec2"
+      pool: "dungeon"
+      imageName: "swift-sail-qbittorrent-gluetun-config-0"
+      staticVolume: "true"
+    nodeStageSecretRef:
+      name: ceph-secret-user
+      namespace: kube-system
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: swift-sail-qbittorrent-gluetun-config
+spec:
+  storageClassName: ceph-rbd-static
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 64Mi
+  volumeName: swift-sail-qbittorrent-gluetun-config-0
+---
+# Radarr Config
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: swift-sail-radarr-config-0
+spec:
+  capacity:
+    storage: 5Gi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: ceph-rbd-static
+  csi:
+    driver: rbd.csi.ceph.com
+    fsType: ext4
+    volumeHandle: swift-sail-radarr-config-0
+    volumeAttributes:
+      clusterID: "0985467c-d8f3-4483-b27f-f0a512397ec2"
+      pool: "dungeon"
+      imageName: "swift-sail-radarr-config-0"
+      staticVolume: "true"
+    nodeStageSecretRef:
+      name: ceph-secret-user
+      namespace: kube-system
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: swift-sail-radarr-config
+spec:
+  storageClassName: ceph-rbd-static
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 5Gi
+  volumeName: swift-sail-radarr-config-0

@@ -6,6 +6,7 @@ resources:
   - httproutes.yaml
   - smb-volumes.yaml
   - externalsecret-smb.yaml
+  - static-rbd-volumes.yaml
 patches:
   - path: deployment-patch.yaml
     target:
