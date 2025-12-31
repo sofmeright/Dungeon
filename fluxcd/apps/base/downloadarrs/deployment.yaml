@@ -224,7 +224,7 @@ spec:
 
         # Readarr
         - name: readarr
-          image: lscr.io/linuxserver/readarr:develop
+          image: lscr.io/linuxserver/readarr:nightly
           env:
             - name: TZ
               value: PLACEHOLDER_TZ
