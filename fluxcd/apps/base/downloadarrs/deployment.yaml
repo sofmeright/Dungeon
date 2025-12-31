@@ -1,0 +1,308 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: downloadarrs
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: downloadarrs
+  template:
+    metadata:
+      labels:
+        app: downloadarrs
+    spec:
+      containers:
+        # Gluetun VPN Gateway - shared by all apps
+        - name: gluetun
+          image: docker.io/qmcgaw/gluetun:latest
+          securityContext:
+            privileged: true
+          env:
+            - name: VPN_SERVICE_PROVIDER
+              value: "private internet access"
+            - name: SERVER_REGIONS
+              value: PLACEHOLDER_SERVER_REGIONS
+            - name: VPN_PORT_FORWARDING
+              value: "on"
+            - name: PORT_FORWARD_ONLY
+              value: "true"
+            - name: VPN_PORT_FORWARDING_PROVIDER
+              value: "private internet access"
+            - name: VPN_PORT_FORWARDING_STATUS_FILE
+              value: "/tmp/gluetun/forwarded_port"
+            - name: FIREWALL_INPUT_PORTS
+              value: "6887,7878,8989,8686,8787"
+            - name: FIREWALL_OUTBOUND_SUBNETS
+              value: PLACEHOLDER_FIREWALL_SUBNETS
+            - name: DNS_ADDRESS
+              value: "10.144.0.10"
+            - name: TZ
+              value: PLACEHOLDER_TZ
+            - name: LOG_LEVEL
+              value: "info"
+            - name: HEALTH_VPN_DURATION_INITIAL
+              value: "60s"
+            - name: OPENVPN_USER
+              valueFrom:
+                secretKeyRef:
+                  name: downloadarrs-vpn-secret
+                  key: username
+            - name: OPENVPN_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: downloadarrs-vpn-secret
+                  key: password
+            - name: VPN_PORT_FORWARDING_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: downloadarrs-vpn-secret
+                  key: username
+            - name: VPN_PORT_FORWARDING_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: downloadarrs-vpn-secret
+                  key: password
+          volumeMounts:
+            - name: gluetun-config
+              mountPath: /gluetun
+            - name: gluetun-tmp
+              mountPath: /tmp/gluetun
+          ports:
+            - containerPort: 6887
+              name: qbittorrent
+            - containerPort: 7878
+              name: radarr
+            - containerPort: 8989
+              name: sonarr
+            - containerPort: 8686
+              name: lidarr
+            - containerPort: 8787
+              name: readarr
+          resources:
+            requests:
+              cpu: 50m
+              memory: 256Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
+
+        # qBittorrent - full downloads access
+        - name: qbittorrent
+          image: lscr.io/linuxserver/qbittorrent:latest
+          env:
+            - name: TZ
+              value: PLACEHOLDER_TZ
+            - name: WEBUI_PORT
+              value: "6887"
+            - name: PUID
+              value: "1000"
+            - name: PGID
+              value: "1000"
+          volumeMounts:
+            - name: qbittorrent-config
+              mountPath: /config
+            - name: downloads
+              mountPath: /downloads
+            - name: tv-shows-seeding
+              mountPath: /media/TV_Shows/Automated-Seeding
+            - name: movies-seeding
+              mountPath: /media/Movies/2D-Automated-Seeding
+            - name: downloads-completed
+              mountPath: /media/timecapsule/Media/Download/__qbittorrent
+          resources:
+            requests:
+              cpu: 100m
+              memory: 512Mi
+            limits:
+              cpu: "2"
+              memory: 4Gi
+
+        # Port Manager for qBittorrent
+        - name: port-manager
+          image: docker.io/prplanit/qbittorrent-port-manager:1.3
+          env:
+            - name: QBITTORRENT_SERVER
+              value: "localhost"
+            - name: QBITTORRENT_PORT
+              value: "6887"
+            - name: QBITTORRENT_USER
+              valueFrom:
+                secretKeyRef:
+                  name: downloadarrs-qbittorrent-secret
+                  key: username
+            - name: QBITTORRENT_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: downloadarrs-qbittorrent-secret
+                  key: password
+            - name: PORT_FORWARDED
+              value: "/tmp/gluetun/forwarded_port"
+            - name: HTTP_S
+              value: "http"
+          volumeMounts:
+            - name: gluetun-tmp
+              mountPath: /tmp/gluetun
+
+        # Radarr - only zz-radarr subpath
+        - name: radarr
+          image: ghcr.io/hotio/radarr:latest
+          env:
+            - name: TZ
+              value: PLACEHOLDER_TZ
+            - name: PUID
+              value: "1000"
+            - name: PGID
+              value: "1000"
+          volumeMounts:
+            - name: radarr-config
+              mountPath: /config
+            - name: movies
+              mountPath: /media/Movies
+            - name: downloads
+              mountPath: /downloads/zz-radarr
+              subPath: zz-radarr
+          resources:
+            requests:
+              cpu: 100m
+              memory: 512Mi
+            limits:
+              cpu: "1"
+              memory: 1Gi
+
+        # Sonarr - only zz-sonarr subpath
+        - name: sonarr
+          image: ghcr.io/hotio/sonarr:latest
+          env:
+            - name: TZ
+              value: PLACEHOLDER_TZ
+            - name: PUID
+              value: "1000"
+            - name: PGID
+              value: "1000"
+          volumeMounts:
+            - name: sonarr-config
+              mountPath: /config
+            - name: tv-shows
+              mountPath: /media/TV_Shows
+            - name: downloads
+              mountPath: /downloads/zz-sonarr
+              subPath: zz-sonarr
+          resources:
+            requests:
+              cpu: 100m
+              memory: 512Mi
+            limits:
+              cpu: "1"
+              memory: 1Gi
+
+        # Lidarr
+        - name: lidarr
+          image: lscr.io/linuxserver/lidarr:latest
+          env:
+            - name: TZ
+              value: PLACEHOLDER_TZ
+            - name: PUID
+              value: "1000"
+            - name: PGID
+              value: "1000"
+          volumeMounts:
+            - name: lidarr-config
+              mountPath: /config
+            - name: music
+              mountPath: /media/Music
+            - name: downloads
+              mountPath: /downloads/zz-lidarr
+              subPath: zz-lidarr
+          resources:
+            requests:
+              cpu: 100m
+              memory: 512Mi
+            limits:
+              cpu: "1"
+              memory: 1Gi
+
+        # Readarr
+        - name: readarr
+          image: lscr.io/linuxserver/readarr:develop
+          env:
+            - name: TZ
+              value: PLACEHOLDER_TZ
+            - name: PUID
+              value: "1000"
+            - name: PGID
+              value: "1000"
+          volumeMounts:
+            - name: readarr-config
+              mountPath: /config
+            - name: books
+              mountPath: /media/Books
+            - name: downloads
+              mountPath: /downloads/zz-readarr
+              subPath: zz-readarr
+          resources:
+            requests:
+              cpu: 100m
+              memory: 512Mi
+            limits:
+              cpu: "1"
+              memory: 1Gi
+
+      volumes:
+        # Gluetun
+        - name: gluetun-config
+          persistentVolumeClaim:
+            claimName: PLACEHOLDER_GLUETUN_CONFIG_PVC
+        - name: gluetun-tmp
+          emptyDir: {}
+
+        # qBittorrent
+        - name: qbittorrent-config
+          persistentVolumeClaim:
+            claimName: PLACEHOLDER_QBITTORRENT_CONFIG_PVC
+        - name: downloads
+          persistentVolumeClaim:
+            claimName: PLACEHOLDER_DOWNLOADS_PVC
+
+        # Radarr
+        - name: radarr-config
+          persistentVolumeClaim:
+            claimName: PLACEHOLDER_RADARR_CONFIG_PVC
+        - name: movies
+          persistentVolumeClaim:
+            claimName: PLACEHOLDER_MOVIES_PVC
+
+        # Sonarr
+        - name: sonarr-config
+          persistentVolumeClaim:
+            claimName: PLACEHOLDER_SONARR_CONFIG_PVC
+        - name: tv-shows
+          persistentVolumeClaim:
+            claimName: PLACEHOLDER_TV_SHOWS_PVC
+
+        # Lidarr
+        - name: lidarr-config
+          persistentVolumeClaim:
+            claimName: PLACEHOLDER_LIDARR_CONFIG_PVC
+        - name: music
+          persistentVolumeClaim:
+            claimName: PLACEHOLDER_MUSIC_PVC
+
+        # Readarr
+        - name: readarr-config
+          persistentVolumeClaim:
+            claimName: PLACEHOLDER_READARR_CONFIG_PVC
+        - name: books
+          persistentVolumeClaim:
+            claimName: PLACEHOLDER_BOOKS_PVC
+
+        # Shared seeding/completed paths
+        - name: tv-shows-seeding
+          persistentVolumeClaim:
+            claimName: PLACEHOLDER_TV_SHOWS_SEEDING_PVC
+        - name: movies-seeding
+          persistentVolumeClaim:
+            claimName: PLACEHOLDER_MOVIES_SEEDING_PVC
+        - name: downloads-completed
+          persistentVolumeClaim:
+            claimName: PLACEHOLDER_DOWNLOADS_COMPLETED_PVC

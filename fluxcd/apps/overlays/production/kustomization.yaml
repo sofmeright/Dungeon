@@ -64,23 +64,19 @@ resources:
   - photoprism
   - photoprism-x
   - plex
-  # Media Stack
-  - qbittorrent
+  # Media Stack - Combined downloadarrs pod
+  - downloadarrs  # qbittorrent + radarr + sonarr + lidarr + readarr
   - neko-vpn
   - anirra
   - bazarr
   - byparr
   - cross-seed
   - jellyseerr
-  - lidarr
   - overseerr
   - pinchflat
   - pyload-ng
   - prowlarr
-  - radarr
-  - sonarr
   - supermicro-license-generator
-  - readarr
   - sabnzbd
   - thelounge
   # Personal

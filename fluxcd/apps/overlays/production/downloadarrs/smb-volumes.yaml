@@ -1,0 +1,281 @@
+# SMB volumes for downloadarrs - Movies, TV Shows, Music, Books, Seeding paths
+---
+# qBittorrent TV Shows Seeding
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: qbittorrent-tv-shows-seeding
+spec:
+  capacity:
+    storage: 16Ti
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  mountOptions:
+    - vers=2.1
+    - uid=1000
+    - gid=1000
+    - file_mode=0777
+    - dir_mode=0777
+  csi:
+    driver: smb.csi.k8s.io
+    readOnly: false
+    volumeHandle: qbittorrent-tv-shows-seeding-gringotts-media-tv
+    volumeAttributes:
+      source: "//gringotts/timecapsule/Media/TV_Shows/Automated-Seeding"
+    nodeStageSecretRef:
+      name: downloadarrs-smb-secret
+      namespace: swift-sail
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: qbittorrent-tv-shows-seeding
+spec:
+  storageClassName: ""
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 16Ti
+  volumeName: qbittorrent-tv-shows-seeding
+---
+# qBittorrent Movies Seeding
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: qbittorrent-movies-seeding
+spec:
+  capacity:
+    storage: 16Ti
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  mountOptions:
+    - vers=2.1
+    - uid=1000
+    - gid=1000
+    - file_mode=0777
+    - dir_mode=0777
+  csi:
+    driver: smb.csi.k8s.io
+    readOnly: false
+    volumeHandle: qbittorrent-movies-seeding-gringotts-media-movies
+    volumeAttributes:
+      source: "//gringotts/timecapsule/Media/Movies/2D-Automated-Seeding"
+    nodeStageSecretRef:
+      name: downloadarrs-smb-secret
+      namespace: swift-sail
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: qbittorrent-movies-seeding
+spec:
+  storageClassName: ""
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 16Ti
+  volumeName: qbittorrent-movies-seeding
+---
+# qBittorrent Downloads Completed (SMB)
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: qbittorrent-downloads
+spec:
+  capacity:
+    storage: 2Ti
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  mountOptions:
+    - vers=2.1
+    - uid=1000
+    - gid=1000
+    - file_mode=0777
+    - dir_mode=0777
+  csi:
+    driver: smb.csi.k8s.io
+    readOnly: false
+    volumeHandle: qbittorrent-downloads-gringotts-timecapsule-downloads
+    volumeAttributes:
+      source: "//gringotts/timecapsule/Media/Download/__qbittorrent"
+    nodeStageSecretRef:
+      name: downloadarrs-smb-secret
+      namespace: swift-sail
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: qbittorrent-downloads
+spec:
+  storageClassName: ""
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 2Ti
+  volumeName: qbittorrent-downloads
+---
+# Radarr Movies
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: radarr-movies
+spec:
+  capacity:
+    storage: 50Ti
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  mountOptions:
+    - vers=2.1
+    - uid=1000
+    - gid=1000
+    - file_mode=0777
+    - dir_mode=0777
+  csi:
+    driver: smb.csi.k8s.io
+    readOnly: false
+    volumeHandle: radarr-movies-gringotts-timecapsule-media-movies
+    volumeAttributes:
+      source: "//gringotts/timecapsule/Media/Movies"
+    nodeStageSecretRef:
+      name: downloadarrs-smb-secret
+      namespace: swift-sail
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: radarr-movies
+spec:
+  storageClassName: ""
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 50Ti
+  volumeName: radarr-movies
+---
+# Sonarr TV Shows
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: sonarr-tv-shows
+spec:
+  capacity:
+    storage: 50Ti
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  mountOptions:
+    - vers=2.1
+    - uid=1000
+    - gid=1000
+    - file_mode=0777
+    - dir_mode=0777
+  csi:
+    driver: smb.csi.k8s.io
+    readOnly: false
+    volumeHandle: sonarr-tv-shows-gringotts-timecapsule-media-tv
+    volumeAttributes:
+      source: "//gringotts/timecapsule/Media/TV_Shows"
+    nodeStageSecretRef:
+      name: downloadarrs-smb-secret
+      namespace: swift-sail
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: sonarr-tv-shows
+spec:
+  storageClassName: ""
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 50Ti
+  volumeName: sonarr-tv-shows
+---
+# Lidarr Music
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: lidarr-music
+spec:
+  capacity:
+    storage: 10Ti
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  mountOptions:
+    - vers=2.1
+    - uid=1000
+    - gid=1000
+    - file_mode=0777
+    - dir_mode=0777
+  csi:
+    driver: smb.csi.k8s.io
+    readOnly: false
+    volumeHandle: lidarr-music-gringotts-timecapsule-media-music
+    volumeAttributes:
+      source: "//gringotts/timecapsule/Media/Music"
+    nodeStageSecretRef:
+      name: downloadarrs-smb-secret
+      namespace: swift-sail
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: lidarr-music
+spec:
+  storageClassName: ""
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 10Ti
+  volumeName: lidarr-music
+---
+# Readarr Books
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: readarr-books
+spec:
+  capacity:
+    storage: 10Ti
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  mountOptions:
+    - vers=2.1
+    - uid=1000
+    - gid=1000
+    - file_mode=0777
+    - dir_mode=0777
+  csi:
+    driver: smb.csi.k8s.io
+    readOnly: false
+    volumeHandle: readarr-books-gringotts-timecapsule-media-books
+    volumeAttributes:
+      source: "//gringotts/timecapsule/Media/Books"
+    nodeStageSecretRef:
+      name: downloadarrs-smb-secret
+      namespace: swift-sail
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: readarr-books
+spec:
+  storageClassName: ""
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 10Ti
+  volumeName: readarr-books

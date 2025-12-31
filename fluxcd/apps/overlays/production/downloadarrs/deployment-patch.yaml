@@ -1,0 +1,86 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: downloadarrs
+spec:
+  template:
+    spec:
+      containers:
+        - name: gluetun
+          env:
+            - name: SERVER_REGIONS
+              value: "CA Vancouver"
+            - name: FIREWALL_OUTBOUND_SUBNETS
+              value: "10.144.0.0/12,172.16.0.0/12,172.22.30.33/32,192.168.144.0/20"
+            - name: TZ
+              value: "America/Chicago"
+        - name: qbittorrent
+          env:
+            - name: TZ
+              value: "America/Chicago"
+        - name: radarr
+          env:
+            - name: TZ
+              value: "America/Chicago"
+        - name: sonarr
+          env:
+            - name: TZ
+              value: "America/Chicago"
+        - name: lidarr
+          env:
+            - name: TZ
+              value: "America/Chicago"
+        - name: readarr
+          env:
+            - name: TZ
+              value: "America/Chicago"
+      volumes:
+        # Gluetun
+        - name: gluetun-config
+          persistentVolumeClaim:
+            claimName: swift-sail-qbittorrent-gluetun-config
+        # qBittorrent
+        - name: qbittorrent-config
+          persistentVolumeClaim:
+            claimName: swift-sail-qbittorrent-config
+        - name: downloads
+          persistentVolumeClaim:
+            claimName: swift-sail-qbittorrent-downloads
+        # Radarr
+        - name: radarr-config
+          persistentVolumeClaim:
+            claimName: swift-sail-radarr-config
+        - name: movies
+          persistentVolumeClaim:
+            claimName: radarr-movies
+        # Sonarr
+        - name: sonarr-config
+          persistentVolumeClaim:
+            claimName: config-sonarr-0
+        - name: tv-shows
+          persistentVolumeClaim:
+            claimName: sonarr-tv-shows
+        # Lidarr
+        - name: lidarr-config
+          persistentVolumeClaim:
+            claimName: config-lidarr-0
+        - name: music
+          persistentVolumeClaim:
+            claimName: lidarr-music
+        # Readarr
+        - name: readarr-config
+          persistentVolumeClaim:
+            claimName: config-readarr-0
+        - name: books
+          persistentVolumeClaim:
+            claimName: readarr-books
+        # Shared seeding/completed
+        - name: tv-shows-seeding
+          persistentVolumeClaim:
+            claimName: qbittorrent-tv-shows-seeding
+        - name: movies-seeding
+          persistentVolumeClaim:
+            claimName: qbittorrent-movies-seeding
+        - name: downloads-completed
+          persistentVolumeClaim:
+            claimName: qbittorrent-downloads
