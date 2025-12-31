@@ -58,7 +58,7 @@ metadata:
   name: swift-sail-qbittorrent-downloads-0
 spec:
   capacity:
-    storage: 336Gi
+    storage: 500Gi
   accessModes:
     - ReadWriteOnce
   persistentVolumeReclaimPolicy: Retain
