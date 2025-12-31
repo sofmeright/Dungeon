@@ -24,7 +24,7 @@ spec:
     volumeAttributes:
       source: "//gringotts/timecapsule/Media/TV_Shows/Automated-Seeding"
     nodeStageSecretRef:
-      name: downloadarrs-smb-secret
+      name: qbittorrent-smb-secret
       namespace: swift-sail
 ---
 apiVersion: v1
@@ -64,7 +64,7 @@ spec:
     volumeAttributes:
       source: "//gringotts/timecapsule/Media/Movies/2D-Automated-Seeding"
     nodeStageSecretRef:
-      name: downloadarrs-smb-secret
+      name: qbittorrent-smb-secret
       namespace: swift-sail
 ---
 apiVersion: v1
@@ -104,7 +104,7 @@ spec:
     volumeAttributes:
       source: "//gringotts/timecapsule/Media/Download/__qbittorrent"
     nodeStageSecretRef:
-      name: downloadarrs-smb-secret
+      name: qbittorrent-smb-secret
       namespace: swift-sail
 ---
 apiVersion: v1
@@ -144,7 +144,7 @@ spec:
     volumeAttributes:
       source: "//gringotts/timecapsule/Media/Movies"
     nodeStageSecretRef:
-      name: downloadarrs-smb-secret
+      name: radarr-smb-secret
       namespace: swift-sail
 ---
 apiVersion: v1
@@ -184,7 +184,7 @@ spec:
     volumeAttributes:
       source: "//gringotts/timecapsule/Media/TV_Shows"
     nodeStageSecretRef:
-      name: downloadarrs-smb-secret
+      name: sonarr-smb-secret
       namespace: swift-sail
 ---
 apiVersion: v1
@@ -224,7 +224,7 @@ spec:
     volumeAttributes:
       source: "//gringotts/timecapsule/Media/Music"
     nodeStageSecretRef:
-      name: downloadarrs-smb-secret
+      name: lidarr-smb-secret
       namespace: swift-sail
 ---
 apiVersion: v1
@@ -264,7 +264,7 @@ spec:
     volumeAttributes:
       source: "//gringotts/timecapsule/Media/Books"
     nodeStageSecretRef:
-      name: downloadarrs-smb-secret
+      name: readarr-smb-secret
       namespace: swift-sail
 ---
 apiVersion: v1
