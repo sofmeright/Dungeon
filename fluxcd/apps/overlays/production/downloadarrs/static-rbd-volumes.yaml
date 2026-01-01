@@ -197,7 +197,7 @@ metadata:
   name: swift-sail-lidarr-config-0
 spec:
   capacity:
-    storage: 5Gi
+    storage: 10Gi
   accessModes:
     - ReadWriteOnce
   persistentVolumeReclaimPolicy: Retain
@@ -225,7 +225,7 @@ spec:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 5Gi
+      storage: 10Gi
   volumeName: swift-sail-lidarr-config-0
 ---
 # Readarr Config
