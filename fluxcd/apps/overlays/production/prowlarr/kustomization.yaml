@@ -7,6 +7,7 @@ resources:
   - ../../../base/prowlarr
   - service-headless.yaml
   - httproute-xylem.yaml
+  - static-rbd-volumes.yaml
 
 patches:
   - path: statefulset-patch.yaml

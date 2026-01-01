@@ -6,6 +6,7 @@ namespace: swift-sail
 resources:
   - ../../../base/jellyseerr
   - httproute.yaml
+  - static-rbd-volumes.yaml
 
 patches:
   - path: statefulset-patch.yaml

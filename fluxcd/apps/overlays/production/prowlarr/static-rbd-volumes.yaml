@@ -1,0 +1,38 @@
+# Static RBD volumes for prowlarr
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: optcp-prowlarr-config-0
+spec:
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: ceph-rbd-static
+  csi:
+    driver: rbd.csi.ceph.com
+    fsType: ext4
+    volumeHandle: optcp-prowlarr-config-0
+    volumeAttributes:
+      clusterID: "0985467c-d8f3-4483-b27f-f0a512397ec2"
+      pool: "dungeon"
+      imageName: "optcp-prowlarr-config-0"
+      staticVolume: "true"
+    nodeStageSecretRef:
+      name: ceph-secret-user
+      namespace: kube-system
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: optcp-prowlarr-config
+spec:
+  storageClassName: ceph-rbd-static
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+  volumeName: optcp-prowlarr-config-0

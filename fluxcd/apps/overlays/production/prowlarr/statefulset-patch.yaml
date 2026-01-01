@@ -6,30 +6,26 @@ spec:
   template:
     spec:
       containers:
-      - name: prowlarr
-        image: ghcr.io/hotio/prowlarr:latest
-        env:
-        - name: TZ
-          value: "America/Chicago"
-      - name: gluetun
-        image: docker.jcr.pcfae.com/qmcgaw/gluetun:latest
-        env:
-        - name: VPN_SERVICE_PROVIDER
-          value: "private internet access"
-        - name: SERVER_REGIONS
-          $patch: delete
-        - name: FIREWALL_VPN_INPUT_PORTS
-          $patch: delete
-        - name: FIREWALL_INPUT_PORTS
-          value: "9696"
-        - name: FIREWALL_OUTBOUND_SUBNETS
-          value: "10.144.0.0/12,172.16.0.0/12,172.22.30.33/32,192.168.144.0/20"
-  volumeClaimTemplates:
-  - metadata:
-      name: config
-    spec:
-      accessModes: ["ReadWriteOnce"]
-      storageClassName: ceph-rbd-retain
-      resources:
-        requests:
-          storage: 1Gi
+        - name: prowlarr
+          image: ghcr.io/hotio/prowlarr:latest
+          env:
+            - name: TZ
+              value: "America/Chicago"
+        - name: gluetun
+          image: docker.io/qmcgaw/gluetun:latest
+          env:
+            - name: VPN_SERVICE_PROVIDER
+              value: "private internet access"
+            - name: SERVER_REGIONS
+              $patch: delete
+            - name: FIREWALL_VPN_INPUT_PORTS
+              $patch: delete
+            - name: FIREWALL_INPUT_PORTS
+              value: "9696"
+            - name: FIREWALL_OUTBOUND_SUBNETS
+              value: "10.144.0.0/12,172.16.0.0/12,172.22.30.33/32,192.168.144.0/20"
+      volumes:
+        - name: config
+          persistentVolumeClaim:
+            claimName: optcp-prowlarr-config
+  volumeClaimTemplates: []

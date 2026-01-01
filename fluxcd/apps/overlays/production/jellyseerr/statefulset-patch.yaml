@@ -6,32 +6,28 @@ spec:
   template:
     spec:
       containers:
-      - name: jellyseerr
-        image: docker.jcr.pcfae.com/fallenbagel/jellyseerr:latest
-        env:
-        - name: TZ
-          value: "America/Chicago"
-      - name: gluetun
-        image: docker.jcr.pcfae.com/qmcgaw/gluetun:v3.39.1
-        env:
-        - name: VPN_SERVICE_PROVIDER
-          value: "private internet access"
-        - name: SERVER_REGIONS
-          $patch: delete
-        - name: FIREWALL_VPN_INPUT_PORTS
-          $patch: delete
-        - name: FIREWALL_INPUT_PORTS
-          value: "5055"
-        - name: FIREWALL_OUTBOUND_SUBNETS
-          value: "10.144.0.0/12,172.16.0.0/12,172.22.30.33/32,192.168.144.0/20"
-        - name: DNS_ADDRESS
-          value: "10.144.0.10"
-  volumeClaimTemplates:
-  - metadata:
-      name: config
-    spec:
-      accessModes: ["ReadWriteOnce"]
-      storageClassName: ceph-rbd-retain
-      resources:
-        requests:
-          storage: 2Gi
+        - name: jellyseerr
+          image: docker.io/fallenbagel/jellyseerr:latest
+          env:
+            - name: TZ
+              value: "America/Chicago"
+        - name: gluetun
+          image: docker.io/qmcgaw/gluetun:v3.39.1
+          env:
+            - name: VPN_SERVICE_PROVIDER
+              value: "private internet access"
+            - name: SERVER_REGIONS
+              $patch: delete
+            - name: FIREWALL_VPN_INPUT_PORTS
+              $patch: delete
+            - name: FIREWALL_INPUT_PORTS
+              value: "5055"
+            - name: FIREWALL_OUTBOUND_SUBNETS
+              value: "10.144.0.0/12,172.16.0.0/12,172.22.30.33/32,192.168.144.0/20"
+            - name: DNS_ADDRESS
+              value: "10.144.0.10"
+      volumes:
+        - name: config
+          persistentVolumeClaim:
+            claimName: optcp-jellyseerr-config
+  volumeClaimTemplates: []
