@@ -8,8 +8,26 @@ spec:
     - name: xylem-gateway
       namespace: arylls-lookout
   hostnames:
+    # Wildcards
     - "*.pcfae.com"
     - "pcfae.com"
+    # Explicit subdomains (override wildcard precedence)
+    - "radarr.pcfae.com"
+    - "sonarr.pcfae.com"
+    - "lidarr.pcfae.com"
+    - "readarr.pcfae.com"
+    - "qbitt.pcfae.com"
+    - "bazarr.pcfae.com"
+    - "prowlarr.pcfae.com"
+    - "overseer.pcfae.com"
+    - "sabnzbd.pcfae.com"
+    - "thelounge.pcfae.com"
+    - "pinchflat.pcfae.com"
+    - "grafana.pcfae.com"
+    - "vault.pcfae.com"
+    - "netbox.pcfae.com"
+    - "photos.pcfae.com"
+    - "fotos.pcfae.com"
   rules:
     - matches:
         - path:
