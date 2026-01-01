@@ -56,21 +56,21 @@ spec:
         # Sonarr
         - name: sonarr-config
           persistentVolumeClaim:
-            claimName: config-sonarr-0
+            claimName: swift-sail-sonarr-config
         - name: tv-shows
           persistentVolumeClaim:
             claimName: sonarr-tv-shows
         # Lidarr
         - name: lidarr-config
           persistentVolumeClaim:
-            claimName: config-lidarr-0
+            claimName: swift-sail-lidarr-config
         - name: music
           persistentVolumeClaim:
             claimName: lidarr-music
         # Readarr
         - name: readarr-config
           persistentVolumeClaim:
-            claimName: config-readarr-0
+            claimName: swift-sail-readarr-config
         - name: books
           persistentVolumeClaim:
             claimName: readarr-books
