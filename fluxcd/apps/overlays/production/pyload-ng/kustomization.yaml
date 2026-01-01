@@ -6,6 +6,7 @@ namespace: swift-sail
 resources:
   - ../../../base/pyload-ng
   - httproute-xylem.yaml
+  - static-rbd-volumes.yaml
 
 patches:
   - path: statefulset-patch.yaml
