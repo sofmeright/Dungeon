@@ -5,9 +5,9 @@ metadata:
   name: pinchflat-downloads
 spec:
   csi:
-    volumeHandle: pinchflat-downloads-gringotts-timecapsule-media
+    volumeHandle: swift-sail-pinchflat-downloads-smb
     volumeAttributes:
-      source: "//gringotts/timecapsule/Media"
+      source: "//gringotts/timecapsule/Media/Movies/Youtube/_Pinchflat"
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
