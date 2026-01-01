@@ -12,6 +12,62 @@ spec:
       labels:
         app: downloadarrs
     spec:
+      initContainers:
+        - name: cross-seed-config-init
+          image: docker.io/busybox:latest
+          env:
+            - name: QBITTORRENT_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: downloadarrs-qbittorrent-secret
+                  key: username
+            - name: QBITTORRENT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: downloadarrs-qbittorrent-secret
+                  key: password
+            - name: PROWLARR_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: prowlarr-api-secret
+                  key: api_key
+          command:
+            - sh
+            - -c
+            - |
+              cat > /config/config.js << CONFIGEOF
+              module.exports = {
+                delay: 30,
+                torznab: ["http://localhost:9696/1/api?apikey=$PROWLARR_API_KEY"],
+                torrentClients: ["qbittorrent:http://$QBITTORRENT_USERNAME:$QBITTORRENT_PASSWORD@localhost:6887"],
+                port: 2468,
+                host: "0.0.0.0",
+                rssCadence: null,
+                searchCadence: null,
+                excludeOlder: null,
+                excludeRecentSearch: null,
+                action: "inject",
+                matchMode: "safe",
+                skipRecheck: true,
+                linkType: "hardlink",
+                linkDirs: [],
+                dataDirs: ["/downloads"],
+                maxDataDepth: 3,
+                outputDir: null,
+                includeEpisodes: true,
+                includeSingleEpisodes: true,
+                includeNonVideos: false,
+                fuzzySizeThreshold: 0.02,
+                duplicateCategories: true,
+                apiAuth: false,
+                useClientTorrents: true
+              };
+              CONFIGEOF
+              chown 1000:1000 /config/config.js
+              echo "Cross-seed configuration complete"
+          volumeMounts:
+            - name: cross-seed-config
+              mountPath: /config
       containers:
         # Gluetun VPN Gateway - shared by all apps
         - name: gluetun
@@ -32,7 +88,7 @@ spec:
             - name: VPN_PORT_FORWARDING_STATUS_FILE
               value: "/tmp/gluetun/forwarded_port"
             - name: FIREWALL_INPUT_PORTS
-              value: "6887,7878,8989,8686,8787"
+              value: "6887,7878,8989,8686,8787,2468"
             - name: FIREWALL_OUTBOUND_SUBNETS
               value: PLACEHOLDER_FIREWALL_SUBNETS
             - name: DNS_ADDRESS
@@ -79,6 +135,8 @@ spec:
               name: lidarr
             - containerPort: 8787
               name: readarr
+            - containerPort: 2468
+              name: cross-seed
           resources:
             requests:
               cpu: 50m
@@ -248,6 +306,28 @@ spec:
               cpu: "1"
               memory: 1Gi
 
+        # Cross-seed
+        - name: cross-seed
+          image: docker.io/crossseed/cross-seed:latest
+          env:
+            - name: TZ
+              value: PLACEHOLDER_TZ
+          volumeMounts:
+            - name: cross-seed-config
+              mountPath: /config
+            - name: downloads
+              mountPath: /downloads
+            - name: qbittorrent-config
+              mountPath: /qbittorrent-config
+              readOnly: true
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: "1"
+              memory: 1Gi
+
       volumes:
         # Gluetun
         - name: gluetun-config
@@ -295,6 +375,11 @@ spec:
         - name: books
           persistentVolumeClaim:
             claimName: PLACEHOLDER_BOOKS_PVC
+
+        # Cross-seed
+        - name: cross-seed-config
+          persistentVolumeClaim:
+            claimName: PLACEHOLDER_CROSS_SEED_CONFIG_PVC
 
         # Shared seeding/completed paths
         - name: tv-shows-seeding

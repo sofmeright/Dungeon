@@ -265,3 +265,41 @@ spec:
     requests:
       storage: 5Gi
   volumeName: swift-sail-readarr-config-0
+---
+# Cross-seed Config
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: swift-sail-cross-seed-config-0
+spec:
+  capacity:
+    storage: 2Gi
+  accessModes:
+    - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: ceph-rbd-static
+  csi:
+    driver: rbd.csi.ceph.com
+    fsType: ext4
+    volumeHandle: swift-sail-cross-seed-config-0
+    volumeAttributes:
+      clusterID: "0985467c-d8f3-4483-b27f-f0a512397ec2"
+      pool: "dungeon"
+      imageName: "swift-sail-cross-seed-config-0"
+      staticVolume: "true"
+    nodeStageSecretRef:
+      name: ceph-secret-user
+      namespace: kube-system
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: swift-sail-cross-seed-config
+spec:
+  storageClassName: ceph-rbd-static
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 2Gi
+  volumeName: swift-sail-cross-seed-config-0

@@ -34,6 +34,10 @@ spec:
           env:
             - name: TZ
               value: "America/Chicago"
+        - name: cross-seed
+          env:
+            - name: TZ
+              value: "America/Chicago"
       volumes:
         # Gluetun
         - name: gluetun-config
@@ -74,6 +78,10 @@ spec:
         - name: books
           persistentVolumeClaim:
             claimName: readarr-books
+        # Cross-seed
+        - name: cross-seed-config
+          persistentVolumeClaim:
+            claimName: swift-sail-cross-seed-config
         # Shared seeding/completed
         - name: tv-shows-seeding
           persistentVolumeClaim:
