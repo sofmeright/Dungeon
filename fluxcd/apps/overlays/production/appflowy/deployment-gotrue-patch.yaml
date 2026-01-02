@@ -5,102 +5,106 @@ metadata:
 spec:
   replicas: 1
   template:
+    metadata:
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "9999"
     spec:
       containers:
-      - name: gotrue
-        image: docker.jcr.pcfae.com/appflowyinc/gotrue:latest
-        ports:
-        - name: http
-          containerPort: 9999
-          protocol: TCP
-        env:
-        # Non-secret configuration
-        - name: PORT
-          value: "9999"
-        - name: GOTRUE_LOG_LEVEL
-          value: "debug"
-        - name: GOTRUE_DB_DRIVER
-          value: "postgres"
-        - name: GOTRUE_JWT_ADMIN_GROUP_NAME
-          value: "supabase_admin"
-        - name: API_EXTERNAL_URL
-          value: "https://flwy.prplanit.com/gotrue"
-        - name: GOTRUE_SITE_URL
-          value: "appflowy-flutter://"
-        - name: GOTRUE_URI_ALLOW_LIST
-          value: "**"
-        - name: GOTRUE_DISABLE_SIGNUP
-          value: "false"
-        - name: GOTRUE_JWT_EXP
-          value: "7200"
-        - name: GOTRUE_MAILER_AUTOCONFIRM
-          value: "true"
-        - name: GOTRUE_MAILER_URLPATHS_CONFIRMATION
-          value: "/gotrue/verify"
-        - name: GOTRUE_MAILER_URLPATHS_INVITE
-          value: "/gotrue/verify"
-        - name: GOTRUE_MAILER_URLPATHS_RECOVERY
-          value: "/gotrue/verify"
-        - name: GOTRUE_MAILER_URLPATHS_EMAIL_CHANGE
-          value: "/gotrue/verify"
-        - name: GOTRUE_RATE_LIMIT_EMAIL_SENT
-          value: "100"
-        - name: GOTRUE_SMTP_HOST
-          value: "smtp.gmail.com"
-        - name: GOTRUE_SMTP_PORT
-          value: "587"
-        - name: GOTRUE_SMTP_MAX_FREQUENCY
-          value: "1ns"
-        - name: GOTRUE_SMTP_ADMIN_EMAIL
-          value: "precisionplanit@gmail.com"
-        - name: GOTRUE_EXTERNAL_GITHUB_ENABLED
-          value: "false"
-        - name: GOTRUE_EXTERNAL_GOOGLE_ENABLED
-          value: "false"
-        - name: GOTRUE_EXTERNAL_DISCORD_ENABLED
-          value: "false"
-        # Database URLs from gotrue-specific secret
-        - name: DATABASE_URL
-          valueFrom:
-            secretKeyRef:
-              name: appflowy-gotrue-secrets
-              key: DATABASE_URL
-        - name: GOTRUE_DATABASE_URL
-          valueFrom:
-            secretKeyRef:
-              name: appflowy-gotrue-secrets
-              key: GOTRUE_DATABASE_URL
-        # JWT and admin credentials from shared secret
-        - name: GOTRUE_JWT_SECRET
-          valueFrom:
-            secretKeyRef:
-              name: appflowy-shared-secrets
-              key: GOTRUE_JWT_SECRET
-        - name: GOTRUE_ADMIN_EMAIL
-          valueFrom:
-            secretKeyRef:
-              name: appflowy-shared-secrets
-              key: GOTRUE_ADMIN_EMAIL
-        - name: GOTRUE_ADMIN_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: appflowy-shared-secrets
-              key: GOTRUE_ADMIN_PASSWORD
-        # SMTP credentials from gotrue-specific secret
-        - name: GOTRUE_SMTP_USER
-          valueFrom:
-            secretKeyRef:
-              name: appflowy-gotrue-secrets
-              key: GOTRUE_SMTP_USER
-        - name: GOTRUE_SMTP_PASS
-          valueFrom:
-            secretKeyRef:
-              name: appflowy-gotrue-secrets
-              key: GOTRUE_SMTP_PASS
-        resources:
-          requests:
-            memory: "512Mi"
-            cpu: "250m"
-          limits:
-            memory: "1Gi"
-            cpu: "500m"
+        - name: gotrue
+          image: docker.jcr.pcfae.com/appflowyinc/gotrue:latest
+          ports:
+            - name: http
+              containerPort: 9999
+              protocol: TCP
+          env:
+            # Non-secret configuration
+            - name: PORT
+              value: "9999"
+            - name: GOTRUE_LOG_LEVEL
+              value: "debug"
+            - name: GOTRUE_DB_DRIVER
+              value: "postgres"
+            - name: GOTRUE_JWT_ADMIN_GROUP_NAME
+              value: "supabase_admin"
+            - name: API_EXTERNAL_URL
+              value: "https://flwy.prplanit.com/gotrue"
+            - name: GOTRUE_SITE_URL
+              value: "appflowy-flutter://"
+            - name: GOTRUE_URI_ALLOW_LIST
+              value: "**"
+            - name: GOTRUE_DISABLE_SIGNUP
+              value: "false"
+            - name: GOTRUE_JWT_EXP
+              value: "7200"
+            - name: GOTRUE_MAILER_AUTOCONFIRM
+              value: "true"
+            - name: GOTRUE_MAILER_URLPATHS_CONFIRMATION
+              value: "/gotrue/verify"
+            - name: GOTRUE_MAILER_URLPATHS_INVITE
+              value: "/gotrue/verify"
+            - name: GOTRUE_MAILER_URLPATHS_RECOVERY
+              value: "/gotrue/verify"
+            - name: GOTRUE_MAILER_URLPATHS_EMAIL_CHANGE
+              value: "/gotrue/verify"
+            - name: GOTRUE_RATE_LIMIT_EMAIL_SENT
+              value: "100"
+            - name: GOTRUE_SMTP_HOST
+              value: "smtp.gmail.com"
+            - name: GOTRUE_SMTP_PORT
+              value: "587"
+            - name: GOTRUE_SMTP_MAX_FREQUENCY
+              value: "1ns"
+            - name: GOTRUE_SMTP_ADMIN_EMAIL
+              value: "precisionplanit@gmail.com"
+            - name: GOTRUE_EXTERNAL_GITHUB_ENABLED
+              value: "false"
+            - name: GOTRUE_EXTERNAL_GOOGLE_ENABLED
+              value: "false"
+            - name: GOTRUE_EXTERNAL_DISCORD_ENABLED
+              value: "false"
+            # Database URLs from gotrue-specific secret
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: appflowy-gotrue-secrets
+                  key: DATABASE_URL
+            - name: GOTRUE_DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: appflowy-gotrue-secrets
+                  key: GOTRUE_DATABASE_URL
+            # JWT and admin credentials from shared secret
+            - name: GOTRUE_JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: appflowy-shared-secrets
+                  key: GOTRUE_JWT_SECRET
+            - name: GOTRUE_ADMIN_EMAIL
+              valueFrom:
+                secretKeyRef:
+                  name: appflowy-shared-secrets
+                  key: GOTRUE_ADMIN_EMAIL
+            - name: GOTRUE_ADMIN_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: appflowy-shared-secrets
+                  key: GOTRUE_ADMIN_PASSWORD
+            # SMTP credentials from gotrue-specific secret
+            - name: GOTRUE_SMTP_USER
+              valueFrom:
+                secretKeyRef:
+                  name: appflowy-gotrue-secrets
+                  key: GOTRUE_SMTP_USER
+            - name: GOTRUE_SMTP_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: appflowy-gotrue-secrets
+                  key: GOTRUE_SMTP_PASS
+          resources:
+            requests:
+              memory: "512Mi"
+              cpu: "250m"
+            limits:
+              memory: "1Gi"
+              cpu: "500m"

@@ -5,6 +5,10 @@ metadata:
 spec:
   replicas: 3
   template:
+    metadata:
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "7575"
     spec:
       containers:
         - name: homarr

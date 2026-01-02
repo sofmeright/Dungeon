@@ -7,6 +7,10 @@ spec:
     spec:
       version: "1.23.0"
   values:
+    # Prometheus scraping
+    podAnnotations:
+      prometheus.io/scrape: "true"
+      prometheus.io/port: "8383"
     image:
       tag: v1.23.0
     bankVaults:

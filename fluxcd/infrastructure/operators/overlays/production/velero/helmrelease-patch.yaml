@@ -6,6 +6,11 @@ metadata:
 spec:
   targetNamespace: fairy-bottle
   values:
+    # Prometheus scraping
+    podAnnotations:
+      prometheus.io/scrape: "true"
+      prometheus.io/port: "8085"
+
     image:
       pullSecrets:
         - jcr-pcfae-dungeon-pull-secret

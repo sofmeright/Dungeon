@@ -4,6 +4,14 @@ metadata:
   name: alloy
 spec:
   targetNamespace: gossip-stone
+  values:
+    alloy:
+      extraAnnotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "12345"
+      configMap:
+        create: false
+        name: "alloy-config"
   postRenderers:
     - kustomize:
         patches:
@@ -20,8 +28,3 @@ spec:
                   spec:
                     hostNetwork: true
                     dnsPolicy: ClusterFirstWithHostNet
-  values:
-    alloy:
-      configMap:
-        create: false
-        name: "alloy-config"

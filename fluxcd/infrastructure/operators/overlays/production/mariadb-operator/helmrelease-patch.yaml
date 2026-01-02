@@ -4,3 +4,15 @@ metadata:
   name: mariadb-operator
 spec:
   targetNamespace: gorons-bracelet
+  values:
+    podAnnotations:
+      prometheus.io/scrape: "true"
+      prometheus.io/port: "8080"
+    webhook:
+      podAnnotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8080"
+    certController:
+      podAnnotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8080"

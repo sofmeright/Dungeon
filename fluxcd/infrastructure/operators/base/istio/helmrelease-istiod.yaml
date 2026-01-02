@@ -27,6 +27,9 @@ spec:
 
     # Pilot (istiod) configuration
     pilot:
+      podAnnotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "15014"
       env:
         # Enable Gateway API support
         PILOT_ENABLE_GATEWAY_API: "true"

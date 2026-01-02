@@ -4,3 +4,16 @@ metadata:
   name: cert-manager
 spec:
   targetNamespace: king-of-red-lions
+  values:
+    # Prometheus scraping for cert-manager pods
+    podAnnotations:
+      prometheus.io/scrape: "true"
+      prometheus.io/port: "9402"
+    webhook:
+      podAnnotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "9402"
+    cainjector:
+      podAnnotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "9402"

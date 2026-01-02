@@ -4,6 +4,11 @@ metadata:
   name: gpu-operator
 spec:
   values:
+    # Prometheus scraping for operator
+    operator:
+      podAnnotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8080"
     # Enable CDI as default mode
     cdi:
       enabled: true
@@ -66,6 +71,9 @@ spec:
     dcgmExporter:
       nodeSelector:
         kubernetes.io/hostname: dungeon-chest-004
+      podAnnotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "9400"
 
     # GPU Feature Discovery node selector
     gfd:

@@ -11,27 +11,30 @@ spec:
     metadata:
       labels:
         app: prometheus-exporter-pve
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "9221"
     spec:
       containers:
-      - name: exporter
-        image: PLACEHOLDER_IMAGE
-        ports:
-        - containerPort: 9221
-          name: metrics
-          protocol: TCP
-        volumeMounts:
-        - name: config
-          mountPath: /etc/prometheus/pve.yml
-          subPath: pve.yml
-          readOnly: true
-        resources:
-          requests:
-            cpu: PLACEHOLDER_CPU
-            memory: PLACEHOLDER_MEMORY
-          limits:
-            cpu: PLACEHOLDER_CPU_LIMIT
-            memory: PLACEHOLDER_MEMORY_LIMIT
+        - name: exporter
+          image: PLACEHOLDER_IMAGE
+          ports:
+            - containerPort: 9221
+              name: metrics
+              protocol: TCP
+          volumeMounts:
+            - name: config
+              mountPath: /etc/prometheus/pve.yml
+              subPath: pve.yml
+              readOnly: true
+          resources:
+            requests:
+              cpu: PLACEHOLDER_CPU
+              memory: PLACEHOLDER_MEMORY
+            limits:
+              cpu: PLACEHOLDER_CPU_LIMIT
+              memory: PLACEHOLDER_MEMORY_LIMIT
       volumes:
-      - name: config
-        secret:
-          secretName: PLACEHOLDER_SECRET
+        - name: config
+          secret:
+            secretName: PLACEHOLDER_SECRET

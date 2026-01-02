@@ -5,25 +5,29 @@ metadata:
 spec:
   replicas: 1
   template:
+    metadata:
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "9090"
     spec:
       containers:
-      - name: anubis
-        image: ghcr.io/techarohq/anubis:latest
-        env:
-        - name: DIFFICULTY
-          value: "4"
-        - name: SERVE_ROBOTS_TXT
-          value: "true"
-        - name: TARGET
-          value: "http://10.55.6.136:5005"
-        - name: OG_PASSTHROUGH
-          value: "true"
-        - name: OG_EXPIRY_TIME
-          value: "24h"
-        resources:
-          requests:
-            memory: 128Mi
-            cpu: 100m
-          limits:
-            memory: 512Mi
-            cpu: 500m
+        - name: anubis
+          image: ghcr.io/techarohq/anubis:latest
+          env:
+            - name: DIFFICULTY
+              value: "4"
+            - name: SERVE_ROBOTS_TXT
+              value: "true"
+            - name: TARGET
+              value: "http://10.55.6.136:5005"
+            - name: OG_PASSTHROUGH
+              value: "true"
+            - name: OG_EXPIRY_TIME
+              value: "24h"
+          resources:
+            requests:
+              memory: 128Mi
+              cpu: 100m
+            limits:
+              memory: 512Mi
+              cpu: 500m

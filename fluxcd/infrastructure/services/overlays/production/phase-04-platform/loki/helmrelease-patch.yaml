@@ -5,7 +5,15 @@ metadata:
 spec:
   targetNamespace: gossip-stone
   values:
+    # Prometheus scraping annotations
+    lokiCanary:
+      podAnnotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "3500"
     loki:
+      podAnnotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "3100"
       storage:
         s3:
           endpoint: ceph-rgw.gorons-bracelet.svc.cluster.local:80

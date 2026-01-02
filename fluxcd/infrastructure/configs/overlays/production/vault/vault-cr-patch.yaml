@@ -7,6 +7,9 @@ spec:
   vaultPodSpec:
     imagePullSecrets:
       - name: jcr-pcfae-dungeon-pull-secret
+  vaultAnnotations:
+    prometheus.io/scrape: "true"
+    prometheus.io/port: "9091"
   vaultContainerSpec:
     securityContext:
       capabilities:

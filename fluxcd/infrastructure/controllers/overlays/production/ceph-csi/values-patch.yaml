@@ -105,7 +105,14 @@ spec:
                             expirationSeconds: 3600
                             audience: ceph-csi-kms
   values:
+    nodeplugin:
+      podAnnotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8080"
     provisioner:
+      podAnnotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8080"
       enableHostNetwork: true
       httpMetrics:
         enabled: true

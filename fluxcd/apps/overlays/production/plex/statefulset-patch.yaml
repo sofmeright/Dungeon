@@ -5,24 +5,28 @@ metadata:
 spec:
   replicas: 1
   template:
+    metadata:
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "32400"
     spec:
       imagePullSecrets:
-      - name: docker-io-prplanit-pull-secret
+        - name: docker-io-prplanit-pull-secret
       containers:
-      - name: plex
-        image: docker.io/plexinc/pms-docker:latest
-        env:
-        - name: ADVERTISE_IP
-          value: "http://172.22.30.123:32400/,https://plex.temple-of-time.com/"
-        volumeMounts:
-        - name: config
-          mountPath: /config
-        - name: transcode
-          mountPath: /transcode
+        - name: plex
+          image: docker.io/plexinc/pms-docker:latest
+          env:
+            - name: ADVERTISE_IP
+              value: "http://172.22.30.123:32400/,https://plex.temple-of-time.com/"
+          volumeMounts:
+            - name: config
+              mountPath: /config
+            - name: transcode
+              mountPath: /transcode
       volumes:
-      - name: config
-        persistentVolumeClaim:
-          claimName: kai-plex-config
-      - name: transcode
-        persistentVolumeClaim:
-          claimName: kai-plex-transcode
+        - name: config
+          persistentVolumeClaim:
+            claimName: kai-plex-config
+        - name: transcode
+          persistentVolumeClaim:
+            claimName: kai-plex-transcode
