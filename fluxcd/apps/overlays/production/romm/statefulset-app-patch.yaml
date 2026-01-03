@@ -6,25 +6,39 @@ spec:
   replicas: 1
   template:
     spec:
-      imagePullSecrets:
-      - name: jcr-pcfae-dungeon-pull-secret
       containers:
-      - name: romm
-        image: docker.jcr.pcfae.com/rommapp/romm:latest
+        - name: romm
+          image: docker.io/rommapp/romm:latest
   volumeClaimTemplates:
-  - metadata:
-      name: shooting-gallery-romm-resources
-    spec:
-      storageClassName: ceph-rbd-retain
-  - metadata:
-      name: shooting-gallery-romm-redis
-    spec:
-      storageClassName: ceph-rbd-retain
-  - metadata:
-      name: shooting-gallery-romm-assets
-    spec:
-      storageClassName: ceph-rbd-retain
-  - metadata:
-      name: shooting-gallery-romm-config
-    spec:
-      storageClassName: ceph-rbd-retain
+    - metadata:
+        name: shooting-gallery-romm-resources
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        storageClassName: ceph-rbd-retain
+        resources:
+          requests:
+            storage: 10Gi
+    - metadata:
+        name: shooting-gallery-romm-redis
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        storageClassName: ceph-rbd-retain
+        resources:
+          requests:
+            storage: 5Gi
+    - metadata:
+        name: shooting-gallery-romm-assets
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        storageClassName: ceph-rbd-retain
+        resources:
+          requests:
+            storage: 10Gi
+    - metadata:
+        name: shooting-gallery-romm-config
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        storageClassName: ceph-rbd-retain
+        resources:
+          requests:
+            storage: 1Gi

@@ -6,13 +6,15 @@ spec:
   replicas: 1
   template:
     spec:
-      imagePullSecrets:
-      - name: jcr-pcfae-dungeon-pull-secret
       containers:
-      - name: mariadb
-        image: docker.jcr.pcfae.com/library/mariadb:latest
+        - name: mariadb
+          image: docker.io/library/mariadb:latest
   volumeClaimTemplates:
-  - metadata:
-      name: shooting-gallery-romm-mysql
-    spec:
-      storageClassName: ceph-rbd-retain
+    - metadata:
+        name: shooting-gallery-romm-mysql
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        storageClassName: ceph-rbd-retain
+        resources:
+          requests:
+            storage: 10Gi
