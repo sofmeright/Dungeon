@@ -13,6 +13,11 @@ spec:
           env:
             - name: SEARXNG_BASE_URL
               value: "http://172.22.30.107:8986/"
+            - name: SEARXNG_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: searxng-secrets
+                  key: secret_key
       volumes:
         - name: searxng-data
           persistentVolumeClaim: null
