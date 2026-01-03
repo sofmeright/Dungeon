@@ -76,6 +76,7 @@ resources:
   - pyload-ng
   - prowlarr
   - supermicro-license-generator
+  - py-kms
   - sabnzbd
   - thelounge
   # Personal
