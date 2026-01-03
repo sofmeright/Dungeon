@@ -24,6 +24,7 @@ resources:
   - homarr
   - kasm
   - organizr
+  - rustdesk-server
   - tacticalrmm
   # AI
   - ollama
