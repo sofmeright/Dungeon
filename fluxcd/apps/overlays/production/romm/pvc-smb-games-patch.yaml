@@ -3,4 +3,5 @@ kind: PersistentVolumeClaim
 metadata:
   name: shooting-gallery-romm-smb-games
 spec:
-  storageClassName: smb-gringotts-games
+  storageClassName: ""
+  volumeName: romm-games

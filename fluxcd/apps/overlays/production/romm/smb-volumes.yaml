@@ -1,0 +1,50 @@
+---
+# SMB Secret for games volume
+apiVersion: external-secrets.io/v1beta1
+kind: ExternalSecret
+metadata:
+  name: romm-smb-secret
+spec:
+  refreshInterval: 1h
+  secretStoreRef:
+    name: vault-operationtimecapsule
+    kind: ClusterSecretStore
+  target:
+    name: romm-smb-secret
+    creationPolicy: Owner
+  data:
+    - secretKey: username
+      remoteRef:
+        key: smb/romm
+        property: username
+    - secretKey: password
+      remoteRef:
+        key: smb/romm
+        property: password
+---
+# Games PV - SMB share from gringotts
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: romm-games
+spec:
+  capacity:
+    storage: 5Ti
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  mountOptions:
+    - vers=2.1
+    - uid=3454
+    - gid=3007
+    - file_mode=0777
+    - dir_mode=0777
+  csi:
+    driver: smb.csi.k8s.io
+    readOnly: false
+    volumeHandle: romm-games-gringotts-games
+    volumeAttributes:
+      source: "//gringotts/Games"
+    nodeStageSecretRef:
+      name: romm-smb-secret
+      namespace: shooting-gallery
