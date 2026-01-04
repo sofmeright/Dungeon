@@ -7,3 +7,8 @@ metadata:
     lbipam.cilium.io/sharing-key: "shooting-gallery"
 spec:
   type: LoadBalancer
+  ports:
+    - name: http
+      port: 8080
+      targetPort: 8080
+      protocol: TCP

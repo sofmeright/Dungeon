@@ -7,12 +7,16 @@ spec:
   template:
     spec:
       imagePullSecrets:
-      - name: jcr-pcfae-dungeon-pull-secret
+        - name: jcr-pcfae-dungeon-pull-secret
       containers:
-      - name: rustdesk-server
-        image: docker.jcr.pcfae.com/rustdesk/rustdesk-server:latest
+        - name: rustdesk-server
+          image: docker.jcr.pcfae.com/rustdesk/rustdesk-server:latest
   volumeClaimTemplates:
-  - metadata:
-      name: hookshot-rustdesk-server-data
-    spec:
-      storageClassName: ceph-rbd-retain
+    - metadata:
+        name: hookshot-rustdesk-server-data
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        storageClassName: ceph-rbd-retain
+        resources:
+          requests:
+            storage: 1Gi

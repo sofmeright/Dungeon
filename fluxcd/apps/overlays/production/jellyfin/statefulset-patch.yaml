@@ -16,7 +16,7 @@ spec:
         runAsGroup: 1000
       initContainers:
         - name: fix-permissions
-          image: docker.jcr.pcfae.com/busybox:1.36
+          image: docker.io/busybox:1.36
           securityContext:
             runAsUser: 0
             runAsGroup: 0
@@ -33,7 +33,7 @@ spec:
               mountPath: /cache
       containers:
         - name: jellyfin
-          image: docker.jcr.pcfae.com/jellyfin/jellyfin:10.10.7
+          image: docker.io/jellyfin/jellyfin:10.10.7
           env:
             - name: JELLYFIN_PublishedServerUrl
               value: "https://jfish.optcp.com"
