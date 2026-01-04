@@ -13,4 +13,21 @@ patches:
   - path: statefulset-app-patch.yaml
   - path: statefulset-db-patch.yaml
   - path: pvc-smb-games-patch.yaml
-  - path: service-patch.yaml
+  - target:
+      kind: Service
+      name: romm
+    patch: |-
+      - op: replace
+        path: /spec/ports/0/port
+        value: 8080
+      - op: replace
+        path: /spec/ports/0/targetPort
+        value: 8080
+      - op: replace
+        path: /spec/type
+        value: LoadBalancer
+      - op: add
+        path: /metadata/annotations
+        value:
+          lbipam.cilium.io/ips: "172.22.30.231"
+          lbipam.cilium.io/sharing-key: "shooting-gallery"
