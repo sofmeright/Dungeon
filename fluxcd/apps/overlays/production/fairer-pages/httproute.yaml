@@ -17,7 +17,13 @@ spec:
     - "astralfocal.com"
     - "kai-hamilton.com"
     - "hass.arbitorium.com"
+    # Explicit subdomains to override wildcard precedence
     - "mealie.yesimvegan.com"
+    - "wiki.yesimvegan.com"
+    - "blog.sofmeright.com"
+    - "ls.sofmeright.com"
+    - "resume.sofmeright.com"
+    - "uptime.sofmeright.com"
   rules:
     - matches:
         - path:
