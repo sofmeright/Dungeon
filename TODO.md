@@ -399,3 +399,52 @@ kubectl get nodes -o custom-columns=NAME:.metadata.name,GPU:.status.allocatable.
 - GPU Operator Platform Support: https://docs.nvidia.com/datacenter/cloud-native/gpu-operator/latest/platform-support.html
 
 **Last Updated:** 2025-11-10
+
+## Prometheus Metrics - Exportarr Sidecars
+
+**Status:** Pending
+
+**Goal:** Add Prometheus metrics exporters to the downloadarrs pod for monitoring arr apps and qBittorrent.
+
+### Exportarr Sidecars
+- [ ] Add exportarr sidecar for Sonarr metrics
+- [ ] Add exportarr sidecar for Radarr metrics
+- [ ] Add exportarr sidecar for Lidarr metrics
+- [ ] Add exportarr sidecar for Readarr metrics
+- **Source:** https://github.com/onedr0p/exportarr
+
+### qBittorrent Exporter
+- [ ] Add qbittorrent-exporter sidecar to downloadarrs pod
+- **Source:** https://github.com/caseyscarborough/qbittorrent-exporter or https://github.com/esanchezm/prometheus-qbittorrent-exporter
+
+**Note:** These sidecars will expose `/metrics` endpoints that Alloy can scrape (requires `prometheus.io/scrape: "true"` annotation).
+
+## Jellyfin 10.11.x Upgrade Investigation
+
+**Status:** Blocked - Plugin compatibility unknown
+
+**Current State:**
+- Jellyfin version: 10.10.7
+- SSO Authentication plugin: v3.5.2.4
+- Skin Manager plugin: v2.0.2.0
+
+**Required for 10.11.x Upgrade:**
+
+### SSO Authentication Plugin
+- [ ] Update SSO plugin from v3.5.2.4 to v4.0.0.3
+- **Source:** https://github.com/9p4/jellyfin-plugin-sso/releases
+- **Note:** v3.5.2.4 is for 10.10.x, v4.0.0.3 required for 10.11.x
+- **Install method:** Manual - download zip to `/config/plugins/SSO Authentication_4.0.0.3/`
+
+### Skin Manager Plugin
+- [ ] Investigate Skin Manager compatibility with 10.11.x
+- **Source:** https://github.com/danieladov/jellyfin-plugin-skin-manager
+- **Current version:** 2.0.2.0 (last updated Nov 2022)
+- **Status:** Marked as "stale", some features broken in 10.10.7
+- **Risk:** HIGH - likely to break with no maintainer to fix
+
+### JellySkin Theme
+- [ ] Investigate JellySkin theme compatibility with 10.11.x
+- **Source:** https://github.com/prayag17/JellySkin
+
+**Decision:** Stay on 10.10.7 until plugin compatibility is confirmed or alternatives found for Skin Manager.

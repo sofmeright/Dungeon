@@ -17,6 +17,7 @@ spec:
     - "astralfocal.com"
     - "kai-hamilton.com"
     - "hass.arbitorium.com"
+    - "mealie.yesimvegan.com"
   rules:
     - matches:
         - path:
