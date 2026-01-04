@@ -97,6 +97,7 @@ resources:
   - shlink
   - filebrowser
   - google-webfonts-helper
+  - convertx
   - hrconvert2
   - it-tools
   - mazanoke
