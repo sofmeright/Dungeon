@@ -9,6 +9,12 @@ resources:
   - httproute-cell-membrane.yaml
   - httproute-xylem.yaml
   - httproute-xylem-overflow.yaml
+  - httproute-xylem-overflow-2.yaml
+  - httproute-xylem-overflow-3.yaml
+  - httproute-xylem-overflow-4.yaml
+  - httproute-xylem-overflow-5.yaml
+  - httproute-cell-membrane-overflow.yaml
+  - httproute-cell-membrane-overflow-2.yaml
 
 patches:
   - path: service-patch.yaml

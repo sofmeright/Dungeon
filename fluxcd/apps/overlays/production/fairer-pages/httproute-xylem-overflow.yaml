@@ -10,6 +10,7 @@ spec:
   hostnames:
     # Overflow hostnames when primary route hits 16 limit
     - "romm.pcfae.com"
+    - "web.pcfae.com"
   rules:
     - matches:
         - path:
