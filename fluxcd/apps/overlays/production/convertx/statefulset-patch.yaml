@@ -9,6 +9,9 @@ spec:
       containers:
         - name: convertx
           image: ghcr.io/c4illin/convertx:main
+          env:
+            - name: HTTP_ALLOWED
+              value: "true"
   volumeClaimTemplates:
     - metadata:
         name: tingle-tuner-convertx-data
