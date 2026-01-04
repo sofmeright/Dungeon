@@ -1,0 +1,20 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: fairer-pages-xylem-overflow
+  namespace: tingle-tuner
+spec:
+  parentRefs:
+    - name: xylem-gateway
+      namespace: arylls-lookout
+  hostnames:
+    # Overflow hostnames when primary route hits 16 limit
+    - "romm.pcfae.com"
+  rules:
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /fairer-pages/
+      backendRefs:
+        - name: fairer-pages
+          port: 8023

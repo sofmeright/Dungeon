@@ -8,6 +8,7 @@ resources:
   - httproute.yaml
   - httproute-cell-membrane.yaml
   - httproute-xylem.yaml
+  - httproute-xylem-overflow.yaml
 
 patches:
   - path: service-patch.yaml

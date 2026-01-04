@@ -26,7 +26,6 @@ spec:
     - "grafana.pcfae.com"
     - "vault.pcfae.com"
     - "photos.pcfae.com"
-    - "romm.pcfae.com"
   rules:
     - matches:
         - path:
