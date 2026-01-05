@@ -9,6 +9,9 @@ spec:
       containers:
         - name: dailytxt
           image: docker.io/phitux/dailytxt:latest
+          env:
+            - name: ALLOWED_HOSTS
+              value: "shiplog.pcfae.com"
           volumeMounts:
             - name: data
               mountPath: /data
