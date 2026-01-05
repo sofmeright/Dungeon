@@ -4,6 +4,8 @@ namespace: pedestal-of-time
 resources:
   - ../../../base/dailytxt
   - httproute-xylem.yaml
+  - persistent-volume.yaml
+  - persistent-volume-claim.yaml
 patches:
   - path: statefulset-patch.yaml
     target:
