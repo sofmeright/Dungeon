@@ -11,7 +11,7 @@ spec:
           image: docker.io/phitux/dailytxt:latest
           volumeMounts:
             - name: data
-              mountPath: /app/data
+              mountPath: /data
       volumes:
         - name: data
           persistentVolumeClaim:
