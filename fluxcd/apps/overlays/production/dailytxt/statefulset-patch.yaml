@@ -9,9 +9,24 @@ spec:
       containers:
         - name: dailytxt
           image: docker.io/phitux/dailytxt:latest
+          ports:
+            - containerPort: 80
+              name: http
+              protocol: TCP
           env:
+            - name: SECRET_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: dailytxt-secrets
+                  key: secret_key
             - name: ALLOWED_HOSTS
               value: "shiplog.pcfae.com"
+            - name: ALLOW_REGISTRATION
+              value: "false"
+            - name: LOGOUT_AFTER_DAYS
+              value: "60"
+            - name: INDENT
+              value: "2"
           volumeMounts:
             - name: data
               mountPath: /data
