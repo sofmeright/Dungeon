@@ -49,7 +49,7 @@ spec:
 
                   if error_codes[status_num] then
                     response_handle:headers():replace(":status", "302")
-                    response_handle:headers():add("location", "/fairer-pages/random/" .. status .. ".html")
+                    response_handle:headers():add("location", "/fairer-pages/playlist/random/" .. status .. ".html")
                     response_handle:headers():add("x-original-status", status)
                   end
                 end
