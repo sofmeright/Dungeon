@@ -15,3 +15,9 @@ patches:
     target:
       kind: Service
       name: dailytxt
+  - target:
+      kind: StatefulSet
+      name: dailytxt
+    patch: |
+      - op: remove
+        path: /spec/volumeClaimTemplates
