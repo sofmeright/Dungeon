@@ -9,3 +9,8 @@ metadata:
     service.cilium.io/loadbalancer-mode: "dsr"
 spec:
   type: LoadBalancer
+  ports:
+    - port: 8765
+      targetPort: 80
+      protocol: TCP
+      name: http
