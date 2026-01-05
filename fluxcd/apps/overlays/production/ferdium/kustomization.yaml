@@ -3,6 +3,7 @@ kind: Kustomization
 namespace: lost-woods
 resources:
   - ../../../base/ferdium
+  - httproute-xylem.yaml
 patches:
   - path: statefulset-patch.yaml
     target:
