@@ -4,15 +4,15 @@ metadata:
   name: mazanoke
 spec:
   parentRefs:
-  - name: xylem-gateway
-    namespace: king-of-red-lions
+    - name: xylem-gateway
+      namespace: arylls-lookout
   hostnames:
-  - "mazanoke.pcfae.com"
+    - "mazanoke.pcfae.com"
   rules:
-  - matches:
-    - path:
-        type: PathPrefix
-        value: /
-    backendRefs:
-    - name: mazanoke
-      port: 3474
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /
+      backendRefs:
+        - name: mazanoke
+          port: 3474
