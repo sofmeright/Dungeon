@@ -6,33 +6,33 @@ spec:
   template:
     spec:
       containers:
-      - name: mariadb
-        image: docker.jcr.pcfae.com/mariadb:10.6
-        command: []
-        args:
-        - --character-set-server=utf8mb4
-        - --collation-server=utf8mb4_unicode_ci
-        - --skip-character-set-client-handshake
-        - --skip-innodb-read-only-compressed
-        volumeMounts:
-        - $patch: delete
-          name: PLACEHOLDER_MARIADB_DATA
-        - name: hyrule-castle-erpnext-mariadb-data
-          mountPath: /var/lib/mysql
+        - name: mariadb
+          image: docker.io/mariadb:10.6
+          command: []
+          args:
+            - --character-set-server=utf8mb4
+            - --collation-server=utf8mb4_unicode_ci
+            - --skip-character-set-client-handshake
+            - --skip-innodb-read-only-compressed
+          volumeMounts:
+            - $patch: delete
+              name: PLACEHOLDER_MARIADB_DATA
+            - name: hyrule-castle-erpnext-mariadb-data
+              mountPath: /var/lib/mysql
+          resources:
+            requests:
+              cpu: "500m"
+              memory: "1Gi"
+            limits:
+              cpu: "2000m"
+              memory: "4Gi"
+  volumeClaimTemplates:
+    - metadata:
+        name: hyrule-castle-erpnext-mariadb-data
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        storageClassName: ceph-rbd
         resources:
           requests:
-            cpu: "500m"
-            memory: "1Gi"
-          limits:
-            cpu: "2000m"
-            memory: "4Gi"
-  volumeClaimTemplates:
-  - metadata:
-      name: hyrule-castle-erpnext-mariadb-data
-    spec:
-      accessModes:
-      - ReadWriteOnce
-      storageClassName: ceph-rbd
-      resources:
-        requests:
-          storage: 20Gi
+            storage: 20Gi
