@@ -7,6 +7,9 @@ spec:
 
   imageName: PLACEHOLDER_POSTGRES_IMAGE
 
+  affinity:
+    podAntiAffinityType: required
+
   bootstrap:
     initdb:
       database: vaultwarden
@@ -32,6 +35,7 @@ spec:
       work_mem: "1310kB"
       min_wal_size: "512MB"
       max_wal_size: "2GB"
+      max_slot_wal_keep_size: "800MB"
 
   resources:
     requests:

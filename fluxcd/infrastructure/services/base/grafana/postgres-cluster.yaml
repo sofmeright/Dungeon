@@ -5,6 +5,9 @@ metadata:
 spec:
   instances: PLACEHOLDER_INSTANCES
 
+  affinity:
+    podAntiAffinityType: required
+
   postgresql:
     parameters:
       shared_buffers: "PLACEHOLDER_SHARED_BUFFERS"

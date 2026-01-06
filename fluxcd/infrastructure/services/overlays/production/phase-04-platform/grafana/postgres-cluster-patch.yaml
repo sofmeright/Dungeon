@@ -6,6 +6,9 @@ metadata:
 spec:
   instances: 3
 
+  affinity:
+    podAntiAffinityType: required
+
   # Fast failover optimizations
   switchoverDelay: 30  # Reduced from default 3600s for faster planned switchovers
 
@@ -27,7 +30,7 @@ spec:
       wal_receiver_timeout: "5s"
       # WAL retention limits - prevent disk from filling
       wal_keep_size: "128MB"  # Reduced from 512MB default
-      max_slot_wal_keep_size: "512MB"  # Invalidate dead replica slots before disk fills
+      max_slot_wal_keep_size: "400MB"  # 8% of 5Gi PVC
 
   # Enable monitoring
   monitoring:

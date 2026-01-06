@@ -5,13 +5,13 @@ metadata:
 spec:
   instances: 3
   imageName: ghcr.io/cloudnative-pg/postgresql:16.1
-  
+
   enableSuperuserAccess: false
   enablePDB: true
-  
+
   affinity:
-    podAntiAffinityType: preferred
-  
+    podAntiAffinityType: required
+
   bootstrap:
     initdb:
       database: netbird
@@ -21,7 +21,7 @@ spec:
       localeCType: C
       secret:
         name: netbird-secrets
-  
+
   postgresql:
     parameters:
       max_connections: "200"
@@ -36,7 +36,8 @@ spec:
       work_mem: 2MB
       min_wal_size: 1GB
       max_wal_size: 4GB
-  
+      max_slot_wal_keep_size: "1600MB"
+
   storage:
     size: 20Gi
     storageClass: PLACEHOLDER_STORAGE_CLASS

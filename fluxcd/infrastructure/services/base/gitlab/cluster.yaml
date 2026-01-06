@@ -7,6 +7,9 @@ spec:
 
   imageName: ghcr.io/cloudnative-pg/postgresql:16.1
 
+  affinity:
+    podAntiAffinityType: required
+
   bootstrap:
     initdb:
       database: gitlabhq_production
@@ -36,6 +39,7 @@ spec:
       work_mem: "2621kB"
       min_wal_size: "1GB"
       max_wal_size: "4GB"
+      max_slot_wal_keep_size: "1600MB"
 
   resources:
     requests:

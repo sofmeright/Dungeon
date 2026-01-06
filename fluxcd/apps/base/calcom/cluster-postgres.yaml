@@ -7,6 +7,9 @@ spec:
 
   imageName: ghcr.io/cloudnative-pg/postgresql:16.1
 
+  affinity:
+    podAntiAffinityType: required
+
   bootstrap:
     initdb:
       database: calendso
@@ -34,6 +37,7 @@ spec:
       work_mem: "1310kB"
       min_wal_size: "512MB"
       max_wal_size: "2GB"
+      max_slot_wal_keep_size: "800MB"
 
   resources:
     requests:

@@ -5,12 +5,16 @@ metadata:
 spec:
   instances: 1
 
+  affinity:
+    podAntiAffinityType: required
+
   postgresql:
     shared_preload_libraries:
       - pg_trgm
     parameters:
       shared_buffers: "256MB"
       max_connections: "100"
+      max_slot_wal_keep_size: "1600MB"
 
   bootstrap:
     initdb:

@@ -5,10 +5,14 @@ metadata:
 spec:
   instances: PLACEHOLDER_INSTANCES
 
+  affinity:
+    podAntiAffinityType: required
+
   postgresql:
     parameters:
       shared_buffers: "PLACEHOLDER_SHARED_BUFFERS"
       max_connections: "PLACEHOLDER_MAX_CONNECTIONS"
+      max_slot_wal_keep_size: "800MB"
 
   bootstrap:
     initdb:
