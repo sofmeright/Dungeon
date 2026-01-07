@@ -7,49 +7,64 @@ spec:
   template:
     spec:
       containers:
-      - name: netalertx
-        image: ghcr.io/jokob-sk/netalertx:latest
-        ports:
-        - containerPort: 20211
-          name: http
-          hostPort: 20211
-        env:
-        - name: PUID
-          value: "200"
-        - name: PGID
-          value: "300"
-        - name: PORT
-          value: "20211"
-        - name: TZ
-          value: "America/Los_Angeles"
-        volumeMounts:
-        - name: gossip-stone-netalertx-config
-          mountPath: /app/config
-        - name: gossip-stone-netalertx-sqlite
-          mountPath: /app/db
-        - name: api-tmpfs
-          mountPath: /app/api
+        - name: netalertx
+          image: ghcr.io/jokob-sk/netalertx:25.11.29
+          ports:
+            - containerPort: 20211
+              name: http
+              hostPort: 20211
+          securityContext:
+            capabilities:
+              drop:
+                - ALL
+              add:
+                - NET_RAW
+                - NET_ADMIN
+                - NET_BIND_SERVICE
+          env:
+            - name: PORT
+              value: "20211"
+            - name: TZ
+              value: "America/Los_Angeles"
+          volumeMounts:
+            - name: gossip-stone-netalertx-config
+              mountPath: /data/config
+            - name: gossip-stone-netalertx-sqlite
+              mountPath: /data/db
+            - name: tmp
+              mountPath: /tmp
+            - name: localtime
+              mountPath: /etc/localtime
+              readOnly: true
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: 1000m
+              memory: 1Gi
+      volumes:
+        - name: tmp
+          emptyDir:
+            medium: Memory
+        - name: localtime
+          hostPath:
+            path: /etc/localtime
+            type: File
+  volumeClaimTemplates:
+    - metadata:
+        name: gossip-stone-netalertx-config
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        storageClassName: ceph-rbd-retain
         resources:
           requests:
-            cpu: 100m
-            memory: 256Mi
-          limits:
-            cpu: 1000m
-            memory: 1Gi
-  volumeClaimTemplates:
-  - metadata:
-      name: gossip-stone-netalertx-config
-    spec:
-      accessModes: ["ReadWriteOnce"]
-      storageClassName: ceph-rbd-retain
-      resources:
-        requests:
-          storage: 1Gi
-  - metadata:
-      name: gossip-stone-netalertx-sqlite
-    spec:
-      accessModes: ["ReadWriteOnce"]
-      storageClassName: ceph-rbd-retain
-      resources:
-        requests:
-          storage: 2Gi
+            storage: 1Gi
+    - metadata:
+        name: gossip-stone-netalertx-sqlite
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        storageClassName: ceph-rbd-retain
+        resources:
+          requests:
+            storage: 2Gi
