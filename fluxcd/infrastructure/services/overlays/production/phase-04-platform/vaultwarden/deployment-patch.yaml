@@ -30,7 +30,7 @@ spec:
             - name: SSO_AUTHORITY
               value: "https://sso.prplanit.com"
             - name: SSO_AUDIENCE_TRUSTED
-              value: "^315814797100716034$"
+              value: "^315814(797100716034|911924047874)$"
           volumeMounts:
             - $patch: replace
             - name: rsa-key
