@@ -7,3 +7,4 @@ resources:
   - cephfs-init-ark-sa.yaml
   - cephfs-init-mimir.yaml
   - cephfs-init-homarr.yaml
+  - cephfs-init-vaultwarden.yaml

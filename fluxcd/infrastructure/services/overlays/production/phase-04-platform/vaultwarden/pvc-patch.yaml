@@ -4,8 +4,9 @@ metadata:
   name: vaultwarden-data
 spec:
   accessModes:
-  - ReadWriteOnce
-  storageClassName: ceph-rbd
+    - ReadWriteMany
   resources:
     requests:
-      storage: 10Gi
+      storage: 2Gi
+  volumeName: vaultwarden-data-pv
+  storageClassName: ""

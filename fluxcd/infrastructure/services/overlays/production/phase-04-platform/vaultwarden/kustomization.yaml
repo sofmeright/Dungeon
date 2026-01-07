@@ -5,6 +5,7 @@ resources:
   - ../../../../base/vaultwarden
   - httproute.yaml
   - httproute-xylem.yaml
+  - cephfs-data-pv.yaml
 patches:
   - path: deployment-patch.yaml
     target:
