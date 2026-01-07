@@ -28,7 +28,7 @@ spec:
             - name: SSO_SIGNUPS_MATCH_EMAIL
               value: "true"
             - name: SSO_AUTHORITY
-              value: "https://zitadel.prplanit.com"
+              value: "https://sso.prplanit.com"
           volumeMounts:
             - $patch: replace
             - name: rsa-key
