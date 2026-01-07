@@ -11,7 +11,7 @@ spec:
     # prplanit.com subdomains
     - "analytics.prplanit.com"
     - "apps.prplanit.com"
-    - "bw.prplanit.com"
+    - "vw.prplanit.com"
     - "cal.prplanit.com"
     - "dolibarr.prplanit.com"
     - "erpnext.prplanit.com"

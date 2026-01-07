@@ -219,6 +219,8 @@ data:
           answer: 10.40.9.104
         - domain: bw.prplanit.com
           answer: 10.40.9.104
+        - domain: vw.prplanit.com
+          answer: 172.22.30.71
         - domain: hass.arbitorium.com
           answer: 10.4.20.69
         - domain: lwd.optcp.com

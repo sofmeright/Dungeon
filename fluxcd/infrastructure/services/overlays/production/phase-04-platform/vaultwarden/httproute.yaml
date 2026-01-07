@@ -8,7 +8,7 @@ spec:
     - name: cell-membrane-gateway
       namespace: hyrule-castle
   hostnames:
-    - "bw.prplanit.com"
+    - "vw.prplanit.com"
   rules:
     - matches:
         - path:
