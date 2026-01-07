@@ -3,7 +3,6 @@ kind: Kustomization
 namespace: zeldas-lullaby
 resources:
   - ../../../../base/vaultwarden
-  - rsa-key-secret.enc.yaml
   - httproute.yaml
   - httproute-xylem.yaml
 patches:

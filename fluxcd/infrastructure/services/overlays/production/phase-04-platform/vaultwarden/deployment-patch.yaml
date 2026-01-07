@@ -46,5 +46,8 @@ spec:
         - $patch: replace
         - name: rsa-key
           secret:
-            secretName: vaultwarden-rsa-key
+            secretName: vaultwarden-secrets
+            items:
+              - key: rsa_key.pem
+                path: rsa_key.pem
             defaultMode: 0600
