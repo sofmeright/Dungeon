@@ -33,6 +33,8 @@ spec:
               value: "^315814(797100716034|911924047874)$"
           volumeMounts:
             - $patch: replace
+            - name: vaultwarden-data
+              mountPath: /data
             - name: rsa-key
               mountPath: /data/rsa_key.pem
               subPath: rsa_key.pem
@@ -46,6 +48,9 @@ spec:
               memory: 512Mi
       volumes:
         - $patch: replace
+        - name: vaultwarden-data
+          persistentVolumeClaim:
+            claimName: vaultwarden-data
         - name: rsa-key
           secret:
             secretName: vaultwarden-secrets
