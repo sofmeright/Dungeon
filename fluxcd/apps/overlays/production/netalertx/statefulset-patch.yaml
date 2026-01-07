@@ -6,6 +6,8 @@ spec:
   replicas: 1
   template:
     spec:
+      securityContext:
+        fsGroup: 20211
       containers:
         - name: netalertx
           image: ghcr.io/jokob-sk/netalertx:25.11.29
