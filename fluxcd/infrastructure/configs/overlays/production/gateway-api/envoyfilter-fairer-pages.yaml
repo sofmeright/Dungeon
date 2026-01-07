@@ -41,6 +41,12 @@ spec:
                     return
                   end
 
+                  -- Skip redirect for JSON API responses
+                  local content_type = response_handle:headers():get("content-type") or ""
+                  if string.match(content_type, "application/json") then
+                    return
+                  end
+
                   local status = response_handle:headers():get(":status")
                   local status_num = tonumber(status)
 
