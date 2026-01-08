@@ -7,7 +7,6 @@ spec:
   template:
     spec:
       securityContext:
-        runAsUser: 0
         fsGroup: 20211
       containers:
         - name: netalertx
@@ -34,12 +33,7 @@ spec:
             # /data root for runtime files
             - name: data
               mountPath: /data
-            # Legacy /app mounts (source for migration - data at PVC root)
-            - name: gossip-stone-netalertx-config
-              mountPath: /app/config
-            - name: gossip-stone-netalertx-sqlite
-              mountPath: /app/db
-            # New /data mounts (target for migration - data at subPath)
+            # Post-migration: only /data mounts with subPaths
             - name: gossip-stone-netalertx-config
               mountPath: /data/config
               subPath: data/config
