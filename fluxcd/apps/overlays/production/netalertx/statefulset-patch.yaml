@@ -29,6 +29,8 @@ spec:
             - name: TZ
               value: "America/Los_Angeles"
           volumeMounts:
+            - name: data
+              mountPath: /data
             - name: gossip-stone-netalertx-config
               mountPath: /data/config
             - name: gossip-stone-netalertx-sqlite
@@ -46,6 +48,8 @@ spec:
               cpu: 1000m
               memory: 1Gi
       volumes:
+        - name: data
+          emptyDir: {}
         - name: tmp
           emptyDir:
             medium: Memory
