@@ -29,12 +29,22 @@ spec:
             - name: TZ
               value: "America/Los_Angeles"
           volumeMounts:
+            - $patch: replace
+            # /data root for runtime files
             - name: data
               mountPath: /data
+            # Legacy /app mounts (source for migration - data at PVC root)
+            - name: gossip-stone-netalertx-config
+              mountPath: /app/config
+            - name: gossip-stone-netalertx-sqlite
+              mountPath: /app/db
+            # New /data mounts (target for migration - data at subPath)
             - name: gossip-stone-netalertx-config
               mountPath: /data/config
+              subPath: data/config
             - name: gossip-stone-netalertx-sqlite
               mountPath: /data/db
+              subPath: data/db
             - name: tmp
               mountPath: /tmp
             - name: localtime
@@ -48,6 +58,7 @@ spec:
               cpu: 1000m
               memory: 1Gi
       volumes:
+        - $patch: replace
         - name: data
           emptyDir: {}
         - name: tmp
