@@ -9,5 +9,12 @@ spec:
       imagePullSecrets:
         - name: jcr-pcfae-dungeon-pull-secret
       containers:
-      - name: it-tools
-        image: docker.jcr.pcfae.com/corentinth/it-tools:latest
+        - name: it-tools
+          image: docker.io/corentinth/it-tools:latest
+          resources:
+            requests:
+              cpu: "2m"
+              memory: "32Mi"
+            limits:
+              cpu: "10m"
+              memory: "128Mi"

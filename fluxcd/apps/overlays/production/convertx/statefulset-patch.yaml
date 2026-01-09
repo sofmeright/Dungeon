@@ -9,6 +9,13 @@ spec:
       containers:
         - name: convertx
           image: ghcr.io/c4illin/convertx:main
+          resources:
+            requests:
+              cpu: "2m"
+              memory: "64Mi"
+            limits:
+              cpu: "10m"
+              memory: "256Mi"
           env:
             - name: HTTP_ALLOWED
               value: "true"

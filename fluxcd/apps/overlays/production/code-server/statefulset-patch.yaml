@@ -9,39 +9,39 @@ spec:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
-            - matchExpressions:
-              - key: kubernetes.io/hostname
-                operator: In
-                values:
-                - dungeon-map-002
+              - matchExpressions:
+                  - key: kubernetes.io/hostname
+                    operator: In
+                    values:
+                      - dungeon-map-002
       tolerations:
-      - key: node-role.kubernetes.io/control-plane
-        operator: Exists
-        effect: NoSchedule
+        - key: node-role.kubernetes.io/control-plane
+          operator: Exists
+          effect: NoSchedule
       containers:
-      - name: code-server
-        image: lscr.io/linuxserver/code-server:latest
-        env:
-        - name: PROXY_DOMAIN
-          value: "code.pcfae.com"
-        volumeMounts:
-        - name: tingle-tuner-code-server-config
-          mountPath: /config
-        - name: srv
-          mountPath: /srv
-        resources:
-          requests:
-            cpu: "250m"
-            memory: "512Mi"
-          limits:
-            cpu: "1000m"
-            memory: "2Gi"
+        - name: code-server
+          image: lscr.io/linuxserver/code-server:latest
+          env:
+            - name: PROXY_DOMAIN
+              value: "code.pcfae.com"
+          volumeMounts:
+            - name: tingle-tuner-code-server-config
+              mountPath: /config
+            - name: srv
+              mountPath: /srv
+          resources:
+            requests:
+              cpu: "2m"
+              memory: "256Mi"
+            limits:
+              cpu: "50m"
+              memory: "1Gi"
       volumes:
-      - name: srv
-        hostPath:
-          path: /srv
-          type: Directory
-      - name: tingle-tuner-code-server-config
-        hostPath:
-          path: /opt/k8s-data/code-server/config
-          type: DirectoryOrCreate
+        - name: srv
+          hostPath:
+            path: /srv
+            type: Directory
+        - name: tingle-tuner-code-server-config
+          hostPath:
+            path: /opt/k8s-data/code-server/config
+            type: DirectoryOrCreate

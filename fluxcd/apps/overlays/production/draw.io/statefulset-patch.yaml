@@ -7,12 +7,12 @@ spec:
   template:
     spec:
       containers:
-      - name: draw-io
-        image: docker.jcr.pcfae.com/jgraph/drawio:latest
-        resources:
-          requests:
-            cpu: 100m
-            memory: 256Mi
-          limits:
-            cpu: 1000m
-            memory: 512Mi
+        - name: draw-io
+          image: docker.io/jgraph/drawio:latest
+          resources:
+            requests:
+              cpu: "3m"
+              memory: "128Mi"
+            limits:
+              cpu: "10m"
+              memory: "256Mi"

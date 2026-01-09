@@ -10,43 +10,57 @@ spec:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
             nodeSelectorTerms:
-            - matchExpressions:
-              - key: kubernetes.io/hostname
-                operator: In
-                values:
-                - dungeon-chest-001
+              - matchExpressions:
+                  - key: kubernetes.io/hostname
+                    operator: In
+                    values:
+                      - dungeon-chest-001
       containers:
-      - name: gluetun
-        image: docker.jcr.pcfae.com/qmcgaw/gluetun:latest
-        env:
-        - name: VPN_SERVICE_PROVIDER
-          value: "private internet access"
-        - name: SERVER_REGIONS
-          value: "CA Vancouver"
-        - name: VPN_PORT_FORWARDING
-          value: "off"
-        - name: FIREWALL_OUTBOUND_SUBNETS
-          value: "10.0.0.0/8,172.16.0.0/12,192.168.0.0/16"
-        - name: FIREWALL_INPUT_PORTS
-          value: "5340,62001,62002"
-        - name: TZ
-          value: "Etc/UTC"
-        volumeMounts:
-        - name: tingle-tuner-neko-vpn-gluetun-config
-          mountPath: /gluetun
-      - name: neko
-        image: ghcr.io/m1k1o/neko/vivaldi:latest
-        env:
-        - name: NEKO_DESKTOP_SCREEN
-          value: "1920x1080@30"
-        - name: NEKO_ICESERVERS
-          value: '[{"urls":["turn:172.22.30.120:3478?transport=udp"],"username":"neko-user","credential":"neko-pass"}]'
+        - name: gluetun
+          image: docker.io/qmcgaw/gluetun:latest
+          resources:
+            requests:
+              cpu: "2m"
+              memory: "100Mi"
+            limits:
+              cpu: "10m"
+              memory: "256Mi"
+          env:
+            - name: VPN_SERVICE_PROVIDER
+              value: "private internet access"
+            - name: SERVER_REGIONS
+              value: "CA Vancouver"
+            - name: VPN_PORT_FORWARDING
+              value: "off"
+            - name: FIREWALL_OUTBOUND_SUBNETS
+              value: "10.0.0.0/8,172.16.0.0/12,192.168.0.0/16"
+            - name: FIREWALL_INPUT_PORTS
+              value: "5340,62001,62002"
+            - name: TZ
+              value: "Etc/UTC"
+          volumeMounts:
+            - name: tingle-tuner-neko-vpn-gluetun-config
+              mountPath: /gluetun
+        - name: neko
+          image: ghcr.io/m1k1o/neko/vivaldi:latest
+          resources:
+            requests:
+              cpu: "102m"
+              memory: "586Mi"
+            limits:
+              cpu: "500m"
+              memory: "1Gi"
+          env:
+            - name: NEKO_DESKTOP_SCREEN
+              value: "1920x1080@30"
+            - name: NEKO_ICESERVERS
+              value: '[{"urls":["turn:172.22.30.120:3478?transport=udp"],"username":"neko-user","credential":"neko-pass"}]'
   volumeClaimTemplates:
-  - metadata:
-      name: tingle-tuner-neko-vpn-gluetun-config
-    spec:
-      accessModes: ["ReadWriteOnce"]
-      storageClassName: ceph-rbd-retain
-      resources:
-        requests:
-          storage: 1Gi
+    - metadata:
+        name: tingle-tuner-neko-vpn-gluetun-config
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        storageClassName: ceph-rbd-retain
+        resources:
+          requests:
+            storage: 1Gi
