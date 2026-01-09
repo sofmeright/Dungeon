@@ -6,104 +6,103 @@ spec:
   template:
     spec:
       imagePullSecrets:
-      - name: jcr-pcfae-dungeon-pull-secret
-      - name: docker-io-pull-secret
+        - name: docker-io-pull-secret
       initContainers:
-      - name: wait-for-mongodb
-        image: docker.jcr.pcfae.com/busybox:1.36
-      - name: wait-for-postgres
-        image: docker.jcr.pcfae.com/busybox:1.36
-      - name: wait-for-redis
-        image: docker.jcr.pcfae.com/busybox:1.36
+        - name: wait-for-mongodb
+          image: docker.io/busybox:1.36
+        - name: wait-for-postgres
+          image: docker.io/busybox:1.36
+        - name: wait-for-redis
+          image: docker.io/busybox:1.36
       containers:
-      - name: tactical-init
-        image: docker.jcr.pcfae.com/tacticalrmm/tactical:latest
-        resources:
-          requests:
-            memory: "512Mi"
-            cpu: "250m"
-          limits:
-            memory: "1Gi"
-            cpu: "500m"
-      - name: meshcentral
-        image: docker.jcr.pcfae.com/tacticalrmm/tactical-meshcentral:latest
-        resources:
-          requests:
-            cpu: "250m"
-            memory: "512Mi"
-          limits:
-            cpu: "1000m"
-            memory: "2Gi"
-      - name: nats
-        image: docker.jcr.pcfae.com/tacticalrmm/tactical-nats:latest
-        resources:
-          requests:
-            cpu: "100m"
-            memory: "128Mi"
-          limits:
-            cpu: "500m"
-            memory: "512Mi"
-      - name: backend
-        image: docker.jcr.pcfae.com/tacticalrmm/tactical:latest
-        resources:
-          requests:
-            cpu: "250m"
-            memory: "512Mi"
-          limits:
-            cpu: "1000m"
-            memory: "2Gi"
-      - name: websockets
-        image: docker.jcr.pcfae.com/tacticalrmm/tactical:latest
-        resources:
-          requests:
-            cpu: "100m"
-            memory: "256Mi"
-          limits:
-            cpu: "500m"
-            memory: "1Gi"
-      - name: celery
-        image: docker.jcr.pcfae.com/tacticalrmm/tactical:latest
-        resources:
-          requests:
-            cpu: "250m"
-            memory: "512Mi"
-          limits:
-            cpu: "1000m"
-            memory: "2Gi"
-      - name: celerybeat
-        image: docker.jcr.pcfae.com/tacticalrmm/tactical:latest
-        resources:
-          requests:
-            cpu: "100m"
-            memory: "256Mi"
-          limits:
-            cpu: "500m"
-            memory: "1Gi"
-      - name: frontend
-        image: docker.jcr.pcfae.com/tacticalrmm/tactical-frontend:latest
-        resources:
-          requests:
-            cpu: "100m"
-            memory: "128Mi"
-          limits:
-            cpu: "500m"
-            memory: "512Mi"
-      - name: nginx
-        image: docker.jcr.pcfae.com/tacticalrmm/tactical-nginx:latest
-        resources:
-          requests:
-            cpu: "100m"
-            memory: "128Mi"
-          limits:
-            cpu: "500m"
-            memory: "512Mi"
+        - name: tactical-init
+          image: docker.io/tacticalrmm/tactical:latest
+          resources:
+            requests:
+              memory: "512Mi"
+              cpu: "250m"
+            limits:
+              memory: "1Gi"
+              cpu: "500m"
+        - name: meshcentral
+          image: docker.io/tacticalrmm/tactical-meshcentral:latest
+          resources:
+            requests:
+              cpu: "250m"
+              memory: "512Mi"
+            limits:
+              cpu: "1000m"
+              memory: "2Gi"
+        - name: nats
+          image: docker.io/tacticalrmm/tactical-nats:latest
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "500m"
+              memory: "512Mi"
+        - name: backend
+          image: docker.io/tacticalrmm/tactical:latest
+          resources:
+            requests:
+              cpu: "250m"
+              memory: "512Mi"
+            limits:
+              cpu: "1000m"
+              memory: "2Gi"
+        - name: websockets
+          image: docker.io/tacticalrmm/tactical:latest
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "256Mi"
+            limits:
+              cpu: "500m"
+              memory: "1Gi"
+        - name: celery
+          image: docker.io/tacticalrmm/tactical:latest
+          resources:
+            requests:
+              cpu: "250m"
+              memory: "512Mi"
+            limits:
+              cpu: "1000m"
+              memory: "2Gi"
+        - name: celerybeat
+          image: docker.io/tacticalrmm/tactical:latest
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "256Mi"
+            limits:
+              cpu: "500m"
+              memory: "1Gi"
+        - name: frontend
+          image: docker.io/tacticalrmm/tactical-frontend:latest
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "500m"
+              memory: "512Mi"
+        - name: nginx
+          image: docker.io/tacticalrmm/tactical-nginx:latest
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "500m"
+              memory: "512Mi"
   volumeClaimTemplates:
-  - metadata:
-      name: hookshot-tactical-app-data
-    spec:
-      accessModes:
-      - ReadWriteOnce
-      storageClassName: ceph-rbd
-      resources:
-        requests:
-          storage: 5Gi
+    - metadata:
+        name: hookshot-tactical-app-data
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        storageClassName: ceph-rbd
+        resources:
+          requests:
+            storage: 5Gi

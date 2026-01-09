@@ -6,21 +6,21 @@ spec:
   template:
     spec:
       containers:
-      - name: redis
-        image: docker.jcr.pcfae.com/redis:7-alpine
+        - name: redis
+          image: docker.io/redis:7-alpine
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "256Mi"
+            limits:
+              cpu: "500m"
+              memory: "1Gi"
+  volumeClaimTemplates:
+    - metadata:
+        name: redis-data
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        storageClassName: ceph-rbd
         resources:
           requests:
-            cpu: "100m"
-            memory: "256Mi"
-          limits:
-            cpu: "500m"
-            memory: "1Gi"
-  volumeClaimTemplates:
-  - metadata:
-      name: redis-data
-    spec:
-      accessModes: ["ReadWriteOnce"]
-      storageClassName: ceph-rbd
-      resources:
-        requests:
-          storage: 5Gi
+            storage: 5Gi
