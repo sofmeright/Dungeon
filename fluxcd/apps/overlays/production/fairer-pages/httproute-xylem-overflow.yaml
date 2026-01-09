@@ -12,6 +12,7 @@ spec:
     - "romm.pcfae.com"
     - "web.pcfae.com"
     - "budget.pcfae.com"
+    - "convertx.pcfae.com"
   rules:
     - matches:
         - path:
