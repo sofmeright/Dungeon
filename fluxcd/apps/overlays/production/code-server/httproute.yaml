@@ -5,16 +5,16 @@ metadata:
   namespace: tingle-tuner
 spec:
   parentRefs:
-  - name: xylem-gateway
-    namespace: arylls-lookout
-    sectionName: https
+    - name: xylem-gateway
+      namespace: arylls-lookout
+      sectionName: https-pcfae
   hostnames:
-  - "code.pcfae.com"
+    - "code.pcfae.com"
   rules:
-  - matches:
-    - path:
-        type: PathPrefix
-        value: /
-    backendRefs:
-    - name: code-server
-      port: 8443
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /
+      backendRefs:
+        - name: code-server
+          port: 8443
