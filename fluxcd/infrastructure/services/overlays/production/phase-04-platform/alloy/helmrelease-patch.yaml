@@ -12,6 +12,13 @@ spec:
       configMap:
         create: false
         name: "alloy-config"
+      resources:
+        requests:
+          cpu: 1000m
+          memory: 6Gi
+        limits:
+          cpu: "3"
+          memory: 10Gi
   postRenderers:
     - kustomize:
         patches:
