@@ -16,14 +16,14 @@ spec:
             value: /api
       backendRefs:
         - name: netbird-management
-          port: 443
+          port: 80
     - matches:
         - path:
             type: PathPrefix
             value: /management
       backendRefs:
         - name: netbird-management
-          port: 443
+          port: 80
     - matches:
         - path:
             type: PathPrefix

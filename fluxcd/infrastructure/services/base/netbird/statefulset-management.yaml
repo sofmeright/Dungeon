@@ -190,8 +190,8 @@ spec:
             - --log-file
             - console
           ports:
-            - containerPort: 443
-              name: https
+            - containerPort: 80
+              name: http
           env:
             - name: NETBIRD_STORE_ENGINE
               value: postgres
