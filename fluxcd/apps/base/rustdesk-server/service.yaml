@@ -5,28 +5,28 @@ metadata:
 spec:
   type: LoadBalancer
   selector:
-    app: rustdesk-server
+    app: rustdesk
   ports:
-  - name: tcp-21114
-    port: 21114
-    protocol: TCP
-    targetPort: 21114
-  - name: tcp-21115
-    port: 21115
-    protocol: TCP
-    targetPort: 21115
-  - name: tcp-21116
-    port: 21116
-    protocol: TCP
-    targetPort: 21116
-  - name: udp-21116
-    port: 21116
-    protocol: UDP
-    targetPort: 21116
-  - name: webclient
-    port: 21118
-    protocol: TCP
-    targetPort: 21118
+    - name: tcp-21114
+      port: 21114
+      protocol: TCP
+      targetPort: 21114
+    - name: tcp-21115
+      port: 21115
+      protocol: TCP
+      targetPort: 21115
+    - name: tcp-21116
+      port: 21116
+      protocol: TCP
+      targetPort: 21116
+    - name: udp-21116
+      port: 21116
+      protocol: UDP
+      targetPort: 21116
+    - name: hbbs-ws
+      port: 21118
+      protocol: TCP
+      targetPort: 21118
 ---
 apiVersion: v1
 kind: Service
@@ -35,13 +35,13 @@ metadata:
 spec:
   type: LoadBalancer
   selector:
-    app: rustdesk-relay
+    app: rustdesk
   ports:
-  - name: tcp-21117
-    port: 21117
-    protocol: TCP
-    targetPort: 21117
-  - name: webclient
-    port: 21119
-    protocol: TCP
-    targetPort: 21119
+    - name: tcp-21117
+      port: 21117
+      protocol: TCP
+      targetPort: 21117
+    - name: hbbr-ws
+      port: 21119
+      protocol: TCP
+      targetPort: 21119

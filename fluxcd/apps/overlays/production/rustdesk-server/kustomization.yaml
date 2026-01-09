@@ -4,6 +4,5 @@ namespace: hookshot
 resources:
   - ../../../base/rustdesk-server
 patches:
-  - path: statefulset-server-patch.yaml
-  - path: statefulset-relay-patch.yaml
+  - path: statefulset-patch.yaml
   - path: service-patch.yaml

@@ -1,0 +1,77 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: rustdesk
+spec:
+  serviceName: rustdesk
+  replicas: PLACEHOLDER_REPLICAS
+  selector:
+    matchLabels:
+      app: rustdesk
+  template:
+    metadata:
+      labels:
+        app: rustdesk
+    spec:
+      containers:
+        - name: hbbs
+          image: PLACEHOLDER_IMAGE
+          command: ["hbbs"]
+          env:
+            - name: ALWAYS_USE_RELAY
+              value: "Y"
+          ports:
+            - containerPort: 21114
+              name: tcp-21114
+              protocol: TCP
+            - containerPort: 21115
+              name: tcp-21115
+              protocol: TCP
+            - containerPort: 21116
+              name: tcp-21116
+              protocol: TCP
+            - containerPort: 21116
+              name: udp-21116
+              protocol: UDP
+            - containerPort: 21118
+              name: hbbs-ws
+              protocol: TCP
+          volumeMounts:
+            - name: data
+              mountPath: /root
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
+        - name: hbbr
+          image: PLACEHOLDER_IMAGE
+          command: ["hbbr"]
+          ports:
+            - containerPort: 21117
+              name: tcp-21117
+              protocol: TCP
+            - containerPort: 21119
+              name: hbbr-ws
+              protocol: TCP
+          volumeMounts:
+            - name: data
+              mountPath: /root
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        storageClassName: PLACEHOLDER_STORAGE_CLASS
+        resources:
+          requests:
+            storage: 1Gi

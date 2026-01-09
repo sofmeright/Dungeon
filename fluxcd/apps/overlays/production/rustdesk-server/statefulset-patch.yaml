@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: rustdesk-server
+  name: rustdesk
 spec:
   replicas: 1
   template:
@@ -9,11 +9,13 @@ spec:
       imagePullSecrets:
         - name: jcr-pcfae-dungeon-pull-secret
       containers:
-        - name: rustdesk-server
-          image: docker.jcr.pcfae.com/rustdesk/rustdesk-server:latest
+        - name: hbbs
+          image: docker.io/rustdesk/rustdesk-server:latest
+        - name: hbbr
+          image: docker.io/rustdesk/rustdesk-server:latest
   volumeClaimTemplates:
     - metadata:
-        name: hookshot-rustdesk-server-data
+        name: data
       spec:
         accessModes: ["ReadWriteOnce"]
         storageClassName: ceph-rbd-retain
