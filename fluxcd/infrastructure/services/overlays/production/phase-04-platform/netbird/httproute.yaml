@@ -20,10 +20,24 @@ spec:
     - matches:
         - path:
             type: PathPrefix
-            value: /signalexchange.SignalExchange
+            value: /management
+      backendRefs:
+        - name: netbird-management
+          port: 443
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /signalexchange
       backendRefs:
         - name: netbird-signal
           port: 80
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /relay
+      backendRefs:
+        - name: netbird-relay
+          port: 33080
     - matches:
         - path:
             type: PathPrefix
