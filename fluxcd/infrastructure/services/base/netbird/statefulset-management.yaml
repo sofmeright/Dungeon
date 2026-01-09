@@ -202,6 +202,8 @@ spec:
                   key: POSTGRES_DSN
             - name: NETBIRD_MGMT_IDP
               value: zitadel
+            - name: NETBIRD_METRICS_INTERVAL_IN_SECONDS
+              value: "43200"
             - name: NETBIRD_IDP_MGMT_CLIENT_ID
               valueFrom:
                 secretKeyRef:
