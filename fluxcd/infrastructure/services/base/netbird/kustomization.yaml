@@ -5,6 +5,7 @@ resources:
   - cluster-postgres.yaml
   - configmap-management.yaml
   - configmap-coturn.yaml
+  - configmap-dashboard-nginx.yaml
   - statefulset-management.yaml
   - statefulset-signal.yaml
   - deployment-dashboard.yaml

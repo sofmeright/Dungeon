@@ -55,3 +55,11 @@ spec:
             limits:
               memory: "512Mi"
               cpu: "500m"
+          volumeMounts:
+            - name: nginx-config
+              mountPath: /etc/nginx/http.d/default.conf
+              subPath: default.conf
+      volumes:
+        - name: nginx-config
+          configMap:
+            name: netbird-dashboard-nginx
