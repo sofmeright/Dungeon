@@ -16,165 +16,223 @@ spec:
         component: management
     spec:
       initContainers:
-      - name: config-generator
-        image: busybox:latest
-        command: ["/bin/sh", "-c"]
-        args:
-          - |
-            cat > /etc/netbird/config.json <<EOF
-            {
-              "Stuns": [
-                {
-                  "Proto": "udp",
-                  "URI": "stun:stun.netbird.io:3478"
-                }
-              ],
-              "TURNConfig": {
-                "Turns": [
+        - name: config-generator
+          image: busybox:latest
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              cat > /etc/netbird/config.json <<EOF
+              {
+                "Stuns": [
                   {
                     "Proto": "udp",
-                    "URI": "turn:netbird.prplanit.com:3478",
-                    "Username": "netbird",
+                    "URI": "stun:turn.prplanit.com:3478",
+                    "Username": "",
                     "Password": ""
                   }
                 ],
-                "CredentialsTTL": "12h",
-                "Secret": "",
-                "TimeBasedCredentials": false
-              },
-              "Signal": {
-                "Proto": "https",
-                "URI": "netbird.prplanit.com:443"
-              },
-              "Relay": {
-                "Addresses": ["rels://netbird.prplanit.com:443"],
-                "CredentialsTTL": "12h"
-              },
-              "Datadir": "/var/lib/netbird",
-              "StoreConfig": {
-                "Engine": "postgres"
-              },
-              "HttpConfig": {
-                "Address": "0.0.0.0:443",
-                "AuthIssuer": "https://sso.prplanit.com",
-                "AuthAudience": "${AUTH_CLIENT_ID}",
-                "OIDCConfigEndpoint": "https://sso.prplanit.com/.well-known/openid-configuration",
-                "IdpSignKeyRefreshEnabled": true
-              },
-              "IdpManagerConfig": {
-                "ManagerType": "zitadel",
-                "ClientConfig": {
-                  "Issuer": "https://sso.prplanit.com",
-                  "TokenEndpoint": "https://sso.prplanit.com/oauth/v2/token",
-                  "ClientID": "${AUTH_CLIENT_ID}",
-                  "ClientSecret": "${AUTH_CLIENT_SECRET}",
-                  "GrantType": "client_credentials"
+                "TURNConfig": {
+                  "TimeBasedCredentials": false,
+                  "CredentialsTTL": "12h0m0s",
+                  "Secret": "secret",
+                  "Turns": [
+                    {
+                      "Proto": "udp",
+                      "URI": "turn:turn.prplanit.com:3478",
+                      "Username": "${COTURN_USER}",
+                      "Password": "${COTURN_PASS}"
+                    }
+                  ]
                 },
-                "ExtraConfig": {
-                  "ManagementEndpoint": "https://sso.prplanit.com/management/v1"
-                }
-              },
-              "DeviceAuthorizationFlow": {
-                "Provider": "hosted",
-                "ProviderConfig": {
-                  "Audience": "${AUTH_CLIENT_ID}",
-                  "ClientID": "${AUTH_CLIENT_ID}",
-                  "TokenEndpoint": "https://sso.prplanit.com/oauth/v2/token",
-                  "DeviceAuthEndpoint": "https://sso.prplanit.com/oauth/v2/device_authorization",
-                  "Scope": "openid",
-                  "UseIDToken": false
-                }
-              },
-              "PKCEAuthorizationFlow": {
-                "ProviderConfig": {
-                  "Audience": "${AUTH_CLIENT_ID}",
-                  "ClientID": "${AUTH_CLIENT_ID}",
-                  "TokenEndpoint": "https://sso.prplanit.com/oauth/v2/token",
-                  "AuthorizationEndpoint": "https://sso.prplanit.com/oauth/v2/authorize",
-                  "Scope": "openid profile email offline_access api",
-                  "RedirectURLs": ["http://localhost:53000/"]
+                "Relay": {
+                  "Addresses": ["rels://netbird.prplanit.com:443"],
+                  "CredentialsTTL": "24h0m0s",
+                  "Secret": "${NETBIRD_RELAY_AUTH_SECRET}"
+                },
+                "Signal": {
+                  "Proto": "https",
+                  "URI": "netbird.prplanit.com:443",
+                  "Username": "",
+                  "Password": ""
+                },
+                "Datadir": "/var/lib/netbird/",
+                "DataStoreEncryptionKey": "${DATASTORE_ENCRYPTION_KEY}",
+                "HttpConfig": {
+                  "LetsEncryptDomain": "",
+                  "CertFile": "",
+                  "CertKey": "",
+                  "AuthAudience": "${AUTH_CLIENT_ID}",
+                  "AuthIssuer": "https://sso.prplanit.com",
+                  "AuthUserIDClaim": "",
+                  "AuthKeysLocation": "https://sso.prplanit.com/oauth/v2/keys",
+                  "OIDCConfigEndpoint": "https://sso.prplanit.com/.well-known/openid-configuration",
+                  "IdpSignKeyRefreshEnabled": true,
+                  "ExtraAuthAudience": ""
+                },
+                "IdpManagerConfig": {
+                  "ManagerType": "zitadel",
+                  "ClientConfig": {
+                    "Issuer": "https://sso.prplanit.com",
+                    "TokenEndpoint": "https://sso.prplanit.com/oauth/v2/token",
+                    "ClientID": "${IDP_MGMT_CLIENT_ID}",
+                    "ClientSecret": "${AUTH_CLIENT_SECRET}",
+                    "GrantType": "client_credentials"
+                  },
+                  "ExtraConfig": {
+                    "ManagementEndpoint": "https://sso.prplanit.com/management/v1"
+                  },
+                  "Auth0ClientCredentials": null,
+                  "AzureClientCredentials": null,
+                  "KeycloakClientCredentials": null,
+                  "ZitadelClientCredentials": null
+                },
+                "DeviceAuthorizationFlow": {
+                  "Provider": "hosted",
+                  "ProviderConfig": {
+                    "ClientID": "${AUTH_CLIENT_ID}",
+                    "ClientSecret": "",
+                    "Domain": "sso.prplanit.com",
+                    "Audience": "${AUTH_CLIENT_ID}",
+                    "TokenEndpoint": "https://sso.prplanit.com/oauth/v2/token",
+                    "DeviceAuthEndpoint": "https://sso.prplanit.com/oauth/v2/device_authorization",
+                    "AuthorizationEndpoint": "",
+                    "Scope": "openid",
+                    "UseIDToken": false,
+                    "RedirectURLs": null
+                  }
+                },
+                "PKCEAuthorizationFlow": {
+                  "ProviderConfig": {
+                    "ClientID": "${AUTH_CLIENT_ID}",
+                    "ClientSecret": "",
+                    "Domain": "",
+                    "Audience": "${AUTH_CLIENT_ID}",
+                    "TokenEndpoint": "https://sso.prplanit.com/oauth/v2/token",
+                    "DeviceAuthEndpoint": "",
+                    "AuthorizationEndpoint": "https://sso.prplanit.com/oauth/v2/authorize",
+                    "Scope": "openid profile email offline_access api",
+                    "UseIDToken": false,
+                    "RedirectURLs": [
+                      "http://localhost:53000/",
+                      "http://localhost:54000/",
+                      "https://netbird.prplanit.com/auth",
+                      "https://netbird.prplanit.com/silent-auth"
+                    ]
+                  }
+                },
+                "StoreConfig": {
+                  "Engine": "postgres"
+                },
+                "ReverseProxy": {
+                  "TrustedHTTPProxies": [],
+                  "TrustedHTTPProxiesCount": 0,
+                  "TrustedPeers": ["0.0.0.0/0"]
                 }
               }
-            }
-            EOF
+              EOF
 
-            # Substitute environment variables using shell parameter expansion
-            sed -i "s/\${AUTH_CLIENT_ID}/${AUTH_CLIENT_ID}/g" /etc/netbird/config.json
-            sed -i "s/\${AUTH_CLIENT_SECRET}/${AUTH_CLIENT_SECRET}/g" /etc/netbird/config.json
+              # Substitute environment variables
+              sed -i "s|\${AUTH_CLIENT_ID}|${AUTH_CLIENT_ID}|g" /etc/netbird/config.json
+              sed -i "s|\${AUTH_CLIENT_SECRET}|${AUTH_CLIENT_SECRET}|g" /etc/netbird/config.json
+              sed -i "s|\${IDP_MGMT_CLIENT_ID}|${IDP_MGMT_CLIENT_ID}|g" /etc/netbird/config.json
+              sed -i "s|\${COTURN_USER}|${COTURN_USER}|g" /etc/netbird/config.json
+              sed -i "s|\${COTURN_PASS}|${COTURN_PASS}|g" /etc/netbird/config.json
+              sed -i "s|\${NETBIRD_RELAY_AUTH_SECRET}|${NETBIRD_RELAY_AUTH_SECRET}|g" /etc/netbird/config.json
+              sed -i "s|\${DATASTORE_ENCRYPTION_KEY}|${DATASTORE_ENCRYPTION_KEY}|g" /etc/netbird/config.json
 
-            echo "Config generated successfully. Checking content:"
-            cat /etc/netbird/config.json | grep -i "clientsecret" | head -5
-
-            echo "Verifying file exists and is readable:"
-            ls -la /etc/netbird/
-            echo "File permissions:"
-            ls -l /etc/netbird/config.json
-        env:
-        - name: AUTH_CLIENT_ID
-          valueFrom:
-            secretKeyRef:
-              name: netbird-secrets
-              key: AUTH_CLIENT_ID
-        - name: AUTH_CLIENT_SECRET
-          valueFrom:
-            secretKeyRef:
-              name: netbird-secrets
-              key: AUTH_CLIENT_SECRET
-        volumeMounts:
-        - name: generated-config
-          mountPath: /etc/netbird
+              echo "Config generated successfully"
+              ls -la /etc/netbird/
+          env:
+            - name: AUTH_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: netbird-secrets
+                  key: AUTH_CLIENT_ID
+            - name: AUTH_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: netbird-secrets
+                  key: AUTH_CLIENT_SECRET
+            - name: IDP_MGMT_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: netbird-secrets
+                  key: IDP_MGMT_CLIENT_ID
+            - name: COTURN_USER
+              valueFrom:
+                secretKeyRef:
+                  name: netbird-secrets
+                  key: COTURN_USER
+            - name: COTURN_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: netbird-secrets
+                  key: COTURN_PASS
+            - name: NETBIRD_RELAY_AUTH_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: netbird-secrets
+                  key: NETBIRD_RELAY_AUTH_SECRET
+            - name: DATASTORE_ENCRYPTION_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: netbird-secrets
+                  key: DATASTORE_ENCRYPTION_KEY
+          volumeMounts:
+            - name: generated-config
+              mountPath: /etc/netbird
       containers:
-      - name: management
-        image: PLACEHOLDER_IMAGE
-        args:
-        - --config
-        - /etc/netbird/config.json
-        - --log-file
-        - console
-        ports:
-        - containerPort: 443
-          name: https
-        env:
-        - name: NETBIRD_STORE_ENGINE
-          value: postgres
-        - name: NETBIRD_STORE_ENGINE_POSTGRES_DSN
-          valueFrom:
-            secretKeyRef:
-              name: netbird-secrets
-              key: POSTGRES_DSN
-        - name: NETBIRD_MGMT_IDP
-          value: zitadel
-        - name: NETBIRD_IDP_MGMT_CLIENT_ID
-          valueFrom:
-            secretKeyRef:
-              name: netbird-secrets
-              key: AUTH_CLIENT_ID
-        - name: NETBIRD_IDP_MGMT_CLIENT_SECRET
-          valueFrom:
-            secretKeyRef:
-              name: netbird-secrets
-              key: AUTH_CLIENT_SECRET
-        volumeMounts:
-        - name: management-data
-          mountPath: /var/lib/netbird
+        - name: management
+          image: PLACEHOLDER_IMAGE
+          args:
+            - --config
+            - /etc/netbird/config.json
+            - --log-file
+            - console
+          ports:
+            - containerPort: 443
+              name: https
+          env:
+            - name: NETBIRD_STORE_ENGINE
+              value: postgres
+            - name: NETBIRD_STORE_ENGINE_POSTGRES_DSN
+              valueFrom:
+                secretKeyRef:
+                  name: netbird-secrets
+                  key: POSTGRES_DSN
+            - name: NETBIRD_MGMT_IDP
+              value: zitadel
+            - name: NETBIRD_IDP_MGMT_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: netbird-secrets
+                  key: AUTH_CLIENT_ID
+            - name: NETBIRD_IDP_MGMT_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: netbird-secrets
+                  key: AUTH_CLIENT_SECRET
+          volumeMounts:
+            - name: management-data
+              mountPath: /var/lib/netbird
+            - name: generated-config
+              mountPath: /etc/netbird
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "250m"
+            limits:
+              memory: "1Gi"
+              cpu: "1000m"
+      volumes:
         - name: generated-config
-          mountPath: /etc/netbird
+          emptyDir: {}
+  volumeClaimTemplates:
+    - metadata:
+        name: management-data
+      spec:
+        accessModes: [ReadWriteOnce]
+        storageClassName: PLACEHOLDER_STORAGE_CLASS
         resources:
           requests:
-            memory: "256Mi"
-            cpu: "250m"
-          limits:
-            memory: "1Gi"
-            cpu: "1000m"
-      volumes:
-      - name: generated-config
-        emptyDir: {}
-  volumeClaimTemplates:
-  - metadata:
-      name: management-data
-    spec:
-      accessModes: [ReadWriteOnce]
-      storageClassName: PLACEHOLDER_STORAGE_CLASS
-      resources:
-        requests:
-          storage: 5Gi
+            storage: 5Gi

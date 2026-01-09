@@ -14,6 +14,57 @@ spec:
         app: netbird
         component: coturn
     spec:
+      initContainers:
+        - name: config-generator
+          image: busybox:latest
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              cat > /etc/coturn/turnserver.conf <<EOF
+              listening-port=3478
+              tls-listening-port=5349
+              listening-ip=0.0.0.0
+              relay-ip=0.0.0.0
+              external-ip=${EXTERNAL_IP}
+
+              min-port=49152
+              max-port=65535
+
+              realm=netbird.prplanit.com
+              server-name=netbird.prplanit.com
+
+              lt-cred-mech
+              user=${COTURN_USER}:${COTURN_PASS}
+
+              log-file=stdout
+              verbose
+
+              fingerprint
+              no-multicast-peers
+              no-cli
+              no-software-attribute
+
+              pidfile="/var/tmp/turnserver.pid"
+              EOF
+
+              echo "Coturn config generated"
+              cat /etc/coturn/turnserver.conf
+          env:
+            - name: COTURN_USER
+              valueFrom:
+                secretKeyRef:
+                  name: netbird-secrets
+                  key: COTURN_USER
+            - name: COTURN_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: netbird-secrets
+                  key: COTURN_PASS
+            - name: EXTERNAL_IP
+              value: "PLACEHOLDER_EXTERNAL_IP"
+          volumeMounts:
+            - name: generated-config
+              mountPath: /etc/coturn
       containers:
         - name: coturn
           image: PLACEHOLDER_IMAGE
@@ -28,13 +79,12 @@ spec:
               name: turns
               protocol: TCP
           volumeMounts:
-            - name: coturn-config
-              mountPath: /etc/turnserver.conf
-              subPath: turnserver.conf
+            - name: generated-config
+              mountPath: /etc/coturn
           command:
             - turnserver
             - -c
-            - /etc/turnserver.conf
+            - /etc/coturn/turnserver.conf
           resources:
             requests:
               memory: "256Mi"
@@ -43,6 +93,5 @@ spec:
               memory: "1Gi"
               cpu: "1000m"
       volumes:
-        - name: coturn-config
-          configMap:
-            name: netbird-coturn-config
+        - name: generated-config
+          emptyDir: {}

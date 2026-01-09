@@ -18,42 +18,48 @@ patches:
   - patch: |-
       - op: replace
         path: /spec/template/spec/initContainers/0/image
-        value: docker.jcr.pcfae.com/library/busybox:latest
+        value: docker.io/library/busybox:latest
     target:
       kind: StatefulSet
       name: netbird-management
   - patch: |-
       - op: replace
         path: /spec/template/spec/containers/0/image
-        value: docker.jcr.pcfae.com/netbirdio/management:latest
+        value: docker.io/netbirdio/management:latest
     target:
       kind: StatefulSet
       name: netbird-management
   - patch: |-
       - op: replace
         path: /spec/template/spec/containers/0/image
-        value: docker.jcr.pcfae.com/netbirdio/signal:latest
+        value: docker.io/netbirdio/signal:latest
     target:
       kind: StatefulSet
       name: netbird-signal
   - patch: |-
       - op: replace
         path: /spec/template/spec/containers/0/image
-        value: docker.jcr.pcfae.com/netbirdio/dashboard:latest
+        value: docker.io/netbirdio/dashboard:latest
     target:
       kind: Deployment
       name: netbird-dashboard
   - patch: |-
       - op: replace
         path: /spec/template/spec/containers/0/image
-        value: docker.jcr.pcfae.com/netbirdio/relay:latest
+        value: docker.io/netbirdio/relay:latest
     target:
       kind: Deployment
       name: netbird-relay
   - patch: |-
       - op: replace
+        path: /spec/template/spec/initContainers/0/image
+        value: docker.io/library/busybox:latest
+      - op: replace
+        path: /spec/template/spec/initContainers/0/env/2/value
+        value: "71.24.190.221"
+      - op: replace
         path: /spec/template/spec/containers/0/image
-        value: docker.jcr.pcfae.com/coturn/coturn:latest
+        value: docker.io/coturn/coturn:latest
     target:
       kind: Deployment
       name: netbird-coturn
@@ -87,6 +93,18 @@ patches:
         value: apps/netbird
       - op: replace
         path: /spec/data/8/remoteRef/key
+        value: apps/netbird
+      - op: replace
+        path: /spec/data/9/remoteRef/key
+        value: apps/netbird
+      - op: replace
+        path: /spec/data/10/remoteRef/key
+        value: apps/netbird
+      - op: replace
+        path: /spec/data/11/remoteRef/key
+        value: apps/netbird
+      - op: replace
+        path: /spec/data/12/remoteRef/key
         value: apps/netbird
     target:
       kind: ExternalSecret
