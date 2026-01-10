@@ -35,7 +35,7 @@ spec:
               memory: "24Mi"
             limits:
               cpu: "50m"
-              memory: "32Mi"
+              memory: "48Mi"
       volumes:
         - name: srv
           hostPath:
