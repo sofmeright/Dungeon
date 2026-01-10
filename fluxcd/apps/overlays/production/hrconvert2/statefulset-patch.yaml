@@ -12,10 +12,10 @@ spec:
           resources:
             requests:
               cpu: "2m"
-              memory: "64Mi"
+              memory: "12Mi"
             limits:
               cpu: "10m"
-              memory: "256Mi"
+              memory: "16Mi"
           volumeMounts:
             - name: tingle-tuner-hrconvert2-config
               mountPath: /var/www/html/HRProprietary/HRConvert2/config.php
