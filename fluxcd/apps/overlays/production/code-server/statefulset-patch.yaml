@@ -34,7 +34,7 @@ spec:
               cpu: "2m"
               memory: "256Mi"
             limits:
-              cpu: "200m"
+              cpu: "50m"
               memory: "1Gi"
       volumes:
         - name: srv
