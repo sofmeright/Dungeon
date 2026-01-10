@@ -16,10 +16,25 @@ spec:
   values:
     operator:
       replicas: PLACEHOLDER_REPLICAS
-    
+      resources:
+        requests:
+          cpu: 10m
+          memory: 90Mi
+        limits:
+          cpu: 100m
+          memory: 128Mi
+
+    resources:
+      requests:
+        cpu: 700m
+        memory: 2Gi
+      limits:
+        cpu: 1000m
+        memory: 3Gi
+
     ipam:
       mode: kubernetes
-    
+
     ipv4NativeRoutingCIDR: "PLACEHOLDER_POD_CIDR"
 
     k8sServiceHost: "PLACEHOLDER_API_VIP"
@@ -41,30 +56,30 @@ spec:
     defaultLBServiceIPAM: lbipam
 
     enableLoadBalancerIPAM: true
-    
+
     externalIPs:
       enabled: true
-    
+
     hostServices:
       enabled: true
       protocols: tcp,udp
-    
+
     nodePort:
       enabled: true
-    
+
     hostPort:
       enabled: true
-    
+
     bpf:
       masquerade: true
-      
+
     hubble:
       enabled: true
       relay:
         enabled: true
       ui:
         enabled: true
-        
+
     prometheus:
       enabled: true
       serviceMonitor:

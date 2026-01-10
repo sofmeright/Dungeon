@@ -10,6 +10,13 @@ spec:
       podAnnotations:
         prometheus.io/scrape: "true"
         prometheus.io/port: "3500"
+      resources:
+        requests:
+          cpu: 10m
+          memory: 32Mi
+        limits:
+          cpu: 20m
+          memory: 48Mi
     loki:
       podAnnotations:
         prometheus.io/scrape: "true"
@@ -36,6 +43,13 @@ spec:
       enabled: false
     singleBinary:
       replicas: 3
+      resources:
+        requests:
+          cpu: 350m
+          memory: 850Mi
+        limits:
+          cpu: 500m
+          memory: 1Gi
       persistence:
         enabled: true
         size: 100Gi
@@ -47,6 +61,13 @@ spec:
             name: loki-s3
     gateway:
       replicas: 3
+      resources:
+        requests:
+          cpu: 10m
+          memory: 16Mi
+        limits:
+          cpu: 50m
+          memory: 32Mi
     write:
       replicas: 0
     read:
