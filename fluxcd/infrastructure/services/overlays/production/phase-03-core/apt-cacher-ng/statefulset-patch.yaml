@@ -7,44 +7,44 @@ spec:
   template:
     spec:
       initContainers:
-      - name: init
-        image: docker.jcr.pcfae.com/prplanit/apt-cacher-ng-oci:3.7.4-v0.1
+        - name: init
+          image: docker.jcr.pcfae.com/prplanit/apt-cacher-ng-oci:3.7.4-v0.1
       containers:
-      - name: apt-cacher-ng
-        image: docker.jcr.pcfae.com/prplanit/apt-cacher-ng-oci:3.7.4-v0.1
-        env:
-        - name: MAX_THREADS
-          value: "30"
-        - name: NETWORK_TIMEOUT
-          value: "120"
-        resources:
-          limits:
-            memory: 4Gi
-            cpu: "4000m"
-          requests:
-            memory: 512Mi
-            cpu: "500m"
-        volumeMounts:
-        - name: hyrule-castle-apt-cacher-ng-cache
-          mountPath: /var/cache/apt-cacher-ng
-        - name: hyrule-castle-apt-cacher-ng-logs
-          mountPath: /var/log/apt-cacher-ng
+        - name: apt-cacher-ng
+          image: docker.jcr.pcfae.com/prplanit/apt-cacher-ng-oci:3.7.4-v0.1
+          env:
+            - name: MAX_THREADS
+              value: "30"
+            - name: NETWORK_TIMEOUT
+              value: "120"
+          resources:
+            limits:
+              memory: 256Mi
+              cpu: "500m"
+            requests:
+              memory: 16Mi
+              cpu: "10m"
+          volumeMounts:
+            - name: hyrule-castle-apt-cacher-ng-cache
+              mountPath: /var/cache/apt-cacher-ng
+            - name: hyrule-castle-apt-cacher-ng-logs
+              mountPath: /var/log/apt-cacher-ng
   volumeClaimTemplates:
-  - metadata:
-      name: hyrule-castle-apt-cacher-ng-cache
-    spec:
-      accessModes:
-      - ReadWriteOnce
-      storageClassName: ceph-rbd
-      resources:
-        requests:
-          storage: 100Gi
-  - metadata:
-      name: hyrule-castle-apt-cacher-ng-logs
-    spec:
-      accessModes:
-      - ReadWriteOnce
-      storageClassName: ceph-rbd
-      resources:
-        requests:
-          storage: 10Gi
+    - metadata:
+        name: hyrule-castle-apt-cacher-ng-cache
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        storageClassName: ceph-rbd
+        resources:
+          requests:
+            storage: 100Gi
+    - metadata:
+        name: hyrule-castle-apt-cacher-ng-logs
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        storageClassName: ceph-rbd
+        resources:
+          requests:
+            storage: 10Gi

@@ -6,26 +6,26 @@ spec:
   template:
     spec:
       containers:
-      - name: postgres
-        image: docker.jcr.pcfae.com/postgres:16.6-alpine
-        volumeMounts:
-        - $patch: replace
-        - name: hyrule-castle-jfrog-artifactory-postgres-data
-          mountPath: /var/lib/postgresql/data
+        - name: postgres
+          image: docker.io/postgres:16.6-alpine
+          volumeMounts:
+            - $patch: replace
+            - name: hyrule-castle-jfrog-artifactory-postgres-data
+              mountPath: /var/lib/postgresql/data
+          resources:
+            requests:
+              cpu: "10m"
+              memory: "64Mi"
+            limits:
+              cpu: "500m"
+              memory: "512Mi"
+  volumeClaimTemplates:
+    - metadata:
+        name: hyrule-castle-jfrog-artifactory-postgres-data
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        storageClassName: ceph-rbd
         resources:
           requests:
-            cpu: "500m"
-            memory: "512Mi"
-          limits:
-            cpu: "2000m"
-            memory: "2Gi"
-  volumeClaimTemplates:
-  - metadata:
-      name: hyrule-castle-jfrog-artifactory-postgres-data
-    spec:
-      accessModes:
-      - ReadWriteOnce
-      storageClassName: ceph-rbd
-      resources:
-        requests:
-          storage: 20Gi
+            storage: 20Gi
