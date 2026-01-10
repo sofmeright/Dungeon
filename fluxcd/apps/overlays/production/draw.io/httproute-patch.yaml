@@ -4,15 +4,15 @@ metadata:
   name: draw-io
 spec:
   parentRefs:
-  - name: xylem-gateway
-    namespace: kokiri-forest
+    - name: xylem-gateway
+      namespace: arylls-lookout
   hostnames:
-  - draw.pcfae.com
+    - draw.pcfae.com
   rules:
-  - matches:
-    - path:
-        type: PathPrefix
-        value: /
-    backendRefs:
-    - name: draw-io
-      port: 4549
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /
+      backendRefs:
+        - name: draw-io
+          port: 4549
