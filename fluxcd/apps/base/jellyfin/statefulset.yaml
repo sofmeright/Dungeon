@@ -51,10 +51,10 @@ spec:
               mountPath: /media/Photos
           resources:
             requests:
-              cpu: 2m
-              memory: 5Gi
-            limits:
               cpu: 100m
+              memory: 1536Mi
+            limits:
+              cpu: 4
               memory: 6Gi
       volumes:
         - name: media-movies
