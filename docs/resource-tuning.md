@@ -6,7 +6,7 @@ Tuned 2026-01-10. Formula: request ~1.2x actual (4Mi multiples for mem), limit ~
 |-----------|-----|------------|-------------|-----------|------------|-------------|-----------|-------|
 | tingle-tuner | code-server | 1-47m | 2m | 50m | 44Mi | 24Mi | 48Mi | CPU spikes during active use |
 | tingle-tuner | it-tools (x3) | 1m | 2m | 10m | 13Mi | 16Mi | 20Mi | |
-| tingle-tuner | searxng (x3) | 1-2m | 3m | 25m | 200Mi | 256Mi | 512Mi | |
+| tingle-tuner | searxng (x3) | 1-2m | 150m | 200m | 200Mi | 256Mi | 512Mi | Needs 150m+ CPU for granian startup; 150m unstable, 140m fails |
 | tingle-tuner | searxng-redis (x3) | 3-5m | 6m | 10m | 3-6Mi | 32Mi | 128Mi | |
 | tingle-tuner | draw-io | 11-15m | 15m | 100m | 81Mi | 84Mi | 104Mi | Needs 100m CPU for RSA cert gen on startup (~99s at 100m, ~218s at 50m) |
 | tingle-tuner | hrconvert2 | 1m | 2m | 10m | 9Mi | 12Mi | 16Mi | |
