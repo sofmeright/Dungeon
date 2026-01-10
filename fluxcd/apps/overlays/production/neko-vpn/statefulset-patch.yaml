@@ -24,7 +24,7 @@ spec:
               memory: "100Mi"
             limits:
               cpu: "10m"
-              memory: "256Mi"
+              memory: "152Mi"
           env:
             - name: VPN_SERVICE_PROVIDER
               value: "private internet access"
