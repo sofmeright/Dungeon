@@ -29,9 +29,11 @@ spec:
           resources:
             limits:
               nvidia.com/gpu: 1
-            requests:
+              cpu: "2"
               memory: "8Gi"
-              cpu: "2000m"
+            requests:
+              memory: "1536Mi"
+              cpu: "200m"
           volumeMounts:
             - name: data
               mountPath: /data
