@@ -24,10 +24,10 @@ spec:
           resources:
             requests:
               cpu: "500m"
-              memory: "500Mi"
+              memory: "700Mi"
             limits:
-              cpu: "1000m"
-              memory: "600Mi"
+              cpu: "750m"
+              memory: "800Mi"
   volumeClaimTemplates:
     - metadata:
         name: zeldas-lullaby-netbox-config-data
