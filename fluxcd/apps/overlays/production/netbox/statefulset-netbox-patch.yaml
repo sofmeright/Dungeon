@@ -23,10 +23,10 @@ spec:
               mountPath: /config
           resources:
             requests:
-              cpu: "100m"
+              cpu: "500m"
               memory: "500Mi"
             limits:
-              cpu: "500m"
+              cpu: "1000m"
               memory: "600Mi"
   volumeClaimTemplates:
     - metadata:
