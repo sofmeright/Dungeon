@@ -30,13 +30,13 @@ spec:
                 topologyKey: kubernetes.io/hostname
       # Resource limits for ingestion
       # With out_of_order_time_window at 1h, 8Gi needed for current cardinality
-      # Bumped - ingesters hitting 2000m CPU and 7.3Gi memory under load
+      # Bumped - ingesters hitting 3000m CPU ceiling under load
       resources:
         requests:
           cpu: 2000m
           memory: 8Gi
         limits:
-          cpu: 3
+          cpu: 4
           memory: 10Gi
 
     store_gateway:
