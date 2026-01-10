@@ -11,8 +11,8 @@ spec:
           image: docker.io/jgraph/drawio:latest
           resources:
             requests:
-              cpu: "11m"
+              cpu: "15m"
               memory: "128Mi"
             limits:
-              cpu: "35m"
+              cpu: "50m"
               memory: "256Mi"
