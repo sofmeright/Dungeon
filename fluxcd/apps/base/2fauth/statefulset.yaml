@@ -142,10 +142,10 @@ spec:
               mountPath: /2fauth
           resources:
             requests:
-              memory: 16Mi
+              memory: 48Mi
               cpu: 2m
             limits:
-              memory: 24Mi
+              memory: 64Mi
               cpu: 10m
   volumeClaimTemplates:
     - metadata:
