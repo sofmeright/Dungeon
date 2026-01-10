@@ -32,10 +32,10 @@ spec:
           resources:
             requests:
               cpu: "2m"
-              memory: "20Mi"
+              memory: "24Mi"
             limits:
               cpu: "50m"
-              memory: "24Mi"
+              memory: "32Mi"
       volumes:
         - name: srv
           hostPath:
