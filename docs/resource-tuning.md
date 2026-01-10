@@ -12,5 +12,5 @@ Tuned 2026-01-10. Formula: request ~1.2x actual (4Mi multiples for mem), limit ~
 | tingle-tuner | hrconvert2 | 1m | 2m | 10m | 9Mi | 12Mi | 16Mi | |
 | tingle-tuner | google-webfonts-helper | 1m | 2m | 10m | 51Mi | 52Mi | 64Mi | |
 | tingle-tuner | convertx | 1m | 2m | 10m | 24Mi | 64Mi | 96Mi | OOMKilled at 80Mi |
-| tingle-tuner | neko-vpn/gluetun | 1m | 2m | 10m | 82Mi | 100Mi | 256Mi | VPN container |
+| tingle-tuner | neko-vpn/gluetun | 1m | 2m | 10m | 82Mi | 100Mi | 152Mi | VPN container |
 | tingle-tuner | neko-vpn/neko | 85-92m | 102m | 500m | 488Mi | 586Mi | 1Gi | Browser workload, needs headroom |
