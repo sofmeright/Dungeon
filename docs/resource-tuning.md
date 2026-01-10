@@ -19,26 +19,30 @@ Tuned 2026-01-10. Formula: request ~1.2x actual (4Mi multiples for mem), limit ~
 
 ## zeldas-lullaby namespace
 
-| Namespace | App | CPU Actual | CPU Request | CPU Limit | Mem Actual | Mem Request | Mem Limit | Notes |
-|-----------|-----|------------|-------------|-----------|------------|-------------|-----------|-------|
-| zeldas-lullaby | netbird-coturn | 1m | 6m | 100m | 1Mi | 8Mi | 128Mi | TURN relay needs headroom for actual traffic |
-| zeldas-lullaby | netbird-dashboard | 1m | 2m | 10m | 30Mi | 36Mi | 48Mi | |
-| zeldas-lullaby | netbird-management | 1m | 2m | 10m | 36Mi | 40Mi | 48Mi | |
-| zeldas-lullaby | netbird-relay | 1m | 2m | 10m | 2Mi | 4Mi | 8Mi | |
-| zeldas-lullaby | netbird-signal | 1m | 2m | 10m | 2Mi | 4Mi | 8Mi | |
-| zeldas-lullaby | zitadel | 52m | 60m | 200m | 97Mi | 128Mi | 256Mi | |
-| zeldas-lullaby | zitadel-login-v2 | 1m | 2m | 50m | 85Mi | 100Mi | 128Mi | |
-| zeldas-lullaby | zitadel-postgres | 30m | 35m | 100m | 49Mi | 64Mi | 128Mi | |
-| zeldas-lullaby | vaultwarden | 1m | 2m | 50m | 21Mi | 24Mi | 32Mi | |
-| zeldas-lullaby | vaultwarden-postgres | 20m | 25m | 100m | 14Mi | 24Mi | 32Mi | |
-| zeldas-lullaby | vault | 66m | 70m | 150m | 138Mi | 144Mi | 256Mi | |
-| zeldas-lullaby | vault-bank-vaults | 1m | 2m | 20m | 45Mi | 64Mi | 128Mi | |
-| zeldas-lullaby | vault-prometheus-exporter | 1m | 2m | 10m | 13Mi | 16Mi | 32Mi | |
-| zeldas-lullaby | netbox | 2m | 5m | 100m | 445Mi | 512Mi | 768Mi | |
-| zeldas-lullaby | netbox-postgres | 1m | 2m | 50m | 15Mi | 24Mi | 32Mi | |
-| zeldas-lullaby | netbox-redis | 15m | 20m | 50m | 3Mi | 8Mi | 16Mi | |
-| zeldas-lullaby | oauth2-proxy | 1m | 2m | 10m | 11Mi | 12Mi | 24Mi | |
-| zeldas-lullaby | semaphore | 1m | 2m | 100m | 11Mi | 32Mi | 64Mi | |
-| zeldas-lullaby | semaphore-postgres | 1m | 2m | 20m | 14Mi | 24Mi | 64Mi | |
-| zeldas-lullaby | twofauth | 1m | 2m | 10m | 11Mi | 16Mi | 24Mi | |
-| zeldas-lullaby | bank-vaults-operator | 2m | 5m | 50m | 77Mi | 96Mi | 128Mi | |
+| App | Rep | CPU Actual | CPU Req | CPU Lim | Mem Actual | Mem Req | Mem Lim | Notes |
+|-----|-----|------------|---------|---------|------------|---------|---------|-------|
+| netbird-coturn | 3 | 2-5m | 6m | 100m | 6-7Mi | 8Mi | 128Mi | TURN relay needs headroom |
+| netbird-dashboard | 3 | 1-2m | 2m | 10m | 29-32Mi | 36Mi | 48Mi | |
+| netbird-management | 3 | 0-1m | 2m | 10m | 22-26Mi | 32Mi | 40Mi | |
+| netbird-relay | 3 | 0-1m | 2m | 10m | 2-3Mi | 12Mi | 16Mi | 8Mi failed: k8s min 12Mi for sandbox |
+| netbird-signal | 3 | 0-1m | 2m | 10m | 3Mi | 12Mi | 16Mi | 8Mi failed: k8s min 12Mi for sandbox |
+| zitadel | 3 | 12-15m | 60m | 200m | 82-106Mi | 128Mi | 256Mi | |
+| zitadel-login-v2 | 3 | 0-1m | 2m | 50m | 68-107Mi | 100Mi | 128Mi | |
+| zitadel-postgres | 3 | 15-43m | 35m | 100m | 46-175Mi | 256Mi | 512Mi | |
+| vaultwarden | 3 | 1-2m | 2m | 50m | 10-18Mi | 20Mi | 64Mi | |
+| vaultwarden-postgres | 3 | 8-9m | 25m | 100m | 43-82Mi | 128Mi | 256Mi | |
+| vault | 3 | 23-58m | 70m | 150m | 97-251Mi | 144Mi | 256Mi | |
+| vault-bank-vaults | 3 | 1m | 2m | 20m | 23Mi | 64Mi | 128Mi | sidecar |
+| vault-prom-exporter | 3 | ~1m | 2m | 10m | ~16Mi | 16Mi | 32Mi | sidecar |
+| netbox-server | 1 | 315m | 500m | 750m | 132Mi | 700Mi | 800Mi | OOMKilled at 600Mi |
+| netbox-postgres | 1 | 20m | 2m | 50m | 31Mi | 24Mi | 64Mi | |
+| netbox-redis | 1 | 15m | 20m | 50m | 3Mi | 8Mi | 16Mi | |
+| oauth2-proxy | 1 | 0m | 2m | 10m | 5Mi | 12Mi | 24Mi | |
+| semaphore | 1 | 1m | 2m | 100m | 27Mi | 32Mi | 64Mi | |
+| semaphore-postgres | 1 | ~1m | 2m | 20m | ~24Mi | 24Mi | 64Mi | sidecar |
+| twofauth | 1 | 1m | 2m | 10m | 13Mi | 48Mi | 64Mi | OOMKilled at 24Mi |
+| bank-vaults-operator | 1 | 28m | 5m | 50m | 89Mi | 96Mi | 128Mi | |
+
+**Savings:** CPU ~7.2 cores -> ~920m (87%), Memory ~11GiB -> ~2.4GiB (78%)
+
+**Note:** Any pod requires >= 12Mi memory limit for k8s sandbox (CRI-O runtime overhead).
