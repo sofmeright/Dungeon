@@ -14,30 +14,37 @@ spec:
         app: quay
     spec:
       containers:
-      - name: quay
-        image: quay.jcr.pcfae.com/projectquay/quay:latest
-        env:
-        - name: DEBUGLOG
-          value: "false"
-        ports:
-        - containerPort: 8080
-          name: http
-        - containerPort: 8443
-          name: https
-        volumeMounts:
-        - name: quay-config
-          mountPath: /conf/stack
-        - name: quay-storage
-          mountPath: /datastorage
+        - name: quay
+          image: quay.jcr.pcfae.com/projectquay/quay:latest
+          env:
+            - name: DEBUGLOG
+              value: "false"
+          ports:
+            - containerPort: 8080
+              name: http
+            - containerPort: 8443
+              name: https
+          volumeMounts:
+            - name: quay-config
+              mountPath: /conf/stack
+            - name: quay-storage
+              mountPath: /datastorage
+          resources:
+            requests:
+              cpu: 200m
+              memory: 7Gi
+            limits:
+              cpu: 500m
+              memory: 8Gi
       volumes:
-      - name: quay-config
-        secret:
-          secretName: quay-secrets
+        - name: quay-config
+          secret:
+            secretName: quay-secrets
   volumeClaimTemplates:
-  - metadata:
-      name: quay-storage
-    spec:
-      storageClassName: PLACEHOLDER_STORAGE_CLASS
-      resources:
-        requests:
-          storage: PLACEHOLDER_STORAGE_SIZE
+    - metadata:
+        name: quay-storage
+      spec:
+        storageClassName: PLACEHOLDER_STORAGE_CLASS
+        resources:
+          requests:
+            storage: PLACEHOLDER_STORAGE_SIZE

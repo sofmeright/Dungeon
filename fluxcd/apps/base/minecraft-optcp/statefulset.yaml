@@ -40,6 +40,13 @@ spec:
               mountPath: /data
           stdin: true
           tty: true
+          resources:
+            requests:
+              cpu: 70m
+              memory: 8Gi
+            limits:
+              cpu: 500m
+              memory: 10Gi
   volumeClaimTemplates:
     - metadata:
         name: data
