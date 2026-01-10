@@ -15,107 +15,107 @@ spec:
     spec:
       serviceAccountName: zitadel
       initContainers:
-      - name: wait-for-setup
-        image: PLACEHOLDER_KUBECTL_IMAGE
-        command:
-        - sh
-        - -c
-        - |
-          echo "Waiting for setup job to complete..."
-          until [ "$(kubectl get job zitadel-setup -n PLACEHOLDER_NAMESPACE -o jsonpath='{.status.succeeded}' 2>/dev/null)" = "1" ]; do
-            echo "Setup job not complete yet, waiting..."
-            sleep 5
-          done
-          echo "Setup job completed! Starting Zitadel..."
-        resources:
-          requests:
-            memory: "32Mi"
-            cpu: "10m"
-          limits:
-            memory: "64Mi"
-            cpu: "50m"
+        - name: wait-for-setup
+          image: PLACEHOLDER_KUBECTL_IMAGE
+          command:
+            - sh
+            - -c
+            - |
+              echo "Waiting for setup job to complete..."
+              until [ "$(kubectl get job zitadel-setup -n PLACEHOLDER_NAMESPACE -o jsonpath='{.status.succeeded}' 2>/dev/null)" = "1" ]; do
+                echo "Setup job not complete yet, waiting..."
+                sleep 5
+              done
+              echo "Setup job completed! Starting Zitadel..."
+          resources:
+            requests:
+              memory: "32Mi"
+              cpu: "10m"
+            limits:
+              memory: "64Mi"
+              cpu: "50m"
       containers:
-      - name: zitadel
-        image: PLACEHOLDER_IMAGE
-        ports:
-        - containerPort: 8080
-          name: http
-        env:
-        - name: ZITADEL_MASTERKEY
-          valueFrom:
-            secretKeyRef:
-              name: zitadel-masterkey
-              key: masterkey
-        - name: ZITADEL_DATABASE_POSTGRES_USER_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: zitadel-secrets
-              key: ZITADEL_DATABASE_POSTGRES_USER_PASSWORD
-        - name: ZITADEL_DATABASE_POSTGRES_ADMIN_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: zitadel-postgres-superuser
-              key: password
-        - name: ZITADEL_DEFAULTINSTANCE_SMTPCONFIGURATION_SMTP_USER
-          valueFrom:
-            secretKeyRef:
-              name: zitadel-secrets
-              key: SMTP_USER
-        - name: ZITADEL_DEFAULTINSTANCE_SMTPCONFIGURATION_SMTP_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: zitadel-secrets
-              key: SMTP_PASSWORD
-        # LoginV2 feature configuration
-        - name: ZITADEL_DEFAULTINSTANCE_FEATURES_LOGINV2_REQUIRED
-          value: "true"
-        - name: ZITADEL_DEFAULTINSTANCE_FEATURES_LOGINV2_BASEURI
-          value: "http://zitadel-login-v2:3000"
-        # Kubernetes integration
-        - name: KUBERNETES_SERVICE_HOST
-          value: "kubernetes.default.svc"
-        - name: KUBERNETES_SERVICE_PORT
-          value: "443"
-        - name: ZITADEL_PORT
-          value: "8080"
-        - name: ZITADEL_EXTERNALPORT
-          value: "443"
-        - name: POD_IP
-          valueFrom:
-            fieldRef:
-              fieldPath: status.podIP
-        command:
-        - /app/zitadel
-        - start
-        - --config
-        - /config/zitadel-config.yaml
-        - --masterkeyFromEnv
-        - --tlsMode
-        - external
-        volumeMounts:
-        - name: zitadel-config
-          mountPath: /config
-          readOnly: true
-        resources:
-          requests:
-            memory: "512Mi"
-            cpu: "250m"
-          limits:
-            memory: "1Gi"
-            cpu: "1000m"
-        livenessProbe:
-          httpGet:
-            path: /debug/healthz
-            port: 8080
-          initialDelaySeconds: 30
-          periodSeconds: 10
-        readinessProbe:
-          httpGet:
-            path: /debug/ready
-            port: 8080
-          initialDelaySeconds: 10
-          periodSeconds: 5
+        - name: zitadel
+          image: PLACEHOLDER_IMAGE
+          ports:
+            - containerPort: 8080
+              name: http
+          env:
+            - name: ZITADEL_MASTERKEY
+              valueFrom:
+                secretKeyRef:
+                  name: zitadel-masterkey
+                  key: masterkey
+            - name: ZITADEL_DATABASE_POSTGRES_USER_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: zitadel-secrets
+                  key: ZITADEL_DATABASE_POSTGRES_USER_PASSWORD
+            - name: ZITADEL_DATABASE_POSTGRES_ADMIN_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: zitadel-postgres-superuser
+                  key: password
+            - name: ZITADEL_DEFAULTINSTANCE_SMTPCONFIGURATION_SMTP_USER
+              valueFrom:
+                secretKeyRef:
+                  name: zitadel-secrets
+                  key: SMTP_USER
+            - name: ZITADEL_DEFAULTINSTANCE_SMTPCONFIGURATION_SMTP_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: zitadel-secrets
+                  key: SMTP_PASSWORD
+            # LoginV2 feature configuration
+            - name: ZITADEL_DEFAULTINSTANCE_FEATURES_LOGINV2_REQUIRED
+              value: "true"
+            - name: ZITADEL_DEFAULTINSTANCE_FEATURES_LOGINV2_BASEURI
+              value: "http://zitadel-login-v2:3000"
+            # Kubernetes integration
+            - name: KUBERNETES_SERVICE_HOST
+              value: "kubernetes.default.svc"
+            - name: KUBERNETES_SERVICE_PORT
+              value: "443"
+            - name: ZITADEL_PORT
+              value: "8080"
+            - name: ZITADEL_EXTERNALPORT
+              value: "443"
+            - name: POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+          command:
+            - /app/zitadel
+            - start
+            - --config
+            - /config/zitadel-config.yaml
+            - --masterkeyFromEnv
+            - --tlsMode
+            - external
+          volumeMounts:
+            - name: zitadel-config
+              mountPath: /config
+              readOnly: true
+          resources:
+            requests:
+              memory: "128Mi"
+              cpu: "60m"
+            limits:
+              memory: "256Mi"
+              cpu: "200m"
+          livenessProbe:
+            httpGet:
+              path: /debug/healthz
+              port: 8080
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /debug/ready
+              port: 8080
+            initialDelaySeconds: 10
+            periodSeconds: 5
       volumes:
-      - name: zitadel-config
-        configMap:
-          name: zitadel-config
+        - name: zitadel-config
+          configMap:
+            name: zitadel-config

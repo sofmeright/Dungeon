@@ -20,35 +20,35 @@ spec:
         runAsUser: 1000
         fsGroup: 1000
       containers:
-      - name: zitadel-login-v2
-        image: ghcr.io/zitadel/zitadel-login:v4.3.0
-        imagePullPolicy: IfNotPresent
-        ports:
-        - name: http
-          containerPort: 3000
-          protocol: TCP
-        env:
-        - name: ZITADEL_API_URL
-          value: "http://zitadel:8174"
-        - name: ZITADEL_EXTERNAL_DOMAIN
-          value: "PLACEHOLDER_DOMAIN"
-        - name: ZITADEL_EXTERNAL_SECURE
-          value: "true"
-        - name: ZITADEL_SERVICE_USER_TOKEN
-          valueFrom:
-            secretKeyRef:
-              name: zitadel-login-client
-              key: pat
-        securityContext:
-          allowPrivilegeEscalation: false
-          readOnlyRootFilesystem: true
-          capabilities:
-            drop:
-            - ALL
-        resources:
-          requests:
-            cpu: 100m
-            memory: 128Mi
-          limits:
-            cpu: 500m
-            memory: 512Mi
+        - name: zitadel-login-v2
+          image: ghcr.io/zitadel/zitadel-login:v4.3.0
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 3000
+              protocol: TCP
+          env:
+            - name: ZITADEL_API_URL
+              value: "http://zitadel:8174"
+            - name: ZITADEL_EXTERNAL_DOMAIN
+              value: "PLACEHOLDER_DOMAIN"
+            - name: ZITADEL_EXTERNAL_SECURE
+              value: "true"
+            - name: ZITADEL_SERVICE_USER_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: zitadel-login-client
+                  key: pat
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop:
+                - ALL
+          resources:
+            requests:
+              cpu: 2m
+              memory: 100Mi
+            limits:
+              cpu: 50m
+              memory: 128Mi

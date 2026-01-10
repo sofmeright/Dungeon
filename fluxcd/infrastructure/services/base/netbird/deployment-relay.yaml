@@ -15,27 +15,27 @@ spec:
         component: relay
     spec:
       containers:
-      - name: relay
-        image: PLACEHOLDER_IMAGE
-        ports:
-        - containerPort: 33080
-          name: relay
-        env:
-        - name: NB_LOG_LEVEL
-          value: info
-        - name: NB_LISTEN_ADDRESS
-          value: ":33080"
-        - name: NB_EXPOSED_ADDRESS
-          value: "rels://netbird.prplanit.com:443"
-        - name: NB_AUTH_SECRET
-          valueFrom:
-            secretKeyRef:
-              name: netbird-secrets
-              key: NETBIRD_RELAY_AUTH_SECRET
-        resources:
-          requests:
-            memory: "128Mi"
-            cpu: "100m"
-          limits:
-            memory: "512Mi"
-            cpu: "500m"
+        - name: relay
+          image: PLACEHOLDER_IMAGE
+          ports:
+            - containerPort: 33080
+              name: relay
+          env:
+            - name: NB_LOG_LEVEL
+              value: info
+            - name: NB_LISTEN_ADDRESS
+              value: ":33080"
+            - name: NB_EXPOSED_ADDRESS
+              value: "rels://netbird.prplanit.com:443"
+            - name: NB_AUTH_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: netbird-secrets
+                  key: NETBIRD_RELAY_AUTH_SECRET
+          resources:
+            requests:
+              memory: "4Mi"
+              cpu: "2m"
+            limits:
+              memory: "8Mi"
+              cpu: "10m"

@@ -23,6 +23,13 @@ spec:
       image:
         repository: ghcr.io/bank-vaults/bank-vaults
         tag: PLACEHOLDER_BANKVAULTS_TAG
+    resources:
+      requests:
+        cpu: 5m
+        memory: 96Mi
+      limits:
+        cpu: 50m
+        memory: 128Mi
     webhook:
       enabled: true
       image:

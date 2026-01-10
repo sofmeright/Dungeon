@@ -221,11 +221,11 @@ spec:
               mountPath: /etc/netbird
           resources:
             requests:
-              memory: "256Mi"
-              cpu: "250m"
+              memory: "32Mi"
+              cpu: "2m"
             limits:
-              memory: "1Gi"
-              cpu: "1000m"
+              memory: "40Mi"
+              cpu: "10m"
       volumes:
         - name: generated-config
           emptyDir: {}

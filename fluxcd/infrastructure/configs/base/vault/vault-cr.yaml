@@ -52,11 +52,25 @@ spec:
   resources:
     vault:
       requests:
-        memory: "256Mi"
-        cpu: "250m"
+        memory: "144Mi"
+        cpu: "70m"
       limits:
-        memory: "512Mi"
-        cpu: "500m"
+        memory: "256Mi"
+        cpu: "150m"
+    bankVaults:
+      requests:
+        memory: "64Mi"
+        cpu: "2m"
+      limits:
+        memory: "128Mi"
+        cpu: "20m"
+    prometheusExporter:
+      requests:
+        memory: "16Mi"
+        cpu: "2m"
+      limits:
+        memory: "32Mi"
+        cpu: "10m"
 
   # Service configuration - disabled during initialization
   serviceRegistrationEnabled: false
@@ -65,7 +79,7 @@ spec:
   serviceAccount: vault
 
   # Fix statsd exporter image with full registry path
-  statsdImage: docker.jcr.pcfae.com/prom/statsd-exporter:latest
+  statsdImage: docker.io/prom/statsd-exporter:latest
 
   # Make sure it runs on worker nodes with pod anti-affinity for HA
   affinity:

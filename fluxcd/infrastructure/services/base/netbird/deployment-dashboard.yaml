@@ -50,11 +50,11 @@ spec:
               value: "443"
           resources:
             requests:
-              memory: "128Mi"
-              cpu: "100m"
+              memory: "36Mi"
+              cpu: "2m"
             limits:
-              memory: "512Mi"
-              cpu: "500m"
+              memory: "48Mi"
+              cpu: "10m"
           volumeMounts:
             - name: nginx-config
               mountPath: /etc/nginx/http.d/default.conf

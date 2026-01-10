@@ -8,27 +8,27 @@ spec:
       securityContext:
         fsGroup: 70
       containers:
-      - name: postgres
-        image: docker.jcr.pcfae.com/postgres:15-alpine
-        volumeMounts:
-        - $patch: delete
-          name: PLACEHOLDER_POSTGRES_DATA
-        - name: zeldas-lullaby-netbox-postgres-data
-          mountPath: /var/lib/postgresql/data
+        - name: postgres
+          image: docker.io/postgres:15-alpine
+          volumeMounts:
+            - $patch: delete
+              name: PLACEHOLDER_POSTGRES_DATA
+            - name: zeldas-lullaby-netbox-postgres-data
+              mountPath: /var/lib/postgresql/data
+          resources:
+            requests:
+              cpu: "2m"
+              memory: "24Mi"
+            limits:
+              cpu: "50m"
+              memory: "64Mi"
+  volumeClaimTemplates:
+    - metadata:
+        name: zeldas-lullaby-netbox-postgres-data
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        storageClassName: ceph-rbd
         resources:
           requests:
-            cpu: "250m"
-            memory: "512Mi"
-          limits:
-            cpu: "1000m"
-            memory: "2Gi"
-  volumeClaimTemplates:
-  - metadata:
-      name: zeldas-lullaby-netbox-postgres-data
-    spec:
-      accessModes:
-      - ReadWriteOnce
-      storageClassName: ceph-rbd
-      resources:
-        requests:
-          storage: 20Gi
+            storage: 20Gi

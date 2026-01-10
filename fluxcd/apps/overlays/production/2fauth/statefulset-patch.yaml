@@ -11,20 +11,20 @@ spec:
         runAsUser: 1000
         runAsGroup: 1000
       containers:
-      - name: twofauth
-        image: docker.jcr.pcfae.com/2fauth/2fauth:latest
-        env:
-        - name: APP_URL
-          value: "http://172.22.30.86:8000"
-        volumeMounts:
-        - name: zeldas-lullaby-twofauth-data
-          mountPath: /2fauth
+        - name: twofauth
+          image: docker.io/2fauth/2fauth:latest
+          env:
+            - name: APP_URL
+              value: "http://172.22.30.86:8000"
+          volumeMounts:
+            - name: zeldas-lullaby-twofauth-data
+              mountPath: /2fauth
   volumeClaimTemplates:
-  - metadata:
-      name: zeldas-lullaby-twofauth-data
-    spec:
-      accessModes: ["ReadWriteOnce"]
-      storageClassName: ceph-rbd-retain
-      resources:
-        requests:
-          storage: 5Gi
+    - metadata:
+        name: zeldas-lullaby-twofauth-data
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        storageClassName: ceph-rbd-retain
+        resources:
+          requests:
+            storage: 5Gi

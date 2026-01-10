@@ -9,48 +9,48 @@ spec:
       securityContext:
         fsGroup: 1000
       containers:
-      - name: postgres
-        image: docker.jcr.pcfae.com/postgres:14
-      - name: semaphore
-        image: docker.jcr.pcfae.com/semaphoreui/semaphore:latest
-        securityContext:
-          runAsUser: 1000
-          runAsGroup: 1000
-        env:
-        - name: TZ
-          value: "Etc/UTC"
-        - name: SEMAPHORE_PORT
-          value: "3000"
+        - name: postgres
+          image: docker.io/postgres:14
+        - name: semaphore
+          image: docker.io/semaphoreui/semaphore:latest
+          securityContext:
+            runAsUser: 1000
+            runAsGroup: 1000
+          env:
+            - name: TZ
+              value: "Etc/UTC"
+            - name: SEMAPHORE_PORT
+              value: "3000"
   volumeClaimTemplates:
-  - metadata:
-      name: postgres-data
-    spec:
-      storageClassName: ceph-rbd-retain
-      accessModes: ["ReadWriteOnce"]
-      resources:
-        requests:
-          storage: 10Gi
-  - metadata:
-      name: config
-    spec:
-      storageClassName: ceph-rbd-retain
-      accessModes: ["ReadWriteOnce"]
-      resources:
-        requests:
-          storage: 1Gi
-  - metadata:
-      name: playbooks
-    spec:
-      storageClassName: ceph-rbd-retain
-      accessModes: ["ReadWriteOnce"]
-      resources:
-        requests:
-          storage: 10Gi
-  - metadata:
-      name: ssh-keys
-    spec:
-      storageClassName: ceph-rbd-retain
-      accessModes: ["ReadWriteOnce"]
-      resources:
-        requests:
-          storage: 100Mi
+    - metadata:
+        name: postgres-data
+      spec:
+        storageClassName: ceph-rbd-retain
+        accessModes: ["ReadWriteOnce"]
+        resources:
+          requests:
+            storage: 10Gi
+    - metadata:
+        name: config
+      spec:
+        storageClassName: ceph-rbd-retain
+        accessModes: ["ReadWriteOnce"]
+        resources:
+          requests:
+            storage: 1Gi
+    - metadata:
+        name: playbooks
+      spec:
+        storageClassName: ceph-rbd-retain
+        accessModes: ["ReadWriteOnce"]
+        resources:
+          requests:
+            storage: 10Gi
+    - metadata:
+        name: ssh-keys
+      spec:
+        storageClassName: ceph-rbd-retain
+        accessModes: ["ReadWriteOnce"]
+        resources:
+          requests:
+            storage: 100Mi
