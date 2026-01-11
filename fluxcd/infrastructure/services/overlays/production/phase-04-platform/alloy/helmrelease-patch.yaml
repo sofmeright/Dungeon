@@ -5,6 +5,11 @@ metadata:
 spec:
   targetNamespace: gossip-stone
   values:
+    # Run on all nodes including control plane
+    tolerations:
+      - key: node-role.kubernetes.io/control-plane
+        operator: Exists
+        effect: NoSchedule
     alloy:
       extraAnnotations:
         prometheus.io/scrape: "true"
@@ -35,7 +40,3 @@ spec:
                   spec:
                     hostNetwork: true
                     dnsPolicy: ClusterFirstWithHostNet
-                    tolerations:
-                      - key: node-role.kubernetes.io/control-plane
-                        operator: Exists
-                        effect: NoSchedule
