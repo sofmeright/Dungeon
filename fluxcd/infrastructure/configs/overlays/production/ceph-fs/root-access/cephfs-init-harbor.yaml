@@ -1,0 +1,45 @@
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: cephfs-init-harbor
+  namespace: gorons-bracelet
+spec:
+  ttlSecondsAfterFinished: 300
+  template:
+    spec:
+      restartPolicy: OnFailure
+      initContainers:
+        - name: mkdir-structure
+          image: docker.io/library/alpine:latest
+          command:
+            - /bin/sh
+            - -c
+            - |
+              set -e
+              echo "Creating directory structure in CephFS..."
+              mkdir -p /cephfs/dungeon/nvme/apps/harbor/job-logs
+
+              echo "Setting ownership to UID/GID 10000 (harbor)..."
+              chown -R 10000:10000 /cephfs/dungeon/nvme/apps/harbor
+
+              echo "Setting permissions..."
+              chmod -R 755 /cephfs/dungeon/nvme/apps/harbor
+
+              echo "Directory structure created successfully!"
+          volumeMounts:
+            - name: cephfs-root
+              mountPath: /cephfs
+      containers:
+        - name: completion
+          image: docker.io/library/alpine:latest
+          command:
+            - /bin/sh
+            - -c
+            - |
+              echo "Harbor CephFS initialization complete!"
+              exit 0
+      volumes:
+        - name: cephfs-root
+          persistentVolumeClaim:
+            claimName: gorons-bracelet-cephfs-root

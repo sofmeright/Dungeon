@@ -7,18 +7,18 @@ spec:
   install:
     timeout: 15m
   valuesFrom:
-  - kind: Secret
-    name: harbor-secrets
-    valuesKey: postgres_password
-    targetPath: database.external.password
-  - kind: Secret
-    name: harbor-secrets
-    valuesKey: s3_accesskey
-    targetPath: persistence.imageChartStorage.s3.accesskey
-  - kind: Secret
-    name: harbor-secrets
-    valuesKey: s3_secretkey
-    targetPath: persistence.imageChartStorage.s3.secretkey
+    - kind: Secret
+      name: harbor-secrets
+      valuesKey: postgres_password
+      targetPath: database.external.password
+    - kind: Secret
+      name: harbor-secrets
+      valuesKey: s3_accesskey
+      targetPath: persistence.imageChartStorage.s3.accesskey
+    - kind: Secret
+      name: harbor-secrets
+      valuesKey: s3_secretkey
+      targetPath: persistence.imageChartStorage.s3.secretkey
   values:
     # External URL
     externalURL: https://172.22.30.71:9483
@@ -87,8 +87,8 @@ spec:
           storageClass: ceph-rbd-retain
           size: 50Gi
         jobservice:
-          storageClass: ceph-rbd-retain
-          size: 10Gi
+          # Use CephFS (RWX) for multi-replica jobservice
+          existingClaim: hyrule-castle-harbor-jobservice
       imageChartStorage:
         type: s3
         s3:
@@ -102,10 +102,6 @@ spec:
     # Admin password from existing secret
     existingSecretAdminPassword: harbor-secrets
     existingSecretAdminPasswordKey: admin_password
-
-    # Disable CSRF protection for local access
-    core:
-      csrf: false
 
     # Disable Trivy and Notary for now
     trivy:
