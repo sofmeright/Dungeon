@@ -9,6 +9,15 @@ patches:
     target:
       kind: StatefulSet
       name: linkstack
+  # Replace imagePullSecrets instead of merging (removes placeholder)
+  - target:
+      kind: StatefulSet
+      name: linkstack
+    patch: |
+      - op: replace
+        path: /spec/template/spec/imagePullSecrets
+        value:
+          - name: jcr-pcfae-dungeon-pull-secret
   - path: statefulset-db-patch.yaml
     target:
       kind: StatefulSet
