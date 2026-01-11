@@ -1,0 +1,84 @@
+---
+# ERPNext Sites CephFS PV
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: hyrule-castle-erpnext-sites-pv
+spec:
+  capacity:
+    storage: 20Gi
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  claimRef:
+    apiVersion: v1
+    kind: PersistentVolumeClaim
+    name: hyrule-castle-erpnext-sites
+    namespace: hyrule-castle
+  csi:
+    driver: gorons-bracelet.cephfs.csi.ceph.com
+    nodeStageSecretRef:
+      name: csi-cephfs-node
+      namespace: gorons-bracelet
+    volumeAttributes:
+      clusterID: 0985467c-d8f3-4483-b27f-f0a512397ec2
+      fsName: Seed_Bank
+      staticVolume: "true"
+      rootPath: /dungeon/nvme/apps/erpnext/sites
+    volumeHandle: hyrule-castle-erpnext-sites-static
+---
+# ERPNext Sites CephFS PVC
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: hyrule-castle-erpnext-sites
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 20Gi
+  volumeName: hyrule-castle-erpnext-sites-pv
+  storageClassName: ""
+---
+# ERPNext Logs CephFS PV
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: hyrule-castle-erpnext-logs-pv
+spec:
+  capacity:
+    storage: 5Gi
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  claimRef:
+    apiVersion: v1
+    kind: PersistentVolumeClaim
+    name: hyrule-castle-erpnext-logs
+    namespace: hyrule-castle
+  csi:
+    driver: gorons-bracelet.cephfs.csi.ceph.com
+    nodeStageSecretRef:
+      name: csi-cephfs-node
+      namespace: gorons-bracelet
+    volumeAttributes:
+      clusterID: 0985467c-d8f3-4483-b27f-f0a512397ec2
+      fsName: Seed_Bank
+      staticVolume: "true"
+      rootPath: /dungeon/nvme/apps/erpnext/logs
+    volumeHandle: hyrule-castle-erpnext-logs-static
+---
+# ERPNext Logs CephFS PVC
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: hyrule-castle-erpnext-logs
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 5Gi
+  volumeName: hyrule-castle-erpnext-logs-pv
+  storageClassName: ""

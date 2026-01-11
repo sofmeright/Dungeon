@@ -6,6 +6,7 @@ namespace: hyrule-castle
 resources:
   - ../../../base/erpnext
   - httproute.yaml
+  - cephfs-pvs.yaml
 
 patches:
   - path: statefulset-mariadb-patch.yaml

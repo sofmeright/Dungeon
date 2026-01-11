@@ -15,9 +15,9 @@ spec:
               name: PLACEHOLDER_SITES_DATA
             - $patch: delete
               name: PLACEHOLDER_LOGS_DATA
-            - name: hyrule-castle-erpnext-sites-data
+            - name: sites-data
               mountPath: /home/frappe/frappe-bench/sites
-            - name: hyrule-castle-erpnext-logs-data
+            - name: logs-data
               mountPath: /home/frappe/frappe-bench/logs
         - name: create-site
           image: docker.io/frappe/erpnext:v15.54.5
@@ -26,9 +26,9 @@ spec:
               name: PLACEHOLDER_SITES_DATA
             - $patch: delete
               name: PLACEHOLDER_LOGS_DATA
-            - name: hyrule-castle-erpnext-sites-data
+            - name: sites-data
               mountPath: /home/frappe/frappe-bench/sites
-            - name: hyrule-castle-erpnext-logs-data
+            - name: logs-data
               mountPath: /home/frappe/frappe-bench/logs
       containers:
         - name: backend
@@ -38,9 +38,9 @@ spec:
               name: PLACEHOLDER_SITES_DATA
             - $patch: delete
               name: PLACEHOLDER_LOGS_DATA
-            - name: hyrule-castle-erpnext-sites-data
+            - name: sites-data
               mountPath: /home/frappe/frappe-bench/sites
-            - name: hyrule-castle-erpnext-logs-data
+            - name: logs-data
               mountPath: /home/frappe/frappe-bench/logs
           resources:
             requests:
@@ -49,22 +49,12 @@ spec:
             limits:
               cpu: "1000m"
               memory: "1Gi"
-  volumeClaimTemplates:
-    - metadata:
-        name: hyrule-castle-erpnext-sites-data
-      spec:
-        accessModes:
-          - ReadWriteOnce
-        storageClassName: ceph-rbd
-        resources:
-          requests:
-            storage: 20Gi
-    - metadata:
-        name: hyrule-castle-erpnext-logs-data
-      spec:
-        accessModes:
-          - ReadWriteOnce
-        storageClassName: ceph-rbd
-        resources:
-          requests:
-            storage: 5Gi
+      volumes:
+        - name: sites-data
+          persistentVolumeClaim:
+            claimName: hyrule-castle-erpnext-sites
+        - name: logs-data
+          persistentVolumeClaim:
+            claimName: hyrule-castle-erpnext-logs
+  # Remove volumeClaimTemplates - using pre-provisioned CephFS PVCs instead
+  volumeClaimTemplates: []
