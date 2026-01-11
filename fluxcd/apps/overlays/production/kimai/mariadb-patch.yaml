@@ -3,6 +3,9 @@ kind: MariaDB
 metadata:
   name: kimai-mariadb
 spec:
+  # Ensure pods are on separate nodes for HA
+  affinity:
+    antiAffinityEnabled: true
   storage:
     size: 20Gi
     storageClassName: ceph-rbd
