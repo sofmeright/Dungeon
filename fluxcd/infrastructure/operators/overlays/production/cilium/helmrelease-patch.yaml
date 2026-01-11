@@ -4,9 +4,6 @@ metadata:
   name: cilium
 spec:
   values:
-    # Cluster-specific network configuration
-    ipv4NativeRoutingCIDR: "192.168.144.0/20"
-    ipv6NativeRoutingCIDR: "fc00:f1:d759:3053:a573::/64"
     k8sServiceHost: "172.22.144.105"
 
     # Enable IPv6 for external connectivity
@@ -15,6 +12,13 @@ spec:
 
     operator:
       replicas: 1
+      resources:
+        requests:
+          cpu: 50m
+          memory: 256Mi
+        limits:
+          cpu: 500m
+          memory: 512Mi
     # eBPF native datapath configuration
     bpf:
       masquerade: true  # Enable BPF masquerade for external traffic
@@ -41,9 +45,11 @@ spec:
     # Enable masquerading ONLY for traffic going outside the cluster
     enableIPv4Masquerade: true
 
+    # Cluster-specific network configuration
     # Native routing (no masquerade) for pod network - this is the key!
     # Traffic within this CIDR uses eBPF native routing without any NAT
     ipv4NativeRoutingCIDR: "192.168.144.0/20"
+    ipv6NativeRoutingCIDR: "fc00:f1:d759:3053:a573::/64"
 
     # Also configure routing mode explicitly
     routingMode: native

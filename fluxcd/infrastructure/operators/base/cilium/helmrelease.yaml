@@ -18,11 +18,11 @@ spec:
       replicas: PLACEHOLDER_REPLICAS
       resources:
         requests:
-          cpu: 10m
-          memory: 90Mi
+          cpu: 50m
+          memory: 256Mi
         limits:
-          cpu: 100m
-          memory: 128Mi
+          cpu: 500m
+          memory: 512Mi
 
     resources:
       requests:
