@@ -87,10 +87,11 @@ spec:
           storageClass: ceph-rbd-retain
           size: 50Gi
         jobservice:
-          # Use CephFS (RWX) for multi-replica jobservice
-          existingClaim: hyrule-castle-harbor-jobservice
-          storageClass: ""
-          size: ""
+          jobLog:
+            # Use CephFS (RWX) for multi-replica jobservice
+            existingClaim: hyrule-castle-harbor-jobservice
+            storageClass: ""
+            size: ""
       imageChartStorage:
         type: s3
         s3:
