@@ -31,11 +31,11 @@ spec:
               mountPath: /srv
           resources:
             requests:
-              cpu: "2m"
-              memory: "24Mi"
+              cpu: "10m"
+              memory: "128Mi"
             limits:
-              cpu: "50m"
-              memory: "48Mi"
+              cpu: "500m"
+              memory: "512Mi"
       volumes:
         - name: srv
           hostPath:
