@@ -4,6 +4,9 @@ metadata:
   name: osticket-mariadb
 spec:
   image: docker.jcr.pcfae.com/mariadb:11.4.2
+  # Ensure pods are on separate nodes for HA
+  affinity:
+    antiAffinityEnabled: true
   storage:
     size: 10Gi
     storageClassName: ceph-rbd

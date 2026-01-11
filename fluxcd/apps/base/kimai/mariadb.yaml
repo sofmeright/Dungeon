@@ -18,6 +18,11 @@ spec:
 
   # High availability with 3-replica Galera cluster
   replicas: 3
+
+  # Ensure pods are on separate nodes for HA
+  affinity:
+    antiAffinityEnabled: true
+
   galera:
     enabled: true
     sst: mariabackup
