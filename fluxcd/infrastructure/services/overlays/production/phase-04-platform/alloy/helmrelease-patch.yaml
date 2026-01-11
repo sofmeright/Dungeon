@@ -19,11 +19,11 @@ spec:
         name: "alloy-config"
       resources:
         requests:
-          cpu: 1000m
-          memory: 6Gi
+          cpu: 100m
+          memory: 256Mi
         limits:
-          cpu: "3"
-          memory: 10Gi
+          cpu: "1"
+          memory: 1Gi
   postRenderers:
     - kustomize:
         patches:
