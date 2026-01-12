@@ -6,7 +6,8 @@
 # 1. Suspending the MariaDB CR (operator stops reconciling)
 # 2. Scaling down StatefulSet to release PVCs
 # 3. Running helper pods to:
-#    - Wipe grastate.dat and galera.cache on storage PVC
+#    - Wipe grastate.dat and galera.cache on storage PVC (default)
+#    - OR wipe entire /var/lib/mysql directory (--full-wipe)
 #    - Remove 1-bootstrap.cnf from galera config PVC
 # 4. Resuming the CR (operator recreates pod, joins via SST)
 #
@@ -14,7 +15,11 @@
 # This script does NOT auto-detect - it heals exactly what you specify.
 #
 # Usage:
-#   ./galera-heal-node.sh <mariadb-name> <namespace> <bad-node-number>
+#   ./galera-heal-node.sh <mariadb-name> <namespace> <bad-node-number> [--full-wipe]
+#
+# Options:
+#   --full-wipe   Wipe entire /var/lib/mysql directory (for corrupted data)
+#                 Use when "Installation of system tables failed" errors occur
 #
 # Example:
 #   # First, check status yourself:
@@ -24,8 +29,11 @@
 #   # Check grastate.dat on each node to find the healthy one:
 #   kubectl exec osticket-mariadb-1 -n hyrule-castle -c mariadb -- cat /var/lib/mysql/grastate.dat
 #
-#   # Then heal the specific bad node:
+#   # Then heal the specific bad node (grastate only):
 #   ./galera-heal-node.sh osticket-mariadb hyrule-castle 0
+#
+#   # Or full wipe for corrupted data:
+#   ./galera-heal-node.sh osticket-mariadb hyrule-castle 0 --full-wipe
 #
 
 set -euo pipefail
@@ -64,14 +72,18 @@ cleanup() {
 }
 trap cleanup EXIT
 
-# Require all 3 arguments
-if [[ $# -ne 3 ]]; then
-    echo "Usage: $0 <mariadb-name> <namespace> <bad-node-number>"
+# Require at least 3 arguments
+if [[ $# -lt 3 ]]; then
+    echo "Usage: $0 <mariadb-name> <namespace> <bad-node-number> [--full-wipe]"
     echo ""
     echo "All arguments are REQUIRED. No auto-detection."
     echo ""
+    echo "Options:"
+    echo "  --full-wipe   Wipe entire /var/lib/mysql (for corrupted data)"
+    echo ""
     echo "Example:"
     echo "  $0 osticket-mariadb hyrule-castle 0"
+    echo "  $0 osticket-mariadb hyrule-castle 0 --full-wipe"
     echo ""
     echo "First identify the bad node by checking grastate.dat:"
     echo "  kubectl exec <mariadb>-<N> -n <namespace> -c mariadb -- cat /var/lib/mysql/grastate.dat"
@@ -81,6 +93,10 @@ fi
 MARIADB_NAME="$1"
 NAMESPACE="$2"
 BAD_NODE="$3"
+FULL_WIPE="false"
+if [[ "${4:-}" == "--full-wipe" ]]; then
+    FULL_WIPE="true"
+fi
 TARGET_POD="${MARIADB_NAME}-${BAD_NODE}"
 TARGET_PVC="storage-${MARIADB_NAME}-${BAD_NODE}"
 GALERA_PVC="galera-${MARIADB_NAME}-${BAD_NODE}"
@@ -223,17 +239,23 @@ while kubectl get pod "${TARGET_POD}" -n "${NAMESPACE}" &>/dev/null; do
 done
 log_info "Pod terminated, PVCs released."
 
-# === STEP 3: Create helper pod to fix storage PVC (grastate + galera.cache) ===
-log_info "Step 3: Wiping grastate.dat and galera.cache..."
+# === STEP 3: Create helper pod to fix storage PVC ===
+if [[ "${FULL_WIPE}" == "true" ]]; then
+    log_warn "Step 3: FULL WIPE - Deleting entire /var/lib/mysql directory..."
+    WIPE_COMMAND="set -e; echo '=== Current contents ==='; ls -la /var/lib/mysql; echo ''; echo '=== FULL WIPE - Removing all data ==='; rm -rf /var/lib/mysql/*; echo ''; echo '=== After wipe ==='; ls -la /var/lib/mysql; echo '=== Done! Node will receive full SST from donor ==='"
+else
+    log_info "Step 3: Wiping grastate.dat and galera.cache..."
+    WIPE_COMMAND="set -e; echo '=== Current grastate.dat ==='; cat /var/lib/mysql/grastate.dat 2>/dev/null || echo 'not found'; echo ''; echo '=== Wiping grastate.dat ==='; printf '%s\\n' '# GALERA saved state' 'version: 2.1' 'uuid:    00000000-0000-0000-0000-000000000000' 'seqno:   -1' 'safe_to_bootstrap: 0' > /var/lib/mysql/grastate.dat; echo 'New grastate.dat:'; cat /var/lib/mysql/grastate.dat; echo ''; echo '=== Removing galera.cache (forces full SST) ==='; rm -f /var/lib/mysql/galera.cache; echo 'galera.cache removed'; echo '=== Done! ==='"
+fi
 
 HELPER_POD="${MARIADB_NAME}-heal-storage-${BAD_NODE}-$$"
 
-cat <<'EOFYAML' | sed "s/HELPER_POD_PLACEHOLDER/${HELPER_POD}/g; s/NAMESPACE_PLACEHOLDER/${NAMESPACE}/g; s/TARGET_PVC_PLACEHOLDER/${TARGET_PVC}/g" | kubectl apply -f -
+cat <<EOFYAML | kubectl apply -f -
 apiVersion: v1
 kind: Pod
 metadata:
-  name: HELPER_POD_PLACEHOLDER
-  namespace: NAMESPACE_PLACEHOLDER
+  name: ${HELPER_POD}
+  namespace: ${NAMESPACE}
 spec:
   restartPolicy: Never
   securityContext:
@@ -241,14 +263,14 @@ spec:
   containers:
   - name: healer
     image: docker.io/library/busybox:latest
-    command: ["sh", "-c", "set -e; echo '=== Current grastate.dat ==='; cat /var/lib/mysql/grastate.dat 2>/dev/null || echo 'not found'; echo ''; echo '=== Wiping grastate.dat ==='; printf '%s\\n' '# GALERA saved state' 'version: 2.1' 'uuid:    00000000-0000-0000-0000-000000000000' 'seqno:   -1' 'safe_to_bootstrap: 0' > /var/lib/mysql/grastate.dat; echo 'New grastate.dat:'; cat /var/lib/mysql/grastate.dat; echo ''; echo '=== Removing galera.cache (forces full SST) ==='; rm -f /var/lib/mysql/galera.cache; echo 'galera.cache removed'; echo '=== Done! ==='"]
+    command: ["sh", "-c", "${WIPE_COMMAND}"]
     volumeMounts:
     - name: storage
       mountPath: /var/lib/mysql
   volumes:
   - name: storage
     persistentVolumeClaim:
-      claimName: TARGET_PVC_PLACEHOLDER
+      claimName: ${TARGET_PVC}
 EOFYAML
 
 # Wait for helper to complete
