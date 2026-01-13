@@ -9,4 +9,4 @@
   value: 40323
 - op: replace
   path: /spec/ports/0/targetPort
-  value: 80
+  value: 8080

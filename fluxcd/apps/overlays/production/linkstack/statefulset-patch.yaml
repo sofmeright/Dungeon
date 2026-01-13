@@ -11,12 +11,14 @@ spec:
       containers:
         - name: linkstack
           image: docker.io/linkstackorg/linkstack:latest
-          securityContext:
-            capabilities:
-              add:
-                - NET_BIND_SERVICE
+          command:
+            - /bin/sh
+            - -c
+            - |
+              sed -i 's/Listen 80$/Listen 8080/' /etc/apache2/httpd.conf
+              exec /usr/local/bin/docker-entrypoint.sh
           ports:
-            - containerPort: 80
+            - containerPort: 8080
               name: http
           env:
             - name: PUID
