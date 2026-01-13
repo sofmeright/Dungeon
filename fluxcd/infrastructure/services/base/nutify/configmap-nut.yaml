@@ -1,0 +1,67 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nutify-nut-config
+data:
+  ups.conf: |
+    [ups]
+    driver = "snmp-ups"
+    port = "eaton-ups.prplanit.internal"
+    snmp_version = "v3"
+    secLevel = "authPriv"
+    secName = "nutify"
+    authProtocol = "SHA256"
+    authPassword = "${NUT_SNMP_AUTH_PASSWORD}"
+    privProtocol = "AES"
+    privPassword = "${NUT_SNMP_PRIV_PASSWORD}"
+    pollfreq = 15
+    desc = "Eaton 5PX-3000"
+
+  upsmon.conf: |
+    MONITOR ups@localhost 1 monuser monpass master
+    MINSUPPLIES 1
+    SHUTDOWNCMD "/bin/bash /root/script/nutify-shutdown.sh"
+    NOTIFYCMD /app/nutify/core/events/ups_notifier.py
+    POLLFREQ 5
+    POLLFREQALERT 5
+    HOSTSYNC 15
+    DEADTIME 15
+    POWERDOWNFLAG /etc/killpower
+    RBWARNTIME 43200
+    NOCOMMWARNTIME 300
+    FINALDELAY 5
+    NOTIFYFLAG ONLINE SYSLOG+WALL+EXEC
+    NOTIFYFLAG ONBATT SYSLOG+WALL+EXEC
+    NOTIFYFLAG LOWBATT SYSLOG+WALL+EXEC
+    NOTIFYFLAG FSD SYSLOG+WALL+EXEC
+    NOTIFYFLAG COMMOK SYSLOG+WALL+EXEC
+    NOTIFYFLAG COMMBAD SYSLOG+WALL+EXEC
+    NOTIFYFLAG SHUTDOWN SYSLOG+WALL+EXEC
+    NOTIFYFLAG REPLBATT SYSLOG+WALL+EXEC
+    NOTIFYFLAG NOCOMM SYSLOG+WALL+EXEC
+    NOTIFYFLAG NOPARENT SYSLOG+WALL+EXEC
+    DEBUG_MIN 2
+
+  nut.conf: |
+    MODE=netserver
+
+  upsd.conf: |
+    LISTEN 0.0.0.0 3493
+    MAXAGE 15
+
+  upsd.users: |
+    [monuser]
+    password = monpass
+    upsmon master
+
+  entrypoint-wrapper.sh: |
+    #!/bin/bash
+    # Substitute environment variables in ups.conf
+    envsubst < /etc/nut-templates/ups.conf > /etc/nut/ups.conf
+    cp /etc/nut-templates/upsmon.conf /etc/nut/upsmon.conf
+    cp /etc/nut-templates/nut.conf /etc/nut/nut.conf
+    cp /etc/nut-templates/upsd.conf /etc/nut/upsd.conf
+    cp /etc/nut-templates/upsd.users /etc/nut/upsd.users
+    chmod 640 /etc/nut/*
+    chown root:nut /etc/nut/*
+    exec "$@"

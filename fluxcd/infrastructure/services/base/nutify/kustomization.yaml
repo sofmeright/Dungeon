@@ -4,3 +4,5 @@ resources:
   - statefulset.yaml
   - service.yaml
   - externalsecret.yaml
+  - configmap-script.yaml
+  - configmap-nut.yaml

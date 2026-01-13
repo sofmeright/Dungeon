@@ -14,101 +14,102 @@ spec:
         app: nutify
     spec:
       containers:
-      - name: nutify
-        image: cr.pcfae.com/prplanit/nutify-ssh:latest
-        ports:
-        - containerPort: 3493
-          name: nut
-        - containerPort: 5050
-          name: http
-        - containerPort: 443
-          name: https
-        env:
-        - name: UDEV
-          value: "1"
-        envFrom:
-        - secretRef:
-            name: nutify-secret
-        securityContext:
-          privileged: true
-          capabilities:
-            add:
-            - SYS_ADMIN
-            - SYS_RAWIO
-            - MKNOD
-        volumeMounts:
-        - name: gossip-stone-nutify-logs
-          mountPath: /app/nutify/logs
-        - name: gossip-stone-nutify-instance
-          mountPath: /app/nutify/instance
-        - name: gossip-stone-nutify-ssl
-          mountPath: /app/ssl
-        - name: gossip-stone-nutify-nut-config
-          mountPath: /etc/nut
-        - name: gossip-stone-nutify-ssh
-          mountPath: /root/.ssh
-        - name: gossip-stone-nutify-script
-          mountPath: /root/script
-        - name: dev
-          mountPath: /dev
-        - name: udev
-          mountPath: /run/udev
-          readOnly: true
+        - name: nutify
+          image: cr.pcfae.com/prplanit/nutify-ssh:latest
+          ports:
+            - containerPort: 3493
+              name: nut
+            - containerPort: 5050
+              name: http
+            - containerPort: 443
+              name: https
+          env:
+            - name: UDEV
+              value: "1"
+          envFrom:
+            - secretRef:
+                name: nutify-secret
+          securityContext:
+            privileged: true
+            capabilities:
+              add:
+                - SYS_ADMIN
+                - SYS_RAWIO
+                - MKNOD
+          command: ["/bin/bash", "/etc/nut-templates/entrypoint-wrapper.sh"]
+          args: ["python3", "/app/nutify/app.py"]
+          volumeMounts:
+            - name: gossip-stone-nutify-logs
+              mountPath: /app/nutify/logs
+            - name: gossip-stone-nutify-instance
+              mountPath: /app/nutify/instance
+            - name: gossip-stone-nutify-ssl
+              mountPath: /app/ssl
+            - name: nut-config-templates
+              mountPath: /etc/nut-templates
+            - name: nut-config
+              mountPath: /etc/nut
+            - name: nutify-ssh
+              mountPath: /root/.ssh
+            - name: nutify-script
+              mountPath: /root/script
+            - name: dev
+              mountPath: /dev
+            - name: udev
+              mountPath: /run/udev
+              readOnly: true
       volumes:
-      - name: dev
-        hostPath:
-          path: /dev
-          type: Directory
-      - name: udev
-        hostPath:
-          path: /run/udev
-          type: Directory
+        - name: dev
+          hostPath:
+            path: /dev
+            type: Directory
+        - name: udev
+          hostPath:
+            path: /run/udev
+            type: Directory
+        - name: nut-config-templates
+          configMap:
+            name: nutify-nut-config
+            defaultMode: 0755
+        - name: nut-config
+          emptyDir: {}
+        - name: nutify-script
+          configMap:
+            name: nutify-script
+            defaultMode: 0755
+        - name: nutify-ssh
+          secret:
+            secretName: nutify-secret
+            defaultMode: 0600
+            items:
+              - key: NUTIFY_SSH_PRIVATE_KEY
+                path: id_rsa
+              - key: NUTIFY_SSH_PUBLIC_KEY
+                path: id_rsa.pub
+              - key: NUTIFY_SSH_KNOWN_HOSTS
+                path: known_hosts
   volumeClaimTemplates:
-  - metadata:
-      name: gossip-stone-nutify-logs
-    spec:
-      accessModes:
-      - ReadWriteOnce
-      resources:
-        requests:
-          storage: 1Gi
-  - metadata:
-      name: gossip-stone-nutify-instance
-    spec:
-      accessModes:
-      - ReadWriteOnce
-      resources:
-        requests:
-          storage: 2Gi
-  - metadata:
-      name: gossip-stone-nutify-ssl
-    spec:
-      accessModes:
-      - ReadWriteOnce
-      resources:
-        requests:
-          storage: 100Mi
-  - metadata:
-      name: gossip-stone-nutify-nut-config
-    spec:
-      accessModes:
-      - ReadWriteOnce
-      resources:
-        requests:
-          storage: 100Mi
-  - metadata:
-      name: gossip-stone-nutify-ssh
-    spec:
-      accessModes:
-      - ReadWriteOnce
-      resources:
-        requests:
-          storage: 100Mi
-  - metadata:
-      name: gossip-stone-nutify-script
-    spec:
-      accessModes:
-      - ReadWriteOnce
-      resources:
-        requests:
-          storage: 100Mi
+    - metadata:
+        name: gossip-stone-nutify-logs
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 1Gi
+    - metadata:
+        name: gossip-stone-nutify-instance
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 2Gi
+    - metadata:
+        name: gossip-stone-nutify-ssl
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 100Mi

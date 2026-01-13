@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nutify-script
+data:
+  nutify-shutdown.sh: |
+    #!/bin/bash
+    hosts=( "Avocado" "Bamboo" "Cosmos" "Dragonfruit" "Eggplant" )
+    for host in "${hosts[@]}"; do
+        ssh root@$host "shutdown now"
+    done
