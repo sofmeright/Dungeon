@@ -8,15 +8,13 @@ spec:
     spec:
       imagePullSecrets:
         - name: jcr-pcfae-dungeon-pull-secret
+      volumes:
+        - name: apache-config
+          configMap:
+            name: linkstack-apache-config
       containers:
         - name: linkstack
           image: docker.io/linkstackorg/linkstack:latest
-          command:
-            - /bin/sh
-            - -c
-            - |
-              sed -i 's/Listen 80$/Listen 8080/' /etc/apache2/httpd.conf
-              exec /usr/local/bin/docker-entrypoint.sh
           ports:
             - containerPort: 8080
               name: http
@@ -43,6 +41,9 @@ spec:
               cpu: 2000m
               memory: 2Gi
           volumeMounts:
+            - name: apache-config
+              mountPath: /etc/apache2/httpd.conf
+              subPath: httpd.conf
             - name: kokiri-forest-linkstack-htdocs
               mountPath: /htdocs
   volumeClaimTemplates:
