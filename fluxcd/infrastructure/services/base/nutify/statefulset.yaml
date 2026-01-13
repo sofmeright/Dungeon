@@ -23,19 +23,9 @@ spec:
               name: http
             - containerPort: 443
               name: https
-          env:
-            - name: UDEV
-              value: "1"
           envFrom:
             - secretRef:
                 name: nutify-secret
-          securityContext:
-            privileged: true
-            capabilities:
-              add:
-                - SYS_ADMIN
-                - SYS_RAWIO
-                - MKNOD
           command: ["/bin/bash", "/etc/nut-templates/entrypoint-wrapper.sh"]
           args: ["python3", "/app/nutify/app.py"]
           volumeMounts:
@@ -53,20 +43,7 @@ spec:
               mountPath: /root/.ssh
             - name: nutify-script
               mountPath: /root/script
-            - name: dev
-              mountPath: /dev
-            - name: udev
-              mountPath: /run/udev
-              readOnly: true
       volumes:
-        - name: dev
-          hostPath:
-            path: /dev
-            type: Directory
-        - name: udev
-          hostPath:
-            path: /run/udev
-            type: Directory
         - name: nut-config-templates
           configMap:
             name: nutify-nut-config

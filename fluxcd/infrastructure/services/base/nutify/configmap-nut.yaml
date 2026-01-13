@@ -56,8 +56,10 @@ data:
 
   entrypoint-wrapper.sh: |
     #!/bin/bash
-    # Substitute environment variables in ups.conf
-    envsubst < /etc/nut-templates/ups.conf > /etc/nut/ups.conf
+    # Substitute environment variables in ups.conf using sed
+    sed -e "s|\${NUT_SNMP_AUTH_PASSWORD}|${NUT_SNMP_AUTH_PASSWORD}|g" \
+        -e "s|\${NUT_SNMP_PRIV_PASSWORD}|${NUT_SNMP_PRIV_PASSWORD}|g" \
+        /etc/nut-templates/ups.conf > /etc/nut/ups.conf
     cp /etc/nut-templates/upsmon.conf /etc/nut/upsmon.conf
     cp /etc/nut-templates/nut.conf /etc/nut/nut.conf
     cp /etc/nut-templates/upsd.conf /etc/nut/upsd.conf
