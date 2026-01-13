@@ -9,42 +9,45 @@ spec:
       imagePullSecrets:
         - name: jcr-pcfae-dungeon-pull-secret
       containers:
-      - name: linkstack
-        image: docker.jcr.pcfae.com/linkstackorg/linkstack:latest
-        env:
-        - name: PUID
-          value: "1000"
-        - name: PGID
-          value: "1000"
-        - name: TZ
-          value: "Etc/UTC"
-        - name: HTTP_SERVER_NAME
-          value: "ls.sofmeright.com"
-        - name: HTTPS_SERVER_NAME
-          value: "ls.sofmeright.com"
-        - name: LOG_LEVEL
-          value: "info"
-        - name: PHP_MEMORY_LIMIT
-          value: "512M"
-        - name: UPLOAD_MAX_FILESIZE
-          value: "16M"
+        - name: linkstack
+          image: docker.io/linkstackorg/linkstack:latest
+          ports:
+            - containerPort: 8080
+              name: http
+          env:
+            - name: SERVER_PORT
+              value: "8080"
+            - name: PUID
+              value: "1000"
+            - name: PGID
+              value: "1000"
+            - name: TZ
+              value: "Etc/UTC"
+            - name: HTTP_SERVER_NAME
+              value: "ls.sofmeright.com"
+            - name: LOG_LEVEL
+              value: "info"
+            - name: PHP_MEMORY_LIMIT
+              value: "512M"
+            - name: UPLOAD_MAX_FILESIZE
+              value: "16M"
+          resources:
+            requests:
+              cpu: 100m
+              memory: 512Mi
+            limits:
+              cpu: 2000m
+              memory: 2Gi
+          volumeMounts:
+            - name: kokiri-forest-linkstack-htdocs
+              mountPath: /htdocs
+  volumeClaimTemplates:
+    - metadata:
+        name: kokiri-forest-linkstack-htdocs
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        storageClassName: ceph-rbd
         resources:
           requests:
-            cpu: 100m
-            memory: 512Mi
-          limits:
-            cpu: 2000m
-            memory: 2Gi
-        volumeMounts:
-        - name: kokiri-forest-linkstack-htdocs
-          mountPath: /htdocs
-  volumeClaimTemplates:
-  - metadata:
-      name: kokiri-forest-linkstack-htdocs
-    spec:
-      accessModes:
-      - ReadWriteOnce
-      storageClassName: ceph-rbd
-      resources:
-        requests:
-          storage: 5Gi
+            storage: 5Gi
