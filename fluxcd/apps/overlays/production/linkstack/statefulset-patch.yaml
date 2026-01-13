@@ -44,6 +44,9 @@ spec:
             - name: apache-config
               mountPath: /etc/apache2/httpd.conf
               subPath: httpd.conf
+            - name: apache-config
+              mountPath: /etc/apache2/conf.d/ssl.conf
+              subPath: ssl.conf
             - name: kokiri-forest-linkstack-htdocs
               mountPath: /htdocs
   volumeClaimTemplates:

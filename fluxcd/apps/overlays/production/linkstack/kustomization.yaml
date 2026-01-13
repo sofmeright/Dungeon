@@ -5,6 +5,7 @@ configMapGenerator:
   - name: linkstack-apache-config
     files:
       - httpd.conf
+      - ssl.conf
 resources:
   - ../../../base/linkstack
   - httproute-xylem.yaml
