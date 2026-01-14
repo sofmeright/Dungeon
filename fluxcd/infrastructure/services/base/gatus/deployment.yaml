@@ -62,7 +62,6 @@ spec:
           image: ghcr.io/home-operations/gatus-sidecar:PLACEHOLDER_SIDECAR_VERSION
           args:
             - --auto-httproute
-            - --auto-group
             - --output=/config/endpoints.yaml
           volumeMounts:
             - name: config
