@@ -8,6 +8,9 @@ spec:
     spec:
       imagePullSecrets:
         - name: jcr-pcfae-dungeon-pull-secret
+      initContainers:
+        - name: init-config
+          image: docker.io/library/busybox:1.37
       containers:
         - name: gatus
           image: ghcr.io/twin/gatus:v5.17.0

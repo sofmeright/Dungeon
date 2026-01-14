@@ -10,3 +10,10 @@ data:
     ui:
       title: Status
       header: Service Status
+    endpoints:
+      - name: gatus
+        group: core
+        url: "http://localhost:8080/health"
+        interval: 60s
+        conditions:
+          - "[STATUS] == 200"

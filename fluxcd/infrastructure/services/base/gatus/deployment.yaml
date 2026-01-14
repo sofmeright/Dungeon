@@ -15,6 +15,15 @@ spec:
         app.kubernetes.io/name: gatus
     spec:
       serviceAccountName: gatus
+      initContainers:
+        - name: init-config
+          image: busybox:latest
+          command: ["sh", "-c", "cp /configmap/* /config/"]
+          volumeMounts:
+            - name: configmap
+              mountPath: /configmap
+            - name: config
+              mountPath: /config
       containers:
         - name: gatus
           image: ghcr.io/twin/gatus:PLACEHOLDER_VERSION
@@ -41,11 +50,7 @@ spec:
                   key: password
           volumeMounts:
             - name: config
-              mountPath: /config/config.yaml
-              subPath: config.yaml
-            - name: sidecar-config
-              mountPath: /config/gatus-sidecar.yaml
-              subPath: gatus-sidecar.yaml
+              mountPath: /config
           resources:
             requests:
               cpu: PLACEHOLDER_CPU_REQUEST
@@ -57,9 +62,9 @@ spec:
           image: ghcr.io/home-operations/gatus-sidecar:PLACEHOLDER_SIDECAR_VERSION
           args:
             - --auto-httproute
-            - --output=/config/gatus-sidecar.yaml
+            - --output=/config/endpoints.yaml
           volumeMounts:
-            - name: sidecar-config
+            - name: config
               mountPath: /config
           resources:
             requests:
@@ -69,8 +74,8 @@ spec:
               cpu: 100m
               memory: 128Mi
       volumes:
-        - name: config
+        - name: configmap
           configMap:
             name: gatus-config
-        - name: sidecar-config
+        - name: config
           emptyDir: {}
