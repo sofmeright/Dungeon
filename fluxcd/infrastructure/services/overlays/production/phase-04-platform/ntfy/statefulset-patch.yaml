@@ -7,10 +7,10 @@ spec:
   template:
     spec:
       imagePullSecrets:
-      - name: jcr-pcfae-dungeon-pull-secret
+        - name: jcr-pcfae-dungeon-pull-secret
       containers:
         - name: ntfy
-          image: docker.jcr.pcfae.com/binwiederhier/ntfy:v2.11.0
+          image: docker.io/binwiederhier/ntfy:v2.11.0
           ports:
             - name: http
               containerPort: 80
@@ -21,6 +21,10 @@ spec:
           env:
             - name: NTFY_BASE_URL
               value: "https://ntfy.prplanit.com"
+            - name: NTFY_BEHIND_PROXY
+              value: "true"
+            - name: NTFY_CACHE_DURATION
+              value: "365d"
             - name: NTFY_SMTP_SERVER_LISTEN
               value: ":25"
             - name: NTFY_SMTP_SERVER_DOMAIN
