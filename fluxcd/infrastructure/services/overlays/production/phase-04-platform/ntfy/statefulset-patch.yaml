@@ -28,7 +28,7 @@ spec:
             - name: NTFY_SMTP_SERVER_LISTEN
               value: ":25"
             - name: NTFY_SMTP_SERVER_DOMAIN
-              value: "ntfy.prplanit.com"
+              value: "m.ntfy.prplanit.com"
             - name: NTFY_SMTP_SERVER_ADDR_PREFIX
               value: "ntfy-"
           volumeMounts:
@@ -37,10 +37,10 @@ spec:
           resources:
             requests:
               cpu: 50m
-              memory: 128Mi
+              memory: 256Mi
             limits:
               cpu: 500m
-              memory: 512Mi
+              memory: 768Mi
   volumeClaimTemplates:
     - metadata:
         name: delivery-bag-ntfy-data
