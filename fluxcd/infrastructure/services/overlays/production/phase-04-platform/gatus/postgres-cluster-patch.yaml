@@ -1,0 +1,17 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: gatus-postgres
+spec:
+  instances: 1
+
+  bootstrap:
+    initdb:
+      database: gatus
+      owner: gatus
+      secret:
+        name: gatus-postgres-credentials
+
+  storage:
+    storageClass: ceph-rbd-retain
+    size: 2Gi

@@ -1,0 +1,18 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: gatus-xylem
+spec:
+  parentRefs:
+    - name: xylem-gateway
+      namespace: arylls-lookout
+  hostnames:
+    - "stats.pcfae.com"
+  rules:
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /
+      backendRefs:
+        - name: gatus
+          port: 80

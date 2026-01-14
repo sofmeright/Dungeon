@@ -1,0 +1,25 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: gatus-postgres
+  labels:
+    app.kubernetes.io/name: gatus
+spec:
+  instances: PLACEHOLDER_INSTANCES
+
+  affinity:
+    podAntiAffinityType: preferred
+
+  postgresql:
+    parameters:
+      shared_buffers: "128MB"
+      max_connections: "100"
+
+  bootstrap:
+    initdb:
+      database: gatus
+      owner: gatus
+
+  storage:
+    storageClass: PLACEHOLDER_STORAGE_CLASS
+    size: PLACEHOLDER_STORAGE_SIZE
