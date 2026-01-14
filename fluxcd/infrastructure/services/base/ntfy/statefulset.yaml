@@ -27,8 +27,6 @@ spec:
           env:
             - name: NTFY_BASE_URL
               value: PLACEHOLDER_BASE_URL
-            - name: NTFY_UPSTREAM_BASE_URL
-              value: "https://ntfy.sh"
             - name: NTFY_CACHE_FILE
               value: "/var/lib/ntfy/cache.db"
             - name: NTFY_AUTH_FILE
