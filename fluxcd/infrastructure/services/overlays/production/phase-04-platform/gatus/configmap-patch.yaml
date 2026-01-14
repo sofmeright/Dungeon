@@ -8,8 +8,9 @@ data:
       type: postgres
       path: "postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:5432/${POSTGRES_DB}?sslmode=disable"
     ui:
-      title: Status
+      title: PrecisionPlanIT Status
       header: Service Status
+      logo: https://precisionplanit.com/img/favicon.png
     endpoints:
       - name: gatus
         group: core
