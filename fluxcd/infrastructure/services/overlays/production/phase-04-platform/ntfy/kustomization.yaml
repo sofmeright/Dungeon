@@ -4,6 +4,7 @@ namespace: delivery-bag
 resources:
   - ../../../../base/ntfy
   - httproute-xylem.yaml
+  - service-smtp.yaml
 patches:
   - path: statefulset-patch.yaml
   - path: httproute-patch.yaml
@@ -11,19 +12,3 @@ patches:
     target:
       kind: Service
       name: ntfy
-  - target:
-      version: v1
-      kind: Service
-      name: ntfy
-    patch: |-
-      - op: replace
-        path: /spec/ports
-        value:
-          - name: http
-            port: 1638
-            protocol: TCP
-            targetPort: 80
-          - name: smtp
-            port: 25
-            protocol: TCP
-            targetPort: 25

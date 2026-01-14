@@ -15,4 +15,4 @@ spec:
             value: /
       backendRefs:
         - name: ntfy
-          port: 1638
+          port: 80
