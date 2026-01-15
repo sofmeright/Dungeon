@@ -24,7 +24,13 @@ spec:
             - name: NTFY_BEHIND_PROXY
               value: "true"
             - name: NTFY_CACHE_DURATION
-              value: "365d"
+              value: "30d"
+            # SQLite batch settings - defaults are 0/0s (sync writes)
+            # Uncomment if lock contention becomes an issue:
+            # - name: NTFY_CACHE_BATCH_SIZE
+            #   value: "100"
+            # - name: NTFY_CACHE_BATCH_TIMEOUT
+            #   value: "1s"
             - name: NTFY_SMTP_SERVER_LISTEN
               value: ":25"
             - name: NTFY_SMTP_SERVER_DOMAIN
@@ -39,7 +45,7 @@ spec:
               cpu: 50m
               memory: 512Mi
             limits:
-              cpu: 500m
+              cpu: "1.2"
               memory: 1536Mi
   volumeClaimTemplates:
     - metadata:
