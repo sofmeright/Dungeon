@@ -15,10 +15,9 @@ spec:
       default: true
 
     # Node selector - only deploy GPU components to nodes with GPUs
-    # Initially target dungeon-chest-004, can be expanded later
     daemonsets:
       nodeSelector:
-        kubernetes.io/hostname: dungeon-chest-004
+        nvidia.com/gpu.present: "true"
       tolerations:
         - key: nvidia.com/gpu
           operator: Exists
@@ -38,7 +37,7 @@ spec:
     # Toolkit node selector
     toolkit:
       nodeSelector:
-        kubernetes.io/hostname: dungeon-chest-004
+        nvidia.com/gpu.present: "true"
       env:
         - name: CDI_ENABLED
           value: "true"
@@ -46,15 +45,17 @@ spec:
           value: "cdi"
 
     # Device plugin with time-slicing configuration for GPU sharing
+    # Profiles sized by GPU capability - more powerful = more slices
     devicePlugin:
       enabled: true
       nodeSelector:
-        kubernetes.io/hostname: dungeon-chest-004
+        nvidia.com/gpu.present: "true"
       config:
         name: time-slicing-config
         default: any
         create: true
         data:
+          # Default fallback
           any: |-
             version: v1
             flags:
@@ -65,12 +66,48 @@ spec:
                 failRequestsGreaterThanOne: false
                 resources:
                 - name: nvidia.com/gpu
-                  replicas: 10
+                  replicas: 16
+          # GTX 980 Ti - 6GB Maxwell, base reference
+          gtx-980-ti: |-
+            version: v1
+            flags:
+              migStrategy: none
+            sharing:
+              timeSlicing:
+                renameByDefault: false
+                failRequestsGreaterThanOne: false
+                resources:
+                - name: nvidia.com/gpu
+                  replicas: 16
+          # RTX A2000 12GB - 1.4x base TFLOPS
+          rtx-a2000: |-
+            version: v1
+            flags:
+              migStrategy: none
+            sharing:
+              timeSlicing:
+                renameByDefault: false
+                failRequestsGreaterThanOne: false
+                resources:
+                - name: nvidia.com/gpu
+                  replicas: 24
+          # RTX 3080 Ti 12GB - 6x base TFLOPS
+          rtx-3080-ti: |-
+            version: v1
+            flags:
+              migStrategy: none
+            sharing:
+              timeSlicing:
+                renameByDefault: false
+                failRequestsGreaterThanOne: false
+                resources:
+                - name: nvidia.com/gpu
+                  replicas: 96
 
     # DCGM exporter node selector
     dcgmExporter:
       nodeSelector:
-        kubernetes.io/hostname: dungeon-chest-004
+        nvidia.com/gpu.present: "true"
       podAnnotations:
         prometheus.io/scrape: "true"
         prometheus.io/port: "9400"
@@ -78,7 +115,7 @@ spec:
     # GPU Feature Discovery node selector
     gfd:
       nodeSelector:
-        kubernetes.io/hostname: dungeon-chest-004
+        nvidia.com/gpu.present: "true"
 
     # Validator - disabled in production (CDI mode doesn't require validation)
     validator:
