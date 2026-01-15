@@ -37,10 +37,10 @@ spec:
           resources:
             requests:
               cpu: 50m
-              memory: 256Mi
+              memory: 512Mi
             limits:
               cpu: 500m
-              memory: 768Mi
+              memory: 1536Mi
   volumeClaimTemplates:
     - metadata:
         name: delivery-bag-ntfy-data
