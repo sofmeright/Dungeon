@@ -1,0 +1,48 @@
+---
+# kubelet-maxpods.yaml
+# Updates maxPods limit on k8s worker nodes for N+2 failover capacity
+# Run via Semaphore or: ansible-playbook -i inventory k8s/tuning/kubelet-maxpods.yaml
+
+- name: Update kubelet maxPods to 250
+  hosts: k8s_worker
+  serial: 1
+  become: true
+
+  vars:
+    max_pods: 250
+    node_name: "{{ inventory_hostname | replace('dungeon_worker_', 'dungeon-chest-') | replace('_', '-') }}"
+
+  tasks:
+    - name: Check current maxPods setting
+      shell: grep -E "^maxPods:" /var/lib/kubelet/config.yaml || echo "maxPods not set"
+      register: current_maxpods
+      changed_when: false
+
+    - name: Update maxPods in kubelet config
+      lineinfile:
+        path: /var/lib/kubelet/config.yaml
+        regexp: '^maxPods:'
+        line: 'maxPods: {{ max_pods }}'
+        insertafter: '^kind: KubeletConfiguration'
+      register: kubelet_config
+      when: "('maxPods: ' ~ max_pods) not in current_maxpods.stdout"
+
+    - name: Restart kubelet
+      systemd:
+        name: kubelet
+        state: restarted
+      when: kubelet_config.changed
+
+    - name: Wait for kubelet to restart
+      pause:
+        seconds: 30
+      when: kubelet_config.changed
+
+    - name: Verify kubelet is running
+      systemd:
+        name: kubelet
+      register: kubelet_status
+      until: kubelet_status.status.ActiveState == "active"
+      retries: 6
+      delay: 10
+      when: kubelet_config.changed
