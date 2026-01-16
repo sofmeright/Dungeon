@@ -8,3 +8,14 @@ spec:
       namespace: hyrule-castle
   hostnames:
     - ntfy.prplanit.com
+  rules:
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /
+      backendRefs:
+        - name: ntfy
+          port: 80
+      timeouts:
+        request: "0s"
+        backendRequest: "0s"
