@@ -4,15 +4,15 @@ metadata:
   name: quay
 spec:
   parentRefs:
-  - name: cell-membrane-gateway
-    namespace: king-of-red-lions
+    - name: xylem-gateway
+      namespace: arylls-lookout
   hostnames:
-  - "quay.prplanit.com"
+    - "quay.pcfae.com"
   rules:
-  - matches:
-    - path:
-        type: PathPrefix
-        value: /
-    backendRefs:
-    - name: quay
-      port: 8080
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /
+      backendRefs:
+        - name: quay
+          port: 8080

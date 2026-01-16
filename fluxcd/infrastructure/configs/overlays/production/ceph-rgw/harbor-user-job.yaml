@@ -3,132 +3,146 @@ kind: Job
 metadata:
   name: harbor-rgw-setup
 spec:
-  ttlSecondsAfterFinished: 600
+  ttlSecondsAfterFinished: 43200
   template:
     spec:
       restartPolicy: OnFailure
       containers:
-      - name: setup
-        image: docker.jcr.pcfae.com/library/python:3.11-alpine
-        env:
-        - name: ADMIN_ACCESSKEY
-          valueFrom:
-            secretKeyRef:
-              name: rgw-admin-ops-user
-              key: accessKey
-        - name: ADMIN_SECRETKEY
-          valueFrom:
-            secretKeyRef:
-              name: rgw-admin-ops-user
-              key: secretKey
-        - name: HARBOR_ACCESSKEY
-          valueFrom:
-            secretKeyRef:
-              name: harbor-rgw-credentials
-              key: access_key
-        - name: HARBOR_SECRETKEY
-          valueFrom:
-            secretKeyRef:
-              name: harbor-rgw-credentials
-              key: secret_key
-        - name: AWS_ACCESS_KEY_ID
-          valueFrom:
-            secretKeyRef:
-              name: rgw-admin-ops-user
-              key: accessKey
-        - name: AWS_SECRET_ACCESS_KEY
-          valueFrom:
-            secretKeyRef:
-              name: rgw-admin-ops-user
-              key: secretKey
-        command:
-        - /bin/sh
-        - -c
-        - |
-          set -e
+        - name: setup
+          image: docker.jcr.pcfae.com/library/python:3.11-alpine
+          env:
+            - name: ADMIN_ACCESSKEY
+              valueFrom:
+                secretKeyRef:
+                  name: rgw-admin-ops-user
+                  key: accessKey
+            - name: ADMIN_SECRETKEY
+              valueFrom:
+                secretKeyRef:
+                  name: rgw-admin-ops-user
+                  key: secretKey
+            - name: HARBOR_ACCESSKEY
+              valueFrom:
+                secretKeyRef:
+                  name: harbor-rgw-credentials
+                  key: access_key
+            - name: HARBOR_SECRETKEY
+              valueFrom:
+                secretKeyRef:
+                  name: harbor-rgw-credentials
+                  key: secret_key
+            - name: AWS_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: rgw-admin-ops-user
+                  key: accessKey
+            - name: AWS_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: rgw-admin-ops-user
+                  key: secretKey
+          command:
+            - /bin/sh
+            - -c
+            - |
+              set -e
 
-          echo "Installing dependencies..."
-          pip install --no-cache-dir boto3 requests-aws4auth
+              echo "Installing dependencies..."
+              pip install --no-cache-dir boto3 requests-aws4auth
 
-          cat > /tmp/rgw_setup.py << 'EOFPYTHON'
-          import boto3
-          import sys
-          from botocore.client import Config
-          from botocore.exceptions import ClientError
+              cat > /tmp/rgw_setup.py << 'EOFPYTHON'
+              import boto3
+              import sys
+              from botocore.client import Config
+              from botocore.exceptions import ClientError
 
-          RGW_ENDPOINT = "http://ceph-rgw.gorons-bracelet.svc.cluster.local:80"
+              RGW_ENDPOINT = "http://ceph-rgw.gorons-bracelet.svc.cluster.local:80"
 
-          def create_user(admin_access, admin_secret, harbor_access, harbor_secret):
-              """Create RGW user via Admin API"""
-              import requests
-              from requests_aws4auth import AWS4Auth
+              def create_user(admin_access, admin_secret, harbor_access, harbor_secret):
+                  """Create RGW user via Admin API"""
+                  import requests
+                  from requests_aws4auth import AWS4Auth
 
-              auth = AWS4Auth(admin_access, admin_secret, 'us-east-1', 's3')
+                  auth = AWS4Auth(admin_access, admin_secret, 'us-east-1', 's3')
 
-              url = f"{RGW_ENDPOINT}/admin/user"
-              params = {
-                  'uid': 'harbor',
-                  'display-name': 'Harbor Container Registry',
-                  'access-key': harbor_access,
-                  'secret-key': harbor_secret
-              }
+                  url = f"{RGW_ENDPOINT}/admin/user"
+                  params = {
+                      'uid': 'harbor',
+                      'display-name': 'Harbor Container Registry',
+                      'access-key': harbor_access,
+                      'secret-key': harbor_secret
+                  }
 
-              try:
-                  resp = requests.put(url, params=params, auth=auth)
-                  if resp.status_code == 200:
-                      print("✓ Harbor RGW user created successfully")
-                      return True
-                  elif 'UserAlreadyExists' in resp.text or 'EntityAlreadyExists' in resp.text:
-                      print("✓ Harbor RGW user already exists")
-                      return True
-                  else:
-                      print(f"⚠ User creation response: {resp.status_code} - {resp.text}")
+                  try:
+                      resp = requests.put(url, params=params, auth=auth)
+                      if resp.status_code == 200:
+                          print("✓ Harbor RGW user created successfully")
+                          return True
+                      elif 'UserAlreadyExists' in resp.text or 'EntityAlreadyExists' in resp.text:
+                          print("✓ Harbor RGW user already exists")
+                          return True
+                      else:
+                          print(f"⚠ User creation response: {resp.status_code} - {resp.text}")
+                          print("  Assuming user exists, continuing...")
+                          return True
+                  except Exception as e:
+                      print(f"⚠ User creation failed: {e}")
                       print("  Assuming user exists, continuing...")
                       return True
-              except Exception as e:
-                  print(f"⚠ User creation failed: {e}")
-                  print("  Assuming user exists, continuing...")
-                  return True
 
-          def create_bucket(access_key, secret_key):
-              """Create S3 bucket"""
-              s3 = boto3.client(
-                  's3',
-                  endpoint_url=RGW_ENDPOINT,
-                  aws_access_key_id=access_key,
-                  aws_secret_access_key=secret_key,
-                  config=Config(signature_version='s3v4')
-              )
+              def create_bucket(access_key, secret_key):
+                  """Create S3 bucket with verification"""
+                  import time
+                  s3 = boto3.client(
+                      's3',
+                      endpoint_url=RGW_ENDPOINT,
+                      aws_access_key_id=access_key,
+                      aws_secret_access_key=secret_key,
+                      config=Config(signature_version='s3v4')
+                  )
 
-              try:
-                  s3.head_bucket(Bucket='harbor')
-                  print("✓ Bucket 'harbor' already exists")
-                  return True
-              except ClientError as e:
-                  if e.response['Error']['Code'] == '404':
-                      s3.create_bucket(Bucket='harbor')
-                      print("✓ Bucket 'harbor' created successfully")
+                  try:
+                      s3.head_bucket(Bucket='harbor')
+                      print("✓ Bucket 'harbor' already exists")
                       return True
+                  except ClientError as e:
+                      error_code = e.response['Error']['Code']
+                      if error_code == '404':
+                          print("Creating bucket 'harbor'...")
+                          s3.create_bucket(Bucket='harbor')
+                          # Verify bucket is accessible after creation
+                          print("Verifying bucket creation...")
+                          time.sleep(2)
+                          for attempt in range(3):
+                              try:
+                                  s3.head_bucket(Bucket='harbor')
+                                  print("✓ Bucket 'harbor' created and verified successfully")
+                                  return True
+                              except ClientError as verify_error:
+                                  print(f"  Verification attempt {attempt + 1}/3 failed: {verify_error}")
+                                  time.sleep(2)
+                          print("✗ Bucket created but verification failed - bucket may be corrupted")
+                          return False
+                      else:
+                          print(f"✗ Bucket check failed with error code {error_code}: {e}")
+                          return False
+
+              if __name__ == '__main__':
+                  import os
+                  admin_access = os.environ['ADMIN_ACCESSKEY']
+                  admin_secret = os.environ['ADMIN_SECRETKEY']
+                  harbor_access = os.environ['HARBOR_ACCESSKEY']
+                  harbor_secret = os.environ['HARBOR_SECRETKEY']
+
+                  print("Creating Harbor RGW user via Admin API...")
+                  create_user(admin_access, admin_secret, harbor_access, harbor_secret)
+
+                  print("\nCreating harbor bucket with Harbor credentials...")
+                  if create_bucket(harbor_access, harbor_secret):
+                      print("\n✓ Setup complete!")
+                      sys.exit(0)
                   else:
-                      print(f"✗ Bucket check failed: {e}")
-                      return False
+                      sys.exit(1)
+              EOFPYTHON
 
-          if __name__ == '__main__':
-              import os
-              admin_access = os.environ['ADMIN_ACCESSKEY']
-              admin_secret = os.environ['ADMIN_SECRETKEY']
-              harbor_access = os.environ['HARBOR_ACCESSKEY']
-              harbor_secret = os.environ['HARBOR_SECRETKEY']
-
-              print("Creating Harbor RGW user via Admin API...")
-              create_user(admin_access, admin_secret, harbor_access, harbor_secret)
-
-              print("\nCreating harbor bucket with Harbor credentials...")
-              if create_bucket(harbor_access, harbor_secret):
-                  print("\n✓ Setup complete!")
-                  sys.exit(0)
-              else:
-                  sys.exit(1)
-          EOFPYTHON
-
-          python /tmp/rgw_setup.py
+              python /tmp/rgw_setup.py

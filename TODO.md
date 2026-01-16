@@ -115,6 +115,7 @@ CLAUDE.md specifies PVC naming pattern for StatefulSets: `<namespace>-<app>-<pur
 - [ ] kubevirt (hypervisor)
 - [ ] rook-ceph ~ Could potentially migrate PVE Ceph to K8s with BGP loadbalancing & disk passthrough we would lose nothing...
 - [ ] vyOS ~ could extend k8s to handling routing and setup something truly resiliant and robust as compared to pfsense.
+- [ ] Spegel (P2P container image sharing) - Nodes share images peer-to-peer, reducing registry pulls. New nodes get images from peers instantly. Zero additional storage overhead. https://github.com/spegel-org/spegel
 
 **Large stacks to migrate** (not yet deployed to K8s):
 - [ ] ARK servers (6 instances) - Game servers on Jabu-Jabu
