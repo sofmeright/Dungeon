@@ -226,7 +226,7 @@ spec:
       # Clear contents but keep the directory (parent may be root-owned)
       rm -rf /var/lib/postgresql/data/pgdata/*
       rm -rf /var/lib/postgresql/data/pgdata/.[!.]*
-      rm -rf /var/lib/postgresql/data/lost+found
+      rm -rf /var/lib/postgresql/data/lost+found 2>/dev/null || true
       echo "pgdata cleared."
 
       echo "=== Step 2: Setting up TLS certificates ==="

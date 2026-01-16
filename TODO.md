@@ -419,6 +419,101 @@ kubectl get nodes -o custom-columns=NAME:.metadata.name,GPU:.status.allocatable.
 
 **Note:** These sidecars will expose `/metrics` endpoints that Alloy can scrape (requires `prometheus.io/scrape: "true"` annotation).
 
+## PostgreSQL HA Alternatives Evaluation
+
+**Status:** Research complete - Decision pending
+
+**Context:** CNPG clusters experienced replica divergence during node outages. 3/12 clusters failed (zitadel, gitlab, appflowy) while 9/12 survived identical hardware scenarios. Root cause: WAL timeline divergence when replicas can't catch up before WAL is recycled.
+
+### Current Solution: CloudNativePG (CNPG)
+- **Architecture:** Single-primary with streaming replication
+- **Failure mode:** Timeline divergence during failovers - replicas need pg_rewind or rebuild
+- **Strengths:** Actual PostgreSQL, full extension support, mature operator
+- **Weaknesses:** Failover creates new timeline, requires WAL availability for replica recovery
+- **Fix applied:** Increased `wal_keep_size` and `max_slot_wal_keep_size` for consistency across clusters
+
+### Alternative 1: YugabyteDB
+- **Architecture:** Distributed SQL with Raft consensus per shard
+- **Engine:** PostgreSQL wire-compatible (not actual PostgreSQL)
+- **License:** Apache 2.0 (fully open source)
+- **Strengths:**
+  - True distributed consistency via Raft - no timeline divergence
+  - Automatic failover without data loss
+  - Read-your-writes guarantee across all nodes
+- **Weaknesses:**
+  - Not actual PostgreSQL - some extensions won't work
+  - Higher resource overhead (Raft consensus)
+  - Smaller community than PostgreSQL
+- **Best for:** Apps needing strong consistency, can tolerate PostgreSQL-compatible vs actual PostgreSQL
+
+### Alternative 2: pgEdge
+- **Architecture:** Multi-master using logical replication (Spock extension)
+- **Engine:** Actual PostgreSQL
+- **License:** PostgreSQL License (permissive, OSI-approved)
+- **Strengths:**
+  - True multi-master/active-active - any node accepts writes
+  - No failover needed - all nodes are primary
+  - Full PostgreSQL extension compatibility (pgVector, PostGIS, etc.)
+  - Open source core (Spock, LOLOR, Snowflake extensions)
+- **Weaknesses:**
+  - Eventual consistency for cross-node reads (replication lag)
+  - Timestamp-based conflict resolution (last-write-wins)
+  - DDL replication only recently added
+  - Smaller community than YugabyteDB
+- **Best for:** Apps needing real PostgreSQL with multi-master, can tolerate eventual consistency
+
+### Alternative 3: TiDB (MySQL-compatible)
+- **Architecture:** Distributed SQL with Raft consensus (inspired by Google Spanner)
+- **Engine:** MySQL wire-compatible (not actual MySQL)
+- **License:** Apache 2.0 (fully open source, including enterprise features)
+- **Storage:** TiKV (CNCF graduated project)
+- **Strengths:**
+  - Strong consistency via Raft (like YugabyteDB)
+  - MySQL 8.0 compatible - use existing MySQL clients/ORMs
+  - HTAP support - both OLTP and OLAP workloads
+  - Horizontal scaling without sharding complexity
+  - Two-phase commit for ACID across nodes
+- **Weaknesses:**
+  - Not actual MySQL - some edge cases may differ
+  - Higher resource overhead (3+ TiKV nodes, 3+ PD nodes, TiDB nodes)
+  - Complex architecture (TiDB + TiKV + PD components)
+  - Smaller community than PostgreSQL ecosystem
+- **Best for:** MySQL workloads needing strong consistency, horizontal scaling, or analytics (HTAP)
+
+### Consistency Model Comparison
+
+| Scenario | CNPG | YugabyteDB | pgEdge |
+|----------|------|------------|--------|
+| Write to Node A, read from Node B immediately | N/A (single primary) | Consistent (Raft) | May see stale data (async replication) |
+| Simultaneous writes to same row | N/A (single primary) | Serialized (Raft) | Last-write-wins (timestamp) |
+| Node failure during write | Failover + potential data loss | No data loss (Raft quorum) | Other nodes continue (async lag) |
+| Read-your-writes guarantee | Yes (single primary) | Yes (always) | Only on same node |
+
+### Recommendation
+
+1. **Keep CNPG** for most workloads - it works well with proper WAL retention settings
+2. **Consider YugabyteDB** for new apps requiring strong consistency (financial, inventory)
+3. **Consider pgEdge** if multi-master is needed AND eventual consistency is acceptable
+
+### Healing Script for CNPG Replica Failures
+
+Location: `bash/maintenance/cnpg-heal-replica.sh`
+
+Usage:
+```bash
+# Heal a specific failed replica (does NOT auto-detect - you specify the replica)
+./bash/maintenance/cnpg-heal-replica.sh <cluster-name> <namespace> <replica-number>
+
+# Examples for current failed replicas:
+./bash/maintenance/cnpg-heal-replica.sh gitlab-postgresql hyrule-castle 1
+./bash/maintenance/cnpg-heal-replica.sh gitlab-postgresql hyrule-castle 3
+./bash/maintenance/cnpg-heal-replica.sh zitadel-postgres zeldas-lullaby 2
+./bash/maintenance/cnpg-heal-replica.sh zitadel-postgres zeldas-lullaby 3
+./bash/maintenance/cnpg-heal-replica.sh appflowy-postgres temple-of-time 1
+```
+
+**Last Updated:** 2026-01-16
+
 ## Jellyfin 10.11.x Upgrade Investigation
 
 **Status:** Blocked - Plugin compatibility unknown
