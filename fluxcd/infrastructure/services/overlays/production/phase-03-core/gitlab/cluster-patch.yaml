@@ -8,9 +8,10 @@ spec:
     size: 50Gi
   postgresql:
     parameters:
-      # WAL management to prevent disk fill from stale replication slots
-      wal_keep_size: "128MB"
-      max_slot_wal_keep_size: "512MB"
+      # WAL retention for replica catchup during outages
+      # Consistent with other CNPG clusters (vaultwarden, calcom, zitadel)
+      wal_keep_size: "512MB"
+      max_slot_wal_keep_size: "1600MB"
   backup:
     barmanObjectStore:
       endpointURL: http://ceph-rgw.gorons-bracelet.svc.cluster.local
