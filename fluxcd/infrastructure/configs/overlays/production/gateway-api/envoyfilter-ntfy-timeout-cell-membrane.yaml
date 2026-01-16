@@ -1,0 +1,24 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: EnvoyFilter
+metadata:
+  name: ntfy-websocket-timeout-cell-membrane
+  namespace: hyrule-castle
+spec:
+  workloadSelector:
+    labels:
+      gateway.networking.k8s.io/gateway-name: cell-membrane-gateway
+  configPatches:
+    - applyTo: HTTP_ROUTE
+      match:
+        context: GATEWAY
+        routeConfiguration:
+          vhost:
+            name: ntfy.prplanit.com:443
+            route:
+              action: ANY
+      patch:
+        operation: MERGE
+        value:
+          route:
+            timeout: 0s
+            idle_timeout: 0s

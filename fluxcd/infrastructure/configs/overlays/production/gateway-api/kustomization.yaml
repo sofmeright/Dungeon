@@ -5,6 +5,8 @@ resources:
   - envoyfilter-fairer-pages.yaml
   - envoyfilter-fairer-pages-cell-membrane.yaml
   - envoyfilter-fairer-pages-xylem.yaml
+  - envoyfilter-ntfy-timeout-cell-membrane.yaml
+  - envoyfilter-ntfy-timeout-xylem.yaml
 patches:
   - path: gateway-patch-xylem.yaml
     target:
