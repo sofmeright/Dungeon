@@ -7,7 +7,7 @@ spec:
     - name: xylem-gateway
       namespace: arylls-lookout
   hostnames:
-    - "nvr2.pcfae.com"
+    - "nvr.pcfae.com"
   rules:
     - matches:
         - path:

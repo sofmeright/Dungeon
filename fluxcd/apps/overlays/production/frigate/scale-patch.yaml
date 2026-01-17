@@ -1,8 +1,7 @@
-# Frigate scaled to 0 - using Shinobi instead
-# Keeping config as reference in case we switch back
+# Frigate enabled - primary NVR
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
   name: frigate
 spec:
-  replicas: 0
+  replicas: 1

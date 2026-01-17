@@ -3,10 +3,14 @@ kind: Kustomization
 namespace: lens-of-truth
 resources:
   - ../../../base/shinobi
-  - httproute.yaml
+  # - httproute.yaml  # Disabled - Frigate taking over nvr.pcfae.com
   - externalsecret-registry.yaml
 patches:
   - path: statefulset-patch.yaml
+    target:
+      kind: StatefulSet
+      name: shinobi
+  - path: scale-patch.yaml
     target:
       kind: StatefulSet
       name: shinobi

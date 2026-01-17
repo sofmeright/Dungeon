@@ -1,0 +1,7 @@
+# Shinobi scaled to 0 - using Frigate instead
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: shinobi
+spec:
+  replicas: 0
