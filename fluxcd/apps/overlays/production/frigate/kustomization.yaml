@@ -4,9 +4,13 @@ namespace: lens-of-truth
 resources:
   - ../../../base/frigate
   - httproute-xylem.yaml
-# Frigate disabled - using Shinobi instead. Config kept for reference.
+# Frigate enabled - primary NVR (replaced Shinobi)
 patches:
   - path: scale-patch.yaml
+  - path: statefulset-patch.yaml
+    target:
+      kind: StatefulSet
+      name: frigate
   - path: service-patch.yaml
     target:
       kind: Service
