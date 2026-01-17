@@ -6,4 +6,7 @@ spec:
   template:
     spec:
       imagePullSecrets:
-      - name: cr-pcfae-admin-pull-secret
+        - name: cr-pcfae-admin-pull-secret
+      containers:
+        - name: shinobi
+          image: docker.io/prplanit/shinobi:2026.01.14-nvidia
