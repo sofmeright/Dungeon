@@ -5,6 +5,6 @@ metadata:
 spec:
   parentRefs:
     - name: phloem-gateway
-      namespace: king-of-red-lions
+      namespace: kokiri-forest
   hostnames:
     - status.sofmeright.com
