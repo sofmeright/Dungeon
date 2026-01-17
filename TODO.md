@@ -515,6 +515,26 @@ Usage:
 
 **Last Updated:** 2026-01-16
 
+## Gateway API: CSP Header Override
+
+Some apps set restrictive `frame-ancestors 'self'` CSP headers blocking dashboard embedding. Need EnvoyFilter response header manipulation to override for: zitadel, photoprism, qbittorrent, calibre-web.
+
+## Gateway API: Request Body Size Limits
+
+Unlike nginx (`client_max_body_size`), Istio has no default request body limit. Consider adding EnvoyFilter limits on public gateways (phloem/cell-membrane) to prevent DoS, with exceptions for apps needing large uploads.
+
+```yaml
+spec:
+  configPatches:
+    - applyTo: HTTP_CONNECTION_MANAGER
+      match:
+        context: GATEWAY
+      patch:
+        operation: MERGE
+        value:
+          max_request_bytes: 52428800  # 50MB
+```
+
 ## Jellyfin 10.11.x Upgrade Investigation
 
 **Status:** Blocked - Plugin compatibility unknown
