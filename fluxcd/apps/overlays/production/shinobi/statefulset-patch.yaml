@@ -9,4 +9,4 @@ spec:
         - name: cr-pcfae-admin-pull-secret
       containers:
         - name: shinobi
-          image: docker.io/prplanit/shinobi:2026.01.14-nvidia
+          image: docker.io/prplanit/shinobi:2026.01.17-nvidia
