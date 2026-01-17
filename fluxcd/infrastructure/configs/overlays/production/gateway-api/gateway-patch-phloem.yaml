@@ -51,3 +51,15 @@ spec:
         certificateRefs:
           - kind: Secret
             name: yesimvegan-com-tls
+    - name: https-kai-hamilton
+      protocol: HTTPS
+      port: 443
+      hostname: "kai-hamilton.com"
+      allowedRoutes:
+        namespaces:
+          from: All
+      tls:
+        mode: Terminate
+        certificateRefs:
+          - kind: Secret
+            name: kai-hamilton-com-tls
