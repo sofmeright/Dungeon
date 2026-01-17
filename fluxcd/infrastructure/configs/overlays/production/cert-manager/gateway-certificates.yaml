@@ -153,3 +153,15 @@ spec:
     kind: ClusterIssuer
   dnsNames:
     - "kai-hamilton.com"
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: astralfocal-com-tls
+spec:
+  secretName: astralfocal-com-tls
+  issuerRef:
+    name: letsencrypt-production
+    kind: ClusterIssuer
+  dnsNames:
+    - "astralfocal.com"

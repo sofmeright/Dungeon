@@ -99,3 +99,10 @@ patches:
     target:
       kind: Certificate
       name: kai-hamilton-com-tls
+  - patch: |-
+      - op: add
+        path: /metadata/namespace
+        value: kokiri-forest
+    target:
+      kind: Certificate
+      name: astralfocal-com-tls
