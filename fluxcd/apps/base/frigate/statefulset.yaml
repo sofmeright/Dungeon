@@ -14,67 +14,67 @@ spec:
         app: frigate
     spec:
       containers:
-      - name: frigate
-        image: ghcr.io/blakeblackshear/frigate:stable-tensorrt
-        ports:
-        - containerPort: 5000
-          name: http
-        - containerPort: 8554
-          name: rtsp
-        - containerPort: 8555
-          name: webrtc-tcp
-          protocol: TCP
-        - containerPort: 8555
-          name: webrtc-udp
-          protocol: UDP
-        env:
-        - name: NVIDIA_VISIBLE_DEVICES
-          value: "all"
-        - name: NVIDIA_DRIVER_CAPABILITIES
-          value: "all"
-        - name: FRIGATE_RTSP_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: frigate-secret
-              key: FRIGATE_RTSP_PASSWORD
-        resources:
-          limits:
-            nvidia.com/gpu: 1
-        securityContext:
-          privileged: true
-        volumeMounts:
-        - name: config
-          mountPath: /config
-        - name: storage
-          mountPath: /media/frigate
-        - name: cache
-          mountPath: /tmp/cache
-        - name: localtime
-          mountPath: /etc/localtime
-          readOnly: true
+        - name: frigate
+          image: ghcr.io/blakeblackshear/frigate:stable-tensorrt
+          ports:
+            - containerPort: 5000
+              name: http
+            - containerPort: 8554
+              name: rtsp
+            - containerPort: 8555
+              name: webrtc-tcp
+              protocol: TCP
+            - containerPort: 8555
+              name: webrtc-udp
+              protocol: UDP
+          env:
+            - name: NVIDIA_VISIBLE_DEVICES
+              value: "all"
+            - name: NVIDIA_DRIVER_CAPABILITIES
+              value: "all"
+            - name: FRIGATE_RTSP_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: frigate-secret
+                  key: FRIGATE_RTSP_PASSWORD
+          resources:
+            limits:
+              nvidia.com/gpu: 1
+          securityContext:
+            privileged: true
+          volumeMounts:
+            - name: config
+              mountPath: /config
+            - name: storage
+              mountPath: /media/frigate
+            - name: cache
+              mountPath: /tmp/cache
+            - name: localtime
+              mountPath: /etc/localtime
+              readOnly: true
       volumes:
-      - name: cache
-        emptyDir:
-          medium: Memory
-          sizeLimit: 1Gi
-      - name: localtime
-        hostPath:
-          path: /etc/localtime
-          type: File
+        - name: cache
+          emptyDir:
+            medium: Memory
+            sizeLimit: 1Gi
+        - name: localtime
+          hostPath:
+            path: /etc/localtime
+            type: File
   volumeClaimTemplates:
-  - metadata:
-      name: config
-    spec:
-      accessModes:
-      - ReadWriteOnce
-      resources:
-        requests:
-          storage: 5Gi
-  - metadata:
-      name: storage
-    spec:
-      accessModes:
-      - ReadWriteOnce
-      resources:
-        requests:
-          storage: 100Gi
+    - metadata:
+        name: config
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 1Gi
+    - metadata:
+        name: storage
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 100Gi
