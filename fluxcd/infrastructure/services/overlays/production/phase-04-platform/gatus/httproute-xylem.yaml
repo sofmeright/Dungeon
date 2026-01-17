@@ -7,7 +7,7 @@ spec:
     - name: xylem-gateway
       namespace: arylls-lookout
   hostnames:
-    - "stats.pcfae.com"
+    - "status.pcfae.com"
   rules:
     - matches:
         - path:
