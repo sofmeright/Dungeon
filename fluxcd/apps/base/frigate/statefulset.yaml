@@ -19,6 +19,12 @@ spec:
           ports:
             - containerPort: 5000
               name: http
+            - containerPort: 8971
+              name: http-auth
+            - containerPort: 1984
+              name: go2rtc
+            - containerPort: 1935
+              name: rtmp
             - containerPort: 8554
               name: rtsp
             - containerPort: 8555
@@ -47,16 +53,22 @@ spec:
               mountPath: /config
             - name: storage
               mountPath: /media/frigate
+            - name: shm
+              mountPath: /dev/shm
             - name: cache
               mountPath: /tmp/cache
             - name: localtime
               mountPath: /etc/localtime
               readOnly: true
       volumes:
-        - name: cache
+        - name: shm
           emptyDir:
             medium: Memory
             sizeLimit: 1Gi
+        - name: cache
+          emptyDir:
+            medium: Memory
+            sizeLimit: 2Gi
         - name: localtime
           hostPath:
             path: /etc/localtime
