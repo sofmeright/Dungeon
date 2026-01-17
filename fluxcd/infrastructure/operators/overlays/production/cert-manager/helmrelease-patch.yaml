@@ -7,5 +7,5 @@ spec:
   # Note: Chart already sets prometheus.io/scrape annotations by default
   values:
     extraArgs:
-      - --dns01-recursive-nameservers=1.1.1.1:53,8.8.8.8:53
+      - --dns01-recursive-nameservers=1.1.1.1:53,1.0.0.1:53
       - --dns01-recursive-nameservers-only
