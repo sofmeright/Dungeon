@@ -50,12 +50,26 @@ data:
       }
     }
 
-    // Global metric relabeling - drop bloated cAdvisor container labels from ALL sources
-    // Mimir's Kafka ingest has 10MB message limit, bloated labels exceed this
-    // Reduces metric size by dropping 28+ useless container_label_* fields
-    // Keeps: compose_project, compose_service, config_hash, container_number, image, working_dir
+    // Global metric relabeling - drop high-cardinality metrics and bloated labels
+    // 1. Drop histogram buckets (_bucket) - keeps _sum/_count for rate and avg latency
+    // 2. Drop per-device blkio metrics - too granular, not useful for health monitoring
+    // 3. Drop bloated container_label_* fields from cAdvisor
     prometheus.relabel "drop_container_labels" {
       forward_to = [prometheus.remote_write.default.receiver]
+
+      // DROP: Histogram buckets - massive cardinality, _sum/_count give rate + avg latency
+      rule {
+        source_labels = ["__name__"]
+        regex         = ".*_bucket"
+        action        = "drop"
+      }
+
+      // DROP: Per-device blkio metrics - per-RBD granularity is overkill
+      rule {
+        source_labels = ["__name__"]
+        regex         = "container_blkio_device_usage_total"
+        action        = "drop"
+      }
 
       // Step 1: Rename labels we want to keep to temporary names
       rule {
