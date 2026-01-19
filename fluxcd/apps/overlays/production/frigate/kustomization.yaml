@@ -7,6 +7,10 @@ resources:
 # Frigate enabled - primary NVR (replaced Shinobi)
 patches:
   - path: scale-patch.yaml
+  - path: config-patch.yaml
+    target:
+      kind: ConfigMap
+      name: frigate-config
   - path: service-patch.yaml
     target:
       kind: Service

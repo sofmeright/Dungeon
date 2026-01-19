@@ -13,6 +13,27 @@ spec:
       labels:
         app: frigate
     spec:
+      initContainers:
+        # Download YOLO-NAS model if not present
+        - name: download-model
+          image: docker.io/curlimages/curl:8.11.1
+          command:
+            - sh
+            - -c
+            - |
+              MODEL_PATH="/config/model_cache/yolo_nas_s.onnx"
+              if [ -f "$MODEL_PATH" ]; then
+                echo "Model already exists at $MODEL_PATH"
+              else
+                echo "Downloading YOLO-NAS model..."
+                mkdir -p /config/model_cache
+                curl -fsSL -o "$MODEL_PATH" \
+                  "https://github.com/harakas/models/raw/main/yolo_nas_s.onnx"
+                echo "Model downloaded to $MODEL_PATH"
+              fi
+          volumeMounts:
+            - name: config
+              mountPath: /config
       containers:
         - name: frigate
           image: ghcr.io/blakeblackshear/frigate:stable-tensorrt
@@ -51,6 +72,9 @@ spec:
           volumeMounts:
             - name: config
               mountPath: /config
+            - name: config-file
+              mountPath: /config/config.yaml
+              subPath: config.yaml
             - name: storage
               mountPath: /media/frigate
             - name: shm
@@ -61,6 +85,9 @@ spec:
               mountPath: /etc/localtime
               readOnly: true
       volumes:
+        - name: config-file
+          configMap:
+            name: frigate-config
         - name: shm
           emptyDir:
             medium: Memory

@@ -1,0 +1,74 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: frigate-config
+data:
+  config.yaml: |
+    # Frigate Production Configuration
+    # UI-managed settings (zones, masks, filters) stored in frigate.db
+
+    version: 0.14-0
+
+    mqtt:
+      enabled: false
+
+    # ONNX detector with TensorRT auto-detection (via -tensorrt image)
+    detectors:
+      onnx:
+        type: onnx
+
+    # YOLO-NAS model - downloaded by init container
+    model:
+      model_type: yolonas
+      width: 320
+      height: 320
+      input_tensor: nchw
+      input_pixel_format: bgr
+      path: /config/model_cache/yolo_nas_s.onnx
+      labelmap_path: /labelmap.txt
+
+    # Default ffmpeg settings
+    ffmpeg:
+      hwaccel_args: preset-nvidia-h264
+
+    # Global detect defaults
+    detect:
+      enabled: true
+      width: 1280
+      height: 720
+      fps: 5
+
+    # Global record defaults
+    record:
+      enabled: true
+      retain:
+        days: 7
+        mode: motion
+      events:
+        retain:
+          default: 14
+          mode: motion
+
+    # Global snapshots defaults
+    snapshots:
+      enabled: true
+      retain:
+        default: 14
+
+    # Production cameras
+    cameras:
+      sideporch:
+        enabled: true
+        ffmpeg:
+          inputs:
+            - path: rtsp://frigate:${FRIGATE_RTSP_PASSWORD}@10.9.11.129:554/Preview_01_sub
+              roles:
+                - detect
+            - path: rtsp://frigate:${FRIGATE_RTSP_PASSWORD}@10.9.11.129:554/Preview_01_main
+              roles:
+                - record
+        detect:
+          enabled: true
+          width: 640
+          height: 480
+          fps: 5
