@@ -14,21 +14,21 @@ spec:
         app: frigate
     spec:
       initContainers:
-        # Download YOLO-NAS model if not present
+        # Download YOLOx model if not present
         - name: download-model
           image: docker.io/curlimages/curl:8.11.1
           command:
             - sh
             - -c
             - |
-              MODEL_PATH="/config/model_cache/yolo_nas_s.onnx"
+              MODEL_PATH="/config/model_cache/yolox_s.onnx"
               if [ -f "$MODEL_PATH" ]; then
                 echo "Model already exists at $MODEL_PATH"
               else
-                echo "Downloading YOLO-NAS model..."
+                echo "Downloading YOLOx-S model..."
                 mkdir -p /config/model_cache
                 curl -fsSL -o "$MODEL_PATH" \
-                  "https://github.com/harakas/models/raw/main/yolo_nas_s.onnx"
+                  "https://github.com/Megvii-BaseDetection/YOLOX/releases/download/0.1.1rc0/yolox_s.onnx"
                 echo "Model downloaded to $MODEL_PATH"
               fi
           volumeMounts:
