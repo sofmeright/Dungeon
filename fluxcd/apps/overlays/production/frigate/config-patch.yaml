@@ -44,9 +44,14 @@ data:
       retain:
         days: 7
         mode: motion
-      events:
+      alerts:
         retain:
-          default: 14
+          days: 14
+          mode: motion
+      detections:
+        retain:
+          days: 14
+          mode: motion
 
     # Global snapshots defaults
     snapshots:
