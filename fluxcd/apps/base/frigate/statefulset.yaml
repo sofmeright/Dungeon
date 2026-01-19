@@ -16,20 +16,27 @@ spec:
       initContainers:
         # Download YOLOx model if not present
         - name: download-model
-          image: docker.io/curlimages/curl:8.11.1
+          image: docker.io/prplanit/stagefreight:latest
           command:
             - sh
             - -c
             - |
               MODEL_PATH="/config/model_cache/yolox_s.onnx"
-              if [ -f "$MODEL_PATH" ]; then
-                echo "Model already exists at $MODEL_PATH"
+              MODEL_URL="https://github.com/Megvii-BaseDetection/YOLOX/releases/download/0.1.1rc0/yolox_s.onnx"
+              if [ -f "$MODEL_PATH" ] && [ -s "$MODEL_PATH" ]; then
+                echo "Model already exists at $MODEL_PATH ($(ls -lh $MODEL_PATH | awk '{print $5}'))"
               else
                 echo "Downloading YOLOx-S model..."
                 mkdir -p /config/model_cache
-                curl -fsSL -o "$MODEL_PATH" \
-                  "https://github.com/Megvii-BaseDetection/YOLOX/releases/download/0.1.1rc0/yolox_s.onnx"
-                echo "Model downloaded to $MODEL_PATH"
+                rm -f "$MODEL_PATH"
+                wget -q -O "$MODEL_PATH" "$MODEL_URL"
+                if [ -s "$MODEL_PATH" ]; then
+                  echo "Model downloaded successfully ($(ls -lh $MODEL_PATH | awk '{print $5}'))"
+                else
+                  echo "ERROR: Download failed!"
+                  rm -f "$MODEL_PATH"
+                  exit 1
+                fi
               fi
           volumeMounts:
             - name: config
