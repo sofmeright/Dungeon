@@ -32,9 +32,9 @@ data:
     go2rtc:
       streams:
         sideporch_sub:
-          - rtsp://frigate:${FRIGATE_RTSP_PASSWORD}@10.9.11.129:554/h264Preview_01_sub
+          - rtsp://frigate:{FRIGATE_RTSP_PASSWORD}@10.9.11.129:554/h264Preview_01_sub
         sideporch_main:
-          - rtsp://frigate:${FRIGATE_RTSP_PASSWORD}@10.9.11.129:554/h265Preview_01_main
+          - rtsp://frigate:{FRIGATE_RTSP_PASSWORD}@10.9.11.129:554/h265Preview_01_main
 
     # Default ffmpeg settings
     ffmpeg:
