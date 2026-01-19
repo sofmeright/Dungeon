@@ -47,7 +47,6 @@ data:
       events:
         retain:
           default: 14
-          mode: motion
 
     # Global snapshots defaults
     snapshots:
