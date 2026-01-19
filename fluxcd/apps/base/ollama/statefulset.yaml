@@ -14,28 +14,28 @@ spec:
         app: ollama
     spec:
       containers:
-      - name: ollama
-        image: docker.io/ollama/ollama:latest
-        ports:
-        - containerPort: 11434
-          name: http
-        env:
-        - name: NVIDIA_VISIBLE_DEVICES
-          value: "all"
-        - name: NVIDIA_DRIVER_CAPABILITIES
-          value: "all"
-        resources:
-          limits:
-            nvidia.com/gpu: 1
-        volumeMounts:
-        - name: data
-          mountPath: /root/.ollama
+        - name: ollama
+          image: docker.io/ollama/ollama:latest
+          ports:
+            - containerPort: 11434
+              name: http
+          env:
+            - name: NVIDIA_VISIBLE_DEVICES
+              value: "all"
+            - name: NVIDIA_DRIVER_CAPABILITIES
+              value: "all"
+          resources:
+            limits:
+              nvidia.com/gpu: 6  # Heavy LLM inference workload
+          volumeMounts:
+            - name: data
+              mountPath: /root/.ollama
   volumeClaimTemplates:
-  - metadata:
-      name: data
-    spec:
-      accessModes:
-      - ReadWriteOnce
-      resources:
-        requests:
-          storage: 50Gi
+    - metadata:
+        name: data
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 50Gi

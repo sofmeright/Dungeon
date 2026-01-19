@@ -14,36 +14,36 @@ spec:
         app: faster-whisper
     spec:
       containers:
-      - name: faster-whisper
-        image: lscr.io/linuxserver/faster-whisper:gpu
-        ports:
-        - containerPort: 10300
-          name: http
-        env:
-        - name: PUID
-          value: "1000"
-        - name: PGID
-          value: "1000"
-        - name: TZ
-          value: "Etc/UTC"
-        - name: WHISPER_BEAM
-          value: "1"
-        - name: WHISPER_LANG
-          value: "en"
-        - name: WHISPER_MODEL
-          value: "turbo"
-        resources:
-          limits:
-            nvidia.com/gpu: 1
-        volumeMounts:
-        - name: config
-          mountPath: /config
+        - name: faster-whisper
+          image: lscr.io/linuxserver/faster-whisper:gpu
+          ports:
+            - containerPort: 10300
+              name: http
+          env:
+            - name: PUID
+              value: "1000"
+            - name: PGID
+              value: "1000"
+            - name: TZ
+              value: "Etc/UTC"
+            - name: WHISPER_BEAM
+              value: "1"
+            - name: WHISPER_LANG
+              value: "en"
+            - name: WHISPER_MODEL
+              value: "turbo"
+          resources:
+            limits:
+              nvidia.com/gpu: 2  # Moderate audio transcription workload
+          volumeMounts:
+            - name: config
+              mountPath: /config
   volumeClaimTemplates:
-  - metadata:
-      name: config
-    spec:
-      accessModes:
-      - ReadWriteOnce
-      resources:
-        requests:
-          storage: 10Gi
+    - metadata:
+        name: config
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 10Gi

@@ -36,7 +36,7 @@ spec:
               value: "compute,utility"
           resources:
             limits:
-              nvidia.com/gpu: 1
+              nvidia.com/gpu: 2  # Moderate translation workload
           volumeMounts:
             - name: models
               mountPath: /home/libretranslate/.local

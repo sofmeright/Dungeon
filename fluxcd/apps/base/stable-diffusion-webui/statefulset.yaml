@@ -28,7 +28,7 @@ spec:
               value: "compute,utility"
           resources:
             limits:
-              nvidia.com/gpu: 1
+              nvidia.com/gpu: 6  # Heavy image generation workload
               cpu: "2"
               memory: "8Gi"
             requests:

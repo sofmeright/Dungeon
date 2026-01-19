@@ -24,7 +24,7 @@ spec:
               value: "all"
           resources:
             limits:
-              nvidia.com/gpu: "1"
+              nvidia.com/gpu: "2"  # Moderate transcoding workload
           volumeMounts:
             - name: config
               mountPath: /config
