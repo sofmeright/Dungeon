@@ -12,7 +12,7 @@ repos:
         entry: bash -c 'trufflehog git file://. --since-commit HEAD --only-verified --fail --no-update'
         language: system
         pass_filenames: false
-        stages: [commit]
+        stages: [pre-commit]
 
   # Gitleaks - Detect hardcoded secrets (all patterns)
   - repo: https://github.com/gitleaks/gitleaks
