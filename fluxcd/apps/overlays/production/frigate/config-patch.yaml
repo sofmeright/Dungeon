@@ -65,12 +65,12 @@ data:
         enabled: true
         ffmpeg:
           inputs:
-            # Reolink RLC-510A - substream for detection (640x480 @ 10fps)
+            # Reolink RLC-510A substream (640x480 @ 10fps)
             - path: rtsp://frigate:${FRIGATE_RTSP_PASSWORD}@10.9.11.129:554/h264Preview_01_sub
               roles:
                 - detect
-            # Main stream for recording (2560x1920 @ 30fps, 6144kbps)
-            - path: rtsp://frigate:${FRIGATE_RTSP_PASSWORD}@10.9.11.129:554/
+            # Reolink RLC-510A main stream (2560x1920 @ 30fps)
+            - path: rtsp://frigate:${FRIGATE_RTSP_PASSWORD}@10.9.11.129:554/h265Preview_01_main
               roles:
                 - record
         detect:
