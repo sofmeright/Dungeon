@@ -27,14 +27,6 @@ data:
       path: /config/model_cache/yolox_s.onnx
       labelmap_path: /labelmap.txt
 
-    # go2rtc handles flaky Reolink RTSP and provides stable restream
-    go2rtc:
-      streams:
-        sideporch_main:
-          - rtsp://frigate:${FRIGATE_RTSP_PASSWORD}@10.9.11.129:554/h265Preview_01_main
-        sideporch_sub:
-          - rtsp://frigate:${FRIGATE_RTSP_PASSWORD}@10.9.11.129:554/h264Preview_01_sub
-
     # Default ffmpeg settings
     ffmpeg:
       hwaccel_args: preset-nvidia-h264
@@ -73,11 +65,12 @@ data:
         enabled: true
         ffmpeg:
           inputs:
-            # go2rtc restream - handles flaky Reolink RTSP
-            - path: rtsp://127.0.0.1:8554/sideporch_sub
+            # Substream for detection (640x480 @ 15fps)
+            - path: rtsp://frigate:${FRIGATE_RTSP_PASSWORD}@10.9.11.129:554/h264Preview_01_sub
               roles:
                 - detect
-            - path: rtsp://127.0.0.1:8554/sideporch_main
+            # Main stream for recording (2560x1920 @ 30fps)
+            - path: rtsp://frigate:${FRIGATE_RTSP_PASSWORD}@10.9.11.129:554/h265Preview_01_main
               roles:
                 - record
         detect:
