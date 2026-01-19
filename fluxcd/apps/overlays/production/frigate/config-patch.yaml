@@ -28,15 +28,6 @@ data:
       path: /config/model_cache/yolox_s.onnx
       labelmap_path: /labelmap.txt
 
-    # go2rtc maintains single connection per stream
-    # Camera rejects simultaneous RTSP connections
-    go2rtc:
-      streams:
-        sideporch_sub:
-          - rtsp://frigate:{FRIGATE_RTSP_PASSWORD}@10.9.11.129:554/h264Preview_01_sub
-        sideporch_main:
-          - rtsp://frigate:{FRIGATE_RTSP_PASSWORD}@10.9.11.129:554/h265Preview_01_main
-
     # Default ffmpeg settings
     ffmpeg:
       hwaccel_args: preset-nvidia-h264
@@ -75,11 +66,10 @@ data:
         enabled: true
         ffmpeg:
           inputs:
-            # go2rtc restreams (camera only allows 1 connection per stream)
-            - path: rtsp://127.0.0.1:8554/sideporch_sub
+            - path: rtsp://frigate:{FRIGATE_RTSP_PASSWORD}@10.9.11.129:554/h264Preview_01_sub
               roles:
                 - detect
-            - path: rtsp://127.0.0.1:8554/sideporch_main
+            - path: rtsp://frigate:{FRIGATE_RTSP_PASSWORD}@10.9.11.129:554/h265Preview_01_main
               roles:
                 - record
         detect:
