@@ -77,3 +77,44 @@ data:
           width: 640
           height: 480
           fps: 5
+        zones:
+          driveway:
+            coordinates: 0.777,0.177,0.959,0.278,0.918,0.572,0.562,0.821,0.322,0.438,0.308,0.181,0.665,0.118
+          side_yard:
+            coordinates: 1,0.27,0.998,0.998,0.149,1,0.119,0.841,0.099,0.232,0.311,0.181,0.565,0.354
+          sidewalk:
+            coordinates: 0.104,0.279,0.162,0.116,0.614,0.046,0.758,0.143
+            loitering_time: 30
+          driveway_fence:
+            coordinates: 0.818,0.2,0.665,0.118,0.606,0.047,0.8,0.145
+            loitering_time: 30
+        review:
+          alerts:
+            required_zones:
+              - side_yard
+              - driveway
+              - sidewalk
+              - driveway_fence
+          detections:
+            required_zones:
+              - side_yard
+              - driveway
+              - sidewalk
+              - driveway_fence
+        record:
+          enabled: true
+          retain:
+            days: 45
+            mode: motion
+          alerts:
+            required_zones:
+              - side_yard
+              - driveway
+              - sidewalk
+              - driveway_fence
+          detections:
+            required_zones:
+              - side_yard
+              - driveway
+              - sidewalk
+              - driveway_fence

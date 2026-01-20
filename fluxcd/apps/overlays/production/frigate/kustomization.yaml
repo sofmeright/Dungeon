@@ -11,6 +11,10 @@ patches:
     target:
       kind: ConfigMap
       name: frigate-config
+  - path: statefulset-storage-patch.yaml
+    target:
+      kind: StatefulSet
+      name: frigate
   - path: service-patch.yaml
     target:
       kind: Service
