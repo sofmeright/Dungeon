@@ -5,3 +5,8 @@ metadata:
   name: frigate
 spec:
   replicas: 1
+  template:
+    spec:
+      containers:
+        - name: frigate
+          image: ghcr.io/blakeblackshear/frigate:0.16.3-tensorrt

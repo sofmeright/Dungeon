@@ -106,15 +106,3 @@ data:
           retain:
             days: 45
             mode: motion
-          alerts:
-            required_zones:
-              - side_yard
-              - driveway
-              - sidewalk
-              - driveway_fence
-          detections:
-            required_zones:
-              - side_yard
-              - driveway
-              - sidewalk
-              - driveway_fence

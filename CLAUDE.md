@@ -161,6 +161,27 @@
     ceph osd pool application enable dungeon-rgw rgw
     ceph osd pool application enable dungeon-rgw-data rgw
     ```
+  - **Ceph CSI RBD Image Metadata** (for cross-pool migrations):
+    - CSI stores 3 metadata keys on each RBD image - all inferable from K8s objects:
+      - `csi.storage.k8s.io/pv/name` = PV name (format: `pvc-<PVC_UID>`)
+      - `csi.storage.k8s.io/pvc/name` = PVC name
+      - `csi.storage.k8s.io/pvc/namespace` = PVC namespace
+    - **Migration procedure** (e.g., moving PVC from NVMe to HDD pool):
+      1. Scale down workload to 0 replicas
+      2. Delete old PVC (Retain policy keeps RBD image)
+      3. Delete StatefulSet with `--cascade=orphan` (volumeClaimTemplates are immutable)
+      4. Update overlay with new storageClassName, flux reconcile to recreate StatefulSet
+      5. Scale up to create fresh PVC on new pool, capture PV name
+      6. Scale down, then on Ceph node:
+         ```bash
+         # Copy data from old to new image
+         rbd cp <old-pool>/csi-vol-<old-uuid> <new-pool>/csi-vol-<new-uuid>
+         # Restore CSI metadata on new image
+         rbd image-meta set <new-pool>/csi-vol-<new-uuid> csi.storage.k8s.io/pv/name <pv-name>
+         rbd image-meta set <new-pool>/csi-vol-<new-uuid> csi.storage.k8s.io/pvc/name <pvc-name>
+         rbd image-meta set <new-pool>/csi-vol-<new-uuid> csi.storage.k8s.io/pvc/namespace <namespace>
+         ```
+      7. Scale up workload
 
 - Cluster Networking:
   - **NO MANUAL ROUTES EVER**: Cilium handles all routing via native eBPF with DSR, masquerading, BGP, LoadBalancer IPAM, and Gateway API (HTTPRoute). Never create manual ip route commands or static routes.
