@@ -28,3 +28,4 @@ resources:
   - registries/docker-io-shared  # Docker Hub pull credentials (shared across namespaces)
   - gitlab  # GitLab SMTP and OIDC credentials
   - chrony  # NTP server configuration
+  - coredns  # Cluster DNS forward config
