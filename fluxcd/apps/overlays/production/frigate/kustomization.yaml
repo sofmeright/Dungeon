@@ -4,9 +4,10 @@ namespace: lens-of-truth
 resources:
   - ../../../base/frigate
   - httproute-xylem.yaml
+  - frigate-notify-config.yaml
 # Frigate enabled - primary NVR (replaced Shinobi)
 patches:
-  - path: scale-patch.yaml
+  - path: statefulset-patch.yaml
   - path: config-patch.yaml
     target:
       kind: ConfigMap

@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: frigate-notify-config
+data:
+  config.yml: |
+    frigate:
+      server: http://localhost:5000
+      public_url: https://nvr.pcfae.com
+
+    alerts:
+      ntfy:
+        enabled: true
+        server: https://ntfy.prplanit.com
+        topic: Ad_Arbitorium-Security
+        headers:
+          - 'Authorization: Bearer {{ env "FN_NTFY_TOKEN" }}'
