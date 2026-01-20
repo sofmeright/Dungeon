@@ -14,4 +14,4 @@ data:
         server: https://ntfy.prplanit.com
         topic: Ad_Arbitorium-Security
         headers:
-          - 'Authorization: Bearer {{ env "FN_NTFY_TOKEN" }}'
+          Authorization: 'Bearer {{ env "FN_NTFY_TOKEN" }}'
