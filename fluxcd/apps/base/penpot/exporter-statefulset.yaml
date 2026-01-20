@@ -14,17 +14,22 @@ spec:
         app: penpot-exporter
     spec:
       containers:
-      - name: exporter
-        image: PLACEHOLDER_IMAGE
-        env:
-        - name: PENPOT_PUBLIC_URI
-          value: "http://penpot-frontend:8080"
-        - name: PENPOT_REDIS_URI
-          value: "redis://penpot-redis/0"
-        resources:
-          requests:
-            memory: "256Mi"
-            cpu: "100m"
-          limits:
-            memory: "512Mi"
-            cpu: "500m"
+        - name: exporter
+          image: PLACEHOLDER_IMAGE
+          env:
+            - name: PENPOT_PUBLIC_URI
+              value: "http://penpot-frontend:8080"
+            - name: PENPOT_REDIS_URI
+              value: "redis://penpot-redis/0"
+            - name: PENPOT_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: penpot-secrets
+                  key: secret_key
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "100m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"

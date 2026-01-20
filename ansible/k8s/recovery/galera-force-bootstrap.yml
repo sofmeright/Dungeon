@@ -1,0 +1,414 @@
+---
+# galera-force-bootstrap.yml - Bootstrap a fully-down Galera cluster
+#
+# Use when ALL nodes are down and none are marked safe_to_bootstrap.
+#
+# Safety checks:
+#   - Verifies ALL node PVCs exist (prevents split-brain)
+#   - Ensures all pods are stopped before bootstrap
+#   - Uses operator's recovery data for seqno detection
+#
+# Usage:
+#   docker run -it --rm \
+#     -v ~/.kube:/root/.kube:ro \
+#     -v /srv/dungeon/ansible:/app:ro \
+#     prplanit/ansible-oci:2.20.1-v2 \
+#     ansible-playbook k8s/recovery/galera-force-bootstrap.yml \
+#       -e mariadb_name=osticket-mariadb \
+#       -e namespace=hyrule-castle
+#
+# Or with prompts:
+#   ansible-playbook k8s/recovery/galera-force-bootstrap.yml
+#
+# Non-interactive (for scripts/CI):
+#   ansible-playbook k8s/recovery/galera-force-bootstrap.yml \
+#     -e mariadb_name=osticket-mariadb \
+#     -e namespace=hyrule-castle \
+#     -e auto_confirm=true
+#
+
+- name: Force bootstrap Galera cluster
+  hosts: localhost
+  connection: local
+  gather_facts: false
+
+  vars:
+    auto_confirm: false
+
+  vars_prompt:
+    - name: mariadb_name
+      prompt: "MariaDB resource name"
+      private: false
+      default: ""
+    - name: namespace
+      prompt: "Namespace"
+      private: false
+      default: ""
+
+  pre_tasks:
+    - name: Validate required variables
+      ansible.builtin.assert:
+        that:
+          - mariadb_name | length > 0
+          - namespace | length > 0
+        fail_msg: "mariadb_name and namespace are required"
+
+  tasks:
+    # =========================================================================
+    # Step 1: Verify MariaDB CR exists and get status
+    # =========================================================================
+    - name: Get MariaDB resource
+      kubernetes.core.k8s_info:
+        api_version: k8s.mariadb.com/v1alpha1
+        kind: MariaDB
+        name: "{{ mariadb_name }}"
+        namespace: "{{ namespace }}"
+      register: mariadb_info
+
+    - name: Fail if MariaDB not found
+      ansible.builtin.fail:
+        msg: "MariaDB '{{ mariadb_name }}' not found in namespace '{{ namespace }}'"
+      when: mariadb_info.resources | length == 0
+
+    - name: Set MariaDB facts
+      ansible.builtin.set_fact:
+        mariadb: "{{ mariadb_info.resources[0] }}"
+        replicas: "{{ mariadb_info.resources[0].spec.replicas }}"
+        ready_condition: "{{ mariadb_info.resources[0].status.conditions | selectattr('type', 'eq', 'Ready') | first | default({}) }}"
+        galera_condition: "{{ mariadb_info.resources[0].status.conditions | selectattr('type', 'eq', 'GaleraReady') | first | default({}) }}"
+        galera_recovery: "{{ mariadb_info.resources[0].status.galeraRecovery | default({}) }}"
+
+    - name: Display current status
+      ansible.builtin.debug:
+        msg: |
+          MariaDB: {{ mariadb_name }}
+          Namespace: {{ namespace }}
+          Replicas: {{ replicas }}
+          Ready: {{ ready_condition.status | default('Unknown') }}
+          GaleraReady: {{ galera_condition.status | default('Unknown') }}
+
+    - name: Warn if cluster appears healthy
+      ansible.builtin.pause:
+        prompt: |
+
+          WARNING: Cluster appears healthy!
+          Ready={{ ready_condition.status }}, GaleraReady={{ galera_condition.status }}
+
+          This playbook is for fully-down clusters.
+          Press Enter to continue anyway, or Ctrl+C to abort
+      when:
+        - ready_condition.status | default('False') == 'True'
+        - galera_condition.status | default('False') == 'True'
+        - not auto_confirm | bool
+
+    # =========================================================================
+    # Step 2: Verify ALL PVCs exist (prevent split-brain)
+    # =========================================================================
+    - name: Check all storage PVCs exist
+      kubernetes.core.k8s_info:
+        api_version: v1
+        kind: PersistentVolumeClaim
+        name: "storage-{{ mariadb_name }}-{{ item }}"
+        namespace: "{{ namespace }}"
+      loop: "{{ range(replicas | int) | list }}"
+      register: pvc_checks
+
+    - name: Build PVC status list
+      ansible.builtin.set_fact:
+        pvc_status: "{{ pvc_status | default([]) + [{'node': item.item, 'exists': item.resources | length > 0, 'name': 'storage-' + mariadb_name + '-' + item.item | string}] }}"
+      loop: "{{ pvc_checks.results }}"
+      loop_control:
+        label: "node {{ item.item }}"
+
+    - name: Display PVC status
+      ansible.builtin.debug:
+        msg: "{{ '[OK]' if item.exists else '[MISSING]' }} {{ item.name }}"
+      loop: "{{ pvc_status }}"
+      loop_control:
+        label: "{{ item.name }}"
+
+    - name: Fail if any PVCs are missing
+      ansible.builtin.fail:
+        msg: |
+          ABORTING: Missing PVCs detected!
+          Missing: {{ pvc_status | rejectattr('exists') | map(attribute='name') | list | join(', ') }}
+
+          This could indicate:
+            - A node was deleted and may rejoin with stale data
+            - PVC was accidentally removed
+
+          Resolve missing PVCs before force bootstrap to prevent split-brain.
+      when: pvc_status | rejectattr('exists') | list | length > 0
+
+    - name: Confirm all PVCs present
+      ansible.builtin.debug:
+        msg: "All {{ replicas }} PVCs present"
+
+    # =========================================================================
+    # Step 3: Check pod states
+    # =========================================================================
+    - name: Get all MariaDB pods
+      kubernetes.core.k8s_info:
+        api_version: v1
+        kind: Pod
+        namespace: "{{ namespace }}"
+        label_selectors:
+          - "app.kubernetes.io/instance={{ mariadb_name }}"
+      register: pods_info
+
+    - name: Identify running pods with ready MariaDB containers
+      ansible.builtin.set_fact:
+        running_pods: "{{ pods_info.resources | selectattr('status.phase', 'eq', 'Running') | selectattr('status.containerStatuses', 'defined') | list }}"
+
+    - name: Check for healthy MariaDB containers
+      ansible.builtin.set_fact:
+        healthy_pods: >-
+          {{ running_pods | map(attribute='metadata.name') | select('defined') | list }}
+
+    - name: Display pod status
+      ansible.builtin.debug:
+        msg: |
+          Total pods found: {{ pods_info.resources | length }}
+          Running pods: {{ running_pods | length }}
+
+    - name: Scale down if pods are running
+      when: running_pods | length > 0
+      block:
+        - name: Prompt to scale down
+          ansible.builtin.pause:
+            prompt: |
+
+              Some pods are still running: {{ healthy_pods | join(', ') }}
+
+              For safe bootstrap, all pods should be stopped.
+              Press Enter to scale down, or Ctrl+C to abort
+          when: not auto_confirm | bool
+
+        - name: Suspend MariaDB CR
+          kubernetes.core.k8s:
+            state: patched
+            api_version: k8s.mariadb.com/v1alpha1
+            kind: MariaDB
+            name: "{{ mariadb_name }}"
+            namespace: "{{ namespace }}"
+            definition:
+              spec:
+                suspend: true
+
+        - name: Scale StatefulSet to 0
+          kubernetes.core.k8s_scale:
+            api_version: apps/v1
+            kind: StatefulSet
+            name: "{{ mariadb_name }}"
+            namespace: "{{ namespace }}"
+            replicas: 0
+            wait: true
+            wait_timeout: 120
+
+        - name: Wait for pods to terminate
+          kubernetes.core.k8s_info:
+            api_version: v1
+            kind: Pod
+            namespace: "{{ namespace }}"
+            label_selectors:
+              - "app.kubernetes.io/instance={{ mariadb_name }}"
+          register: remaining_pods
+          until: remaining_pods.resources | length == 0
+          retries: 24
+          delay: 5
+
+    # =========================================================================
+    # Step 4: Read recovery data and find best node
+    # =========================================================================
+    - name: Fail if no recovery data
+      ansible.builtin.fail:
+        msg: |
+          No recovery data found in MariaDB status.
+          The operator may not have run recovery yet.
+
+          Try resuming the CR and waiting for recovery pods:
+            kubectl patch mariadb {{ mariadb_name }} -n {{ namespace }} --type=merge -p '{"spec":{"suspend":false}}'
+      when: galera_recovery | length == 0
+
+    - name: Display recovery data
+      ansible.builtin.debug:
+        var: galera_recovery
+
+    - name: Find node with highest seqno
+      ansible.builtin.set_fact:
+        node_seqnos: >-
+          {%- set result = [] -%}
+          {%- for i in range(replicas | int) -%}
+            {%- set pod_name = mariadb_name ~ '-' ~ i -%}
+            {%- set recovered_seqno = galera_recovery.get('recovered', {}).get(pod_name, {}).get('seqno', -1) -%}
+            {%- set state_seqno = galera_recovery.get('state', {}).get(pod_name, {}).get('seqno', -1) -%}
+            {%- set seqno = [recovered_seqno | int, state_seqno | int] | max -%}
+            {%- set _ = result.append({'node': pod_name, 'seqno': seqno}) -%}
+          {%- endfor -%}
+          {{ result }}
+
+    - name: Display node seqnos
+      ansible.builtin.debug:
+        msg: "{{ item.node }}: seqno={{ item.seqno }}"
+      loop: "{{ node_seqnos }}"
+
+    - name: Determine best bootstrap node
+      ansible.builtin.set_fact:
+        best_node: "{{ (node_seqnos | sort(attribute='seqno', reverse=true) | first).node }}"
+        best_seqno: "{{ (node_seqnos | sort(attribute='seqno', reverse=true) | first).seqno }}"
+
+    - name: Fail if no valid node found
+      ansible.builtin.fail:
+        msg: |
+          Could not determine best node to bootstrap from.
+          All nodes have seqno <= -1.
+
+          This may indicate corrupted grastate.dat on all nodes.
+          Consider using galera-heal-node.sh with --full-wipe.
+      when: best_seqno | int < 0
+
+    - name: Display best node
+      ansible.builtin.debug:
+        msg: "Best bootstrap candidate: {{ best_node }} (seqno: {{ best_seqno }})"
+
+    # =========================================================================
+    # Step 5: Confirm and apply bootstrap
+    # =========================================================================
+    - name: Confirm bootstrap (interactive)
+      ansible.builtin.pause:
+        prompt: |
+
+          ============================================================
+          BOOTSTRAP CONFIRMATION
+          ============================================================
+
+          This will bootstrap the cluster from: {{ best_node }}
+          All other nodes will sync FROM this node.
+
+          Data on {{ best_node }} (seqno {{ best_seqno }}) becomes the source of truth.
+
+          Type 'bootstrap' to proceed
+
+      register: confirm_input
+      when: not auto_confirm | bool
+
+    - name: Validate confirmation
+      ansible.builtin.fail:
+        msg: "Aborted - confirmation not provided"
+      when:
+        - not auto_confirm | bool
+        - confirm_input.user_input != 'bootstrap'
+
+    - name: Auto-confirm notice
+      ansible.builtin.debug:
+        msg: "Auto-confirm enabled - proceeding with bootstrap from {{ best_node }} (seqno: {{ best_seqno }})"
+      when: auto_confirm | bool
+
+    # =========================================================================
+    # Step 6: Apply force bootstrap
+    # =========================================================================
+    - name: Delete stale recovery pods
+      kubernetes.core.k8s:
+        state: absent
+        api_version: v1
+        kind: Pod
+        namespace: "{{ namespace }}"
+        label_selectors:
+          - "app.kubernetes.io/instance={{ mariadb_name }}"
+          - "k8s.mariadb.com/recovery=true"
+      ignore_errors: true
+
+    - name: Apply forceClusterBootstrapInPod
+      kubernetes.core.k8s:
+        state: patched
+        api_version: k8s.mariadb.com/v1alpha1
+        kind: MariaDB
+        name: "{{ mariadb_name }}"
+        namespace: "{{ namespace }}"
+        definition:
+          spec:
+            galera:
+              recovery:
+                forceClusterBootstrapInPod: "{{ best_node }}"
+
+    - name: Resume CR if suspended
+      kubernetes.core.k8s:
+        state: patched
+        api_version: k8s.mariadb.com/v1alpha1
+        kind: MariaDB
+        name: "{{ mariadb_name }}"
+        namespace: "{{ namespace }}"
+        definition:
+          spec:
+            suspend: false
+
+    - name: Scale StatefulSet back up
+      kubernetes.core.k8s_scale:
+        api_version: apps/v1
+        kind: StatefulSet
+        name: "{{ mariadb_name }}"
+        namespace: "{{ namespace }}"
+        replicas: "{{ replicas | int }}"
+
+    # =========================================================================
+    # Step 7: Monitor recovery
+    # =========================================================================
+    - name: Wait for cluster recovery
+      kubernetes.core.k8s_info:
+        api_version: k8s.mariadb.com/v1alpha1
+        kind: MariaDB
+        name: "{{ mariadb_name }}"
+        namespace: "{{ namespace }}"
+      register: recovery_status
+      until: >-
+        (recovery_status.resources[0].status.conditions | selectattr('type', 'eq', 'Ready') | first | default({})).status | default('False') == 'True'
+        and
+        (recovery_status.resources[0].status.conditions | selectattr('type', 'eq', 'GaleraReady') | first | default({})).status | default('False') == 'True'
+      retries: 30
+      delay: 10
+      ignore_errors: true
+
+    - name: Display final status
+      kubernetes.core.k8s_info:
+        api_version: k8s.mariadb.com/v1alpha1
+        kind: MariaDB
+        name: "{{ mariadb_name }}"
+        namespace: "{{ namespace }}"
+      register: final_status
+
+    - name: Show final MariaDB status
+      ansible.builtin.debug:
+        msg: |
+          Ready: {{ (final_status.resources[0].status.conditions | selectattr('type', 'eq', 'Ready') | first | default({})).status | default('Unknown') }}
+          GaleraReady: {{ (final_status.resources[0].status.conditions | selectattr('type', 'eq', 'GaleraReady') | first | default({})).status | default('Unknown') }}
+
+    - name: Get pod status
+      kubernetes.core.k8s_info:
+        api_version: v1
+        kind: Pod
+        namespace: "{{ namespace }}"
+        label_selectors:
+          - "app.kubernetes.io/instance={{ mariadb_name }}"
+      register: final_pods
+
+    - name: Show pod status
+      ansible.builtin.debug:
+        msg: "{{ item.metadata.name }}: {{ item.status.phase }}"
+      loop: "{{ final_pods.resources }}"
+      loop_control:
+        label: "{{ item.metadata.name }}"
+
+    - name: Post-recovery instructions
+      ansible.builtin.debug:
+        msg: |
+
+          ============================================================
+          POST-RECOVERY CLEANUP
+          ============================================================
+
+          After cluster is stable, remove forceClusterBootstrapInPod:
+
+            kubectl patch mariadb {{ mariadb_name }} -n {{ namespace }} \
+              --type=json -p '[{"op":"remove","path":"/spec/galera/recovery/forceClusterBootstrapInPod"}]'
+
+          ============================================================

@@ -6,7 +6,7 @@ spec:
   template:
     spec:
       imagePullSecrets:
-      - name: ghcr-civilblur-pull-secret
+        - name: jcr-pcfae-dungeon-pull-secret
       containers:
-      - name: mazanoke
-        image: ghcr.jcr.pcfae.com/civilblur/mazanoke:latest
+        - name: mazanoke
+          image: ghcr.io/civilblur/mazanoke:latest
