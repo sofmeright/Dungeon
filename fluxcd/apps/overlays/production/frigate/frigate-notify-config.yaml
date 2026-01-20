@@ -7,6 +7,9 @@ data:
     frigate:
       server: http://localhost:5000
       public_url: https://nvr.pcfae.com
+      webapi:
+        enabled: true
+        interval: 30
 
     alerts:
       ntfy:
