@@ -9,7 +9,7 @@ data:
       public_url: https://nvr.pcfae.com
       webapi:
         enabled: true
-        interval: 30
+        interval: 5
 
     alerts:
       ntfy:
