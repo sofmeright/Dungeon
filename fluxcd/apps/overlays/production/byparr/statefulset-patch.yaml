@@ -6,30 +6,39 @@ spec:
   template:
     spec:
       containers:
-      - name: byparr
-        image: ghcr.io/thephaseless/byparr:latest
-        env:
-        - name: TZ
-          value: "America/Chicago"
-      - name: gluetun
-        image: docker.jcr.pcfae.com/qmcgaw/gluetun:v3.40.0
-        env:
-        - name: VPN_SERVICE_PROVIDER
-          value: "private internet access"
-        - name: SERVER_REGIONS
-          $patch: delete
-        - name: FIREWALL_OUTBOUND_SUBNETS
-          value: "10.144.0.0/12,172.16.0.0/12,172.22.30.33/32,192.168.144.0/20"
-        - name: DNS_ADDRESS
-          value: "10.144.0.10"
-        - name: UPDATER_PERIOD
-          value: "24h"
+        - name: byparr
+          image: ghcr.io/thephaseless/byparr:latest
+          env:
+            - name: TZ
+              value: "America/Chicago"
+          volumeMounts:
+            - name: screenshots
+              mountPath: /app/screenshots
+            - name: cache
+              mountPath: /root/.cache
+        - name: gluetun
+          image: docker.jcr.pcfae.com/qmcgaw/gluetun:v3.40.0
+          env:
+            - name: VPN_SERVICE_PROVIDER
+              value: "private internet access"
+            - name: SERVER_REGIONS
+              $patch: delete
+            - name: FIREWALL_OUTBOUND_SUBNETS
+              value: "10.144.0.0/12,172.16.0.0/12,172.22.30.33/32,192.168.144.0/20"
+            - name: DNS_ADDRESS
+              value: "10.144.0.10"
+            - name: UPDATER_PERIOD
+              value: "24h"
+      volumes:
+        - name: cache
+          persistentVolumeClaim:
+            claimName: byparr-cache-pvc
   volumeClaimTemplates:
-  - metadata:
-      name: screenshots
-    spec:
-      accessModes: ["ReadWriteOnce"]
-      storageClassName: ceph-rbd-retain
-      resources:
-        requests:
-          storage: 1Gi
+    - metadata:
+        name: screenshots
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        storageClassName: ceph-rbd-retain
+        resources:
+          requests:
+            storage: 1Gi

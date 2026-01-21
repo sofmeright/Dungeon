@@ -5,6 +5,7 @@ namespace: swift-sail
 
 resources:
   - ../../../base/byparr
+  - cephfs-cache-pv.yaml
 
 patches:
   - path: statefulset-patch.yaml

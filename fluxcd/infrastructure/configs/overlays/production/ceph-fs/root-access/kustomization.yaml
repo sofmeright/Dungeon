@@ -10,3 +10,4 @@ resources:
   - cephfs-init-vaultwarden.yaml
   - cephfs-init-erpnext.yaml
   - cephfs-init-harbor.yaml
+  - cephfs-init-byparr.yaml
