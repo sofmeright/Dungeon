@@ -53,7 +53,7 @@ spec:
       clusterID: 0985467c-d8f3-4483-b27f-f0a512397ec2
       fsName: Seed_Bank
       staticVolume: "true"
-      rootPath: /dungeon/nvme/games/ark-sa/cluster
+      rootPath: /dungeon/hdd/games/ark-sa/cluster
     volumeHandle: ark-sa-cluster-static
 ---
 apiVersion: v1
