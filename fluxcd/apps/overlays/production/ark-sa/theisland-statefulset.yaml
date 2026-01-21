@@ -18,6 +18,30 @@ spec:
         - name: jcr-pcfae-dungeon-pull-secret
       securityContext:
         fsGroup: 7777
+      initContainers:
+        - name: install-xaudio2
+          image: docker.io/alpine:latest
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              set -e
+              DLL_PATH="/serverfiles/ShooterGame/Binaries/Win64/xaudio2_9.dll"
+              if [ -f "$DLL_PATH" ]; then
+                echo "xaudio2_9.dll already exists, skipping"
+                exit 0
+              fi
+              echo "Installing Microsoft XAudio2 DLL (fixes Dec 2025 update crash)..."
+              apk add --no-cache curl unzip
+              cd /tmp
+              curl -sL -o xaudio.zip "https://www.nuget.org/api/v2/package/Microsoft.XAudio2.Redist/1.2.11"
+              unzip -q xaudio.zip -d xaudio
+              cp xaudio/build/native/release/bin/x64/xaudio2_9.dll "$DLL_PATH"
+              chown 7777:7777 "$DLL_PATH"
+              chmod 775 "$DLL_PATH"
+              echo "xaudio2_9.dll installed successfully"
+          volumeMounts:
+            - name: serverfiles
+              mountPath: /serverfiles
       containers:
         - name: theisland
           image: docker.io/acekorneya/asa_server:2_1_latest
