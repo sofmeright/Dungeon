@@ -108,11 +108,11 @@ spec:
               value: "-ServerPlatform=ALL -PublicIPForEpic=71.24.190.218 -ServerIP=71.24.190.218 -OverrideOfficialDifficulty=5.0"
           resources:
             limits:
-              cpu: "2"
-              memory: 24Gi
+              cpu: "1.5"
+              memory: 16Gi
             requests:
               cpu: "1"
-              memory: 16Gi
+              memory: 8Gi
           volumeMounts:
             - name: serverfiles
               mountPath: /home/pok/arkserver
