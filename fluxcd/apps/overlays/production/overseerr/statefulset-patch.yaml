@@ -17,7 +17,11 @@ spec:
             - name: VPN_SERVICE_PROVIDER
               value: "private internet access"
             - name: SERVER_REGIONS
-              $patch: delete
+              value: >-
+                US East,US West,US Chicago,US New York,US Atlanta,US Denver,
+                US Seattle,US Silicon Valley,US Texas,US Florida,CA Montreal,
+                CA Toronto,CA Vancouver,UK London,UK Manchester,DE Berlin,
+                DE Frankfurt,France,Romania
             - name: FIREWALL_VPN_INPUT_PORTS
               $patch: delete
             - name: FIREWALL_INPUT_PORTS
