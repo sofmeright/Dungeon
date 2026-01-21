@@ -35,7 +35,7 @@ spec:
               cd /tmp
               curl -sL -o xaudio.zip "https://www.nuget.org/api/v2/package/Microsoft.XAudio2.Redist/1.2.11"
               unzip -q xaudio.zip -d xaudio
-              cp xaudio/build/native/release/bin/x64/xaudio2_9.dll "$DLL_PATH"
+              cp xaudio/build/native/release/bin/x64/xaudio2_9redist.dll "$DLL_PATH"
               chown 7777:7777 "$DLL_PATH"
               chmod 775 "$DLL_PATH"
               echo "xaudio2_9.dll installed successfully"
