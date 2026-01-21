@@ -3,7 +3,7 @@ kind: MariaDB
 metadata:
   name: osticket-mariadb
 spec:
-  image: docker.jcr.pcfae.com/mariadb:11.4.2
+  image: docker.jcr.pcfae.com/mariadb:12.0.2
   # Ensure pods are on separate nodes for HA
   affinity:
     antiAffinityEnabled: true
