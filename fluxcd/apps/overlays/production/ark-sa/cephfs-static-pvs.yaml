@@ -68,3 +68,38 @@ spec:
       storage: 20Gi
   volumeName: ark-sa-cluster-pv
   storageClassName: ""
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: ark-sa-steam-pv
+spec:
+  capacity:
+    storage: 10Gi
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  csi:
+    driver: gorons-bracelet.cephfs.csi.ceph.com
+    nodeStageSecretRef:
+      name: csi-cephfs-node
+      namespace: gorons-bracelet
+    volumeAttributes:
+      clusterID: 0985467c-d8f3-4483-b27f-f0a512397ec2
+      fsName: Seed_Bank
+      staticVolume: "true"
+      rootPath: /dungeon/hdd/games/ark-sa/steam
+    volumeHandle: ark-sa-steam-static
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: ark-sa-steam-pvc
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 10Gi
+  volumeName: ark-sa-steam-pv
+  storageClassName: ""
