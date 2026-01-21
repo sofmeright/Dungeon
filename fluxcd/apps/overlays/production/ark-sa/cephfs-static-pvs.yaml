@@ -72,7 +72,7 @@ spec:
 apiVersion: v1
 kind: PersistentVolume
 metadata:
-  name: ark-sa-steam-pv
+  name: ark-sa-steamapps-pv
 spec:
   capacity:
     storage: 10Gi
@@ -88,18 +88,18 @@ spec:
       clusterID: 0985467c-d8f3-4483-b27f-f0a512397ec2
       fsName: Seed_Bank
       staticVolume: "true"
-      rootPath: /dungeon/hdd/games/ark-sa/steam
-    volumeHandle: ark-sa-steam-static
+      rootPath: /dungeon/hdd/games/ark-sa/steamapps
+    volumeHandle: ark-sa-steamapps-static
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: ark-sa-steam-pvc
+  name: ark-sa-steamapps-pvc
 spec:
   accessModes:
     - ReadWriteMany
   resources:
     requests:
       storage: 10Gi
-  volumeName: ark-sa-steam-pv
+  volumeName: ark-sa-steamapps-pv
   storageClassName: ""

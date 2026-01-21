@@ -19,8 +19,8 @@ spec:
               set -e
               echo "Creating directory structure in CephFS..."
               mkdir -p /cephfs/dungeon/nvme/games/ark-sa/serverfiles
-              mkdir -p /cephfs/dungeon/nvme/games/ark-sa/cluster
-              mkdir -p /cephfs/dungeon/hdd/games/ark-sa/steam
+              mkdir -p /cephfs/dungeon/hdd/games/ark-sa/cluster
+              mkdir -p /cephfs/dungeon/hdd/games/ark-sa/steamapps
 
               echo "Setting ownership to UID/GID 7777 (pok)..."
               chown -R 7777:7777 /cephfs/dungeon/nvme/games/ark-sa

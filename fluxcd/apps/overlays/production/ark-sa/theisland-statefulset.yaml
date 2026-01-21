@@ -96,8 +96,8 @@ spec:
               mountPath: /home/pok/arkserver/ShooterGame/Saved
             - name: cluster
               mountPath: /home/pok/arkserver/ShooterGame/Saved/clusters
-            - name: steam
-              mountPath: /home/pok/.steam
+            - name: steamapps
+              mountPath: /home/pok/.steam/steam/steamapps
       volumes:
         - name: serverfiles
           persistentVolumeClaim:
@@ -105,9 +105,9 @@ spec:
         - name: cluster
           persistentVolumeClaim:
             claimName: ark-sa-cluster-pvc
-        - name: steam
+        - name: steamapps
           persistentVolumeClaim:
-            claimName: ark-sa-steam-pvc
+            claimName: ark-sa-steamapps-pvc
   volumeClaimTemplates:
     - metadata:
         name: shooting-gallery-ark-sa-tmc-theisland-saved
