@@ -160,9 +160,10 @@ spec:
             # Immich photo library
             - persistentvolumeclaims/library-immich-0
             - persistentvolumeclaims/temple-of-time-immich-library-immich-0
-            # Plex MS-X media (pedestal-of-time)
+            # Plex MS-X media and transcode (pedestal-of-time)
             - persistentvolumeclaims/plex-ms-x-media-movies
             - persistentvolumeclaims/plex-ms-x-media-photos
+            - persistentvolumeclaims/kai-plex-ms-x-transcode
             # AI/ML output and models
             - persistentvolumeclaims/output-stable-diffusion-webui-0
             # Frigate NVR storage
