@@ -3,146 +3,83 @@ kind: Job
 metadata:
   name: harbor-rgw-setup
 spec:
-  ttlSecondsAfterFinished: 43200
+  ttlSecondsAfterFinished: 86400
   template:
     spec:
       restartPolicy: OnFailure
       containers:
         - name: setup
-          image: docker.jcr.pcfae.com/library/python:3.11-alpine
+          image: quay.io/ceph/ceph:v19
           env:
-            - name: ADMIN_ACCESSKEY
-              valueFrom:
-                secretKeyRef:
-                  name: rgw-admin-ops-user
-                  key: accessKey
-            - name: ADMIN_SECRETKEY
-              valueFrom:
-                secretKeyRef:
-                  name: rgw-admin-ops-user
-                  key: secretKey
-            - name: HARBOR_ACCESSKEY
+            - name: HARBOR_ACCESS_KEY
               valueFrom:
                 secretKeyRef:
                   name: harbor-rgw-credentials
                   key: access_key
-            - name: HARBOR_SECRETKEY
+            - name: HARBOR_SECRET_KEY
               valueFrom:
                 secretKeyRef:
                   name: harbor-rgw-credentials
                   key: secret_key
-            - name: AWS_ACCESS_KEY_ID
-              valueFrom:
-                secretKeyRef:
-                  name: rgw-admin-ops-user
-                  key: accessKey
-            - name: AWS_SECRET_ACCESS_KEY
-              valueFrom:
-                secretKeyRef:
-                  name: rgw-admin-ops-user
-                  key: secretKey
           command:
-            - /bin/sh
+            - /bin/bash
             - -c
             - |
-              set -e
+              set -ex
 
-              echo "Installing dependencies..."
-              pip install --no-cache-dir boto3 requests-aws4auth
+              # Wait for RGW to be ready
+              until radosgw-admin user list 2>/dev/null; do
+                echo "Waiting for RGW to be accessible..."
+                sleep 5
+              done
 
-              cat > /tmp/rgw_setup.py << 'EOFPYTHON'
-              import boto3
-              import sys
-              from botocore.client import Config
-              from botocore.exceptions import ClientError
+              # Create S3 user for Harbor if it doesn't exist
+              if ! radosgw-admin user info --uid=harbor 2>/dev/null; then
+                echo "Creating Harbor S3 user..."
+                radosgw-admin user create \
+                  --uid=harbor \
+                  --display-name="Harbor Container Registry" \
+                  --access-key="${HARBOR_ACCESS_KEY}" \
+                  --secret-key="${HARBOR_SECRET_KEY}"
+              else
+                echo "Harbor S3 user already exists"
+              fi
 
-              RGW_ENDPOINT = "http://ceph-rgw.gorons-bracelet.svc.cluster.local:80"
+              # Install s3cmd for bucket creation
+              dnf install -y s3cmd
 
-              def create_user(admin_access, admin_secret, harbor_access, harbor_secret):
-                  """Create RGW user via Admin API"""
-                  import requests
-                  from requests_aws4auth import AWS4Auth
+              # Configure s3cmd
+              cat > /root/.s3cfg <<EOF
+              [default]
+              access_key = ${HARBOR_ACCESS_KEY}
+              secret_key = ${HARBOR_SECRET_KEY}
+              host_base = ceph-rgw.gorons-bracelet.svc.cluster.local
+              host_bucket = ceph-rgw.gorons-bracelet.svc.cluster.local/%(bucket)
+              use_https = False
+              EOF
 
-                  auth = AWS4Auth(admin_access, admin_secret, 'us-east-1', 's3')
+              # Create harbor bucket
+              if ! s3cmd ls s3://harbor 2>/dev/null; then
+                echo "Creating bucket: harbor"
+                s3cmd mb s3://harbor
+              else
+                echo "Bucket already exists: harbor"
+              fi
 
-                  url = f"{RGW_ENDPOINT}/admin/user"
-                  params = {
-                      'uid': 'harbor',
-                      'display-name': 'Harbor Container Registry',
-                      'access-key': harbor_access,
-                      'secret-key': harbor_secret
-                  }
-
-                  try:
-                      resp = requests.put(url, params=params, auth=auth)
-                      if resp.status_code == 200:
-                          print("✓ Harbor RGW user created successfully")
-                          return True
-                      elif 'UserAlreadyExists' in resp.text or 'EntityAlreadyExists' in resp.text:
-                          print("✓ Harbor RGW user already exists")
-                          return True
-                      else:
-                          print(f"⚠ User creation response: {resp.status_code} - {resp.text}")
-                          print("  Assuming user exists, continuing...")
-                          return True
-                  except Exception as e:
-                      print(f"⚠ User creation failed: {e}")
-                      print("  Assuming user exists, continuing...")
-                      return True
-
-              def create_bucket(access_key, secret_key):
-                  """Create S3 bucket with verification"""
-                  import time
-                  s3 = boto3.client(
-                      's3',
-                      endpoint_url=RGW_ENDPOINT,
-                      aws_access_key_id=access_key,
-                      aws_secret_access_key=secret_key,
-                      config=Config(signature_version='s3v4')
-                  )
-
-                  try:
-                      s3.head_bucket(Bucket='harbor')
-                      print("✓ Bucket 'harbor' already exists")
-                      return True
-                  except ClientError as e:
-                      error_code = e.response['Error']['Code']
-                      if error_code == '404':
-                          print("Creating bucket 'harbor'...")
-                          s3.create_bucket(Bucket='harbor')
-                          # Verify bucket is accessible after creation
-                          print("Verifying bucket creation...")
-                          time.sleep(2)
-                          for attempt in range(3):
-                              try:
-                                  s3.head_bucket(Bucket='harbor')
-                                  print("✓ Bucket 'harbor' created and verified successfully")
-                                  return True
-                              except ClientError as verify_error:
-                                  print(f"  Verification attempt {attempt + 1}/3 failed: {verify_error}")
-                                  time.sleep(2)
-                          print("✗ Bucket created but verification failed - bucket may be corrupted")
-                          return False
-                      else:
-                          print(f"✗ Bucket check failed with error code {error_code}: {e}")
-                          return False
-
-              if __name__ == '__main__':
-                  import os
-                  admin_access = os.environ['ADMIN_ACCESSKEY']
-                  admin_secret = os.environ['ADMIN_SECRETKEY']
-                  harbor_access = os.environ['HARBOR_ACCESSKEY']
-                  harbor_secret = os.environ['HARBOR_SECRETKEY']
-
-                  print("Creating Harbor RGW user via Admin API...")
-                  create_user(admin_access, admin_secret, harbor_access, harbor_secret)
-
-                  print("\nCreating harbor bucket with Harbor credentials...")
-                  if create_bucket(harbor_access, harbor_secret):
-                      print("\n✓ Setup complete!")
-                      sys.exit(0)
-                  else:
-                      sys.exit(1)
-              EOFPYTHON
-
-              python /tmp/rgw_setup.py
+              echo "Harbor S3 setup complete"
+          volumeMounts:
+            - name: ceph-config
+              mountPath: /etc/ceph/ceph.conf
+              subPath: ceph.conf
+              readOnly: true
+            - name: ceph-keyring
+              mountPath: /etc/ceph/ceph.keyring
+              subPath: keyring
+              readOnly: true
+      volumes:
+        - name: ceph-config
+          configMap:
+            name: ceph-config
+        - name: ceph-keyring
+          secret:
+            secretName: ceph-rgw-keyring
