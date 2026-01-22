@@ -48,15 +48,16 @@ spec:
               # Install s3cmd for bucket creation
               dnf install -y s3cmd
 
-              # Configure s3cmd
-              cat > /root/.s3cfg <<EOF
-              [default]
-              access_key = ${HARBOR_ACCESS_KEY}
-              secret_key = ${HARBOR_SECRET_KEY}
-              host_base = ceph-rgw.gorons-bracelet.svc.cluster.local
-              host_bucket = ceph-rgw.gorons-bracelet.svc.cluster.local/%(bucket)
-              use_https = False
-              EOF
+              # Configure s3cmd (signature_v2 needed for Ceph RGW)
+              printf '%s\n' \
+                "[default]" \
+                "access_key = ${HARBOR_ACCESS_KEY}" \
+                "secret_key = ${HARBOR_SECRET_KEY}" \
+                "host_base = ceph-rgw.gorons-bracelet.svc.cluster.local" \
+                "host_bucket = ceph-rgw.gorons-bracelet.svc.cluster.local/%(bucket)" \
+                "use_https = False" \
+                "signature_v2 = True" \
+                > /root/.s3cfg
 
               # Create harbor bucket
               if ! s3cmd ls s3://harbor 2>/dev/null; then
