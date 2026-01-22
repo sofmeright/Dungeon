@@ -27,16 +27,16 @@ spec:
             - |
               set -ex
 
-              # Wait for RGW to be ready
-              until radosgw-admin user list 2>/dev/null; do
+              # Wait for RGW to be ready (use client.dungeon-rgw keyring)
+              until radosgw-admin --name client.dungeon-rgw user list 2>/dev/null; do
                 echo "Waiting for RGW to be accessible..."
                 sleep 5
               done
 
               # Create S3 user for Harbor if it doesn't exist
-              if ! radosgw-admin user info --uid=harbor 2>/dev/null; then
+              if ! radosgw-admin --name client.dungeon-rgw user info --uid=harbor 2>/dev/null; then
                 echo "Creating Harbor S3 user..."
-                radosgw-admin user create \
+                radosgw-admin --name client.dungeon-rgw user create \
                   --uid=harbor \
                   --display-name="Harbor Container Registry" \
                   --access-key="${HARBOR_ACCESS_KEY}" \
@@ -73,7 +73,7 @@ spec:
               subPath: ceph.conf
               readOnly: true
             - name: ceph-keyring
-              mountPath: /etc/ceph/ceph.keyring
+              mountPath: /etc/ceph/ceph.client.dungeon-rgw.keyring
               subPath: keyring
               readOnly: true
       volumes:
