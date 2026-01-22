@@ -40,3 +40,4 @@ ignore: |
   .git/
   docs/
   **/templates/
+  **/*.enc.yaml
