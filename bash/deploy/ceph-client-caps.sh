@@ -27,22 +27,14 @@ ceph auth caps client.dungeon-provisioner \
   mgr 'allow rw'
 
 # client.healthchecker - used by rook-ceph operator for health monitoring
-# Note: includes restricted auth get-or-create for client.crash only
 echo "Updating client.healthchecker caps..."
 ceph auth caps client.healthchecker \
-  mon 'allow r, allow command quorum_status, allow command version, allow command "auth get-or-create" with entity=client.crash' \
+  mon 'allow r, allow command quorum_status, allow command version' \
   mgr 'allow command config' \
   osd 'profile rbd-read-only, allow rwx pool=default.rgw.meta, allow r pool=.rgw.root, allow rw pool=default.rgw.control, allow rx pool=default.rgw.log, allow x pool=default.rgw.buckets.index' \
   mds 'allow *'
 
-# client.crash - used by crash collector to report Ceph daemon crashes
-# For external clusters this is mostly unused, but keeps rook-ceph happy
-echo "Creating/updating client.crash..."
-ceph auth get-or-create client.crash \
-  mon 'allow profile crash' \
-  mgr 'allow rw'
-
 echo ""
 echo "=== All client capabilities updated ==="
 echo ""
-echo "Verify with: ceph auth ls | grep -A5 'client\.\(dungeon\|healthchecker\|crash\)'"
+echo "Verify with: ceph auth ls | grep -A5 'client\.\(dungeon\|healthchecker\)'"
