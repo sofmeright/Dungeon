@@ -1,0 +1,328 @@
+---
+# Ceph RGW Configuration Playbook
+#
+# This playbook ensures Ceph RGW is properly configured for K8s-managed gateways.
+# RGW daemons run in Kubernetes, NOT on Proxmox nodes.
+# Proxmox only provides the Ceph cluster (MON, OSD, MGR, MDS).
+#
+# Run: ansible-playbook -i inventory infrastructure/ceph-rgw.yaml
+#
+# What this playbook does:
+#   1. Ensures RGW pools exist with correct settings
+#   2. Ensures realm/zonegroup/zone are configured
+#   3. Ensures zone endpoint points to K8s service
+#   4. Ensures RGW daemons are DISABLED on Proxmox (K8s handles this)
+#   5. Creates admin ops user for bucket management
+
+- name: Ceph RGW Configuration for K8s-managed Gateways
+  hosts: proxmox[0]  # Run on first Proxmox node only (ceph commands are cluster-wide)
+  gather_facts: no
+  vars:
+    # Realm/Zone Configuration
+    rgw_realm: "dungeon"
+    rgw_zonegroup: "default"
+    rgw_zone: "default"
+
+    # K8s RGW endpoint (where RGW actually runs)
+    rgw_endpoint: "http://ceph-rgw.gorons-bracelet.svc.cluster.local"
+
+    # Pool Configuration
+    rgw_metadata_pool: "dungeon-rgw"
+    rgw_data_pool: "dungeon-rgw-data"
+    rgw_metadata_pool_pg_num: 32
+    rgw_data_pool_pg_num: 64
+
+    # Admin user
+    rgw_admin_user: "rgw-admin-ops-user"
+    rgw_admin_display_name: "RGW Admin Ops User"
+    rgw_admin_caps: "users=*;buckets=*;usage=read;metadata=read;zone=read"
+
+  tasks:
+    # ============================================
+    # POOL CONFIGURATION
+    # ============================================
+    - name: Check if metadata pool exists
+      ansible.builtin.command: ceph osd pool ls
+      register: pool_list
+      changed_when: false
+
+    - name: Create metadata pool if not exists
+      ansible.builtin.command: >
+        ceph osd pool create {{ rgw_metadata_pool }} {{ rgw_metadata_pool_pg_num }} {{ rgw_metadata_pool_pg_num }}
+      when: rgw_metadata_pool not in pool_list.stdout_lines
+
+    - name: Create data pool if not exists
+      ansible.builtin.command: >
+        ceph osd pool create {{ rgw_data_pool }} {{ rgw_data_pool_pg_num }} {{ rgw_data_pool_pg_num }}
+      when: rgw_data_pool not in pool_list.stdout_lines
+
+    - name: Enable RGW application on metadata pool
+      ansible.builtin.command: ceph osd pool application enable {{ rgw_metadata_pool }} rgw
+      register: result
+      changed_when: "'already' not in result.stderr"
+      failed_when: result.rc != 0 and 'already' not in result.stderr
+
+    - name: Enable RGW application on data pool
+      ansible.builtin.command: ceph osd pool application enable {{ rgw_data_pool }} rgw
+      register: result
+      changed_when: "'already' not in result.stderr"
+      failed_when: result.rc != 0 and 'already' not in result.stderr
+
+    # ============================================
+    # REALM CONFIGURATION
+    # ============================================
+    - name: Check if realm exists
+      ansible.builtin.command: radosgw-admin realm get --rgw-realm={{ rgw_realm }}
+      register: realm_check
+      changed_when: false
+      failed_when: false
+
+    - name: Create realm if not exists
+      ansible.builtin.command: radosgw-admin realm create --rgw-realm={{ rgw_realm }} --default
+      when: realm_check.rc != 0
+
+    - name: Get realm ID
+      ansible.builtin.shell: |
+        radosgw-admin realm get --rgw-realm={{ rgw_realm }} | grep '"id"' | head -1 | cut -d'"' -f4
+      register: realm_id
+      changed_when: false
+
+    # ============================================
+    # ZONEGROUP CONFIGURATION
+    # ============================================
+    - name: Check if zonegroup exists
+      ansible.builtin.command: radosgw-admin zonegroup get --rgw-zonegroup={{ rgw_zonegroup }}
+      register: zonegroup_check
+      changed_when: false
+      failed_when: false
+
+    - name: Create zonegroup if not exists
+      ansible.builtin.command: >
+        radosgw-admin zonegroup create
+        --rgw-zonegroup={{ rgw_zonegroup }}
+        --rgw-realm={{ rgw_realm }}
+        --master --default
+      when: zonegroup_check.rc != 0
+
+    - name: Get zonegroup ID
+      ansible.builtin.shell: |
+        radosgw-admin zonegroup get --rgw-zonegroup={{ rgw_zonegroup }} | grep '"id"' | head -1 | cut -d'"' -f4
+      register: zonegroup_id
+      changed_when: false
+
+    # ============================================
+    # ZONE CONFIGURATION
+    # ============================================
+    - name: Check if zone exists
+      ansible.builtin.command: radosgw-admin zone get --rgw-zone={{ rgw_zone }}
+      register: zone_check
+      changed_when: false
+      failed_when: false
+
+    - name: Get zone ID (if exists)
+      ansible.builtin.shell: |
+        radosgw-admin zone get --rgw-zone={{ rgw_zone }} | grep '"id"' | head -1 | cut -d'"' -f4
+      register: existing_zone_id
+      changed_when: false
+      when: zone_check.rc == 0
+
+    - name: Generate zone ID (if creating new)
+      ansible.builtin.command: uuidgen
+      register: new_zone_id
+      when: zone_check.rc != 0
+
+    - name: Set zone_id fact
+      ansible.builtin.set_fact:
+        zone_id: "{{ existing_zone_id.stdout if zone_check.rc == 0 else new_zone_id.stdout }}"
+
+    - name: Create zone configuration file
+      ansible.builtin.copy:
+        dest: /tmp/rgw-zone-config.json
+        content: |
+          {
+              "id": "{{ zone_id }}",
+              "name": "{{ rgw_zone }}",
+              "domain_root": "{{ rgw_metadata_pool }}",
+              "control_pool": "{{ rgw_metadata_pool }}",
+              "gc_pool": "{{ rgw_metadata_pool }}",
+              "lc_pool": "{{ rgw_metadata_pool }}",
+              "log_pool": "{{ rgw_metadata_pool }}",
+              "intent_log_pool": "{{ rgw_metadata_pool }}",
+              "usage_log_pool": "{{ rgw_metadata_pool }}",
+              "roles_pool": "{{ rgw_metadata_pool }}",
+              "reshard_pool": "{{ rgw_metadata_pool }}",
+              "user_keys_pool": "{{ rgw_metadata_pool }}",
+              "user_email_pool": "{{ rgw_metadata_pool }}",
+              "user_swift_pool": "{{ rgw_metadata_pool }}",
+              "user_uid_pool": "{{ rgw_metadata_pool }}",
+              "otp_pool": "{{ rgw_metadata_pool }}",
+              "notif_pool": "{{ rgw_metadata_pool }}",
+              "topics_pool": "{{ rgw_metadata_pool }}",
+              "account_pool": "{{ rgw_metadata_pool }}",
+              "group_pool": "{{ rgw_metadata_pool }}",
+              "system_key": {
+                  "access_key": "",
+                  "secret_key": ""
+              },
+              "placement_pools": [
+                  {
+                      "key": "default-placement",
+                      "val": {
+                          "index_pool": "{{ rgw_metadata_pool }}",
+                          "storage_classes": {
+                              "STANDARD": {
+                                  "data_pool": "{{ rgw_data_pool }}"
+                              }
+                          },
+                          "data_extra_pool": "{{ rgw_metadata_pool }}",
+                          "index_type": 0,
+                          "inline_data": true
+                      }
+                  }
+              ],
+              "realm_id": "{{ realm_id.stdout }}",
+              "tier_config": []
+          }
+        mode: '0644'
+
+    - name: Apply zone configuration
+      ansible.builtin.command: >
+        radosgw-admin zone set --rgw-zone={{ rgw_zone }} --infile=/tmp/rgw-zone-config.json --default
+      register: zone_set_result
+
+    - name: Set zone as master
+      ansible.builtin.command: radosgw-admin zone modify --rgw-zone={{ rgw_zone }} --master --default
+
+    # ============================================
+    # ENDPOINT CONFIGURATION (CRITICAL)
+    # ============================================
+    - name: Update zone endpoint to K8s service
+      ansible.builtin.command: >
+        radosgw-admin zone modify --rgw-zone={{ rgw_zone }} --endpoints={{ rgw_endpoint }}
+
+    - name: Update zonegroup endpoint to K8s service
+      ansible.builtin.command: >
+        radosgw-admin zonegroup modify --rgw-zonegroup={{ rgw_zonegroup }} --endpoints={{ rgw_endpoint }}
+
+    - name: Create zonegroup configuration with zone reference
+      ansible.builtin.copy:
+        dest: /tmp/rgw-zonegroup-config.json
+        content: |
+          {
+              "id": "{{ zonegroup_id.stdout }}",
+              "name": "{{ rgw_zonegroup }}",
+              "api_name": "{{ rgw_zonegroup }}",
+              "is_master": true,
+              "endpoints": ["{{ rgw_endpoint }}"],
+              "hostnames": [],
+              "hostnames_s3website": [],
+              "master_zone": "{{ zone_id }}",
+              "zones": [
+                  {
+                      "id": "{{ zone_id }}",
+                      "name": "{{ rgw_zone }}",
+                      "endpoints": ["{{ rgw_endpoint }}"]
+                  }
+              ],
+              "placement_targets": [
+                  {
+                      "name": "default-placement",
+                      "tags": [],
+                      "storage_classes": ["STANDARD"]
+                  }
+              ],
+              "default_placement": "default-placement",
+              "realm_id": "{{ realm_id.stdout }}"
+          }
+        mode: '0644'
+
+    - name: Apply zonegroup configuration
+      ansible.builtin.command: >
+        radosgw-admin zonegroup set --rgw-zonegroup={{ rgw_zonegroup }} --infile=/tmp/rgw-zonegroup-config.json
+
+    # ============================================
+    # COMMIT PERIOD
+    # ============================================
+    - name: Commit period to activate changes
+      ansible.builtin.command: radosgw-admin period update --commit
+
+    # ============================================
+    # ADMIN USER
+    # ============================================
+    - name: Check if admin user exists
+      ansible.builtin.command: radosgw-admin user info --uid={{ rgw_admin_user }}
+      register: admin_user_check
+      changed_when: false
+      failed_when: false
+
+    - name: Create admin ops user if not exists
+      ansible.builtin.command: >
+        radosgw-admin user create
+        --uid={{ rgw_admin_user }}
+        --display-name="{{ rgw_admin_display_name }}"
+        --caps="{{ rgw_admin_caps }}"
+      when: admin_user_check.rc != 0
+
+    # ============================================
+    # CLEANUP
+    # ============================================
+    - name: Remove temporary files
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: absent
+      loop:
+        - /tmp/rgw-zone-config.json
+        - /tmp/rgw-zonegroup-config.json
+
+    # ============================================
+    # VERIFICATION
+    # ============================================
+    - name: Verify zonegroup endpoint configuration
+      ansible.builtin.shell: |
+        radosgw-admin zonegroup get --rgw-zonegroup={{ rgw_zonegroup }} | python3 -c "import sys,json; d=json.load(sys.stdin); print(d.get('endpoints', []))"
+      register: zonegroup_verify
+      changed_when: false
+
+    - name: Display configured endpoint
+      ansible.builtin.debug:
+        msg: "Zonegroup endpoints: {{ zonegroup_verify.stdout }}"
+
+    - name: Verify endpoint is correct
+      ansible.builtin.assert:
+        that:
+          - "rgw_endpoint in zonegroup_verify.stdout"
+        fail_msg: "Endpoint mismatch! Expected {{ rgw_endpoint }} but got {{ zonegroup_verify.stdout }}"
+        success_msg: "Endpoint correctly configured: {{ rgw_endpoint }}"
+
+# ============================================
+# DISABLE RGW ON ALL PROXMOX NODES
+# ============================================
+- name: Ensure RGW daemons are DISABLED on Proxmox (K8s handles RGW)
+  hosts: proxmox
+  gather_facts: no
+  tasks:
+    - name: Get list of RGW services
+      ansible.builtin.shell: |
+        systemctl list-units --type=service --all --no-legend | grep -E 'ceph-radosgw|radosgw' | awk '{print $1}' | grep -E '\.service$' || true
+      register: rgw_services
+      changed_when: false
+
+    - name: Stop and disable any RGW services
+      ansible.builtin.systemd:
+        name: "{{ item }}"
+        state: stopped
+        enabled: no
+      loop: "{{ rgw_services.stdout_lines }}"
+      when:
+        - rgw_services.stdout_lines | length > 0
+        - item | length > 0
+        - item.endswith('.service')
+
+    - name: Verify no RGW processes running
+      ansible.builtin.shell: pgrep -x radosgw || true
+      register: rgw_process
+      changed_when: false
+
+    - name: Report RGW status
+      ansible.builtin.debug:
+        msg: "{{ 'WARNING: RGW process still running!' if rgw_process.stdout else 'OK: No RGW processes on this node' }}"

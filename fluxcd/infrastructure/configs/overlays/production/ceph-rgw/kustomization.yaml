@@ -3,7 +3,11 @@ kind: Kustomization
 namespace: gorons-bracelet
 resources:
   - ceph-rgw-keyring.enc.yaml
-  - ceph-rgw-gitlab-user.enc.yaml
-  - gitlab-s3-setup-job.yaml
-  - harbor-credentials-externalsecret.yaml
-  - harbor-user-job.yaml
+  - ceph-rgw-setup-script.yaml
+  - gitlab-rgw-credentials.enc.yaml
+  - gitlab-rgw-setup.yaml
+  - harbor-rgw-credentials-externalsecret.yaml
+  - harbor-rgw-setup.yaml
+  - loki-rgw-setup.yaml
+  - mimir-rgw-credentials-externalsecret.yaml
+  - mimir-rgw-setup.yaml

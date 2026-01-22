@@ -1,0 +1,141 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ceph-rgw-setup-script
+data:
+  setup.sh: |
+    #!/bin/bash
+    set -e
+
+    usage() {
+      echo "Usage: $0 --user <uid> --display-name <name> --buckets <bucket1,bucket2,...>"
+      echo ""
+      echo "Options:"
+      echo "  --user          RGW user UID (required)"
+      echo "  --display-name  User display name (required)"
+      echo "  --buckets       Comma-separated list of buckets to create (required)"
+      echo ""
+      echo "Environment variables required:"
+      echo "  ACCESS_KEY      S3 access key"
+      echo "  SECRET_KEY      S3 secret key"
+      exit 1
+    }
+
+    # Parse arguments with getopt
+    OPTS=$(getopt -o 'h' --long 'user:,display-name:,buckets:,help' -n 'setup.sh' -- "$@")
+    if [ $? -ne 0 ]; then
+      usage
+    fi
+    eval set -- "$OPTS"
+
+    UID_NAME=""
+    DISPLAY_NAME=""
+    BUCKETS_CSV=""
+
+    while true; do
+      case "$1" in
+        --user)
+          UID_NAME="$2"
+          shift 2
+          ;;
+        --display-name)
+          DISPLAY_NAME="$2"
+          shift 2
+          ;;
+        --buckets)
+          BUCKETS_CSV="$2"
+          shift 2
+          ;;
+        -h|--help)
+          usage
+          ;;
+        --)
+          shift
+          break
+          ;;
+      esac
+    done
+
+    # Validate required arguments
+    if [ -z "$UID_NAME" ]; then
+      echo "ERROR: --user is required"
+      usage
+    fi
+    if [ -z "$DISPLAY_NAME" ]; then
+      echo "ERROR: --display-name is required"
+      usage
+    fi
+    if [ -z "$BUCKETS_CSV" ]; then
+      echo "ERROR: --buckets is required"
+      usage
+    fi
+    if [ -z "$ACCESS_KEY" ]; then
+      echo "ERROR: ACCESS_KEY environment variable is required"
+      exit 1
+    fi
+    if [ -z "$SECRET_KEY" ]; then
+      echo "ERROR: SECRET_KEY environment variable is required"
+      exit 1
+    fi
+
+    # Convert comma-separated buckets to array
+    IFS=',' read -ra BUCKETS <<< "$BUCKETS_CSV"
+
+    echo "=== RGW Setup: ${UID_NAME} ==="
+    echo "User: ${UID_NAME} (${DISPLAY_NAME})"
+    echo "Buckets: ${BUCKETS[*]}"
+
+    # Wait for RGW to be ready
+    echo ""
+    echo "Waiting for RGW to be accessible..."
+    until radosgw-admin --name client.dungeon-rgw user list >/dev/null 2>&1; do
+      echo "  RGW not ready, retrying in 5s..."
+      sleep 5
+    done
+    echo "RGW is accessible"
+
+    # Create S3 user if it doesn't exist
+    # NOTE: UID must differ from bucket name to avoid RGW object collision
+    echo ""
+    if ! radosgw-admin --name client.dungeon-rgw user info --uid="${UID_NAME}" >/dev/null 2>&1; then
+      echo "Creating user: ${UID_NAME}..."
+      radosgw-admin --name client.dungeon-rgw user create \
+        --uid="${UID_NAME}" \
+        --display-name="${DISPLAY_NAME}" \
+        --access-key="${ACCESS_KEY}" \
+        --secret-key="${SECRET_KEY}"
+      echo "User created: ${UID_NAME}"
+    else
+      echo "User already exists: ${UID_NAME}"
+    fi
+
+    # Install s3cmd for bucket creation
+    echo ""
+    echo "Installing s3cmd..."
+    dnf install -y s3cmd >/dev/null 2>&1
+
+    # Configure s3cmd (signature_v2 needed for Ceph RGW)
+    printf '%s\n' \
+      "[default]" \
+      "access_key = ${ACCESS_KEY}" \
+      "secret_key = ${SECRET_KEY}" \
+      "host_base = ceph-rgw.gorons-bracelet.svc.cluster.local" \
+      "host_bucket = ceph-rgw.gorons-bracelet.svc.cluster.local/%(bucket)" \
+      "use_https = False" \
+      "signature_v2 = True" \
+      > /root/.s3cfg
+
+    # Create buckets
+    echo ""
+    echo "Creating buckets..."
+    for bucket in "${BUCKETS[@]}"; do
+      if ! s3cmd ls "s3://${bucket}" >/dev/null 2>&1; then
+        echo "  Creating bucket: ${bucket}"
+        s3cmd mb "s3://${bucket}"
+      else
+        echo "  Bucket exists: ${bucket}"
+      fi
+    done
+
+    echo ""
+    echo "=== RGW Setup Complete: ${UID_NAME} ==="

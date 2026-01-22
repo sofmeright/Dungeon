@@ -32,9 +32,9 @@ spec:
       storage:
         type: 's3'
         bucketNames:
-          chunks: loki
-          ruler: loki
-          admin: loki
+          chunks: loki-chunks
+          ruler: loki-ruler
+          admin: loki-admin
         s3:
           endpoint: PLACEHOLDER_S3_ENDPOINT
           region: PLACEHOLDER_S3_REGION
