@@ -14,12 +14,12 @@ spec:
             - name: ACCESS_KEY
               valueFrom:
                 secretKeyRef:
-                  name: loki-s3
+                  name: loki-rgw-credentials
                   key: s3_access_key
             - name: SECRET_KEY
               valueFrom:
                 secretKeyRef:
-                  name: loki-s3
+                  name: loki-rgw-credentials
                   key: s3_secret_key
           command:
             - /bin/bash
