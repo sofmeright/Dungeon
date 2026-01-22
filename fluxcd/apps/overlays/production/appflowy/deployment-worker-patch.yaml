@@ -7,12 +7,12 @@ spec:
   template:
     spec:
       containers:
-      - name: appflowy-worker
-        image: docker.jcr.pcfae.com/appflowyinc/appflowy_worker:latest
-        resources:
-          requests:
-            memory: "512Mi"
-            cpu: "250m"
-          limits:
-            memory: "1Gi"
-            cpu: "500m"
+        - name: appflowy-worker
+          image: docker.io/appflowyinc/appflowy_worker:0.10.3
+          resources:
+            requests:
+              memory: "512Mi"
+              cpu: "250m"
+            limits:
+              memory: "1Gi"
+              cpu: "500m"

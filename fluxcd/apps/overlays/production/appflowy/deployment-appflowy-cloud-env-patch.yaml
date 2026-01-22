@@ -6,86 +6,86 @@ spec:
   template:
     spec:
       containers:
-      - name: appflowy-cloud
-        ports:
-        - name: http
-          containerPort: 8000
-          protocol: TCP
-        env:
-        # Non-secret configuration
-        - name: RUST_LOG
-          value: "info"
-        - name: APPFLOWY_ACCESS_CONTROL
-          value: "true"
-        - name: APPFLOWY_BASE_URL
-          value: "https://flwy.prplanit.com"
-        - name: APPFLOWY_WEB_URL
-          value: "https://flwy.prplanit.com"
-        - name: APPFLOWY_DATABASE_MAX_CONNECTIONS
-          value: "40"
-        - name: POSTGRES_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: appflowy-postgres-superuser
-              key: password
-        - name: APPFLOWY_DATABASE_URL
-          value: "postgres://postgres:$(POSTGRES_PASSWORD)@appflowy-postgres-rw:5432/appflowy"
-        - name: APPFLOWY_REDIS_URI
-          value: "redis://appflowy-redis:6379"
-        - name: APPFLOWY_GOTRUE_BASE_URL
-          value: "http://appflowy-gotrue:9999"
-        - name: APPFLOWY_GOTRUE_EXT_URL
-          value: "https://flwy.prplanit.com/gotrue"
-        - name: APPFLOWY_GOTRUE_JWT_EXP
-          value: "7200"
-        - name: APPFLOWY_WEBSOCKET_MAILBOX_SIZE
-          value: "6000"
-        - name: APPFLOWY_S3_USE_MINIO
-          value: "true"
-        - name: APPFLOWY_S3_MINIO_URL
-          value: "http://appflowy-minio:9000"
-        - name: APPFLOWY_S3_BUCKET
-          value: "appflowy"
-        - name: APPFLOWY_S3_REGION
-          value: "us-east-1"
-        - name: APPFLOWY_S3_CREATE_BUCKET
-          value: "true"
-        - name: APPFLOWY_S3_PRESIGNED_URL_ENDPOINT
-          value: "https://flwy.prplanit.com/files"
-        # Secrets from shared secret (JWT, GoTrue admin)
-        - name: APPFLOWY_GOTRUE_JWT_SECRET
-          valueFrom:
-            secretKeyRef:
-              name: appflowy-shared-secrets
-              key: GOTRUE_JWT_SECRET
-        - name: APPFLOWY_GOTRUE_ADMIN_EMAIL
-          valueFrom:
-            secretKeyRef:
-              name: appflowy-shared-secrets
-              key: GOTRUE_ADMIN_EMAIL
-        - name: APPFLOWY_GOTRUE_ADMIN_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: appflowy-shared-secrets
-              key: GOTRUE_ADMIN_PASSWORD
-        # Secrets from cloud-specific secret (MinIO, SMTP)
-        - name: APPFLOWY_S3_ACCESS_KEY
-          valueFrom:
-            secretKeyRef:
-              name: appflowy-cloud-secrets
-              key: MINIO_ROOT_USER
-        - name: APPFLOWY_S3_SECRET_KEY
-          valueFrom:
-            secretKeyRef:
-              name: appflowy-cloud-secrets
-              key: MINIO_ROOT_PASSWORD
-        - name: APPFLOWY_MAILER_SMTP_USERNAME
-          valueFrom:
-            secretKeyRef:
-              name: appflowy-cloud-secrets
-              key: APPFLOWY_MAILER_SMTP_USERNAME
-        - name: APPFLOWY_MAILER_SMTP_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: appflowy-cloud-secrets
-              key: APPFLOWY_MAILER_SMTP_PASSWORD
+        - name: appflowy-cloud
+          ports:
+            - name: http
+              containerPort: 8000
+              protocol: TCP
+          env:
+            # Non-secret configuration
+            - name: RUST_LOG
+              value: "info"
+            - name: APPFLOWY_ACCESS_CONTROL
+              value: "true"
+            - name: APPFLOWY_BASE_URL
+              value: "https://flwy.prplanit.com"
+            - name: APPFLOWY_WEB_URL
+              value: "https://flwy.prplanit.com"
+            - name: APPFLOWY_DATABASE_MAX_CONNECTIONS
+              value: "40"
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: appflowy-postgres-superuser
+                  key: password
+            - name: APPFLOWY_DATABASE_URL
+              value: "postgres://postgres:$(POSTGRES_PASSWORD)@appflowy-postgres-rw:5432/appflowy"
+            - name: APPFLOWY_REDIS_URI
+              value: "redis://appflowy-redis:6379"
+            - name: APPFLOWY_GOTRUE_BASE_URL
+              value: "http://appflowy-gotrue:9999"
+            - name: APPFLOWY_GOTRUE_EXT_URL
+              value: "https://flwy.prplanit.com/gotrue"
+            - name: APPFLOWY_GOTRUE_JWT_EXP
+              value: "7200"
+            - name: APPFLOWY_WEBSOCKET_MAILBOX_SIZE
+              value: "6000"
+            - name: APPFLOWY_S3_USE_MINIO
+              value: "false"
+            - name: APPFLOWY_S3_MINIO_URL
+              value: "http://ceph-rgw.gorons-bracelet.svc.cluster.local"
+            - name: APPFLOWY_S3_BUCKET
+              value: "appflowy-files"
+            - name: APPFLOWY_S3_REGION
+              value: "us-east-1"
+            - name: APPFLOWY_S3_CREATE_BUCKET
+              value: "true"
+            - name: APPFLOWY_S3_PRESIGNED_URL_ENDPOINT
+              value: "https://flwy.prplanit.com/files"
+            # Secrets from shared secret (JWT, GoTrue admin)
+            - name: APPFLOWY_GOTRUE_JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: appflowy-shared-secrets
+                  key: GOTRUE_JWT_SECRET
+            - name: APPFLOWY_GOTRUE_ADMIN_EMAIL
+              valueFrom:
+                secretKeyRef:
+                  name: appflowy-shared-secrets
+                  key: GOTRUE_ADMIN_EMAIL
+            - name: APPFLOWY_GOTRUE_ADMIN_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: appflowy-shared-secrets
+                  key: GOTRUE_ADMIN_PASSWORD
+            # Secrets from cloud-specific secret (RGW S3, SMTP)
+            - name: APPFLOWY_S3_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: appflowy-cloud-secrets
+                  key: S3_ACCESS_KEY
+            - name: APPFLOWY_S3_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: appflowy-cloud-secrets
+                  key: S3_SECRET_KEY
+            - name: APPFLOWY_MAILER_SMTP_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: appflowy-cloud-secrets
+                  key: APPFLOWY_MAILER_SMTP_USERNAME
+            - name: APPFLOWY_MAILER_SMTP_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: appflowy-cloud-secrets
+                  key: APPFLOWY_MAILER_SMTP_PASSWORD

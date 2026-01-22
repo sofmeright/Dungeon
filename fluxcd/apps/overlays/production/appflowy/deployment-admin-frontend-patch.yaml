@@ -7,12 +7,12 @@ spec:
   template:
     spec:
       containers:
-      - name: admin-frontend
-        image: docker.jcr.pcfae.com/appflowyinc/admin_frontend:latest
-        resources:
-          requests:
-            memory: "512Mi"
-            cpu: "250m"
-          limits:
-            memory: "1Gi"
-            cpu: "500m"
+        - name: admin-frontend
+          image: docker.io/appflowyinc/admin_frontend:0.10.3
+          resources:
+            requests:
+              memory: "512Mi"
+              cpu: "250m"
+            limits:
+              memory: "1Gi"
+              cpu: "500m"

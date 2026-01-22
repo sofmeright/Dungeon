@@ -3,31 +3,31 @@ kind: StatefulSet
 metadata:
   name: appflowy-minio
 spec:
-  replicas: 1
+  replicas: 0  # Migrated to Ceph RGW
   template:
     spec:
       containers:
-      - name: minio
-        image: docker.jcr.pcfae.com/minio/minio:latest
-        env:
-        - name: MINIO_BROWSER_REDIRECT_URL
-          value: "https://flwy.prplanit.com/minio"
-        volumeMounts:
-        - name: temple-of-time-appflowy-minio-data
-          mountPath: /data
+        - name: minio
+          image: docker.io/minio/minio:latest
+          env:
+            - name: MINIO_BROWSER_REDIRECT_URL
+              value: "https://flwy.prplanit.com/minio"
+          volumeMounts:
+            - name: temple-of-time-appflowy-minio-data
+              mountPath: /data
+          resources:
+            requests:
+              memory: "1Gi"
+              cpu: "500m"
+            limits:
+              memory: "2Gi"
+              cpu: "1000m"
+  volumeClaimTemplates:
+    - metadata:
+        name: temple-of-time-appflowy-minio-data
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        storageClassName: ceph-rbd
         resources:
           requests:
-            memory: "1Gi"
-            cpu: "500m"
-          limits:
-            memory: "2Gi"
-            cpu: "1000m"
-  volumeClaimTemplates:
-  - metadata:
-      name: temple-of-time-appflowy-minio-data
-    spec:
-      accessModes: ["ReadWriteOnce"]
-      storageClassName: ceph-rbd
-      resources:
-        requests:
-          storage: 50Gi
+            storage: 50Gi
