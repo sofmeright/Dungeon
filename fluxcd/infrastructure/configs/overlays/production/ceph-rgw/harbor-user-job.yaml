@@ -34,11 +34,12 @@ spec:
               done
 
               # Create S3 user for Harbor if it doesn't exist
-              if ! radosgw-admin --name client.dungeon-rgw user info --uid=harbor 2>/dev/null; then
+              # NOTE: UID must differ from bucket name to avoid RGW object collision
+              if ! radosgw-admin --name client.dungeon-rgw user info --uid=harbor-sa 2>/dev/null; then
                 echo "Creating Harbor S3 user..."
                 radosgw-admin --name client.dungeon-rgw user create \
-                  --uid=harbor \
-                  --display-name="Harbor Container Registry" \
+                  --uid=harbor-sa \
+                  --display-name="Harbor Container Registry Service Account" \
                   --access-key="${HARBOR_ACCESS_KEY}" \
                   --secret-key="${HARBOR_SECRET_KEY}"
               else
@@ -59,15 +60,15 @@ spec:
                 "signature_v2 = True" \
                 > /root/.s3cfg
 
-              # Create harbor bucket
-              if ! s3cmd ls s3://harbor 2>/dev/null; then
-                echo "Creating bucket: harbor"
-                s3cmd mb s3://harbor
+              # Create harbor-registry bucket
+              if ! s3cmd ls s3://harbor-registry 2>/dev/null; then
+                echo "Creating bucket: harbor-registry"
+                s3cmd mb s3://harbor-registry
               else
-                echo "Bucket already exists: harbor"
+                echo "Bucket already exists: harbor-registry"
               fi
 
-              echo "Harbor S3 setup complete"
+              echo "Harbor RGW setup complete"
           volumeMounts:
             - name: ceph-config
               mountPath: /etc/ceph/ceph.conf
