@@ -5,3 +5,6 @@ metadata:
 spec:
   cephVersion:
     image: quay.io/ceph/ceph:v19
+  # Crash collector disabled - no Ceph daemons run in K8s for external clusters
+  crashCollector:
+    disable: true
