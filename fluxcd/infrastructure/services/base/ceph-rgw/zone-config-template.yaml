@@ -6,35 +6,35 @@ data:
   zone.json: |
     {
         "name": "default",
-        "domain_root": "dungeon-rgw.root",
-        "control_pool": "dungeon-rgw.control",
-        "gc_pool": "dungeon-rgw.gc",
-        "lc_pool": "dungeon-rgw.lc",
-        "log_pool": "dungeon-rgw.log",
-        "intent_log_pool": "dungeon-rgw.intent",
-        "usage_log_pool": "dungeon-rgw.usage",
-        "roles_pool": "dungeon-rgw.roles",
-        "reshard_pool": "dungeon-rgw.reshard",
-        "user_keys_pool": "dungeon-rgw.users.keys",
-        "user_email_pool": "dungeon-rgw.users.email",
-        "user_swift_pool": "dungeon-rgw.users.swift",
-        "user_uid_pool": "dungeon-rgw.users.uid",
-        "otp_pool": "dungeon-rgw.otp",
-        "notif_pool": "dungeon-rgw.notif",
-        "topics_pool": "dungeon-rgw.topics",
-        "account_pool": "dungeon-rgw.accounts",
-        "group_pool": "dungeon-rgw.groups",
+        "domain_root": "dungeon-rgw",
+        "control_pool": "dungeon-rgw",
+        "gc_pool": "dungeon-rgw",
+        "lc_pool": "dungeon-rgw",
+        "log_pool": "dungeon-rgw",
+        "intent_log_pool": "dungeon-rgw",
+        "usage_log_pool": "dungeon-rgw",
+        "roles_pool": "dungeon-rgw",
+        "reshard_pool": "dungeon-rgw",
+        "user_keys_pool": "dungeon-rgw",
+        "user_email_pool": "dungeon-rgw",
+        "user_swift_pool": "dungeon-rgw",
+        "user_uid_pool": "dungeon-rgw",
+        "otp_pool": "dungeon-rgw",
+        "notif_pool": "dungeon-rgw",
+        "topics_pool": "dungeon-rgw",
+        "account_pool": "dungeon-rgw",
+        "group_pool": "dungeon-rgw",
         "placement_pools": [
             {
                 "key": "default-placement",
                 "val": {
-                    "index_pool": "dungeon-rgw.buckets.index",
+                    "index_pool": "dungeon-rgw",
                     "storage_classes": {
                         "STANDARD": {
                             "data_pool": "dungeon-rgw-data"
                         }
                     },
-                    "data_extra_pool": "dungeon-rgw.buckets.non-ec",
+                    "data_extra_pool": "dungeon-rgw",
                     "index_type": 0,
                     "inline_data": true
                 }
