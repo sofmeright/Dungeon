@@ -60,6 +60,9 @@ spec:
               name: PLACEHOLDER_APP_PUBLIC
             - $patch: delete
               name: PLACEHOLDER_APP_STORAGE
+            - name: nginx-config
+              mountPath: /etc/nginx/conf.d
+              readOnly: true
             - name: hyrule-castle-invoiceninja-app-public
               mountPath: /var/www/html/public
               readOnly: true
