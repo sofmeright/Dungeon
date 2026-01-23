@@ -25,5 +25,6 @@ data:
   APPFLOWY_S3_USE_MINIO: "true"
   APPFLOWY_S3_MINIO_URL: "http://ceph-rgw.gorons-bracelet.svc.cluster.local"
   APPFLOWY_S3_BUCKET: "appflowy-files"
+  APPFLOWY_S3_CREATE_BUCKET: "false"
   AI_APPFLOWY_BUCKET_NAME: "appflowy-files"
   AI_MINIO_URL: "http://ceph-rgw.gorons-bracelet.svc.cluster.local"

@@ -49,7 +49,7 @@ spec:
             - name: APPFLOWY_S3_REGION
               value: "us-east-1"
             - name: APPFLOWY_S3_CREATE_BUCKET
-              value: "true"
+              value: "false"
             - name: APPFLOWY_S3_PRESIGNED_URL_ENDPOINT
               value: "https://flwy.prplanit.com/files"
             # Secrets from shared secret (JWT, GoTrue admin)
