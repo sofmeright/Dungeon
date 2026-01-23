@@ -16,6 +16,10 @@ spec:
           env:
             - name: APP_URL
               value: "https://2fa.pcfae.com"
+            - name: SESSION_DRIVER
+              value: "database"
+            - name: CACHE_DRIVER
+              value: "database"
           resources:
             requests:
               memory: 128Mi
