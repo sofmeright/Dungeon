@@ -41,7 +41,7 @@ spec:
             - name: APPFLOWY_WEBSOCKET_MAILBOX_SIZE
               value: "6000"
             - name: APPFLOWY_S3_USE_MINIO
-              value: "false"
+              value: "true"
             - name: APPFLOWY_S3_MINIO_URL
               value: "http://ceph-rgw.gorons-bracelet.svc.cluster.local"
             - name: APPFLOWY_S3_BUCKET

@@ -21,8 +21,8 @@ data:
   APPFLOWY_MAILER_SMTP_HOST: "smtp.gmail.com"
   GOTRUE_SMTP_HOST: "smtp.gmail.com"
 
-  # Production S3 (Ceph RGW)
-  APPFLOWY_S3_USE_MINIO: "false"
+  # Production S3 (Ceph RGW - use MinIO mode for S3 compatibility)
+  APPFLOWY_S3_USE_MINIO: "true"
   APPFLOWY_S3_MINIO_URL: "http://ceph-rgw.gorons-bracelet.svc.cluster.local"
   APPFLOWY_S3_BUCKET: "appflowy-files"
   AI_APPFLOWY_BUCKET_NAME: "appflowy-files"
