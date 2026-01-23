@@ -49,11 +49,11 @@ spec:
             - name: apache-config
               mountPath: /etc/apache2/conf.d/ssl.conf
               subPath: ssl.conf
-            - name: kokiri-forest-linkstack-htdocs
-              mountPath: /htdocs
+            - name: kokiri-forest-linkstack-storage
+              mountPath: /htdocs/storage
   volumeClaimTemplates:
     - metadata:
-        name: kokiri-forest-linkstack-htdocs
+        name: kokiri-forest-linkstack-storage
       spec:
         accessModes:
           - ReadWriteOnce

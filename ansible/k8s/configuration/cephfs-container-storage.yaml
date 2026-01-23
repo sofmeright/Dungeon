@@ -1,0 +1,169 @@
+---
+# CephFS Container Image Storage Configuration
+#
+# Configures K8s nodes to use shared CephFS for container image storage.
+# Eliminates per-node disk pressure and enables cluster-wide image cache.
+#
+# Prerequisites:
+#   1. Create the CephFS directory (via existing CephFS mount):
+#      mkdir -p /dungeon/hdd/container-images
+#
+#   2. Create restricted Ceph user on Ceph cluster (Proxmox):
+#      ceph fs authorize Seed_Bank client.dungeon-host /dungeon/hdd/container-images rw
+#
+#   3. Get the key:
+#      ceph auth get-key client.dungeon-host
+#
+#   4. Create and encrypt vars file:
+#      sops vars/cephfs-container-storage.sops.yaml
+#      # Add: cephfs_key: <key from step 3>
+#
+# Usage:
+#   ansible-playbook -i inventory k8s/configuration/cephfs-container-storage.yaml -l dungeon_k8s
+#
+# First-time migration (backs up existing local storage):
+#   ansible-playbook ... -e cephfs_migrate_storage=true
+
+- name: K8s Nodes - Configure CephFS for Container Image Storage
+  hosts: dungeon_k8s
+  become: yes
+  vars_files:
+    - vars/cephfs-container-storage.sops.yaml
+  vars:
+    ceph_fsid: "0985467c-d8f3-4483-b27f-f0a512397ec2"
+    ceph_mon_hosts:
+      - "[fc00:f1:ada:104e:1ace::1]"
+      - "[fc00:f1:ada:104e:1ace::2]"
+      - "[fc00:f1:ada:104e:1ace::3]"
+      - "[fc00:f1:ada:104e:1ace::4]"
+      - "[fc00:f1:ada:104e:1ace::5]"
+    ceph_fs_name: "Seed_Bank"
+    ceph_user: "dungeon-host"
+    cephfs_mount_path: "/media/container-images"
+    cephfs_subpath: "/dungeon/hdd/container-images"
+
+  tasks:
+    - name: Install ceph-common package
+      ansible.builtin.apt:
+        name: ceph-common
+        state: present
+        update_cache: yes
+
+    - name: Create /etc/ceph directory
+      ansible.builtin.file:
+        path: /etc/ceph
+        state: directory
+        mode: '0755'
+
+    - name: Configure /etc/ceph/ceph.conf
+      ansible.builtin.copy:
+        dest: /etc/ceph/ceph.conf
+        mode: '0644'
+        content: |
+          [global]
+          fsid = {{ ceph_fsid }}
+          mon_host = {{ ceph_mon_hosts | join(',') }}
+
+    - name: Write CephFS keyring
+      ansible.builtin.copy:
+        dest: "/etc/ceph/ceph.client.{{ ceph_user }}.keyring"
+        mode: '0600'
+        content: |
+          [client.{{ ceph_user }}]
+              key = {{ cephfs_key }}
+
+    - name: Write CephFS secret file for mount
+      ansible.builtin.copy:
+        dest: "/etc/ceph/ceph.client.{{ ceph_user }}.secret"
+        mode: '0600'
+        content: "{{ cephfs_key }}"
+
+    - name: Create mount point directory
+      ansible.builtin.file:
+        path: "{{ cephfs_mount_path }}"
+        state: directory
+        mode: '0755'
+
+    - name: Create systemd mount unit for CephFS
+      ansible.builtin.copy:
+        dest: /etc/systemd/system/media-container\\x2dimages.mount
+        mode: '0644'
+        content: |
+          [Unit]
+          Description=CephFS Container Image Storage
+          Before=crio.service kubelet.service
+          After=network-online.target
+
+          [Mount]
+          What={{ ceph_mon_hosts[0] }}:{{ cephfs_subpath }}
+          Where={{ cephfs_mount_path }}
+          Type=ceph
+          Options=name={{ ceph_user }},secretfile=/etc/ceph/ceph.client.{{ ceph_user }}.secret,fs={{ ceph_fs_name }},_netdev
+
+          [Install]
+          WantedBy=multi-user.target
+      notify:
+        - Reload systemd
+
+    - name: Enable and start CephFS mount
+      ansible.builtin.systemd:
+        name: media-container\\x2dimages.mount
+        enabled: yes
+        state: started
+        daemon_reload: yes
+
+    - name: Verify CephFS mount
+      ansible.builtin.command:
+        cmd: mountpoint -q {{ cephfs_mount_path }}
+      changed_when: false
+
+    - name: Create storage subdirectories
+      ansible.builtin.file:
+        path: "{{ cephfs_mount_path }}/{{ item }}"
+        state: directory
+        mode: '0755'
+      loop:
+        - overlay
+        - overlay-images
+        - overlay-layers
+        - overlay-containers
+
+    - name: Stop CRI-O before storage config change
+      ansible.builtin.systemd:
+        name: crio
+        state: stopped
+
+    - name: Backup existing local container storage (if migrating)
+      ansible.builtin.command:
+        cmd: mv /var/lib/containers/storage /var/lib/containers/storage.local-backup
+        creates: /var/lib/containers/storage.local-backup
+      when: cephfs_migrate_storage | default(false)
+
+    - name: Configure CRI-O storage.conf
+      ansible.builtin.copy:
+        dest: /etc/containers/storage.conf
+        mode: '0644'
+        backup: yes
+        content: |
+          [storage]
+          driver = "overlay"
+          runroot = "/run/containers/storage"
+          graphroot = "{{ cephfs_mount_path }}"
+
+          [storage.options]
+          additionalimagestores = []
+          pull_options = {enable_partial_images = "false", use_hard_links = "false", ostree_repos=""}
+
+          [storage.options.overlay]
+          mountopt = "nodev,metacopy=on"
+
+    - name: Start CRI-O with new storage config
+      ansible.builtin.systemd:
+        name: crio
+        state: started
+        enabled: yes
+
+  handlers:
+    - name: Reload systemd
+      ansible.builtin.systemd:
+        daemon_reload: yes
