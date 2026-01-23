@@ -5,16 +5,15 @@ metadata:
   namespace: hyrule-castle
 spec:
   parentRefs:
-  - name: cell-membrane-gateway
-    namespace: hyrule-castle
-    sectionName: https
+    - name: cell-membrane-gateway
+      namespace: hyrule-castle
   hostnames:
-  - "invoiceninja.prplanit.com"
+    - "invoiceninja.prplanit.com"
   rules:
-  - matches:
-    - path:
-        type: PathPrefix
-        value: /
-    backendRefs:
-    - name: invoiceninja-nginx
-      port: 9000
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /
+      backendRefs:
+        - name: invoiceninja-nginx
+          port: 9000
