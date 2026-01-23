@@ -6,29 +6,29 @@ spec:
   template:
     spec:
       securityContext:
-        fsGroup: 999  # Redis user in official redis:alpine image
+        fsGroup: 1000  # redis group in official redis:alpine image
       containers:
-      - name: redis
-        image: docker.jcr.pcfae.com/redis:alpine
-        volumeMounts:
-        - $patch: delete
-          name: PLACEHOLDER_REDIS_DATA
-        - name: hyrule-castle-invoiceninja-redis-data
-          mountPath: /data
+        - name: redis
+          image: docker.io/redis:alpine
+          volumeMounts:
+            - $patch: delete
+              name: PLACEHOLDER_REDIS_DATA
+            - name: hyrule-castle-invoiceninja-redis-data
+              mountPath: /data
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "256Mi"
+            limits:
+              cpu: "500m"
+              memory: "1Gi"
+  volumeClaimTemplates:
+    - metadata:
+        name: hyrule-castle-invoiceninja-redis-data
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        storageClassName: ceph-rbd
         resources:
           requests:
-            cpu: "100m"
-            memory: "256Mi"
-          limits:
-            cpu: "500m"
-            memory: "1Gi"
-  volumeClaimTemplates:
-  - metadata:
-      name: hyrule-castle-invoiceninja-redis-data
-    spec:
-      accessModes:
-      - ReadWriteOnce
-      storageClassName: ceph-rbd
-      resources:
-        requests:
-          storage: 5Gi
+            storage: 5Gi
