@@ -16,50 +16,50 @@ spec:
       imagePullSecrets:
         - name: PLACEHOLDER_IMAGE_PULL_SECRET
       containers:
-      - name: linkstack
-        image: PLACEHOLDER_IMAGE
-        ports:
-        - containerPort: 443
-          name: https
-        env:
-        - name: PUID
-          value: PLACEHOLDER_PUID
-        - name: PGID
-          value: PLACEHOLDER_PGID
-        - name: TZ
-          value: PLACEHOLDER_TZ
-        - name: SERVER_ADMIN
-          valueFrom:
-            secretKeyRef:
-              name: linkstack-secrets
-              key: SERVER_ADMIN
-        - name: HTTP_SERVER_NAME
-          value: PLACEHOLDER_HTTP_SERVER_NAME
-        - name: HTTPS_SERVER_NAME
-          value: PLACEHOLDER_HTTPS_SERVER_NAME
-        - name: LOG_LEVEL
-          value: PLACEHOLDER_LOG_LEVEL
-        - name: PHP_MEMORY_LIMIT
-          value: PLACEHOLDER_PHP_MEMORY_LIMIT
-        - name: UPLOAD_MAX_FILESIZE
-          value: PLACEHOLDER_UPLOAD_MAX_FILESIZE
+        - name: linkstack
+          image: PLACEHOLDER_IMAGE
+          ports:
+            - containerPort: 443
+              name: https
+          env:
+            - name: PUID
+              value: PLACEHOLDER_PUID
+            - name: PGID
+              value: PLACEHOLDER_PGID
+            - name: TZ
+              value: PLACEHOLDER_TZ
+            - name: SERVER_ADMIN
+              valueFrom:
+                secretKeyRef:
+                  name: linkstack-secrets
+                  key: SERVER_ADMIN
+            - name: HTTP_SERVER_NAME
+              value: PLACEHOLDER_HTTP_SERVER_NAME
+            - name: HTTPS_SERVER_NAME
+              value: PLACEHOLDER_HTTPS_SERVER_NAME
+            - name: LOG_LEVEL
+              value: PLACEHOLDER_LOG_LEVEL
+            - name: PHP_MEMORY_LIMIT
+              value: PLACEHOLDER_PHP_MEMORY_LIMIT
+            - name: UPLOAD_MAX_FILESIZE
+              value: PLACEHOLDER_UPLOAD_MAX_FILESIZE
+          resources:
+            requests:
+              cpu: PLACEHOLDER_CPU_REQUEST
+              memory: PLACEHOLDER_MEMORY_REQUEST
+            limits:
+              cpu: PLACEHOLDER_CPU_LIMIT
+              memory: PLACEHOLDER_MEMORY_LIMIT
+          volumeMounts:
+            - name: PLACEHOLDER_NAMESPACE-linkstack-storage
+              mountPath: /htdocs/storage
+  volumeClaimTemplates:
+    - metadata:
+        name: PLACEHOLDER_NAMESPACE-linkstack-storage
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        storageClassName: PLACEHOLDER_STORAGE_CLASS
         resources:
           requests:
-            cpu: PLACEHOLDER_CPU_REQUEST
-            memory: PLACEHOLDER_MEMORY_REQUEST
-          limits:
-            cpu: PLACEHOLDER_CPU_LIMIT
-            memory: PLACEHOLDER_MEMORY_LIMIT
-        volumeMounts:
-        - name: PLACEHOLDER_NAMESPACE-linkstack-htdocs
-          mountPath: /htdocs
-  volumeClaimTemplates:
-  - metadata:
-      name: PLACEHOLDER_NAMESPACE-linkstack-htdocs
-    spec:
-      accessModes:
-      - ReadWriteOnce
-      storageClassName: PLACEHOLDER_STORAGE_CLASS
-      resources:
-        requests:
-          storage: PLACEHOLDER_HTDOCS_STORAGE
+            storage: PLACEHOLDER_STORAGE_SIZE
