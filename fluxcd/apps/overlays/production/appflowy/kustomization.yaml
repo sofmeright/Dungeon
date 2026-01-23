@@ -27,3 +27,4 @@ patches:
   - path: externalsecret-minio-patch.yaml
   - path: externalsecret-postgres-init-patch.yaml
   - path: configmap-app-patch.yaml
+  - path: configmap-nginx-patch.yaml
