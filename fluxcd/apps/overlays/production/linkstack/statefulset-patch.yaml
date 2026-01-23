@@ -57,6 +57,11 @@ spec:
               value: "512M"
             - name: UPLOAD_MAX_FILESIZE
               value: "16M"
+            # Laravel/LinkStack settings - override .env for infrastructure config
+            - name: APP_URL
+              value: "https://ls.sofmeright.com"
+            - name: FORCE_HTTPS
+              value: "true"
           resources:
             requests:
               cpu: 100m
