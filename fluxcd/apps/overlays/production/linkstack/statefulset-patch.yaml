@@ -49,15 +49,37 @@ spec:
             - name: apache-config
               mountPath: /etc/apache2/conf.d/ssl.conf
               subPath: ssl.conf
-            - name: kokiri-forest-linkstack-storage
-              mountPath: /htdocs/storage
+            - name: kokiri-forest-linkstack-themes
+              mountPath: /htdocs/themes
+            - name: kokiri-forest-linkstack-img
+              mountPath: /htdocs/img
+            - name: kokiri-forest-linkstack-backups
+              mountPath: /htdocs/backups
   volumeClaimTemplates:
     - metadata:
-        name: kokiri-forest-linkstack-storage
+        name: kokiri-forest-linkstack-themes
       spec:
         accessModes:
           - ReadWriteOnce
         storageClassName: ceph-rbd
         resources:
           requests:
-            storage: 5Gi
+            storage: 1Gi
+    - metadata:
+        name: kokiri-forest-linkstack-img
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        storageClassName: ceph-rbd
+        resources:
+          requests:
+            storage: 1Gi
+    - metadata:
+        name: kokiri-forest-linkstack-backups
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        storageClassName: ceph-rbd
+        resources:
+          requests:
+            storage: 1Gi
