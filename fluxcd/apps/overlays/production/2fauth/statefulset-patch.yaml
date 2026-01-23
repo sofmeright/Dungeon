@@ -15,7 +15,7 @@ spec:
           image: docker.io/2fauth/2fauth:latest
           env:
             - name: APP_URL
-              value: "http://172.22.30.86:8000"
+              value: "https://2fa.pcfae.com"
           resources:
             requests:
               memory: 128Mi
