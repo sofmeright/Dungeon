@@ -8,3 +8,7 @@ spec:
       namespace: hyrule-castle
   hostnames:
     - analytics.prplanit.com
+  rules:
+    - backendRefs:
+        - name: umami
+          port: 3475
