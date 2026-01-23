@@ -51,40 +51,15 @@ spec:
               cpu: PLACEHOLDER_CPU_LIMIT
               memory: PLACEHOLDER_MEMORY_LIMIT
           volumeMounts:
-            - name: PLACEHOLDER_NAMESPACE-linkstack-themes
-              mountPath: /htdocs/themes
-            - name: PLACEHOLDER_NAMESPACE-linkstack-img
-              mountPath: /htdocs/img
-            - name: PLACEHOLDER_NAMESPACE-linkstack-backups
-              mountPath: /htdocs/backups
-              # Optional: mount database dir if using SQLite instead of MariaDB/MySQL
-              # - name: PLACEHOLDER_NAMESPACE-linkstack-database
-              #   mountPath: /htdocs/database
+            - name: PLACEHOLDER_NAMESPACE-linkstack-htdocs
+              mountPath: /htdocs
   volumeClaimTemplates:
     - metadata:
-        name: PLACEHOLDER_NAMESPACE-linkstack-themes
+        name: PLACEHOLDER_NAMESPACE-linkstack-htdocs
       spec:
         accessModes:
           - ReadWriteOnce
         storageClassName: PLACEHOLDER_STORAGE_CLASS
         resources:
           requests:
-            storage: PLACEHOLDER_THEMES_SIZE
-    - metadata:
-        name: PLACEHOLDER_NAMESPACE-linkstack-img
-      spec:
-        accessModes:
-          - ReadWriteOnce
-        storageClassName: PLACEHOLDER_STORAGE_CLASS
-        resources:
-          requests:
-            storage: PLACEHOLDER_IMG_SIZE
-    - metadata:
-        name: PLACEHOLDER_NAMESPACE-linkstack-backups
-      spec:
-        accessModes:
-          - ReadWriteOnce
-        storageClassName: PLACEHOLDER_STORAGE_CLASS
-        resources:
-          requests:
-            storage: PLACEHOLDER_BACKUPS_SIZE
+            storage: PLACEHOLDER_HTDOCS_SIZE

@@ -11,9 +11,31 @@ spec:
       securityContext:
         fsGroup: 101
       volumes:
+        # NOTE: Apache config customization via ConfigMap
+        # httpd.conf - main Apache config with port 8080 for HTTP
+        # ssl.conf - SSL configuration (TLS terminated at gateway)
         - name: apache-config
           configMap:
             name: linkstack-apache-config
+      initContainers:
+        - name: init-htdocs
+          image: docker.io/linkstackorg/linkstack:latest
+          command:
+            - /bin/sh
+            - -c
+            - |
+              # Copy app files from image to PVC if empty (mimics Docker volume behavior)
+              if [ ! -f /mnt/htdocs/index.php ]; then
+                echo "Initializing htdocs from container image..."
+                cp -a /htdocs/. /mnt/htdocs/
+                chown -R 100:101 /mnt/htdocs
+                echo "Done - copied $(find /mnt/htdocs -type f | wc -l) files"
+              else
+                echo "htdocs already initialized (index.php exists), skipping copy"
+              fi
+          volumeMounts:
+            - name: kokiri-forest-linkstack-htdocs
+              mountPath: /mnt/htdocs
       containers:
         - name: linkstack
           image: docker.io/linkstackorg/linkstack:latest
@@ -49,37 +71,15 @@ spec:
             - name: apache-config
               mountPath: /etc/apache2/conf.d/ssl.conf
               subPath: ssl.conf
-            - name: kokiri-forest-linkstack-themes
-              mountPath: /htdocs/themes
-            - name: kokiri-forest-linkstack-img
-              mountPath: /htdocs/img
-            - name: kokiri-forest-linkstack-backups
-              mountPath: /htdocs/backups
+            - name: kokiri-forest-linkstack-htdocs
+              mountPath: /htdocs
   volumeClaimTemplates:
     - metadata:
-        name: kokiri-forest-linkstack-themes
+        name: kokiri-forest-linkstack-htdocs
       spec:
         accessModes:
           - ReadWriteOnce
         storageClassName: ceph-rbd
         resources:
           requests:
-            storage: 1Gi
-    - metadata:
-        name: kokiri-forest-linkstack-img
-      spec:
-        accessModes:
-          - ReadWriteOnce
-        storageClassName: ceph-rbd
-        resources:
-          requests:
-            storage: 1Gi
-    - metadata:
-        name: kokiri-forest-linkstack-backups
-      spec:
-        accessModes:
-          - ReadWriteOnce
-        storageClassName: ceph-rbd
-        resources:
-          requests:
-            storage: 1Gi
+            storage: 5Gi
