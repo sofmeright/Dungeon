@@ -5,6 +5,6 @@ metadata:
 spec:
   parentRefs:
     - name: cell-membrane-gateway
-      namespace: king-of-red-lions
+      namespace: hyrule-castle
   hostnames:
     - analytics.prplanit.com
