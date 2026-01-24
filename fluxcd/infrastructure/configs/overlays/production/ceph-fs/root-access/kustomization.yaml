@@ -10,6 +10,5 @@ resources:
   - cephfs-init-grafana.yaml
   - cephfs-init-harbor.yaml
   - cephfs-init-homarr.yaml
-  - cephfs-init-mimir.yaml
   - cephfs-init-opnform.yaml
   - cephfs-init-vaultwarden.yaml
