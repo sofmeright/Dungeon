@@ -8,7 +8,7 @@ spec:
     spec:
       containers:
       - name: appflowy-ai
-        image: docker.jcr.pcfae.com/appflowyinc/appflowy_ai:latest
+        image: docker.io/appflowyinc/appflowy_ai:latest
         resources:
           requests:
             memory: "1Gi"

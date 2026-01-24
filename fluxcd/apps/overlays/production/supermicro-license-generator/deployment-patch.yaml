@@ -8,7 +8,7 @@ spec:
     spec:
       containers:
       - name: supermicro-license-generator
-        image: docker.jcr.pcfae.com/prplanit/sm-lickitung-oci:latest
+        image: docker.io/prplanit/sm-lickitung-oci:latest
         resources:
           requests:
             cpu: 50m

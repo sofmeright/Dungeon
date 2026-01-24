@@ -8,7 +8,7 @@ spec:
     spec:
       containers:
       - name: app
-        image: docker.jcr.pcfae.com/amruthpillai/reactive-resume:latest
+        image: docker.io/amruthpillai/reactive-resume:latest
         env:
         - name: PUBLIC_URL
           value: "https://resume.sofmeright.com"

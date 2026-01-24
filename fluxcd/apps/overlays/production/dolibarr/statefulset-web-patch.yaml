@@ -7,10 +7,10 @@ spec:
     spec:
       initContainers:
       - name: wait-for-mariadb
-        image: docker.jcr.pcfae.com/busybox:1.36
+        image: docker.io/busybox:1.36
       containers:
       - name: dolibarr
-        image: docker.jcr.pcfae.com/tuxgasy/dolibarr:latest
+        image: docker.io/tuxgasy/dolibarr:latest
         volumeMounts:
         - $patch: delete
           name: PLACEHOLDER_DOLIBARR_DATA

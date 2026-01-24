@@ -7,7 +7,7 @@ spec:
     spec:
       containers:
       - name: redis
-        image: docker.jcr.pcfae.com/redis:6.2-alpine
+        image: docker.io/redis:6.2-alpine
         resources:
           requests:
             cpu: "100m"

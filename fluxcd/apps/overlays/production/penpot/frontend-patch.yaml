@@ -9,7 +9,7 @@ spec:
       - name: docker-io-pull-secret
       containers:
       - name: frontend
-        image: docker.jcr.pcfae.com/penpotapp/frontend:latest
+        image: docker.io/penpotapp/frontend:latest
         env:
         - name: PENPOT_FLAGS
           value: "enable-registration enable-login-with-password enable-login-with-oidc enable-oidc-registration disable-email-verification enable-insecure-register enable-smtp enable-prepl-server disable-secure-session-cookies"

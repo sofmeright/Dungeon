@@ -7,7 +7,7 @@ spec:
     spec:
       containers:
       - name: postgres
-        image: docker.jcr.pcfae.com/postgres:15
+        image: docker.io/postgres:15
         volumeMounts:
         - name: temple-of-time-joplin-postgres-data
           mountPath: /var/lib/postgresql/data

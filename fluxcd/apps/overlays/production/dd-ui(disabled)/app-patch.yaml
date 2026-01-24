@@ -9,7 +9,7 @@ spec:
       - name: jcr-pcfae-dungeon-pull-secret
       containers:
       - name: dd-ui
-        image: docker.jcr.pcfae.com/prplanit/dd-ui:v0.7.5
+        image: docker.io/prplanit/dd-ui:v0.7.5
         env:
         - name: DD_UI_UI_ORIGIN
           value: https://dd-ui.pcfae.com

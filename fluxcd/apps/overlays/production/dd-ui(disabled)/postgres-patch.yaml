@@ -9,7 +9,7 @@ spec:
       - name: jcr-pcfae-dungeon-pull-secret
       containers:
       - name: postgres
-        image: docker.jcr.pcfae.com/postgres:16-alpine
+        image: docker.io/postgres:16-alpine
         volumeMounts:
         - name: hookshot-dd-ui-postgres-data
           mountPath: /var/lib/postgresql/data

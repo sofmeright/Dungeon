@@ -8,7 +8,7 @@ spec:
     spec:
       containers:
       - name: bagisto-demo
-        image: docker.jcr.pcfae.com/webkul/apache-php:latest
+        image: docker.io/webkul/apache-php:latest
         env:
         - name: USER_UID
           value: "1000"

@@ -10,7 +10,7 @@ spec:
       - name: jcr-pcfae-dungeon-pull-secret
       containers:
       - name: quay
-        image: quay.jcr.pcfae.com/projectquay/quay:latest
+        image: quay.io/projectquay/quay:latest
   volumeClaimTemplates:
   - metadata:
       name: quay-storage

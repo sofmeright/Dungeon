@@ -20,7 +20,7 @@ spec:
         fsGroup: 1001
       containers:
       - name: theisland
-        image: docker.jcr.pcfae.com/drpsychick/arkserver:latest
+        image: docker.io/drpsychick/arkserver:latest
         ports:
         - containerPort: 7797
           protocol: UDP

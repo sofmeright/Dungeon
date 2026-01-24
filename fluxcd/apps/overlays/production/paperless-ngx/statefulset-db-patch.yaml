@@ -8,7 +8,7 @@ spec:
     spec:
       containers:
       - name: postgres
-        image: docker.jcr.pcfae.com/library/postgres:16
+        image: docker.io/library/postgres:16
         volumeMounts:
         - name: pedestal-of-time-paperless-postgres
           mountPath: /var/lib/postgresql/data

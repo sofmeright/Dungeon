@@ -10,4 +10,4 @@ spec:
       - name: jcr-pcfae-dungeon-pull-secret
       containers:
       - name: tiki-wiki
-        image: docker.jcr.pcfae.com/tikiwiki/tikiwiki:25.x
+        image: docker.io/tikiwiki/tikiwiki:25.x

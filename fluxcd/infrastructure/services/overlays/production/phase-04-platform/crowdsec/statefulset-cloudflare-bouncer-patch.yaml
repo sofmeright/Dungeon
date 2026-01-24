@@ -11,7 +11,7 @@ spec:
     spec:
       initContainers:
       - name: config-substitution
-        image: docker.jcr.pcfae.com/alpine:latest
+        image: docker.io/alpine:latest
         command:
         - sh
         - -c
@@ -36,7 +36,7 @@ spec:
           mountPath: /config
       containers:
       - name: cloudflare-bouncer
-        image: ghcr.jcr.pcfae.com/crowdsecurity/cloudflare-bouncer:latest
+        image: ghcr.io/crowdsecurity/cloudflare-bouncer:latest
         volumeMounts:
         - name: bouncer-config-rendered
           mountPath: /etc/crowdsec/bouncers

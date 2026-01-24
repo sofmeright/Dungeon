@@ -10,7 +10,7 @@ spec:
       - name: jcr-pcfae-dungeon-pull-secret
       containers:
       - name: redis
-        image: docker.jcr.pcfae.com/redis:7
+        image: docker.io/redis:7
   volumeClaimTemplates:
   - metadata:
       name: redis-data

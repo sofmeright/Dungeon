@@ -8,7 +8,7 @@ spec:
     spec:
       containers:
       - name: redis
-        image: docker.jcr.pcfae.com/redis:latest
+        image: docker.io/redis:latest
         resources:
           requests:
             memory: "512Mi"

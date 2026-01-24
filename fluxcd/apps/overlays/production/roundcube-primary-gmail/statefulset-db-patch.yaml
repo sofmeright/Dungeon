@@ -8,7 +8,7 @@ spec:
     spec:
       containers:
       - name: mysql
-        image: docker.jcr.pcfae.com/library/mysql:5.7
+        image: docker.io/library/mysql:5.7
         args:
         - --datadir=/var/lib/mysql/data
         volumeMounts:

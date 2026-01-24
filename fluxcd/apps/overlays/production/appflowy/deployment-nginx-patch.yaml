@@ -8,7 +8,7 @@ spec:
     spec:
       containers:
       - name: nginx
-        image: docker.jcr.pcfae.com/nginx:latest
+        image: docker.io/nginx:latest
         volumeMounts:
         - name: nginx-config
           mountPath: /etc/nginx/nginx.conf

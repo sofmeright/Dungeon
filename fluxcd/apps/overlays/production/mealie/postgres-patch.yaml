@@ -8,7 +8,7 @@ spec:
     spec:
       containers:
         - name: postgres
-          image: docker.jcr.pcfae.com/library/postgres:15
+          image: docker.io/library/postgres:15
           volumeMounts:
             - name: postgres-data
               mountPath: /var/lib/postgresql/data

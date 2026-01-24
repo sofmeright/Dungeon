@@ -7,7 +7,7 @@ spec:
     spec:
       containers:
       - name: filebrowser
-        image: docker.jcr.pcfae.com/filebrowser/filebrowser:v2.31.2
+        image: docker.io/filebrowser/filebrowser:v2.31.2
   volumeClaimTemplates:
   - metadata:
       name: database

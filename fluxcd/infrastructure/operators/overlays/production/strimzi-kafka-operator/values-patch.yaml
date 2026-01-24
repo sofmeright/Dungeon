@@ -12,63 +12,63 @@ spec:
     # Image configuration - use JCR pull-through cache for bandwidth efficiency
     # CRI-O requires fully qualified image names in short-name enforcement mode
     image:
-      registry: quay.jcr.pcfae.com
+      registry: quay.io
       repository: strimzi
       # tag: use chart default (inherits from chart version)
 
     # Kafka image configuration
     kafka:
       image:
-        registry: quay.jcr.pcfae.com
+        registry: quay.io
         repository: strimzi/kafka
         # tag: use chart default
 
     # Kafka Bridge image
     kafkaBridge:
       image:
-        registry: quay.jcr.pcfae.com
+        registry: quay.io
         repository: strimzi/kafka-bridge
         # tag: use chart default
 
     # Kafka Exporter image
     kafkaExporter:
       image:
-        registry: quay.jcr.pcfae.com
+        registry: quay.io
         repository: strimzi
         # tag: use chart default
 
     # Cruise Control image
     cruiseControl:
       image:
-        registry: quay.jcr.pcfae.com
+        registry: quay.io
         repository: strimzi/kafka
         # tag: use chart default
 
     # Topic Operator image
     topicOperator:
       image:
-        registry: quay.jcr.pcfae.com
+        registry: quay.io
         repository: strimzi
         # tag: use chart default
 
     # User Operator image
     userOperator:
       image:
-        registry: quay.jcr.pcfae.com
+        registry: quay.io
         repository: strimzi
         # tag: use chart default
 
     # Kafka Init image
     kafkaInit:
       image:
-        registry: quay.jcr.pcfae.com
+        registry: quay.io
         repository: strimzi
         # tag: use chart default
 
     # TLS Sidecar image
     tlsSidecarEntityOperator:
       image:
-        registry: quay.jcr.pcfae.com
+        registry: quay.io
         repository: strimzi/kafka
         # tag: use chart default
 

@@ -10,7 +10,7 @@ spec:
       - name: jcr-pcfae-dungeon-pull-secret
       containers:
       - name: pihole
-        image: docker.jcr.pcfae.com/pihole/pihole:latest
+        image: docker.io/pihole/pihole:latest
         env:
         - name: TZ
           value: "America/Phoenix"

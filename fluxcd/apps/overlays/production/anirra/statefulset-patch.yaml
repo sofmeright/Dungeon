@@ -7,7 +7,7 @@ spec:
     spec:
       containers:
       - name: anirra
-        image: docker.jcr.pcfae.com/jpyles0524/anirra:latest
+        image: docker.io/jpyles0524/anirra:latest
         resources:
           requests:
             cpu: 200m

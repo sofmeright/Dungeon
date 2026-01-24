@@ -8,7 +8,7 @@ spec:
     spec:
       containers:
       - name: mariadb
-        image: docker.jcr.pcfae.com/mariadb:latest
+        image: docker.io/mariadb:latest
         env:
         - name: TZ
           value: "Etc/UTC"

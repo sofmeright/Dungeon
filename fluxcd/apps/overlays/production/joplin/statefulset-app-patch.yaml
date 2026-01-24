@@ -7,7 +7,7 @@ spec:
     spec:
       containers:
       - name: joplin
-        image: docker.jcr.pcfae.com/joplin/server:latest
+        image: docker.io/joplin/server:latest
         env:
         - name: APP_BASE_URL
           value: "https://joplin.optcp.com"

@@ -8,7 +8,7 @@ spec:
     spec:
       containers:
       - name: redis
-        image: docker.jcr.pcfae.com/library/redis:7
+        image: docker.io/library/redis:7
         volumeMounts:
         - name: pedestal-of-time-paperless-redis-data
           mountPath: /data

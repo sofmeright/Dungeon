@@ -7,4 +7,4 @@ spec:
     spec:
       containers:
       - name: kimai
-        image: docker.jcr.pcfae.com/kimai/kimai2:apache
+        image: docker.io/kimai/kimai2:apache

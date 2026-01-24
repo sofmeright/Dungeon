@@ -7,7 +7,7 @@ spec:
     spec:
       containers:
       - name: mariadb
-        image: docker.jcr.pcfae.com/mariadb:latest
+        image: docker.io/mariadb:latest
         volumeMounts:
         - $patch: delete
           name: PLACEHOLDER_MARIADB_DATA

@@ -10,7 +10,7 @@ spec:
       - name: jcr-pcfae-dungeon-pull-secret
       initContainers:
       - name: copy-config
-        image: docker.jcr.pcfae.com/busybox:1.36
+        image: docker.io/busybox:1.36
         command:
         - sh
         - -c
@@ -36,7 +36,7 @@ spec:
           mountPath: /opt/adguardhome/conf
       containers:
       - name: adguard
-        image: docker.jcr.pcfae.com/adguard/adguardhome:v0.107.66
+        image: docker.io/adguard/adguardhome:v0.107.66
   volumeClaimTemplates:
   - metadata:
       name: adguard-data

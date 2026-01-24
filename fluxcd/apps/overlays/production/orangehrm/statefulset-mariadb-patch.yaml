@@ -9,7 +9,7 @@ spec:
         fsGroup: 999
       containers:
       - name: mariadb
-        image: docker.jcr.pcfae.com/mariadb:10.2
+        image: docker.io/mariadb:10.2
         volumeMounts:
         - $patch: delete
           name: PLACEHOLDER_MARIADB_DATA

@@ -17,7 +17,7 @@ spec:
             - name: cache
               mountPath: /root/.cache
         - name: gluetun
-          image: docker.jcr.pcfae.com/qmcgaw/gluetun:v3.40.0
+          image: docker.io/qmcgaw/gluetun:v3.40.0
           env:
             - name: VPN_SERVICE_PROVIDER
               value: "private internet access"

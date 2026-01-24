@@ -10,7 +10,7 @@ spec:
       - name: jcr-pcfae-dungeon-pull-secret
       containers:
       - name: shlink-app
-        image: docker.jcr.pcfae.com/shlinkio/shlink:latest
+        image: docker.io/shlinkio/shlink:latest
         env:
         - name: TZ
           value: "America/Phoenix"

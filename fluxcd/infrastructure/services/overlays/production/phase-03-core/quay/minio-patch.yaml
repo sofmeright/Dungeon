@@ -10,7 +10,7 @@ spec:
       - name: jcr-pcfae-dungeon-pull-secret
       containers:
       - name: minio
-        image: docker.jcr.pcfae.com/minio/minio:latest
+        image: docker.io/minio/minio:latest
   volumeClaimTemplates:
   - metadata:
       name: minio-data

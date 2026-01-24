@@ -8,7 +8,7 @@ spec:
     spec:
       containers:
       - name: mariadb
-        image: docker.jcr.pcfae.com/mariadb:11
+        image: docker.io/mariadb:11
         volumeMounts:
         - name: pedestal-of-time-monica-mysql
           mountPath: /var/lib/mysql

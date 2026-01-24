@@ -157,7 +157,7 @@ spec:
     spec:
       containers:
       - name: nginx
-        image: docker.jcr.pcfae.com/library/nginx:alpine
+        image: docker.io/library/nginx:alpine
         ports:
         - containerPort: 80
           name: http

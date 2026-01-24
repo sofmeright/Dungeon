@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: dashboard
-        image: docker.jcr.pcfae.com/netbird-dashboard:latest
+        image: docker.io/netbird-dashboard:latest
         env:
         - name: NETBIRD_MGMT_API_ENDPOINT
           value: "https://netbird.prplanit.com"

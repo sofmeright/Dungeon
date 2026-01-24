@@ -9,7 +9,7 @@ spec:
         - name: jcr-pcfae-dungeon-pull-secret
       containers:
       - name: wazuh-indexer
-        image: docker.jcr.pcfae.com/wazuh/wazuh-indexer:4.13.1
+        image: docker.io/wazuh/wazuh-indexer:4.13.1
         envFrom: []
         resources:
           requests:
