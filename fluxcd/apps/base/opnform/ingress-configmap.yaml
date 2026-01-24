@@ -18,9 +18,9 @@ data:
         # API and backend routes - pass to PHP-FPM
         location ~ ^/(api|open|local/temp|forms/assets|vapor)(/|$) {
             fastcgi_pass opnform-api:9000;
+            include fastcgi_params;
             fastcgi_param SCRIPT_FILENAME /usr/share/nginx/html/public/index.php;
             fastcgi_param REQUEST_URI $api_uri;
-            include fastcgi_params;
             fastcgi_param HTTP_X_FORWARDED_PROTO $scheme;
             fastcgi_param HTTP_X_FORWARDED_HOST $host;
             fastcgi_read_timeout 600;
