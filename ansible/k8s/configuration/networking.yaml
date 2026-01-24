@@ -1,0 +1,51 @@
+---
+# K8s Worker Node Trunk Interface Configuration
+#
+# Adds a secondary trunk interface (enp6s19) for L2 network scanning.
+# The interface is brought up with no IP and no default route.
+#
+# Prerequisites:
+#   1. Add net1 (untagged trunk) to each worker VM in Proxmox
+#   2. Interface will appear as enp6s19
+#
+# Usage:
+#   ansible-playbook -i inventory k8s/configuration/networking.yaml -l k8s_worker
+
+- name: K8s Workers - Configure Trunk Interface for Network Scanning
+  hosts: k8s_worker
+  become: yes
+  vars:
+    trunk_interface: "enp6s19"
+
+  tasks:
+    - name: Check if trunk interface exists
+      ansible.builtin.stat:
+        path: "/sys/class/net/{{ trunk_interface }}"
+      register: trunk_exists
+
+    - name: Create netplan config for trunk interface
+      ansible.builtin.copy:
+        dest: /etc/netplan/60-trunk.yaml
+        mode: '0600'
+        content: |
+          network:
+            version: 2
+            ethernets:
+              {{ trunk_interface }}:
+                dhcp4: false
+                dhcp6: false
+                optional: true
+      when: trunk_exists.stat.exists
+      notify:
+        - Apply netplan
+
+    - name: Bring up trunk interface immediately
+      ansible.builtin.command:
+        cmd: "ip link set {{ trunk_interface }} up"
+      when: trunk_exists.stat.exists
+      changed_when: false
+
+  handlers:
+    - name: Apply netplan
+      ansible.builtin.command:
+        cmd: netplan apply
