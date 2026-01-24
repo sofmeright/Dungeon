@@ -3,47 +3,48 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   name: cephfs-init-ark-sa
-  namespace: gorons-bracelet
 spec:
   ttlSecondsAfterFinished: 300
   template:
     spec:
       restartPolicy: OnFailure
       initContainers:
-        - name: mkdir-structure
-          image: docker.io/library/alpine:latest
+        - name: setup-nvme
+          image: docker.io/prplanit/ansible-oci:2.20.1-v2
           command:
-            - /bin/sh
-            - -c
-            - |
-              set -e
-              echo "Creating directory structure in CephFS..."
-              mkdir -p /cephfs/dungeon/nvme/games/ark-sa/serverfiles
-              mkdir -p /cephfs/dungeon/hdd/games/ark-sa/cluster
-              mkdir -p /cephfs/dungeon/hdd/games/ark-sa/steamapps
-
-              echo "Setting ownership to UID/GID 7777 (pok)..."
-              chown -R 7777:7777 /cephfs/dungeon/nvme/games/ark-sa
-              chown -R 7777:7777 /cephfs/dungeon/hdd/games/ark-sa
-
-              echo "Setting permissions..."
-              chmod -R 755 /cephfs/dungeon/nvme/games/ark-sa
-              chmod -R 755 /cephfs/dungeon/hdd/games/ark-sa
-
-              echo "Directory structure created successfully!"
+            - ansible-playbook
+            - /scripts/cephfs-init-rootpaths.yml
+            - -e
+            - path=/dungeon/nvme/games/ark-sa subdirs=serverfiles owner=7777:7777 mode=0755
           volumeMounts:
             - name: cephfs-root
               mountPath: /cephfs
-      containers:
-        - name: completion
-          image: docker.io/library/alpine:latest
+            - name: setup-script
+              mountPath: /scripts
+              readOnly: true
+        - name: setup-hdd
+          image: docker.io/prplanit/ansible-oci:2.20.1-v2
           command:
-            - /bin/sh
-            - -c
-            - |
-              echo "ARK CephFS initialization complete!"
-              exit 0
+            - ansible-playbook
+            - /scripts/cephfs-init-rootpaths.yml
+            - -e
+            - path=/dungeon/hdd/games/ark-sa subdirs=cluster,steamapps owner=7777:7777 mode=0755
+          volumeMounts:
+            - name: cephfs-root
+              mountPath: /cephfs
+            - name: setup-script
+              mountPath: /scripts
+              readOnly: true
+      containers:
+        - name: complete
+          image: docker.io/prplanit/ansible-oci:2.20.1-v2
+          command:
+            - echo
+            - "ARK SA CephFS initialization complete"
       volumes:
         - name: cephfs-root
           persistentVolumeClaim:
             claimName: gorons-bracelet-cephfs-root
+        - name: setup-script
+          configMap:
+            name: cephfs-setup-script
