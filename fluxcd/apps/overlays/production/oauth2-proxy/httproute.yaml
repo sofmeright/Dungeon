@@ -5,16 +5,16 @@ metadata:
   namespace: zeldas-lullaby
 spec:
   parentRefs:
-  - name: xylem-gateway
-    namespace: arylls-lookout
-    sectionName: https
+    - name: xylem-gateway
+      namespace: arylls-lookout
+      sectionName: https-pcfae
   hostnames:
-  - "oa2p.pcfae.com"
+    - "oa2p.pcfae.com"
   rules:
-  - matches:
-    - path:
-        type: PathPrefix
-        value: /
-    backendRefs:
-    - name: oauth2-proxy
-      port: 4180
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /
+      backendRefs:
+        - name: oauth2-proxy
+          port: 4180
