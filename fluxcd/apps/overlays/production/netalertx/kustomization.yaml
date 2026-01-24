@@ -6,7 +6,6 @@ resources:
   - httproute-xylem.yaml
 patches:
   - path: statefulset-patch.yaml
-  - path: httproute-patch.yaml
   - path: service-patch.yaml
     target:
       kind: Service
