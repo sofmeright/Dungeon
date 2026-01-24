@@ -22,7 +22,6 @@ spec:
             - name: setup-script
               mountPath: /scripts
               readOnly: true
-      containers:
         - name: setup-hdd
           image: docker.io/prplanit/ansible-oci:2.20.1-v2
           command:
@@ -36,6 +35,12 @@ spec:
             - name: setup-script
               mountPath: /scripts
               readOnly: true
+      containers:
+        - name: complete
+          image: docker.io/prplanit/ansible-oci:2.20.1-v2
+          command:
+            - echo
+            - "ARK SA CephFS initialization complete"
       volumes:
         - name: cephfs-root
           persistentVolumeClaim:
