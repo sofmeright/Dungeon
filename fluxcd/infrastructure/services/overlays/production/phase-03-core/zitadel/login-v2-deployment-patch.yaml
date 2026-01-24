@@ -6,11 +6,18 @@ spec:
   template:
     spec:
       containers:
-      - name: zitadel-login-v2
-        env:
-        - name: ZITADEL_EXTERNAL_DOMAIN
-          value: "sso.prplanit.com"
-        - name: CUSTOM_REQUEST_HEADERS
-          value: "Host:sso.prplanit.com"
-        - name: NEXT_PUBLIC_BASE_PATH
-          value: "/ui/v2/login"
+        - name: zitadel-login-v2
+          env:
+            - name: ZITADEL_EXTERNAL_DOMAIN
+              value: "sso.prplanit.com"
+            - name: CUSTOM_REQUEST_HEADERS
+              value: "Host:sso.prplanit.com"
+            - name: NEXT_PUBLIC_BASE_PATH
+              value: "/ui/v2/login"
+          resources:
+            requests:
+              cpu: 10m
+              memory: 128Mi
+            limits:
+              cpu: 200m
+              memory: 384Mi
