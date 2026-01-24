@@ -5,16 +5,16 @@ metadata:
   namespace: zeldas-lullaby
 spec:
   parentRefs:
-  - name: xylem-gateway
-    namespace: arylls-lookout
-    sectionName: https
+    - name: xylem-gateway
+      namespace: arylls-lookout
+      sectionName: https-pcfae
   hostnames:
-  - "netbox.pcfae.com"
+    - "netbox.pcfae.com"
   rules:
-  - matches:
-    - path:
-        type: PathPrefix
-        value: /
-    backendRefs:
-    - name: netbox-server
-      port: 13031
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /
+      backendRefs:
+        - name: netbox-server
+          port: 13031
