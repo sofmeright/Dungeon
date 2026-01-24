@@ -3,43 +3,29 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   name: cephfs-init-byparr
-  namespace: gorons-bracelet
 spec:
   ttlSecondsAfterFinished: 300
   template:
     spec:
       restartPolicy: OnFailure
-      initContainers:
-        - name: mkdir-structure
-          image: docker.io/library/alpine:latest
+      containers:
+        - name: setup
+          image: docker.io/prplanit/ansible-oci:2.20.1-v2
           command:
-            - /bin/sh
-            - -c
-            - |
-              set -e
-              echo "Creating directory structure in CephFS..."
-              mkdir -p /cephfs/dungeon/hdd/apps/byparr/cache
-
-              echo "Setting ownership to UID/GID 0 (root)..."
-              chown -R 0:0 /cephfs/dungeon/hdd/apps/byparr
-
-              echo "Setting permissions..."
-              chmod -R 755 /cephfs/dungeon/hdd/apps/byparr
-
-              echo "Directory structure created successfully!"
+            - ansible-playbook
+            - /scripts/cephfs-init-rootpaths.yml
+            - -e
+            - path=/dungeon/hdd/apps/byparr/cache owner=0:0 mode=0755
           volumeMounts:
             - name: cephfs-root
               mountPath: /cephfs
-      containers:
-        - name: completion
-          image: docker.io/library/alpine:latest
-          command:
-            - /bin/sh
-            - -c
-            - |
-              echo "Byparr CephFS initialization complete!"
-              exit 0
+            - name: setup-script
+              mountPath: /scripts
+              readOnly: true
       volumes:
         - name: cephfs-root
           persistentVolumeClaim:
             claimName: gorons-bracelet-cephfs-root
+        - name: setup-script
+          configMap:
+            name: cephfs-setup-script

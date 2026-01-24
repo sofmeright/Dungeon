@@ -3,48 +3,29 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   name: cephfs-init-mimir
-  namespace: gorons-bracelet
 spec:
   ttlSecondsAfterFinished: 300
   template:
     spec:
       restartPolicy: OnFailure
-      initContainers:
-      - name: mkdir-structure
-        image: docker.io/library/alpine:latest
-        command:
-        - /bin/sh
-        - -c
-        - |
-          set -e
-          echo "Creating directory structure in CephFS..."
-          mkdir -p /cephfs/dungeon/nvme/apps/mimir/ingester-0
-          mkdir -p /cephfs/dungeon/nvme/apps/mimir/ingester-1
-          mkdir -p /cephfs/dungeon/nvme/apps/mimir/ingester-2
-          mkdir -p /cephfs/dungeon/nvme/apps/mimir/store-gateway-0
-          mkdir -p /cephfs/dungeon/nvme/apps/mimir/compactor-0
-          mkdir -p /cephfs/dungeon/nvme/apps/mimir/alertmanager-0
-
-          echo "Setting ownership to UID/GID 10001 (mimir)..."
-          chown -R 10001:10001 /cephfs/dungeon/nvme/apps/mimir
-
-          echo "Setting permissions..."
-          chmod -R 755 /cephfs/dungeon/nvme/apps/mimir
-
-          echo "Directory structure created successfully!"
-        volumeMounts:
-        - name: cephfs-root
-          mountPath: /cephfs
       containers:
-      - name: completion
-        image: docker.io/library/alpine:latest
-        command:
-        - /bin/sh
-        - -c
-        - |
-          echo "Mimir CephFS initialization complete!"
-          exit 0
+        - name: setup
+          image: docker.io/prplanit/ansible-oci:2.20.1-v2
+          command:
+            - ansible-playbook
+            - /scripts/cephfs-init-rootpaths.yml
+            - -e
+            - path=/dungeon/nvme/apps/mimir subdirs=ingester-0,ingester-1,ingester-2,store-gateway-0,compactor-0,alertmanager-0 owner=10001:10001 mode=0755
+          volumeMounts:
+            - name: cephfs-root
+              mountPath: /cephfs
+            - name: setup-script
+              mountPath: /scripts
+              readOnly: true
       volumes:
-      - name: cephfs-root
-        persistentVolumeClaim:
-          claimName: gorons-bracelet-cephfs-root
+        - name: cephfs-root
+          persistentVolumeClaim:
+            claimName: gorons-bracelet-cephfs-root
+        - name: setup-script
+          configMap:
+            name: cephfs-setup-script
