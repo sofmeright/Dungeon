@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: opnform-api
+spec:
+  template:
+    spec:
+      volumes:
+        - name: storage
+          persistentVolumeClaim:
+            claimName: hyrule-castle-opnform-storage
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: opnform-api-worker
+spec:
+  template:
+    spec:
+      volumes:
+        - name: storage
+          persistentVolumeClaim:
+            claimName: hyrule-castle-opnform-storage
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: opnform-api-scheduler
+spec:
+  template:
+    spec:
+      volumes:
+        - name: storage
+          persistentVolumeClaim:
+            claimName: hyrule-castle-opnform-storage

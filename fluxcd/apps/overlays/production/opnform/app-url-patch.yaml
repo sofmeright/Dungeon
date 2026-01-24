@@ -1,15 +1,15 @@
 apiVersion: apps/v1
-kind: StatefulSet
+kind: Deployment
 metadata:
   name: opnform-api
 spec:
   template:
     spec:
       containers:
-      - name: api
-        env:
-        - name: APP_URL
-          value: "https://form.prplanit.com"
+        - name: api
+          env:
+            - name: APP_URL
+              value: "https://form.prplanit.com"
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -19,10 +19,10 @@ spec:
   template:
     spec:
       containers:
-      - name: worker
-        env:
-        - name: APP_URL
-          value: "https://form.prplanit.com"
+        - name: worker
+          env:
+            - name: APP_URL
+              value: "https://form.prplanit.com"
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -32,10 +32,10 @@ spec:
   template:
     spec:
       containers:
-      - name: scheduler
-        env:
-        - name: APP_URL
-          value: "https://form.prplanit.com"
+        - name: scheduler
+          env:
+            - name: APP_URL
+              value: "https://form.prplanit.com"
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -45,7 +45,7 @@ spec:
   template:
     spec:
       containers:
-      - name: client
-        env:
-        - name: NUXT_PUBLIC_APP_URL
-          value: "https://form.prplanit.com"
+        - name: client
+          env:
+            - name: NUXT_PUBLIC_APP_URL
+              value: "https://form.prplanit.com"

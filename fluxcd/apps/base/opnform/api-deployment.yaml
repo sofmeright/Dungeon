@@ -1,11 +1,10 @@
 apiVersion: apps/v1
-kind: StatefulSet
+kind: Deployment
 metadata:
   name: opnform-api
   labels:
     app: opnform-api
 spec:
-  serviceName: opnform-api
   replicas: 1
   selector:
     matchLabels:
@@ -191,12 +190,7 @@ spec:
             limits:
               cpu: 2000m
               memory: 2Gi
-  volumeClaimTemplates:
-    - metadata:
-        name: storage
-      spec:
-        accessModes:
-          - ReadWriteOnce
-        resources:
-          requests:
-            storage: 20Gi
+      volumes:
+        - name: storage
+          persistentVolumeClaim:
+            claimName: PLACEHOLDER_STORAGE_PVC

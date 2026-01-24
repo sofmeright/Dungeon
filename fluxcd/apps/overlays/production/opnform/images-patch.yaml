@@ -6,8 +6,8 @@ spec:
   template:
     spec:
       containers:
-      - name: postgres
-        image: docker.jcr.pcfae.com/postgres:16
+        - name: postgres
+          image: docker.io/postgres:16
 ---
 apiVersion: apps/v1
 kind: StatefulSet
@@ -17,24 +17,24 @@ spec:
   template:
     spec:
       containers:
-      - name: redis
-        image: docker.jcr.pcfae.com/redis:7
+        - name: redis
+          image: docker.io/redis:7
 ---
 apiVersion: apps/v1
-kind: StatefulSet
+kind: Deployment
 metadata:
   name: opnform-api
 spec:
   template:
     spec:
       initContainers:
-      - name: wait-for-db
-        image: docker.jcr.pcfae.com/busybox:latest
-      - name: wait-for-redis
-        image: docker.jcr.pcfae.com/busybox:latest
+        - name: wait-for-db
+          image: docker.io/busybox:latest
+        - name: wait-for-redis
+          image: docker.io/busybox:latest
       containers:
-      - name: api
-        image: docker.jcr.pcfae.com/jhumanj/opnform-api:latest
+        - name: api
+          image: docker.io/jhumanj/opnform-api:latest
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -43,12 +43,9 @@ metadata:
 spec:
   template:
     spec:
-      initContainers:
-      - name: wait-for-api
-        image: docker.jcr.pcfae.com/busybox:latest
       containers:
-      - name: worker
-        image: docker.jcr.pcfae.com/jhumanj/opnform-api:latest
+        - name: worker
+          image: docker.io/jhumanj/opnform-api:latest
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -57,12 +54,9 @@ metadata:
 spec:
   template:
     spec:
-      initContainers:
-      - name: wait-for-api
-        image: docker.jcr.pcfae.com/busybox:latest
       containers:
-      - name: scheduler
-        image: docker.jcr.pcfae.com/jhumanj/opnform-api:latest
+        - name: scheduler
+          image: docker.io/jhumanj/opnform-api:latest
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -72,8 +66,8 @@ spec:
   template:
     spec:
       containers:
-      - name: client
-        image: docker.jcr.pcfae.com/jhumanj/opnform-client:latest
+        - name: client
+          image: docker.io/jhumanj/opnform-client:latest
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -83,5 +77,5 @@ spec:
   template:
     spec:
       containers:
-      - name: nginx
-        image: docker.jcr.pcfae.com/nginx:1
+        - name: nginx
+          image: docker.io/nginx:1
