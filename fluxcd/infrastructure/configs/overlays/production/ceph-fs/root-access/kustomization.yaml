@@ -3,11 +3,13 @@ kind: Kustomization
 namespace: gorons-bracelet
 resources:
   - cephfs-root-pvc.yaml
-  - cephfs-init-grafana.yaml
+  - cephfs-setup-script.yaml
   - cephfs-init-ark-sa.yaml
-  - cephfs-init-mimir.yaml
-  - cephfs-init-homarr.yaml
-  - cephfs-init-vaultwarden.yaml
-  - cephfs-init-erpnext.yaml
-  - cephfs-init-harbor.yaml
   - cephfs-init-byparr.yaml
+  - cephfs-init-erpnext.yaml
+  - cephfs-init-grafana.yaml
+  - cephfs-init-harbor.yaml
+  - cephfs-init-homarr.yaml
+  - cephfs-init-mimir.yaml
+  - cephfs-init-opnform.yaml
+  - cephfs-init-vaultwarden.yaml
