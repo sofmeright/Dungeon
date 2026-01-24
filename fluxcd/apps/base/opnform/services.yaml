@@ -7,10 +7,10 @@ spec:
   selector:
     app: opnform-postgres
   ports:
-  - name: postgres
-    port: 5432
-    protocol: TCP
-    targetPort: 5432
+    - name: postgres
+      port: 5432
+      protocol: TCP
+      targetPort: 5432
 ---
 apiVersion: v1
 kind: Service
@@ -21,10 +21,10 @@ spec:
   selector:
     app: opnform-redis
   ports:
-  - name: redis
-    port: 6379
-    protocol: TCP
-    targetPort: 6379
+    - name: redis
+      port: 6379
+      protocol: TCP
+      targetPort: 6379
 ---
 apiVersion: v1
 kind: Service
@@ -35,10 +35,10 @@ spec:
   selector:
     app: opnform-api
   ports:
-  - name: http
-    port: 80
-    protocol: TCP
-    targetPort: 80
+    - name: fastcgi
+      port: 9000
+      protocol: TCP
+      targetPort: 9000
 ---
 apiVersion: v1
 kind: Service
@@ -49,10 +49,10 @@ spec:
   selector:
     app: opnform-client
   ports:
-  - name: http
-    port: 3000
-    protocol: TCP
-    targetPort: 3000
+    - name: http
+      port: 3000
+      protocol: TCP
+      targetPort: 3000
 ---
 apiVersion: v1
 kind: Service
@@ -63,7 +63,7 @@ spec:
   selector:
     app: opnform-ingress
   ports:
-  - name: http
-    port: 80
-    protocol: TCP
-    targetPort: 80
+    - name: http
+      port: 80
+      protocol: TCP
+      targetPort: 80

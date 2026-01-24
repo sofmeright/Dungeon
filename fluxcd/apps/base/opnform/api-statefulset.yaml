@@ -16,187 +16,187 @@ spec:
         app: opnform-api
     spec:
       initContainers:
-      - name: wait-for-db
-        image: docker.io/busybox:latest
-        command:
-        - sh
-        - -c
-        - |
-          until nc -z -v -w5 opnform-postgres 5432; do
-            echo "Waiting for PostgreSQL..."
-            sleep 5
-          done
-      - name: wait-for-redis
-        image: docker.io/busybox:latest
-        command:
-        - sh
-        - -c
-        - |
-          until nc -z -v -w5 opnform-redis 6379; do
-            echo "Waiting for Redis..."
-            sleep 5
-          done
+        - name: wait-for-db
+          image: docker.io/busybox:latest
+          command:
+            - sh
+            - -c
+            - |
+              until nc -z -v -w5 opnform-postgres 5432; do
+                echo "Waiting for PostgreSQL..."
+                sleep 5
+              done
+        - name: wait-for-redis
+          image: docker.io/busybox:latest
+          command:
+            - sh
+            - -c
+            - |
+              until nc -z -v -w5 opnform-redis 6379; do
+                echo "Waiting for Redis..."
+                sleep 5
+              done
       containers:
-      - name: api
-        image: docker.io/jhumanj/opnform-api:latest
-        ports:
-        - name: http
-          containerPort: 80
-          protocol: TCP
-        env:
-        - name: APP_NAME
-          value: "OpnForm"
-        - name: APP_ENV
-          value: "production"
-        - name: APP_DEBUG
-          value: "false"
-        - name: APP_KEY
-          valueFrom:
-            secretKeyRef:
-              name: opnform-secret
-              key: app-key
-        - name: APP_URL
-          value: PLACEHOLDER_APP_URL
-        - name: SELF_HOSTED
-          value: "true"
-        - name: LOG_CHANNEL
-          value: "errorlog"
-        - name: LOG_LEVEL
-          value: "debug"
-        - name: FILESYSTEM_DRIVER
-          value: "local"
-        - name: LOCAL_FILESYSTEM_VISIBILITY
-          value: "public"
-        - name: CACHE_DRIVER
-          value: "redis"
-        - name: QUEUE_CONNECTION
-          value: "redis"
-        - name: SESSION_DRIVER
-          value: "redis"
-        - name: DB_CONNECTION
-          value: "pgsql"
-        - name: DB_HOST
-          value: "opnform-postgres"
-        - name: DB_PORT
-          value: "5432"
-        - name: DB_DATABASE
-          valueFrom:
-            secretKeyRef:
-              name: opnform-postgres
-              key: database
-        - name: DB_USERNAME
-          valueFrom:
-            secretKeyRef:
-              name: opnform-postgres
-              key: username
-        - name: DB_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: opnform-postgres
-              key: password
-        - name: REDIS_HOST
-          value: "opnform-redis"
-        - name: REDIS_PORT
-          value: "6379"
-        - name: PHP_MEMORY_LIMIT
-          value: "1G"
-        - name: PHP_MAX_EXECUTION_TIME
-          value: "600"
-        - name: PHP_UPLOAD_MAX_FILESIZE
-          value: "64M"
-        - name: PHP_POST_MAX_SIZE
-          value: "64M"
-        - name: JWT_TTL
-          value: "1440"
-        - name: JWT_SECRET
-          valueFrom:
-            secretKeyRef:
-              name: opnform-secret
-              key: jwt-secret
-        - name: JWT_SKIP_IP_UA_VALIDATION
-          value: "true"
-        - name: FRONT_API_SECRET
-          valueFrom:
-            secretKeyRef:
-              name: opnform-secret
-              key: front-api-secret
-        - name: SHOW_OFFICIAL_TEMPLATES
-          value: "true"
-        - name: MAIL_MAILER
-          value: "smtp"
-        - name: MAIL_HOST
-          valueFrom:
-            secretKeyRef:
-              name: opnform-smtp
-              key: host
-        - name: MAIL_PORT
-          value: "587"
-        - name: MAIL_USERNAME
-          valueFrom:
-            secretKeyRef:
-              name: opnform-smtp
-              key: username
-        - name: MAIL_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: opnform-smtp
-              key: password
-        - name: MAIL_ENCRYPTION
-          value: "tls"
-        - name: MAIL_FROM_ADDRESS
-          valueFrom:
-            secretKeyRef:
-              name: opnform-smtp
-              key: from-address
-        - name: MAIL_FROM_NAME
-          valueFrom:
-            secretKeyRef:
-              name: opnform-smtp
-              key: from-name
-        - name: RE_CAPTCHA_SITE_KEY
-          valueFrom:
-            secretKeyRef:
-              name: opnform-secret
-              key: recaptcha-site-key
-        - name: RE_CAPTCHA_SECRET_KEY
-          valueFrom:
-            secretKeyRef:
-              name: opnform-secret
-              key: recaptcha-secret-key
-        volumeMounts:
-        - name: storage
-          mountPath: /usr/share/nginx/html/storage
-        livenessProbe:
-          exec:
-            command:
-            - php
-            - /usr/share/nginx/html/artisan
-            - about
-          initialDelaySeconds: 60
-          periodSeconds: 30
-          timeoutSeconds: 15
-        readinessProbe:
-          exec:
-            command:
-            - php
-            - /usr/share/nginx/html/artisan
-            - about
-          initialDelaySeconds: 30
-          periodSeconds: 10
-          timeoutSeconds: 15
+        - name: api
+          image: docker.io/jhumanj/opnform-api:latest
+          ports:
+            - name: fastcgi
+              containerPort: 9000
+              protocol: TCP
+          env:
+            - name: APP_NAME
+              value: "OpnForm"
+            - name: APP_ENV
+              value: "production"
+            - name: APP_DEBUG
+              value: "false"
+            - name: APP_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: opnform-secret
+                  key: app-key
+            - name: APP_URL
+              value: PLACEHOLDER_APP_URL
+            - name: SELF_HOSTED
+              value: "true"
+            - name: LOG_CHANNEL
+              value: "errorlog"
+            - name: LOG_LEVEL
+              value: "debug"
+            - name: FILESYSTEM_DRIVER
+              value: "local"
+            - name: LOCAL_FILESYSTEM_VISIBILITY
+              value: "public"
+            - name: CACHE_DRIVER
+              value: "redis"
+            - name: QUEUE_CONNECTION
+              value: "redis"
+            - name: SESSION_DRIVER
+              value: "redis"
+            - name: DB_CONNECTION
+              value: "pgsql"
+            - name: DB_HOST
+              value: "opnform-postgres"
+            - name: DB_PORT
+              value: "5432"
+            - name: DB_DATABASE
+              valueFrom:
+                secretKeyRef:
+                  name: opnform-postgres
+                  key: database
+            - name: DB_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: opnform-postgres
+                  key: username
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: opnform-postgres
+                  key: password
+            - name: REDIS_HOST
+              value: "opnform-redis"
+            - name: REDIS_PORT
+              value: "6379"
+            - name: PHP_MEMORY_LIMIT
+              value: "1G"
+            - name: PHP_MAX_EXECUTION_TIME
+              value: "600"
+            - name: PHP_UPLOAD_MAX_FILESIZE
+              value: "64M"
+            - name: PHP_POST_MAX_SIZE
+              value: "64M"
+            - name: JWT_TTL
+              value: "1440"
+            - name: JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: opnform-secret
+                  key: jwt-secret
+            - name: JWT_SKIP_IP_UA_VALIDATION
+              value: "true"
+            - name: FRONT_API_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: opnform-secret
+                  key: front-api-secret
+            - name: SHOW_OFFICIAL_TEMPLATES
+              value: "true"
+            - name: MAIL_MAILER
+              value: "smtp"
+            - name: MAIL_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: opnform-smtp
+                  key: host
+            - name: MAIL_PORT
+              value: "587"
+            - name: MAIL_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: opnform-smtp
+                  key: username
+            - name: MAIL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: opnform-smtp
+                  key: password
+            - name: MAIL_ENCRYPTION
+              value: "tls"
+            - name: MAIL_FROM_ADDRESS
+              valueFrom:
+                secretKeyRef:
+                  name: opnform-smtp
+                  key: from-address
+            - name: MAIL_FROM_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: opnform-smtp
+                  key: from-name
+            - name: RE_CAPTCHA_SITE_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: opnform-secret
+                  key: recaptcha-site-key
+            - name: RE_CAPTCHA_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: opnform-secret
+                  key: recaptcha-secret-key
+          volumeMounts:
+            - name: storage
+              mountPath: /usr/share/nginx/html/storage
+          livenessProbe:
+            exec:
+              command:
+                - php
+                - /usr/share/nginx/html/artisan
+                - about
+            initialDelaySeconds: 60
+            periodSeconds: 30
+            timeoutSeconds: 15
+          readinessProbe:
+            exec:
+              command:
+                - php
+                - /usr/share/nginx/html/artisan
+                - about
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 15
+          resources:
+            requests:
+              cpu: 200m
+              memory: 512Mi
+            limits:
+              cpu: 2000m
+              memory: 2Gi
+  volumeClaimTemplates:
+    - metadata:
+        name: storage
+      spec:
+        accessModes:
+          - ReadWriteOnce
         resources:
           requests:
-            cpu: 200m
-            memory: 512Mi
-          limits:
-            cpu: 2000m
-            memory: 2Gi
-  volumeClaimTemplates:
-  - metadata:
-      name: storage
-    spec:
-      accessModes:
-      - ReadWriteOnce
-      resources:
-        requests:
-          storage: 20Gi
+            storage: 20Gi
