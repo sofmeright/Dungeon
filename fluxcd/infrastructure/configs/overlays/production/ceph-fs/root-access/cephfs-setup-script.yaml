@@ -1,0 +1,95 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cephfs-setup-script
+data:
+  setup.sh: |
+    #!/bin/sh
+    set -e
+
+    usage() {
+      echo "Usage: $0 --path <base-path> --subdirs <dir1,dir2,...> [options]"
+      echo ""
+      echo "Options:"
+      echo "  --path        Base path to create and own (required)"
+      echo "  --subdirs     Comma-separated subdirectories under base path (required)"
+      echo "  --owner       Owner UID:GID (default: 1000:1000)"
+      echo "  --mode        Permissions mode (default: 755)"
+      echo ""
+      echo "Example:"
+      echo "  $0 --path /dungeon/hdd/apps/myapp --subdirs data,cache --owner 1000:1000"
+      exit 1
+    }
+
+    # Defaults
+    OWNER="1000:1000"
+    MODE="755"
+    BASE_PATH=""
+    SUBDIRS=""
+
+    # Parse arguments
+    while [ $# -gt 0 ]; do
+      case "$1" in
+        --path)
+          BASE_PATH="$2"
+          shift 2
+          ;;
+        --subdirs)
+          SUBDIRS="$2"
+          shift 2
+          ;;
+        --owner)
+          OWNER="$2"
+          shift 2
+          ;;
+        --mode)
+          MODE="$2"
+          shift 2
+          ;;
+        -h|--help)
+          usage
+          ;;
+        *)
+          echo "ERROR: Unknown option: $1"
+          usage
+          ;;
+      esac
+    done
+
+    # Validate required arguments
+    if [ -z "$BASE_PATH" ]; then
+      echo "ERROR: --path is required"
+      usage
+    fi
+    if [ -z "$SUBDIRS" ]; then
+      echo "ERROR: --subdirs is required"
+      usage
+    fi
+
+    echo "=== CephFS Setup ==="
+    echo "Path: ${BASE_PATH}"
+    echo "Subdirs: ${SUBDIRS}"
+    echo "Owner: ${OWNER}"
+    echo "Mode: ${MODE}"
+    echo ""
+
+    # Create directories
+    echo "Creating directory structure..."
+    echo "$SUBDIRS" | tr ',' '\n' | while read -r subdir; do
+      if [ -n "$subdir" ]; then
+        echo "  mkdir -p /cephfs${BASE_PATH}/${subdir}"
+        mkdir -p "/cephfs${BASE_PATH}/${subdir}"
+      fi
+    done
+
+    # Set ownership on base path
+    echo ""
+    echo "Setting ownership to ${OWNER} on /cephfs${BASE_PATH}..."
+    chown -R "${OWNER}" "/cephfs${BASE_PATH}"
+
+    # Set permissions
+    echo "Setting permissions to ${MODE}..."
+    chmod -R "${MODE}" "/cephfs${BASE_PATH}"
+
+    echo ""
+    echo "=== CephFS Setup Complete ==="

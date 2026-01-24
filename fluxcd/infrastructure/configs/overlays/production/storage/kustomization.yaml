@@ -6,3 +6,4 @@ resources:
   - ceph-rbd-hdd.yaml
   - ceph-rbd-templated.yaml
   - cephfs-nvme.yaml
+  - cephfs-hdd.yaml
