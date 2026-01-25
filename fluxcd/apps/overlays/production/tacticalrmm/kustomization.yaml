@@ -4,6 +4,7 @@ namespace: hookshot
 resources:
   - ../../../base/tacticalrmm
   - httproute.yaml
+  - destinationrule.yaml
 patches:
   - path: externalsecret-patch.yaml
     target:
