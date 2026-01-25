@@ -10,3 +10,4 @@ spec:
           number: 6875
         tls:
           mode: SIMPLE
+          insecureSkipVerify: true
