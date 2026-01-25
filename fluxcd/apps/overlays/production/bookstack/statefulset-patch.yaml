@@ -16,7 +16,7 @@ spec:
             - name: hyrule-castle-bookstack-config
               mountPath: /config
             - name: hyrule-castle-bookstack-uploads
-              mountPath: /config/uploads
+              mountPath: /app/www/public/uploads
             - name: oidc-multiaud-fix
               mountPath: /app/www/themes/custom/functions.php
               subPath: functions.php
@@ -64,7 +64,7 @@ spec:
             - name: STORAGE_TYPE
               value: "local"
             - name: STORAGE_UPLOADS_PATH
-              value: "/config/uploads"
+              value: "/app/www/public/uploads"
       volumes:
         - $patch: replace
         - name: oidc-multiaud-fix
