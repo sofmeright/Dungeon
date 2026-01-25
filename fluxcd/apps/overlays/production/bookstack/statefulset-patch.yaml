@@ -12,6 +12,7 @@ spec:
         - name: bookstack
           image: lscr.io/linuxserver/bookstack:latest
           volumeMounts:
+            - $patch: replace
             - name: hyrule-castle-bookstack-config
               mountPath: /config
             - name: hyrule-castle-bookstack-uploads
@@ -65,6 +66,7 @@ spec:
             - name: STORAGE_UPLOADS_PATH
               value: "/config/uploads"
       volumes:
+        - $patch: replace
         - name: oidc-multiaud-fix
           configMap:
             name: bookstack-oidc-multiaud-fix
