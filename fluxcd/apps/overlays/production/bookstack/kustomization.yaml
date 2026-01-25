@@ -7,6 +7,7 @@ resources:
   - ../../../base/bookstack
   - httproute.yaml
   - destinationrule.yaml
+  - configmap-oidc-multiaud-fix.yaml
 
 patches:
   - path: statefulset-patch.yaml

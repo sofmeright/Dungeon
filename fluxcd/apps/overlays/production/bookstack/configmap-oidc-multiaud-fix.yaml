@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: bookstack-oidc-multiaud-fix
+data:
+  functions.php: |
+    <?php
+
+    use BookStack\Facades\Theme;
+    use BookStack\Theming\ThemeEvents;
+
+    Theme::listen(ThemeEvents::OIDC_ID_TOKEN_PRE_VALIDATE, function (array $idTokenData, array $accessTokenData) {
+        if (is_array($idTokenData['aud']) && in_array($idTokenData['azp'], $idTokenData['aud'])) {
+            return array_merge($idTokenData, [
+                'aud' => [$idTokenData['azp']]
+            ]);
+        }
+    });

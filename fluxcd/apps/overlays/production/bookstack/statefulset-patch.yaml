@@ -6,82 +6,84 @@ spec:
   template:
     spec:
       initContainers:
-      - name: wait-for-db
-        image: lscr.io/linuxserver/bookstack:latest
+        - name: wait-for-db
+          image: lscr.io/linuxserver/bookstack:latest
       containers:
-      - name: bookstack
-        image: lscr.io/linuxserver/bookstack:latest
-        volumeMounts:
-        - name: hyrule-castle-bookstack-config
-          mountPath: /config
-        - name: hyrule-castle-bookstack-uploads
-          mountPath: /config/uploads
-        - $patch: delete
-          name: custom-functions
-        env:
-        - name: PUID
-          value: "1000"
-        - name: PGID
-          value: "1000"
-        - name: TZ
-          value: "America/Los_Angeles"
-        - name: APP_URL
-          value: "https://kb.precisionplanit.com"
-        - name: AUTH_METHOD
-          value: "oidc"
-        - name: AUTH_AUTO_INITIATE
-          value: "true"
-        - name: CACHE_DRIVER
-          value: "database"
-        - name: OIDC_NAME
-          value: "PrPlanIT SSO"
-        - name: OIDC_DISPLAY_NAME_CLAIMS
-          value: "name"
-        - name: OIDC_ISSUER
-          value: "https://sso.prplanit.com"
-        - name: OIDC_END_SESSION_ENDPOINT
-          value: "false"
-        - name: OIDC_ISSUER_DISCOVER
-          value: "true"
-        - name: APP_THEME
-          value: "custom"
-        - name: OIDC_DUMP_USER_DETAILS
-          value: "false"
-        - name: OIDC_USER_TO_GROUPS
-          value: "true"
-        - name: OIDC_GROUPS_CLAIM
-          value: "groups"
-        - name: OIDC_ADDITIONAL_SCOPES
-          value: "groups"
-        - name: OIDC_REMOVE_FROM_GROUPS
-          value: "false"
-        - name: ALLOWED_IFRAME_HOSTS
-          value: "https://apps.pcfae.com"
-        - name: ALLOWED_IFRAME_SOURCES
-          value: "https://apps.pcfae.com"
-        - name: STORAGE_TYPE
-          value: "local"
-        - name: STORAGE_UPLOADS_PATH
-          value: "/config/uploads"
+        - name: bookstack
+          image: lscr.io/linuxserver/bookstack:latest
+          volumeMounts:
+            - name: hyrule-castle-bookstack-config
+              mountPath: /config
+            - name: hyrule-castle-bookstack-uploads
+              mountPath: /config/uploads
+            - name: oidc-multiaud-fix
+              mountPath: /app/www/themes/custom/functions.php
+              subPath: functions.php
+          env:
+            - name: PUID
+              value: "1000"
+            - name: PGID
+              value: "1000"
+            - name: TZ
+              value: "America/Los_Angeles"
+            - name: APP_URL
+              value: "https://kb.precisionplanit.com"
+            - name: AUTH_METHOD
+              value: "oidc"
+            - name: AUTH_AUTO_INITIATE
+              value: "true"
+            - name: CACHE_DRIVER
+              value: "database"
+            - name: OIDC_NAME
+              value: "PrPlanIT SSO"
+            - name: OIDC_DISPLAY_NAME_CLAIMS
+              value: "name"
+            - name: OIDC_ISSUER
+              value: "https://sso.prplanit.com"
+            - name: OIDC_END_SESSION_ENDPOINT
+              value: "false"
+            - name: OIDC_ISSUER_DISCOVER
+              value: "true"
+            - name: APP_THEME
+              value: "custom"
+            - name: OIDC_DUMP_USER_DETAILS
+              value: "false"
+            - name: OIDC_USER_TO_GROUPS
+              value: "true"
+            - name: OIDC_GROUPS_CLAIM
+              value: "groups"
+            - name: OIDC_ADDITIONAL_SCOPES
+              value: "groups"
+            - name: OIDC_REMOVE_FROM_GROUPS
+              value: "false"
+            - name: ALLOWED_IFRAME_HOSTS
+              value: "https://apps.pcfae.com"
+            - name: ALLOWED_IFRAME_SOURCES
+              value: "https://apps.pcfae.com"
+            - name: STORAGE_TYPE
+              value: "local"
+            - name: STORAGE_UPLOADS_PATH
+              value: "/config/uploads"
       volumes:
-      - $patch: delete
-        name: custom-functions
+        - name: oidc-multiaud-fix
+          configMap:
+            name: bookstack-oidc-multiaud-fix
   volumeClaimTemplates:
-  - metadata:
-      name: hyrule-castle-bookstack-config
-    spec:
-      accessModes:
-      - ReadWriteOnce
-      storageClassName: ceph-rbd
-      resources:
-        requests:
-          storage: 1Gi
-  - metadata:
-      name: hyrule-castle-bookstack-uploads
-    spec:
-      accessModes:
-      - ReadWriteOnce
-      storageClassName: ceph-rbd
-      resources:
-        requests:
-          storage: 10Gi
+    - metadata:
+        name: hyrule-castle-bookstack-config
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        storageClassName: ceph-rbd
+        resources:
+          requests:
+            storage: 1Gi
+    - metadata:
+        name: hyrule-castle-bookstack-uploads
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        storageClassName: ceph-rbd
+        resources:
+          requests:
+            storage: 10Gi
