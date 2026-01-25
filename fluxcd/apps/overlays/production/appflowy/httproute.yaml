@@ -6,7 +6,7 @@ spec:
   parentRefs:
   - name: cell-membrane-gateway
     namespace: hyrule-castle
-    sectionName: https
+    sectionName: https-prplanit
   hostnames:
   - "flwy.prplanit.com"
   rules:
@@ -15,5 +15,5 @@ spec:
         type: PathPrefix
         value: /
     backendRefs:
-    - name: nginx
+    - name: appflowy-nginx
       port: 80
