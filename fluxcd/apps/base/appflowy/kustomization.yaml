@@ -3,7 +3,6 @@ kind: Kustomization
 resources:
   - postgres-cluster.yaml
   - statefulset-redis.yaml
-  - statefulset-minio.yaml
   - deployment-gotrue.yaml
   - deployment-appflowy-cloud.yaml
   - deployment-admin-frontend.yaml
@@ -13,7 +12,6 @@ resources:
   - deployment-nginx.yaml
   - service-postgres.yaml
   - service-redis.yaml
-  - service-minio.yaml
   - service-gotrue.yaml
   - service-appflowy-cloud.yaml
   - service-admin-frontend.yaml
@@ -30,5 +28,4 @@ resources:
   - externalsecret-gotrue.yaml
   - externalsecret-worker.yaml
   - externalsecret-ai.yaml
-  - externalsecret-minio.yaml
   - externalsecret-postgres-init.yaml

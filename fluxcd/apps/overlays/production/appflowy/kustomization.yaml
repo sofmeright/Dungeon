@@ -9,7 +9,6 @@ resources:
 patches:
   - path: postgres-cluster-patch.yaml
   - path: statefulset-redis-patch.yaml
-  - path: statefulset-minio-patch.yaml
   - path: deployment-gotrue-patch.yaml
   - path: deployment-appflowy-cloud-patch.yaml
   - path: deployment-appflowy-cloud-env-patch.yaml
@@ -25,7 +24,6 @@ patches:
   - path: externalsecret-gotrue-patch.yaml
   - path: externalsecret-worker-patch.yaml
   - path: externalsecret-ai-patch.yaml
-  - path: externalsecret-minio-patch.yaml
   - path: externalsecret-postgres-init-patch.yaml
   - path: configmap-app-patch.yaml
   - path: configmap-nginx-patch.yaml
