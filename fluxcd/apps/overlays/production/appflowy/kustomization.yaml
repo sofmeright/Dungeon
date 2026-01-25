@@ -5,6 +5,7 @@ resources:
   - ../../../base/appflowy
   - httproute.yaml
   - httproute-xylem.yaml
+  - externalsecret-s3.yaml
 patches:
   - path: postgres-cluster-patch.yaml
   - path: statefulset-redis-patch.yaml
@@ -18,7 +19,7 @@ patches:
   - path: deployment-web-patch.yaml
   - path: deployment-nginx-patch.yaml
   - path: service-nginx-patch.yaml
-  - path: externalsecret-patch.yaml
+  - path: externalsecret-postgres-app-patch.yaml
   - path: externalsecret-shared-patch.yaml
   - path: externalsecret-cloud-patch.yaml
   - path: externalsecret-gotrue-patch.yaml

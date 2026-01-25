@@ -9,6 +9,18 @@ spec:
       containers:
         - name: appflowy-worker
           image: docker.io/appflowyinc/appflowy_worker:0.10.3
+          env:
+            # Override S3 credentials to use separate secret (vault-zeldas-letter)
+            - name: APPFLOWY_S3_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: appflowy-s3-secrets
+                  key: APPFLOWY_S3_ACCESS_KEY
+            - name: APPFLOWY_S3_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: appflowy-s3-secrets
+                  key: APPFLOWY_S3_SECRET_KEY
           resources:
             requests:
               memory: "512Mi"

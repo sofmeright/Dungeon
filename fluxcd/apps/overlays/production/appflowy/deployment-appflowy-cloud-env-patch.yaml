@@ -68,17 +68,17 @@ spec:
                 secretKeyRef:
                   name: appflowy-shared-secrets
                   key: GOTRUE_ADMIN_PASSWORD
-            # Secrets from cloud-specific secret (RGW S3, SMTP)
+            # S3/RGW credentials from separate secret (vault-zeldas-letter)
             - name: APPFLOWY_S3_ACCESS_KEY
               valueFrom:
                 secretKeyRef:
-                  name: appflowy-cloud-secrets
-                  key: S3_ACCESS_KEY
+                  name: appflowy-s3-secrets
+                  key: APPFLOWY_S3_ACCESS_KEY
             - name: APPFLOWY_S3_SECRET_KEY
               valueFrom:
                 secretKeyRef:
-                  name: appflowy-cloud-secrets
-                  key: S3_SECRET_KEY
+                  name: appflowy-s3-secrets
+                  key: APPFLOWY_S3_SECRET_KEY
             - name: APPFLOWY_MAILER_SMTP_USERNAME
               valueFrom:
                 secretKeyRef:
