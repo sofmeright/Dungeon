@@ -8,6 +8,7 @@ data:
   APPFLOWY_WEB_URL: "https://flwy.prplanit.com"
   APPFLOWY_WS_BASE_URL: "wss://flwy.prplanit.com/ws"
   APPFLOWY_S3_PRESIGNED_URL_ENDPOINT: "https://flwy.prplanit.com/files"
+  APPFLOWY_GOTRUE_BASE_URL: "https://flwy.prplanit.com/gotrue"
   APPFLOWY_GOTRUE_EXT_URL: "https://flwy.prplanit.com/gotrue"
   API_EXTERNAL_URL: "https://flwy.prplanit.com/gotrue"
   AI_APPFLOWY_HOST: "https://flwy.prplanit.com"
