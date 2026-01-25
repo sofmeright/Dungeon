@@ -53,6 +53,28 @@ spec:
       allowedRoutes:
         namespaces:
           from: All
+    - name: https-prplanit-apex
+      protocol: HTTPS
+      port: 443
+      hostname: "prplanit.com"
+      tls:
+        mode: Terminate
+        certificateRefs:
+          - name: prplanit-com-tls
+      allowedRoutes:
+        namespaces:
+          from: All
+    - name: https-precisionplanit-apex
+      protocol: HTTPS
+      port: 443
+      hostname: "precisionplanit.com"
+      tls:
+        mode: Terminate
+        certificateRefs:
+          - name: precisionplanit-com-tls
+      allowedRoutes:
+        namespaces:
+          from: All
     - name: https-uni2
       protocol: HTTPS
       port: 443

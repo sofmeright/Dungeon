@@ -1,0 +1,19 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: precisionplanit-site
+spec:
+  parentRefs:
+    - name: cell-membrane-gateway
+      namespace: hyrule-castle
+  hostnames:
+    - "precisionplanit.com"
+    - "www.precisionplanit.com"
+  rules:
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /
+      backendRefs:
+        - name: precisionplanit-site
+          port: 4021
