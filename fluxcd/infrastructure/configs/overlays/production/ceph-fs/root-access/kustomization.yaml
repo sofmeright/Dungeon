@@ -12,3 +12,4 @@ resources:
   - cephfs-init-homarr.yaml
   - cephfs-init-opnform.yaml
   - cephfs-init-vaultwarden.yaml
+  - cephfs-init-penpot.yaml

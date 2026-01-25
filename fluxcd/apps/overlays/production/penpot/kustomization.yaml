@@ -5,6 +5,7 @@ resources:
   - ../../../base/penpot
   - httproute.yaml
   - httproute-cell-membrane.yaml
+  - cephfs-assets-pv.yaml
 patches:
   - path: postgres-patch.yaml
     target:

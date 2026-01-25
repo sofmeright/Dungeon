@@ -1,10 +1,37 @@
 {
   "permissions": {
-    "allow": [],
-    "deny": [
+    "allow": [
+      "Bash(cat:*)",
+      "Bash(curl:*)",
+      "Bash(flux get kustomizations:*)",
+      "Bash(flux reconcile:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "Bash(git mv:*)",
+      "Bash(kubectl rollout restart deployment:*)",
+      "Bash(ssh:*)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "WebSearch",
+      "Bash(if [ -d \"/srv/dungeon/fluxcd/apps/overlays/production/$app\" ])",
+      "Bash(do echo \"=== $app ===\")",
+      "Bash(then echo \"  ✓ EXISTS in apps/overlays/production\")",
+      "Bash(else echo \"  ✗ MISSING from apps/overlays/production\")",
+      "Bash(fi)",
+      "Bash(done)",
+      "Bash(find:*)"
+    ],
+    "deny": [],
+    "ask": [
       "Bash(kubectl apply:*)",
       "Bash(kubectl patch:*)",
-      "Bash(kubectl edit:*)"
+      "Bash(kubectl edit:*)",
+      "Bash(mv:*)"
     ]
-  }
+  },
+  "enableAllProjectMcpServers": true,
+  "enabledMcpjsonServers": [
+    "deepwiki",
+    "kubernetes"
+  ]
 }

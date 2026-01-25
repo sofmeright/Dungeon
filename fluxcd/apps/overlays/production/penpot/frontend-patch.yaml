@@ -6,22 +6,23 @@ spec:
   template:
     spec:
       imagePullSecrets:
-      - name: docker-io-pull-secret
+        - name: docker-io-pull-secret
       containers:
-      - name: frontend
-        image: docker.io/penpotapp/frontend:latest
-        env:
-        - name: PENPOT_FLAGS
-          value: "enable-registration enable-login-with-password enable-login-with-oidc enable-oidc-registration disable-email-verification enable-insecure-register enable-smtp enable-prepl-server disable-secure-session-cookies"
-        - name: PENPOT_PUBLIC_URI
-          value: "https://design.pcfae.com"
-  volumeClaimTemplates:
-  - metadata:
-      name: assets
-    spec:
-      accessModes:
-      - ReadWriteOnce
-      storageClassName: ceph-rbd
-      resources:
-        requests:
-          storage: 20Gi
+        - name: frontend
+          image: docker.io/penpotapp/frontend:latest
+          env:
+            - name: PENPOT_FLAGS
+              value: >-
+                enable-registration enable-login-with-password enable-login-with-oidc
+                enable-oidc-registration disable-email-verification enable-insecure-register
+                enable-smtp enable-prepl-server disable-secure-session-cookies
+            - name: PENPOT_PUBLIC_URI
+              value: "https://design.pcfae.com"
+          volumeMounts:
+            - name: penpot-assets
+              mountPath: /opt/data/assets
+      volumes:
+        - name: penpot-assets
+          persistentVolumeClaim:
+            claimName: penpot-assets-pvc
+  volumeClaimTemplates: []

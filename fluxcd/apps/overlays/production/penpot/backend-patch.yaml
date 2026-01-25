@@ -32,13 +32,11 @@ spec:
               value: "https://sso.prplanit.com/oidc/v1/userinfo"
             - name: PENPOT_OIDC_USER_INFO_SOURCE
               value: "userinfo"
-  volumeClaimTemplates:
-    - metadata:
-        name: temple-of-time-penpot-assets
-      spec:
-        accessModes:
-          - ReadWriteOnce
-        storageClassName: ceph-rbd
-        resources:
-          requests:
-            storage: 20Gi
+          volumeMounts:
+            - name: penpot-assets
+              mountPath: /opt/data/assets
+      volumes:
+        - name: penpot-assets
+          persistentVolumeClaim:
+            claimName: penpot-assets-pvc
+  volumeClaimTemplates: []
