@@ -1,0 +1,12 @@
+apiVersion: networking.istio.io/v1
+kind: DestinationRule
+metadata:
+  name: bookstack
+spec:
+  host: bookstack.hyrule-castle.svc.cluster.local
+  trafficPolicy:
+    portLevelSettings:
+      - port:
+          number: 6875
+        tls:
+          mode: SIMPLE
