@@ -5,4 +5,4 @@
     lbipam.cilium.io/sharing-key: "hookshot"
 - op: replace
   path: /spec/ports/0/port
-  value: 4430
+  value: 4443
