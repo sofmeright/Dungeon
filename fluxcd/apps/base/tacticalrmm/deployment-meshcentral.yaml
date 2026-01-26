@@ -45,6 +45,10 @@ spec:
                   key: MONGODB_PASSWORD
             - name: MESH_PERSISTENT_CONFIG
               value: "1"
+            - name: NGINX_HOST_IP
+              value: "tactical-nginx"
+            - name: NGINX_HOST_PORT
+              value: "443"
       volumes:
         - name: tactical-data
           persistentVolumeClaim:
