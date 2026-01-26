@@ -1,0 +1,165 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: tactical-nginx-entrypoint
+data:
+  entrypoint.sh: |
+    #!/usr/bin/env bash
+    # Modified for K8s: HTTP-only (TLS terminated at gateway)
+    # Original: https://github.com/amidaware/tacticalrmm/blob/master/docker/containers/tactical-nginx/entrypoint.sh
+
+    set -e
+
+    : "${WORKER_CONNECTIONS:=4096}"
+    : "${APP_PORT:=8080}"
+    : "${API_PORT:=8080}"
+    : "${NGINX_RESOLVER:=127.0.0.11}"
+    : "${BACKEND_SERVICE:=tactical-backend}"
+    : "${FRONTEND_SERVICE:=tactical-frontend}"
+    : "${MESH_SERVICE:=tactical-meshcentral}"
+    : "${WEBSOCKETS_SERVICE:=tactical-websockets}"
+    : "${NATS_SERVICE:=tactical-nats}"
+    : "${DEV:=0}"
+    : "${TACTICAL_DIR:=/opt/tactical}"
+
+    rm -f /etc/nginx/conf.d/default.conf
+
+    nginxdefaultconf='/etc/nginx/nginx.conf'
+    /bin/bash -c "sed -i 's/worker_connections.*/worker_connections ${WORKER_CONNECTIONS};/g' $nginxdefaultconf"
+    grep -q -e 'worker_rlimit_nofile' "${nginxdefaultconf}" || sed -i -e '/worker_processes.*/a\' -e 'worker_rlimit_nofile 1000000;' "${nginxdefaultconf}"
+
+    if [[ $DEV -eq 1 ]]; then
+        API_NGINX="
+            set \$api http://${BACKEND_SERVICE}:${API_PORT};
+            proxy_pass \$api;
+            proxy_http_version  1.1;
+            proxy_cache_bypass  \$http_upgrade;
+            proxy_set_header Upgrade           \$http_upgrade;
+            proxy_set_header Connection        \"upgrade\";
+            proxy_set_header Host              \$host;
+            proxy_set_header X-Real-IP         \$remote_addr;
+            proxy_set_header X-Forwarded-For   \$proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto \$scheme;
+            proxy_set_header X-Forwarded-Host  \$host;
+            proxy_set_header X-Forwarded-Port  \$server_port;
+    "
+        STATIC_ASSETS="
+        location /static/ {
+            root /workspace/api/tacticalrmm;
+            add_header \"Access-Control-Allow-Origin\" \"https://\${APP_HOST}\";
+        }
+    "
+    else
+        API_NGINX="
+            set \$api ${BACKEND_SERVICE}:${API_PORT};
+            include         uwsgi_params;
+            uwsgi_pass      \$api;
+    "
+        STATIC_ASSETS="
+        location /static/ {
+            root ${TACTICAL_DIR}/api/;
+            add_header \"Access-Control-Allow-Origin\" \"https://${APP_HOST}\";
+        }
+    "
+    fi
+
+    nginx_config="$(cat <<EOF
+    # backend config - HTTP only (TLS at gateway)
+    server {
+        resolver ${NGINX_RESOLVER} valid=30s;
+        listen 8080;
+        server_name ${API_HOST};
+
+        location / {
+            ${API_NGINX}
+        }
+
+        ${STATIC_ASSETS}
+
+        location /private/ {
+            internal;
+            add_header "Access-Control-Allow-Origin" "https://${APP_HOST}";
+            alias ${TACTICAL_DIR}/api/tacticalrmm/private/;
+        }
+
+        location ~ ^/ws/ {
+            set \$api http://${WEBSOCKETS_SERVICE}:8383;
+            proxy_pass \$api;
+            proxy_http_version 1.1;
+            proxy_set_header Upgrade \$http_upgrade;
+            proxy_set_header Connection "upgrade";
+            proxy_redirect     off;
+            proxy_set_header   Host \$host;
+            proxy_set_header   X-Real-IP \$remote_addr;
+            proxy_set_header   X-Forwarded-For \$proxy_add_x_forwarded_for;
+            proxy_set_header   X-Forwarded-Host \$server_name;
+        }
+
+        location /assets/ {
+            internal;
+            add_header "Access-Control-Allow-Origin" "https://${APP_HOST}";
+            alias ${TACTICAL_DIR}/reporting/assets/;
+        }
+
+        location ~ ^/natsws {
+            set \$natswebsocket http://${NATS_SERVICE}:9235;
+            proxy_pass \$natswebsocket;
+            proxy_http_version 1.1;
+            proxy_set_header Host \$host;
+            proxy_set_header Upgrade \$http_upgrade;
+            proxy_set_header Connection "upgrade";
+            proxy_set_header X-Forwarded-Host \$host:\$server_port;
+            proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto \$scheme;
+        }
+
+        client_max_body_size 300M;
+    }
+
+    # frontend config - HTTP only (TLS at gateway)
+    server {
+        resolver ${NGINX_RESOLVER} valid=30s;
+        listen 8080;
+        server_name ${APP_HOST};
+
+        location / {
+            set \$app http://${FRONTEND_SERVICE}:${APP_PORT};
+            proxy_pass \$app;
+            proxy_http_version  1.1;
+            proxy_cache_bypass  \$http_upgrade;
+            proxy_set_header Upgrade           \$http_upgrade;
+            proxy_set_header Connection        "upgrade";
+            proxy_set_header Host              \$host;
+            proxy_set_header X-Real-IP         \$remote_addr;
+            proxy_set_header X-Forwarded-For   \$proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto \$scheme;
+            proxy_set_header X-Forwarded-Host  \$host;
+            proxy_set_header X-Forwarded-Port  \$server_port;
+        }
+    }
+
+    # meshcentral config - HTTP only (TLS at gateway)
+    server {
+        resolver ${NGINX_RESOLVER} valid=30s;
+        listen 8080;
+        proxy_send_timeout 330s;
+        proxy_read_timeout 330s;
+        server_name ${MESH_HOST};
+
+        location / {
+            set \$meshcentral http://${MESH_SERVICE}:4443;
+            proxy_pass \$meshcentral;
+            proxy_http_version 1.1;
+            proxy_set_header Upgrade \$http_upgrade;
+            proxy_set_header Connection "upgrade";
+            proxy_set_header Host \$host;
+            proxy_set_header X-Real-IP \$remote_addr;
+            proxy_set_header X-Forwarded-Host \$host:\$server_port;
+            proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto \$scheme;
+        }
+    }
+    EOF
+    )"
+
+    echo "${nginx_config}" >/etc/nginx/conf.d/default.conf

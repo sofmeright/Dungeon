@@ -6,6 +6,6 @@ spec:
   selector:
     app: tactical-nginx
   ports:
-    - name: https
-      port: 443
-      targetPort: 4443
+    - name: http
+      port: 80
+      targetPort: 8080

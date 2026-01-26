@@ -25,6 +25,7 @@ spec:
         - name: tactical-data
           persistentVolumeClaim:
             claimName: hookshot-tactical-data-pvc
-        - name: certs
-          secret:
-            secretName: hookshot-tactical-tls
+        - name: entrypoint
+          configMap:
+            name: tactical-nginx-entrypoint
+            defaultMode: 0755

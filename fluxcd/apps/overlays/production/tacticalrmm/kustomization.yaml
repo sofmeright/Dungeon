@@ -4,9 +4,7 @@ namespace: hookshot
 resources:
   - ../../../base/tacticalrmm
   - httproute.yaml
-  - destinationrule.yaml
   - cephfs-pvs.yaml
-  - certificate.yaml
 patches:
   # ExternalSecret
   - path: externalsecret-patch.yaml

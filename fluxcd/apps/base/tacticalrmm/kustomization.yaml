@@ -28,3 +28,5 @@ resources:
   - service-nginx.yaml
   # Secrets
   - externalsecret.yaml
+  # ConfigMaps
+  - configmap-nginx-entrypoint.yaml

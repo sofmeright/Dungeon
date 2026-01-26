@@ -18,14 +18,12 @@ spec:
           ports:
             - containerPort: 8080
               name: http
-            - containerPort: 4443
-              name: https
           volumeMounts:
             - name: tactical-data
               mountPath: /opt/tactical
-            - name: certs
-              mountPath: /certs
-              readOnly: true
+            - name: entrypoint
+              mountPath: /docker-entrypoint.d/entrypoint.sh
+              subPath: entrypoint.sh
           env:
             - name: APP_HOST
               valueFrom:
@@ -42,14 +40,13 @@ spec:
                 secretKeyRef:
                   name: tacticalrmm-secrets
                   key: MESH_HOST
-            - name: CERT_FILE
-              value: "/certs/tls.crt"
-            - name: KEY_FILE
-              value: "/certs/tls.key"
+            - name: NGINX_RESOLVER
+              value: "PLACEHOLDER_DNS_RESOLVER"
       volumes:
         - name: tactical-data
           persistentVolumeClaim:
             claimName: PLACEHOLDER_TACTICAL_DATA_PVC
-        - name: certs
-          secret:
-            secretName: PLACEHOLDER_CERTS_SECRET
+        - name: entrypoint
+          configMap:
+            name: tactical-nginx-entrypoint
+            defaultMode: 0755
