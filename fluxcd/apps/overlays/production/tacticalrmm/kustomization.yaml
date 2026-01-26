@@ -69,7 +69,3 @@ patches:
     target:
       kind: Service
       name: tactical-meshcentral
-  - path: service-nginx-patch.yaml
-    target:
-      kind: Service
-      name: tactical-nginx
