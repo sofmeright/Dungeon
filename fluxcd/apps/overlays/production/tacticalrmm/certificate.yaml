@@ -1,0 +1,14 @@
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: hookshot-tactical-tls
+spec:
+  secretName: hookshot-tactical-tls
+  issuerRef:
+    name: letsencrypt-production
+    kind: ClusterIssuer
+  dnsNames:
+    - "trmm.prplanit.com"
+    - "trmm-api.prplanit.com"
+    - "meshc.prplanit.com"

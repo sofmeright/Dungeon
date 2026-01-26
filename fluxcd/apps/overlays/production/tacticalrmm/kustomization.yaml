@@ -5,6 +5,8 @@ resources:
   - ../../../base/tacticalrmm
   - httproute.yaml
   - destinationrule.yaml
+  - cephfs-pvs.yaml
+  - certificate.yaml
 patches:
   - path: externalsecret-patch.yaml
     target:

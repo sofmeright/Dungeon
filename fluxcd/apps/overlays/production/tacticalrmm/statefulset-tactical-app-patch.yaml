@@ -96,13 +96,14 @@ spec:
             limits:
               cpu: "500m"
               memory: "512Mi"
-  volumeClaimTemplates:
-    - metadata:
-        name: hookshot-tactical-app-data
-      spec:
-        accessModes:
-          - ReadWriteOnce
-        storageClassName: ceph-rbd
-        resources:
-          requests:
-            storage: 5Gi
+      volumes:
+        - $patch: replace
+        - name: hookshot-tactical-data
+          persistentVolumeClaim:
+            claimName: hookshot-tactical-data-pvc
+        - name: hookshot-meshcentral-data
+          persistentVolumeClaim:
+            claimName: hookshot-meshcentral-data-pvc
+        - name: hookshot-tactical-certs
+          secret:
+            secretName: hookshot-tactical-tls

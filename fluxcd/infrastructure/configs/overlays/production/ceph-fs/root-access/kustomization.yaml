@@ -13,3 +13,4 @@ resources:
   - cephfs-init-opnform.yaml
   - cephfs-init-vaultwarden.yaml
   - cephfs-init-penpot.yaml
+  - cephfs-init-tacticalrmm.yaml
