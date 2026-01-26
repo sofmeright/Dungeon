@@ -16,7 +16,7 @@ spec:
         - name: frontend
           image: PLACEHOLDER_FRONTEND_IMAGE
           ports:
-            - containerPort: 80
+            - containerPort: 8080
               name: http
           volumeMounts:
             - name: tactical-data
