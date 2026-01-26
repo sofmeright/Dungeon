@@ -16,7 +16,7 @@ spec:
         - name: meshcentral
           image: PLACEHOLDER_MESHCENTRAL_IMAGE
           ports:
-            - containerPort: 4430
+            - containerPort: 4443
               name: meshcentral
           volumeMounts:
             - name: tactical-data

@@ -7,5 +7,5 @@ spec:
     app: tactical-meshcentral
   ports:
     - name: meshcentral
-      port: 4430
-      targetPort: 4430
+      port: 4443
+      targetPort: 4443
