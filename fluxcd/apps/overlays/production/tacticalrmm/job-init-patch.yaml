@@ -7,13 +7,6 @@ spec:
     spec:
       imagePullSecrets:
         - name: jcr-pcfae-dungeon-pull-secret
-      initContainers:
-        - name: wait-for-mongodb
-          image: docker.io/busybox:1.36
-        - name: wait-for-postgres
-          image: docker.io/busybox:1.36
-        - name: wait-for-redis
-          image: docker.io/busybox:1.36
       containers:
         - name: tactical-init
           image: docker.io/tacticalrmm/tactical:latest

@@ -8,36 +8,39 @@ spec:
     spec:
       restartPolicy: OnFailure
       initContainers:
-        - name: wait-for-mongodb
-          image: PLACEHOLDER_BUSYBOX_IMAGE
-          command:
-            - sh
-            - -c
-            - |
-              until nc -z tactical-mongodb 27017; do
-                echo "Waiting for MongoDB..."
-                sleep 2
-              done
         - name: wait-for-postgres
-          image: PLACEHOLDER_BUSYBOX_IMAGE
+          image: docker.io/postgres:13-alpine
           command:
             - sh
             - -c
             - |
-              until nc -z tactical-postgres 5432; do
+              until pg_isready -h tactical-postgres -p 5432 -U tactical; do
                 echo "Waiting for PostgreSQL..."
                 sleep 2
               done
+              echo "PostgreSQL is ready"
         - name: wait-for-redis
-          image: PLACEHOLDER_BUSYBOX_IMAGE
+          image: docker.io/redis:6.0-alpine
           command:
             - sh
             - -c
             - |
-              until nc -z tactical-redis 6379; do
+              until redis-cli -h tactical-redis ping | grep -q PONG; do
                 echo "Waiting for Redis..."
                 sleep 2
               done
+              echo "Redis is ready"
+        - name: wait-for-meshcentral
+          image: docker.io/curlimages/curl:latest
+          command:
+            - sh
+            - -c
+            - |
+              until curl -sf http://tactical-meshcentral:4443 >/dev/null 2>&1; do
+                echo "Waiting for MeshCentral..."
+                sleep 2
+              done
+              echo "MeshCentral is ready"
       containers:
         - name: tactical-init
           image: PLACEHOLDER_TACTICAL_IMAGE

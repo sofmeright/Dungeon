@@ -8,12 +8,17 @@ spec:
       imagePullSecrets:
         - name: jcr-pcfae-dungeon-pull-secret
       initContainers:
-        - name: wait-for-init
-          image: docker.io/busybox:1.36
-          command: ["sh", "-c", "until [ -f /opt/tactical/tmp/tactical.ready ]; do echo 'Waiting for init...'; sleep 5; done"]
-          volumeMounts:
-            - name: tactical-data
-              mountPath: /opt/tactical
+        - name: wait-for-mongodb
+          image: docker.io/mongo:4.4
+          command:
+            - sh
+            - -c
+            - |
+              until mongo --host tactical-mongodb --eval "db.adminCommand('ping')" >/dev/null 2>&1; do
+                echo "Waiting for MongoDB..."
+                sleep 2
+              done
+              echo "MongoDB is ready"
       containers:
         - name: meshcentral
           image: docker.io/tacticalrmm/tactical-meshcentral:latest
