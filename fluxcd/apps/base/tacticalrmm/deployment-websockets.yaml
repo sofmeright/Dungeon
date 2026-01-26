@@ -17,7 +17,7 @@ spec:
           image: PLACEHOLDER_TACTICAL_IMAGE
           args: ["tactical-websockets"]
           ports:
-            - containerPort: 8001
+            - containerPort: 8383
               name: websockets
           volumeMounts:
             - name: tactical-data

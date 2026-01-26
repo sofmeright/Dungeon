@@ -20,6 +20,8 @@ spec:
               name: nats
             - containerPort: 8222
               name: nats-http
+            - containerPort: 9235
+              name: nats-ws
           volumeMounts:
             - name: tactical-data
               mountPath: /opt/tactical

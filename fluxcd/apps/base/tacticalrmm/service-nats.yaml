@@ -12,3 +12,6 @@ spec:
     - name: nats-http
       port: 8222
       targetPort: 8222
+    - name: nats-ws
+      port: 9235
+      targetPort: 9235

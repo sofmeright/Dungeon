@@ -7,5 +7,5 @@ spec:
     app: tactical-websockets
   ports:
     - name: websockets
-      port: 8001
-      targetPort: 8001
+      port: 8383
+      targetPort: 8383
