@@ -15,7 +15,7 @@ spec:
             - ansible-playbook
             - /scripts/cephfs-init-rootpaths.yml
             - -e
-            - path=/dungeon/hdd/apps/tacticalrmm subdirs=tactical-data,meshcentral-data owner=1000:1000 mode=0755
+            - path=/dungeon/hdd/apps/tacticalrmm subdirs=tactical-data,meshcentral-data,mongo-init,redis-init owner=1000:1000 mode=0755
           volumeMounts:
             - name: cephfs-root
               mountPath: /cephfs

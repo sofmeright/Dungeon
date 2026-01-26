@@ -13,25 +13,39 @@ spec:
       labels:
         app: tactical-redis
     spec:
+      initContainers:
+        - name: create-initialized-marker
+          image: PLACEHOLDER_BUSYBOX_IMAGE
+          command:
+            - sh
+            - -c
+            - touch /redis-init/.initialized && chown 1000:1000 /redis-init/.initialized
+          volumeMounts:
+            - name: redis-init
+              mountPath: /redis-init
       containers:
-      - name: redis
-        image: PLACEHOLDER_REDIS_IMAGE
-        ports:
-        - containerPort: 6379
-          name: redis
-        command:
-        - redis-server
-        - --appendonly
-        - "yes"
-        volumeMounts:
-        - name: redis-data
-          mountPath: /data
+        - name: redis
+          image: PLACEHOLDER_REDIS_IMAGE
+          ports:
+            - containerPort: 6379
+              name: redis
+          command:
+            - redis-server
+            - --appendonly
+            - "yes"
+          volumeMounts:
+            - name: redis-data
+              mountPath: /data
+      volumes:
+        - name: redis-init
+          persistentVolumeClaim:
+            claimName: PLACEHOLDER_REDIS_INIT_PVC
   volumeClaimTemplates:
-  - metadata:
-      name: redis-data
-    spec:
-      accessModes: ["ReadWriteOnce"]
-      storageClassName: PLACEHOLDER_STORAGE_CLASS
-      resources:
-        requests:
-          storage: PLACEHOLDER_STORAGE_SIZE
+    - metadata:
+        name: redis-data
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        storageClassName: PLACEHOLDER_STORAGE_CLASS
+        resources:
+          requests:
+            storage: PLACEHOLDER_STORAGE_SIZE

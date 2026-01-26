@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tactical-meshcentral
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tactical-meshcentral
+  template:
+    metadata:
+      labels:
+        app: tactical-meshcentral
+    spec:
+      containers:
+        - name: meshcentral
+          image: PLACEHOLDER_MESHCENTRAL_IMAGE
+          ports:
+            - containerPort: 4430
+              name: meshcentral
+          volumeMounts:
+            - name: tactical-data
+              mountPath: /opt/tactical
+            - name: meshcentral-data
+              mountPath: /home/node/app/meshcentral-data
+          env:
+            - name: MESH_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: tacticalrmm-secrets
+                  key: MESH_HOST
+            - name: MESH_USER
+              valueFrom:
+                secretKeyRef:
+                  name: tacticalrmm-secrets
+                  key: MESH_USER
+            - name: MESH_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: tacticalrmm-secrets
+                  key: MESH_PASS
+            - name: MONGODB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: tacticalrmm-secrets
+                  key: MONGODB_USER
+            - name: MONGODB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: tacticalrmm-secrets
+                  key: MONGODB_PASSWORD
+            - name: MESH_PERSISTENT_CONFIG
+              value: "1"
+      volumes:
+        - name: tactical-data
+          persistentVolumeClaim:
+            claimName: PLACEHOLDER_TACTICAL_DATA_PVC
+        - name: meshcentral-data
+          persistentVolumeClaim:
+            claimName: PLACEHOLDER_MESHCENTRAL_DATA_PVC

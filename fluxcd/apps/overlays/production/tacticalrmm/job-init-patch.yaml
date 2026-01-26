@@ -1,0 +1,33 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: tactical-init
+spec:
+  template:
+    spec:
+      imagePullSecrets:
+        - name: jcr-pcfae-dungeon-pull-secret
+      initContainers:
+        - name: wait-for-mongodb
+          image: docker.io/busybox:1.36
+        - name: wait-for-postgres
+          image: docker.io/busybox:1.36
+        - name: wait-for-redis
+          image: docker.io/busybox:1.36
+      containers:
+        - name: tactical-init
+          image: docker.io/tacticalrmm/tactical:latest
+      volumes:
+        - $patch: replace
+        - name: tactical-data
+          persistentVolumeClaim:
+            claimName: hookshot-tactical-data-pvc
+        - name: meshcentral-data
+          persistentVolumeClaim:
+            claimName: hookshot-meshcentral-data-pvc
+        - name: mongo-data
+          persistentVolumeClaim:
+            claimName: hookshot-mongo-init-pvc
+        - name: redis-data
+          persistentVolumeClaim:
+            claimName: hookshot-redis-init-pvc

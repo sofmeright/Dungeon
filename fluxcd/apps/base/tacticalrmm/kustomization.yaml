@@ -1,14 +1,30 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
+  # Databases (StatefulSets)
   - statefulset-postgres.yaml
   - statefulset-redis.yaml
   - statefulset-mongodb.yaml
-  - statefulset-tactical-app.yaml
+  # Init Job
+  - job-init.yaml
+  # Application Deployments
+  - deployment-backend.yaml
+  - deployment-frontend.yaml
+  - deployment-websockets.yaml
+  - deployment-celery.yaml
+  - deployment-celerybeat.yaml
+  - deployment-nats.yaml
+  - deployment-meshcentral.yaml
+  - deployment-nginx.yaml
+  # Services
   - service-postgres.yaml
   - service-redis.yaml
   - service-mongodb.yaml
-  - service-app.yaml
+  - service-backend.yaml
+  - service-frontend.yaml
+  - service-websockets.yaml
+  - service-nats.yaml
   - service-meshcentral.yaml
   - service-nginx.yaml
+  # Secrets
   - externalsecret.yaml

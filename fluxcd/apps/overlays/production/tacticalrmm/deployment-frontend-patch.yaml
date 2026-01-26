@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tactical-frontend
+spec:
+  template:
+    spec:
+      imagePullSecrets:
+        - name: jcr-pcfae-dungeon-pull-secret
+      containers:
+        - name: frontend
+          image: docker.io/tacticalrmm/tactical-frontend:latest
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "500m"
+              memory: "512Mi"
+      volumes:
+        - $patch: replace
+        - name: tactical-data
+          persistentVolumeClaim:
+            claimName: hookshot-tactical-data-pvc

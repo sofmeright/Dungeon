@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tactical-backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tactical-backend
+  template:
+    metadata:
+      labels:
+        app: tactical-backend
+    spec:
+      containers:
+        - name: backend
+          image: PLACEHOLDER_TACTICAL_IMAGE
+          args: ["tactical-backend"]
+          ports:
+            - containerPort: 8000
+              name: backend
+          volumeMounts:
+            - name: tactical-data
+              mountPath: /opt/tactical
+      volumes:
+        - name: tactical-data
+          persistentVolumeClaim:
+            claimName: PLACEHOLDER_TACTICAL_DATA_PVC

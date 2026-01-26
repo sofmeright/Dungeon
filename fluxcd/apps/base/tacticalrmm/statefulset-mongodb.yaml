@@ -13,31 +13,48 @@ spec:
       labels:
         app: tactical-mongodb
     spec:
+      initContainers:
+        - name: create-initialized-marker
+          image: PLACEHOLDER_BUSYBOX_IMAGE
+          command:
+            - sh
+            - -c
+            - touch /mongo-init/.initialized && chown 1000:1000 /mongo-init/.initialized
+          volumeMounts:
+            - name: mongo-init
+              mountPath: /mongo-init
       containers:
-      - name: mongodb
-        image: PLACEHOLDER_MONGODB_IMAGE
-        ports:
-        - containerPort: 27017
-          name: mongodb
-        env:
-        - name: MONGO_INITDB_ROOT_USERNAME
-          value: "tactical"
-        - name: MONGO_INITDB_ROOT_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: tacticalrmm-secrets
-              key: MONGODB_PASSWORD
-        - name: MONGO_INITDB_DATABASE
-          value: "meshcentral"
-        volumeMounts:
-        - name: mongodb-data
-          mountPath: /data/db
+        - name: mongodb
+          image: PLACEHOLDER_MONGODB_IMAGE
+          ports:
+            - containerPort: 27017
+              name: mongodb
+          env:
+            - name: MONGO_INITDB_ROOT_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: tacticalrmm-secrets
+                  key: MONGODB_USER
+            - name: MONGO_INITDB_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: tacticalrmm-secrets
+                  key: MONGODB_PASSWORD
+            - name: MONGO_INITDB_DATABASE
+              value: "meshcentral"
+          volumeMounts:
+            - name: mongodb-data
+              mountPath: /data/db
+      volumes:
+        - name: mongo-init
+          persistentVolumeClaim:
+            claimName: PLACEHOLDER_MONGO_INIT_PVC
   volumeClaimTemplates:
-  - metadata:
-      name: mongodb-data
-    spec:
-      accessModes: ["ReadWriteOnce"]
-      storageClassName: PLACEHOLDER_STORAGE_CLASS
-      resources:
-        requests:
-          storage: PLACEHOLDER_STORAGE_SIZE
+    - metadata:
+        name: mongodb-data
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        storageClassName: PLACEHOLDER_STORAGE_CLASS
+        resources:
+          requests:
+            storage: PLACEHOLDER_STORAGE_SIZE

@@ -6,7 +6,6 @@ spec:
   selector:
     app: tactical-meshcentral
   ports:
-  - name: http
-    port: 4430
-    targetPort: 4430
-  type: LoadBalancer
+    - name: meshcentral
+      port: 4430
+      targetPort: 4430

@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tactical-celerybeat
+spec:
+  template:
+    spec:
+      imagePullSecrets:
+        - name: jcr-pcfae-dungeon-pull-secret
+      containers:
+        - name: celerybeat
+          image: docker.io/tacticalrmm/tactical:latest
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "256Mi"
+            limits:
+              cpu: "500m"
+              memory: "1Gi"
+      volumes:
+        - $patch: replace
+        - name: tactical-data
+          persistentVolumeClaim:
+            claimName: hookshot-tactical-data-pvc

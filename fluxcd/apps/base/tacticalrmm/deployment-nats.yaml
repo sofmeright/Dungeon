@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tactical-nats
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tactical-nats
+  template:
+    metadata:
+      labels:
+        app: tactical-nats
+    spec:
+      containers:
+        - name: nats
+          image: PLACEHOLDER_NATS_IMAGE
+          ports:
+            - containerPort: 4222
+              name: nats
+            - containerPort: 8222
+              name: nats-http
+          volumeMounts:
+            - name: tactical-data
+              mountPath: /opt/tactical
+          env:
+            - name: API_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: tacticalrmm-secrets
+                  key: API_HOST
+      volumes:
+        - name: tactical-data
+          persistentVolumeClaim:
+            claimName: PLACEHOLDER_TACTICAL_DATA_PVC

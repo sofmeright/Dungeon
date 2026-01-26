@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tactical-nginx
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tactical-nginx
+  template:
+    metadata:
+      labels:
+        app: tactical-nginx
+    spec:
+      containers:
+        - name: nginx
+          image: PLACEHOLDER_NGINX_IMAGE
+          ports:
+            - containerPort: 80
+              name: http
+            - containerPort: 443
+              name: https
+          volumeMounts:
+            - name: tactical-data
+              mountPath: /opt/tactical
+            - name: certs
+              mountPath: /certs
+              readOnly: true
+          env:
+            - name: APP_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: tacticalrmm-secrets
+                  key: APP_HOST
+            - name: API_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: tacticalrmm-secrets
+                  key: API_HOST
+            - name: MESH_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: tacticalrmm-secrets
+                  key: MESH_HOST
+            - name: CERT_FILE
+              value: "/certs/tls.crt"
+            - name: KEY_FILE
+              value: "/certs/tls.key"
+      volumes:
+        - name: tactical-data
+          persistentVolumeClaim:
+            claimName: PLACEHOLDER_TACTICAL_DATA_PVC
+        - name: certs
+          secret:
+            secretName: PLACEHOLDER_CERTS_SECRET

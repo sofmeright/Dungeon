@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tactical-meshcentral
+spec:
+  template:
+    spec:
+      imagePullSecrets:
+        - name: jcr-pcfae-dungeon-pull-secret
+      containers:
+        - name: meshcentral
+          image: docker.io/tacticalrmm/tactical-meshcentral:latest
+          resources:
+            requests:
+              cpu: "250m"
+              memory: "512Mi"
+            limits:
+              cpu: "1000m"
+              memory: "2Gi"
+      volumes:
+        - $patch: replace
+        - name: tactical-data
+          persistentVolumeClaim:
+            claimName: hookshot-tactical-data-pvc
+        - name: meshcentral-data
+          persistentVolumeClaim:
+            claimName: hookshot-meshcentral-data-pvc

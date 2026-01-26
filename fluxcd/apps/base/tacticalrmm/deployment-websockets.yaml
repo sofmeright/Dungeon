@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tactical-websockets
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tactical-websockets
+  template:
+    metadata:
+      labels:
+        app: tactical-websockets
+    spec:
+      containers:
+        - name: websockets
+          image: PLACEHOLDER_TACTICAL_IMAGE
+          args: ["tactical-websockets"]
+          ports:
+            - containerPort: 8001
+              name: websockets
+          volumeMounts:
+            - name: tactical-data
+              mountPath: /opt/tactical
+      volumes:
+        - name: tactical-data
+          persistentVolumeClaim:
+            claimName: PLACEHOLDER_TACTICAL_DATA_PVC

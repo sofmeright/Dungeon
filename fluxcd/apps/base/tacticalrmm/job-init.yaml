@@ -1,0 +1,113 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: tactical-init
+spec:
+  ttlSecondsAfterFinished: 300
+  template:
+    spec:
+      restartPolicy: OnFailure
+      initContainers:
+        - name: wait-for-mongodb
+          image: PLACEHOLDER_BUSYBOX_IMAGE
+          command:
+            - sh
+            - -c
+            - |
+              until nc -z tactical-mongodb 27017; do
+                echo "Waiting for MongoDB..."
+                sleep 2
+              done
+        - name: wait-for-postgres
+          image: PLACEHOLDER_BUSYBOX_IMAGE
+          command:
+            - sh
+            - -c
+            - |
+              until nc -z tactical-postgres 5432; do
+                echo "Waiting for PostgreSQL..."
+                sleep 2
+              done
+        - name: wait-for-redis
+          image: PLACEHOLDER_BUSYBOX_IMAGE
+          command:
+            - sh
+            - -c
+            - |
+              until nc -z tactical-redis 6379; do
+                echo "Waiting for Redis..."
+                sleep 2
+              done
+      containers:
+        - name: tactical-init
+          image: PLACEHOLDER_TACTICAL_IMAGE
+          command: ["tactical-init"]
+          volumeMounts:
+            - name: tactical-data
+              mountPath: /opt/tactical
+            - name: meshcentral-data
+              mountPath: /meshcentral-data
+            - name: mongo-data
+              mountPath: /mongo/data/db
+            - name: redis-data
+              mountPath: /redis/data
+          env:
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: tacticalrmm-secrets
+                  key: POSTGRES_USER
+            - name: POSTGRES_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: tacticalrmm-secrets
+                  key: POSTGRES_PASS
+            - name: APP_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: tacticalrmm-secrets
+                  key: APP_HOST
+            - name: API_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: tacticalrmm-secrets
+                  key: API_HOST
+            - name: MESH_USER
+              valueFrom:
+                secretKeyRef:
+                  name: tacticalrmm-secrets
+                  key: MESH_USER
+            - name: MESH_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: tacticalrmm-secrets
+                  key: MESH_HOST
+            - name: TRMM_USER
+              valueFrom:
+                secretKeyRef:
+                  name: tacticalrmm-secrets
+                  key: TRMM_USER
+            - name: TRMM_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: tacticalrmm-secrets
+                  key: TRMM_PASS
+            - name: TRMM_DISABLE_WEB_TERMINAL
+              value: "False"
+            - name: TRMM_DISABLE_SERVER_SCRIPTS
+              value: "False"
+            - name: TRMM_DISABLE_SSO
+              value: "False"
+      volumes:
+        - name: tactical-data
+          persistentVolumeClaim:
+            claimName: PLACEHOLDER_TACTICAL_DATA_PVC
+        - name: meshcentral-data
+          persistentVolumeClaim:
+            claimName: PLACEHOLDER_MESHCENTRAL_DATA_PVC
+        - name: mongo-data
+          persistentVolumeClaim:
+            claimName: PLACEHOLDER_MONGO_INIT_PVC
+        - name: redis-data
+          persistentVolumeClaim:
+            claimName: PLACEHOLDER_REDIS_INIT_PVC

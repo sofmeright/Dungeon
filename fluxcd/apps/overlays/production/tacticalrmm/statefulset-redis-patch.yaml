@@ -5,6 +5,9 @@ metadata:
 spec:
   template:
     spec:
+      initContainers:
+        - name: create-initialized-marker
+          image: docker.io/busybox:1.36
       containers:
         - name: redis
           image: docker.io/redis:7-alpine
@@ -15,6 +18,10 @@ spec:
             limits:
               cpu: "500m"
               memory: "1Gi"
+      volumes:
+        - name: redis-init
+          persistentVolumeClaim:
+            claimName: hookshot-redis-init-pvc
   volumeClaimTemplates:
     - metadata:
         name: redis-data

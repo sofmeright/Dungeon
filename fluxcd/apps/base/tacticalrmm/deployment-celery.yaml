@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tactical-celery
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tactical-celery
+  template:
+    metadata:
+      labels:
+        app: tactical-celery
+    spec:
+      containers:
+        - name: celery
+          image: PLACEHOLDER_TACTICAL_IMAGE
+          args: ["tactical-celery"]
+          volumeMounts:
+            - name: tactical-data
+              mountPath: /opt/tactical
+      volumes:
+        - name: tactical-data
+          persistentVolumeClaim:
+            claimName: PLACEHOLDER_TACTICAL_DATA_PVC

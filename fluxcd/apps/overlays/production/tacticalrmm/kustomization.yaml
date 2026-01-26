@@ -8,10 +8,12 @@ resources:
   - cephfs-pvs.yaml
   - certificate.yaml
 patches:
+  # ExternalSecret
   - path: externalsecret-patch.yaml
     target:
       kind: ExternalSecret
       name: tacticalrmm-secrets
+  # Database StatefulSets
   - path: statefulset-postgres-patch.yaml
     target:
       kind: StatefulSet
@@ -24,10 +26,45 @@ patches:
     target:
       kind: StatefulSet
       name: tactical-mongodb
-  - path: statefulset-tactical-app-patch.yaml
+  # Init Job
+  - path: job-init-patch.yaml
     target:
-      kind: StatefulSet
-      name: tactical-app
+      kind: Job
+      name: tactical-init
+  # Application Deployments
+  - path: deployment-backend-patch.yaml
+    target:
+      kind: Deployment
+      name: tactical-backend
+  - path: deployment-frontend-patch.yaml
+    target:
+      kind: Deployment
+      name: tactical-frontend
+  - path: deployment-websockets-patch.yaml
+    target:
+      kind: Deployment
+      name: tactical-websockets
+  - path: deployment-celery-patch.yaml
+    target:
+      kind: Deployment
+      name: tactical-celery
+  - path: deployment-celerybeat-patch.yaml
+    target:
+      kind: Deployment
+      name: tactical-celerybeat
+  - path: deployment-nats-patch.yaml
+    target:
+      kind: Deployment
+      name: tactical-nats
+  - path: deployment-meshcentral-patch.yaml
+    target:
+      kind: Deployment
+      name: tactical-meshcentral
+  - path: deployment-nginx-patch.yaml
+    target:
+      kind: Deployment
+      name: tactical-nginx
+  # Services
   - path: service-meshcentral-patch.yaml
     target:
       kind: Service

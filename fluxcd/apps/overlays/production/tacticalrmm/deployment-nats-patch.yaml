@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tactical-nats
+spec:
+  template:
+    spec:
+      imagePullSecrets:
+        - name: jcr-pcfae-dungeon-pull-secret
+      containers:
+        - name: nats
+          image: docker.io/tacticalrmm/tactical-nats:latest
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "500m"
+              memory: "512Mi"
+      volumes:
+        - $patch: replace
+        - name: tactical-data
+          persistentVolumeClaim:
+            claimName: hookshot-tactical-data-pvc
