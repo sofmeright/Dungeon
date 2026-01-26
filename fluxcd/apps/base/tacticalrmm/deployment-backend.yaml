@@ -17,7 +17,7 @@ spec:
           image: PLACEHOLDER_TACTICAL_IMAGE
           args: ["tactical-backend"]
           ports:
-            - containerPort: 8000
+            - containerPort: 8080
               name: backend
           volumeMounts:
             - name: tactical-data
