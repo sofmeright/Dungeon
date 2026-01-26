@@ -10,6 +10,9 @@ spec:
       containers:
         - name: websockets
           image: docker.io/tacticalrmm/tactical:latest
+          env:
+            - name: NATS_CONNECT_HOST
+              value: "tactical-nats"
           resources:
             requests:
               cpu: "100m"
