@@ -5,7 +5,7 @@ metadata:
 spec:
   exportTo:
     - "."
-    - "istio-system"
+    - "hyrule-castle"
   host: tactical-nginx.hookshot.svc.cluster.local
   trafficPolicy:
     portLevelSettings:
