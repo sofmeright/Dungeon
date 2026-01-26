@@ -16,9 +16,9 @@ spec:
         - name: nginx
           image: PLACEHOLDER_NGINX_IMAGE
           ports:
-            - containerPort: 80
+            - containerPort: 8080
               name: http
-            - containerPort: 443
+            - containerPort: 4443
               name: https
           volumeMounts:
             - name: tactical-data

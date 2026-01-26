@@ -10,6 +10,9 @@ spec:
       containers:
         - name: nginx
           image: docker.io/tacticalrmm/tactical-nginx:latest
+          env:
+            - name: NGINX_RESOLVER
+              value: "10.144.0.10"
           resources:
             requests:
               cpu: "100m"
