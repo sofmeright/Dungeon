@@ -17,6 +17,9 @@ spec:
       containers:
         - name: tactical-init
           image: docker.io/tacticalrmm/tactical:latest
+          env:
+            - name: NATS_CONNECT_HOST
+              value: "tactical-nats"
       volumes:
         - $patch: replace
         - name: tactical-data
