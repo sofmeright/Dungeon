@@ -11,3 +11,4 @@ spec:
         tls:
           mode: SIMPLE
           insecureSkipVerify: true
+          sni: trmm.prplanit.com
