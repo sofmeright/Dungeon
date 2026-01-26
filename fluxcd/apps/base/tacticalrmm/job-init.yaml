@@ -41,7 +41,7 @@ spec:
       containers:
         - name: tactical-init
           image: PLACEHOLDER_TACTICAL_IMAGE
-          command: ["tactical-init"]
+          args: ["tactical-init"]
           volumeMounts:
             - name: tactical-data
               mountPath: /opt/tactical
