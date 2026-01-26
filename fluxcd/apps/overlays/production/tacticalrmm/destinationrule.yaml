@@ -3,6 +3,9 @@ kind: DestinationRule
 metadata:
   name: tactical-nginx
 spec:
+  exportTo:
+    - "."
+    - "istio-system"
   host: tactical-nginx.hookshot.svc.cluster.local
   trafficPolicy:
     portLevelSettings:
