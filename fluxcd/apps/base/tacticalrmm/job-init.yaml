@@ -53,10 +53,7 @@ spec:
               mountPath: /redis/data
           env:
             - name: POSTGRES_USER
-              valueFrom:
-                secretKeyRef:
-                  name: tacticalrmm-secrets
-                  key: POSTGRES_USER
+              value: "tactical"
             - name: POSTGRES_PASS
               valueFrom:
                 secretKeyRef:
@@ -73,10 +70,7 @@ spec:
                   name: tacticalrmm-secrets
                   key: API_HOST
             - name: MESH_USER
-              valueFrom:
-                secretKeyRef:
-                  name: tacticalrmm-secrets
-                  key: MESH_USER
+              value: "tactical"
             - name: MESH_HOST
               valueFrom:
                 secretKeyRef:

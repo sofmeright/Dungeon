@@ -30,20 +30,14 @@ spec:
                   name: tacticalrmm-secrets
                   key: MESH_HOST
             - name: MESH_USER
-              valueFrom:
-                secretKeyRef:
-                  name: tacticalrmm-secrets
-                  key: MESH_USER
+              value: "tactical"
             - name: MESH_PASS
               valueFrom:
                 secretKeyRef:
                   name: tacticalrmm-secrets
                   key: MESH_PASS
             - name: MONGODB_USER
-              valueFrom:
-                secretKeyRef:
-                  name: tacticalrmm-secrets
-                  key: MONGODB_USER
+              value: "tactical"
             - name: MONGODB_PASSWORD
               valueFrom:
                 secretKeyRef:

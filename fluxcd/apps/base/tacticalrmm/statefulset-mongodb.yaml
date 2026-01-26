@@ -31,10 +31,7 @@ spec:
               name: mongodb
           env:
             - name: MONGO_INITDB_ROOT_USERNAME
-              valueFrom:
-                secretKeyRef:
-                  name: tacticalrmm-secrets
-                  key: MONGODB_USER
+              value: "tactical"
             - name: MONGO_INITDB_ROOT_PASSWORD
               valueFrom:
                 secretKeyRef:
