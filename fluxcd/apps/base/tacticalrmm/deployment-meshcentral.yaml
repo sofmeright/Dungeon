@@ -48,7 +48,7 @@ spec:
             - name: NGINX_HOST_IP
               value: "tactical-nginx"
             - name: NGINX_HOST_PORT
-              value: "443"
+              value: "4443"
       volumes:
         - name: tactical-data
           persistentVolumeClaim:
