@@ -13,6 +13,16 @@ spec:
           env:
             - name: NGINX_RESOLVER
               value: "10.144.0.10"
+            - name: BACKEND_SERVICE
+              value: "tactical-backend.hookshot.svc.cluster.local"
+            - name: FRONTEND_SERVICE
+              value: "tactical-frontend.hookshot.svc.cluster.local"
+            - name: WEBSOCKETS_SERVICE
+              value: "tactical-websockets.hookshot.svc.cluster.local"
+            - name: NATS_SERVICE
+              value: "tactical-nats.hookshot.svc.cluster.local"
+            - name: MESH_SERVICE
+              value: "tactical-meshcentral.hookshot.svc.cluster.local"
           resources:
             requests:
               cpu: "100m"
