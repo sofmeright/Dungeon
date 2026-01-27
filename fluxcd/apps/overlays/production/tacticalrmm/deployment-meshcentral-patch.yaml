@@ -28,6 +28,7 @@ spec:
               echo "Injecting TLS cert into meshcentral-data..."
               cp /tls/tls.crt /meshdata/webserver-cert-public.crt
               cp /tls/tls.key /meshdata/webserver-cert-private.key
+              chown 1000:1000 /meshdata/webserver-cert-public.crt /meshdata/webserver-cert-private.key
               chmod 644 /meshdata/webserver-cert-public.crt
               chmod 600 /meshdata/webserver-cert-private.key
               echo "TLS cert injected successfully"
