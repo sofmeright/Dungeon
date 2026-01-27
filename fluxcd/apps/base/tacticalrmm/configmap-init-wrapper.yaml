@@ -20,7 +20,10 @@ data:
       SETTINGS="/opt/tactical/api/tacticalrmm/local_settings.py"
       sed -i "s|^SECRET_KEY = .*|SECRET_KEY = \"${DJANGO_SECRET_KEY}\"|" "$SETTINGS"
       # 4. Regenerate NATS configs to match patched SECRET_KEY
+      #    reload_nats regenerates nats-rmm.conf (server auth, password = SECRET_KEY)
+      #    create_natsapi_conf regenerates nats-api.conf (client config, key = SECRET_KEY)
       cd /opt/tactical/api
+      python manage.py reload_nats
       python manage.py create_natsapi_conf
     fi
 
