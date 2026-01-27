@@ -12,8 +12,8 @@ data:
     # 1. Delete ready marker so services wait for fresh init
     rm -f /opt/tactical/tmp/tactical.ready
 
-    # 2. Run stock tactical-init
-    tactical-init
+    # 2. Run stock tactical-init (via image entrypoint)
+    /entrypoint.sh tactical-init
 
     # 3. Patch SECRET_KEY from Vault (tactical-init generates random, we override)
     if [ -n "$DJANGO_SECRET_KEY" ]; then
