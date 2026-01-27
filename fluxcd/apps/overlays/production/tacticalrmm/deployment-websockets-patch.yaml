@@ -20,13 +20,13 @@ spec:
               done
               echo "PostgreSQL is ready"
         - name: wait-for-backend
-          image: docker.io/curlimages/curl:latest
+          image: docker.io/busybox:1.36
           command:
             - sh
             - -c
             - |
-              until curl -sf http://tactical-backend:8080/ >/dev/null 2>&1; do
-                echo "Waiting for Backend..."
+              until nc -z tactical-backend 8080; do
+                echo "Waiting for Backend (uwsgi)..."
                 sleep 2
               done
               echo "Backend is ready"
