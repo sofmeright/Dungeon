@@ -41,6 +41,15 @@ spec:
       containers:
         - name: meshcentral
           image: docker.io/tacticalrmm/tactical-meshcentral:latest
+          command:
+            - bash
+            - -c
+            - |
+              # Patch entrypoint to remove certUrl (we inject certs directly via init container,
+              # and the default certUrl "https://tactical-nginx:80" is broken — nginx serves HTTP only)
+              sed '/"certUrl"/d' /entrypoint.sh > /tmp/entrypoint-patched.sh
+              chmod +x /tmp/entrypoint-patched.sh
+              exec /tmp/entrypoint-patched.sh
           env:
             - name: MESH_PERSISTENT_CONFIG
               value: "0"
