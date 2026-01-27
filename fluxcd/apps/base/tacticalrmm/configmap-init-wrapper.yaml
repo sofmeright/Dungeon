@@ -1,0 +1,30 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: tactical-init-wrapper
+data:
+  init-wrapper.sh: |
+    #!/usr/bin/env bash
+    set -e
+    # Based on tactical-init from TacticalRMM v1.4.0
+    # Upstream: https://github.com/amidaware/tacticalrmm/tree/v1.4.0
+
+    # 1. Delete ready marker so services wait for fresh init
+    rm -f /opt/tactical/tmp/tactical.ready
+
+    # 2. Run stock tactical-init
+    tactical-init
+
+    # 3. Patch SECRET_KEY from Vault (tactical-init generates random, we override)
+    if [ -n "$DJANGO_SECRET_KEY" ]; then
+      SETTINGS="/opt/tactical/api/tacticalrmm/local_settings.py"
+      sed -i "s|^SECRET_KEY = .*|SECRET_KEY = \"${DJANGO_SECRET_KEY}\"|" "$SETTINGS"
+      # 4. Regenerate NATS configs to match patched SECRET_KEY
+      cd /opt/tactical/api
+      python manage.py create_natsapi_conf
+    fi
+
+    # 5. Patch proxy trust settings (idempotent)
+    SETTINGS="/opt/tactical/api/tacticalrmm/local_settings.py"
+    grep -q "USE_X_FORWARDED_HOST" "$SETTINGS" 2>/dev/null || \
+      printf '\n# Proxy trust settings\nUSE_X_FORWARDED_HOST = True\nSECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")\n' >> "$SETTINGS"

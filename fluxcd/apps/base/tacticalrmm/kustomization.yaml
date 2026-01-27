@@ -5,8 +5,6 @@ resources:
   - statefulset-postgres.yaml
   - statefulset-redis.yaml
   - statefulset-mongodb.yaml
-  # Init Job
-  - job-init.yaml
   # Application Deployments
   - deployment-backend.yaml
   - deployment-frontend.yaml
@@ -30,3 +28,4 @@ resources:
   - externalsecret.yaml
   # ConfigMaps
   - configmap-nginx-entrypoint.yaml
+  - configmap-init-wrapper.yaml

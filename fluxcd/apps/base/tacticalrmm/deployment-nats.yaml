@@ -12,6 +12,21 @@ spec:
       labels:
         app: tactical-nats
     spec:
+      initContainers:
+        - name: wait-for-nats-config
+          image: PLACEHOLDER_BUSYBOX_IMAGE
+          command:
+            - sh
+            - -c
+            - |
+              until [ -f /opt/tactical/api/nats-rmm.conf ]; do
+                echo "Waiting for nats-rmm.conf..."
+                sleep 5
+              done
+              echo "NATS config found"
+          volumeMounts:
+            - name: tactical-data
+              mountPath: /opt/tactical
       containers:
         - name: nats
           image: PLACEHOLDER_NATS_IMAGE

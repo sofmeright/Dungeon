@@ -8,9 +8,17 @@ spec:
       imagePullSecrets:
         - name: jcr-pcfae-dungeon-pull-secret
       initContainers:
-        - name: wait-for-init
+        - name: wait-for-nats-config
           image: docker.io/busybox:1.36
-          command: ["sh", "-c", "until [ -f /opt/tactical/tmp/tactical.ready ]; do echo 'Waiting for init...'; sleep 5; done"]
+          command:
+            - sh
+            - -c
+            - |
+              until [ -f /opt/tactical/api/nats-rmm.conf ]; do
+                echo "Waiting for nats-rmm.conf..."
+                sleep 5
+              done
+              echo "NATS config found"
           volumeMounts:
             - name: tactical-data
               mountPath: /opt/tactical

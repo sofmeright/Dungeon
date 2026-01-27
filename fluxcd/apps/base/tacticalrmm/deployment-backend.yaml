@@ -26,3 +26,16 @@ spec:
         - name: tactical-data
           persistentVolumeClaim:
             claimName: PLACEHOLDER_TACTICAL_DATA_PVC
+        - name: meshcentral-data
+          persistentVolumeClaim:
+            claimName: PLACEHOLDER_MESHCENTRAL_DATA_PVC
+        - name: mongo-data
+          persistentVolumeClaim:
+            claimName: PLACEHOLDER_MONGO_INIT_PVC
+        - name: redis-data
+          persistentVolumeClaim:
+            claimName: PLACEHOLDER_REDIS_INIT_PVC
+        - name: init-wrapper
+          configMap:
+            name: tactical-init-wrapper
+            defaultMode: 0755

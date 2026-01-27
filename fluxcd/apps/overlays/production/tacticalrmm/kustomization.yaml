@@ -24,11 +24,6 @@ patches:
     target:
       kind: StatefulSet
       name: tactical-mongodb
-  # Init Job
-  - path: job-init-patch.yaml
-    target:
-      kind: Job
-      name: tactical-init
   # Application Deployments
   - path: deployment-backend-patch.yaml
     target:

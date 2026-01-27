@@ -19,23 +19,90 @@ spec:
                 sleep 2
               done
               echo "PostgreSQL is ready"
-        - name: wait-for-init
-          image: docker.io/busybox:1.36
-          command: ["sh", "-c", "until [ -f /opt/tactical/tmp/tactical.ready ]; do echo 'Waiting for init...'; sleep 5; done"]
-          volumeMounts:
-            - name: tactical-data
-              mountPath: /opt/tactical
-        - name: patch-proxy-settings
+        - name: wait-for-redis
+          image: docker.io/redis:6.0-alpine
+          command:
+            - sh
+            - -c
+            - |
+              until redis-cli -h tactical-redis ping | grep -q PONG; do
+                echo "Waiting for Redis..."
+                sleep 2
+              done
+              echo "Redis is ready"
+        - name: wait-for-meshcentral
           image: docker.io/busybox:1.36
           command:
             - sh
             - -c
             - |
-              grep -q "USE_X_FORWARDED_HOST" /opt/tactical/api/tacticalrmm/local_settings.py 2>/dev/null || \
-              echo -e '\n# Proxy trust settings\nUSE_X_FORWARDED_HOST = True\nSECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")' >> /opt/tactical/api/tacticalrmm/local_settings.py
+              until nc -z tactical-meshcentral 4443; do
+                echo "Waiting for MeshCentral..."
+                sleep 2
+              done
+              echo "MeshCentral is ready"
+        - name: tactical-init
+          image: docker.io/tacticalrmm/tactical:latest
+          command: ["/bin/bash", "/scripts/init-wrapper.sh"]
+          env:
+            - name: POSTGRES_USER
+              value: "tactical"
+            - name: POSTGRES_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: tacticalrmm-secrets
+                  key: POSTGRES_PASS
+            - name: APP_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: tacticalrmm-secrets
+                  key: APP_HOST
+            - name: API_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: tacticalrmm-secrets
+                  key: API_HOST
+            - name: MESH_USER
+              value: "tactical"
+            - name: MESH_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: tacticalrmm-secrets
+                  key: MESH_HOST
+            - name: TRMM_USER
+              valueFrom:
+                secretKeyRef:
+                  name: tacticalrmm-secrets
+                  key: TRMM_USER
+            - name: TRMM_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: tacticalrmm-secrets
+                  key: TRMM_PASS
+            - name: DJANGO_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: tacticalrmm-secrets
+                  key: DJANGO_SECRET_KEY
+            - name: NATS_CONNECT_HOST
+              value: "tactical-nats"
+            - name: TRMM_DISABLE_WEB_TERMINAL
+              value: "False"
+            - name: TRMM_DISABLE_SERVER_SCRIPTS
+              value: "False"
+            - name: TRMM_DISABLE_SSO
+              value: "False"
           volumeMounts:
             - name: tactical-data
               mountPath: /opt/tactical
+            - name: meshcentral-data
+              mountPath: /meshcentral-data
+            - name: mongo-data
+              mountPath: /mongo/data/db
+            - name: redis-data
+              mountPath: /redis/data
+            - name: init-wrapper
+              mountPath: /scripts
       containers:
         - name: backend
           image: docker.io/tacticalrmm/tactical:latest
@@ -54,3 +121,16 @@ spec:
         - name: tactical-data
           persistentVolumeClaim:
             claimName: hookshot-tactical-data-pvc
+        - name: meshcentral-data
+          persistentVolumeClaim:
+            claimName: hookshot-meshcentral-data-pvc
+        - name: mongo-data
+          persistentVolumeClaim:
+            claimName: hookshot-mongo-init-pvc
+        - name: redis-data
+          persistentVolumeClaim:
+            claimName: hookshot-redis-init-pvc
+        - name: init-wrapper
+          configMap:
+            name: tactical-init-wrapper
+            defaultMode: 0755
