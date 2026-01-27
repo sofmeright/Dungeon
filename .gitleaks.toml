@@ -29,3 +29,14 @@ regexes = [
   '''a3ViZXJuZXRlcw==''',  # Example Kubernetes token
   '''age1[a-z0-9]{58}''',  # SOPS age public keys (safe to commit)
 ]
+
+# ExternalSecret templates contain kubernetes.io/tls type references and
+# Go template expressions ({{ .cert }}) that trigger kubernetes-secret-yaml
+# rule — these are ESO templates, not actual Secret manifests.
+[[rules]]
+id = "kubernetes-secret-yaml"
+description = "Allow ExternalSecret templates referencing TLS types"
+[rules.allowlist]
+paths = [
+  '''externalsecret.*\.yaml$''',
+]
