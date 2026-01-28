@@ -68,6 +68,7 @@ spec:
               const c = require(f);
               c.settings.debug = "relay,agent,peer";
               c.settings.tlsOffload = true;
+              c.settings.agentPong = 28;
               require("fs").writeFileSync(f, JSON.stringify(c, null, 2));
               JSEOF
               sed '/"certUrl"/d' /entrypoint.sh \
