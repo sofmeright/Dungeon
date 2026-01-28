@@ -22,8 +22,6 @@ spec:
             '@type': type.googleapis.com/envoy.extensions.filters.network.http_connection_manager.v3.HttpConnectionManager
             http2_protocol_options:
               allow_connect: true
-            upgrade_configs:
-              - upgrade_type: websocket
     - applyTo: HTTP_ROUTE
       match:
         context: GATEWAY
