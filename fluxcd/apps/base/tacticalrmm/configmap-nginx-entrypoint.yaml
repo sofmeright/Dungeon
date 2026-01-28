@@ -53,6 +53,11 @@ data:
         API_NGINX="
             set \$api ${BACKEND_SERVICE}:${API_PORT};
             include         uwsgi_params;
+            uwsgi_param     X-Real-IP         \$remote_addr;
+            uwsgi_param     X-Forwarded-For   \$proxy_add_x_forwarded_for;
+            uwsgi_param     X-Forwarded-Proto \"https\";
+            uwsgi_param     X-Forwarded-Host  \$host;
+            uwsgi_param     X-Forwarded-Port  \$server_port;
             uwsgi_pass      \$api;
     "
         STATIC_ASSETS="
@@ -108,9 +113,12 @@ data:
             set \$natswebsocket http://${NATS_SERVICE}:9235;
             proxy_pass \$natswebsocket;
             proxy_http_version 1.1;
+            proxy_send_timeout 330s;
+            proxy_read_timeout 330s;
             proxy_set_header Host \$host;
             proxy_set_header Upgrade \$http_upgrade;
             proxy_set_header Connection "upgrade";
+            proxy_set_header X-Real-IP \$remote_addr;
             proxy_set_header X-Forwarded-Host \$host:\$server_port;
             proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
             proxy_set_header X-Forwarded-Proto "https";
@@ -123,6 +131,8 @@ data:
     server {
         resolver ${NGINX_RESOLVER} valid=30s;
         listen 8080;
+        proxy_send_timeout 330s;
+        proxy_read_timeout 330s;
         server_name ${APP_HOST};
 
         location / {
@@ -160,6 +170,7 @@ data:
             proxy_set_header X-Forwarded-Host \$host:\$server_port;
             proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
             proxy_set_header X-Forwarded-Proto "https";
+            proxy_set_header X-Forwarded-Port \$server_port;
         }
     }
     EOF
