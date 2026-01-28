@@ -1,7 +1,7 @@
 apiVersion: networking.istio.io/v1alpha3
 kind: EnvoyFilter
 metadata:
-  name: meshcentral-websocket-timeout-cell-membrane
+  name: tacticalrmm-websocket-timeout-cell-membrane
   namespace: hyrule-castle
 spec:
   workloadSelector:
@@ -14,6 +14,23 @@ spec:
         routeConfiguration:
           vhost:
             name: meshc.prplanit.com:443
+            route:
+              action: ANY
+      patch:
+        operation: MERGE
+        value:
+          route:
+            timeout: 0s
+            idle_timeout: 0s
+            upgrade_configs:
+              - upgrade_type: websocket
+                enabled: true
+    - applyTo: HTTP_ROUTE
+      match:
+        context: GATEWAY
+        routeConfiguration:
+          vhost:
+            name: trmm-api.prplanit.com:443
             route:
               action: ANY
       patch:
