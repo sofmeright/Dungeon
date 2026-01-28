@@ -8,6 +8,22 @@ spec:
     labels:
       gateway.networking.k8s.io/gateway-name: cell-membrane-gateway
   configPatches:
+    - applyTo: NETWORK_FILTER
+      match:
+        context: GATEWAY
+        listener:
+          filterChain:
+            filter:
+              name: envoy.filters.network.http_connection_manager
+      patch:
+        operation: MERGE
+        value:
+          typed_config:
+            '@type': type.googleapis.com/envoy.extensions.filters.network.http_connection_manager.v3.HttpConnectionManager
+            http2_protocol_options:
+              allow_connect: true
+            upgrade_configs:
+              - upgrade_type: websocket
     - applyTo: HTTP_ROUTE
       match:
         context: GATEWAY
@@ -31,6 +47,23 @@ spec:
         routeConfiguration:
           vhost:
             name: trmm-api.prplanit.com:443
+            route:
+              action: ANY
+      patch:
+        operation: MERGE
+        value:
+          route:
+            timeout: 0s
+            idle_timeout: 0s
+            upgrade_configs:
+              - upgrade_type: websocket
+                enabled: true
+    - applyTo: HTTP_ROUTE
+      match:
+        context: GATEWAY
+        routeConfiguration:
+          vhost:
+            name: trmm.prplanit.com:443
             route:
               action: ANY
       patch:
