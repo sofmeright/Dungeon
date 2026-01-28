@@ -79,8 +79,6 @@ spec:
           env:
             - name: MESH_PERSISTENT_CONFIG
               value: "0"
-            - name: NGINX_HOST_IP
-              value: "true"
           resources:
             requests:
               cpu: "250m"
