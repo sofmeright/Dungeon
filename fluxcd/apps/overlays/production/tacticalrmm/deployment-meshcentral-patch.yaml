@@ -45,6 +45,22 @@ spec:
             - bash
             - -c
             - |
+              # Replace bundled MeshAgent binaries with newer versions from meshcentral@1.1.56
+              # The Dec 2022 binary has CAPTUREBLT bug causing intermittent black screen on Win11/Server2025
+              # The Mar 2025 binary (from npm 1.1.56) includes the fix (MeshAgent commit 653f13a)
+              AGENTS_DIR="/home/node/app/node_modules/meshcentral/agents"
+              cd /tmp
+              wget -q "https://registry.npmjs.org/meshcentral/-/meshcentral-1.1.56.tgz" -O meshcentral.tgz
+              tar xzf meshcentral.tgz
+              for f in package/agents/MeshService*; do
+                bin=$(basename "$f")
+                if [ -f "$AGENTS_DIR/$bin" ]; then
+                  cp "$f" "$AGENTS_DIR/$bin"
+                  echo "Replaced $bin ($(wc -c < "$AGENTS_DIR/$bin") bytes)"
+                fi
+              done
+              rm -rf package meshcentral.tgz
+
               # Patch entrypoint to remove certUrl (we inject certs directly via init container,
               # and the default certUrl "https://tactical-nginx:80" is broken — nginx serves HTTP only)
               sed '/"certUrl"/d' /entrypoint.sh > /tmp/entrypoint-patched.sh
