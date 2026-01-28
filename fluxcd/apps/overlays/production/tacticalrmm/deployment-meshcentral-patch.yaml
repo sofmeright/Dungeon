@@ -60,9 +60,19 @@ spec:
               done
               rm -rf /tmp/package /tmp/meshcentral.tgz
 
-              # Patch entrypoint to remove certUrl (we inject certs directly via init container,
-              # and the default certUrl "https://tactical-nginx:80" is broken — nginx serves HTTP only)
-              sed '/"certUrl"/d' /entrypoint.sh > /tmp/entrypoint-patched.sh
+              # Patch entrypoint:
+              # 1. Remove certUrl (we inject certs directly via init container)
+              # 2. Inject debug flags into config.json after generation, before node starts
+              cat > /tmp/inject-debug.js << 'JSEOF'
+              const f = "/home/node/app/meshcentral-data/config.json";
+              const c = require(f);
+              c.settings.debug = "relay,agent,peer";
+              require("fs").writeFileSync(f, JSON.stringify(c, null, 2));
+              JSEOF
+              sed '/"certUrl"/d' /entrypoint.sh \
+                | sed '/^node node_modules\/meshcentral$/i \
+              node /tmp/inject-debug.js' \
+                > /tmp/entrypoint-patched.sh
               chmod +x /tmp/entrypoint-patched.sh
               exec /tmp/entrypoint-patched.sh
           env:
