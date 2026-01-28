@@ -79,6 +79,8 @@ spec:
           env:
             - name: MESH_PERSISTENT_CONFIG
               value: "0"
+            - name: WS_MASK_OVERRIDE
+              value: "1"
           resources:
             requests:
               cpu: "250m"
