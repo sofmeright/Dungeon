@@ -420,6 +420,8 @@ kubectl get nodes -o custom-columns=NAME:.metadata.name,GPU:.status.allocatable.
 
 **Note:** These sidecars will expose `/metrics` endpoints that Alloy can scrape (requires `prometheus.io/scrape: "true"` annotation).
 
+- [ ] Create PrometheusRule alert for `prometheus_remote_write_samples_failed_total` to monitor metrics ingestion health
+
 ## PostgreSQL HA Alternatives Evaluation
 
 **Status:** Research complete - Decision pending
