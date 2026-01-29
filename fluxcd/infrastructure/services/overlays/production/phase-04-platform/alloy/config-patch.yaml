@@ -72,24 +72,24 @@ data:
         action        = "drop"
       }
 
-      // DROP: GitLab Sidekiq per-worker metrics - hundreds of unique workers create massive cardinality
+      // DROP: GitLab Sidekiq metrics - all sidekiq metrics are high-cardinality
       rule {
-        source_labels = ["__name__", "worker"]
-        regex         = "sidekiq_.+;.+"
+        source_labels = ["__name__"]
+        regex         = "sidekiq_.+"
         action        = "drop"
       }
 
       // DROP: GitLab SLI per-endpoint metrics - hundreds of unique GraphQL/API endpoints
       rule {
-        source_labels = ["__name__", "endpoint_id"]
-        regex         = "gitlab_sli_.+;.+"
+        source_labels = ["__name__"]
+        regex         = "gitlab_sli_.+"
         action        = "drop"
       }
 
       // DROP: GitLab SQL per-endpoint metrics - massive cardinality from endpoint_id
       rule {
-        source_labels = ["__name__", "endpoint_id"]
-        regex         = "gitlab_sql_.+;.+"
+        source_labels = ["__name__"]
+        regex         = "gitlab_sql_.+"
         action        = "drop"
       }
 
