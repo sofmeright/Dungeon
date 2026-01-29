@@ -54,6 +54,7 @@ data:
     // 1. Drop histogram buckets (_bucket) - keeps _sum/_count for rate and avg latency
     // 2. Drop per-device blkio metrics - too granular, not useful for health monitoring
     // 3. Drop bloated container_label_* fields from cAdvisor
+    // 4. Drop high-cardinality GitLab per-worker/per-endpoint metrics - massive cardinality
     prometheus.relabel "drop_container_labels" {
       forward_to = [prometheus.remote_write.default.receiver]
 
@@ -68,6 +69,49 @@ data:
       rule {
         source_labels = ["__name__"]
         regex         = "container_blkio_device_usage_total"
+        action        = "drop"
+      }
+
+      // DROP: GitLab Sidekiq per-worker metrics - hundreds of unique workers create massive cardinality
+      rule {
+        source_labels = ["__name__", "worker"]
+        regex         = "sidekiq_.+;.+"
+        action        = "drop"
+      }
+
+      // DROP: GitLab SLI per-endpoint metrics - hundreds of unique GraphQL/API endpoints
+      rule {
+        source_labels = ["__name__", "endpoint_id"]
+        regex         = "gitlab_sli_.+;.+"
+        action        = "drop"
+      }
+
+      // DROP: GitLab SQL per-endpoint metrics - massive cardinality from endpoint_id
+      rule {
+        source_labels = ["__name__", "endpoint_id"]
+        regex         = "gitlab_sql_.+;.+"
+        action        = "drop"
+      }
+
+      // DROP: GitLab per-endpoint metrics with various labels
+      rule {
+        source_labels = ["__name__"]
+        regex         = "gitlab_(cache|redis|elasticsearch)_requests.*"
+        action        = "drop"
+      }
+
+      // DROP: Kubernetes API server metrics for rarely-used CRD resources
+      // Keeps common resources (pods, nodes, services, deployments, etc.)
+      rule {
+        source_labels = ["__name__", "resource"]
+        regex         = "apiserver_.+;(ipaddresses|resourceclaims|operatorconfigs|cephobjectzones|redissentinels)"
+        action        = "drop"
+      }
+
+      // DROP: etcd metrics for rarely-used CRD resources
+      rule {
+        source_labels = ["__name__", "resource"]
+        regex         = "etcd_.+;(ipaddresses|resourceclaims|operatorconfigs|cephobjectzones|redissentinels)"
         action        = "drop"
       }
 
@@ -802,7 +846,22 @@ data:
     // Collect logs from Kubernetes pods with proper labels
     loki.source.kubernetes "pods" {
       targets    = discovery.relabel.pods_logs.output
+      forward_to = [loki.process.filter_noise.receiver]
+    }
+
+    // Filter out noisy non-actionable log lines
+    loki.process "filter_noise" {
       forward_to = [loki.process.add_labels.receiver]
+
+      // DROP: Out-of-order metric errors - not actionable, monitor via prometheus_remote_write_samples_failed_total metric
+      stage.drop {
+        expression = "err-mimir-sample-timestamp-too-old"
+      }
+
+      // DROP: Mimir ingester out-of-order warnings - same issue from different component
+      stage.drop {
+        expression = "sample has been rejected because another sample with a more recent timestamp"
+      }
     }
 
     // Add additional processing and labels
