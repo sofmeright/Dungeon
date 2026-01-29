@@ -72,80 +72,12 @@ data:
         action        = "drop"
       }
 
-      // DROP: GitLab Sidekiq metrics - all sidekiq metrics are high-cardinality
+      // DROP: All GitLab and Sidekiq metrics - rely on logs for GitLab monitoring
+      // GitLab exposes 10,000+ high-cardinality internal metrics that are only useful
+      // for debugging GitLab itself. For operational monitoring, use logs + basic k8s metrics.
       rule {
         source_labels = ["__name__"]
-        regex         = "sidekiq_.+"
-        action        = "drop"
-      }
-
-      // DROP: GitLab SLI per-endpoint metrics - hundreds of unique GraphQL/API endpoints
-      rule {
-        source_labels = ["__name__"]
-        regex         = "gitlab_sli_.+"
-        action        = "drop"
-      }
-
-      // DROP: GitLab SQL per-endpoint metrics - massive cardinality from endpoint_id
-      rule {
-        source_labels = ["__name__"]
-        regex         = "gitlab_sql_.+"
-        action        = "drop"
-      }
-
-      // DROP: GitLab per-endpoint metrics with various labels
-      rule {
-        source_labels = ["__name__"]
-        regex         = "gitlab_(cache|redis|elasticsearch)_requests.*"
-        action        = "drop"
-      }
-
-      // DROP: GitLab PostgreSQL sequence metadata - 6,723 series of min/max/current values
-      rule {
-        source_labels = ["__name__"]
-        regex         = "gitlab_pg_sequences_.+"
-        action        = "drop"
-      }
-
-      // DROP: GitLab per-transaction database metrics - high cardinality from transaction labels
-      rule {
-        source_labels = ["__name__"]
-        regex         = "gitlab_transaction_.+"
-        action        = "drop"
-      }
-
-      // DROP: GitLab Ruby runtime internals - thread counts, GC stats, not actionable
-      rule {
-        source_labels = ["__name__"]
-        regex         = "gitlab_ruby_.+"
-        action        = "drop"
-      }
-
-      // DROP: GitLab cache operations - 415+ series of cache hits/misses/operations
-      rule {
-        source_labels = ["__name__"]
-        regex         = "gitlab_cache_(operations|misses|hits)_.+"
-        action        = "drop"
-      }
-
-      // DROP: GitLab connection pool metrics - per-pool connection tracking
-      rule {
-        source_labels = ["__name__"]
-        regex         = "gitlab_connection_pool_.+"
-        action        = "drop"
-      }
-
-      // DROP: GitLab Redis client metrics - per-command/per-instance cardinality
-      rule {
-        source_labels = ["__name__"]
-        regex         = "gitlab_redis_client_.+"
-        action        = "drop"
-      }
-
-      // DROP: GitLab database transaction seconds - histogram data
-      rule {
-        source_labels = ["__name__"]
-        regex         = "gitlab_database_transaction_seconds_.+"
+        regex         = "(gitlab|sidekiq)_.+"
         action        = "drop"
       }
 
