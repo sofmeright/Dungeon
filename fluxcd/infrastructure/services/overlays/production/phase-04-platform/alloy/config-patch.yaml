@@ -100,6 +100,27 @@ data:
         action        = "drop"
       }
 
+      // DROP: GitLab PostgreSQL sequence metadata - 6,723 series of min/max/current values
+      rule {
+        source_labels = ["__name__"]
+        regex         = "gitlab_pg_sequences_.+"
+        action        = "drop"
+      }
+
+      // DROP: GitLab per-transaction database metrics - high cardinality from transaction labels
+      rule {
+        source_labels = ["__name__"]
+        regex         = "gitlab_transaction_.+"
+        action        = "drop"
+      }
+
+      // DROP: GitLab Ruby runtime internals - thread counts, GC stats, not actionable
+      rule {
+        source_labels = ["__name__"]
+        regex         = "gitlab_ruby_.+"
+        action        = "drop"
+      }
+
       // DROP: Kubernetes API server metrics for rarely-used CRD resources
       // Keeps common resources (pods, nodes, services, deployments, etc.)
       rule {
