@@ -121,6 +121,34 @@ data:
         action        = "drop"
       }
 
+      // DROP: GitLab cache operations - 415+ series of cache hits/misses/operations
+      rule {
+        source_labels = ["__name__"]
+        regex         = "gitlab_cache_(operations|misses|hits)_.+"
+        action        = "drop"
+      }
+
+      // DROP: GitLab connection pool metrics - per-pool connection tracking
+      rule {
+        source_labels = ["__name__"]
+        regex         = "gitlab_connection_pool_.+"
+        action        = "drop"
+      }
+
+      // DROP: GitLab Redis client metrics - per-command/per-instance cardinality
+      rule {
+        source_labels = ["__name__"]
+        regex         = "gitlab_redis_client_.+"
+        action        = "drop"
+      }
+
+      // DROP: GitLab database transaction seconds - histogram data
+      rule {
+        source_labels = ["__name__"]
+        regex         = "gitlab_database_transaction_seconds_.+"
+        action        = "drop"
+      }
+
       // DROP: Kubernetes API server metrics for rarely-used CRD resources
       // Keeps common resources (pods, nodes, services, deployments, etc.)
       rule {
