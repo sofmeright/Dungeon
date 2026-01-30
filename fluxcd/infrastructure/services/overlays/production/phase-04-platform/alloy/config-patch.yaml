@@ -29,11 +29,11 @@ data:
       role = "ingress"
     }
 
-    // Prometheus Remote Write - Direct to Mimir Distributor
-    // Mimir architecture: Alloy → Mimir Distributor → Mimir Ingester → Object Storage
+    // Prometheus Remote Write - Direct to VictoriaMetrics vminsert
+    // VictoriaMetrics architecture: Alloy → vminsert → vmstorage (replicated)
     prometheus.remote_write "default" {
       endpoint {
-        url = "http://mimir-distributor.gossip-stone.svc.cluster.local:8080/api/v1/push"
+        url = "http://vminsert.gossip-stone.svc.cluster.local:8480/insert/0/prometheus/api/v1/write"
 
         // Queue config tuned for stability - minimal parallelism
         // Distributors have limited memory, keep load gentle
