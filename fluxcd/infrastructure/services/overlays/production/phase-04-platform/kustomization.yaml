@@ -10,6 +10,7 @@ resources:
   - ./kube-state-metrics
   - ./loki
   - ./mimir
+  - ./victoria-metrics
   - ./netbird
   - ./ntfy
   - ./nutify
