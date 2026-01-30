@@ -5,6 +5,7 @@ resources:
   - ./bank-vaults
   - ./ceph-rook-ceph
   - ./cert-manager
+  - ./gateway-api-crds
   - ./cilium
   - ./cloudnative-pg
   - ./external-secrets
