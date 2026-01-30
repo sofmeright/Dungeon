@@ -10,3 +10,7 @@ patches:
     target:
       kind: HelmRelease
       name: mimir
+  - path: suspend-patch.yaml
+    target:
+      kind: HelmRelease
+      name: mimir
