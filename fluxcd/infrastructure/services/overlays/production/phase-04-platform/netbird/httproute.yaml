@@ -21,6 +21,8 @@ spec:
         - path:
             type: PathPrefix
             value: /management
+      timeouts:
+        request: 24h
       backendRefs:
         - name: netbird-management
           port: 80
@@ -28,6 +30,8 @@ spec:
         - path:
             type: PathPrefix
             value: /signalexchange
+      timeouts:
+        request: 24h
       backendRefs:
         - name: netbird-signal
           port: 80
@@ -35,6 +39,8 @@ spec:
         - path:
             type: PathPrefix
             value: /relay
+      timeouts:
+        request: 24h
       backendRefs:
         - name: netbird-relay
           port: 33080
