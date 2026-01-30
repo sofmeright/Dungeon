@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vminsert
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: vminsert
+  template:
+    metadata:
+      labels:
+        app: vminsert
+    spec:
+      containers:
+        - name: vminsert
+          image: PLACEHOLDER_IMAGE
+          args:
+            - -storageNode=vmstorage-0.vmstorage:8400,vmstorage-1.vmstorage:8400,vmstorage-2.vmstorage:8400
+            - -httpListenAddr=:8480
+            - -replicationFactor=2
+          ports:
+            - containerPort: 8480
+              name: http
+          resources:
+            requests:
+              cpu: PLACEHOLDER_CPU
+              memory: PLACEHOLDER_MEMORY
+            limits:
+              cpu: PLACEHOLDER_CPU_LIMIT
+              memory: PLACEHOLDER_MEMORY_LIMIT

@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: vmstorage
+spec:
+  serviceName: vmstorage
+  replicas: 3
+  selector:
+    matchLabels:
+      app: vmstorage
+  template:
+    metadata:
+      labels:
+        app: vmstorage
+    spec:
+      containers:
+        - name: vmstorage
+          image: PLACEHOLDER_IMAGE
+          args:
+            - -storageDataPath=/storage
+            - -retentionPeriod=30d
+            - -httpListenAddr=:8482
+            - -vminsertAddr=:8400
+            - -vmselectAddr=:8401
+          ports:
+            - containerPort: 8482
+              name: http
+            - containerPort: 8400
+              name: vminsert
+            - containerPort: 8401
+              name: vmselect
+          volumeMounts:
+            - name: storage
+              mountPath: /storage
+          resources:
+            requests:
+              cpu: PLACEHOLDER_CPU
+              memory: PLACEHOLDER_MEMORY
+            limits:
+              cpu: PLACEHOLDER_CPU_LIMIT
+              memory: PLACEHOLDER_MEMORY_LIMIT
+  volumeClaimTemplates:
+    - metadata:
+        name: storage
+      spec:
+        accessModes: [ReadWriteOnce]
+        storageClassName: PLACEHOLDER_STORAGE_CLASS
+        resources:
+          requests:
+            storage: PLACEHOLDER_STORAGE_SIZE

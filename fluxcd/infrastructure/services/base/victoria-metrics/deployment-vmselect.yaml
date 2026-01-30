@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: vmselect
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: vmselect
+  template:
+    metadata:
+      labels:
+        app: vmselect
+    spec:
+      containers:
+        - name: vmselect
+          image: PLACEHOLDER_IMAGE
+          args:
+            - -storageNode=vmstorage-0.vmstorage:8401,vmstorage-1.vmstorage:8401,vmstorage-2.vmstorage:8401
+            - -httpListenAddr=:8481
+            - -replicationFactor=2
+          ports:
+            - containerPort: 8481
+              name: http
+          resources:
+            requests:
+              cpu: PLACEHOLDER_CPU
+              memory: PLACEHOLDER_MEMORY
+            limits:
+              cpu: PLACEHOLDER_CPU_LIMIT
+              memory: PLACEHOLDER_MEMORY_LIMIT
