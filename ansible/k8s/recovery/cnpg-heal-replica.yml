@@ -1,0 +1,362 @@
+---
+# cnpg-heal-replica.yaml - Ansible playbook to heal unhealthy CNPG PostgreSQL replica
+#
+# This playbook heals a diverged/unhealthy replica by:
+# 1. Fencing the instance (CNPG stops managing it)
+# 2. Force deleting the fenced pod
+# 3. Running a pod that clears pgdata AND runs pg_basebackup
+# 4. Removing the fence (CNPG takes over the replica)
+#
+# Usage:
+#   ansible-playbook cnpg-heal-replica.yaml \
+#     -e cluster_name=grafana-postgres \
+#     -e namespace=gossip-stone \
+#     -e replica_number=3
+
+- name: Heal CNPG PostgreSQL Replica
+  hosts: localhost
+  connection: local
+  gather_facts: true
+
+  vars:
+    heal_timeout: 600
+    delete_timeout: 300
+
+  tasks:
+    - name: Validate required variables
+      ansible.builtin.assert:
+        that:
+          - cluster_name is defined
+          - namespace is defined
+          - replica_number is defined
+        fail_msg: "Required variables: cluster_name, namespace, replica_number"
+
+    - name: Set derived variables
+      ansible.builtin.set_fact:
+        target_pod: "{{ cluster_name }}-{{ replica_number }}"
+        target_pvc: "{{ cluster_name }}-{{ replica_number }}"
+        ca_secret: "{{ cluster_name }}-ca"
+        replication_secret: "{{ cluster_name }}-replication"
+        heal_pod: "{{ cluster_name }}-heal-{{ replica_number }}-{{ ansible_date_time.epoch }}"
+
+    - name: Display operation details
+      ansible.builtin.debug:
+        msg:
+          - "=== CNPG Replica Healer ==="
+          - "Cluster: {{ cluster_name }}"
+          - "Namespace: {{ namespace }}"
+          - "Target replica: {{ target_pod }}"
+
+    - name: Check if cluster exists
+      kubernetes.core.k8s_info:
+        api_version: postgresql.cnpg.io/v1
+        kind: Cluster
+        name: "{{ cluster_name }}"
+        namespace: "{{ namespace }}"
+      register: cluster_info
+      failed_when: cluster_info.resources | length == 0
+
+    - name: Check if target PVC exists
+      kubernetes.core.k8s_info:
+        api_version: v1
+        kind: PersistentVolumeClaim
+        name: "{{ target_pvc }}"
+        namespace: "{{ namespace }}"
+      register: pvc_info
+      failed_when: pvc_info.resources | length == 0
+
+    - name: Get cluster state
+      ansible.builtin.set_fact:
+        cluster_spec: "{{ cluster_info.resources[0].spec }}"
+        cluster_status: "{{ cluster_info.resources[0].status }}"
+        cluster_annotations: "{{ cluster_info.resources[0].metadata.annotations | default({}) }}"
+
+    - name: Display cluster state
+      ansible.builtin.debug:
+        msg:
+          - "Current instances: {{ cluster_spec.instances }}"
+          - "Ready instances: {{ cluster_status.readyInstances }}"
+          - "Phase: {{ cluster_status.phase }}"
+          - "Primary: {{ cluster_status.currentPrimary }}"
+          - "PostgreSQL image: {{ cluster_spec.imageName }}"
+
+    - name: SAFETY CHECK - Verify target is not the primary
+      ansible.builtin.fail:
+        msg: "ABORT: {{ target_pod }} is the PRIMARY. Cannot heal primary. Failover first."
+      when: target_pod == cluster_status.currentPrimary
+
+    - name: SAFETY CHECK - Verify primary is healthy
+      kubernetes.core.k8s_info:
+        api_version: v1
+        kind: Pod
+        name: "{{ cluster_status.currentPrimary }}"
+        namespace: "{{ namespace }}"
+      register: primary_pod_info
+
+    - name: Check primary ready status
+      ansible.builtin.fail:
+        msg: "ABORT: Primary {{ cluster_status.currentPrimary }} is not healthy. Fix primary first."
+      when: >
+        primary_pod_info.resources | length == 0 or
+        not (primary_pod_info.resources[0].status.containerStatuses[0].ready | default(false))
+
+    - name: Get primary IP
+      ansible.builtin.set_fact:
+        primary_ip: "{{ primary_pod_info.resources[0].status.podIP }}"
+
+    - name: Get postgres UID/GID from primary
+      kubernetes.core.k8s_exec:
+        namespace: "{{ namespace }}"
+        pod: "{{ cluster_status.currentPrimary }}"
+        container: postgres
+        command: id -u postgres
+      register: postgres_uid_result
+      failed_when: false
+
+    - name: Set postgres UID/GID
+      ansible.builtin.set_fact:
+        postgres_uid: "{{ postgres_uid_result.stdout | default('26') | trim }}"
+        postgres_gid: "{{ postgres_uid_result.stdout | default('26') | trim }}"
+
+    - name: Display operation plan
+      ansible.builtin.debug:
+        msg:
+          - "=== Plan ==="
+          - "1. Fence instance {{ target_pod }} (CNPG stops managing it)"
+          - "2. Delete pod {{ target_pod }}"
+          - "3. Clear pgdata on PVC {{ target_pvc }} (PVC preserved)"
+          - "4. Run pg_basebackup from {{ cluster_status.currentPrimary }} ({{ primary_ip }})"
+          - "5. Remove fence (CNPG takes over the replica)"
+
+    - name: Pause for confirmation
+      ansible.builtin.pause:
+        prompt: "Type 'yes' to proceed"
+      register: confirm
+      when: not (auto_confirm | default(false))
+
+    - name: Verify confirmation
+      ansible.builtin.fail:
+        msg: "Operation cancelled by user"
+      when:
+        - not (auto_confirm | default(false))
+        - confirm.user_input != 'yes'
+
+    - name: STEP 1 - Fence the instance
+      kubernetes.core.k8s:
+        state: patched
+        api_version: postgresql.cnpg.io/v1
+        kind: Cluster
+        name: "{{ cluster_name }}"
+        namespace: "{{ namespace }}"
+        definition:
+          metadata:
+            annotations:
+              cnpg.io/fencedInstances: '["{{ target_pod }}"]'
+
+    - name: Wait for fence to take effect
+      ansible.builtin.pause:
+        seconds: 3
+
+    - name: STEP 2 - Create heal pod
+      kubernetes.core.k8s:
+        state: present
+        definition:
+          apiVersion: v1
+          kind: Pod
+          metadata:
+            name: "{{ heal_pod }}"
+            namespace: "{{ namespace }}"
+          spec:
+            restartPolicy: Never
+            securityContext:
+              runAsUser: "{{ postgres_uid | int }}"
+              runAsGroup: "{{ postgres_gid | int }}"
+              fsGroup: "{{ postgres_gid | int }}"
+            containers:
+              - name: healer
+                image: "{{ cluster_spec.imageName }}"
+                command:
+                  - sh
+                  - -c
+                  - |
+                    set -e
+                    echo "=== Step 1: Clearing pgdata ==="
+                    if [ -f /var/lib/postgresql/data/pgdata/PG_VERSION ]; then
+                      echo "WARNING: Found existing PG_VERSION file. Proceeding with clear..."
+                    fi
+                    rm -rf /var/lib/postgresql/data/pgdata/*
+                    rm -rf /var/lib/postgresql/data/pgdata/.[!.]*
+                    rm -rf /var/lib/postgresql/data/lost+found 2>/dev/null || true
+                    echo "pgdata cleared."
+
+                    echo "=== Step 2: Setting up TLS certificates ==="
+                    mkdir -p /tmp/certs
+                    cp /certs/ca/ca.crt /tmp/certs/
+                    cp /certs/replication/tls.crt /tmp/certs/
+                    cp /certs/replication/tls.key /tmp/certs/
+                    chmod 600 /tmp/certs/tls.key
+                    echo "TLS certs ready."
+
+                    echo "=== Step 3: Running pg_basebackup ==="
+                    pg_basebackup -h {{ primary_ip }} -p 5432 -U streaming_replica \
+                      -D /var/lib/postgresql/data/pgdata \
+                      -Fp -Xs -P -R \
+                      --checkpoint=fast \
+                      -d "sslmode=verify-ca sslcert=/tmp/certs/tls.crt sslkey=/tmp/certs/tls.key sslrootcert=/tmp/certs/ca.crt"
+
+                    echo "=== pg_basebackup complete! ==="
+                volumeMounts:
+                  - name: pgdata
+                    mountPath: /var/lib/postgresql/data
+                  - name: ca-certs
+                    mountPath: /certs/ca
+                    readOnly: true
+                  - name: replication-certs
+                    mountPath: /certs/replication
+                    readOnly: true
+            volumes:
+              - name: pgdata
+                persistentVolumeClaim:
+                  claimName: "{{ target_pvc }}"
+              - name: ca-certs
+                secret:
+                  secretName: "{{ ca_secret }}"
+                  items:
+                    - key: ca.crt
+                      path: ca.crt
+              - name: replication-certs
+                secret:
+                  secretName: "{{ replication_secret }}"
+                  items:
+                    - key: tls.crt
+                      path: tls.crt
+                    - key: tls.key
+                      path: tls.key
+
+    - name: Wait for heal pod to be created
+      ansible.builtin.pause:
+        seconds: 2
+
+    - name: STEP 3 - Delete target pod and wait for heal pod to acquire PVC
+      block:
+        - name: Delete target pod (force)
+          kubernetes.core.k8s:
+            state: absent
+            api_version: v1
+            kind: Pod
+            name: "{{ target_pod }}"
+            namespace: "{{ namespace }}"
+            delete_options:
+              gracePeriodSeconds: 0
+          failed_when: false
+
+        - name: Wait for heal pod to acquire PVC and start running
+          kubernetes.core.k8s_info:
+            api_version: v1
+            kind: Pod
+            name: "{{ heal_pod }}"
+            namespace: "{{ namespace }}"
+          register: heal_pod_status
+          until: >
+            heal_pod_status.resources | length > 0 and
+            heal_pod_status.resources[0].status.phase in ['Running', 'Succeeded']
+          retries: "{{ delete_timeout }}"
+          delay: 1
+
+    - name: STEP 4 - Wait for heal pod to complete
+      kubernetes.core.k8s_info:
+        api_version: v1
+        kind: Pod
+        name: "{{ heal_pod }}"
+        namespace: "{{ namespace }}"
+      register: heal_status
+      until: heal_status.resources[0].status.phase in ['Succeeded', 'Failed']
+      retries: "{{ (heal_timeout / 10) | int }}"
+      delay: 10
+
+    - name: Check if heal pod succeeded
+      ansible.builtin.fail:
+        msg: "Heal pod failed! Check logs with: kubectl logs {{ heal_pod }} -n {{ namespace }}"
+      when: heal_status.resources[0].status.phase == 'Failed'
+
+    - name: Display heal pod logs
+      kubernetes.core.k8s_log:
+        name: "{{ heal_pod }}"
+        namespace: "{{ namespace }}"
+      register: heal_logs
+
+    - name: Show heal pod logs
+      ansible.builtin.debug:
+        msg: "{{ heal_logs.log_lines }}"
+
+    - name: Delete heal pod
+      kubernetes.core.k8s:
+        state: absent
+        api_version: v1
+        kind: Pod
+        name: "{{ heal_pod }}"
+        namespace: "{{ namespace }}"
+        delete_options:
+          gracePeriodSeconds: 0
+
+    - name: Wait for cleanup
+      ansible.builtin.pause:
+        seconds: 5
+
+    - name: STEP 5 - Remove fence
+      kubernetes.core.k8s:
+        state: patched
+        api_version: postgresql.cnpg.io/v1
+        kind: Cluster
+        name: "{{ cluster_name }}"
+        namespace: "{{ namespace }}"
+        definition:
+          metadata:
+            annotations:
+              cnpg.io/fencedInstances: null
+
+    - name: Wait for target pod to come back online
+      kubernetes.core.k8s_info:
+        api_version: v1
+        kind: Pod
+        name: "{{ target_pod }}"
+        namespace: "{{ namespace }}"
+      register: target_status
+      until: >
+        target_status.resources | length > 0 and
+        target_status.resources[0].status.containerStatuses[0].ready | default(false)
+      retries: 30
+      delay: 10
+      failed_when: false
+
+    - name: Display final status
+      kubernetes.core.k8s_info:
+        api_version: postgresql.cnpg.io/v1
+        kind: Cluster
+        name: "{{ cluster_name }}"
+        namespace: "{{ namespace }}"
+      register: final_cluster
+
+    - name: Display final cluster state
+      ansible.builtin.debug:
+        msg:
+          - "=== Final Status ==="
+          - "Cluster: {{ final_cluster.resources[0].status.phase }}"
+          - "Ready: {{ final_cluster.resources[0].status.readyInstances }}/{{ final_cluster.resources[0].spec.instances }}"
+
+    - name: Get final pod list
+      kubernetes.core.k8s_info:
+        api_version: v1
+        kind: Pod
+        namespace: "{{ namespace }}"
+        label_selectors:
+          - "cnpg.io/cluster={{ cluster_name }}"
+      register: final_pods
+
+    - name: Display pod status
+      ansible.builtin.debug:
+        msg: "{{ final_pods.resources | map(attribute='metadata.name') | list }}"
+
+    - name: Operation complete
+      ansible.builtin.debug:
+        msg: "Replica {{ target_pod }} has been healed!"

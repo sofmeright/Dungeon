@@ -38,11 +38,53 @@ spec:
           name: grafana-postgres-credentials
           key: password
 
+    # Datasource provisioning
+    datasources:
+      datasources.yaml:
+        apiVersion: 1
+        datasources:
+          - name: VictoriaMetrics
+            type: prometheus
+            access: proxy
+            url: http://vmselect.gossip-stone.svc.cluster.local:8481/select/0/prometheus
+            isDefault: true
+            editable: false
+            jsonData:
+              timeInterval: 30s
+              httpMethod: POST
+          - name: Loki
+            type: loki
+            access: proxy
+            url: http://loki-gateway.gossip-stone.svc.cluster.local:80
+            editable: false
+            jsonData:
+              maxLines: 1000
+
+    # Dashboard provisioning
+    dashboardProviders:
+      dashboardproviders.yaml:
+        apiVersion: 1
+        providers:
+          - name: 'default'
+            orgId: 1
+            folder: ''
+            type: file
+            disableDeletion: false
+            editable: true
+            options:
+              path: /var/lib/grafana/dashboards/default
+
+    # Mount dashboards from ConfigMap
+    dashboardsConfigMaps:
+      default: grafana-dashboards
+
     # Override default plugins volume with RWX PVC
     # sidecar is used to override the default emptyDir plugins volume
     sidecar:
       plugins:
         enabled: false  # Disable sidecar plugin loader to avoid conflicts
+      dashboards:
+        enabled: false  # Using provisioning instead
 
     # Add RWX volume for shared plugins
     extraVolumes:

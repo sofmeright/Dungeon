@@ -5,3 +5,4 @@ resources:
   - helmrelease.yaml
   - postgres-cluster.yaml
   - externalsecret-postgres.yaml
+  - dashboards
