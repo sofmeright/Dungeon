@@ -10,6 +10,7 @@ spec:
   hostnames:
     - "joplin.pcfae.com"
     - "kasm.pcfae.com"
+    - "kimai.pcfae.com"
     - "kms.pcfae.com"
     - "links.pcfae.com"
     - "loki.pcfae.com"
@@ -23,7 +24,6 @@ spec:
     - "ntfy.pcfae.com"
     - "nut.pcfae.com"
     - "nvr2.pcfae.com"
-    - "nvr.pcfae.com"
   rules:
     - matches:
         - path:
