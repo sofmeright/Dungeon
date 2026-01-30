@@ -61,3 +61,10 @@ patches:
       - op: add
         path: /metadata/namespace
         value: gossip-stone
+  - target:
+      kind: ConfigMap
+      name: grafana-dashboards
+    patch: |-
+      - op: add
+        path: /metadata/namespace
+        value: gossip-stone
