@@ -6,5 +6,8 @@ spec:
   template:
     spec:
       containers:
-      - name: kimai
-        image: docker.io/kimai/kimai2:apache
+        - name: kimai
+          image: docker.io/kimai/kimai2:apache
+          env:
+            - name: TRUSTED_HOSTS
+              value: "localhost,127.0.0.1,kimai,kimai.pcfae.com"
