@@ -35,7 +35,7 @@ spec:
           mountPath: /var/lib/postgresql/data
       containers:
       - name: immich-server
-        image: ghcr.io/immich-app/immich-server:release
+        image: ghcr.io/immich-app/immich-server:v2.5.0
         ports:
         - containerPort: 2283
           name: http
@@ -76,7 +76,7 @@ spec:
         - name: library
           mountPath: /usr/src/app/upload
       - name: immich-machine-learning
-        image: ghcr.io/immich-app/immich-machine-learning:release-cuda
+        image: ghcr.io/immich-app/immich-machine-learning:v2.5.0-cuda
         env:
         - name: DB_HOSTNAME
           value: localhost
