@@ -1,29 +1,31 @@
 apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
 metadata:
-  name: fairer-pages-xylem-overflow-3
+  name: fairer-pages-xylem-3
   namespace: tingle-tuner
 spec:
   parentRefs:
     - name: xylem-gateway
       namespace: arylls-lookout
   hostnames:
-    - "dl.pcfae.com"
-    - "dns2.pcfae.com"
-    - "dns.pcfae.com"
-    - "draw.pcfae.com"
-    - "emulatorjs.pcfae.com"
-    - "flowy.pcfae.com"
-    - "fotos.pcfae.com"
-    - "guacamole.pcfae.com"
-    - "gwfonts.pcfae.com"
-    - "hosts.pcfae.com"
-    - "hrconvert2.pcfae.com"
-    - "images.pcfae.com"
+    # Note: 16 hostnames max should be assigned to each "httproute-<name>-<#>.yaml"
+
     - "inventory.pcfae.com"
     - "invoice.pcfae.com"
     - "ittools.pcfae.com"
     - "jcr.pcfae.com"
+    - "joplin.pcfae.com"
+    - "kasm.pcfae.com"
+    - "kimai.pcfae.com"
+    - "kms.pcfae.com"
+    - "links.pcfae.com"
+    - "loki.pcfae.com"
+    - "lubelogger.pcfae.com"
+    - "mail.pcfae.com"
+    - "mazanoke.pcfae.com"
+    - "mimir.pcfae.com"
+    - "monica.pcfae.com"
+    - "netalertx.pcfae.com"
   rules:
     - matches:
         - path:

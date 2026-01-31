@@ -5,16 +5,20 @@ namespace: tingle-tuner
 
 resources:
   - ../../../base/fairer-pages
-  - httproute.yaml
-  - httproute-cell-membrane.yaml
-  - httproute-xylem.yaml
-  - httproute-xylem-overflow.yaml
-  - httproute-xylem-overflow-2.yaml
-  - httproute-xylem-overflow-3.yaml
-  - httproute-xylem-overflow-4.yaml
-  - httproute-xylem-overflow-5.yaml
-  - httproute-cell-membrane-overflow.yaml
-  - httproute-cell-membrane-overflow-2.yaml
+  - httproute-cell-membrane-0.yaml
+  - httproute-cell-membrane-1.yaml
+  - httproute-cell-membrane-2.yaml
+  - httproute-cell-membrane-3.yaml
+  - httproute-cell-membrane-4.yaml
+  - httproute-cell-membrane-5.yaml
+  - httproute-cell-membrane-6.yaml
+  - httproute-phloem-0.yaml
+  - httproute-xylem-0.yaml
+  - httproute-xylem-1.yaml
+  - httproute-xylem-2.yaml
+  - httproute-xylem-3.yaml
+  - httproute-xylem-4.yaml
+  - httproute-xylem-5.yaml
 
 patches:
   - path: service-patch.yaml
