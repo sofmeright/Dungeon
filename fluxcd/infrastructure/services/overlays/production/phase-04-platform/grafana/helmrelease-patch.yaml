@@ -45,7 +45,6 @@ spec:
         datasources:
           - name: VictoriaMetrics
             type: prometheus
-            uid: prometheus
             access: proxy
             url: http://vmselect.gossip-stone.svc.cluster.local:8481/select/0/prometheus
             isDefault: true
