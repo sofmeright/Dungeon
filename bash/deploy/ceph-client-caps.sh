@@ -15,7 +15,7 @@ echo "=== Updating Ceph client capabilities for dungeon cluster ==="
 # client.dungeon - used by CSI node plugin for mounting RBD volumes
 echo "Updating client.dungeon caps..."
 ceph auth caps client.dungeon \
-  mon 'allow r' \
+  mon 'allow r, allow command "osd blacklist"' \
   osd 'allow class-read object_prefix rbd_children, allow rwx pool=dungeon, allow rwx pool=dungeon_hdd' \
   mgr 'allow rw'
 
