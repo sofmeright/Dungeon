@@ -4,6 +4,7 @@ metadata:
   name: loki
 spec:
   targetNamespace: gossip-stone
+  timeout: 15m
   values:
     # Prometheus scraping annotations
     lokiCanary:
