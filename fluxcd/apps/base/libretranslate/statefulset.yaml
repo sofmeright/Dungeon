@@ -13,6 +13,15 @@ spec:
       labels:
         app: libretranslate
     spec:
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: nvidia.com/gpu.compute.major
+                    operator: Gt
+                    values:
+                      - "6"
       initContainers:
         - name: fix-permissions
           image: docker.io/library/busybox:latest
