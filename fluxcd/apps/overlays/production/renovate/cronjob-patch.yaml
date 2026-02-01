@@ -13,7 +13,7 @@ spec:
               image: ghcr.io/renovatebot/renovate:39
               env:
                 - name: RENOVATE_ENDPOINT
-                  value: "https://gitlab.precisionplanit.com/api/v4"
+                  value: "https://gitlab.prplanit.com/api/v4"
                 - name: LOG_LEVEL
                   value: "debug"
               resources:
