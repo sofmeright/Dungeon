@@ -6,48 +6,48 @@ spec:
   template:
     spec:
       initContainers:
-      - name: wait-for-mariadb
-        image: docker.io/busybox:1.36
+        - name: wait-for-mariadb
+          image: docker.io/busybox:1.36
       containers:
-      - name: dolibarr
-        image: docker.io/tuxgasy/dolibarr:22.0.3
-        volumeMounts:
-        - $patch: delete
-          name: PLACEHOLDER_DOLIBARR_DATA
-        - $patch: delete
-          name: PLACEHOLDER_DOLIBARR_CONFIG
-        - name: hyrule-castle-dolibarr-data
-          mountPath: /var/www/html
-        - name: hyrule-castle-dolibarr-config
-          mountPath: /var/www/documents
-        env:
-        - name: DOLI_URL_ROOT
-          value: "https://dolibarr.prplanit.com"
-        - name: DOLI_COMPANY_NAME
-          value: "Precision Plan IT"
+        - name: dolibarr
+          image: docker.io/dolibarr/dolibarr:22.0.3
+          volumeMounts:
+            - $patch: delete
+              name: PLACEHOLDER_DOLIBARR_DATA
+            - $patch: delete
+              name: PLACEHOLDER_DOLIBARR_CONFIG
+            - name: hyrule-castle-dolibarr-data
+              mountPath: /var/www/html
+            - name: hyrule-castle-dolibarr-config
+              mountPath: /var/www/documents
+          env:
+            - name: DOLI_URL_ROOT
+              value: "https://dolibarr.prplanit.com"
+            - name: DOLI_COMPANY_NAME
+              value: "Precision Plan IT"
+          resources:
+            requests:
+              cpu: "250m"
+              memory: "512Mi"
+            limits:
+              cpu: "1000m"
+              memory: "2Gi"
+  volumeClaimTemplates:
+    - metadata:
+        name: hyrule-castle-dolibarr-data
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        storageClassName: ceph-rbd
         resources:
           requests:
-            cpu: "250m"
-            memory: "512Mi"
-          limits:
-            cpu: "1000m"
-            memory: "2Gi"
-  volumeClaimTemplates:
-  - metadata:
-      name: hyrule-castle-dolibarr-data
-    spec:
-      accessModes:
-      - ReadWriteOnce
-      storageClassName: ceph-rbd
-      resources:
-        requests:
-          storage: 20Gi
-  - metadata:
-      name: hyrule-castle-dolibarr-config
-    spec:
-      accessModes:
-      - ReadWriteOnce
-      storageClassName: ceph-rbd
-      resources:
-        requests:
-          storage: 5Gi
+            storage: 20Gi
+    - metadata:
+        name: hyrule-castle-dolibarr-config
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        storageClassName: ceph-rbd
+        resources:
+          requests:
+            storage: 5Gi
