@@ -44,9 +44,9 @@ spec:
           livenessProbe:
             exec:
               command:
-                - healthcheck.sh
-                - --connect
-                - --innodb_initialized
+                - /bin/sh
+                - -c
+                - mariadb-admin ping -h localhost
             initialDelaySeconds: 30
             periodSeconds: 10
             timeoutSeconds: 5
@@ -54,9 +54,9 @@ spec:
           readinessProbe:
             exec:
               command:
-                - healthcheck.sh
-                - --connect
-                - --innodb_initialized
+                - /bin/sh
+                - -c
+                - mariadb-admin ping -h localhost
             initialDelaySeconds: 10
             periodSeconds: 10
             timeoutSeconds: 5
