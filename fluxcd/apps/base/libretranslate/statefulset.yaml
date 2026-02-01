@@ -26,6 +26,7 @@ spec:
       containers:
         - name: libretranslate
           image: docker.io/libretranslate/libretranslate:v1.8.3-cuda
+          command: ["libretranslate"]
           ports:
             - containerPort: 5000
               name: http
@@ -34,12 +35,18 @@ spec:
               value: "all"
             - name: NVIDIA_DRIVER_CAPABILITIES
               value: "compute,utility"
+            - name: LT_API_KEYS
+              value: "true"
+            - name: LT_REQ_LIMIT
+              value: "120"
+            - name: LT_UPDATE_MODELS
+              value: "true"
           resources:
             limits:
               nvidia.com/gpu: 2  # Moderate translation workload
           volumeMounts:
             - name: models
-              mountPath: /home/libretranslate/.local
+              mountPath: /root/.local
   volumeClaimTemplates:
     - metadata:
         name: models
