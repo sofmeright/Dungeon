@@ -12,7 +12,7 @@ spec:
         runAsGroup: 1000
       containers:
         - name: twofauth
-          image: docker.io/2fauth/2fauth:latest
+          image: docker.io/2fauth/2fauth:6.0.0
           env:
             - name: APP_URL
               value: "https://2fa.pcfae.com"

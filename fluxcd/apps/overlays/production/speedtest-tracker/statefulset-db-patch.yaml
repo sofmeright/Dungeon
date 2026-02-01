@@ -8,7 +8,7 @@ spec:
     spec:
       initContainers:
       - name: init-permissions
-        image: docker.io/busybox:latest
+        image: docker.io/busybox:1.37.0
         volumeMounts:
         - name: gossip-stone-speedtest-tracker-postgres
           mountPath: /var/lib/postgresql/data

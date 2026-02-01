@@ -20,7 +20,7 @@ spec:
         fsGroup: 7777
       initContainers:
         - name: install-xaudio2
-          image: docker.io/alpine:latest
+          image: docker.io/alpine:3.23.3
           command: ["/bin/sh", "-c"]
           args:
             - |
