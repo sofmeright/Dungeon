@@ -8,7 +8,7 @@ spec:
     spec:
       containers:
       - name: endlessh
-        image: lscr.io/linuxserver/endlessh:latest
+        image: lscr.io/linuxserver/endlessh:version-dfe44eb2
         env:
         - name: TZ
           value: "America/Phoenix"
