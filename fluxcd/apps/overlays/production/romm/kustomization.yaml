@@ -19,10 +19,10 @@ patches:
     patch: |-
       - op: replace
         path: /spec/ports/0/port
-        value: 8080
+        value: 7007
       - op: replace
         path: /spec/ports/0/targetPort
-        value: 8080
+        value: 7007
       - op: replace
         path: /spec/type
         value: LoadBalancer

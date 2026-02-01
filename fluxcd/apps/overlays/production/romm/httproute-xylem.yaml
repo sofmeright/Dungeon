@@ -15,4 +15,4 @@ spec:
             value: /
       backendRefs:
         - name: romm
-          port: 8080
+          port: 7007
