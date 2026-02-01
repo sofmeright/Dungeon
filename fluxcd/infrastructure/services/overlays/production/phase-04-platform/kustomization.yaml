@@ -9,7 +9,6 @@ resources:
   - ./graphite-exporter-truenas
   - ./kube-state-metrics
   - ./loki
-  - ./mimir
   - ./victoria-metrics
   - ./netbird
   - ./ntfy
