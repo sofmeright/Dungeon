@@ -1,0 +1,62 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: renovate-config
+data:
+  # Renovate configuration
+  renovate.json5: |
+    {
+      "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+      "platform": "gitlab",
+      "gitAuthor": "Renovate Bot <renovate@precisionplanit.com>",
+      "onboarding": false,
+      "requireConfig": "ignored",
+      "repositories": ["precisionplanit/dungeon"],
+
+      "flux": {
+        "fileMatch": ["fluxcd/.+\\.yaml$"]
+      },
+
+      "kubernetes": {
+        "fileMatch": ["fluxcd/.+\\.yaml$"]
+      },
+
+      "helm-values": {
+        "fileMatch": ["fluxcd/.+\\.yaml$"]
+      },
+
+      "regexManagers": [
+        {
+          "fileMatch": ["fluxcd/.+\\.yaml$"],
+          "matchStrings": [
+            "image:\\s+repository:\\s+\"?(?<depName>.*?)\"?\\s+tag:\\s+\"?(?<currentValue>.*?)\"?"
+          ],
+          "datasourceTemplate": "docker"
+        }
+      ],
+
+      "packageRules": [
+        {
+          "matchDatasources": ["docker", "helm"],
+          "matchUpdateTypes": ["major"],
+          "enabled": false,
+          "description": "Disable auto-major updates - require manual review"
+        },
+        {
+          "matchDatasources": ["helm"],
+          "commitMessagePrefix": "chore(helm):",
+          "semanticCommits": "enabled"
+        },
+        {
+          "matchDatasources": ["docker"],
+          "commitMessagePrefix": "chore(image):",
+          "semanticCommits": "enabled"
+        }
+      ],
+
+      "commitMessagePrefix": "chore(deps):",
+      "semanticCommits": "enabled",
+      "dependencyDashboard": true,
+      "prConcurrentLimit": 5,
+      "prHourlyLimit": 2
+    }

@@ -102,6 +102,7 @@ resources:
   - it-tools
   - mazanoke
   - podinfo
+  - renovate
   # External Services
   - fusionpbx-external
   - home-assistant-external
