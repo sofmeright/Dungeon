@@ -18,14 +18,14 @@ patches:
   - patch: |-
       - op: replace
         path: /spec/template/spec/initContainers/0/image
-        value: docker.io/library/busybox:latest
+        value: docker.io/library/busybox:1.37.0
     target:
       kind: StatefulSet
       name: netbird-management
   - patch: |-
       - op: replace
         path: /spec/template/spec/containers/0/image
-        value: docker.io/netbirdio/management:latest
+        value: docker.io/netbirdio/management:0.64.4
       - op: replace
         path: /spec/template/spec/containers/0/env/3/value
         value: "86400"
@@ -35,34 +35,34 @@ patches:
   - patch: |-
       - op: replace
         path: /spec/template/spec/containers/0/image
-        value: docker.io/netbirdio/signal:latest
+        value: docker.io/netbirdio/signal:0.64.4
     target:
       kind: StatefulSet
       name: netbird-signal
   - patch: |-
       - op: replace
         path: /spec/template/spec/containers/0/image
-        value: docker.io/netbirdio/dashboard:latest
+        value: docker.io/netbirdio/dashboard:v2.30.1
     target:
       kind: Deployment
       name: netbird-dashboard
   - patch: |-
       - op: replace
         path: /spec/template/spec/containers/0/image
-        value: docker.io/netbirdio/relay:latest
+        value: docker.io/netbirdio/relay:0.64.4
     target:
       kind: Deployment
       name: netbird-relay
   - patch: |-
       - op: replace
         path: /spec/template/spec/initContainers/0/image
-        value: docker.io/library/busybox:latest
+        value: docker.io/library/busybox:1.37.0
       - op: replace
         path: /spec/template/spec/initContainers/0/env/2/value
         value: "71.24.190.221"
       - op: replace
         path: /spec/template/spec/containers/0/image
-        value: docker.io/coturn/coturn:latest
+        value: docker.io/coturn/coturn:4.8.0
     target:
       kind: Deployment
       name: netbird-coturn

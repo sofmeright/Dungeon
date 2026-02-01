@@ -15,7 +15,7 @@ patches:
           - name: cr-pcfae-admin-pull-secret
       - op: replace
         path: /spec/template/spec/containers/0/image
-        value: cr.pcfae.com/sofmeright/prometheus-eaton-ups-exporter:latest
+        value: cr.pcfae.com/sofmeright/prometheus-eaton-ups-exporter@sha256:7dcb97b01ad41c77ff5cae3899ffb5bf0ed5a78ef4a4682905e6e8936497cca1
       - op: replace
         path: /spec/template/spec/containers/0/resources
         value:
