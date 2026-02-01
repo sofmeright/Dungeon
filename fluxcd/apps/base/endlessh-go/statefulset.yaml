@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: endlessh-go
+spec:
+  serviceName: endlessh-go
+  replicas: PLACEHOLDER_REPLICAS
+  selector:
+    matchLabels:
+      app: endlessh-go
+  template:
+    metadata:
+      labels:
+        app: endlessh-go
+    spec:
+      containers:
+      - name: endlessh-go
+        image: PLACEHOLDER_IMAGE
+        args:
+          # Preserve original MSDELAY=10000
+          - -interval_ms=10000
+          # Preserve original MAXLINES=32
+          - -line_length=32
+          # Preserve original MAXCLIENTS=4096
+          - -max_clients=4096
+          # Enable Prometheus metrics
+          - -enable_prometheus=true
+          # Log to stderr (original LOGFILE=false)
+          - -logtostderr
+        ports:
+        - containerPort: 2222
+          name: ssh-tarpit
+          protocol: TCP
+        - containerPort: 2112
+          name: metrics
+          protocol: TCP
+        resources:
+          requests:
+            cpu: 10m
+            memory: 32Mi
+          limits:
+            cpu: 100m
+            memory: 128Mi

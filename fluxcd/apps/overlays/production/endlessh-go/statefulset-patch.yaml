@@ -1,0 +1,11 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: endlessh-go
+spec:
+  replicas: 1
+  template:
+    spec:
+      containers:
+      - name: endlessh-go
+        image: docker.io/shizunge/endlessh-go:2025.0914.0

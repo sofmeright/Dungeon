@@ -4,7 +4,7 @@ kind: Kustomization
 namespace: tingle-tuner
 
 resources:
-- ../../../base/endlessh
+- ../../../base/endlessh-go
 
 patches:
 - path: statefulset-patch.yaml
