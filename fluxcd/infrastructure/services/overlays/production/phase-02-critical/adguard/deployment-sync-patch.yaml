@@ -10,4 +10,4 @@ spec:
       - name: jcr-pcfae-dungeon-pull-secret
       containers:
       - name: adguardhome-sync
-        image: docker.io/linuxserver/adguardhome-sync:latest
+        image: docker.io/linuxserver/adguardhome-sync:0.8.2
