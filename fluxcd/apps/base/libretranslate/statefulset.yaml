@@ -31,6 +31,12 @@ spec:
           ports:
             - containerPort: 5000
               name: http
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+            readOnlyRootFilesystem: false  # CUDA needs writable /tmp
           env:
             - name: NVIDIA_VISIBLE_DEVICES
               value: "all"
