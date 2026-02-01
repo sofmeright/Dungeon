@@ -16,67 +16,67 @@ spec:
         app: echo-ip
     spec:
       initContainers:
-      - name: geoip-update
-        image: docker.io/maxmindinc/geoipupdate:v8.0.0
-        env:
-        - name: GEOIPUPDATE_ACCOUNT_ID
-          valueFrom:
-            secretKeyRef:
-              name: echo-ip-secrets
-              key: GEOIPUPDATE_ACCOUNT_ID
-        - name: GEOIPUPDATE_LICENSE_KEY
-          valueFrom:
-            secretKeyRef:
-              name: echo-ip-secrets
-              key: GEOIPUPDATE_LICENSE_KEY
-        - name: GEOIPUPDATE_EDITION_IDS
-          value: "GeoLite2-ASN GeoLite2-City GeoLite2-Country"
-        volumeMounts:
-        - name: PLACEHOLDER_NAMESPACE-echo-ip-data
-          mountPath: /usr/share/GeoIP
-        resources:
-          requests:
-            memory: "64Mi"
-            cpu: "50m"
-          limits:
-            memory: "256Mi"
-            cpu: "500m"
+        - name: geoip-update
+          image: docker.io/maxmindinc/geoipupdate:v7.1.1
+          env:
+            - name: GEOIPUPDATE_ACCOUNT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: echo-ip-secrets
+                  key: GEOIPUPDATE_ACCOUNT_ID
+            - name: GEOIPUPDATE_LICENSE_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: echo-ip-secrets
+                  key: GEOIPUPDATE_LICENSE_KEY
+            - name: GEOIPUPDATE_EDITION_IDS
+              value: "GeoLite2-ASN GeoLite2-City GeoLite2-Country"
+          volumeMounts:
+            - name: PLACEHOLDER_NAMESPACE-echo-ip-data
+              mountPath: /usr/share/GeoIP
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "50m"
+            limits:
+              memory: "256Mi"
+              cpu: "500m"
       containers:
-      - name: echo-ip
-        image: PLACEHOLDER_IMAGE
-        ports:
-        - containerPort: 8080
-          name: http
-          protocol: TCP
-        volumeMounts:
-        - name: PLACEHOLDER_NAMESPACE-echo-ip-data
-          mountPath: /data
-          readOnly: true
-        - name: PLACEHOLDER_NAMESPACE-echo-ip-html
-          mountPath: /html
+        - name: echo-ip
+          image: PLACEHOLDER_IMAGE
+          ports:
+            - containerPort: 8080
+              name: http
+              protocol: TCP
+          volumeMounts:
+            - name: PLACEHOLDER_NAMESPACE-echo-ip-data
+              mountPath: /data
+              readOnly: true
+            - name: PLACEHOLDER_NAMESPACE-echo-ip-html
+              mountPath: /html
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "50m"
+            limits:
+              memory: "256Mi"
+              cpu: "500m"
+  volumeClaimTemplates:
+    - metadata:
+        name: PLACEHOLDER_NAMESPACE-echo-ip-data
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        storageClassName: PLACEHOLDER_STORAGE_CLASS
         resources:
           requests:
-            memory: "64Mi"
-            cpu: "50m"
-          limits:
-            memory: "256Mi"
-            cpu: "500m"
-  volumeClaimTemplates:
-  - metadata:
-      name: PLACEHOLDER_NAMESPACE-echo-ip-data
-    spec:
-      accessModes:
-      - ReadWriteOnce
-      storageClassName: PLACEHOLDER_STORAGE_CLASS
-      resources:
-        requests:
-          storage: 1Gi
-  - metadata:
-      name: PLACEHOLDER_NAMESPACE-echo-ip-html
-    spec:
-      accessModes:
-      - ReadWriteOnce
-      storageClassName: PLACEHOLDER_STORAGE_CLASS
-      resources:
-        requests:
-          storage: 100Mi
+            storage: 1Gi
+    - metadata:
+        name: PLACEHOLDER_NAMESPACE-echo-ip-html
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        storageClassName: PLACEHOLDER_STORAGE_CLASS
+        resources:
+          requests:
+            storage: 100Mi

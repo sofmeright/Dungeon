@@ -7,16 +7,16 @@ spec:
   template:
     spec:
       imagePullSecrets:
-      - name: jcr-pcfae-dungeon-pull-secret
+        - name: jcr-pcfae-dungeon-pull-secret
       containers:
-      - name: quay
-        image: quay.io/projectquay/quay:3.16.1 ? latest is from 2 years ago
+        - name: quay
+          image: quay.io/projectquay/quay:3.16.1
   volumeClaimTemplates:
-  - metadata:
-      name: quay-storage
-    spec:
-      accessModes:
-      - ReadWriteOnce
+    - metadata:
+        name: quay-storage
+      spec:
+        accessModes:
+          - ReadWriteOnce
       storageClassName: ceph-rbd
       resources:
         requests:

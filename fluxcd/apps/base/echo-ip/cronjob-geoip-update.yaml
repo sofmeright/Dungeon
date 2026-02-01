@@ -18,32 +18,32 @@ spec:
         spec:
           restartPolicy: OnFailure
           containers:
-          - name: geoipupdate
-            image: docker.io/maxmindinc/geoipupdate:v8.0.0
-            env:
-            - name: GEOIPUPDATE_ACCOUNT_ID
-              valueFrom:
-                secretKeyRef:
-                  name: echo-ip-secrets
-                  key: GEOIPUPDATE_ACCOUNT_ID
-            - name: GEOIPUPDATE_LICENSE_KEY
-              valueFrom:
-                secretKeyRef:
-                  name: echo-ip-secrets
-                  key: GEOIPUPDATE_LICENSE_KEY
-            - name: GEOIPUPDATE_EDITION_IDS
-              value: "GeoLite2-ASN GeoLite2-City GeoLite2-Country"
-            volumeMounts:
-            - name: PLACEHOLDER_NAMESPACE-echo-ip-data
-              mountPath: /usr/share/GeoIP
-            resources:
-              requests:
-                memory: "64Mi"
-                cpu: "50m"
-              limits:
-                memory: "256Mi"
-                cpu: "500m"
+            - name: geoipupdate
+              image: docker.io/maxmindinc/geoipupdate:v7.1.1
+              env:
+                - name: GEOIPUPDATE_ACCOUNT_ID
+                  valueFrom:
+                    secretKeyRef:
+                      name: echo-ip-secrets
+                      key: GEOIPUPDATE_ACCOUNT_ID
+                - name: GEOIPUPDATE_LICENSE_KEY
+                  valueFrom:
+                    secretKeyRef:
+                      name: echo-ip-secrets
+                      key: GEOIPUPDATE_LICENSE_KEY
+                - name: GEOIPUPDATE_EDITION_IDS
+                  value: "GeoLite2-ASN GeoLite2-City GeoLite2-Country"
+              volumeMounts:
+                - name: PLACEHOLDER_NAMESPACE-echo-ip-data
+                  mountPath: /usr/share/GeoIP
+              resources:
+                requests:
+                  memory: "64Mi"
+                  cpu: "50m"
+                limits:
+                  memory: "256Mi"
+                  cpu: "500m"
           volumes:
-          - name: PLACEHOLDER_NAMESPACE-echo-ip-data
-            persistentVolumeClaim:
-              claimName: PLACEHOLDER_NAMESPACE-echo-ip-data-echo-ip-0
+            - name: PLACEHOLDER_NAMESPACE-echo-ip-data
+              persistentVolumeClaim:
+                claimName: PLACEHOLDER_NAMESPACE-echo-ip-data-echo-ip-0
