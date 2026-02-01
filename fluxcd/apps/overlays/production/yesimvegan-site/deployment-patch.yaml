@@ -9,4 +9,4 @@ spec:
         - name: cr-pcfae-admin-pull-secret
       containers:
         - name: yesimvegan-site
-          image: cr.pcfae.com/prplanit/yesimvegan.com:latest
+          image: cr.pcfae.com/prplanit/yesimvegan.com:v0.0.2

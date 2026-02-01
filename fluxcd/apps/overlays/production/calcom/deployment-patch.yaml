@@ -8,7 +8,7 @@ spec:
     spec:
       containers:
       - name: calcom
-        image: docker.io/calcom/cal.com:latest
+        image: docker.io/calcom/cal.com:v6.1.9
         env:
         - name: NEXT_PUBLIC_WEBAPP_URL
           value: https://cal.prplanit.com

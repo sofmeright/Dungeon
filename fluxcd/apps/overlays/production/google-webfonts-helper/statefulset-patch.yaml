@@ -8,7 +8,7 @@ spec:
     spec:
       containers:
         - name: google-webfonts-helper
-          image: ghcr.io/majodev/google-webfonts-helper:latest
+          image: ghcr.io/majodev/google-webfonts-helper:v1.7.1
           resources:
             requests:
               cpu: "2m"

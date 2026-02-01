@@ -8,7 +8,7 @@ spec:
     spec:
       containers:
       - name: unifi-app
-        image: lscr.io/linuxserver/unifi-network-application:latest
+        image: lscr.io/linuxserver/unifi-network-application:9.0.114
         env:
         - name: TZ
           value: "America/Phoenix"

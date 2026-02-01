@@ -10,7 +10,7 @@ spec:
         image: docker.io/busybox:1.36
       containers:
       - name: orangehrm
-        image: docker.io/orangehrm/orangehrm:latest
+        image: docker.io/orangehrm/orangehrm:5.8
         volumeMounts:
         - $patch: delete
           name: PLACEHOLDER_ORANGEHRM_DATA

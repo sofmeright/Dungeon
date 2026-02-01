@@ -8,7 +8,7 @@ spec:
     spec:
       containers:
         - name: dailytxt
-          image: docker.io/phitux/dailytxt:latest
+          image: docker.io/phitux/dailytxt:2.3.0
           env:
             - name: ALLOWED_HOSTS
               value: "shiplog.pcfae.com"

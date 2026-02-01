@@ -38,7 +38,7 @@ spec:
               mountPath: /opt/tactical
       containers:
         - name: websockets
-          image: docker.io/tacticalrmm/tactical:latest
+          image: docker.io/tacticalrmm/tactical:1.4.0
           env:
             - name: NATS_CONNECT_HOST
               value: "tactical-nats"

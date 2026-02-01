@@ -22,7 +22,7 @@ spec:
         - until nc -z pelican-mariadb 3306; do echo waiting for database; sleep 2; done
       containers:
       - name: panel
-        image: ghcr.io/pelican-dev/panel:latest
+        image: ghcr.io/pelican-dev/panel:v1.0.0-beta17
         securityContext:
           runAsUser: 0
           capabilities:

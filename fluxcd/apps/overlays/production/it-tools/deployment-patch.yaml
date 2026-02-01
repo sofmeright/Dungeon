@@ -10,7 +10,7 @@ spec:
         - name: jcr-pcfae-dungeon-pull-secret
       containers:
         - name: it-tools
-          image: docker.io/corentinth/it-tools:latest
+          image: docker.io/corentinth/it-tools:2024.10.22-7ca5933
           resources:
             requests:
               cpu: "2m"

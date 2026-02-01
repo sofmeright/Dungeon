@@ -7,7 +7,7 @@ spec:
     spec:
       containers:
       - name: thelounge
-        image: ghcr.io/thelounge/thelounge:latest
+        image: docker.io/linuxserver/thelounge:4.4.3
         env:
         - name: TZ
           value: "America/Chicago"

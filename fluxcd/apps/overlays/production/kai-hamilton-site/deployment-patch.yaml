@@ -9,4 +9,4 @@ spec:
         - name: cr-pcfae-admin-pull-secret
       containers:
         - name: kai-hamilton-site
-          image: cr.pcfae.com/prplanit/kai-hamilton.com:latest
+          image: cr.pcfae.com/prplanit/kai-hamilton.com:v0.0.2

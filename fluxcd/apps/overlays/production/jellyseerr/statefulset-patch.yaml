@@ -7,7 +7,7 @@ spec:
     spec:
       containers:
         - name: jellyseerr
-          image: docker.io/fallenbagel/jellyseerr:latest
+          image: docker.io/fallenbagel/jellyseerr:2.7.3
           env:
             - name: TZ
               value: "America/Chicago"

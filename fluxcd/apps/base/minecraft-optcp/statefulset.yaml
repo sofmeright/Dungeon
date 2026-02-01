@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: minecraft
-          image: docker.io/itzg/minecraft-server:latest
+          image: docker.io/itzg/minecraft-server:java25
           ports:
             - containerPort: 35566
               name: minecraft

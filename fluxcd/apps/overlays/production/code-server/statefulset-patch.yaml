@@ -20,7 +20,7 @@ spec:
           effect: NoSchedule
       containers:
         - name: code-server
-          image: lscr.io/linuxserver/code-server:latest
+          image: lscr.io/linuxserver/code-server:4.108.2
           env:
             - name: PROXY_DOMAIN
               value: "code.pcfae.com"

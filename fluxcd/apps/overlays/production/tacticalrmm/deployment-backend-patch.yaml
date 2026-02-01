@@ -42,7 +42,7 @@ spec:
               done
               echo "MeshCentral is ready"
         - name: tactical-init
-          image: docker.io/tacticalrmm/tactical:latest
+          image: docker.io/tacticalrmm/tactical:1.4.0
           command: ["/bin/bash", "/scripts/init-wrapper.sh"]
           env:
             - name: POSTGRES_USER
@@ -105,7 +105,7 @@ spec:
               mountPath: /scripts
       containers:
         - name: backend
-          image: docker.io/tacticalrmm/tactical:latest
+          image: docker.io/tacticalrmm/tactical:1.4.0
           env:
             - name: NATS_CONNECT_HOST
               value: "tactical-nats"

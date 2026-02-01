@@ -9,4 +9,4 @@ spec:
         - name: cr-pcfae-admin-pull-secret
       containers:
         - name: enamorafoto-site
-          image: cr.pcfae.com/prplanit/enamorafoto.com:latest
+          image: cr.pcfae.com/prplanit/enamorafoto.com:v0.0.2

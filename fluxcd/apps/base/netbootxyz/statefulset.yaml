@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: netbootxyz
-        image: ghcr.io/netbootxyz/netbootxyz:latest
+        image: ghcr.io/netbootxyz/netbootxyz:0.7.6-nbxyz10
         ports:
         - containerPort: 3000
           name: web-app

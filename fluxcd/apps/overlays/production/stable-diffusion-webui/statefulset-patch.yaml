@@ -23,7 +23,7 @@ spec:
           runAsUser: 0
       containers:
       - name: webui
-        image: ghcr.io/ai-dock/stable-diffusion-webui:latest
+        image: ghcr.io/ai-dock/stable-diffusion-webui:v2-cuda-12.1.1-base-22.04-v1.10.1
         env:
         - name: WEBUI_PORT
           value: "7860"

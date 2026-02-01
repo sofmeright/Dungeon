@@ -8,7 +8,7 @@ spec:
     spec:
       containers:
       - name: vlmcsd
-        image: docker.io/mikolatero/vlmcsd:latest
+        image: docker.io/mikolatero/vlmcsd:svn1113
         resources:
           requests:
             cpu: 50m

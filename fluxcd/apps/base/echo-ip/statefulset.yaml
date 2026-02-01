@@ -17,7 +17,7 @@ spec:
     spec:
       initContainers:
       - name: geoip-update
-        image: docker.io/maxmindinc/geoipupdate:latest
+        image: docker.io/maxmindinc/geoipupdate:v8.0.0
         env:
         - name: GEOIPUPDATE_ACCOUNT_ID
           valueFrom:

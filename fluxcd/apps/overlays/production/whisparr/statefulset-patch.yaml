@@ -8,7 +8,7 @@ spec:
     spec:
       containers:
       - name: whisparr
-        image: ghcr.io/hotio/whisparr:latest
+        image: linuxserver/whisparr:3.0.3
         env:
         - name: TZ
           value: "America/Phoenix"

@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: worker
-        image: docker.io/jhumanj/opnform-api:latest
+        image: docker.io/jhumanj/opnform-api:1.13.0
         command: ["php", "artisan", "queue:work"]
         env:
         - name: APP_NAME

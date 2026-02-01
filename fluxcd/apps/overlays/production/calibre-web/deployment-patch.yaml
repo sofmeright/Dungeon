@@ -8,7 +8,7 @@ spec:
     spec:
       containers:
       - name: calibre-web
-        image: lscr.io/linuxserver/calibre-web:latest
+        image: lscr.io/linuxserver/calibre-web:0.6.25
       volumes:
       - name: config
         persistentVolumeClaim:

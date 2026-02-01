@@ -7,10 +7,10 @@ spec:
     spec:
       initContainers:
         - name: wait-for-db
-          image: lscr.io/linuxserver/bookstack:latest
+          image: lscr.io/linuxserver/bookstack:25.12.3
       containers:
         - name: bookstack
-          image: lscr.io/linuxserver/bookstack:latest
+          image: lscr.io/linuxserver/bookstack:25.12.3
           volumeMounts:
             - $patch: replace
             - name: hyrule-castle-bookstack-config

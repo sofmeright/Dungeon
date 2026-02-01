@@ -7,12 +7,12 @@ spec:
     spec:
       containers:
         - name: prowlarr
-          image: ghcr.io/hotio/prowlarr:latest
+          image: linuxserver/prowlarr:2.3.0
           env:
             - name: TZ
               value: "America/Chicago"
         - name: gluetun
-          image: docker.io/qmcgaw/gluetun:latest
+          image: docker.io/qmcgaw/gluetun:v3.39.1
           env:
             - name: VPN_SERVICE_PROVIDER
               value: "private internet access"

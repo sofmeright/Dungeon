@@ -58,7 +58,7 @@ spec:
           mountPath: /config
       containers:
       - name: anirra
-        image: jpyles0524/anirra:latest
+        image: jpyles0524/anirra:xiFwhijN
         command: ["bash", "/start.sh"]
         ports:
         - name: frontend

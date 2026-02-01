@@ -16,7 +16,7 @@ spec:
               mountPath: /opt/tactical
       containers:
         - name: frontend
-          image: docker.io/tacticalrmm/tactical-frontend:latest
+          image: docker.io/tacticalrmm/tactical-frontend:1.4.0
           resources:
             requests:
               cpu: "100m"

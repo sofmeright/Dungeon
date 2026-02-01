@@ -8,7 +8,7 @@ spec:
     spec:
       containers:
       - name: homebox
-        image: ghcr.io/sysadminsmedia/homebox:latest
+        image: ghcr.io/sysadminsmedia/homebox:0.23.0
         volumeMounts:
         - name: pedestal-of-time-homebox-data
           mountPath: /data

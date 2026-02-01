@@ -7,12 +7,12 @@ spec:
     spec:
       initContainers:
       - name: generate-initdb
-        image: docker.io/guacamole/guacamole:latest
+        image: docker.io/guacamole/guacamole@sha256:667daf69562d80a7b9a085afb4ab6f3a84d02c70c43f81b92a685a8f0314bbf2
       - name: init-db
         image: docker.io/postgres:15-alpine
       containers:
       - name: guacamole
-        image: docker.io/guacamole/guacamole:latest
+        image: docker.io/guacamole/guacamole@sha256:667daf69562d80a7b9a085afb4ab6f3a84d02c70c43f81b92a685a8f0314bbf2
         resources:
           requests:
             cpu: "250m"

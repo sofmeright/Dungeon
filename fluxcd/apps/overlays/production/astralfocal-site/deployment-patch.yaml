@@ -9,4 +9,4 @@ spec:
         - name: cr-pcfae-admin-pull-secret
       containers:
         - name: astralfocal-site
-          image: cr.pcfae.com/prplanit/astralfocal.com:latest
+          image: cr.pcfae.com/prplanit/astralfocal.com:v0.0.2

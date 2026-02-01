@@ -13,7 +13,7 @@ spec:
           image: docker.io/curlimages/curl:8.5.0
       containers:
         - name: linkwarden
-          image: ghcr.io/linkwarden/linkwarden:latest
+          image: ghcr.io/linkwarden/linkwarden:v2.13.5
           volumeMounts:
             - name: data
               mountPath: /data/data

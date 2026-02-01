@@ -7,7 +7,7 @@ spec:
     spec:
       containers:
         - name: byparr
-          image: ghcr.io/thephaseless/byparr:latest
+          image: ghcr.io/thephaseless/byparr:2.0.1
           env:
             - name: TZ
               value: "America/Chicago"

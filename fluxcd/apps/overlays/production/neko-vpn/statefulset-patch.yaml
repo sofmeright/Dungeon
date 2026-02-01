@@ -17,7 +17,7 @@ spec:
                       - dungeon-chest-001
       containers:
         - name: gluetun
-          image: docker.io/qmcgaw/gluetun:latest
+          image: docker.io/qmcgaw/gluetun:v3.39.1
           resources:
             requests:
               cpu: "2m"
@@ -42,7 +42,7 @@ spec:
             - name: tingle-tuner-neko-vpn-gluetun-config
               mountPath: /gluetun
         - name: neko
-          image: ghcr.io/m1k1o/neko/vivaldi:latest
+          image: ghcr.io/m1k1o/neko/vivaldi:3.0.7
           resources:
             requests:
               cpu: "102m"

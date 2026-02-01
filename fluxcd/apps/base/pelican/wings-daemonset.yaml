@@ -21,7 +21,7 @@ spec:
         effect: NoSchedule
       containers:
       - name: wings
-        image: ghcr.io/pelican-dev/wings:latest
+        image: ghcr.io/pelican-dev/wings:v1.0.0-beta13
         securityContext:
           privileged: true
         ports:

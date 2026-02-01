@@ -8,7 +8,7 @@ spec:
     spec:
       containers:
       - name: monica
-        image: docker.io/monica:latest
+        image: docker.io/monica:4.1.2-fpm-alpine
         env:
         - name: APP_URL
           value: "https://monica.pcfae.com"

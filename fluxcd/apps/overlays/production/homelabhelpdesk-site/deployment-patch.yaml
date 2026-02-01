@@ -9,4 +9,4 @@ spec:
         - name: cr-pcfae-admin-pull-secret
       containers:
         - name: homelabhelpdesk-site
-          image: cr.pcfae.com/prplanit/homelabhelpdesk.com:latest
+          image: cr.pcfae.com/prplanit/homelabhelpdesk.com:v0.0.2

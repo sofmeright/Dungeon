@@ -9,7 +9,7 @@ spec:
         - name: docker-io-pull-secret
       containers:
         - name: frontend
-          image: docker.io/penpotapp/frontend:latest
+          image: docker.io/penpotapp/frontend:2.12.1
           env:
             - name: PENPOT_FLAGS
               value: >-

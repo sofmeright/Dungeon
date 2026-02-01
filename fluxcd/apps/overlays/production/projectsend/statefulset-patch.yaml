@@ -8,7 +8,7 @@ spec:
     spec:
       containers:
       - name: projectsend
-        image: docker.io/linuxserver/projectsend:latest
+        image: docker.io/linuxserver/projectsend:version-r1945
         env:
         - name: PUID
           value: "1000"

@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: quay
-          image: quay.io/projectquay/quay:latest
+          image: quay.io/projectquay/quay:3.16.1 ? latest is from 2 years ago
           env:
             - name: DEBUGLOG
               value: "false"

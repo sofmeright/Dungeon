@@ -10,7 +10,7 @@ spec:
       - name: jcr-pcfae-dungeon-pull-secret
       containers:
       - name: urbackup-server
-        image: docker.io/uroni/urbackup-server:latest
+        image: docker.io/uroni/urbackup-server:2.6.15
         env:
         - name: TZ
           value: "America/Phoenix"

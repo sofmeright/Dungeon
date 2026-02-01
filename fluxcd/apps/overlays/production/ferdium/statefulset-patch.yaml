@@ -8,7 +8,7 @@ spec:
     spec:
       containers:
       - name: ferdium
-        image: lscr.io/linuxserver/ferdium:latest
+        image: lscr.io/linuxserver/ferdium:7.1.1
         env:
         - name: PUID
           value: "1000"

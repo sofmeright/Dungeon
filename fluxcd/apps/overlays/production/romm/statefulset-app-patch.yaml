@@ -8,7 +8,7 @@ spec:
     spec:
       containers:
         - name: romm
-          image: docker.io/rommapp/romm:latest
+          image: docker.io/rommapp/romm:4.6.1
   volumeClaimTemplates:
     - metadata:
         name: shooting-gallery-romm-resources

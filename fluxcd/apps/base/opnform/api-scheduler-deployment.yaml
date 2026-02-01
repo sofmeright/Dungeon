@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: scheduler
-        image: docker.io/jhumanj/opnform-api:latest
+        image: docker.io/jhumanj/opnform-api:1.13.0
         command: ["php", "artisan", "schedule:work"]
         env:
         - name: APP_NAME

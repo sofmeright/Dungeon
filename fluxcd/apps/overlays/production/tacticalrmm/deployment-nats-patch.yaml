@@ -24,7 +24,7 @@ spec:
               mountPath: /opt/tactical
       containers:
         - name: nats
-          image: docker.io/tacticalrmm/tactical-nats:latest
+          image: docker.io/tacticalrmm/tactical-nats:1.4.0
           resources:
             requests:
               cpu: "100m"

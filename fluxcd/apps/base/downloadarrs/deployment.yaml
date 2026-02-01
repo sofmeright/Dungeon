@@ -71,7 +71,7 @@ spec:
       containers:
         # Gluetun VPN Gateway - shared by all apps
         - name: gluetun
-          image: docker.io/qmcgaw/gluetun:latest
+          image: docker.io/qmcgaw/gluetun:v3.39.1
           securityContext:
             privileged: true
           env:
@@ -147,7 +147,7 @@ spec:
 
         # qBittorrent - full downloads access
         - name: qbittorrent
-          image: lscr.io/linuxserver/qbittorrent:latest
+          image: lscr.io/linuxserver/qbittorrent:5.1.4
           env:
             - name: TZ
               value: PLACEHOLDER_TZ
@@ -204,7 +204,7 @@ spec:
 
         # Radarr - only zz-radarr subpath
         - name: radarr
-          image: ghcr.io/hotio/radarr:latest
+          image: linuxserver/radarr:6.0.4
           env:
             - name: TZ
               value: PLACEHOLDER_TZ
@@ -230,7 +230,7 @@ spec:
 
         # Sonarr - only zz-sonarr subpath
         - name: sonarr
-          image: ghcr.io/hotio/sonarr:latest
+          image: linuxserver/sonarr:4.0.16
           env:
             - name: TZ
               value: PLACEHOLDER_TZ
@@ -256,7 +256,7 @@ spec:
 
         # Lidarr
         - name: lidarr
-          image: lscr.io/linuxserver/lidarr:latest
+          image: lscr.io/linuxserver/lidarr:3.1.0
           env:
             - name: TZ
               value: PLACEHOLDER_TZ
@@ -308,7 +308,7 @@ spec:
 
         # Cross-seed
         - name: cross-seed
-          image: docker.io/crossseed/cross-seed:latest
+          image: docker.io/crossseed/cross-seed:6.13.6
           env:
             - name: TZ
               value: PLACEHOLDER_TZ

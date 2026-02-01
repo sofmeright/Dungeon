@@ -12,7 +12,7 @@ spec:
           mountPath: /usr/share/GeoIP
       containers:
       - name: echo-ip
-        image: docker.io/mpolden/echoip:latest
+        image: docker.io/mpolden/echoip@sha256:23eaa7ac21945854483d44cff84d34ea8f477f3dbe509b4bf90ab671f09aaf14
         command: []
         args:
         - "-C"

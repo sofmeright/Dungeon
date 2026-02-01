@@ -25,7 +25,7 @@ spec:
               mountPath: /home/libretranslate/.local
       containers:
         - name: libretranslate
-          image: docker.io/libretranslate/libretranslate:latest
+          image: docker.io/libretranslate/libretranslate:v1.8.3-cuda
           ports:
             - containerPort: 5000
               name: http

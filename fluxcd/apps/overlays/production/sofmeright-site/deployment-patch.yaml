@@ -9,4 +9,4 @@ spec:
         - name: cr-pcfae-admin-pull-secret
       containers:
         - name: sofmeright-site
-          image: cr.pcfae.com/prplanit/sofmeright.com:latest
+          image: cr.pcfae.com/prplanit/sofmeright.com:v0.0.5

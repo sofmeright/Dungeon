@@ -8,7 +8,7 @@ spec:
     spec:
       containers:
       - name: roundcube
-        image: docker.io/roundcube/roundcubemail:latest
+        image: docker.io/roundcube/roundcubemail:1.6.12-fpm-alpine-nonroot
         env:
         - name: ROUNDCUBEMAIL_SKIN
           value: "elastic"
