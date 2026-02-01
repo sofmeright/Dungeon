@@ -14,35 +14,35 @@ spec:
       imagePullSecrets:
         - name: PLACEHOLDER_IMAGE_PULL_SECRET
       containers:
-      - name: init-praefect-db
-        image: docker.io/bitnami/kubectl:latest
-        env:
-        - name: PRAEFECT_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: gitlab-praefect-credentials
-              key: password
-        command:
-        - /bin/bash
-        - -c
-        - |
-          set -e
+        - name: init-praefect-db
+          image: docker.io/bitnami/kubectl@sha256:b349e60a6ae2969af84a778c0b976b050a0cc77f4fb6a4ad44307cd0a06e9d8f
+          env:
+            - name: PRAEFECT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: gitlab-praefect-credentials
+                  key: password
+          command:
+            - /bin/bash
+            - -c
+            - |
+              set -e
 
-          echo "Setting up Praefect database via PostgreSQL pod..."
+              echo "Setting up Praefect database via PostgreSQL pod..."
 
-          # Find the GitLab primary PostgreSQL pod
-          PRIMARY_POD=$(kubectl get pods -n hyrule-castle -l cnpg.io/cluster=gitlab-postgresql,cnpg.io/instanceRole=primary -o jsonpath='{.items[0].metadata.name}')
-          echo "Found GitLab primary PostgreSQL pod: $PRIMARY_POD"
+              # Find the GitLab primary PostgreSQL pod
+              PRIMARY_POD=$(kubectl get pods -n hyrule-castle -l cnpg.io/cluster=gitlab-postgresql,cnpg.io/instanceRole=primary -o jsonpath='{.items[0].metadata.name}')
+              echo "Found GitLab primary PostgreSQL pod: $PRIMARY_POD"
 
-          # Replace password placeholder in SQL script and pipe directly to psql on primary
-          sed "s|PLACEHOLDER_PASSWORD|$PRAEFECT_PASSWORD|g" /scripts/init-praefect.sql | \
-            kubectl exec -i -n hyrule-castle $PRIMARY_POD -- psql -U postgres
+              # Replace password placeholder in SQL script and pipe directly to psql on primary
+              sed "s|PLACEHOLDER_PASSWORD|$PRAEFECT_PASSWORD|g" /scripts/init-praefect.sql | \
+                kubectl exec -i -n hyrule-castle $PRIMARY_POD -- psql -U postgres
 
-          echo "Praefect database setup complete!"
-        volumeMounts:
-        - name: sql-scripts
-          mountPath: /scripts
+              echo "Praefect database setup complete!"
+          volumeMounts:
+            - name: sql-scripts
+              mountPath: /scripts
       volumes:
-      - name: sql-scripts
-        configMap:
-          name: praefect-init-sql
+        - name: sql-scripts
+          configMap:
+            name: praefect-init-sql
