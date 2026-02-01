@@ -19,9 +19,11 @@ spec:
             nodeSelectorTerms:
               - matchExpressions:
                   - key: nvidia.com/gpu.compute.major
-                    operator: Gt
+                    operator: In
                     values:
-                      - "6"
+                      - "7"
+                      - "8"
+                      - "9"
       initContainers:
         - name: fix-permissions
           image: docker.io/library/busybox:latest
