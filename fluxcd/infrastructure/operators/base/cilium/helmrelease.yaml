@@ -5,6 +5,10 @@ metadata:
 spec:
   targetNamespace: kube-system
   interval: 30m
+  install:
+    crds: Create
+  upgrade:
+    crds: CreateReplace
   chart:
     spec:
       chart: cilium
