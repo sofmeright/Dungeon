@@ -3,4 +3,3 @@ kind: Kustomization
 resources:
   - bgppeeringpolicy.yaml
   - ippool.yaml
-  - egress-iot.yaml
