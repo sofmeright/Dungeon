@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: zigbee2mqtt
+  annotations:
+    lbipam.cilium.io/ips: "172.22.30.149"
+spec:
+  type: LoadBalancer

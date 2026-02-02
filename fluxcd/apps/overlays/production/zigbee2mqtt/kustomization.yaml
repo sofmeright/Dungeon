@@ -4,6 +4,7 @@ namespace: lens-of-truth
 resources:
   - ../../../base/zigbee2mqtt
   - httproute-xylem.yaml
+  - cilium-egress-policy.yaml
 patches:
   - path: statefulset-patch.yaml
     target:
@@ -13,3 +14,7 @@ patches:
     target:
       kind: ConfigMap
       name: zigbee2mqtt-config
+  - path: service-patch.yaml
+    target:
+      kind: Service
+      name: zigbee2mqtt

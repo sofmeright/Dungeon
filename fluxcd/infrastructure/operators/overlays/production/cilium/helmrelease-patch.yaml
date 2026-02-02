@@ -66,6 +66,10 @@ spec:
     # Enable socket LB only in host namespace for Istio Ambient compatibility
     bpfLBSockHostnsOnly: true
 
+    # Egress Gateway - stable egress IPs for pods reaching external services
+    egressGateway:
+      enabled: true
+
     # CNI configuration for Istio Ambient mode compatibility
     cni:
       exclusive: false
