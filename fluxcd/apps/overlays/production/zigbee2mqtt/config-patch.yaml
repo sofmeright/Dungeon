@@ -13,7 +13,7 @@ data:
       server: mqtt://mosquitto:1883
     serial:
       port: tcp://10.20.20.196:6638
-      adapter: zstack
+      adapter: ember
     advanced:
       log_level: info
       last_seen: ISO_8601
