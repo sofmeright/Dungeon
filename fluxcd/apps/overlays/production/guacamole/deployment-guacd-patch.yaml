@@ -7,7 +7,7 @@ spec:
     spec:
       containers:
       - name: guacd
-        image: docker.io/guacamole/guacd@sha256:6b31026db970e27aedda51b1ecf96de34462b34a8c0266af47cada0a3c11082e
+        image: docker.io/guacamole/guacd@sha256:f10c0359d6aa11924db64510f6da85cb7da9646ca24eea7b5a5cb65c39921981
         resources:
           requests:
             cpu: "250m"
