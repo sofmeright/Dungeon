@@ -1,0 +1,9 @@
+apiVersion: networking.istio.io/v1
+kind: DestinationRule
+metadata:
+  name: home-assistant
+spec:
+  host: home-assistant.lens-of-truth.svc.cluster.local
+  trafficPolicy:
+    tls:
+      mode: DISABLE

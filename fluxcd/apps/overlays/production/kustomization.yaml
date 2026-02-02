@@ -12,6 +12,7 @@ resources:
   - beszel
   - echo-ip
   - frigate
+  - home-assistant
   - libretranslate
   - netalertx
   - speedtest-tracker
@@ -105,7 +106,7 @@ resources:
   - renovate
   # External Services
   - fusionpbx-external
-  - home-assistant-external
+  # - home-assistant-external  # Replaced by in-cluster home-assistant
   - mailcow-external
   - nextcloud-external
   # Static Sites

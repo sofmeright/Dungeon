@@ -1,0 +1,74 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: home-assistant
+spec:
+  serviceName: home-assistant
+  replicas: 1
+  selector:
+    matchLabels:
+      app: home-assistant
+  template:
+    metadata:
+      labels:
+        app: home-assistant
+    spec:
+      initContainers:
+        - name: seed-config
+          image: docker.io/alpine/k8s:PLACEHOLDER_TAG
+          command:
+            - sh
+            - -c
+            - |
+              if [ ! -f /config/configuration.yaml ]; then
+                echo "Seeding configuration.yaml..."
+                cp /seed/configuration.yaml /config/configuration.yaml
+              else
+                echo "configuration.yaml already exists, skipping."
+              fi
+              if [ ! -f /config/SERVICE_ACCOUNT.JSON ]; then
+                echo "Seeding SERVICE_ACCOUNT.JSON..."
+                cp /seed-secret/SERVICE_ACCOUNT.JSON /config/SERVICE_ACCOUNT.JSON
+              else
+                echo "SERVICE_ACCOUNT.JSON already exists, skipping."
+              fi
+              mkdir -p /config/themes
+              [ -f /config/automations.yaml ] || echo "[]" > /config/automations.yaml
+              [ -f /config/scripts.yaml ] || echo "" > /config/scripts.yaml
+              [ -f /config/scenes.yaml ] || echo "[]" > /config/scenes.yaml
+          volumeMounts:
+            - name: config
+              mountPath: /config
+            - name: seed-config
+              mountPath: /seed
+            - name: seed-secret
+              mountPath: /seed-secret
+      containers:
+        - name: home-assistant
+          image: ghcr.io/home-assistant/home-assistant:PLACEHOLDER_TAG
+          ports:
+            - name: http
+              containerPort: 8123
+              protocol: TCP
+          env:
+            - name: TZ
+              value: PLACEHOLDER_TZ
+          volumeMounts:
+            - name: config
+              mountPath: /config
+      volumes:
+        - name: seed-config
+          configMap:
+            name: home-assistant-config
+        - name: seed-secret
+          secret:
+            secretName: home-assistant-secret
+  volumeClaimTemplates:
+    - metadata:
+        name: config
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: PLACEHOLDER_STORAGE
