@@ -37,6 +37,10 @@ spec:
             - name: config
               mountPath: /app/data/configuration.yaml
               subPath: configuration.yaml
+      volumes:
+        - name: config
+          configMap:
+            name: zigbee2mqtt-config
   volumeClaimTemplates:
     - metadata:
         name: data
