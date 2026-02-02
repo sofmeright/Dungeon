@@ -14,7 +14,6 @@ resources:
   - frigate
   - libretranslate
   - netalertx
-  - shinobi
   - speedtest-tracker
   - librespeed-speedtest
   - openspeedtest

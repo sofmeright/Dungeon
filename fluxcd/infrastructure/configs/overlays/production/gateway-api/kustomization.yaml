@@ -7,7 +7,6 @@ resources:
   - envoyfilter-fairer-pages-xylem.yaml
   - envoyfilter-ntfy-timeout-cell-membrane.yaml
   - envoyfilter-ntfy-timeout-xylem.yaml
-  - envoyfilter-shinobi-timeout-xylem.yaml
   - envoyfilter-meshcentral-websocket-cell-membrane.yaml
 patches:
   - path: gateway-patch-xylem.yaml
