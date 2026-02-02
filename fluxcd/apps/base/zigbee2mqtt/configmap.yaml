@@ -15,4 +15,5 @@ data:
       server: PLACEHOLDER_MQTT_SERVER
     serial:
       port: PLACEHOLDER_SERIAL_PORT
-      adapter: ember
+      adapter: zstack
+      baudrate: 115200

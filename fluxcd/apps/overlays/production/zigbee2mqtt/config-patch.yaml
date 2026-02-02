@@ -13,8 +13,11 @@ data:
       server: mqtt://mosquitto:1883
     serial:
       port: tcp://10.20.20.196:6638
-      adapter: ember
+      adapter: zstack
+      baudrate: 115200
+      disable_led: false
     advanced:
+      transmit_power: 20
       log_level: info
       last_seen: ISO_8601
       homeassistant_legacy_entity_attributes: false
