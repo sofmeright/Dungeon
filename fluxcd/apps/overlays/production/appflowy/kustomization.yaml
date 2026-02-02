@@ -6,6 +6,7 @@ resources:
   - httproute.yaml
   - httproute-xylem.yaml
   - externalsecret-s3.yaml
+  - secret-postgres-init.yaml
 patches:
   - path: postgres-cluster-patch.yaml
   - path: statefulset-redis-patch.yaml
@@ -24,6 +25,13 @@ patches:
   - path: externalsecret-gotrue-patch.yaml
   - path: externalsecret-worker-patch.yaml
   - path: externalsecret-ai-patch.yaml
-  - path: externalsecret-postgres-init-patch.yaml
+  # Skip postgres-init ExternalSecret - using plain Secret instead (no secrets needed)
   - path: configmap-app-patch.yaml
   - path: configmap-nginx-patch.yaml
+  # Delete the base ExternalSecret since we're using a plain Secret
+  - patch: |-
+      $patch: delete
+      apiVersion: external-secrets.io/v1beta1
+      kind: ExternalSecret
+      metadata:
+        name: appflowy-postgres-init-sql
