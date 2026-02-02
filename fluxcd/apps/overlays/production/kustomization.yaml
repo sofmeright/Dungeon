@@ -13,6 +13,8 @@ resources:
   - echo-ip
   - frigate
   - home-assistant
+  - mosquitto
+  - zigbee2mqtt
   - libretranslate
   - netalertx
   - speedtest-tracker
@@ -30,6 +32,8 @@ resources:
   - ollama
   - open-webui
   - faster-whisper
+  - openwakeword
+  - piper
   - stable-diffusion-webui
   # Business Tools
   - bagisto-demo

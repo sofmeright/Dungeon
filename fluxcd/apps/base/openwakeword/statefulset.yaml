@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: openwakeword
+spec:
+  serviceName: openwakeword
+  replicas: 1
+  selector:
+    matchLabels:
+      app: openwakeword
+  template:
+    metadata:
+      labels:
+        app: openwakeword
+    spec:
+      containers:
+        - name: openwakeword
+          image: docker.io/rhasspy/wyoming-openwakeword:PLACEHOLDER_TAG
+          args:
+            - --preload-model
+            - ok_nabu
+          ports:
+            - name: wyoming
+              containerPort: 10400
+              protocol: TCP
+          volumeMounts:
+            - name: custom
+              mountPath: /custom
+  volumeClaimTemplates:
+    - metadata:
+        name: custom
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: PLACEHOLDER_STORAGE

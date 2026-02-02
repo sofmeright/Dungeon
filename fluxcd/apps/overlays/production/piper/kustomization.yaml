@@ -1,0 +1,10 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: tingle-tuner
+resources:
+  - ../../../base/piper
+patches:
+  - path: statefulset-patch.yaml
+    target:
+      kind: StatefulSet
+      name: piper

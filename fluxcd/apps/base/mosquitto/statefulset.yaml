@@ -1,0 +1,64 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mosquitto
+spec:
+  serviceName: mosquitto
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mosquitto
+  template:
+    metadata:
+      labels:
+        app: mosquitto
+    spec:
+      initContainers:
+        - name: init-passwd
+          image: docker.io/eclipse-mosquitto:PLACEHOLDER_TAG
+          command:
+            - sh
+            - -c
+            - |
+              mosquitto_passwd -c -b /mosquitto/data/passwd "$MQTT_USER" "$MQTT_PASSWORD"
+              echo "Password file generated for user: $MQTT_USER"
+          env:
+            - name: MQTT_USER
+              valueFrom:
+                secretKeyRef:
+                  name: mosquitto-secret
+                  key: MQTT_USER
+            - name: MQTT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mosquitto-secret
+                  key: MQTT_PASSWORD
+          volumeMounts:
+            - name: data
+              mountPath: /mosquitto/data
+      containers:
+        - name: mosquitto
+          image: docker.io/eclipse-mosquitto:PLACEHOLDER_TAG
+          ports:
+            - name: mqtt
+              containerPort: 1883
+              protocol: TCP
+          volumeMounts:
+            - name: data
+              mountPath: /mosquitto/data
+            - name: config
+              mountPath: /mosquitto/config/mosquitto.conf
+              subPath: mosquitto.conf
+      volumes:
+        - name: config
+          configMap:
+            name: mosquitto-config
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: PLACEHOLDER_STORAGE

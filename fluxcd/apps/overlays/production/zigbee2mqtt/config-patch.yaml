@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: zigbee2mqtt-config
+data:
+  configuration.yaml: |
+    homeassistant: true
+    permit_join: false
+    frontend:
+      port: 8080
+    mqtt:
+      base_topic: zigbee2mqtt
+      server: mqtt://mosquitto:1883
+    serial:
+      port: tcp://10.20.20.196:6638
+      adapter: zstack
+    advanced:
+      log_level: info
+      last_seen: ISO_8601
+      homeassistant_legacy_entity_attributes: false
+      legacy_api: false
+      legacy_availability_payload: false

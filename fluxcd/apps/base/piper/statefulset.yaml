@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: piper
+spec:
+  serviceName: piper
+  replicas: 1
+  selector:
+    matchLabels:
+      app: piper
+  template:
+    metadata:
+      labels:
+        app: piper
+    spec:
+      containers:
+        - name: piper
+          image: docker.io/rhasspy/wyoming-piper:PLACEHOLDER_TAG
+          args:
+            - --voice
+            - en_US-lessac-medium
+          ports:
+            - name: wyoming
+              containerPort: 10200
+              protocol: TCP
+          volumeMounts:
+            - name: data
+              mountPath: /data
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: PLACEHOLDER_STORAGE
