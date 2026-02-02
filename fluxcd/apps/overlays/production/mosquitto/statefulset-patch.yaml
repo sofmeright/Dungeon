@@ -7,7 +7,7 @@ spec:
     spec:
       initContainers:
         - name: init-passwd
-          image: docker.io/eclipse-mosquitto:2.1.0
+          image: docker.io/eclipse-mosquitto:2.1.0-alpine
           resources:
             requests:
               cpu: 10m
@@ -17,7 +17,7 @@ spec:
               memory: 64Mi
       containers:
         - name: mosquitto
-          image: docker.io/eclipse-mosquitto:2.1.0
+          image: docker.io/eclipse-mosquitto:2.1.0-alpine
           resources:
             requests:
               cpu: 10m

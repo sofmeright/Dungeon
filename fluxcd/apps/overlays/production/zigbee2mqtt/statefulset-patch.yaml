@@ -5,6 +5,16 @@ metadata:
 spec:
   template:
     spec:
+      initContainers:
+        - name: seed-config
+          image: docker.io/busybox:1.37
+          resources:
+            requests:
+              cpu: 10m
+              memory: 32Mi
+            limits:
+              cpu: 100m
+              memory: 64Mi
       containers:
         - name: zigbee2mqtt
           image: ghcr.io/koenkk/zigbee2mqtt:2.1.3

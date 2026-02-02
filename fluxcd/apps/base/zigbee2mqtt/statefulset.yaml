@@ -13,6 +13,24 @@ spec:
       labels:
         app: zigbee2mqtt
     spec:
+      initContainers:
+        - name: seed-config
+          image: docker.io/busybox:PLACEHOLDER_TAG
+          command:
+            - sh
+            - -c
+            - |
+              if [ ! -f /app/data/configuration.yaml ]; then
+                echo "Seeding configuration.yaml..."
+                cp /seed/configuration.yaml /app/data/configuration.yaml
+              else
+                echo "configuration.yaml already exists, skipping."
+              fi
+          volumeMounts:
+            - name: data
+              mountPath: /app/data
+            - name: config
+              mountPath: /seed
       containers:
         - name: zigbee2mqtt
           image: ghcr.io/koenkk/zigbee2mqtt:PLACEHOLDER_TAG
@@ -34,9 +52,6 @@ spec:
           volumeMounts:
             - name: data
               mountPath: /app/data
-            - name: config
-              mountPath: /app/data/configuration.yaml
-              subPath: configuration.yaml
       volumes:
         - name: config
           configMap:
