@@ -1,15 +1,14 @@
 apiVersion: cilium.io/v2
 kind: CiliumEgressGatewayPolicy
 metadata:
-  name: zigbee2mqtt-slzb06
+  name: egress-iot
 spec:
   selectors:
     - podSelector:
         matchLabels:
-          app: zigbee2mqtt
-          io.kubernetes.pod.namespace: lens-of-truth
+          iot-egress: "true"
   destinationCIDRs:
-    - "10.20.20.196/32"
+    - "10.20.20.0/24"
   egressGateway:
     nodeSelector:
       matchLabels:

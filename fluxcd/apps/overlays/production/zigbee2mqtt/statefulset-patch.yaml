@@ -4,6 +4,9 @@ metadata:
   name: zigbee2mqtt
 spec:
   template:
+    metadata:
+      labels:
+        iot-egress: "true"
     spec:
       initContainers:
         - name: seed-config
