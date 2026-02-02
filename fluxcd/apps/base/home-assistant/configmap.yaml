@@ -7,3 +7,17 @@ data:
     # Home Assistant Base Configuration
     # Patched by overlay with actual configuration
     default_config:
+  service-account-template.json: |
+    {
+      "type": "service_account",
+      "project_id": "PLACEHOLDER_PROJECT_ID",
+      "private_key_id": "PLACEHOLDER",
+      "private_key": "PLACEHOLDER",
+      "client_email": "PLACEHOLDER_CLIENT_EMAIL",
+      "client_id": "PLACEHOLDER",
+      "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+      "token_uri": "https://oauth2.googleapis.com/token",
+      "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+      "client_x509_cert_url": "PLACEHOLDER_CERT_URL",
+      "universe_domain": "googleapis.com"
+    }

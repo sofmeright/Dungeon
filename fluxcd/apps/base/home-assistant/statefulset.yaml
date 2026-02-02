@@ -27,8 +27,12 @@ spec:
                 echo "configuration.yaml already exists, skipping."
               fi
               if [ ! -f /config/SERVICE_ACCOUNT.JSON ]; then
-                echo "Seeding SERVICE_ACCOUNT.JSON..."
-                cp /seed-secret/SERVICE_ACCOUNT.JSON /config/SERVICE_ACCOUNT.JSON
+                echo "Assembling SERVICE_ACCOUNT.JSON from template + secrets..."
+                jq --arg pk_id "$GOOGLE_PRIVATE_KEY_ID" \
+                   --arg pk "$GOOGLE_PRIVATE_KEY" \
+                   --arg cid "$GOOGLE_CLIENT_ID" \
+                   '.private_key_id = $pk_id | .private_key = $pk | .client_id = $cid' \
+                   /seed/service-account-template.json > /config/SERVICE_ACCOUNT.JSON
               else
                 echo "SERVICE_ACCOUNT.JSON already exists, skipping."
               fi
@@ -36,13 +40,27 @@ spec:
               [ -f /config/automations.yaml ] || echo "[]" > /config/automations.yaml
               [ -f /config/scripts.yaml ] || echo "" > /config/scripts.yaml
               [ -f /config/scenes.yaml ] || echo "[]" > /config/scenes.yaml
+          env:
+            - name: GOOGLE_PRIVATE_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: home-assistant-secret
+                  key: GOOGLE_PRIVATE_KEY_ID
+            - name: GOOGLE_PRIVATE_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: home-assistant-secret
+                  key: GOOGLE_PRIVATE_KEY
+            - name: GOOGLE_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: home-assistant-secret
+                  key: GOOGLE_CLIENT_ID
           volumeMounts:
             - name: config
               mountPath: /config
             - name: seed-config
               mountPath: /seed
-            - name: seed-secret
-              mountPath: /seed-secret
       containers:
         - name: home-assistant
           image: ghcr.io/home-assistant/home-assistant:PLACEHOLDER_TAG
@@ -60,9 +78,6 @@ spec:
         - name: seed-config
           configMap:
             name: home-assistant-config
-        - name: seed-secret
-          secret:
-            secretName: home-assistant-secret
   volumeClaimTemplates:
     - metadata:
         name: config
