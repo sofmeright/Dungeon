@@ -7,21 +7,21 @@ spec:
   template:
     spec:
       containers:
-      - name: whisparr
-        image: linuxserver/whisparr:3.0.3
-        env:
-        - name: TZ
-          value: "America/Phoenix"
+        - name: whisparr
+          image: lscr.io/linuxserver/whisparr:3.0.3
+          env:
+            - name: TZ
+              value: "America/Los_Angeles"
   volumeClaimTemplates:
-  - metadata:
-      name: swift-sail-whisparr-config
-    spec:
-      storageClassName: ceph-rbd-retain
-  - metadata:
-      name: swift-sail-whisparr-data
-    spec:
-      storageClassName: ceph-rbd-retain
-  - metadata:
-      name: swift-sail-whisparr-downloads
-    spec:
-      storageClassName: ceph-rbd-retain
+    - metadata:
+        name: swift-sail-whisparr-config
+      spec:
+        storageClassName: ceph-rbd-retain
+    - metadata:
+        name: swift-sail-whisparr-data
+      spec:
+        storageClassName: ceph-rbd-retain
+    - metadata:
+        name: swift-sail-whisparr-downloads
+      spec:
+        storageClassName: ceph-rbd-retain
