@@ -15,6 +15,10 @@ data:
 
       "ignorePaths": ["docker-compose/**"],
 
+      "registryAliases": {
+        "docker.io": "docker.jcr.pcfae.com"
+      },
+
       "flux": {
         "fileMatch": ["fluxcd/.+\\.yaml$"]
       },
