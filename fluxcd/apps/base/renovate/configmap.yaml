@@ -13,6 +13,8 @@ data:
       "requireConfig": "ignored",
       "repositories": ["precisionplanit/dungeon"],
 
+      "ignorePaths": ["docker-compose/**"],
+
       "flux": {
         "fileMatch": ["fluxcd/.+\\.yaml$"]
       },
