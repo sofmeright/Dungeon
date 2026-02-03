@@ -4,6 +4,7 @@ namespace: lens-of-truth
 resources:
   - ../../../base/home-assistant
   - httproute.yaml
+  - httproute-xylem.yaml
   - destinationrule.yaml
 patches:
   - path: statefulset-patch.yaml

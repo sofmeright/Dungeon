@@ -20,14 +20,14 @@ spec:
     - "anubis.pcfae.com"
     - "apps.pcfae.com"
     - "apptray.pcfae.com"
+    - "apt.pcfae.com"
     - "bazarr.pcfae.com"
     - "beszel.pcfae.com"
+    - "bitwarden.pcfae.com"
+    - "blog.pcfae.com"
+    - "bookmarks.pcfae.com"
+    - "books.pcfae.com"
     - "budget.pcfae.com"
-    - "convertx.pcfae.com"
-    - "grafana.pcfae.com"
-    - "lidarr.pcfae.com"
-    - "overseer.pcfae.com"
-    - "photos.pcfae.com"
   rules:
     - matches:
         - path:

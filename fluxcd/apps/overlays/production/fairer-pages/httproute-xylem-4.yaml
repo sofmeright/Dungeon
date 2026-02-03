@@ -10,22 +10,22 @@ spec:
   hostnames:
     # Note: 16 hostnames max should be assigned to each "httproute-<name>-<#>.yaml"
 
-    - "netbox.pcfae.com"
-    - "ntfy.pcfae.com"
-    - "nut.pcfae.com"
-    - "nvr2.pcfae.com"
-    - "nvr.pcfae.com"
-    - "oa2p.pcfae.com"
-    - "ollama.pcfae.com"
-    - "paperless.pcfae.com"
-    - "podinfo.pcfae.com"
+    - "prowlarr.pcfae.com"
+    - "qbitt.pcfae.com"
+    - "radarr.pcfae.com"
+    - "readarr.pcfae.com"
     - "recipes.pcfae.com"
+    - "romm.pcfae.com"
+    - "sabnzbd.pcfae.com"
     - "sdiff.pcfae.com"
     - "search.pcfae.com"
+    - "sh.pcfae.com"
     - "shiplog.pcfae.com"
     - "shlink.pcfae.com"
-    - "sh.pcfae.com"
     - "smkeygen.pcfae.com"
+    - "sonarr.pcfae.com"
+    - "speedtest.pcfae.com"
+    - "speedtester.pcfae.com"
   rules:
     - matches:
         - path:

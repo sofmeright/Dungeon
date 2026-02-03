@@ -10,11 +10,13 @@ spec:
   hostnames:
     # Note: 16 hostnames max should be assigned to each "httproute-<name>-<#>.yaml"
 
-    - "speedtester.pcfae.com"
-    - "speedtest.pcfae.com"
     - "support.pcfae.com"
+    - "thelounge.pcfae.com"
     - "translate.pcfae.com"
     - "uptime.pcfae.com"
+    - "vault.pcfae.com"
+    - "web.pcfae.com"
+    - "z2m.pcfae.com"
   rules:
     - matches:
         - path:
