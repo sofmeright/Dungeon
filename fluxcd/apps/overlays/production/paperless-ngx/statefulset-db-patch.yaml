@@ -7,17 +7,17 @@ spec:
   template:
     spec:
       containers:
-      - name: postgres
-        image: docker.io/library/postgres:16
-        volumeMounts:
-        - name: pedestal-of-time-paperless-postgres
-          mountPath: /var/lib/postgresql/data
+        - name: postgres
+          image: docker.io/postgres:18.1-alpine3.23
+          volumeMounts:
+            - name: pedestal-of-time-paperless-postgres
+              mountPath: /var/lib/postgresql/data
   volumeClaimTemplates:
-  - metadata:
-      name: pedestal-of-time-paperless-postgres
-    spec:
-      accessModes: ["ReadWriteOnce"]
-      storageClassName: ceph-rbd-retain
-      resources:
-        requests:
-          storage: 10Gi
+    - metadata:
+        name: pedestal-of-time-paperless-postgres
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        storageClassName: ceph-rbd-retain
+        resources:
+          requests:
+            storage: 10Gi
