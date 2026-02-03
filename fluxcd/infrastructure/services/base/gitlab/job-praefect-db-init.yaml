@@ -7,7 +7,7 @@ spec:
   template:
     metadata:
       annotations:
-        run-timestamp: "2025-10-23-02-33"
+        run-timestamp: "2026-02-03-01-15"
     spec:
       restartPolicy: OnFailure
       serviceAccountName: gitlab-praefect-db-init
@@ -15,7 +15,7 @@ spec:
         - name: PLACEHOLDER_IMAGE_PULL_SECRET
       containers:
         - name: init-praefect-db
-          image: docker.io/alpine/kubectl:1.35.0
+          image: docker.io/alpine/k8s:PLACEHOLDER_TAG
           env:
             - name: PRAEFECT_PASSWORD
               valueFrom:
@@ -23,7 +23,7 @@ spec:
                   name: gitlab-praefect-credentials
                   key: password
           command:
-            - /bin/bash
+            - /bin/sh
             - -c
             - |
               set -e
