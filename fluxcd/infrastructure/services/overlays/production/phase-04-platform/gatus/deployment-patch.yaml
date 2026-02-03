@@ -13,7 +13,7 @@ spec:
           image: docker.io/library/busybox:1.37
       containers:
         - name: gatus
-          image: ghcr.io/twin/gatus:v5.17.0
+          image: ghcr.io/twin/gatus:v5.34.0
           resources:
             requests:
               cpu: 50m
