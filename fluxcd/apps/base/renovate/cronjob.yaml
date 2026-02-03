@@ -34,6 +34,11 @@ spec:
                     secretKeyRef:
                       name: renovate-gitlab
                       key: github_token
+                - name: RENOVATE_HOST_RULES
+                  valueFrom:
+                    secretKeyRef:
+                      name: renovate-gitlab
+                      key: docker_host_rules
                 - name: RENOVATE_AUTODISCOVER
                   value: "false"
                 - name: RENOVATE_GIT_AUTHOR

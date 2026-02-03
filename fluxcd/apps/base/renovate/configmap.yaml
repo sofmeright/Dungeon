@@ -25,8 +25,9 @@ data:
         "fileMatch": ["fluxcd/.+\\.yaml$"]
       },
 
-      "regexManagers": [
+      "customManagers": [
         {
+          "customType": "regex",
           "fileMatch": ["fluxcd/.+\\.yaml$"],
           "matchStrings": [
             "image:\\s+repository:\\s+\"?(?<depName>.*?)\"?\\s+tag:\\s+\"?(?<currentValue>.*?)\"?"
