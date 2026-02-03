@@ -15,7 +15,7 @@ spec:
       restartPolicy: OnFailure
       containers:
       - name: setup
-        image: ghcr.io/zitadel/zitadel:v4.3.0
+        image: ghcr.io/zitadel/zitadel:v4.10.1
         imagePullPolicy: IfNotPresent
         command:
         - /bin/sh
