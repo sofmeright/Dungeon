@@ -29,6 +29,11 @@ spec:
                     secretKeyRef:
                       name: renovate-gitlab
                       key: token
+                - name: GITHUB_COM_TOKEN
+                  valueFrom:
+                    secretKeyRef:
+                      name: renovate-gitlab
+                      key: github_token
                 - name: RENOVATE_AUTODISCOVER
                   value: "false"
                 - name: RENOVATE_GIT_AUTHOR
