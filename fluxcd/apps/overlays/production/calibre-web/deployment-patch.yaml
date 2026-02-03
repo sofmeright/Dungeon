@@ -7,9 +7,9 @@ spec:
   template:
     spec:
       containers:
-      - name: calibre-web
-        image: lscr.io/linuxserver/calibre-web:0.6.25
+        - name: calibre-web
+          image: docker.io/linuxserver/calibre-web:0.6.25
       volumes:
-      - name: config
-        persistentVolumeClaim:
-          claimName: optcp-calibre-web-config
+        - name: config
+          persistentVolumeClaim:
+            claimName: optcp-calibre-web-config

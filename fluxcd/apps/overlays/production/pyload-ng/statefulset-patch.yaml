@@ -7,7 +7,7 @@ spec:
     spec:
       containers:
         - name: pyload-ng
-          image: lscr.io/linuxserver/pyload-ng:0.5.0
+          image: docker.io/linuxserver/pyload-ng:0.5.0
           env:
             - name: TZ
               value: "America/Chicago"

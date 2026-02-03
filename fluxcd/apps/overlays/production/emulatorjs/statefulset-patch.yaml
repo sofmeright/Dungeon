@@ -7,24 +7,24 @@ spec:
   template:
     spec:
       containers:
-      - name: emulatorjs
-        image: lscr.io/linuxserver/emulatorjs:1.9.2
+        - name: emulatorjs
+          image: docker.io/linuxserver/emulatorjs:1.9.2
   volumeClaimTemplates:
-  - metadata:
-      name: config
-    spec:
-      accessModes:
-        - ReadWriteOnce
-      storageClassName: ceph-rbd
-      resources:
-        requests:
-          storage: 5Gi
-  - metadata:
-      name: data
-    spec:
-      accessModes:
-        - ReadWriteOnce
-      storageClassName: ceph-rbd
-      resources:
-        requests:
-          storage: 50Gi
+    - metadata:
+        name: config
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        storageClassName: ceph-rbd
+        resources:
+          requests:
+            storage: 5Gi
+    - metadata:
+        name: data
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        storageClassName: ceph-rbd
+        resources:
+          requests:
+            storage: 50Gi

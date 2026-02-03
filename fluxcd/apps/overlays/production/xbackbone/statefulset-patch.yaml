@@ -7,13 +7,13 @@ spec:
   template:
     spec:
       containers:
-      - name: xbackbone
-        image: lscr.io/linuxserver/xbackbone:v3.8.8
-        env:
-        - name: TZ
-          value: "America/Phoenix"
+        - name: xbackbone
+          image: docker.io/linuxserver/xbackbone:v3.8.8
+          env:
+            - name: TZ
+              value: "America/Phoenix"
   volumeClaimTemplates:
-  - metadata:
-      name: tingle-tuner-xbackbone-config
-    spec:
-      storageClassName: ceph-rbd-retain
+    - metadata:
+        name: tingle-tuner-xbackbone-config
+      spec:
+        storageClassName: ceph-rbd-retain

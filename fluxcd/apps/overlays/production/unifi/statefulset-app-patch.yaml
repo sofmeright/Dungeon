@@ -7,13 +7,13 @@ spec:
   template:
     spec:
       containers:
-      - name: unifi-app
-        image: lscr.io/linuxserver/unifi-network-application:9.0.114
-        env:
-        - name: TZ
-          value: "America/Phoenix"
+        - name: unifi-app
+          image: docker.io/linuxserver/unifi-network-application:9.0.114
+          env:
+            - name: TZ
+              value: "America/Phoenix"
   volumeClaimTemplates:
-  - metadata:
-      name: zeldas-lullaby-unifi-config
-    spec:
-      storageClassName: ceph-rbd-retain
+    - metadata:
+        name: zeldas-lullaby-unifi-config
+      spec:
+        storageClassName: ceph-rbd-retain

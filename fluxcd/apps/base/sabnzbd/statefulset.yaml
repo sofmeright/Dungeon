@@ -14,85 +14,85 @@ spec:
         app: sabnzbd
     spec:
       containers:
-      - name: sabnzbd
-        image: lscr.io/linuxserver/sabnzbd:PLACEHOLDER_IMAGE_TAG
-        env:
-        - name: TZ
-          value: "PLACEHOLDER_TIMEZONE"
-        - name: PUID
-          value: "1000"
-        - name: PGID
-          value: "1000"
-        resources:
-          requests:
-            cpu: 100m
-            memory: 512Mi
-          limits:
-            cpu: 2000m
-            memory: 2Gi
-        volumeMounts:
-        - name: config
-          mountPath: /config
-        - name: incomplete
-          mountPath: /config/Downloads/incomplete
-        - name: downloads
-          mountPath: /config/Downloads/complete
-      - name: gluetun
-        image: docker.io/qmcgaw/gluetun:PLACEHOLDER_IMAGE_TAG
-        securityContext:
-          privileged: true
-        env:
-        - name: VPN_SERVICE_PROVIDER
-          value: "PLACEHOLDER_VPN_PROVIDER"
-        - name: SERVER_REGIONS
-          value: "PLACEHOLDER_SERVER_REGIONS"
-        - name: FIREWALL_VPN_INPUT_PORTS
-          value: "PLACEHOLDER_VPN_INPUT_PORTS"
-        - name: OPENVPN_USER
-          valueFrom:
-            secretKeyRef:
-              name: sabnzbd-vpn-secret
-              key: vpn_user
-        - name: OPENVPN_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: sabnzbd-vpn-secret
-              key: vpn_password
-        - name: DOT
-          value: "off"
-        - name: DNS_ADDRESS
-          value: "PLACEHOLDER_DNS_ADDRESS"
-        - name: HEALTH_VPN_DURATION_INITIAL
-          value: "60s"
-        resources:
-          requests:
-            cpu: 25m
-            memory: 128Mi
-          limits:
-            cpu: 100m
-            memory: 256Mi
+        - name: sabnzbd
+          image: docker.io/linuxserver/sabnzbd:PLACEHOLDER_IMAGE_TAG
+          env:
+            - name: TZ
+              value: "PLACEHOLDER_TIMEZONE"
+            - name: PUID
+              value: "1000"
+            - name: PGID
+              value: "1000"
+          resources:
+            requests:
+              cpu: 100m
+              memory: 512Mi
+            limits:
+              cpu: 2000m
+              memory: 2Gi
+          volumeMounts:
+            - name: config
+              mountPath: /config
+            - name: incomplete
+              mountPath: /config/Downloads/incomplete
+            - name: downloads
+              mountPath: /config/Downloads/complete
+        - name: gluetun
+          image: docker.io/qmcgaw/gluetun:PLACEHOLDER_IMAGE_TAG
+          securityContext:
+            privileged: true
+          env:
+            - name: VPN_SERVICE_PROVIDER
+              value: "PLACEHOLDER_VPN_PROVIDER"
+            - name: SERVER_REGIONS
+              value: "PLACEHOLDER_SERVER_REGIONS"
+            - name: FIREWALL_VPN_INPUT_PORTS
+              value: "PLACEHOLDER_VPN_INPUT_PORTS"
+            - name: OPENVPN_USER
+              valueFrom:
+                secretKeyRef:
+                  name: sabnzbd-vpn-secret
+                  key: vpn_user
+            - name: OPENVPN_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: sabnzbd-vpn-secret
+                  key: vpn_password
+            - name: DOT
+              value: "off"
+            - name: DNS_ADDRESS
+              value: "PLACEHOLDER_DNS_ADDRESS"
+            - name: HEALTH_VPN_DURATION_INITIAL
+              value: "60s"
+          resources:
+            requests:
+              cpu: 25m
+              memory: 128Mi
+            limits:
+              cpu: 100m
+              memory: 256Mi
   volumeClaimTemplates:
-  - metadata:
-      name: config
-    spec:
-      accessModes: ["ReadWriteOnce"]
-      storageClassName: PLACEHOLDER_STORAGE_CLASS
-      resources:
-        requests:
-          storage: 2Gi
-  - metadata:
-      name: incomplete
-    spec:
-      accessModes: ["ReadWriteOnce"]
-      storageClassName: PLACEHOLDER_STORAGE_CLASS
-      resources:
-        requests:
-          storage: 50Gi
-  - metadata:
-      name: downloads
-    spec:
-      accessModes: ["ReadWriteOnce"]
-      storageClassName: PLACEHOLDER_STORAGE_CLASS
-      resources:
-        requests:
-          storage: 100Gi
+    - metadata:
+        name: config
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        storageClassName: PLACEHOLDER_STORAGE_CLASS
+        resources:
+          requests:
+            storage: 2Gi
+    - metadata:
+        name: incomplete
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        storageClassName: PLACEHOLDER_STORAGE_CLASS
+        resources:
+          requests:
+            storage: 50Gi
+    - metadata:
+        name: downloads
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        storageClassName: PLACEHOLDER_STORAGE_CLASS
+        resources:
+          requests:
+            storage: 100Gi

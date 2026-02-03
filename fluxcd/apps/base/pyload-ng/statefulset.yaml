@@ -14,71 +14,71 @@ spec:
         app: pyload-ng
     spec:
       containers:
-      - name: pyload-ng
-        image: lscr.io/linuxserver/pyload-ng:PLACEHOLDER_IMAGE_TAG
-        env:
-        - name: TZ
-          value: "PLACEHOLDER_TIMEZONE"
-        - name: PUID
-          value: "1000"
-        - name: PGID
-          value: "1000"
-        resources:
-          requests:
-            cpu: 100m
-            memory: 256Mi
-          limits:
-            cpu: 1000m
-            memory: 1Gi
-        volumeMounts:
-        - name: config
-          mountPath: /config
-        - name: downloads
-          mountPath: /downloads
-      - name: gluetun
-        image: docker.io/qmcgaw/gluetun:PLACEHOLDER_IMAGE_TAG
-        securityContext:
-          privileged: true
-        env:
-        - name: VPN_SERVICE_PROVIDER
-          value: "PLACEHOLDER_VPN_PROVIDER"
-        - name: SERVER_REGIONS
-          value: "PLACEHOLDER_SERVER_REGIONS"
-        - name: FIREWALL_VPN_INPUT_PORTS
-          value: "PLACEHOLDER_VPN_INPUT_PORTS"
-        - name: OPENVPN_USER
-          valueFrom:
-            secretKeyRef:
-              name: pyload-ng-vpn-secret
-              key: vpn_user
-        - name: OPENVPN_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: pyload-ng-vpn-secret
-              key: vpn_password
-        - name: DOT
-          value: "off"
-        - name: DNS_ADDRESS
-          value: "PLACEHOLDER_DNS_ADDRESS"
-        - name: HEALTH_VPN_DURATION_INITIAL
-          value: "60s"
-        resources:
-          requests:
-            cpu: 50m
-            memory: 128Mi
-          limits:
-            cpu: 200m
-            memory: 256Mi
+        - name: pyload-ng
+          image: docker.io/linuxserver/pyload-ng:PLACEHOLDER_IMAGE_TAG
+          env:
+            - name: TZ
+              value: "PLACEHOLDER_TIMEZONE"
+            - name: PUID
+              value: "1000"
+            - name: PGID
+              value: "1000"
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: 1000m
+              memory: 1Gi
+          volumeMounts:
+            - name: config
+              mountPath: /config
+            - name: downloads
+              mountPath: /downloads
+        - name: gluetun
+          image: docker.io/qmcgaw/gluetun:PLACEHOLDER_IMAGE_TAG
+          securityContext:
+            privileged: true
+          env:
+            - name: VPN_SERVICE_PROVIDER
+              value: "PLACEHOLDER_VPN_PROVIDER"
+            - name: SERVER_REGIONS
+              value: "PLACEHOLDER_SERVER_REGIONS"
+            - name: FIREWALL_VPN_INPUT_PORTS
+              value: "PLACEHOLDER_VPN_INPUT_PORTS"
+            - name: OPENVPN_USER
+              valueFrom:
+                secretKeyRef:
+                  name: pyload-ng-vpn-secret
+                  key: vpn_user
+            - name: OPENVPN_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: pyload-ng-vpn-secret
+                  key: vpn_password
+            - name: DOT
+              value: "off"
+            - name: DNS_ADDRESS
+              value: "PLACEHOLDER_DNS_ADDRESS"
+            - name: HEALTH_VPN_DURATION_INITIAL
+              value: "60s"
+          resources:
+            requests:
+              cpu: 50m
+              memory: 128Mi
+            limits:
+              cpu: 200m
+              memory: 256Mi
       volumes:
-      - name: downloads
-        persistentVolumeClaim:
-          claimName: pyload-ng-downloads
+        - name: downloads
+          persistentVolumeClaim:
+            claimName: pyload-ng-downloads
   volumeClaimTemplates:
-  - metadata:
-      name: config
-    spec:
-      accessModes: ["ReadWriteOnce"]
-      storageClassName: PLACEHOLDER_STORAGE_CLASS
-      resources:
-        requests:
-          storage: 2Gi
+    - metadata:
+        name: config
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        storageClassName: PLACEHOLDER_STORAGE_CLASS
+        resources:
+          requests:
+            storage: 2Gi
