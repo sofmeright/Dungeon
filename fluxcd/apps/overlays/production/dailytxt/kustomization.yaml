@@ -6,6 +6,7 @@ resources:
   - httproute-xylem.yaml
   - persistent-volume.yaml
   - persistent-volume-claim.yaml
+  - configmap-nginx.yaml
 patches:
   - path: statefulset-patch.yaml
     target:
@@ -21,3 +22,6 @@ patches:
     patch: |
       - op: remove
         path: /spec/volumeClaimTemplates
+      - op: replace
+        path: /spec/template/spec/containers/0/ports/0/containerPort
+        value: 8080
