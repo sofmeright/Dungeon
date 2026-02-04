@@ -6,13 +6,16 @@ spec:
   replicas: 1
   template:
     spec:
+      securityContext:
+        runAsUser: 65534
+        runAsGroup: 65534
       containers:
-      - name: vlmcsd
-        image: docker.io/mikolatero/vlmcsd:svn1113
-        resources:
-          requests:
-            cpu: 50m
-            memory: 64Mi
-          limits:
-            cpu: 200m
-            memory: 128Mi
+        - name: vlmcsd
+          image: docker.io/mikolatero/vlmcsd:svn1113
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              cpu: 200m
+              memory: 128Mi
