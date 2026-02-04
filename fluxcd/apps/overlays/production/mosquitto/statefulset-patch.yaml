@@ -5,6 +5,10 @@ metadata:
 spec:
   template:
     spec:
+      securityContext:
+        runAsUser: 1883
+        runAsGroup: 1883
+        fsGroup: 1883
       initContainers:
         - name: init-passwd
           image: docker.io/eclipse-mosquitto:2.1.0-alpine

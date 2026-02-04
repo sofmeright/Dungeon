@@ -10,6 +10,9 @@ spec:
         prometheus.io/scrape: "true"
         prometheus.io/port: "9090"
     spec:
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
       containers:
         - name: anubis
           image: ghcr.io/techarohq/anubis:v1.24.0

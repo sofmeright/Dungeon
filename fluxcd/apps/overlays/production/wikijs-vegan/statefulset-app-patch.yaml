@@ -6,6 +6,9 @@ spec:
   replicas: 1
   template:
     spec:
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
       containers:
-      - name: wikijs
-        image: ghcr.io/requarks/wiki:2
+        - name: wikijs
+          image: ghcr.io/requarks/wiki:2

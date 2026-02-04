@@ -6,21 +6,25 @@ spec:
   replicas: 1
   template:
     spec:
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
       containers:
-      - name: ghost
-        image: docker.io/library/ghost:5-alpine
-        env:
-        - name: url
-          value: "https://blog.sofmeright.com/"
-        volumeMounts:
-        - name: temple-of-time-ghost-data
-          mountPath: /var/lib/ghost/content
+        - name: ghost
+          image: docker.io/library/ghost:5-alpine
+          env:
+            - name: url
+              value: "https://blog.sofmeright.com/"
+          volumeMounts:
+            - name: temple-of-time-ghost-data
+              mountPath: /var/lib/ghost/content
   volumeClaimTemplates:
-  - metadata:
-      name: temple-of-time-ghost-data
-    spec:
-      accessModes: ["ReadWriteOnce"]
-      storageClassName: ceph-rbd-retain
-      resources:
-        requests:
-          storage: 10Gi
+    - metadata:
+        name: temple-of-time-ghost-data
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        storageClassName: ceph-rbd-retain
+        resources:
+          requests:
+            storage: 10Gi

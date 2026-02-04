@@ -5,9 +5,12 @@ metadata:
 spec:
   template:
     spec:
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
       containers:
-      - name: joplin
-        image: docker.io/joplin/server:3.5.2
-        env:
-        - name: APP_BASE_URL
-          value: "https://joplin.optcp.com"
+        - name: joplin
+          image: docker.io/joplin/server:3.5.2
+          env:
+            - name: APP_BASE_URL
+              value: "https://joplin.optcp.com"
