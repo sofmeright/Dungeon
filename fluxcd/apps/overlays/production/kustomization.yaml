@@ -99,6 +99,7 @@ resources:
   # Utilities
   - code-server
   - endlessh-go
+  - lenpaste
   - shlink
   - filebrowser
   - google-webfonts-helper
