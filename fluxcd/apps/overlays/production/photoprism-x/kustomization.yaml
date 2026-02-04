@@ -9,6 +9,10 @@ resources:
   - destinationrule.yaml
 
 patches:
+  - path: statefulset-patch.yaml
+    target:
+      kind: StatefulSet
+      name: photoprism-x
   - path: externalsecret-patch.yaml
   - path: pv-smb-patch.yaml
   - path: storageclass-patch.yaml

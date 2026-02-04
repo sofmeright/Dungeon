@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: photoprism
+spec:
+  template:
+    spec:
+      securityContext:
+        runAsUser: 2432
+        runAsGroup: 1000
+        fsGroup: 1000
+      containers:
+        - name: photoprism
+          env:
+            - name: PHOTOPRISM_SITE_URL
+              value: "https://photos.optcp.com"
+            - name: PHOTOPRISM_DISABLE_TLS
+              value: "true"
+            - name: PHOTOPRISM_DEFAULT_TLS
+              value: "false"
+            - name: PHOTOPRISM_DISABLE_CHOWN
+              value: "true"
