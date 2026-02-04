@@ -13,15 +13,15 @@ spec:
         app: supermicro-license-generator
     spec:
       containers:
-      - name: supermicro-license-generator
-        image: PLACEHOLDER_IMAGE
-        ports:
-        - containerPort: 80
-          name: http
-        resources:
-          requests:
-            cpu: PLACEHOLDER_CPU_REQUEST
-            memory: PLACEHOLDER_MEMORY_REQUEST
-          limits:
-            cpu: PLACEHOLDER_CPU_LIMIT
-            memory: PLACEHOLDER_MEMORY_LIMIT
+        - name: supermicro-license-generator
+          image: PLACEHOLDER_IMAGE
+          ports:
+            - containerPort: 8080
+              name: http
+          resources:
+            requests:
+              cpu: PLACEHOLDER_CPU_REQUEST
+              memory: PLACEHOLDER_MEMORY_REQUEST
+            limits:
+              cpu: PLACEHOLDER_CPU_LIMIT
+              memory: PLACEHOLDER_MEMORY_LIMIT
