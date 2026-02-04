@@ -14,43 +14,45 @@ spec:
         app: lenpaste-app
     spec:
       containers:
-      - name: lenpaste-app
-        image: PLACEHOLDER_IMAGE
-        ports:
-        - containerPort: 80
-          name: http
-          protocol: TCP
-        env:
-        - name: LENPASTE_DB_DRIVER
-          value: "postgres"
-        - name: POSTGRES_USER
-          valueFrom:
-            secretKeyRef:
-              name: lenpaste-secrets
-              key: postgres-user
-        - name: POSTGRES_PASS
-          valueFrom:
-            secretKeyRef:
-              name: lenpaste-secrets
-              key: postgres-password
-        - name: LENPASTE_DB_SOURCE
-          value: "postgres://$(POSTGRES_USER):$(POSTGRES_PASS)@lenpaste-postgres/lenpaste?sslmode=disable"
-        volumeMounts:
-        - name: tingle-tuner-lenpaste-data
-          mountPath: /data
+        - name: lenpaste-app
+          image: PLACEHOLDER_IMAGE
+          ports:
+            - containerPort: 8080
+              name: http
+              protocol: TCP
+          env:
+            - name: LENPASTE_ADDRESS
+              value: ":8080"
+            - name: LENPASTE_DB_DRIVER
+              value: "postgres"
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: lenpaste-secrets
+                  key: postgres-user
+            - name: POSTGRES_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: lenpaste-secrets
+                  key: postgres-password
+            - name: LENPASTE_DB_SOURCE
+              value: "postgres://$(POSTGRES_USER):$(POSTGRES_PASS)@lenpaste-postgres/lenpaste?sslmode=disable"
+          volumeMounts:
+            - name: tingle-tuner-lenpaste-data
+              mountPath: /data
+          resources:
+            requests:
+              cpu: 50m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
+  volumeClaimTemplates:
+    - metadata:
+        name: tingle-tuner-lenpaste-data
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        storageClassName: PLACEHOLDER_STORAGE_CLASS
         resources:
           requests:
-            cpu: 50m
-            memory: 128Mi
-          limits:
-            cpu: 500m
-            memory: 512Mi
-  volumeClaimTemplates:
-  - metadata:
-      name: tingle-tuner-lenpaste-data
-    spec:
-      accessModes: ["ReadWriteOnce"]
-      storageClassName: PLACEHOLDER_STORAGE_CLASS
-      resources:
-        requests:
-          storage: 5Gi
+            storage: 5Gi
