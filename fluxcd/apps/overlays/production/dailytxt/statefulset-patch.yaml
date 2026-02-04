@@ -49,4 +49,4 @@ spec:
         - name: html
           emptyDir:
             medium: Memory
-            sizeLimit: 1Mi
+            sizeLimit: 4Mi
