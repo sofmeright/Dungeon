@@ -6,6 +6,9 @@ spec:
   replicas: 1
   template:
     spec:
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
       containers:
         - name: google-webfonts-helper
           image: ghcr.io/majodev/google-webfonts-helper:v1.7.1

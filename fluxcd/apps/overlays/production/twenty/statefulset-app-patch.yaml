@@ -6,20 +6,24 @@ spec:
   replicas: 1
   template:
     spec:
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
       imagePullSecrets:
-      - name: jcr-pcfae-dungeon-pull-secret
+        - name: jcr-pcfae-dungeon-pull-secret
       containers:
-      - name: twenty-app
-        image: docker.io/twentycrm/twenty:v0.45.0
-        env:
-        - name: SERVER_URL
-          value: "http://moor:2020"
+        - name: twenty-app
+          image: docker.io/twentycrm/twenty:v0.45.0
+          env:
+            - name: SERVER_URL
+              value: "http://moor:2020"
   volumeClaimTemplates:
-  - metadata:
-      name: hyrule-castle-twenty-app-data
-    spec:
-      storageClassName: ceph-rbd-retain
-  - metadata:
-      name: hyrule-castle-twenty-docker-data
-    spec:
-      storageClassName: ceph-rbd-retain
+    - metadata:
+        name: hyrule-castle-twenty-app-data
+      spec:
+        storageClassName: ceph-rbd-retain
+    - metadata:
+        name: hyrule-castle-twenty-docker-data
+      spec:
+        storageClassName: ceph-rbd-retain

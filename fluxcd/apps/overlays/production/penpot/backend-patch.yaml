@@ -5,6 +5,10 @@ metadata:
 spec:
   template:
     spec:
+      securityContext:
+        runAsUser: 1001
+        runAsGroup: 1001
+        fsGroup: 1001
       imagePullSecrets:
         - name: docker-io-pull-secret
       containers:
