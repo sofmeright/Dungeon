@@ -6,27 +6,31 @@ spec:
   replicas: 1
   template:
     spec:
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
       imagePullSecrets:
-      - name: jcr-pcfae-dungeon-pull-secret
+        - name: jcr-pcfae-dungeon-pull-secret
       containers:
-      - name: beszel
-        image: docker.io/henrygd/beszel:0.18.2
-        volumeMounts:
-        - name: gossip-stone-beszel-data
-          mountPath: /beszel_data
+        - name: beszel
+          image: docker.io/henrygd/beszel:0.18.2
+          volumeMounts:
+            - name: gossip-stone-beszel-data
+              mountPath: /beszel_data
+          resources:
+            requests:
+              cpu: 50m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
+  volumeClaimTemplates:
+    - metadata:
+        name: gossip-stone-beszel-data
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        storageClassName: ceph-rbd-retain
         resources:
           requests:
-            cpu: 50m
-            memory: 128Mi
-          limits:
-            cpu: 500m
-            memory: 512Mi
-  volumeClaimTemplates:
-  - metadata:
-      name: gossip-stone-beszel-data
-    spec:
-      accessModes: ["ReadWriteOnce"]
-      storageClassName: ceph-rbd-retain
-      resources:
-        requests:
-          storage: 2Gi
+            storage: 2Gi

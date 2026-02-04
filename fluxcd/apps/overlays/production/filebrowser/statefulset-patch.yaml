@@ -5,16 +5,20 @@ metadata:
 spec:
   template:
     spec:
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
       containers:
-      - name: filebrowser
-        image: docker.io/filebrowser/filebrowser:v2.31.2
+        - name: filebrowser
+          image: docker.io/filebrowser/filebrowser:v2.31.2
   volumeClaimTemplates:
-  - metadata:
-      name: database
-    spec:
-      accessModes:
-      - ReadWriteOnce
-      storageClassName: ceph-rbd
-      resources:
-        requests:
-          storage: 1Gi
+    - metadata:
+        name: database
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        storageClassName: ceph-rbd
+        resources:
+          requests:
+            storage: 1Gi

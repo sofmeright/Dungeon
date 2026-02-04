@@ -6,6 +6,9 @@ spec:
   replicas: 1
   template:
     spec:
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
       containers:
-      - name: endlessh-go
-        image: docker.io/shizunge/endlessh-go:2025.0914.0
+        - name: endlessh-go
+          image: docker.io/shizunge/endlessh-go:2025.0914.0

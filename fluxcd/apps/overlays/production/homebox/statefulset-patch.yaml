@@ -6,18 +6,22 @@ spec:
   replicas: 1
   template:
     spec:
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
       containers:
-      - name: homebox
-        image: ghcr.io/sysadminsmedia/homebox:0.23.0
-        volumeMounts:
-        - name: pedestal-of-time-homebox-data
-          mountPath: /data
+        - name: homebox
+          image: ghcr.io/sysadminsmedia/homebox:0.23.0
+          volumeMounts:
+            - name: pedestal-of-time-homebox-data
+              mountPath: /data
   volumeClaimTemplates:
-  - metadata:
-      name: pedestal-of-time-homebox-data
-    spec:
-      accessModes: ["ReadWriteOnce"]
-      storageClassName: ceph-rbd-retain
-      resources:
-        requests:
-          storage: 5Gi
+    - metadata:
+        name: pedestal-of-time-homebox-data
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        storageClassName: ceph-rbd-retain
+        resources:
+          requests:
+            storage: 5Gi
