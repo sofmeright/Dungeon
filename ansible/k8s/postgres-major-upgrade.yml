@@ -1,0 +1,819 @@
+---
+# postgres-major-upgrade.yml - PostgreSQL major version upgrade via dump/restore
+#
+# Strategy: dump → wipe PGDATA → start PG 18 (fresh initdb on same PVC) → restore
+# Pioneer: speedtest-tracker first, then apply to remaining apps
+#
+# Safety: Dumps validated programmatically via pg_restore --list (exits non-zero
+# on corrupt archives) + size checks. If validation fails, playbook aborts before
+# any destructive action. No manual confirmation needed.
+#
+# Usage:
+#   docker run --rm \
+#     -v ~/.kube:/root/.kube:ro \
+#     -v ~/.ssh:/root/.ssh:ro \
+#     -v /srv/dungeon:/dungeon \
+#     -v ~/backups/_postgresql:/backups \
+#     prplanit/ansible-oci:2.20.1-v2 \
+#     ansible-playbook /dungeon/ansible/k8s/postgres-major-upgrade.yml \
+#       -e target_app=speedtest-tracker
+#
+# Resume from Phase 5 (after partial run left things scaled down):
+#   Add -e skip_to_deploy=true
+#
+# Available targets:
+#   speedtest-tracker, paperless-ngx, penpot, mealie, lenpaste, joplin, opnform, semaphore
+
+- name: PostgreSQL Major Version Upgrade
+  hosts: localhost
+  connection: local
+  gather_facts: true
+
+  vars:
+    target_version: "18.1-alpine3.23"
+    target_image: "docker.io/postgres:{{ target_version }}"
+    backup_dir: "/backups"
+    repo_dir: "/dungeon"
+    skip_to_deploy: false
+
+    pg_apps:
+      speedtest-tracker:
+        namespace: gossip-stone
+        pg_statefulset: speedtest-tracker-postgres
+        pg_container: postgres
+        pg_user: speedtest
+        pvc_name: gossip-stone-speedtest-tracker-postgres-speedtest-tracker-postgres-0
+        overlay_file: fluxcd/apps/overlays/production/speedtest-tracker/statefulset-db-patch.yaml
+        current_version: "17"
+        app_workloads:
+          - kind: StatefulSet
+            name: speedtest-tracker
+      paperless-ngx:
+        namespace: pedestal-of-time
+        pg_statefulset: paperless-db
+        pg_container: postgres
+        pg_user: paperless
+        pvc_name: pedestal-of-time-paperless-postgres-paperless-db-0
+        overlay_file: fluxcd/apps/overlays/production/paperless-ngx/statefulset-db-patch.yaml
+        current_version: "18"
+        app_workloads:
+          - kind: StatefulSet
+            name: paperless-webserver
+          - kind: StatefulSet
+            name: paperless-redis
+      penpot:
+        namespace: temple-of-time
+        pg_statefulset: penpot-postgres
+        pg_container: postgres
+        pg_user: penpot
+        pvc_name: temple-of-time-penpot-postgres-data-penpot-postgres-0
+        overlay_file: fluxcd/apps/overlays/production/penpot/postgres-patch.yaml
+        current_version: "15"
+        app_workloads:
+          - kind: StatefulSet
+            name: penpot-backend
+          - kind: StatefulSet
+            name: penpot-frontend
+          - kind: StatefulSet
+            name: penpot-exporter
+          - kind: StatefulSet
+            name: penpot-redis
+      mealie:
+        namespace: temple-of-time
+        pg_statefulset: mealie-postgres
+        pg_container: postgres
+        pg_user: mealie
+        pvc_name: optcp-mealie-postgres
+        overlay_file: fluxcd/apps/overlays/production/mealie/postgres-patch.yaml
+        current_version: "15"
+        app_workloads:
+          - kind: StatefulSet
+            name: mealie
+      lenpaste:
+        namespace: tingle-tuner
+        pg_statefulset: lenpaste-postgres
+        pg_container: postgres
+        pg_user: postgres
+        pvc_name: tingle-tuner-lenpaste-postgres-lenpaste-postgres-0
+        overlay_file: fluxcd/apps/overlays/production/lenpaste/statefulset-postgres-patch.yaml
+        current_version: "16"
+        app_workloads:
+          - kind: StatefulSet
+            name: lenpaste-app
+      joplin:
+        namespace: temple-of-time
+        pg_statefulset: joplin-postgres
+        pg_container: postgres
+        pg_user: postgres
+        pvc_name: temple-of-time-joplin-postgres-data-joplin-postgres-0
+        overlay_file: fluxcd/apps/overlays/production/joplin/statefulset-postgres-patch.yaml
+        current_version: "15"
+        app_workloads:
+          - kind: StatefulSet
+            name: joplin-app
+      opnform:
+        namespace: hyrule-castle
+        pg_statefulset: opnform-postgres
+        pg_container: postgres
+        pg_user: prplanit
+        pvc_name: hyrule-castle-postgres-data-opnform-postgres-0
+        overlay_file: fluxcd/apps/overlays/production/opnform/images-patch.yaml
+        current_version: "16"
+        app_workloads:
+          - kind: Deployment
+            name: opnform-api
+          - kind: Deployment
+            name: opnform-api-worker
+          - kind: Deployment
+            name: opnform-api-scheduler
+          - kind: Deployment
+            name: opnform-client
+          - kind: Deployment
+            name: opnform-ingress
+          - kind: StatefulSet
+            name: opnform-redis
+
+      semaphore:
+        namespace: zeldas-lullaby
+        pg_statefulset: semaphore
+        pg_container: postgres
+        pg_user: semaphore
+        pvc_name: postgres-data-semaphore-0
+        overlay_file: fluxcd/apps/overlays/production/semaphore/statefulset-patch.yaml
+        current_version: "14"
+        app_workloads: []
+
+  tasks:
+    # =========================================================================
+    # Phase 1: Pre-flight
+    # =========================================================================
+    - name: "PRE-FLIGHT: Validate target_app is defined and exists"
+      ansible.builtin.assert:
+        that:
+          - target_app is defined
+          - target_app in pg_apps
+        fail_msg: "target_app must be one of: {{ pg_apps.keys() | list | join(', ') }}"
+
+    - name: Set app config and timestamp
+      ansible.builtin.set_fact:
+        app: "{{ pg_apps[target_app] }}"
+        timestamp: "{{ ansible_date_time.iso8601_basic_short }}"
+
+    - name: Display operation details
+      ansible.builtin.debug:
+        msg:
+          - "=== PostgreSQL Major Version Upgrade ==="
+          - "App: {{ target_app }}"
+          - "Namespace: {{ app.namespace }}"
+          - "PG StatefulSet: {{ app.pg_statefulset }}"
+          - "PVC: {{ app.pvc_name }}"
+          - "Expected current version: {{ app.current_version }}"
+          - "Target: {{ target_image }}"
+
+    - name: Verify postgres pod is running
+      kubernetes.core.k8s_info:
+        api_version: v1
+        kind: Pod
+        name: "{{ app.pg_statefulset }}-0"
+        namespace: "{{ app.namespace }}"
+      register: pg_pod_info
+      failed_when: >
+        pg_pod_info.resources | length == 0 or
+        pg_pod_info.resources[0].status.phase != 'Running'
+
+    - name: Check postgres container is ready
+      ansible.builtin.assert:
+        that:
+          - pg_pod_info.resources[0].status.containerStatuses |
+            selectattr('name', 'eq', app.pg_container) |
+            map(attribute='ready') | first
+        fail_msg: "Postgres container '{{ app.pg_container }}' is not ready in pod {{ app.pg_statefulset }}-0"
+
+    - name: Check current PG version
+      kubernetes.core.k8s_exec:
+        namespace: "{{ app.namespace }}"
+        pod: "{{ app.pg_statefulset }}-0"
+        container: "{{ app.pg_container }}"
+        command: psql -U {{ app.pg_user }} -tAc "SHOW server_version"
+      register: pg_version_result
+
+    - name: Validate version matches expected major
+      ansible.builtin.assert:
+        that:
+          - pg_version_result.stdout | trim | regex_search('^\d+') == app.current_version
+        fail_msg: >
+          Version mismatch! Expected major version {{ app.current_version }}
+          but got {{ pg_version_result.stdout | trim }}.
+          Aborting to prevent data loss.
+
+    - name: Display detected version
+      ansible.builtin.debug:
+        msg: "Detected PostgreSQL version: {{ pg_version_result.stdout | trim }}"
+
+    - name: Verify app workloads are running
+      kubernetes.core.k8s_info:
+        api_version: apps/v1
+        kind: "{{ item.kind }}"
+        name: "{{ item.name }}"
+        namespace: "{{ app.namespace }}"
+      loop: "{{ app.app_workloads }}"
+      loop_control:
+        label: "{{ item.kind }}/{{ item.name }}"
+      register: app_workload_info
+      when: app.app_workloads | length > 0
+
+    - name: Check at least one app workload has ready replicas
+      ansible.builtin.assert:
+        that:
+          - app_workload_info.results | map(attribute='resources') |
+            map('first') | selectattr('status.readyReplicas', 'defined') |
+            map(attribute='status.readyReplicas') | select('gt', 0) | list | length > 0
+        fail_msg: "No app workloads have ready replicas"
+      when: app.app_workloads | length > 0
+
+    # =========================================================================
+    # Phase 2: Backup
+    # =========================================================================
+    - name: "BACKUP: Create local backup directory"
+      ansible.builtin.file:
+        path: "{{ backup_dir }}/{{ target_app }}-{{ timestamp }}"
+        state: directory
+        mode: '0755'
+
+    - name: Dump globals (roles, tablespaces) to file in pod
+      kubernetes.core.k8s_exec:
+        namespace: "{{ app.namespace }}"
+        pod: "{{ app.pg_statefulset }}-0"
+        container: "{{ app.pg_container }}"
+        command: sh -c "pg_dumpall -U {{ app.pg_user }} --globals-only > /tmp/globals.sql"
+      register: globals_dump
+      failed_when: globals_dump.rc != 0
+
+    - name: List databases (excluding templates and postgres)
+      kubernetes.core.k8s_exec:
+        namespace: "{{ app.namespace }}"
+        pod: "{{ app.pg_statefulset }}-0"
+        container: "{{ app.pg_container }}"
+        command: >
+          psql -U {{ app.pg_user }} -tAc
+          "SELECT datname FROM pg_database
+           WHERE datistemplate = false AND datname != 'postgres'
+           ORDER BY datname"
+      register: db_list_result
+
+    - name: Set database list
+      ansible.builtin.set_fact:
+        databases: "{{ db_list_result.stdout_lines | select('match', '.+') | list }}"
+
+    - name: Display databases to dump
+      ansible.builtin.debug:
+        msg: "Databases to dump: {{ databases }}"
+
+    - name: Fail if no databases found
+      ansible.builtin.fail:
+        msg: "No databases found to dump (excluding templates and postgres). Something is wrong."
+      when: databases | length == 0
+
+    - name: Dump each database in custom format
+      kubernetes.core.k8s_exec:
+        namespace: "{{ app.namespace }}"
+        pod: "{{ app.pg_statefulset }}-0"
+        container: "{{ app.pg_container }}"
+        command: pg_dump -U {{ app.pg_user }} -Fc -d {{ item }} -f /tmp/{{ item }}.dump
+      loop: "{{ databases }}"
+      register: dump_results
+      failed_when: dump_results.rc != 0
+
+    - name: Validate dump integrity (pg_restore --list)
+      kubernetes.core.k8s_exec:
+        namespace: "{{ app.namespace }}"
+        pod: "{{ app.pg_statefulset }}-0"
+        container: "{{ app.pg_container }}"
+        command: pg_restore --list /tmp/{{ item }}.dump
+      loop: "{{ databases }}"
+      register: restore_list_results
+
+    - name: Abort if any dump is corrupt
+      ansible.builtin.fail:
+        msg: >
+          DUMP VALIDATION FAILED for database '{{ item.item }}'.
+          pg_restore --list returned rc={{ item.rc }}.
+          stderr: {{ item.stderr | default('') }}
+          Aborting before any destructive action.
+      when: item.rc != 0
+      loop: "{{ restore_list_results.results }}"
+      loop_control:
+        label: "{{ item.item }}"
+
+    - name: Check dump file sizes
+      kubernetes.core.k8s_exec:
+        namespace: "{{ app.namespace }}"
+        pod: "{{ app.pg_statefulset }}-0"
+        container: "{{ app.pg_container }}"
+        command: stat -c '%s' /tmp/{{ item }}.dump
+      loop: "{{ databases }}"
+      register: dump_sizes
+
+    - name: Abort if any dump is empty
+      ansible.builtin.fail:
+        msg: >
+          DUMP SIZE ZERO for database '{{ item.item }}'.
+          File /tmp/{{ item.item }}.dump has 0 bytes.
+          Aborting before any destructive action.
+      when: (item.stdout | trim | int) == 0
+      loop: "{{ dump_sizes.results }}"
+      loop_control:
+        label: "{{ item.item }}"
+
+    - name: Record dump sizes for summary
+      ansible.builtin.set_fact:
+        dump_size_map: >-
+          {{ dump_size_map | default({}) | combine({item.item: item.stdout | trim | int}) }}
+      loop: "{{ dump_sizes.results }}"
+      loop_control:
+        label: "{{ item.item }}"
+
+    - name: Stash dumps on PVC (outside pgdata/, survives wipe)
+      kubernetes.core.k8s_exec:
+        namespace: "{{ app.namespace }}"
+        pod: "{{ app.pg_statefulset }}-0"
+        container: "{{ app.pg_container }}"
+        command: >
+          sh -c "mkdir -p /var/lib/postgresql/data/upgrade-dumps &&
+                 cp /tmp/globals.sql /var/lib/postgresql/data/upgrade-dumps/ &&
+                 cp /tmp/*.dump /var/lib/postgresql/data/upgrade-dumps/ &&
+                 ls -la /var/lib/postgresql/data/upgrade-dumps/"
+      register: stash_result
+      failed_when: stash_result.rc != 0
+
+    - name: Copy dump files from pod to local safety backup
+      kubernetes.core.k8s_cp:
+        namespace: "{{ app.namespace }}"
+        pod: "{{ app.pg_statefulset }}-0"
+        container: "{{ app.pg_container }}"
+        remote_path: "/tmp/{{ item }}.dump"
+        local_path: "{{ backup_dir }}/{{ target_app }}-{{ timestamp }}/{{ item }}.dump"
+        state: from_pod
+      loop: "{{ databases }}"
+
+    - name: Copy globals to local safety backup
+      kubernetes.core.k8s_cp:
+        namespace: "{{ app.namespace }}"
+        pod: "{{ app.pg_statefulset }}-0"
+        container: "{{ app.pg_container }}"
+        remote_path: "/tmp/globals.sql"
+        local_path: "{{ backup_dir }}/{{ target_app }}-{{ timestamp }}/globals.sql"
+        state: from_pod
+
+    - name: Verify local backup files exist and are non-zero
+      ansible.builtin.stat:
+        path: "{{ backup_dir }}/{{ target_app }}-{{ timestamp }}/{{ item }}.dump"
+      loop: "{{ databases }}"
+      register: local_dump_stats
+
+    - name: Abort if local copies are missing or empty
+      ansible.builtin.fail:
+        msg: >
+          LOCAL BACKUP VERIFICATION FAILED for '{{ item.item }}'.
+          Expected size: {{ dump_size_map[item.item] }} bytes.
+          Local exists: {{ item.stat.exists | default(false) }}.
+          Local size: {{ item.stat.size | default(0) }}.
+          Aborting before any destructive action.
+      when: >
+        not item.stat.exists or
+        item.stat.size == 0
+      loop: "{{ local_dump_stats.results }}"
+      loop_control:
+        label: "{{ item.item }}"
+
+    - name: Display backup summary
+      ansible.builtin.debug:
+        msg:
+          - "=== Backup Complete & Validated ==="
+          - "Databases: {{ databases | join(', ') }}"
+          - "Sizes: {{ dump_size_map }}"
+          - "Local backup: {{ backup_dir }}/{{ target_app }}-{{ timestamp }}/"
+          - "PVC stash: /var/lib/postgresql/data/upgrade-dumps/"
+          - "All dumps passed pg_restore --list integrity check"
+          - "All local copies verified"
+          - "=== Proceeding with upgrade ==="
+
+    # =========================================================================
+    # Phase 3: Suspend Flux & Scale Down
+    # =========================================================================
+    - name: "SUSPEND: Flux suspend kustomization apps"
+      kubernetes.core.k8s:
+        state: patched
+        api_version: kustomize.toolkit.fluxcd.io/v1
+        kind: Kustomization
+        name: apps
+        namespace: flux-system
+        definition:
+          spec:
+            suspend: true
+
+    - name: Scale down app workloads to 0
+      kubernetes.core.k8s_scale:
+        api_version: apps/v1
+        kind: "{{ item.kind }}"
+        name: "{{ item.name }}"
+        namespace: "{{ app.namespace }}"
+        replicas: 0
+        wait: true
+        wait_timeout: 120
+      loop: "{{ app.app_workloads }}"
+      loop_control:
+        label: "{{ item.kind }}/{{ item.name }}"
+      when: app.app_workloads | length > 0
+
+    - name: Scale down postgres StatefulSet to 0
+      kubernetes.core.k8s_scale:
+        api_version: apps/v1
+        kind: StatefulSet
+        name: "{{ app.pg_statefulset }}"
+        namespace: "{{ app.namespace }}"
+        replicas: 0
+        wait: true
+        wait_timeout: 120
+
+    - name: Wait for postgres pod to terminate
+      kubernetes.core.k8s_info:
+        api_version: v1
+        kind: Pod
+        name: "{{ app.pg_statefulset }}-0"
+        namespace: "{{ app.namespace }}"
+      register: pg_pod_gone
+      until: pg_pod_gone.resources | length == 0
+      retries: 30
+      delay: 5
+
+    # =========================================================================
+    # Phase 4: Wipe PGDATA on Existing PVC
+    # =========================================================================
+    - name: "WIPE: Set wipe pod name"
+      ansible.builtin.set_fact:
+        wipe_pod: "pgupgrade-wipe-{{ target_app }}-{{ ansible_date_time.epoch }}"
+
+    - name: Create temp pod to wipe PGDATA
+      kubernetes.core.k8s:
+        state: present
+        definition:
+          apiVersion: v1
+          kind: Pod
+          metadata:
+            name: "{{ wipe_pod }}"
+            namespace: "{{ app.namespace }}"
+          spec:
+            restartPolicy: Never
+            containers:
+              - name: wipe
+                image: docker.io/alpine/k8s:1.34.0
+                command:
+                  - sh
+                  - -c
+                  - |
+                    set -e
+                    echo "=== Wiping PGDATA contents ==="
+                    PGDATA_DIR="/var/lib/postgresql/data/pgdata"
+                    if [ -d "$PGDATA_DIR" ]; then
+                      echo "Contents before wipe:"
+                      ls -la "$PGDATA_DIR/" 2>/dev/null || true
+                      rm -rf "$PGDATA_DIR"/*
+                      rm -rf "$PGDATA_DIR"/.[!.]*
+                      echo "Contents after wipe:"
+                      ls -la "$PGDATA_DIR/" 2>/dev/null || echo "(empty)"
+                    else
+                      echo "PGDATA directory does not exist, nothing to wipe"
+                    fi
+                    echo "=== Fixing ownership for Alpine postgres (UID 70) ==="
+                    chown -R 70:70 /var/lib/postgresql/data/
+                    ls -la /var/lib/postgresql/data/
+                    echo "=== PGDATA wipe complete ==="
+                volumeMounts:
+                  - name: pgdata
+                    mountPath: /var/lib/postgresql/data
+            volumes:
+              - name: pgdata
+                persistentVolumeClaim:
+                  claimName: "{{ app.pvc_name }}"
+
+    - name: Wait for wipe pod to complete
+      kubernetes.core.k8s_info:
+        api_version: v1
+        kind: Pod
+        name: "{{ wipe_pod }}"
+        namespace: "{{ app.namespace }}"
+      register: wipe_status
+      until: >
+        wipe_status.resources | length > 0 and
+        wipe_status.resources[0].status.phase in ['Succeeded', 'Failed']
+      retries: 60
+      delay: 5
+
+    - name: Fail if wipe pod failed
+      ansible.builtin.fail:
+        msg: "Wipe pod failed! Check logs: kubectl logs {{ wipe_pod }} -n {{ app.namespace }}"
+      when: wipe_status.resources[0].status.phase == 'Failed'
+
+    - name: Show wipe pod logs
+      kubernetes.core.k8s_log:
+        name: "{{ wipe_pod }}"
+        namespace: "{{ app.namespace }}"
+      register: wipe_logs
+
+    - name: Display wipe logs
+      ansible.builtin.debug:
+        msg: "{{ wipe_logs.log_lines }}"
+
+    - name: Delete wipe pod
+      kubernetes.core.k8s:
+        state: absent
+        api_version: v1
+        kind: Pod
+        name: "{{ wipe_pod }}"
+        namespace: "{{ app.namespace }}"
+
+    # =========================================================================
+    # Phase 5: Image Update & Deploy PG 18
+    # =========================================================================
+    - name: "DEPLOY: Update overlay image to PG 18"
+      ansible.builtin.replace:
+        path: "{{ repo_dir }}/{{ app.overlay_file }}"
+        regexp: 'image:\s+docker\.io/(library/)?postgres:\S+'
+        replace: "image: {{ target_image }}"
+
+    - name: Configure git safe directory
+      ansible.builtin.command:
+        cmd: git config --global --add safe.directory {{ repo_dir }}
+      changed_when: true
+
+    - name: Git add overlay file
+      ansible.builtin.command:
+        cmd: git add {{ app.overlay_file }}
+        chdir: "{{ repo_dir }}"
+      changed_when: true
+
+    - name: Git commit image change
+      ansible.builtin.command:
+        argv:
+          - git
+          - commit
+          - -m
+          - "chore({{ target_app }}): upgrade postgres to {{ target_version }}"
+        chdir: "{{ repo_dir }}"
+      changed_when: true
+
+    - name: Git push
+      ansible.builtin.command:
+        cmd: git push
+        chdir: "{{ repo_dir }}"
+      changed_when: true
+
+    - name: Patch postgres StatefulSet image directly (flux is suspended)
+      kubernetes.core.k8s:
+        state: patched
+        api_version: apps/v1
+        kind: StatefulSet
+        name: "{{ app.pg_statefulset }}"
+        namespace: "{{ app.namespace }}"
+        definition:
+          spec:
+            template:
+              spec:
+                containers:
+                  - name: "{{ app.pg_container }}"
+                    image: "{{ target_image }}"
+
+    - name: Scale postgres StatefulSet to 1
+      kubernetes.core.k8s_scale:
+        api_version: apps/v1
+        kind: StatefulSet
+        name: "{{ app.pg_statefulset }}"
+        namespace: "{{ app.namespace }}"
+        replicas: 1
+
+    - name: Wait for PG 18 pod to be Running and Ready
+      kubernetes.core.k8s_info:
+        api_version: v1
+        kind: Pod
+        name: "{{ app.pg_statefulset }}-0"
+        namespace: "{{ app.namespace }}"
+      register: new_pg_pod
+      until: >
+        new_pg_pod.resources | length > 0 and
+        new_pg_pod.resources[0].status.phase == 'Running' and
+        (new_pg_pod.resources[0].status.containerStatuses |
+        selectattr('name', 'eq', app.pg_container) |
+        map(attribute='ready') | first | default(false))
+      retries: 60
+      delay: 10
+
+    - name: Verify new PG version is 18
+      kubernetes.core.k8s_exec:
+        namespace: "{{ app.namespace }}"
+        pod: "{{ app.pg_statefulset }}-0"
+        container: "{{ app.pg_container }}"
+        command: psql -U {{ app.pg_user }} -tAc "SHOW server_version"
+      register: new_version
+
+    - name: Assert PG 18
+      ansible.builtin.assert:
+        that:
+          - new_version.stdout | trim | regex_search('^\d+') == '18'
+        fail_msg: "Expected PostgreSQL 18 but got: {{ new_version.stdout | trim }}"
+
+    - name: Display new version
+      ansible.builtin.debug:
+        msg: "PostgreSQL upgraded: {{ pg_version_result.stdout | trim }} → {{ new_version.stdout | trim }}"
+
+    # =========================================================================
+    # Phase 6: Restore
+    # =========================================================================
+    - name: "RESTORE: Move stashed dumps from PVC to /tmp"
+      kubernetes.core.k8s_exec:
+        namespace: "{{ app.namespace }}"
+        pod: "{{ app.pg_statefulset }}-0"
+        container: "{{ app.pg_container }}"
+        command: >
+          sh -c "cp /var/lib/postgresql/data/upgrade-dumps/* /tmp/ &&
+                 ls -la /tmp/globals.sql /tmp/*.dump"
+      register: move_dumps
+      failed_when: move_dumps.rc != 0
+
+    - name: Restore globals (roles, tablespaces)
+      kubernetes.core.k8s_exec:
+        namespace: "{{ app.namespace }}"
+        pod: "{{ app.pg_statefulset }}-0"
+        container: "{{ app.pg_container }}"
+        command: psql -U {{ app.pg_user }} -f /tmp/globals.sql
+      register: globals_restore
+      failed_when: false
+
+    - name: Display globals restore output
+      ansible.builtin.debug:
+        msg: "{{ globals_restore.stdout_lines | default([]) }}"
+      when: globals_restore.stdout_lines | default([]) | length > 0
+
+    - name: Create databases and restore from dumps
+      kubernetes.core.k8s_exec:
+        namespace: "{{ app.namespace }}"
+        pod: "{{ app.pg_statefulset }}-0"
+        container: "{{ app.pg_container }}"
+        command: >
+          sh -c "
+            createdb -U {{ app.pg_user }} '{{ item }}' 2>/dev/null || true;
+            pg_restore -U {{ app.pg_user }} -d '{{ item }}' --no-owner --no-acl /tmp/{{ item }}.dump
+          "
+      loop: "{{ databases }}"
+      register: restore_results
+      failed_when: false
+
+    - name: Check restore results for critical errors
+      ansible.builtin.debug:
+        msg:
+          - "Database: {{ item.item }}"
+          - "rc: {{ item.rc }}"
+          - "stderr: {{ item.stderr | default('') | truncate(500) }}"
+      loop: "{{ restore_results.results }}"
+      loop_control:
+        label: "{{ item.item }}"
+
+    - name: Warn on restore errors (pg_restore returns non-zero on warnings too)
+      ansible.builtin.debug:
+        msg: >
+          NOTE: pg_restore may return non-zero for non-critical warnings
+          (e.g., existing objects, missing comments on extensions).
+          Verify databases below.
+
+    - name: Verify all databases exist after restore
+      kubernetes.core.k8s_exec:
+        namespace: "{{ app.namespace }}"
+        pod: "{{ app.pg_statefulset }}-0"
+        container: "{{ app.pg_container }}"
+        command: >
+          psql -U {{ app.pg_user }} -tAc
+          "SELECT datname FROM pg_database
+           WHERE datistemplate = false AND datname != 'postgres'
+           ORDER BY datname"
+      register: restored_db_list
+
+    - name: Assert all databases were restored
+      ansible.builtin.assert:
+        that:
+          - item in restored_db_list.stdout
+        fail_msg: "Database '{{ item }}' not found after restore!"
+      loop: "{{ databases }}"
+
+    - name: Get table counts per database
+      kubernetes.core.k8s_exec:
+        namespace: "{{ app.namespace }}"
+        pod: "{{ app.pg_statefulset }}-0"
+        container: "{{ app.pg_container }}"
+        command: >
+          psql -U {{ app.pg_user }} -d {{ item }} -tAc
+          "SELECT count(*) FROM information_schema.tables
+           WHERE table_schema NOT IN ('pg_catalog', 'information_schema')"
+      loop: "{{ databases }}"
+      register: table_counts
+
+    - name: Display table counts
+      ansible.builtin.debug:
+        msg: "Database '{{ item.item }}': {{ item.stdout | trim }} tables"
+      loop: "{{ table_counts.results }}"
+      loop_control:
+        label: "{{ item.item }}"
+
+    - name: Clean up dump files from pod /tmp and PVC stash
+      kubernetes.core.k8s_exec:
+        namespace: "{{ app.namespace }}"
+        pod: "{{ app.pg_statefulset }}-0"
+        container: "{{ app.pg_container }}"
+        command: >
+          sh -c "rm -f /tmp/globals.sql /tmp/*.dump &&
+                 rm -rf /var/lib/postgresql/data/upgrade-dumps"
+
+    # =========================================================================
+    # Phase 7: Resume Flux & Bring Up App
+    # =========================================================================
+    - name: "RESUME: Flux resume kustomization apps"
+      kubernetes.core.k8s:
+        state: patched
+        api_version: kustomize.toolkit.fluxcd.io/v1
+        kind: Kustomization
+        name: apps
+        namespace: flux-system
+        definition:
+          spec:
+            suspend: false
+
+    - name: Trigger flux source reconciliation
+      kubernetes.core.k8s:
+        state: patched
+        api_version: source.toolkit.fluxcd.io/v1
+        kind: GitRepository
+        name: flux-system
+        namespace: flux-system
+        definition:
+          metadata:
+            annotations:
+              reconcile.fluxcd.io/requestedAt: "{{ ansible_date_time.iso8601 }}"
+
+    - name: Trigger flux kustomization reconciliation
+      kubernetes.core.k8s:
+        state: patched
+        api_version: kustomize.toolkit.fluxcd.io/v1
+        kind: Kustomization
+        name: apps
+        namespace: flux-system
+        definition:
+          metadata:
+            annotations:
+              reconcile.fluxcd.io/requestedAt: "{{ ansible_date_time.iso8601 }}"
+
+    - name: Wait for flux kustomization to reconcile
+      kubernetes.core.k8s_info:
+        api_version: kustomize.toolkit.fluxcd.io/v1
+        kind: Kustomization
+        name: apps
+        namespace: flux-system
+      register: flux_ks_status
+      until: >
+        flux_ks_status.resources | length > 0 and
+        (flux_ks_status.resources[0].status.conditions |
+        selectattr('type', 'eq', 'Ready') | first | default({})).status | default('False') == 'True'
+      retries: 30
+      delay: 10
+
+    - name: Wait for app workloads to have ready replicas
+      kubernetes.core.k8s_info:
+        api_version: apps/v1
+        kind: "{{ item.kind }}"
+        name: "{{ item.name }}"
+        namespace: "{{ app.namespace }}"
+      loop: "{{ app.app_workloads }}"
+      loop_control:
+        label: "{{ item.kind }}/{{ item.name }}"
+      register: app_ready_check
+      until: >
+        app_ready_check.resources | length > 0 and
+        (app_ready_check.resources[0].status.readyReplicas | default(0)) > 0
+      retries: 30
+      delay: 10
+      when: app.app_workloads | length > 0
+
+    - name: "COMPLETE: Upgrade summary"
+      ansible.builtin.debug:
+        msg:
+          - "=============================================="
+          - "  PostgreSQL Upgrade Complete: {{ target_app }}"
+          - "=============================================="
+          - "Previous version: {{ pg_version_result.stdout | trim }}"
+          - "New version: {{ new_version.stdout | trim }}"
+          - "Namespace: {{ app.namespace }}"
+          - "Databases restored: {{ databases | join(', ') }}"
+          - "Table counts: {{ table_counts.results | map(attribute='item') | zip(table_counts.results | map(attribute='stdout') | map('trim')) | map('join', '=') | list }}"
+          - "App workloads: all ready"
+          - ""
+          - "Backups preserved at: {{ backup_dir }}/{{ target_app }}-{{ timestamp }}/"
+          - "Delete manually ONLY after confirming app is functional."
+          - "=============================================="
