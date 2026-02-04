@@ -6,13 +6,17 @@ spec:
   replicas: 1
   template:
     spec:
+      securityContext:
+        runAsUser: 999
+        runAsGroup: 1000
+        fsGroup: 1000
       imagePullSecrets:
-      - name: jcr-pcfae-dungeon-pull-secret
+        - name: jcr-pcfae-dungeon-pull-secret
       containers:
-      - name: redis
-        image: docker.io/redis:8.4.0-alpine
+        - name: redis
+          image: docker.io/redis:8.4.0-alpine
   volumeClaimTemplates:
-  - metadata:
-      name: hyrule-castle-twenty-redis
-    spec:
-      storageClassName: ceph-rbd-retain
+    - metadata:
+        name: hyrule-castle-twenty-redis
+      spec:
+        storageClassName: ceph-rbd-retain

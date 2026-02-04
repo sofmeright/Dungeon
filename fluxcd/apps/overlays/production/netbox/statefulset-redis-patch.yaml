@@ -6,7 +6,9 @@ spec:
   template:
     spec:
       securityContext:
-        fsGroup: 1026
+        runAsUser: 999
+        runAsGroup: 1000
+        fsGroup: 1000
       containers:
         - name: redis
           image: docker.io/redis:7-alpine

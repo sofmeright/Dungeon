@@ -5,18 +5,22 @@ metadata:
 spec:
   template:
     spec:
+      securityContext:
+        runAsUser: 999
+        runAsGroup: 999
+        fsGroup: 999
       imagePullSecrets:
-      - name: docker-io-pull-secret
+        - name: docker-io-pull-secret
       containers:
-      - name: redis
-        image: docker.io/redis:7
+        - name: redis
+          image: docker.io/redis:7
   volumeClaimTemplates:
-  - metadata:
-      name: temple-of-time-penpot-redis-data
-    spec:
-      accessModes:
-      - ReadWriteOnce
-      storageClassName: ceph-rbd
-      resources:
-        requests:
-          storage: 5Gi
+    - metadata:
+        name: temple-of-time-penpot-redis-data
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        storageClassName: ceph-rbd
+        resources:
+          requests:
+            storage: 5Gi

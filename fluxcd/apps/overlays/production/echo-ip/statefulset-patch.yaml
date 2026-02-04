@@ -5,52 +5,56 @@ metadata:
 spec:
   template:
     spec:
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
       initContainers:
-      - name: geoip-update
-        volumeMounts:
-        - name: compass-echo-ip-data
-          mountPath: /usr/share/GeoIP
+        - name: geoip-update
+          volumeMounts:
+            - name: compass-echo-ip-data
+              mountPath: /usr/share/GeoIP
       containers:
-      - name: echo-ip
-        image: docker.io/mpolden/echoip@sha256:23eaa7ac21945854483d44cff84d34ea8f477f3dbe509b4bf90ab671f09aaf14
-        command: []
-        args:
-        - "-C"
-        - "0"
-        - "-p"
-        - "-r"
-        - "-H"
-        - "X-Forwarded-For"
-        - "-a"
-        - "/data/GeoLite2-ASN.mmdb"
-        - "-c"
-        - "/data/GeoLite2-City.mmdb"
-        - "-f"
-        - "/data/GeoLite2-Country.mmdb"
-        - "-t"
-        - "html"
-        volumeMounts:
-        - name: compass-echo-ip-data
-          mountPath: /data
-          readOnly: true
-        - name: compass-echo-ip-html
-          mountPath: /html
+        - name: echo-ip
+          image: docker.io/mpolden/echoip@sha256:23eaa7ac21945854483d44cff84d34ea8f477f3dbe509b4bf90ab671f09aaf14
+          command: []
+          args:
+            - "-C"
+            - "0"
+            - "-p"
+            - "-r"
+            - "-H"
+            - "X-Forwarded-For"
+            - "-a"
+            - "/data/GeoLite2-ASN.mmdb"
+            - "-c"
+            - "/data/GeoLite2-City.mmdb"
+            - "-f"
+            - "/data/GeoLite2-Country.mmdb"
+            - "-t"
+            - "html"
+          volumeMounts:
+            - name: compass-echo-ip-data
+              mountPath: /data
+              readOnly: true
+            - name: compass-echo-ip-html
+              mountPath: /html
   volumeClaimTemplates:
-  - metadata:
-      name: compass-echo-ip-data
-    spec:
-      accessModes:
-      - ReadWriteOnce
-      storageClassName: ceph-rbd
-      resources:
-        requests:
-          storage: 1Gi
-  - metadata:
-      name: compass-echo-ip-html
-    spec:
-      accessModes:
-      - ReadWriteOnce
-      storageClassName: ceph-rbd
-      resources:
-        requests:
-          storage: 100Mi
+    - metadata:
+        name: compass-echo-ip-data
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        storageClassName: ceph-rbd
+        resources:
+          requests:
+            storage: 1Gi
+    - metadata:
+        name: compass-echo-ip-html
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        storageClassName: ceph-rbd
+        resources:
+          requests:
+            storage: 100Mi
