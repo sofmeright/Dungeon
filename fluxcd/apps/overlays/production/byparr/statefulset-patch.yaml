@@ -5,8 +5,13 @@ metadata:
 spec:
   template:
     spec:
+      securityContext:
+        fsGroup: 1000
       containers:
         - name: byparr
+          securityContext:
+            runAsUser: 1000
+            runAsGroup: 1000
           image: ghcr.io/thephaseless/byparr:2.0.1
           env:
             - name: TZ

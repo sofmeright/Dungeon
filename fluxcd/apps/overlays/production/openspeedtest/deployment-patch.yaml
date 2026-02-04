@@ -5,6 +5,9 @@ metadata:
 spec:
   template:
     spec:
+      securityContext:
+        runAsUser: 101
+        runAsGroup: 101
       containers:
         - name: openspeedtest
           image: docker.io/openspeedtest/latest:v2.0.6

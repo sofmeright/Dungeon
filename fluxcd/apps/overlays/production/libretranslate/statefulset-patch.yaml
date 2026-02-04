@@ -5,6 +5,10 @@ metadata:
 spec:
   template:
     spec:
+      securityContext:
+        runAsUser: 1032
+        runAsGroup: 1032
+        fsGroup: 1032
       runtimeClassName: nvidia
   volumeClaimTemplates:
     - metadata:

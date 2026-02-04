@@ -8,6 +8,9 @@ spec:
     spec:
       template:
         spec:
+          securityContext:
+            runAsUser: 1000
+            runAsGroup: 1000
           containers:
             - name: renovate
               image: ghcr.io/renovatebot/renovate:39
