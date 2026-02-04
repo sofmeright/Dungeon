@@ -16,40 +16,40 @@ spec:
       securityContext:
         fsGroup: 1000
       containers:
-      - name: filebrowser
-        image: PLACEHOLDER_IMAGE
-        ports:
-        - containerPort: 80
-          name: http
-        volumeMounts:
-        - name: database
-          mountPath: /database
-        - name: config
-          mountPath: /.filebrowser.json
-          subPath: filebrowser.json
-        - name: srv
-          mountPath: /srv
-        - name: home
-          mountPath: /home
+        - name: filebrowser
+          image: PLACEHOLDER_IMAGE
+          ports:
+            - containerPort: 8080
+              name: http
+          volumeMounts:
+            - name: database
+              mountPath: /database
+            - name: config
+              mountPath: /.filebrowser.json
+              subPath: filebrowser.json
+            - name: srv
+              mountPath: /srv
+            - name: home
+              mountPath: /home
       volumes:
-      - name: config
-        configMap:
-          name: filebrowser-config
-      - name: srv
-        hostPath:
-          path: /srv
-          type: DirectoryOrCreate
-      - name: home
-        hostPath:
-          path: /home
-          type: Directory
+        - name: config
+          configMap:
+            name: filebrowser-config
+        - name: srv
+          hostPath:
+            path: /srv
+            type: DirectoryOrCreate
+        - name: home
+          hostPath:
+            path: /home
+            type: Directory
   volumeClaimTemplates:
-  - metadata:
-      name: database
-    spec:
-      accessModes:
-      - ReadWriteOnce
-      storageClassName: PLACEHOLDER_STORAGE_CLASS
-      resources:
-        requests:
-          storage: PLACEHOLDER_DATABASE_STORAGE
+    - metadata:
+        name: database
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        storageClassName: PLACEHOLDER_STORAGE_CLASS
+        resources:
+          requests:
+            storage: PLACEHOLDER_DATABASE_STORAGE
