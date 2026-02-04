@@ -6,13 +6,16 @@ spec:
   replicas: 1
   template:
     spec:
+      securityContext:
+        runAsUser: 1001
+        runAsGroup: 1001
       imagePullSecrets:
-      - name: jcr-pcfae-dungeon-pull-secret
+        - name: jcr-pcfae-dungeon-pull-secret
       containers:
-      - name: shlink-app
-        image: docker.io/shlinkio/shlink:5.0.0
-        env:
-        - name: TZ
-          value: "America/Phoenix"
-        - name: DEFAULT_DOMAIN
-          value: "sh.uni2.cc"
+        - name: shlink-app
+          image: docker.io/shlinkio/shlink:5.0.0
+          env:
+            - name: TZ
+              value: "America/Phoenix"
+            - name: DEFAULT_DOMAIN
+              value: "sh.uni2.cc"

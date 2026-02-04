@@ -6,8 +6,11 @@ spec:
   replicas: 1
   template:
     spec:
+      securityContext:
+        runAsUser: 101
+        runAsGroup: 101
       imagePullSecrets:
-      - name: jcr-pcfae-dungeon-pull-secret
+        - name: jcr-pcfae-dungeon-pull-secret
       containers:
-      - name: shlink-web-client
-        image: docker.io/shlinkio/shlink-web-client:4.6.2
+        - name: shlink-web-client
+          image: docker.io/shlinkio/shlink-web-client:4.6.2
