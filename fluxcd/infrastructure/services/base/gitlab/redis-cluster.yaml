@@ -12,7 +12,7 @@ spec:
       key: password
   redisExporter:
     enabled: false
-    image: quay.io/opstree/redis-exporter:v1.44.0
+    image: quay.io/opstree/redis-exporter:v1.80.2
   storage:
     volumeClaimTemplate:
       spec:
