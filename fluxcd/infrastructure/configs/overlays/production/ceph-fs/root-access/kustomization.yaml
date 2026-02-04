@@ -10,6 +10,7 @@ resources:
   - cephfs-init-grafana.yaml
   - cephfs-init-harbor.yaml
   - cephfs-init-homarr.yaml
+  - cephfs-init-lenpaste.yaml
   - cephfs-init-opnform.yaml
   - cephfs-init-vaultwarden.yaml
   - cephfs-init-penpot.yaml

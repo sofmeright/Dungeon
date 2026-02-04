@@ -6,11 +6,18 @@ spec:
   replicas: 1
   template:
     spec:
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
       containers:
-      - name: lenpaste-app
-        image: ghcr.io/lcomrade/lenpaste:1.3.1
-  volumeClaimTemplates:
-  - metadata:
-      name: tingle-tuner-lenpaste-data
-    spec:
-      storageClassName: ceph-rbd-retain
+        - name: lenpaste-app
+          image: ghcr.io/lcomrade/lenpaste:1.3.1
+          volumeMounts:
+            - name: lenpaste-data
+              mountPath: /data
+      volumes:
+        - name: lenpaste-data
+          persistentVolumeClaim:
+            claimName: lenpaste-data-pvc
+  volumeClaimTemplates: []

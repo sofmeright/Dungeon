@@ -5,6 +5,7 @@ namespace: tingle-tuner
 
 resources:
   - ../../../base/lenpaste
+  - cephfs-data-pv.yaml
   - externalsecret.yaml
   - httproute-xylem.yaml
 

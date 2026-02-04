@@ -7,12 +7,16 @@ spec:
   template:
     spec:
       imagePullSecrets:
-      - name: jcr-pcfae-dungeon-pull-secret
+        - name: jcr-pcfae-dungeon-pull-secret
       containers:
-      - name: postgres
-        image: docker.io/library/postgres:16.1
+        - name: postgres
+          image: docker.io/library/postgres:16.1
   volumeClaimTemplates:
-  - metadata:
-      name: tingle-tuner-lenpaste-postgres
-    spec:
-      storageClassName: ceph-rbd-retain
+    - metadata:
+        name: tingle-tuner-lenpaste-postgres
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        storageClassName: ceph-rbd-retain
+        resources:
+          requests:
+            storage: 10Gi
