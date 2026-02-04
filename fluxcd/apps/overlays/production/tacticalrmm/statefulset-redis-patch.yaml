@@ -5,6 +5,10 @@ metadata:
 spec:
   template:
     spec:
+      securityContext:
+        runAsUser: 999
+        runAsGroup: 1000
+        fsGroup: 1000
       initContainers:
         - name: create-initialized-marker
           image: docker.io/busybox:1.36

@@ -5,13 +5,17 @@ metadata:
 spec:
   template:
     spec:
+      securityContext:
+        runAsUser: 999
+        runAsGroup: 1000
+        fsGroup: 1000
       containers:
-      - name: redis
-        image: docker.io/redis:6.2-alpine
-        resources:
-          requests:
-            cpu: "100m"
-            memory: "256Mi"
-          limits:
-            cpu: "500m"
-            memory: "1Gi"
+        - name: redis
+          image: docker.io/redis:6.2-alpine
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "256Mi"
+            limits:
+              cpu: "500m"
+              memory: "1Gi"

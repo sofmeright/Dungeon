@@ -6,18 +6,22 @@ spec:
   replicas: 1
   template:
     spec:
+      securityContext:
+        runAsUser: 999
+        runAsGroup: 999
+        fsGroup: 999
       containers:
-      - name: redis
-        image: docker.io/library/redis:7
-        volumeMounts:
-        - name: pedestal-of-time-paperless-redis-data
-          mountPath: /data
+        - name: redis
+          image: docker.io/library/redis:7
+          volumeMounts:
+            - name: pedestal-of-time-paperless-redis-data
+              mountPath: /data
   volumeClaimTemplates:
-  - metadata:
-      name: pedestal-of-time-paperless-redis-data
-    spec:
-      accessModes: ["ReadWriteOnce"]
-      storageClassName: ceph-rbd-retain
-      resources:
-        requests:
-          storage: 1Gi
+    - metadata:
+        name: pedestal-of-time-paperless-redis-data
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        storageClassName: ceph-rbd-retain
+        resources:
+          requests:
+            storage: 1Gi
