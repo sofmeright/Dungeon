@@ -6,21 +6,25 @@ spec:
   replicas: 1
   template:
     spec:
+      securityContext:
+        runAsUser: 70
+        runAsGroup: 70
+        fsGroup: 70
       containers:
-      - name: postgres
-        image: docker.io/library/postgres:16-alpine
-        env:
-        - name: PGDATA
-          value: /var/lib/postgresql/data/pgdata
-        volumeMounts:
-        - name: temple-of-time-reactive-resume-postgres-data
-          mountPath: /var/lib/postgresql/data
+        - name: postgres
+          image: docker.io/library/postgres:16-alpine
+          env:
+            - name: PGDATA
+              value: /var/lib/postgresql/data/pgdata
+          volumeMounts:
+            - name: temple-of-time-reactive-resume-postgres-data
+              mountPath: /var/lib/postgresql/data
   volumeClaimTemplates:
-  - metadata:
-      name: temple-of-time-reactive-resume-postgres-data
-    spec:
-      accessModes: ["ReadWriteOnce"]
-      storageClassName: ceph-rbd-retain
-      resources:
-        requests:
-          storage: 5Gi
+    - metadata:
+        name: temple-of-time-reactive-resume-postgres-data
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        storageClassName: ceph-rbd-retain
+        resources:
+          requests:
+            storage: 5Gi

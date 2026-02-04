@@ -6,18 +6,22 @@ spec:
   replicas: 1
   template:
     spec:
+      securityContext:
+        runAsUser: 70
+        runAsGroup: 70
+        fsGroup: 70
       containers:
-      - name: postgres
-        image: docker.io/library/postgres:15-alpine
-        volumeMounts:
-        - name: temple-of-time-wikijs-vegan-postgres
-          mountPath: /var/lib/postgresql/data
+        - name: postgres
+          image: docker.io/library/postgres:15-alpine
+          volumeMounts:
+            - name: temple-of-time-wikijs-vegan-postgres
+              mountPath: /var/lib/postgresql/data
   volumeClaimTemplates:
-  - metadata:
-      name: temple-of-time-wikijs-vegan-postgres
-    spec:
-      accessModes: ["ReadWriteOnce"]
-      storageClassName: ceph-rbd-retain
-      resources:
-        requests:
-          storage: 5Gi
+    - metadata:
+        name: temple-of-time-wikijs-vegan-postgres
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        storageClassName: ceph-rbd-retain
+        resources:
+          requests:
+            storage: 5Gi

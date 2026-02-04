@@ -7,30 +7,30 @@ spec:
   template:
     spec:
       initContainers:
-      - name: wait-for-postgres
-        image: docker.io/library/postgres:15-alpine
+        - name: wait-for-postgres
+          image: docker.io/library/postgres:15-alpine
       containers:
-      - name: umami
-        image: ghcr.io/umami-software/umami:postgresql-latest
-        volumeMounts:
-        - name: gossip-stone-umami-data
-          mountPath: /app/data
+        - name: umami
+          image: ghcr.io/umami-software/umami:postgresql-latest
+          volumeMounts:
+            - name: gossip-stone-umami-data
+              mountPath: /app/data
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: 1000m
+              memory: 1Gi
+  volumeClaimTemplates:
+    - metadata:
+        name: gossip-stone-umami-data
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        storageClassName: ceph-rbd-retain
         resources:
           requests:
-            cpu: 100m
-            memory: 256Mi
-          limits:
-            cpu: 1000m
-            memory: 1Gi
-  volumeClaimTemplates:
-  - metadata:
-      name: gossip-stone-umami-data
-    spec:
-      accessModes: ["ReadWriteOnce"]
-      storageClassName: ceph-rbd-retain
-      resources:
-        requests:
-          storage: 5Gi
+            storage: 5Gi
 ---
 apiVersion: apps/v1
 kind: StatefulSet
@@ -40,25 +40,29 @@ spec:
   replicas: 1
   template:
     spec:
+      securityContext:
+        runAsUser: 70
+        runAsGroup: 70
+        fsGroup: 70
       containers:
-      - name: postgres
-        image: docker.io/library/postgres:15-alpine
-        volumeMounts:
-        - name: gossip-stone-umami-postgres
-          mountPath: /var/lib/postgresql/data
+        - name: postgres
+          image: docker.io/library/postgres:15-alpine
+          volumeMounts:
+            - name: gossip-stone-umami-postgres
+              mountPath: /var/lib/postgresql/data
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
+  volumeClaimTemplates:
+    - metadata:
+        name: gossip-stone-umami-postgres
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        storageClassName: ceph-rbd-retain
         resources:
           requests:
-            cpu: 100m
-            memory: 256Mi
-          limits:
-            cpu: 500m
-            memory: 512Mi
-  volumeClaimTemplates:
-  - metadata:
-      name: gossip-stone-umami-postgres
-    spec:
-      accessModes: ["ReadWriteOnce"]
-      storageClassName: ceph-rbd-retain
-      resources:
-        requests:
-          storage: 10Gi
+            storage: 10Gi

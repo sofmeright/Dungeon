@@ -6,6 +6,8 @@ spec:
   template:
     spec:
       securityContext:
+        runAsUser: 70
+        runAsGroup: 70
         fsGroup: 70
       containers:
         - name: postgres
