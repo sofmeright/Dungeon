@@ -5,18 +5,21 @@ metadata:
 spec:
   template:
     spec:
+      securityContext:
+        runAsUser: 1001
+        runAsGroup: 1001
       initContainers:
-      - name: generate-initdb
-        image: docker.io/guacamole/guacamole@sha256:7678e8be5d62f6d132eac5367a696fbb7bdbf5e78eb1b3cd03a893d2f11967ff
-      - name: init-db
-        image: docker.io/postgres:15-alpine
+        - name: generate-initdb
+          image: docker.io/guacamole/guacamole@sha256:7678e8be5d62f6d132eac5367a696fbb7bdbf5e78eb1b3cd03a893d2f11967ff
+        - name: init-db
+          image: docker.io/postgres:15-alpine
       containers:
-      - name: guacamole
-        image: docker.io/guacamole/guacamole@sha256:7678e8be5d62f6d132eac5367a696fbb7bdbf5e78eb1b3cd03a893d2f11967ff
-        resources:
-          requests:
-            cpu: "250m"
-            memory: "512Mi"
-          limits:
-            cpu: "1000m"
-            memory: "2Gi"
+        - name: guacamole
+          image: docker.io/guacamole/guacamole@sha256:7678e8be5d62f6d132eac5367a696fbb7bdbf5e78eb1b3cd03a893d2f11967ff
+          resources:
+            requests:
+              cpu: "250m"
+              memory: "512Mi"
+            limits:
+              cpu: "1000m"
+              memory: "2Gi"

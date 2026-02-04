@@ -6,11 +6,14 @@ spec:
   replicas: 3
   template:
     spec:
+      securityContext:
+        runAsUser: 1001
+        runAsGroup: 1001
       containers:
-      - name: calcom
-        image: docker.io/calcom/cal.com:v6.1.9
-        env:
-        - name: NEXT_PUBLIC_WEBAPP_URL
-          value: https://cal.prplanit.com
-        - name: NEXT_PUBLIC_API_V2_URL
-          value: https://cal.prplanit.com/api/v2
+        - name: calcom
+          image: docker.io/calcom/cal.com:v6.1.9
+          env:
+            - name: NEXT_PUBLIC_WEBAPP_URL
+              value: https://cal.prplanit.com
+            - name: NEXT_PUBLIC_API_V2_URL
+              value: https://cal.prplanit.com/api/v2
