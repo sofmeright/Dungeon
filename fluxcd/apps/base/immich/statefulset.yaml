@@ -35,7 +35,7 @@ spec:
           mountPath: /var/lib/postgresql/data
       containers:
       - name: immich-server
-        image: ghcr.io/immich-app/immich-server:v2.5.0
+        image: ghcr.io/immich-app/immich-server:v2.5.3
         ports:
         - containerPort: 2283
           name: http
