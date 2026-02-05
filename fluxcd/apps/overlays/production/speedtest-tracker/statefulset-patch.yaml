@@ -45,12 +45,16 @@ spec:
             - name: nginx-config
               mountPath: /config/nginx/site-confs/default.conf
               subPath: default.conf
+            - name: app-storage
+              mountPath: /app/www/storage
       volumes:
         - name: run
           emptyDir: {}
         - name: nginx-config
           configMap:
             name: speedtest-tracker-nginx
+        - name: app-storage
+          emptyDir: {}
   volumeClaimTemplates:
     - metadata:
         name: gossip-stone-speedtest-tracker-config
