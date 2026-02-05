@@ -1,0 +1,272 @@
+# Container Security Audit
+
+Living document tracking security posture of all containerized workloads. This is a permanent SBOM-style audit — update as apps are hardened.
+
+## Security Criteria Checklist
+
+| Criteria | Description | Target |
+|----------|-------------|--------|
+| `runAsNonRoot` | Pod cannot run as UID 0 | `true` for all apps where possible |
+| `runAsUser/runAsGroup` | Explicit UID/GID set | Set for all apps where possible |
+| `fsGroup` | Group ownership for mounted volumes | Set for all apps with PVCs |
+| `readOnlyRootFilesystem` | Immutable root filesystem | `true` for all apps where possible |
+| `allowPrivilegeEscalation` | Prevent setuid/setgid binaries | `false` for all apps |
+| `capabilities.drop` | Remove unneeded Linux capabilities | `[ALL]` then add back minimums |
+| `capabilities.add` | Only capabilities actually needed | Minimal set per app |
+| `imagePullPolicy` | Ensure consistent image pulls | `IfNotPresent` (or `Always` for `:latest`) |
+| `seccompProfile` | Syscall filtering | `RuntimeDefault` minimum |
+| `resources` | CPU/memory limits set | All apps |
+| Minimal images | No unnecessary tools (shells, package managers) | Flag bloated images |
+
+## Legend
+
+- **Y** = Implemented
+- **N** = Not implemented
+- **N/A** = Not applicable (legitimate reason documented)
+- **P** = Partial (some containers in pod)
+- **?** = Unknown / needs investigation
+
+---
+
+## Completed Apps
+
+Apps that have been hardened and verified.
+
+| App | Namespace | UID:GID | fsGroup | readOnlyRoot | noPrivEsc | capDrop | Last Audit | Notes |
+|-----|-----------|---------|---------|--------------|-----------|---------|------------|-------|
+| anubis | wallmaster | various | ? | ? | ? | ? | - | Multiple containers |
+| wikijs-vegan | kokiri-forest | ? | ? | ? | ? | ? | - | |
+| ghost | kokiri-forest | ? | ? | ? | ? | ? | - | |
+| mosquitto | compass | ? | ? | ? | ? | ? | - | |
+| joplin | temple-of-time | ? | ? | ? | ? | ? | - | |
+| homarr (redis) | lost-woods | 999:1000 | ? | ? | ? | ? | - | |
+| open-webui (redis) | tingle-tuner | 999:1000 | ? | ? | ? | ? | - | |
+| twenty (redis) | hyrule-castle | 999:1000 | ? | ? | ? | ? | - | |
+| penpot (redis) | hyrule-castle | 999:1000 | ? | ? | ? | ? | - | |
+| netbox (redis) | hyrule-castle | 999:1000 | ? | ? | ? | ? | - | |
+| invoiceninja (redis) | hyrule-castle | 999:1000 | ? | ? | ? | ? | - | |
+| echo-ip | tingle-tuner | ? | ? | ? | ? | ? | - | |
+| penpot (backend/frontend/exporter) | hyrule-castle | ? | ? | ? | ? | ? | - | |
+| twenty (app/worker) | hyrule-castle | ? | ? | ? | ? | ? | - | |
+| roundcube | delivery-bag | ? | ? | ? | ? | ? | - | |
+| google-webfonts-helper | tingle-tuner | ? | ? | ? | ? | ? | - | |
+| shlink | kokiri-forest | ? | ? | ? | ? | ? | - | |
+| calcom | hyrule-castle | ? | ? | ? | ? | ? | - | |
+| guacamole / guacd | hookshot | ? | ? | ? | ? | ? | - | |
+| oauth2-proxy | zeldas-lullaby | ? | ? | ? | ? | ? | - | |
+| rustdesk-server | hookshot | ? | ? | ? | ? | ? | - | |
+| it-tools | tingle-tuner | 101:101 | 101 | N | ? | N | - | nginx ConfigMap override to port 8080 |
+| linkwarden | temple-of-time | ? | ? | ? | ? | ? | - | |
+| beszel | gossip-stone | ? | ? | ? | ? | ? | - | |
+| filebrowser | tingle-tuner | ? | ? | ? | ? | ? | - | |
+| homebox | temple-of-time | ? | ? | ? | ? | ? | - | |
+| endlessh-go | wallmaster | ? | ? | ? | ? | ? | - | |
+| lenpaste | tingle-tuner | 1000:1000 | ? | ? | ? | ? | - | |
+| openspeedtest | tingle-tuner | 101:101 | ? | ? | ? | ? | - | nginx-unprivileged base |
+| renovate | flux-system | 1000:1000 | ? | ? | ? | ? | - | CronJob |
+| libretranslate | tingle-tuner | 1032:1032 | 1032 | N | ? | N | - | nvidia runtime |
+| vlmcsd | tingle-tuner | 65534:65534 | N/A | N | ? | N | - | nobody user, simple KMS binary |
+| reactive-resume (chrome) | hyrule-castle | 999:999 | ? | ? | ? | ? | - | browserless/chromium blessuser |
+| supermicro-license-generator | tingle-tuner | 100:101 | ? | N | ? | N | - | Fixed image (sm-lickitung-oci v0.0.5), port 80->8080 |
+| draw.io | tingle-tuner | 1001:999 | ? | N | ? | N | - | tomcat user, already non-root in image |
+| semaphore | hyrule-castle | 1000:1000 | ? | N | ? | N | - | Container-level for semaphore, postgres runs as root |
+| actualbudget | temple-of-time | 1000:1000 | 1000 | N | ? | N | - | |
+| dailytxt | temple-of-time | 101:101 | 101 | N | ? | N | 2026-02-05 | nginx ConfigMap override, init container copies HTML to tmpfs |
+| photoprism | temple-of-time | 2432:1000 | 1000 | N | ? | N | 2026-02-05 | PHOTOPRISM_UID/GID + DISABLE_CHOWN + DISABLE_TLS |
+| photoprism-x | temple-of-time | 2432:1000 | 1000 | N | ? | N | 2026-02-05 | PHOTOPRISM_UID/GID + DISABLE_CHOWN + DISABLE_TLS |
+| byparr | swift-sail | 1000:1000 | 1000 | N | ? | N | 2026-02-05 | UV cache/venv as emptyDir, gluetun sidecar needs caps |
+| downloadarrs (cross-seed) | swift-sail | 1000:1000 | 1000 | N | ? | N | 2026-02-05 | Runs non-root |
+| pinchflat | swift-sail | 3000:3141 | ? | N | ? | N | 2026-02-05 | Already non-root in image |
+
+---
+
+## Gluetun Sidecars
+
+All 12 gluetun VPN sidecars have been hardened with minimum required capabilities.
+
+| App | Namespace | Caps Added | Last Audit |
+|-----|-----------|------------|------------|
+| downloadarrs | swift-sail | NET_ADMIN,CHOWN,DAC_OVERRIDE,FOWNER,MKNOD,SETUID,SETGID | 2026-02-05 |
+| byparr | swift-sail | NET_ADMIN,CHOWN,DAC_OVERRIDE,FOWNER,MKNOD,SETUID,SETGID | 2026-02-05 |
+| prowlarr | swift-sail | NET_ADMIN,CHOWN,DAC_OVERRIDE,FOWNER,MKNOD,SETUID,SETGID | 2026-02-05 |
+| bazarr | swift-sail | NET_ADMIN,CHOWN,DAC_OVERRIDE,FOWNER,MKNOD,SETUID,SETGID | 2026-02-05 |
+| sabnzbd | swift-sail | NET_ADMIN,CHOWN,DAC_OVERRIDE,FOWNER,MKNOD,SETUID,SETGID | 2026-02-05 |
+| pyload-ng | swift-sail | NET_ADMIN,CHOWN,DAC_OVERRIDE,FOWNER,MKNOD,SETUID,SETGID | 2026-02-05 |
+| jellyseerr | swift-sail | NET_ADMIN,CHOWN,DAC_OVERRIDE,FOWNER,MKNOD,SETUID,SETGID | 2026-02-05 |
+| overseerr | swift-sail | NET_ADMIN,CHOWN,DAC_OVERRIDE,FOWNER,MKNOD,SETUID,SETGID | 2026-02-05 |
+| thelounge | swift-sail | NET_ADMIN,CHOWN,DAC_OVERRIDE,FOWNER,MKNOD,SETUID,SETGID | 2026-02-05 |
+| pinchflat | swift-sail | NET_ADMIN,CHOWN,DAC_OVERRIDE,FOWNER,MKNOD,SETUID,SETGID | 2026-02-05 |
+| cross-seed | swift-sail | NET_ADMIN,CHOWN,DAC_OVERRIDE,FOWNER,MKNOD,SETUID,SETGID | 2026-02-05 |
+| neko-vpn | swift-sail | NET_ADMIN,CHOWN,DAC_OVERRIDE,FOWNER,MKNOD,SETUID,SETGID | 2026-02-05 |
+
+**Standard gluetun securityContext:**
+```yaml
+securityContext:
+  capabilities:
+    add:
+      - NET_ADMIN    # iptables, routing, tun interface
+      - CHOWN        # /etc/unbound ownership
+      - DAC_OVERRIDE # bypass file permission checks
+      - FOWNER       # bypass ownership checks
+      - MKNOD        # create /dev/net/tun device node
+      - SETUID       # internal privilege management
+      - SETGID       # internal privilege management
+    drop:
+      - ALL
+```
+
+---
+
+## Custom Site Images (Pending)
+
+All use `cr.pcfae.com/prplanit/` nginx-based images serving static sites. Each image repo needs non-root treatment:
+- Remove `user nginx;` directive
+- Set pid to `/tmp/nginx.pid`
+- Set temp paths to `/tmp`
+- Add `LISTEN_PORT` env support
+- Set `USER nginx` (UID 100:101)
+- Use port 8080
+
+Then update overlay with `runAsUser: 100, runAsGroup: 101` and containerPort 8080.
+
+| App | Image | Status | Last Audit |
+|-----|-------|--------|------------|
+| astralfocal-site | cr.pcfae.com/prplanit/astralfocal.com:v0.0.2 | Pending | - |
+| enamorafoto-site | cr.pcfae.com/prplanit/enamorafoto.com:v0.0.2 | Pending | - |
+| etherealclique-site | cr.pcfae.com/prplanit/etherealclique.com:v0.0.2 | Pending | - |
+| homelabhelpdesk-site | cr.pcfae.com/prplanit/homelabhelpdesk.com:v0.0.2 | Pending | - |
+| kai-hamilton-site | cr.pcfae.com/prplanit/kai-hamilton.com:v0.0.2 | Pending | - |
+| precisionplanit-site | cr.pcfae.com/prplanit/precisionplanit.com:v0.0.2 | Pending | - |
+| sofmeright-site | cr.pcfae.com/prplanit/sofmeright.com:v0.0.5 | Pending | - |
+| yesimvegan-site | cr.pcfae.com/prplanit/yesimvegan.com:v0.0.2 | Pending | - |
+| fairer-pages | docker.io/prplanit/fairer-pages:v0.0.11 | Pending | - |
+
+---
+
+## LinuxServer.io Images
+
+These use s6-overlay init system and **must NOT use `runAsUser`**. They start as root but drop to PUID/PGID internally. Verify env vars are set in overlay.
+
+| App | Namespace | Image | PUID/PGID Set? | fsGroup | Last Audit |
+|-----|-----------|-------|----------------|---------|------------|
+| bazarr | swift-sail | linuxserver/bazarr | ? | ? | - |
+| bookstack | temple-of-time | linuxserver/bookstack | ? | ? | - |
+| calibre-web | temple-of-time | linuxserver/calibre-web | ? | 1000 | - |
+| code-server | tingle-tuner | linuxserver/code-server | ? | ? | - |
+| emulatorjs | shooting-gallery | linuxserver/emulatorjs | ? | ? | - |
+| ferdium | tingle-tuner | linuxserver/ferdium | ? | ? | - |
+| faster-whisper | tingle-tuner | linuxserver/faster-whisper | ? | ? | - |
+| netbootxyz | pedestal-of-time | linuxserver/netbootxyz | ? | ? | - |
+| projectsend | temple-of-time | linuxserver/projectsend | ? | ? | - |
+| prowlarr | swift-sail | linuxserver/prowlarr | ? | ? | - |
+| pyload-ng | swift-sail | linuxserver/pyload-ng | ? | ? | - |
+| sabnzbd | swift-sail | linuxserver/sabnzbd | ? | ? | - |
+| speedtest-tracker | gossip-stone | linuxserver/speedtest-tracker | ? | ? | - |
+| thelounge | swift-sail | linuxserver/thelounge | ? | ? | - |
+| unifi | compass | linuxserver/unifi-network-application | ? | ? | - |
+| whisparr | swift-sail | linuxserver/whisparr | ? | ? | - |
+| xbackbone | temple-of-time | linuxserver/xbackbone | ? | ? | - |
+| qbittorrent | swift-sail | linuxserver/qbittorrent | 1000/1000 | 1000 | 2026-02-05 |
+| radarr | swift-sail | linuxserver/radarr | 1000/1000 | 1000 | 2026-02-05 |
+| sonarr | swift-sail | linuxserver/sonarr | 1000/1000 | 1000 | 2026-02-05 |
+| lidarr | swift-sail | linuxserver/lidarr | 1000/1000 | 1000 | 2026-02-05 |
+| readarr | swift-sail | linuxserver/readarr | 1000/1000 | 1000 | 2026-02-05 |
+| organizr | lost-woods | linuxserver/organizr | ? | ? | - |
+
+---
+
+## Root Required (Cannot Change Without Upstream Fixes)
+
+These apps require root for legitimate technical reasons.
+
+| App | Namespace | Image | Reason | Last Audit |
+|-----|-----------|-------|--------|------------|
+| ollama | tingle-tuner | ollama/ollama | Stores data in /root/.ollama | - |
+| romm | temple-of-time | rommapp/romm | Known bugs (#1302, #1327, #1338, #2432) | - |
+| lubelogger | temple-of-time | hargata/lubelogger | Mounts /root/.aspnet/DataProtection-Keys | - |
+| jellyseerr | swift-sail | fallenbagel/jellyseerr | Root (UID 0), no USER directive | - |
+| overseerr | swift-sail | sctx/overseerr | Root (UID 0), no USER directive | - |
+| mealie | temple-of-time | hkotel/mealie | Uses PUID/PGID mechanism, starts as root | - |
+| home-assistant | pedestal-of-time | homeassistant/home-assistant | Needs host access for devices | - |
+| zigbee2mqtt | pedestal-of-time | koenkk/zigbee2mqtt | Needs device access | - |
+| frigate | lens-of-truth | blakeblackshear/frigate | Needs device/GPU access, privileged | - |
+| kasm | tingle-tuner | kasmweb/core | Needs privileged for DinD | - |
+| osticket | hyrule-castle | osticket/osticket | No USER, Apache root pattern | - |
+| dolibarr | hyrule-castle | dolibarr/dolibarr | No USER directive | - |
+| kimai | hyrule-castle | kimai/kimai2 | No USER directive | - |
+| monica | hyrule-castle | monica | No USER directive | - |
+| opnform | hyrule-castle | opnform | Complex multi-container, no USER | - |
+| hrconvert2 | tingle-tuner | zelon88/hrconvert2 | Apache needs root to bind port 80 | - |
+| piper | pedestal-of-time | rhasspy/wyoming-piper | Root, no USER | - |
+| openwakeword | pedestal-of-time | rhasspy/wyoming-openwakeword | Root, no USER | - |
+| reactive-resume (app) | hyrule-castle | amruthpillai/reactive-resume | No USER, untested upstream | - |
+| meilisearch | temple-of-time | getmeili/meilisearch | Non-root reverted in v0.25.0 | - |
+
+---
+
+## Needs Investigation
+
+Apps requiring further research before hardening.
+
+| App | Namespace | Image | Notes | Last Audit |
+|-----|-----------|-------|-------|------------|
+| anirra | swift-sail | jpyles0524/anirra | Custom image, no public docs, UID unknown | - |
+| convertx | tingle-tuner | c4illin/convertx | No USER, uncertain with SQLite permissions | - |
+| mazanoke | tingle-tuner | civilblur/mazanoke | nginx:alpine port 80, needs ConfigMap override | - |
+| py-kms | tingle-tuner | py-kms-organization/py-kms | Likely has non-root user, UID unknown | - |
+| librespeed-speedtest | tingle-tuner | librespeed/speedtest | Maintainers say unprivileged, runs as root | - |
+| netalertx | gossip-stone | jokob-sk/netalertx | Has fsGroup: 20211 + NET_RAW/NET_ADMIN caps, complex | - |
+| linkstack | kokiri-forest | linkstackorg/linkstack | Partial: fsGroup: 101, Apache on 8080, init needs root | - |
+
+---
+
+## Post-Postgres-Upgrade
+
+After upgrading Debian postgres images to `postgres:18.1-alpine3.23`, add:
+```yaml
+securityContext:
+  runAsUser: 70
+  runAsGroup: 70
+  fsGroup: 70
+```
+(Alpine postgres UID is 70)
+
+See postgres upgrade plan at `~/.claude/plans/goofy-baking-shamir.md`.
+
+---
+
+## Hardening Phases
+
+### Phase 1: Non-root where possible (In Progress)
+- [x] Gluetun sidecars: minimum capabilities with drop ALL (12 apps)
+- [x] dailytxt: nginx non-root with ConfigMap
+- [x] photoprism/photoprism-x: runAsUser 2432
+- [x] byparr: runAsUser 1000 with emptyDir for venv
+- [x] downloadarrs: StatefulSet with fsGroup 1000
+- [ ] All LSIO images: verify PUID/PGID set
+- [ ] Custom site images: fix nginx configs
+
+### Phase 2: Read-only root filesystem
+- [ ] Audit all apps for writable paths
+- [ ] Add emptyDir mounts for /tmp, /var/run, app-specific paths
+- [ ] Enable `readOnlyRootFilesystem: true`
+
+### Phase 3: Privilege escalation prevention
+- [ ] Add `allowPrivilegeEscalation: false` to all containers
+- [ ] Audit for setuid/setgid binaries in images
+
+### Phase 4: Seccomp profiles
+- [ ] Enable RuntimeDefault seccomp profile cluster-wide
+- [ ] Create custom profiles for apps needing specific syscalls
+
+### Phase 5: Minimal images
+- [ ] Flag images with unnecessary tools (shells, package managers)
+- [ ] Consider distroless alternatives where available
+
+---
+
+## Audit Log
+
+| Date | Auditor | Changes |
+|------|---------|---------|
+| 2026-02-05 | Claude | Initial audit creation, gluetun caps (12 apps), downloadarrs→StatefulSet, byparr non-root, photoprism non-root, dailytxt non-root, TZ fix to America/Los_Angeles |
