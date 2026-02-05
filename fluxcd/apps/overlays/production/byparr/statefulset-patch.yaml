@@ -46,7 +46,6 @@ spec:
             claimName: byparr-cache-pvc
         - name: venv
           emptyDir:
-            medium: Memory
             sizeLimit: 1Gi
   volumeClaimTemplates:
     - metadata:
