@@ -40,7 +40,11 @@ spec:
         - name: gluetun
           image: docker.io/qmcgaw/gluetun:PLACEHOLDER_IMAGE_TAG
           securityContext:
-            privileged: true
+            capabilities:
+              add:
+                - NET_ADMIN
+              drop:
+                - ALL
           env:
             - name: VPN_SERVICE_PROVIDER
               value: "PLACEHOLDER_VPN_PROVIDER"
