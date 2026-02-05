@@ -22,14 +22,13 @@ spec:
   values:
     # CNI configuration for Ambient mode
     cni:
-      # Use Cilium's CNI chaining
+      # Use Cilium's CNI paths
       cniBinDir: /opt/cni/bin
       cniConfDir: /etc/cni/net.d
-      # Use higher number than Cilium (05) to chain after it
-      cniConfFileName: 10-istio-cni.conflist
 
-      # Explicitly disable chained mode - write our own config
-      chained: false
+      # Chain with Cilium's CNI config (CRITICAL for Cilium + Istio)
+      chained: true
+      cniConfFileName: 05-cilium.conflist
 
       # Ambient mode requires privileged CNI
       privileged: true
