@@ -47,7 +47,7 @@ spec:
         - name: venv
           emptyDir:
             medium: Memory
-            sizeLimit: 256Mi
+            sizeLimit: 1Gi
   volumeClaimTemplates:
     - metadata:
         name: screenshots
