@@ -6,14 +6,14 @@ spec:
   replicas: 1
   template:
     spec:
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
       containers:
         - name: speedtest-tracker
           image: docker.io/linuxserver/speedtest-tracker:1.13.5
           env:
-            - name: PUID
-              value: "1000"
-            - name: PGID
-              value: "1000"
             - name: SPEEDTEST_SCHEDULE
               value: "0 12 * * *"
             - name: SPEEDTEST_SERVERS
@@ -36,6 +36,11 @@ spec:
               mountPath: /config
             - name: gossip-stone-speedtest-tracker-keys
               mountPath: /config/keys
+            - name: run
+              mountPath: /run
+      volumes:
+        - name: run
+          emptyDir: {}
   volumeClaimTemplates:
     - metadata:
         name: gossip-stone-speedtest-tracker-config
