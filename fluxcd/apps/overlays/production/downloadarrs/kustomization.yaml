@@ -9,8 +9,8 @@ resources:
   - externalsecret-prowlarr.yaml
   - static-rbd-volumes.yaml
 patches:
-  - path: deployment-patch.yaml
+  - path: statefulset-patch.yaml
     target:
-      kind: Deployment
+      kind: StatefulSet
       name: downloadarrs
   - path: externalsecret-patch.yaml

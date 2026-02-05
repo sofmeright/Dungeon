@@ -1,8 +1,9 @@
 apiVersion: apps/v1
-kind: Deployment
+kind: StatefulSet
 metadata:
   name: downloadarrs
 spec:
+  serviceName: downloadarrs
   replicas: 1
   selector:
     matchLabels:
@@ -316,6 +317,9 @@ spec:
           env:
             - name: TZ
               value: PLACEHOLDER_TZ
+          securityContext:
+            runAsUser: 1000
+            runAsGroup: 1000
           volumeMounts:
             - name: cross-seed-config
               mountPath: /config
