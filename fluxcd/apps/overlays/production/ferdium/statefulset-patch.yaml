@@ -15,7 +15,7 @@ spec:
             - name: PGID
               value: "1000"
             - name: TZ
-              value: "America/New_York"
+              value: "America/Los_Angeles"
           resources:
             requests:
               cpu: 100m

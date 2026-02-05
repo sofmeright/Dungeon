@@ -11,7 +11,7 @@ spec:
           image: docker.io/linuxserver/unifi-network-application:9.0.114
           env:
             - name: TZ
-              value: "America/Phoenix"
+              value: "America/Los_Angeles"
   volumeClaimTemplates:
     - metadata:
         name: zeldas-lullaby-unifi-config

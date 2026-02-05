@@ -11,7 +11,7 @@ spec:
           image: docker.io/linuxserver/mariadb:11.4.8
           env:
             - name: TZ
-              value: "America/Phoenix"
+              value: "America/Los_Angeles"
   volumeClaimTemplates:
     - metadata:
         name: temple-of-time-shlink-mysql

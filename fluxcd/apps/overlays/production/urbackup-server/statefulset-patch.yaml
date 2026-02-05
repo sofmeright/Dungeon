@@ -7,19 +7,19 @@ spec:
   template:
     spec:
       imagePullSecrets:
-      - name: jcr-pcfae-dungeon-pull-secret
+        - name: jcr-pcfae-dungeon-pull-secret
       containers:
-      - name: urbackup-server
-        image: docker.io/uroni/urbackup-server:2.6.15
-        env:
-        - name: TZ
-          value: "America/Phoenix"
+        - name: urbackup-server
+          image: docker.io/uroni/urbackup-server:2.6.15
+          env:
+            - name: TZ
+              value: "America/Los_Angeles"
   volumeClaimTemplates:
-  - metadata:
-      name: fairy-bottle-urbackup-data
-    spec:
-      storageClassName: ceph-rbd-retain
-  - metadata:
-      name: fairy-bottle-urbackup-backups
-    spec:
-      storageClassName: ceph-rbd-retain
+    - metadata:
+        name: fairy-bottle-urbackup-data
+      spec:
+        storageClassName: ceph-rbd-retain
+    - metadata:
+        name: fairy-bottle-urbackup-backups
+      spec:
+        storageClassName: ceph-rbd-retain

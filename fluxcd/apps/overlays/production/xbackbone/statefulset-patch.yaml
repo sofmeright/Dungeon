@@ -11,7 +11,7 @@ spec:
           image: docker.io/linuxserver/xbackbone:v3.8.8
           env:
             - name: TZ
-              value: "America/Phoenix"
+              value: "America/Los_Angeles"
   volumeClaimTemplates:
     - metadata:
         name: tingle-tuner-xbackbone-config

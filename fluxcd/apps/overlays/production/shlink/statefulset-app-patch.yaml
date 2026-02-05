@@ -16,6 +16,6 @@ spec:
           image: docker.io/shlinkio/shlink:5.0.0
           env:
             - name: TZ
-              value: "America/Phoenix"
+              value: "America/Los_Angeles"
             - name: DEFAULT_DOMAIN
               value: "sh.uni2.cc"
