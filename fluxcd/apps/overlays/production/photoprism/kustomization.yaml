@@ -4,7 +4,6 @@ namespace: temple-of-time
 resources:
   - ../../../base/photoprism
   - httproute-xylem.yaml
-  - destinationrule.yaml
 patches:
   - path: statefulset-patch.yaml
     target:
