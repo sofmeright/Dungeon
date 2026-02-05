@@ -29,11 +29,8 @@ spec:
             - name: VPN_SERVICE_PROVIDER
               value: "private internet access"
             - name: SERVER_REGIONS
-              value: >-
-                US East,US West,US Chicago,US New York,US Atlanta,US Denver,
-                US Seattle,US Silicon Valley,US Texas,US Florida,CA Montreal,
-                CA Toronto,CA Vancouver,UK London,UK Manchester,DE Berlin,
-                DE Frankfurt,France,Romania
+              # yamllint disable-line rule:line-length
+              value: "US East,US West,US Chicago,US New York,US Atlanta,US Denver,US Seattle,US Silicon Valley,US Texas,US Florida,CA Montreal,CA Toronto,CA Vancouver,UK London,UK Manchester,DE Berlin,DE Frankfurt,France,Romania"
             - name: VPN_PORT_FORWARDING
               value: "off"
             - name: FIREWALL_OUTBOUND_SUBNETS
