@@ -80,6 +80,7 @@ spec:
                 - CHOWN
                 - DAC_OVERRIDE
                 - FOWNER
+                - MKNOD
                 - SETUID
                 - SETGID
               drop:
