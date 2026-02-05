@@ -23,6 +23,8 @@ spec:
               mountPath: /app/screenshots
             - name: cache
               mountPath: /app/.cache
+            - name: venv
+              mountPath: /app/.venv
         - name: gluetun
           image: docker.io/qmcgaw/gluetun:v3.40.0
           env:
@@ -40,6 +42,10 @@ spec:
         - name: cache
           persistentVolumeClaim:
             claimName: byparr-cache-pvc
+        - name: venv
+          emptyDir:
+            medium: Memory
+            sizeLimit: 256Mi
   volumeClaimTemplates:
     - metadata:
         name: screenshots
