@@ -77,6 +77,11 @@ spec:
             capabilities:
               add:
                 - NET_ADMIN
+                - CHOWN
+                - DAC_OVERRIDE
+                - FOWNER
+                - SETUID
+                - SETGID
               drop:
                 - ALL
           env:
