@@ -21,7 +21,11 @@ spec:
           memory: 512Mi
     # eBPF native datapath configuration
     bpf:
-      masquerade: true  # Enable BPF masquerade for external traffic
+      # Disable BPF masquerade for Istio Ambient compatibility
+      # (falls back to iptables masquerade - Istio rewrites health probe source IPs
+      # to 169.254.7.127 which BPF masquerade breaks before Istio can process them)
+      # See: https://github.com/cilium/cilium/issues/36022
+      masquerade: false
       # Enable additional BPF features for better performance
       lbExternalClusterIP: true
 
@@ -63,8 +67,12 @@ spec:
 
     # Additional performance optimizations
     bpfClockProbe: true
-    # Enable socket LB only in host namespace for Istio Ambient compatibility
-    bpfLBSockHostnsOnly: true
+
+    # Istio Ambient mode compatibility - limit socket LB to host namespace
+    # Prevents Cilium from interfering with Istio's traffic redirection
+    # See: https://docs.cilium.io/en/stable/network/servicemesh/istio/
+    socketLB:
+      hostNamespaceOnly: true
 
     # CNI configuration for Istio Ambient mode compatibility
     cni:
