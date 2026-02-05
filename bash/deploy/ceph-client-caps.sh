@@ -15,14 +15,14 @@ echo "=== Updating Ceph client capabilities for dungeon cluster ==="
 # client.dungeon - used by CSI node plugin for mounting RBD volumes
 echo "Updating client.dungeon caps..."
 ceph auth caps client.dungeon \
-  mon 'allow r, allow command "osd blacklist"' \
+  mon 'allow r, allow command "osd blacklist", allow command "osd blocklist"' \
   osd 'allow class-read object_prefix rbd_children, allow rwx pool=dungeon, allow rwx pool=dungeon_hdd' \
   mgr 'allow rw'
 
 # client.dungeon-provisioner - used by CSI controller for provisioning RBD volumes
 echo "Updating client.dungeon-provisioner caps..."
 ceph auth caps client.dungeon-provisioner \
-  mon 'allow r, allow command "osd blacklist"' \
+  mon 'allow r, allow command "osd blacklist", allow command "osd blocklist"' \
   osd 'allow rwx pool=dungeon, allow rwx pool=dungeon_hdd, allow class-read object_prefix rbd_children, allow class-write object_prefix rbd_children' \
   mgr 'allow rw'
 

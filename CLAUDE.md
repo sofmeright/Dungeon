@@ -139,8 +139,15 @@
     - `dungeon-rgw` - RGW metadata pool (realm/zone/control/meta/log/index)
     - `dungeon-rgw-data` - RGW object data pool (actual S3 bucket objects)
   - **Ceph Users**:
-    - `client.dungeon-provisioner` - RBD volume provisioner (caps: mon 'allow r, allow command "osd blacklist"', osd 'allow rwx pool=kubernetes', mgr 'allow rw')
-    - `client.dungeon` - RBD volume mounter (caps: mon 'allow r', osd 'allow class-read object_prefix rbd_children, allow rwx pool=kubernetes')
+    - `client.dungeon-provisioner` - RBD volume provisioner
+      (caps: mon 'allow r, allow command "osd blacklist", allow command "osd blocklist"',
+      osd 'allow rwx pool=dungeon, allow rwx pool=dungeon_hdd,
+      allow class-read object_prefix rbd_children,
+      allow class-write object_prefix rbd_children', mgr 'allow rw')
+    - `client.dungeon` - RBD volume mounter
+      (caps: mon 'allow r, allow command "osd blacklist", allow command "osd blocklist"',
+      osd 'allow class-read object_prefix rbd_children,
+      allow rwx pool=dungeon, allow rwx pool=dungeon_hdd', mgr 'allow rw')
     - `client.dungeon-rgw` - RADOS Gateway user (caps: mon 'allow rw', osd 'allow rwx', mgr 'allow rw')
   - **RGW (S3) Configuration**:
     - Deployed in `gorons-bracelet` namespace as StatefulSet

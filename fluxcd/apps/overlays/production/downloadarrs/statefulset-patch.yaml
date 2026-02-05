@@ -15,32 +15,32 @@ spec:
             - name: FIREWALL_OUTBOUND_SUBNETS
               value: "10.144.0.0/12,172.16.0.0/12,172.22.30.33/32,192.168.144.0/20"
             - name: TZ
-              value: "America/Chicago"
+              value: "America/Los_Angeles"
         - name: qbittorrent
           env:
             - name: TZ
-              value: "America/Chicago"
+              value: "America/Los_Angeles"
         - name: radarr
           env:
             - name: TZ
-              value: "America/Chicago"
+              value: "America/Los_Angeles"
         - name: sonarr
           env:
             - name: TZ
-              value: "America/Chicago"
+              value: "America/Los_Angeles"
         - name: lidarr
           env:
             - name: TZ
-              value: "America/Chicago"
+              value: "America/Los_Angeles"
         - name: readarr
           env:
             - name: TZ
-              value: "America/Chicago"
+              value: "America/Los_Angeles"
         - name: cross-seed
           command: ["cross-seed", "daemon"]
           env:
             - name: TZ
-              value: "America/Chicago"
+              value: "America/Los_Angeles"
       volumes:
         # Gluetun
         - name: gluetun-config

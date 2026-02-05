@@ -15,12 +15,14 @@ spec:
           image: ghcr.io/thephaseless/byparr:2.0.1
           env:
             - name: TZ
-              value: "America/Chicago"
+              value: "America/Los_Angeles"
+            - name: UV_CACHE_DIR
+              value: "/app/.cache/uv"
           volumeMounts:
             - name: screenshots
               mountPath: /app/screenshots
             - name: cache
-              mountPath: /root/.cache
+              mountPath: /app/.cache
         - name: gluetun
           image: docker.io/qmcgaw/gluetun:v3.40.0
           env:

@@ -10,7 +10,7 @@ spec:
           image: docker.io/linuxserver/sabnzbd:4.5.5
           env:
             - name: TZ
-              value: "America/Chicago"
+              value: "America/Los_Angeles"
         - name: gluetun
           image: docker.io/qmcgaw/gluetun:v3.39.1
           env:
