@@ -4,6 +4,7 @@ namespace: gossip-stone
 resources:
   - ../../../base/speedtest-tracker
   - httproute-xylem.yaml
+  - nginx-configmap.yaml
 patches:
   - path: statefulset-patch.yaml
     target:

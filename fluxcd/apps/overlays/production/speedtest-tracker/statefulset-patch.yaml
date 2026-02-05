@@ -14,6 +14,10 @@ spec:
         - name: speedtest-tracker
           image: docker.io/linuxserver/speedtest-tracker:1.13.5
           env:
+            - name: PUID
+              value: "1000"
+            - name: PGID
+              value: "1000"
             - name: SPEEDTEST_SCHEDULE
               value: "0 12 * * *"
             - name: SPEEDTEST_SERVERS
@@ -38,9 +42,15 @@ spec:
               mountPath: /config/keys
             - name: run
               mountPath: /run
+            - name: nginx-config
+              mountPath: /config/nginx/site-confs/default.conf
+              subPath: default.conf
       volumes:
         - name: run
           emptyDir: {}
+        - name: nginx-config
+          configMap:
+            name: speedtest-tracker-nginx
   volumeClaimTemplates:
     - metadata:
         name: gossip-stone-speedtest-tracker-config
