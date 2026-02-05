@@ -77,6 +77,71 @@ Apps that have been hardened and verified.
 | byparr | swift-sail | 1000:1000 | 1000 | N | ? | N | 2026-02-05 | UV cache/venv as emptyDir, gluetun sidecar needs caps |
 | downloadarrs (cross-seed) | swift-sail | 1000:1000 | 1000 | N | ? | N | 2026-02-05 | Runs non-root |
 | pinchflat | swift-sail | 3000:3141 | ? | N | ? | N | 2026-02-05 | Already non-root in image |
+| speedtest-tracker | gossip-stone | 1000:1000 | 1000 | N | N | N | 2026-02-05 | LSIO non-root pattern (see below) |
+
+---
+
+## LSIO Non-Root Pattern
+
+LinuxServer.io images can run as true non-root using this pattern (tested on speedtest-tracker):
+
+```yaml
+spec:
+  template:
+    spec:
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+      initContainers:
+        - name: init-storage
+          image: docker.io/alpine/k8s:1.34.0
+          command: ["sh", "-c", "mkdir -p /storage/app/public /storage/framework/cache /storage/framework/sessions /storage/framework/views /storage/logs"]
+          volumeMounts:
+            - name: app-storage
+              mountPath: /storage
+      containers:
+        - name: app
+          env:
+            - name: PUID
+              value: "1000"
+            - name: PGID
+              value: "1000"
+            - name: LOG_CHANNEL
+              value: "stderr"  # Logs to k8s/Loki instead of files
+          volumeMounts:
+            - name: run
+              mountPath: /run
+            - name: app-storage
+              mountPath: /app/www/storage
+            - name: nginx-config
+              mountPath: /config/nginx/site-confs/default.conf
+              subPath: default.conf
+      volumes:
+        - name: run
+          emptyDir:
+            sizeLimit: 10Mi
+        - name: app-storage
+          emptyDir:
+            sizeLimit: 50Mi
+        - name: nginx-config
+          configMap:
+            name: app-nginx  # Override to use port 8080
+```
+
+**Key requirements:**
+- `/run` emptyDir for s6 runtime (pids, sockets)
+- `/app/www/storage` emptyDir with init container for Laravel dirs
+- nginx ConfigMap override to listen on port 8080 instead of 80
+- Service targetPort updated to 8080
+- `LOG_CHANNEL=stderr` to avoid file-based logging
+- `sizeLimit` on emptyDirs to prevent unbounded growth
+- PUID/PGID still set (s6 recognizes but doesn't try to switch)
+
+**Limitations:**
+- Some s6 warnings about supplementary groups (harmless)
+- Docker Mods won't work
+- Not all LSIO images tested
 
 ---
 
@@ -145,33 +210,45 @@ Then update overlay with `runAsUser: 100, runAsGroup: 101` and containerPort 808
 
 ## LinuxServer.io Images
 
-These use s6-overlay init system and **must NOT use `runAsUser`**. They start as root but drop to PUID/PGID internally. Verify env vars are set in overlay.
+These use s6-overlay init system. Two approaches are supported:
 
-| App | Namespace | Image | PUID/PGID Set? | fsGroup | Last Audit |
-|-----|-----------|-------|----------------|---------|------------|
-| bazarr | swift-sail | linuxserver/bazarr | ? | ? | - |
-| bookstack | temple-of-time | linuxserver/bookstack | ? | ? | - |
-| calibre-web | temple-of-time | linuxserver/calibre-web | ? | 1000 | - |
-| code-server | tingle-tuner | linuxserver/code-server | ? | ? | - |
-| emulatorjs | shooting-gallery | linuxserver/emulatorjs | ? | ? | - |
-| ferdium | tingle-tuner | linuxserver/ferdium | ? | ? | - |
-| faster-whisper | tingle-tuner | linuxserver/faster-whisper | ? | ? | - |
-| netbootxyz | pedestal-of-time | linuxserver/netbootxyz | ? | ? | - |
-| projectsend | temple-of-time | linuxserver/projectsend | ? | ? | - |
-| prowlarr | swift-sail | linuxserver/prowlarr | ? | ? | - |
-| pyload-ng | swift-sail | linuxserver/pyload-ng | ? | ? | - |
-| sabnzbd | swift-sail | linuxserver/sabnzbd | ? | ? | - |
-| speedtest-tracker | gossip-stone | linuxserver/speedtest-tracker | ? | ? | - |
-| thelounge | swift-sail | linuxserver/thelounge | ? | ? | - |
-| unifi | compass | linuxserver/unifi-network-application | ? | ? | - |
-| whisparr | swift-sail | linuxserver/whisparr | ? | ? | - |
-| xbackbone | temple-of-time | linuxserver/xbackbone | ? | ? | - |
-| qbittorrent | swift-sail | linuxserver/qbittorrent | 1000/1000 | 1000 | 2026-02-05 |
-| radarr | swift-sail | linuxserver/radarr | 1000/1000 | 1000 | 2026-02-05 |
-| sonarr | swift-sail | linuxserver/sonarr | 1000/1000 | 1000 | 2026-02-05 |
-| lidarr | swift-sail | linuxserver/lidarr | 1000/1000 | 1000 | 2026-02-05 |
-| readarr | swift-sail | linuxserver/readarr | 1000/1000 | 1000 | 2026-02-05 |
-| organizr | lost-woods | linuxserver/organizr | ? | ? | - |
+**Option A: Traditional (root start, PUID/PGID drop)**
+- Container starts as root, s6-overlay drops to PUID/PGID
+- Simpler setup but container technically runs as root initially
+- Required if using Docker Mods
+
+**Option B: True non-root (RECOMMENDED)**
+- Use `runAsUser/runAsGroup/fsGroup` in securityContext
+- Keep PUID/PGID env vars (s6 recognizes but doesn't switch)
+- Requires nginx ConfigMap override for port 8080
+- Requires emptyDir for /run and app-specific writable paths
+- See [LSIO Non-Root Pattern](#lsio-non-root-pattern) section above
+
+| App | Namespace | Image | Mode | PUID/PGID | fsGroup | Last Audit |
+|-----|-----------|-------|------|-----------|---------|------------|
+| speedtest-tracker | gossip-stone | linuxserver/speedtest-tracker | B (non-root) | 1000/1000 | 1000 | 2026-02-05 |
+| qbittorrent | swift-sail | linuxserver/qbittorrent | A (root→drop) | 1000/1000 | 1000 | 2026-02-05 |
+| radarr | swift-sail | linuxserver/radarr | A (root→drop) | 1000/1000 | 1000 | 2026-02-05 |
+| sonarr | swift-sail | linuxserver/sonarr | A (root→drop) | 1000/1000 | 1000 | 2026-02-05 |
+| lidarr | swift-sail | linuxserver/lidarr | A (root→drop) | 1000/1000 | 1000 | 2026-02-05 |
+| readarr | swift-sail | linuxserver/readarr | A (root→drop) | 1000/1000 | 1000 | 2026-02-05 |
+| bazarr | swift-sail | linuxserver/bazarr | ? | ? | ? | - |
+| bookstack | temple-of-time | linuxserver/bookstack | ? | ? | ? | - |
+| calibre-web | temple-of-time | linuxserver/calibre-web | ? | ? | 1000 | - |
+| code-server | tingle-tuner | linuxserver/code-server | ? | ? | ? | - |
+| emulatorjs | shooting-gallery | linuxserver/emulatorjs | ? | ? | ? | - |
+| ferdium | tingle-tuner | linuxserver/ferdium | ? | ? | ? | - |
+| faster-whisper | tingle-tuner | linuxserver/faster-whisper | ? | ? | ? | - |
+| netbootxyz | pedestal-of-time | linuxserver/netbootxyz | ? | ? | ? | - |
+| organizr | lost-woods | linuxserver/organizr | ? | ? | ? | - |
+| projectsend | temple-of-time | linuxserver/projectsend | ? | ? | ? | - |
+| prowlarr | swift-sail | linuxserver/prowlarr | ? | ? | ? | - |
+| pyload-ng | swift-sail | linuxserver/pyload-ng | ? | ? | ? | - |
+| sabnzbd | swift-sail | linuxserver/sabnzbd | ? | ? | ? | - |
+| thelounge | swift-sail | linuxserver/thelounge | ? | ? | ? | - |
+| unifi | compass | linuxserver/unifi-network-application | ? | ? | ? | - |
+| whisparr | swift-sail | linuxserver/whisparr | ? | ? | ? | - |
+| xbackbone | temple-of-time | linuxserver/xbackbone | ? | ? | ? | - |
 
 ---
 
@@ -270,3 +347,8 @@ See postgres upgrade plan at `~/.claude/plans/goofy-baking-shamir.md`.
 | Date | Auditor | Changes |
 |------|---------|---------|
 | 2026-02-05 | Claude | Initial audit creation, gluetun caps (12 apps), downloadarrs→StatefulSet, byparr non-root, photoprism non-root, dailytxt non-root, TZ fix to America/Los_Angeles |
+| 2026-02-05 | Claude | speedtest-tracker LSIO non-root pattern (pioneer), updated LSIO section with Mode column, created workload-compliance-manifest.md |
+
+## Related Documents
+
+- **[Workload Compliance Manifest](workload-compliance-manifest.md)** - Comprehensive tracking of all ~120 workloads against all production standards (security, resources, observability, reliability, images, network)

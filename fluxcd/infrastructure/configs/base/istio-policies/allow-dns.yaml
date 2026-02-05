@@ -1,0 +1,15 @@
+# Allow DNS queries to kube-dns
+# Required for all pods to resolve service names
+apiVersion: security.istio.io/v1
+kind: AuthorizationPolicy
+metadata:
+  name: allow-dns
+spec:
+  action: ALLOW
+  rules:
+    - to:
+        - operation:
+            ports: ["53"]
+      from:
+        - source:
+            namespaces: ["kube-system"]

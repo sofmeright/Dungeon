@@ -1,0 +1,17 @@
+# Allow Prometheus to scrape metrics from all pods
+# Required for monitoring to function
+apiVersion: security.istio.io/v1
+kind: AuthorizationPolicy
+metadata:
+  name: allow-prometheus-scrape
+spec:
+  action: ALLOW
+  rules:
+    - from:
+        - source:
+            namespaces: ["gossip-stone"]
+            principals: ["cluster.local/ns/gossip-stone/sa/prometheus"]
+      to:
+        - operation:
+            # Common metrics ports
+            ports: ["9090", "9091", "9100", "9115", "9153", "9187", "9216", "15020"]

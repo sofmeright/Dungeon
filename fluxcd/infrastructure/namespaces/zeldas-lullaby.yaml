@@ -6,3 +6,4 @@ metadata:
     name: zeldas-lullaby
     jcr-pull-secret: "enabled"
     docker-io-pull-secret: "enabled"
+    istio.io/dataplane-mode: ambient

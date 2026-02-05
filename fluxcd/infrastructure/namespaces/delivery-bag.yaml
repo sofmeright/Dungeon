@@ -4,3 +4,4 @@ metadata:
   name: delivery-bag
   labels:
     jcr-pull-secret: enabled
+    istio.io/dataplane-mode: ambient

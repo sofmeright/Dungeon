@@ -1,0 +1,14 @@
+# Allow ingress from Traefik gateway to tingle-tuner apps
+apiVersion: security.istio.io/v1
+kind: AuthorizationPolicy
+metadata:
+  name: allow-gateway-ingress
+spec:
+  action: ALLOW
+  rules:
+    - from:
+        - source:
+            namespaces: ["king-of-red-lions"]
+      to:
+        - operation:
+            ports: ["80", "8080", "3000", "5000"]

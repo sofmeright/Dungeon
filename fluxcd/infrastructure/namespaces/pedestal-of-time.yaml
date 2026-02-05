@@ -6,3 +6,4 @@ metadata:
     name: pedestal-of-time
     jcr-pull-secret: "enabled"
     docker-io-pull-secret: "enabled"
+    istio.io/dataplane-mode: ambient

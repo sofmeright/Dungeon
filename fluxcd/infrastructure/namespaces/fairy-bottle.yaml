@@ -4,3 +4,4 @@ metadata:
   name: fairy-bottle
   labels:
     jcr-pull-secret: "enabled"
+    istio.io/dataplane-mode: ambient

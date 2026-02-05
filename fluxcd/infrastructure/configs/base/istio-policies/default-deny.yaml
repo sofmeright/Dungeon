@@ -1,0 +1,11 @@
+# Default deny-all policy for namespace
+# This policy denies all traffic unless explicitly allowed by other policies
+# Apply to each namespace that should have zero-trust networking
+apiVersion: security.istio.io/v1
+kind: AuthorizationPolicy
+metadata:
+  name: default-deny
+spec:
+  # Empty selector = applies to all workloads in namespace
+  {}
+  # No rules = deny all traffic
