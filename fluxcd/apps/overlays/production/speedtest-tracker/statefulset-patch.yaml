@@ -10,6 +10,22 @@ spec:
         runAsUser: 1000
         runAsGroup: 1000
         fsGroup: 1000
+      initContainers:
+        - name: init-storage
+          image: docker.io/alpine/k8s:1.34.0
+          command:
+            - sh
+            - -c
+            - |
+              mkdir -p /storage/app/public
+              mkdir -p /storage/framework/cache
+              mkdir -p /storage/framework/sessions
+              mkdir -p /storage/framework/views
+              mkdir -p /storage/logs
+              echo "Storage directories created"
+          volumeMounts:
+            - name: app-storage
+              mountPath: /storage
       containers:
         - name: speedtest-tracker
           image: docker.io/linuxserver/speedtest-tracker:1.13.5
