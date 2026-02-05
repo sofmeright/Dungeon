@@ -96,7 +96,7 @@
         pg_user: postgres
         pvc_name: tingle-tuner-lenpaste-postgres-lenpaste-postgres-0
         overlay_file: fluxcd/apps/overlays/production/lenpaste/statefulset-postgres-patch.yaml
-        current_version: "16"
+        current_version: "18"  # Already upgraded
         app_workloads:
           - kind: StatefulSet
             name: lenpaste-app
