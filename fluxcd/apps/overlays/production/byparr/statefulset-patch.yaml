@@ -18,6 +18,8 @@ spec:
               value: "America/Los_Angeles"
             - name: UV_CACHE_DIR
               value: "/app/.cache/uv"
+            - name: UV_PYTHON_INSTALL_DIR
+              value: "/app/.cache/uv/python"
           volumeMounts:
             - name: screenshots
               mountPath: /app/screenshots
