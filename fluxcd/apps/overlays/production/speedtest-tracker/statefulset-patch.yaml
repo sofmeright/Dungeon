@@ -34,6 +34,8 @@ spec:
               value: "1000"
             - name: PGID
               value: "1000"
+            - name: LOG_CHANNEL
+              value: "stderr"
             - name: SPEEDTEST_SCHEDULE
               value: "0 12 * * *"
             - name: SPEEDTEST_SERVERS
@@ -65,12 +67,14 @@ spec:
               mountPath: /app/www/storage
       volumes:
         - name: run
-          emptyDir: {}
+          emptyDir:
+            sizeLimit: 10Mi
         - name: nginx-config
           configMap:
             name: speedtest-tracker-nginx
         - name: app-storage
-          emptyDir: {}
+          emptyDir:
+            sizeLimit: 50Mi
   volumeClaimTemplates:
     - metadata:
         name: gossip-stone-speedtest-tracker-config
