@@ -11,6 +11,7 @@ resources:
   - envoyfilter-hsts-xylem.yaml
   - envoyfilter-hsts-phloem.yaml
   - envoyfilter-hsts-cell-membrane.yaml
+  - httproute-echoip-http.yaml
   - httproute-http-redirect-xylem.yaml
   - httproute-http-redirect-phloem.yaml
   - httproute-http-redirect-cell-membrane.yaml

@@ -6,7 +6,6 @@ namespace: compass
 resources:
   - ../../../base/echo-ip
   - httproute.yaml
-  - httproute-http.yaml
   - referencegrant.yaml
 
 patches:
