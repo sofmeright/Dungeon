@@ -10,7 +10,7 @@ spec:
     spec:
       containers:
         - name: bazarr
-          image: docker.io/linuxserver/bazarr:1.5.4
+          image: docker.io/linuxserver/bazarr:1.5.5
           env:
             - name: TZ
               value: "America/Los_Angeles"
