@@ -4,51 +4,54 @@ metadata:
   name: gitlab-sentinel
 spec:
   template:
+    metadata:
+      labels:
+        istio.io/dataplane-mode: none
     spec:
       initContainers:
-      - name: config
-        command:
-        - sh
-        - -c
-        - |
-          set -ex
-          # Copy base sentinel config
-          cp /tmp/sentinel/sentinel.conf /etc/redis/sentinel.conf
+        - name: config
+          command:
+            - sh
+            - -c
+            - |
+              set -ex
+              # Copy base sentinel config
+              cp /tmp/sentinel/sentinel.conf /etc/redis/sentinel.conf
 
-          # Find the current Redis master by checking replication info
-          nodes="gitlab-redis-0.gitlab-redis-headless.hyrule-castle.svc.cluster.local,gitlab-redis-1.gitlab-redis-headless.hyrule-castle.svc.cluster.local,gitlab-redis-2.gitlab-redis-headless.hyrule-castle.svc.cluster.local"
+              # Find the current Redis master by checking replication info
+              nodes="gitlab-redis-0.gitlab-redis-headless.hyrule-castle.svc.cluster.local,gitlab-redis-1.gitlab-redis-headless.hyrule-castle.svc.cluster.local,gitlab-redis-2.gitlab-redis-headless.hyrule-castle.svc.cluster.local"
 
-          MASTER_HOST=""
-          for node in $(echo $nodes | tr ',' ' '); do
-            # Try to connect and check if this is the master
-            ROLE=$(redis-cli -h $node -a "$REDIS_PASSWORD" --no-auth-warning info replication 2>/dev/null | grep "role:" | cut -d: -f2 | tr -d '\r\n' || echo "")
-            if [ "$ROLE" = "master" ]; then
-              MASTER_HOST=$node
-              echo "Found master at $MASTER_HOST"
-              break
-            fi
-          done
+              MASTER_HOST=""
+              for node in $(echo $nodes | tr ',' ' '); do
+                # Try to connect and check if this is the master
+                ROLE=$(redis-cli -h $node -a "$REDIS_PASSWORD" --no-auth-warning info replication 2>/dev/null | grep "role:" | cut -d: -f2 | tr -d '\r\n' || echo "")
+                if [ "$ROLE" = "master" ]; then
+                  MASTER_HOST=$node
+                  echo "Found master at $MASTER_HOST"
+                  break
+                fi
+              done
 
-          # If no master found, default to redis-0
-          if [ -z "$MASTER_HOST" ]; then
-            MASTER_HOST="gitlab-redis-0.gitlab-redis-headless.hyrule-castle.svc.cluster.local"
-            echo "No master found, defaulting to $MASTER_HOST"
-          fi
+              # If no master found, default to redis-0
+              if [ -z "$MASTER_HOST" ]; then
+                MASTER_HOST="gitlab-redis-0.gitlab-redis-headless.hyrule-castle.svc.cluster.local"
+                echo "No master found, defaulting to $MASTER_HOST"
+              fi
 
-          # Resolve hostname to IP address for Sentinel config
-          MASTER_IP=$(getent hosts $MASTER_HOST | awk '{ print $1 }' | head -n1)
-          if [ -z "$MASTER_IP" ]; then
-            echo "ERROR: Could not resolve $MASTER_HOST to IP"
-            exit 1
-          fi
-          echo "Resolved $MASTER_HOST to $MASTER_IP"
+              # Resolve hostname to IP address for Sentinel config
+              MASTER_IP=$(getent hosts $MASTER_HOST | awk '{ print $1 }' | head -n1)
+              if [ -z "$MASTER_IP" ]; then
+                echo "ERROR: Could not resolve $MASTER_HOST to IP"
+                exit 1
+              fi
+              echo "Resolved $MASTER_HOST to $MASTER_IP"
 
-          # Configure Sentinel to monitor the master by IP
-          echo "sentinel monitor gitlab-redis $MASTER_IP 6379 2" >> /etc/redis/sentinel.conf
-          echo "sentinel auth-pass gitlab-redis $REDIS_PASSWORD" >> /etc/redis/sentinel.conf
-          echo "sentinel down-after-milliseconds gitlab-redis 5000" >> /etc/redis/sentinel.conf
-          echo "sentinel parallel-syncs gitlab-redis 1" >> /etc/redis/sentinel.conf
-          echo "sentinel failover-timeout gitlab-redis 10000" >> /etc/redis/sentinel.conf
+              # Configure Sentinel to monitor the master by IP
+              echo "sentinel monitor gitlab-redis $MASTER_IP 6379 2" >> /etc/redis/sentinel.conf
+              echo "sentinel auth-pass gitlab-redis $REDIS_PASSWORD" >> /etc/redis/sentinel.conf
+              echo "sentinel down-after-milliseconds gitlab-redis 5000" >> /etc/redis/sentinel.conf
+              echo "sentinel parallel-syncs gitlab-redis 1" >> /etc/redis/sentinel.conf
+              echo "sentinel failover-timeout gitlab-redis 10000" >> /etc/redis/sentinel.conf
 
-          echo "Sentinel configuration complete"
-          cat /etc/redis/sentinel.conf
+              echo "Sentinel configuration complete"
+              cat /etc/redis/sentinel.conf
