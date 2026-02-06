@@ -33,7 +33,7 @@ spec:
               mountPath: /cache
       containers:
         - name: jellyfin
-          image: docker.io/jellyfin/jellyfin:10.10.7
+          image: docker.io/jellyfin/jellyfin:10.11.6
           env:
             - name: JELLYFIN_PublishedServerUrl
               value: "https://jfish.optcp.com"
