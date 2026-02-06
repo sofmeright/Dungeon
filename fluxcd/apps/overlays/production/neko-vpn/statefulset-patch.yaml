@@ -6,8 +6,8 @@ spec:
   replicas: 1
   template:
     metadata:
-      annotations:
-        ambient.istio.io/redirection: disabled
+      labels:
+        istio.io/dataplane-mode: none
     spec:
       affinity:
         nodeAffinity:

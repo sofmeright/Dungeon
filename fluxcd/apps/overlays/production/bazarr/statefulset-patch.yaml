@@ -5,8 +5,8 @@ metadata:
 spec:
   template:
     metadata:
-      annotations:
-        ambient.istio.io/redirection: disabled
+      labels:
+        istio.io/dataplane-mode: none
     spec:
       containers:
         - name: bazarr
