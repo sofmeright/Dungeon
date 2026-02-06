@@ -3,3 +3,4 @@ kind: Kustomization
 resources:
   - bgppeeringpolicy.yaml
   - ippool.yaml
+  - ccnp-istio-ambient.yaml
