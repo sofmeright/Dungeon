@@ -20,7 +20,7 @@ spec:
               done
               echo "PostgreSQL is ready"
         - name: wait-for-redis
-          image: docker.io/redis:6.0-alpine
+          image: docker.io/redis:6.2-alpine
           command:
             - sh
             - -c
