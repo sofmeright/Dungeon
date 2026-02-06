@@ -21,7 +21,7 @@ spec:
       image:
         registry: docker.io
         repository: grafana/alloy
-        tag: "v1.5.1"
+        tag: "v1.13.0"
 
       configMap:
         create: true
