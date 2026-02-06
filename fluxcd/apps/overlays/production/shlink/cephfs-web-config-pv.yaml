@@ -1,0 +1,35 @@
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: temple-of-time-shlink-web-config-pv
+spec:
+  capacity:
+    storage: 100Mi
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  csi:
+    driver: gorons-bracelet.cephfs.csi.ceph.com
+    nodeStageSecretRef:
+      name: csi-cephfs-node
+      namespace: gorons-bracelet
+    volumeAttributes:
+      clusterID: 0985467c-d8f3-4483-b27f-f0a512397ec2
+      fsName: Seed_Bank
+      staticVolume: "true"
+      rootPath: /dungeon/hdd/apps/shlink/web-config
+    volumeHandle: temple-of-time-shlink-web-config-static
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: temple-of-time-shlink-web-config
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 100Mi
+  volumeName: temple-of-time-shlink-web-config-pv
+  storageClassName: ""
