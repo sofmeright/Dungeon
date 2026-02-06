@@ -14,7 +14,7 @@ spec:
         - name: jcr-pcfae-dungeon-pull-secret
       containers:
         - name: twenty-app
-          image: docker.io/twentycrm/twenty:v0.45.0
+          image: docker.io/twentycrm/twenty:v0.60.7
           env:
             - name: SERVER_URL
               value: "http://moor:2020"
