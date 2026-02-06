@@ -1,33 +1,15 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
-namespace: gossip-stone
 resources:
-  - ../../../../base/registries/docker.io-example
+  - ../../../../base/registries/cr.pcfae.com-shared
 patches:
   - target:
-      kind: ExternalSecret
-      name: PLACEHOLDER_REGISTRY_NAME
+      kind: ClusterExternalSecret
+      name: cr-pcfae-admin-pull-secret
     patch: |-
       - op: replace
-        path: /metadata/name
-        value: cr-pcfae-admin-pull-secret
-      - op: replace
-        path: /spec/secretStoreRef/name
+        path: /spec/externalSecretSpec/secretStoreRef/name
         value: vault-zeldas-letter
       - op: replace
-        path: /spec/target/name
-        value: cr-pcfae-admin-pull-secret
-      - op: replace
-        path: /spec/target/template/data/.dockerconfigjson
-        value: |
-          {
-            "auths": {
-              "cr.pcfae.com": {
-                "auth": "{{ printf "%s:%s" .username .password | b64enc }}",
-                "email": ""
-              }
-            }
-          }
-      - op: replace
-        path: /spec/dataFrom/0/extract/key
+        path: /spec/externalSecretSpec/dataFrom/0/extract/key
         value: registries/cr.pcfae.com

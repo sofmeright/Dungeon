@@ -3,4 +3,5 @@ kind: Namespace
 metadata:
   name: lost-woods
   labels:
+    cr-pcfae-pull-secret: "enabled"
     istio.io/dataplane-mode: ambient

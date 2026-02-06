@@ -5,6 +5,7 @@ metadata:
   labels:
     name: lighthouse
     purpose: monitoring
+    cr-pcfae-pull-secret: "enabled"
     jcr-pull-secret: "enabled"
     docker-io-pull-secret: "enabled"
     istio.io/dataplane-mode: ambient
