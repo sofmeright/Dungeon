@@ -39,6 +39,14 @@ data:
             "image:\\s+repository:\\s+\"?(?<depName>.*?)\"?\\s+tag:\\s+\"?(?<currentValue>.*?)\"?"
           ],
           "datasourceTemplate": "docker"
+        },
+        {
+          "customType": "regex",
+          "fileMatch": ["fluxcd/apps/overlays/production/home-assistant/statefulset-patch\\.yaml$"],
+          "matchStrings": [
+            "# renovate: datasource=(?<datasource>.*?) depName=(?<depName>.*?)\\n\\s+- name: COMP_\\d+_VERSION\\n\\s+value: \"?(?<currentValue>[^\"\\n]+)\"?"
+          ],
+          "description": "Home Assistant custom components (HACS, Dreame, etc.)"
         }
       ],
 

@@ -61,6 +61,46 @@ spec:
               mountPath: /config
             - name: seed-config
               mountPath: /seed
+        - name: install-custom-components
+          image: docker.io/alpine/k8s:PLACEHOLDER_TAG
+          command:
+            - sh
+            - -c
+            - |
+              i=1
+              while eval "name=\$COMP_${i}_NAME" && [ -n "$name" ]; do
+                eval "version=\$COMP_${i}_VERSION"
+                eval "url=\$COMP_${i}_URL"
+                dir="/config/custom_components/$name"
+                marker="$dir/.version"
+                if [ -f "$marker" ] && [ "$(cat "$marker")" = "$version" ]; then
+                  echo "$name $version already installed, skipping."
+                else
+                  echo "Installing $name $version..."
+                  rm -rf /tmp/${name}.zip /tmp/${name}_extract
+                  if wget -q -O /tmp/${name}.zip "$url" && unzip -o -q /tmp/${name}.zip -d /tmp/${name}_extract; then
+                    rm -rf "$dir"
+                    mkdir -p "$dir"
+                    top=$(ls /tmp/${name}_extract)
+                    if [ $(echo "$top" | wc -l) = 1 ] && [ -d "/tmp/${name}_extract/$top" ]; then
+                      cp -a /tmp/${name}_extract/$top/* "$dir/"
+                    else
+                      cp -a /tmp/${name}_extract/* "$dir/"
+                    fi
+                    echo "$version" > "$marker"
+                    echo "$name $version installed."
+                  elif [ -d "$dir" ]; then
+                    echo "WARNING: Failed to download $name $version, keeping existing install."
+                  else
+                    echo "ERROR: Failed to download $name $version and no existing install found."
+                  fi
+                  rm -rf /tmp/${name}.zip /tmp/${name}_extract
+                fi
+                i=$((i + 1))
+              done
+          volumeMounts:
+            - name: config
+              mountPath: /config
       containers:
         - name: home-assistant
           image: ghcr.io/home-assistant/home-assistant:PLACEHOLDER_TAG

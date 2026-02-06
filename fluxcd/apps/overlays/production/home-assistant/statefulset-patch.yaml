@@ -16,6 +16,30 @@ spec:
             limits:
               cpu: 100m
               memory: 64Mi
+        - name: install-custom-components
+          image: docker.io/alpine/k8s:1.34.0
+          env:
+            - name: COMP_1_NAME
+              value: hacs
+            # renovate: datasource=github-releases depName=hacs/integration
+            - name: COMP_1_VERSION
+              value: "2.0.5"
+            - name: COMP_1_URL
+              value: "https://github.com/hacs/integration/releases/download/2.0.5/hacs.zip"
+            - name: COMP_2_NAME
+              value: dreame_vacuum
+            # renovate: datasource=github-releases depName=Tasshack/dreame-vacuum
+            - name: COMP_2_VERSION
+              value: "1.0.8"
+            - name: COMP_2_URL
+              value: "https://github.com/Tasshack/dreame-vacuum/releases/download/v1.0.8/dreame_vacuum.zip"
+          resources:
+            requests:
+              cpu: 10m
+              memory: 32Mi
+            limits:
+              cpu: 100m
+              memory: 128Mi
       containers:
         - name: home-assistant
           image: ghcr.io/home-assistant/home-assistant:2026.2.0
