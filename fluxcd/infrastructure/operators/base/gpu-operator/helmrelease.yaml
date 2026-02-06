@@ -70,4 +70,3 @@ spec:
     # Validator
     validator:
       enabled: true
-      version: v25.3.4
