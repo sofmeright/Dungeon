@@ -4,7 +4,6 @@ namespace: hyrule-castle
 resources:
   - ../../../../base/gitlab
   - externalsecret-root.yaml
-  - externalsecret-redis.yaml
   - externalsecret-s3.yaml
   - externalsecret-s3-creds.yaml
   - httproute.yaml
@@ -33,11 +32,11 @@ patches:
     target:
       kind: Job
       name: gitlab-praefect-db-init
-  - path: redis-statefulset-patch.yaml
+  - path: redis-replication-patch.yaml
     target:
-      kind: StatefulSet
+      kind: RedisReplication
       name: gitlab-redis
-  - path: redis-sentinel-patch.yaml
+  - path: externalsecret-redis-patch.yaml
     target:
-      kind: StatefulSet
-      name: gitlab-sentinel
+      kind: ExternalSecret
+      name: gitlab-redis-password

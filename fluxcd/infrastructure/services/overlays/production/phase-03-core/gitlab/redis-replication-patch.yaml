@@ -1,0 +1,12 @@
+apiVersion: redis.redis.opstreelabs.in/v1beta2
+kind: RedisReplication
+metadata:
+  name: gitlab-redis
+spec:
+  storage:
+    volumeClaimTemplate:
+      spec:
+        storageClassName: ceph-rbd-retain
+        resources:
+          requests:
+            storage: 5Gi

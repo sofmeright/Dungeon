@@ -121,16 +121,16 @@ spec:
           key: password
 
 
-      # External Redis with Sentinel (official redis:7.4-alpine cluster)
+      # External Redis with Sentinel (OT Container Kit Redis Operator)
       redis:
-        host: gitlab-redis  # Master name monitored by Sentinel
+        host: gitlab-redis  # Sentinel master group name
         port: 6379
         sentinels:
-          - host: gitlab-sentinel-0.gitlab-sentinel-headless.hyrule-castle.svc.cluster.local
+          - host: gitlab-sentinel-sentinel-0.gitlab-sentinel-sentinel-headless.hyrule-castle.svc.cluster.local
             port: 26379
-          - host: gitlab-sentinel-1.gitlab-sentinel-headless.hyrule-castle.svc.cluster.local
+          - host: gitlab-sentinel-sentinel-1.gitlab-sentinel-sentinel-headless.hyrule-castle.svc.cluster.local
             port: 26379
-          - host: gitlab-sentinel-2.gitlab-sentinel-headless.hyrule-castle.svc.cluster.local
+          - host: gitlab-sentinel-sentinel-2.gitlab-sentinel-sentinel-headless.hyrule-castle.svc.cluster.local
             port: 26379
         auth:
           enabled: true
