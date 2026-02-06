@@ -13,4 +13,4 @@ spec:
         - name: jcr-pcfae-dungeon-pull-secret
       containers:
         - name: shlink-web-client
-          image: docker.io/shlinkio/shlink-web-client:4.6.2
+          image: docker.io/shlinkio/shlink-web-client:4.7.0
