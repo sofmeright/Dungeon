@@ -7,7 +7,7 @@ spec:
     spec:
       containers:
         - name: frontend
-          image: docker.io/frappe/erpnext:v15.54.5
+          image: docker.io/frappe/erpnext:v15.96.1
           env:
             - name: UPSTREAM_REAL_IP_ADDRESS
               value: "172.22.30.71"
