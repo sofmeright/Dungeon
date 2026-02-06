@@ -9,7 +9,7 @@ spec:
       - name: jcr-pcfae-dungeon-pull-secret
       containers:
       - name: mariadb
-        image: docker.io/mariadb:11.6
+        image: docker.io/mariadb:11.8
         resources:
           requests:
             cpu: "250m"
