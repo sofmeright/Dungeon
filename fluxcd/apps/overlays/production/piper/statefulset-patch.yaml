@@ -7,7 +7,7 @@ spec:
     spec:
       containers:
         - name: piper
-          image: docker.io/rhasspy/wyoming-piper:2.2.1
+          image: docker.io/rhasspy/wyoming-piper:2.2.2
           resources:
             requests:
               cpu: 100m
