@@ -22,7 +22,7 @@ spec:
     loki:
       image:
         repository: "grafana/loki"
-        tag: "3.6.4"
+        tag: "3.6.5"
 
       auth_enabled: false
 
