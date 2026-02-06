@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: kasm
-          image: docker.io/linuxserver/kasm:1.18.0
+          image: docker.io/linuxserver/kasm:1.18.0-ls117
           ports:
             - containerPort: 3000
               name: http
