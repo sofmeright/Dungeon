@@ -13,7 +13,7 @@ There are two approaches for GPU drivers in Kubernetes:
 
 ### Current Status
 
-- **GPU Operator Version**: v25.3.4 (namespace: `gorons-bracelet`)
+- **GPU Operator Version**: v25.10.1 (namespace: `gorons-bracelet`)
 - **Driver Mode**: `driver.enabled: false` (host-installed drivers)
 - **Reason**: Originally, precompiled drivers weren't available for Ubuntu 24.04 kernel 6.8
 
@@ -71,23 +71,18 @@ ssh dungeon-chest-00X "sudo apt-get install -y --no-install-recommends \
   libnvidia-fbc1-580-server"
 ```
 
-### Step 4: Install Kernel-Specific NVIDIA Modules
+### Step 4: Install NVIDIA Kernel Module Meta-Package
 
-Check your kernel version first:
-
-```bash
-ssh dungeon-chest-00X "uname -r"
-# Example output: 6.8.0-90-generic
-```
-
-Install matching modules (replace kernel version as needed):
+Install the meta-package that automatically tracks kernel updates:
 
 ```bash
 ssh dungeon-chest-00X "sudo apt-get install --no-install-recommends -y \
-  linux-objects-nvidia-580-server-6.8.0-90-generic \
-  linux-signatures-nvidia-6.8.0-90-generic \
-  linux-modules-nvidia-580-server-6.8.0-90-generic"
+  linux-modules-nvidia-580-server-generic"
 ```
+
+This installs `linux-modules-nvidia-580-server-<kernel-version>`, `linux-objects-nvidia-580-server-<kernel-version>`, and `linux-signatures-nvidia-<kernel-version>` for the current kernel AND automatically pulls matching packages when the kernel is updated via `apt upgrade`.
+
+> **WARNING**: Do NOT install kernel-version-pinned packages (e.g. `linux-modules-nvidia-580-server-6.8.0-90-generic`) directly. These break on kernel updates — the nvidia module won't load for the new kernel, GPU pods will crash with `nvidia-smi: command not found`, and you'll need to manually install the correct version-pinned package for every kernel update.
 
 ### Step 5: Configure CRI-O for NVIDIA Runtime
 
@@ -169,7 +164,11 @@ GPU time-slicing is configured via ConfigMap in the `gorons-bracelet` namespace:
 kubectl get configmap time-slicing-config -n gorons-bracelet -o yaml
 ```
 
-Current configuration provides 8 time-sliced replicas per GPU, allowing multiple pods to share GPU resources.
+Current profiles:
+- **any** (default fallback): 16 replicas
+- **gtx-980-ti**: 16 replicas (6GB Maxwell)
+- **rtx-a2000**: 24 replicas (12GB Ampere)
+- **rtx-3080-ti**: 96 replicas (12GB Ampere)
 
 ## Troubleshooting
 
@@ -188,6 +187,34 @@ Current configuration provides 8 time-sliced replicas per GPU, allowing multiple
 3. Verify nvidia-container-runtime:
    ```bash
    ssh dungeon-chest-00X "cat /usr/local/nvidia/toolkit/nvidia-container-runtime"
+   ```
+
+### GPU Pods Crash After Kernel Update
+
+If GPU operator pods enter `Init:CrashLoopBackOff` after a kernel update:
+
+1. Check if nvidia module is loaded:
+   ```bash
+   ssh dungeon-chest-00X "lsmod | grep nvidia"
+   ```
+
+2. If not loaded, check if modules exist for current kernel:
+   ```bash
+   ssh dungeon-chest-00X "uname -r"
+   ssh dungeon-chest-00X "dpkg -l | grep linux-modules-nvidia | grep \$(uname -r)"
+   ```
+
+3. If no matching modules, install the meta-package (prevents future occurrences):
+   ```bash
+   ssh dungeon-chest-00X "sudo apt install -y linux-modules-nvidia-580-server-generic && sudo modprobe nvidia"
+   ```
+
+4. Delete crashed GPU pods to trigger recreation:
+   ```bash
+   kubectl delete pods -n gorons-bracelet --field-selector spec.nodeName=dungeon-chest-00X \
+     -l app.kubernetes.io/component=nvidia-container-toolkit-daemonset
+   kubectl delete pods -n gorons-bracelet --field-selector spec.nodeName=dungeon-chest-00X \
+     -l app=gpu-feature-discovery
    ```
 
 ### Pods Can't Access GPU
@@ -213,10 +240,23 @@ Current configuration provides 8 time-sliced replicas per GPU, allowing multiple
 
 ### Driver Updates
 
+With the `linux-modules-nvidia-580-server-generic` meta-package installed, kernel module updates are handled automatically by `apt upgrade`:
+
 ```bash
 ssh dungeon-chest-00X "sudo apt update && sudo apt upgrade -y"
-# Reboot required after driver upgrades
+# Reboot required after kernel or driver upgrades
 ssh dungeon-chest-00X "sudo reboot"
+# After reboot, verify driver loaded
+ssh dungeon-chest-00X "nvidia-smi"
+```
+
+If `nvidia-smi` fails after a kernel update, verify the meta-package is installed:
+
+```bash
+ssh dungeon-chest-00X "dpkg -l | grep linux-modules-nvidia-580-server-generic"
+# If missing, install it:
+ssh dungeon-chest-00X "sudo apt install -y linux-modules-nvidia-580-server-generic"
+ssh dungeon-chest-00X "sudo modprobe nvidia"
 ```
 
 ### Verify GPU Health
@@ -228,7 +268,7 @@ ssh dungeon-chest-00X "nvidia-smi"
 ## Related Files
 
 - Setup script: `/srv/dungeon/bash/_importing_from_sibling_repo/setup-gpu-node.sh`
-- GPU Operator Helm release: `/srv/dungeon/fluxcd/infrastructure/controllers/overlays/production/gpu-operator/`
+- GPU Operator Helm release: `/srv/dungeon/fluxcd/infrastructure/operators/overlays/production/gpu-operator/`
 - Time-slicing ConfigMap: `gorons-bracelet/time-slicing-config`
 
 ## References
@@ -238,4 +278,4 @@ ssh dungeon-chest-00X "nvidia-smi"
 - [NVIDIA Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/overview.html)
 
 ---
-*Last Updated: 2026-01-13*
+*Last Updated: 2026-02-06*
