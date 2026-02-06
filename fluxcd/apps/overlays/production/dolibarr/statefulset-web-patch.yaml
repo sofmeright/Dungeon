@@ -7,7 +7,7 @@ spec:
     spec:
       initContainers:
         - name: wait-for-mariadb
-          image: docker.io/busybox:1.36
+          image: docker.io/busybox:1.37
       containers:
         - name: dolibarr
           image: docker.io/dolibarr/dolibarr:22.0.4

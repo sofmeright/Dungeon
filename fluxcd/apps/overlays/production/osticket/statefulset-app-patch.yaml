@@ -9,7 +9,7 @@ spec:
         - name: jcr-pcfae-dungeon-pull-secret
       initContainers:
         - name: wait-for-db
-          image: docker.io/busybox:1.36
+          image: docker.io/busybox:1.37
       containers:
         - name: osticket
           image: docker.io/tiredofit/osticket:3.6.2
