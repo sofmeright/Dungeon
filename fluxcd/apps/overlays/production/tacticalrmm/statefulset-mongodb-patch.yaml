@@ -7,16 +7,17 @@ spec:
     spec:
       automountServiceAccountToken: false
       securityContext:
-        runAsUser: 999
-        runAsGroup: 999
         fsGroup: 999
-        runAsNonRoot: true
         seccompProfile:
           type: RuntimeDefault
       initContainers:
         - name: create-initialized-marker
           image: docker.io/busybox:1.36
+          # CephFS dirs owned by 1000:1000 — must match to touch
           securityContext:
+            runAsUser: 1000
+            runAsGroup: 1000
+            runAsNonRoot: true
             allowPrivilegeEscalation: false
             readOnlyRootFilesystem: true
             capabilities:
@@ -25,6 +26,9 @@ spec:
         - name: mongodb
           image: docker.io/mongo:4.4
           securityContext:
+            runAsUser: 999
+            runAsGroup: 999
+            runAsNonRoot: true
             allowPrivilegeEscalation: false
             capabilities:
               drop: [ALL]
