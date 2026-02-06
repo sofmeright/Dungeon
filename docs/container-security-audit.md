@@ -52,6 +52,17 @@ Apps that have been hardened and verified.
 | google-webfonts-helper | tingle-tuner | ? | ? | ? | ? | ? | - | |
 | shlink | kokiri-forest | ? | ? | ? | ? | ? | - | |
 | calcom | hyrule-castle | ? | ? | ? | ? | ? | - | |
+| tactical-postgres | hookshot | 70:70 | 70 | N/A | Y | Y | 2026-02-06 | Alpine postgres |
+| tactical-redis | hookshot | 999:999 | 999 | Y | Y | Y | 2026-02-06 | readOnlyRoot enabled |
+| tactical-mongodb | hookshot | 999:999 | 999 | N | Y | Y | 2026-02-06 | Writes to /tmp, /data/configdb |
+| tactical-backend | hookshot | 1000:1000 | 1000 | N | Y | Y | 2026-02-06 | Init stays root (chown/rsync/su), main as UID 1000 |
+| tactical-frontend | hookshot | 1000:1000 | 1000 | N | Y | Y | 2026-02-06 | nginx UID 1000 |
+| tactical-celery | hookshot | 1000:1000 | 1000 | N | Y | Y | 2026-02-06 | Same pattern as backend main |
+| tactical-celerybeat | hookshot | 1000:1000 | 1000 | N | Y | Y | 2026-02-06 | Same pattern as backend main |
+| tactical-websockets | hookshot | 1000:1000 | 1000 | N | Y | Y | 2026-02-06 | Same pattern as backend main |
+| tactical-nats | hookshot | 1000:1000 | 1000 | N | Y | Y | 2026-02-06 | Already UID 1000 in image |
+| tactical-meshcentral | hookshot | 1000:1000 | 1000 | N | Y | Y | 2026-02-06 | wget/tar/sed in startup, TLS init hardened |
+| tactical-nginx | hookshot | 1000:1000 | 1000 | N | Y | Y | 2026-02-06 | nginx UID 1000 |
 | guacamole / guacd | hookshot | ? | ? | ? | ? | ? | - | |
 | oauth2-proxy | zeldas-lullaby | ? | ? | ? | ? | ? | - | |
 | rustdesk-server | hookshot | ? | ? | ? | ? | ? | - | |
@@ -252,6 +263,22 @@ These use s6-overlay init system. Two approaches are supported:
 
 ---
 
+## TacticalRMM Documented Exceptions
+
+| Component | Exception | Reason |
+|-----------|-----------|--------|
+| tactical-init (init container) | SEC-1/2 (runs as root) | Entrypoint does chown -R, rsync, su, mkdir — upstream design |
+| tactical-init | SEC-6 (needs CHOWN,FOWNER,DAC_OVERRIDE,SETUID,SETGID) | Required for ownership and user switching |
+| mongo:4.4 | SEC-4 (no readOnlyRoot) | Writes to /tmp, /data/configdb |
+| meshcentral main | SEC-4 (no readOnlyRoot) | wget/tar/sed in startup command |
+| tactical backend/celery/celerybeat/websockets | SEC-4 (no readOnlyRoot) | Write to /opt/tactical |
+| tactical-frontend | SEC-4 (no readOnlyRoot) | nginx writes to /var/cache/nginx, /var/run |
+| tactical-nginx | SEC-4 (no readOnlyRoot) | nginx writes to /var/cache/nginx, /var/run |
+| tactical-postgres | SEC-4 (no readOnlyRoot) | Writes to PGDATA |
+| tactical-nats | SEC-4 (no readOnlyRoot) | Writes to /opt/tactical |
+
+---
+
 ## Root Required (Cannot Change Without Upstream Fixes)
 
 These apps require root for legitimate technical reasons.
@@ -348,6 +375,7 @@ See postgres upgrade plan at `~/.claude/plans/goofy-baking-shamir.md`.
 |------|---------|---------|
 | 2026-02-05 | Claude | Initial audit creation, gluetun caps (12 apps), downloadarrs→StatefulSet, byparr non-root, photoprism non-root, dailytxt non-root, TZ fix to America/Los_Angeles |
 | 2026-02-05 | Claude | speedtest-tracker LSIO non-root pattern (pioneer), updated LSIO section with Mode column, created workload-compliance-manifest.md |
+| 2026-02-06 | Claude | TacticalRMM full hardening: all 11 components in hookshot namespace (SEC-1 through SEC-8). Redis/MongoDB init chown removed (fsGroup handles ownership), wait-for-* init containers hardened as nobody, tactical-init documented exception for root with minimal caps |
 
 ## Related Documents
 

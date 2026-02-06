@@ -5,6 +5,14 @@ metadata:
 spec:
   template:
     spec:
+      automountServiceAccountToken: false
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+        runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault
       imagePullSecrets:
         - name: jcr-pcfae-dungeon-pull-secret
       initContainers:
@@ -19,6 +27,14 @@ spec:
                 sleep 2
               done
               echo "MongoDB is ready"
+          securityContext:
+            runAsUser: 999
+            runAsGroup: 999
+            runAsNonRoot: true
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: [ALL]
         - name: inject-tls-cert
           image: docker.io/alpine/k8s:1.34.0
           command:
@@ -28,10 +44,17 @@ spec:
               echo "Injecting TLS cert into meshcentral-data..."
               cp /tls/tls.crt /meshdata/webserver-cert-public.crt
               cp /tls/tls.key /meshdata/webserver-cert-private.key
-              chown 1000:1000 /meshdata/webserver-cert-public.crt /meshdata/webserver-cert-private.key
               chmod 644 /meshdata/webserver-cert-public.crt
               chmod 600 /meshdata/webserver-cert-private.key
               echo "TLS cert injected successfully"
+          securityContext:
+            runAsUser: 1000
+            runAsGroup: 1000
+            runAsNonRoot: true
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: [ALL]
           volumeMounts:
             - name: meshcentral-tls
               mountPath: /tls
@@ -77,6 +100,10 @@ spec:
                 > /tmp/entrypoint-patched.sh
               chmod +x /tmp/entrypoint-patched.sh
               exec /tmp/entrypoint-patched.sh
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: [ALL]
           env:
             - name: MESH_PERSISTENT_CONFIG
               value: "0"

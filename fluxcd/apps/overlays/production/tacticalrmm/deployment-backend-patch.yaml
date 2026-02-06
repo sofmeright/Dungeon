@@ -5,6 +5,11 @@ metadata:
 spec:
   template:
     spec:
+      automountServiceAccountToken: false
+      securityContext:
+        fsGroup: 1000
+        seccompProfile:
+          type: RuntimeDefault
       imagePullSecrets:
         - name: jcr-pcfae-dungeon-pull-secret
       initContainers:
@@ -19,6 +24,14 @@ spec:
                 sleep 2
               done
               echo "PostgreSQL is ready"
+          securityContext:
+            runAsUser: 65534
+            runAsGroup: 65534
+            runAsNonRoot: true
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: [ALL]
         - name: wait-for-redis
           image: docker.io/redis:6.0-alpine
           command:
@@ -30,6 +43,14 @@ spec:
                 sleep 2
               done
               echo "Redis is ready"
+          securityContext:
+            runAsUser: 65534
+            runAsGroup: 65534
+            runAsNonRoot: true
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: [ALL]
         - name: wait-for-meshcentral
           image: docker.io/busybox:1.36
           command:
@@ -41,9 +62,24 @@ spec:
                 sleep 2
               done
               echo "MeshCentral is ready"
+          securityContext:
+            runAsUser: 65534
+            runAsGroup: 65534
+            runAsNonRoot: true
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: [ALL]
         - name: tactical-init
           image: docker.io/tacticalrmm/tactical:1.4.0
           command: ["/bin/bash", "/scripts/init-wrapper.sh"]
+          # MUST stay root: entrypoint does chown -R, rsync, su, mkdir
+          # Documented exception SEC-1/2
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: [ALL]
+              add: [CHOWN, FOWNER, DAC_OVERRIDE, SETUID, SETGID]
           env:
             - name: POSTGRES_USER
               value: "tactical"
@@ -106,6 +142,13 @@ spec:
       containers:
         - name: backend
           image: docker.io/tacticalrmm/tactical:1.4.0
+          securityContext:
+            runAsUser: 1000
+            runAsGroup: 1000
+            runAsNonRoot: true
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: [ALL]
           env:
             - name: NATS_CONNECT_HOST
               value: "tactical-nats"

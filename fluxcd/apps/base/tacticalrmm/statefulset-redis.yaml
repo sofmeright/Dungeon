@@ -19,7 +19,7 @@ spec:
           command:
             - sh
             - -c
-            - touch /redis-init/.initialized && chown 1000:1000 /redis-init/.initialized
+            - touch /redis-init/.initialized
           volumeMounts:
             - name: redis-init
               mountPath: /redis-init

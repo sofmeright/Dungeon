@@ -5,18 +5,38 @@ metadata:
 spec:
   template:
     spec:
+      automountServiceAccountToken: false
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+        runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault
       imagePullSecrets:
         - name: jcr-pcfae-dungeon-pull-secret
       initContainers:
         - name: wait-for-init
           image: docker.io/busybox:1.36
           command: ["sh", "-c", "until [ -f /opt/tactical/tmp/tactical.ready ]; do echo 'Waiting for init...'; sleep 5; done"]
+          securityContext:
+            runAsUser: 1000
+            runAsGroup: 1000
+            runAsNonRoot: true
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: [ALL]
           volumeMounts:
             - name: tactical-data
               mountPath: /opt/tactical
       containers:
         - name: frontend
           image: docker.io/tacticalrmm/tactical-frontend:1.4.0
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: [ALL]
           resources:
             requests:
               cpu: "100m"

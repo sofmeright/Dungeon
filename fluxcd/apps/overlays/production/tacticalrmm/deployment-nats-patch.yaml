@@ -5,6 +5,14 @@ metadata:
 spec:
   template:
     spec:
+      automountServiceAccountToken: false
+      securityContext:
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+        runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault
       imagePullSecrets:
         - name: jcr-pcfae-dungeon-pull-secret
       initContainers:
@@ -19,12 +27,24 @@ spec:
                 sleep 5
               done
               echo "NATS config found"
+          securityContext:
+            runAsUser: 1000
+            runAsGroup: 1000
+            runAsNonRoot: true
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: [ALL]
           volumeMounts:
             - name: tactical-data
               mountPath: /opt/tactical
       containers:
         - name: nats
           image: docker.io/tacticalrmm/tactical-nats:1.4.0
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: [ALL]
           resources:
             requests:
               cpu: "100m"

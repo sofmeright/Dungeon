@@ -19,7 +19,7 @@ spec:
           command:
             - sh
             - -c
-            - touch /mongo-init/.initialized && chown 1000:1000 /mongo-init/.initialized
+            - touch /mongo-init/.initialized
           volumeMounts:
             - name: mongo-init
               mountPath: /mongo-init
