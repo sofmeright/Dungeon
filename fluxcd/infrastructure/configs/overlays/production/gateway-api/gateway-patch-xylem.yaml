@@ -14,7 +14,7 @@ spec:
       port: 80
       allowedRoutes:
         namespaces:
-          from: All
+          from: Same
     - name: https-pcfae
       protocol: HTTPS
       port: 443
