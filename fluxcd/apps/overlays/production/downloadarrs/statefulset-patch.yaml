@@ -4,6 +4,9 @@ metadata:
   name: downloadarrs
 spec:
   template:
+    metadata:
+      annotations:
+        ambient.istio.io/redirection: disabled
     spec:
       securityContext:
         fsGroup: 1000

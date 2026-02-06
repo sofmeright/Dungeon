@@ -4,6 +4,9 @@ metadata:
   name: prowlarr
 spec:
   template:
+    metadata:
+      annotations:
+        ambient.istio.io/redirection: disabled
     spec:
       containers:
         - name: prowlarr

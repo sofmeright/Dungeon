@@ -4,6 +4,9 @@ metadata:
   name: jellyseerr
 spec:
   template:
+    metadata:
+      annotations:
+        ambient.istio.io/redirection: disabled
     spec:
       containers:
         - name: jellyseerr

@@ -4,6 +4,9 @@ metadata:
   name: overseerr
 spec:
   template:
+    metadata:
+      annotations:
+        ambient.istio.io/redirection: disabled
     spec:
       containers:
         - name: overseerr

@@ -4,6 +4,9 @@ metadata:
   name: pyload-ng
 spec:
   template:
+    metadata:
+      annotations:
+        ambient.istio.io/redirection: disabled
     spec:
       containers:
         - name: pyload-ng

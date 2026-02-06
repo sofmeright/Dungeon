@@ -4,6 +4,9 @@ metadata:
   name: sabnzbd
 spec:
   template:
+    metadata:
+      annotations:
+        ambient.istio.io/redirection: disabled
     spec:
       containers:
         - name: sabnzbd
