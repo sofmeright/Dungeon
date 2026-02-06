@@ -19,7 +19,7 @@ spec:
             name: linkstack-apache-config
       initContainers:
         - name: init-htdocs
-          image: docker.io/linkstackorg/linkstack@sha256:7ea376e9459b85ffbda6b4e422bddc4cea6c5c83aedc5c18c9a6718181192b8a
+          image: docker.io/linkstackorg/linkstack@sha256:d9c4e1fd521e1ae78e796ac549b4d3e6371665775761d6c712aec8ac3bd9c5bc
           command:
             - /bin/sh
             - -c
@@ -38,7 +38,7 @@ spec:
               mountPath: /mnt/htdocs
       containers:
         - name: linkstack
-          image: docker.io/linkstackorg/linkstack@sha256:7ea376e9459b85ffbda6b4e422bddc4cea6c5c83aedc5c18c9a6718181192b8a
+          image: docker.io/linkstackorg/linkstack@sha256:d9c4e1fd521e1ae78e796ac549b4d3e6371665775761d6c712aec8ac3bd9c5bc
           ports:
             - containerPort: 8080
               name: http
