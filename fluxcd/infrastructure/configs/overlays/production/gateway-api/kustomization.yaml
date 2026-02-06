@@ -8,6 +8,9 @@ resources:
   - envoyfilter-ntfy-timeout-cell-membrane.yaml
   - envoyfilter-ntfy-timeout-xylem.yaml
   - envoyfilter-meshcentral-websocket-cell-membrane.yaml
+  - httproute-http-redirect-xylem.yaml
+  - httproute-http-redirect-phloem.yaml
+  - httproute-http-redirect-cell-membrane.yaml
 patches:
   - path: gateway-patch-xylem.yaml
     target:
