@@ -133,10 +133,7 @@ spec:
     # Disable components we don't need
     nginx-ingress:
       enabled: false
-    certmanager:
-      install: false
-      email: devops@prplanit.com  # Required even when disabled
     certmanager-issuer:
-      email: devops@prplanit.com  # Required even when disabled
+      email: sofmeright+gitlab@gmail.com
     prometheus:
       install: false
