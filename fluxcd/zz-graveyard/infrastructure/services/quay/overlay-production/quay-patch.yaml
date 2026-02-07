@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: quay
+spec:
+  replicas: 3
+  template:
+    spec:
+      imagePullSecrets:
+        - name: jcr-pcfae-dungeon-pull-secret
+      containers:
+        - name: quay
+          image: quay.io/projectquay/quay:3.16.1
+  volumeClaimTemplates:
+    - metadata:
+        name: quay-storage
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        storageClassName: ceph-rbd
+        resources:
+          requests:
+            storage: 50Gi

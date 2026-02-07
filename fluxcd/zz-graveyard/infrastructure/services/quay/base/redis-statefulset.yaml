@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: quay-redis
+spec:
+  serviceName: quay-redis
+  replicas: 1
+  selector:
+    matchLabels:
+      app: quay-redis
+  template:
+    metadata:
+      labels:
+        app: quay-redis
+    spec:
+      containers:
+      - name: redis
+        image: docker.io/redis:7
+        command:
+        - redis-server
+        - --requirepass
+        - $(REDIS_PASSWORD)
+        env:
+        - name: REDIS_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: quay-secrets
+              key: redis_password
+        ports:
+        - containerPort: 6379
+          name: redis
+        volumeMounts:
+        - name: redis-data
+          mountPath: /data
+  volumeClaimTemplates:
+  - metadata:
+      name: redis-data
+    spec:
+      storageClassName: PLACEHOLDER_STORAGE_CLASS
+      resources:
+        requests:
+          storage: PLACEHOLDER_STORAGE_SIZE

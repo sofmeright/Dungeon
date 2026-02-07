@@ -62,7 +62,12 @@ repos:
     hooks:
       - id: kustomize-build
         name: Validate Kustomize builds
-        entry: bash -c 'for dir in $(find fluxcd -name kustomization.yaml -type f -exec dirname {} \;); do echo "Validating $dir..."; kustomize build "$dir" > /dev/null || exit 1; done'
+        entry: bash -c '
+          find fluxcd -name kustomization.yaml -type f -not -path "*/zz-graveyard/*" -exec dirname {} \;
+          | while read -r dir; do
+            echo "Validating $dir...";
+            kustomize build "$dir" > /dev/null || exit 1;
+          done'
         language: system
         pass_filenames: false
         files: \.yaml$

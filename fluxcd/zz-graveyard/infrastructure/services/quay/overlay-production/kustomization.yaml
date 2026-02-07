@@ -1,0 +1,13 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: hyrule-castle
+resources:
+  - ../base
+  - httproute.yaml
+  - postgres-bootstrap-secret.yaml
+patches:
+  - path: postgres-cluster-patch.yaml
+  - path: redis-patch.yaml
+  - path: minio-patch.yaml
+  - path: quay-patch.yaml
+  - path: externalsecret-patch.yaml

@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: quay-minio
+spec:
+  serviceName: quay-minio
+  replicas: 1
+  selector:
+    matchLabels:
+      app: quay-minio
+  template:
+    metadata:
+      labels:
+        app: quay-minio
+    spec:
+      containers:
+      - name: minio
+        image: docker.io/minio/minio:RELEASE.2025-09-07T16-13-09Z
+        command:
+        - minio
+        - server
+        - /data
+        - --address
+        - :9002
+        - --console-address
+        - :9003
+        env:
+        - name: MINIO_ROOT_USER
+          valueFrom:
+            secretKeyRef:
+              name: quay-secrets
+              key: minio_root_user
+        - name: MINIO_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: quay-secrets
+              key: minio_root_password
+        ports:
+        - containerPort: 9002
+          name: api
+        - containerPort: 9003
+          name: console
+        volumeMounts:
+        - name: minio-data
+          mountPath: /data
+  volumeClaimTemplates:
+  - metadata:
+      name: minio-data
+    spec:
+      storageClassName: PLACEHOLDER_STORAGE_CLASS
+      resources:
+        requests:
+          storage: PLACEHOLDER_STORAGE_SIZE
