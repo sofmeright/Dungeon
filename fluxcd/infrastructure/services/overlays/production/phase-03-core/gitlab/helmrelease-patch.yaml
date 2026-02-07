@@ -136,6 +136,10 @@ spec:
           enabled: true
           secret: gitlab-redis-password
           key: password
+        sentinelAuth:
+          enabled: true
+          secret: gitlab-redis-password
+          key: password
 
       # Praefect PostgreSQL configuration
       praefect:
