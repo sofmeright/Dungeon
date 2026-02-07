@@ -6,5 +6,4 @@ resources:
   - ./gitlab
   - ./harbor
   - ./jfrog-artifactory
-  - ./quay
   - ./zitadel
