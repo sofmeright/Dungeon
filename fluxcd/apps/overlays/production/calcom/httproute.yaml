@@ -6,7 +6,7 @@ metadata:
   annotations:
     gatus.home-operations.com/endpoint: |
       conditions:
-        - "[STATUS] == 200"
+        - "[STATUS] any(200, 302)"
 spec:
   parentRefs:
     - name: cell-membrane-gateway
