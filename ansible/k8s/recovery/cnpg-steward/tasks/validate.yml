@@ -1,0 +1,52 @@
+---
+# validate.yml - Shared input validation and cluster fact gathering
+#
+# Sets: cluster_spec, cluster_status, cluster_annotations, cluster_instances, fenced_instances
+
+- name: Validate required variables
+  ansible.builtin.assert:
+    that:
+      - cluster_name is defined
+      - namespace is defined
+    fail_msg: "Required variables: cluster_name, namespace"
+
+- name: Display header
+  ansible.builtin.debug:
+    msg:
+      - "=== CNPG Steward ({{ mode }}) ==="
+      - "Cluster: {{ cluster_name }}"
+      - "Namespace: {{ namespace }}"
+      - "Timestamp: {{ ansible_date_time.iso8601 }}"
+
+- name: Get CNPG Cluster CR
+  kubernetes.core.k8s_info:
+    api_version: postgresql.cnpg.io/v1
+    kind: Cluster
+    name: "{{ cluster_name }}"
+    namespace: "{{ namespace }}"
+  register: cluster_info
+  failed_when: cluster_info.resources | length == 0
+
+- name: Set cluster facts
+  ansible.builtin.set_fact:
+    cluster_spec: "{{ cluster_info.resources[0].spec }}"
+    cluster_status: "{{ cluster_info.resources[0].status }}"
+    cluster_annotations: "{{ cluster_info.resources[0].metadata.annotations | default({}) }}"
+    cluster_instances: "{{ cluster_info.resources[0].spec.instances }}"
+
+- name: Check for fenced instances
+  ansible.builtin.set_fact:
+    fenced_instances: "{{ cluster_annotations['cnpg.io/fencedInstances'] | default('[]') | from_json }}"
+
+- name: Display cluster status
+  ansible.builtin.debug:
+    msg:
+      - "--- Cluster Status ---"
+      - "Phase: {{ cluster_status.phase | default('Unknown') }}"
+      - "Instances: {{ cluster_instances }}"
+      - "Ready instances: {{ cluster_status.readyInstances | default(0) }}"
+      - "Current primary: {{ cluster_status.currentPrimary | default('Unknown') }}"
+      - "Target primary: {{ cluster_status.targetPrimary | default('Unknown') }}"
+      - "Timeline ID: {{ cluster_status.timelineID | default('Unknown') }}"
+      - "PostgreSQL image: {{ cluster_spec.imageName }}"
+      - "Fenced instances: {{ fenced_instances }}"

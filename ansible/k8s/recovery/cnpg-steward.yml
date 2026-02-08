@@ -1,0 +1,50 @@
+---
+# cnpg-steward.yml - Unified CNPG PostgreSQL cluster management
+#
+# Modes:
+#   triage  - Read-only diagnostic. Triage all instances, display assessment. (default)
+#   repair  - Triage all, safety gate, heal unhealthy replicas, re-triage.
+#
+# Usage:
+#   docker run --rm \
+#     -v ~/.kube:/root/.kube:ro \
+#     -v /srv/dungeon/ansible:/app:ro \
+#     prplanit/ansible-oci:2.20.1-v2 \
+#     ansible-playbook k8s/recovery/cnpg-steward.yml \
+#       -e cluster_name=zitadel-postgres \
+#       -e namespace=zeldas-lullaby \
+#       -e mode=triage
+#
+# Repair all unhealthy replicas:
+#   ... -e mode=repair
+#
+# Repair a specific replica:
+#   ... -e mode=repair -e replica_number=2
+#
+# Force repair a healthy/split-brain replica (targeted only):
+#   ... -e mode=repair -e replica_number=2 -e force=true
+
+- name: CNPG Steward
+  hosts: localhost
+  connection: local
+  gather_facts: true
+
+  vars:
+    mode: triage
+    force: false
+    heal_timeout: 600
+    delete_timeout: 300
+    # Valid modes (including future planned modes)
+    _valid_modes:
+      - triage
+      - repair
+
+  tasks:
+    - name: Validate mode
+      ansible.builtin.assert:
+        that:
+          - mode in _valid_modes
+        fail_msg: "Invalid mode '{{ mode }}'. Valid modes: {{ _valid_modes | join(', ') }}"
+
+    - name: "Run mode: {{ mode }}"
+      ansible.builtin.include_tasks: "cnpg-steward/tasks/mode-{{ mode }}.yml"

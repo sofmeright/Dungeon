@@ -1,0 +1,549 @@
+---
+# triage-collect.yml - Pod discovery, pg_controldata (exec + PVC probes),
+#   replication status, slots, WAL info, disk space
+#
+# Requires: cluster_spec, cluster_status, cluster_instances (from validate.yml)
+# Sets: expected_instances, running_pods, non_running_pods, missing_instances,
+#   crashloop_pods, instance_controldata, streaming_replicas, disk_usage_map,
+#   primary_is_running, primary_controldata, primary_timeline, pvc_states
+
+# =========================================================================
+# Pod discovery and missing instances
+# =========================================================================
+- name: Build expected instance list
+  ansible.builtin.set_fact:
+    expected_instances: >-
+      {{ cluster_status.instanceNames
+         | default(range(1, cluster_instances | int + 1)
+           | map('regex_replace', '^(.*)$', cluster_name + '-\1')
+           | list) }}
+
+- name: Get all cluster pods
+  kubernetes.core.k8s_info:
+    api_version: v1
+    kind: Pod
+    namespace: "{{ namespace }}"
+    label_selectors:
+      - "cnpg.io/cluster={{ cluster_name }}"
+  register: all_pods
+
+- name: Categorize pods
+  ansible.builtin.set_fact:
+    running_pods: "{{ all_pods.resources | selectattr('status.phase', 'eq', 'Running') | list }}"
+    non_running_pods: "{{ all_pods.resources | rejectattr('status.phase', 'eq', 'Running') | list }}"
+    found_pod_names: "{{ all_pods.resources | map(attribute='metadata.name') | list }}"
+
+- name: Identify missing instances (expected but no pod)
+  ansible.builtin.set_fact:
+    missing_instances: "{{ expected_instances | difference(found_pod_names) }}"
+
+- name: Check PVCs for all expected instances
+  kubernetes.core.k8s_info:
+    api_version: v1
+    kind: PersistentVolumeClaim
+    name: "{{ item }}"
+    namespace: "{{ namespace }}"
+  loop: "{{ expected_instances }}"
+  register: pvc_checks
+
+- name: Build PVC state map
+  ansible.builtin.set_fact:
+    pvc_states: >-
+      {%- set result = {} -%}
+      {%- for check in pvc_checks.results -%}
+        {%- if check.resources | length > 0 -%}
+          {%- set _ = result.update({check.item: check.resources[0].status.phase | default('Unknown')}) -%}
+        {%- else -%}
+          {%- set _ = result.update({check.item: 'MISSING'}) -%}
+        {%- endif -%}
+      {%- endfor -%}
+      {{ result }}
+    dangling_pvcs: "{{ cluster_status.danglingPVC | default([]) }}"
+    healthy_pvcs: "{{ cluster_status.healthyPVC | default([]) }}"
+
+- name: Display pod overview
+  ansible.builtin.debug:
+    msg:
+      - "--- Pod Overview ---"
+      - "Expected instances: {{ expected_instances | join(', ') }}"
+      - "Running: {{ running_pods | map(attribute='metadata.name') | list | join(', ') | default('none') }}"
+      - "Non-running: {{ non_running_pods | map(attribute='metadata.name') | list | join(', ') | default('none') }}"
+      - "Missing (no pod): {{ missing_instances | join(', ') | default('none') }}"
+
+- name: Display PVC state
+  ansible.builtin.debug:
+    msg:
+      - "--- PVC State ---"
+      - "Healthy PVCs: {{ healthy_pvcs | join(', ') | default('none') }}"
+      - "Dangling PVCs: {{ dangling_pvcs | join(', ') | default('none') }}"
+  when: dangling_pvcs | length > 0 or missing_instances | length > 0
+
+- name: Display per-PVC status for missing/dangling instances
+  ansible.builtin.debug:
+    msg: >-
+      PVC {{ item }}:
+      exists={{ pvc_states[item] | default('MISSING') }}
+      {{ '(DANGLING - pod missing)' if item in dangling_pvcs else '' }}
+  loop: "{{ missing_instances + (dangling_pvcs | difference(missing_instances)) }}"
+  when: missing_instances | length > 0 or dangling_pvcs | length > 0
+
+- name: Identify crash-looping pods (Running but not ready, high restarts)
+  ansible.builtin.set_fact:
+    crashloop_pods: >-
+      {{ running_pods | selectattr('status.containerStatuses', 'defined')
+         | selectattr('status.containerStatuses.0.ready', 'eq', false)
+         | list }}
+
+- name: Display non-running pod details
+  ansible.builtin.debug:
+    msg: >-
+      {{ item.metadata.name }}:
+      phase={{ item.status.phase }}
+      reason={{ item.status.containerStatuses[0].state.waiting.reason
+        | default(item.status.containerStatuses[0].state.terminated.reason
+        | default('N/A')) }}
+      restarts={{ item.status.containerStatuses[0].restartCount | default(0) }}
+  loop: "{{ non_running_pods }}"
+  loop_control:
+    label: "{{ item.metadata.name }}"
+  when: non_running_pods | length > 0
+
+- name: Display crash-looping pod details
+  ansible.builtin.debug:
+    msg: "CRASH-LOOP: {{ item.metadata.name }}: phase=Running ready=false restarts={{ item.status.containerStatuses[0].restartCount | default(0) }}"
+  loop: "{{ crashloop_pods }}"
+  loop_control:
+    label: "{{ item.metadata.name }}"
+  when: crashloop_pods | length > 0
+
+# =========================================================================
+# Timeline analysis - pg_controldata on each instance
+# =========================================================================
+- name: Run pg_controldata on healthy running instances
+  kubernetes.core.k8s_exec:
+    namespace: "{{ namespace }}"
+    pod: "{{ item.metadata.name }}"
+    container: postgres
+    command: pg_controldata /var/lib/postgresql/data/pgdata
+  loop: >-
+    {{ running_pods | rejectattr('metadata.name', 'in',
+       crashloop_pods | map(attribute='metadata.name') | list) | list }}
+  loop_control:
+    label: "{{ item.metadata.name }}"
+  register: healthy_controldata_results
+  failed_when: false
+
+- name: Identify instances needing PVC probe
+  ansible.builtin.set_fact:
+    probe_instances: >-
+      {%- set result = [] -%}
+      {%- set healthy_names = healthy_controldata_results.results
+            | selectattr('rc', 'defined')
+            | selectattr('rc', 'eq', 0)
+            | map(attribute='item')
+            | map(attribute='metadata.name') | list -%}
+      {%- set pod_nodes = {} -%}
+      {%- for pod in all_pods.resources -%}
+        {%- set _ = pod_nodes.update({pod.metadata.name: pod.spec.nodeName | default('')}) -%}
+      {%- endfor -%}
+      {%- for inst in expected_instances -%}
+        {%- if inst not in healthy_names and pvc_states[inst] | default('MISSING') == 'Bound' -%}
+          {%- set _ = result.append({'name': inst, 'node': pod_nodes.get(inst, '')}) -%}
+        {%- endif -%}
+      {%- endfor -%}
+      {{ result }}
+
+- name: Display PVC probe plan
+  ansible.builtin.debug:
+    msg: "Probing PVC data for stranded instances: {{ probe_instances | map(attribute='name') | list | join(', ') }}"
+  when: probe_instances | length > 0
+
+- name: Fetch crash reason from logs for crash-looping pods
+  kubernetes.core.k8s_log:
+    name: "{{ item.metadata.name }}"
+    namespace: "{{ namespace }}"
+    container: postgres
+  loop: "{{ crashloop_pods }}"
+  loop_control:
+    label: "{{ item.metadata.name }}"
+  register: crashloop_logs
+  failed_when: false
+  when: crashloop_pods | length > 0
+
+- name: Parse crash reasons from logs
+  ansible.builtin.set_fact:
+    crash_reasons: >-
+      {%- set result = {} -%}
+      {%- if crashloop_logs.results is defined -%}
+        {%- for log_result in crashloop_logs.results -%}
+          {%- if log_result.log is defined -%}
+            {%- set log_text = log_result.log -%}
+            {%- if 'low-disk space condition' in log_text or 'low disk space' in log_text -%}
+              {%- set _ = result.update({log_result.item.metadata.name: 'disk_full'}) -%}
+            {%- else -%}
+              {%- set _ = result.update({log_result.item.metadata.name: 'unknown'}) -%}
+            {%- endif -%}
+          {%- endif -%}
+        {%- endfor -%}
+      {%- endif -%}
+      {{ result }}
+
+- name: Create probe pods for stranded PVCs
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: v1
+      kind: Pod
+      metadata:
+        name: "{{ item.name }}-triage-probe"
+        namespace: "{{ namespace }}"
+        labels:
+          cnpg-triage: probe
+      spec:
+        restartPolicy: Never
+        nodeSelector: "{{ {'kubernetes.io/hostname': item.node} if item.node else omit }}"
+        securityContext:
+          runAsUser: 26
+          runAsGroup: 26
+          fsGroup: 26
+        containers:
+          - name: probe
+            image: "{{ cluster_spec.imageName }}"
+            command: ["pg_controldata", "/var/lib/postgresql/data/pgdata"]
+            volumeMounts:
+              - name: pgdata
+                mountPath: /var/lib/postgresql/data
+                readOnly: true
+        volumes:
+          - name: pgdata
+            persistentVolumeClaim:
+              claimName: "{{ item.name }}"
+  loop: "{{ probe_instances }}"
+  loop_control:
+    label: "{{ item.name }}"
+  register: probe_pod_creation
+  failed_when: false
+  when: probe_instances | length > 0
+
+- name: Wait for probe pods to complete
+  kubernetes.core.k8s_info:
+    api_version: v1
+    kind: Pod
+    name: "{{ item.name }}-triage-probe"
+    namespace: "{{ namespace }}"
+  loop: "{{ probe_instances }}"
+  loop_control:
+    label: "{{ item.name }}"
+  register: probe_pod_status
+  until: >-
+    probe_pod_status.resources | length == 0
+    or probe_pod_status.resources[0].status.phase | default('Pending') in ['Succeeded', 'Failed']
+  retries: 30
+  delay: 5
+  failed_when: false
+  when: probe_instances | length > 0
+
+- name: Collect probe pod logs
+  kubernetes.core.k8s_log:
+    name: "{{ item.name }}-triage-probe"
+    namespace: "{{ namespace }}"
+    container: probe
+  loop: "{{ probe_instances }}"
+  loop_control:
+    label: "{{ item.name }}"
+  register: probe_logs
+  failed_when: false
+  when: probe_instances | length > 0
+
+- name: Delete probe pods
+  kubernetes.core.k8s:
+    state: absent
+    api_version: v1
+    kind: Pod
+    name: "{{ item.name }}-triage-probe"
+    namespace: "{{ namespace }}"
+    delete_options:
+      gracePeriodSeconds: 0
+  loop: "{{ probe_instances }}"
+  loop_control:
+    label: "{{ item.name }}"
+  failed_when: false
+  when: probe_instances | length > 0
+
+- name: Build instance_controldata from all sources
+  ansible.builtin.set_fact:
+    instance_controldata: >-
+      {%- set result = [] -%}
+      {%- set probed = {} -%}
+      {%- if probe_logs.results is defined -%}
+        {%- for pr in probe_logs.results -%}
+          {%- if pr.log is defined and pr.log | length > 0 -%}
+            {%- set lines = pr.log.split('\n') -%}
+            {%- set state_line = lines | select('match', '^Database cluster state:') | first | default('') -%}
+            {%- set timeline_line = lines | select('match', "^Latest checkpoint's TimeLineID:") | first | default('') -%}
+            {%- set ckpt_loc_line = lines | select('match', '^Latest checkpoint location:') | first | default('') -%}
+            {%- set ckpt_time_line = lines | select('match', "^Time of latest checkpoint:") | first | default('') -%}
+            {%- set min_recovery_line = lines | select('match', '^Min recovery ending location:') | first | default('') -%}
+            {%- set _ = probed.update({pr.item.name: {
+              'cluster_state': state_line.split(':',1)[1] | trim if ':' in state_line else 'unknown',
+              'timeline': timeline_line.split(':',1)[1] | trim if ':' in timeline_line else 'unknown',
+              'checkpoint_location': ckpt_loc_line.split(':',1)[1] | trim if ':' in ckpt_loc_line else 'unknown',
+              'checkpoint_time': ckpt_time_line.split(':',1)[1] | trim if ':' in ckpt_time_line else 'unknown',
+              'min_recovery_end': min_recovery_line.split(':',1)[1] | trim if ':' in min_recovery_line else 'unknown'
+            }}) -%}
+          {%- endif -%}
+        {%- endfor -%}
+      {%- endif -%}
+      {%- for item in healthy_controldata_results.results | default([]) -%}
+        {%- set pod_name = item.item.metadata.name -%}
+        {%- if item.rc is defined and item.rc == 0 -%}
+          {%- set lines = item.stdout_lines | default([]) -%}
+          {%- set state_line = lines | select('match', '^Database cluster state:') | first | default('') -%}
+          {%- set timeline_line = lines | select('match', "^Latest checkpoint's TimeLineID:") | first | default('') -%}
+          {%- set ckpt_loc_line = lines | select('match', '^Latest checkpoint location:') | first | default('') -%}
+          {%- set ckpt_time_line = lines | select('match', "^Time of latest checkpoint:") | first | default('') -%}
+          {%- set min_recovery_line = lines | select('match', '^Min recovery ending location:') | first | default('') -%}
+          {%- set _ = result.append({
+            'pod': pod_name,
+            'source': 'exec',
+            'reachable': true,
+            'cluster_state': state_line.split(':',1)[1] | trim if ':' in state_line else 'unknown',
+            'timeline': timeline_line.split(':',1)[1] | trim if ':' in timeline_line else 'unknown',
+            'checkpoint_location': ckpt_loc_line.split(':',1)[1] | trim if ':' in ckpt_loc_line else 'unknown',
+            'checkpoint_time': ckpt_time_line.split(':',1)[1] | trim if ':' in ckpt_time_line else 'unknown',
+            'min_recovery_end': min_recovery_line.split(':',1)[1] | trim if ':' in min_recovery_line else 'unknown'
+          }) -%}
+        {%- endif -%}
+      {%- endfor -%}
+      {%- for inst_name in expected_instances -%}
+        {%- if inst_name not in (result | map(attribute='pod') | list) -%}
+          {%- if inst_name in probed -%}
+            {%- set pd = probed[inst_name] -%}
+            {%- set _ = result.append({
+              'pod': inst_name,
+              'source': 'pvc_probe',
+              'reachable': false,
+              'cluster_state': pd.cluster_state,
+              'timeline': pd.timeline,
+              'checkpoint_location': pd.checkpoint_location,
+              'checkpoint_time': pd.checkpoint_time,
+              'min_recovery_end': pd.min_recovery_end,
+              'crash_reason': crash_reasons.get(inst_name, '') if crash_reasons is mapping else ''
+            }) -%}
+          {%- else -%}
+            {%- set _ = result.append({
+              'pod': inst_name,
+              'source': 'none',
+              'reachable': false,
+              'cluster_state': 'unknown',
+              'timeline': 'unknown',
+              'checkpoint_location': 'unknown',
+              'checkpoint_time': 'unknown',
+              'min_recovery_end': 'unknown',
+              'crash_reason': crash_reasons.get(inst_name, '') if crash_reasons is mapping else ''
+            }) -%}
+          {%- endif -%}
+        {%- endif -%}
+      {%- endfor -%}
+      {{ result }}
+
+- name: Display timeline analysis
+  ansible.builtin.debug:
+    msg:
+      - "--- Timeline Analysis ---"
+
+- name: Display per-instance controldata
+  vars:
+    _src: "{{ item.source | default('exec') }}"
+    _src_label: "{{ {'pvc_probe': '(from PVC probe - pod not running)', 'logs': '(from pod logs - exec failed)', 'none': '(NO DATA - could not probe)'}.get(_src, '') }}"
+    _disk_label: "{{ ' [DISK FULL]' if item.crash_reason | default('') == 'disk_full' else '' }}"
+  ansible.builtin.debug:
+    msg:
+      - "{{ item.pod }}{{ ' ' + _src_label if _src_label else '' }}{{ _disk_label }}"
+      - "  State: {{ item.cluster_state }}"
+      - "  Timeline: {{ item.timeline }}"
+      - "  Checkpoint LSN: {{ item.checkpoint_location }}"
+      - "  Checkpoint time: {{ item.checkpoint_time }}"
+      - "  Min recovery end: {{ item.min_recovery_end }}"
+  loop: "{{ instance_controldata }}"
+  loop_control:
+    label: "{{ item.pod }}"
+
+- name: Identify primary controldata
+  ansible.builtin.set_fact:
+    primary_controldata: >-
+      {{ instance_controldata
+         | selectattr('pod', 'eq', cluster_status.currentPrimary | default(''))
+         | first | default({}) }}
+    primary_timeline: >-
+      {{ (instance_controldata
+          | selectattr('pod', 'eq', cluster_status.currentPrimary | default(''))
+          | first | default({})).timeline | default('unknown') }}
+
+# =========================================================================
+# Replication status from primary
+# =========================================================================
+- name: Check if primary is running
+  ansible.builtin.set_fact:
+    primary_is_running: "{{ cluster_status.currentPrimary | default('') in (running_pods | map(attribute='metadata.name') | list) }}"
+
+- name: Get replication status from primary
+  kubernetes.core.k8s_exec:
+    namespace: "{{ namespace }}"
+    pod: "{{ cluster_status.currentPrimary }}"
+    container: postgres
+    command: >
+      psql -U postgres -d postgres -t -A -F '|' -c
+      "SELECT client_addr, state, sent_lsn, write_lsn, flush_lsn, replay_lsn,
+              write_lag, flush_lag, replay_lag, application_name
+       FROM pg_stat_replication ORDER BY application_name"
+  register: replication_status
+  failed_when: false
+  when: primary_is_running
+
+- name: Display replication status header
+  ansible.builtin.debug:
+    msg:
+      - "--- Replication Status (from {{ cluster_status.currentPrimary | default('N/A') }}) ---"
+
+- name: Display replication status
+  ansible.builtin.debug:
+    msg: "{{ item }}"
+  loop: "{{ replication_status.stdout_lines | default([]) }}"
+  when:
+    - primary_is_running
+    - replication_status.rc | default(1) == 0
+    - replication_status.stdout_lines | default([]) | length > 0
+
+- name: Display no replication warning
+  ansible.builtin.debug:
+    msg: "WARNING: No active replication connections found"
+  when:
+    - primary_is_running
+    - replication_status.rc | default(1) == 0
+    - replication_status.stdout_lines | default([]) | length == 0
+
+- name: Display primary unreachable warning
+  ansible.builtin.debug:
+    msg: "WARNING: Primary is not running - cannot query replication status"
+  when: not primary_is_running
+
+- name: Parse actively streaming replicas
+  ansible.builtin.set_fact:
+    streaming_replicas: >-
+      {%- set result = [] -%}
+      {%- if replication_status is defined and replication_status.rc | default(1) == 0 -%}
+        {%- for line in replication_status.stdout_lines | default([]) -%}
+          {%- set parts = line.split('|') -%}
+          {%- if parts | length >= 10 and parts[1] == 'streaming' -%}
+            {%- set _ = result.append(parts[9]) -%}
+          {%- endif -%}
+        {%- endfor -%}
+      {%- endif -%}
+      {{ result }}
+
+# =========================================================================
+# WAL retention / replication slots from primary
+# =========================================================================
+- name: Get replication slots from primary
+  kubernetes.core.k8s_exec:
+    namespace: "{{ namespace }}"
+    pod: "{{ cluster_status.currentPrimary }}"
+    container: postgres
+    command: >
+      psql -U postgres -d postgres -t -A -F '|' -c
+      "SELECT slot_name, slot_type, active, restart_lsn,
+              confirmed_flush_lsn,
+              pg_wal_lsn_diff(pg_current_wal_lsn(), restart_lsn) AS bytes_behind
+       FROM pg_replication_slots ORDER BY slot_name"
+  register: slot_status
+  failed_when: false
+  when: primary_is_running
+
+- name: Display replication slots header
+  ansible.builtin.debug:
+    msg:
+      - "--- Replication Slots ---"
+
+- name: Display replication slots
+  ansible.builtin.debug:
+    msg: "{{ item }}"
+  loop: "{{ slot_status.stdout_lines | default([]) }}"
+  when:
+    - primary_is_running
+    - slot_status.rc | default(1) == 0
+    - slot_status.stdout_lines | default([]) | length > 0
+
+- name: Display no slots info
+  ansible.builtin.debug:
+    msg: "No replication slots found"
+  when:
+    - primary_is_running
+    - slot_status.rc | default(1) == 0
+    - slot_status.stdout_lines | default([]) | length == 0
+
+- name: Get current WAL position and max_slot_wal_keep_size from primary
+  kubernetes.core.k8s_exec:
+    namespace: "{{ namespace }}"
+    pod: "{{ cluster_status.currentPrimary }}"
+    container: postgres
+    command: >
+      psql -U postgres -d postgres -t -A -F '|' -c
+      "SELECT pg_current_wal_lsn() AS current_lsn,
+              current_setting('max_slot_wal_keep_size') AS max_slot_wal_keep_size,
+              current_setting('wal_keep_size') AS wal_keep_size"
+  register: wal_info
+  failed_when: false
+  when: primary_is_running
+
+- name: Display WAL info
+  ansible.builtin.debug:
+    msg:
+      - "--- WAL Info ---"
+      - "{{ wal_info.stdout | default('Primary unreachable') }}"
+  when: primary_is_running
+
+# =========================================================================
+# Disk space on each running instance
+# =========================================================================
+- name: Check disk space on running instances
+  kubernetes.core.k8s_exec:
+    namespace: "{{ namespace }}"
+    pod: "{{ item.metadata.name }}"
+    container: postgres
+    command: df -h /var/lib/postgresql/data
+  loop: "{{ running_pods }}"
+  loop_control:
+    label: "{{ item.metadata.name }}"
+  register: disk_results
+  failed_when: false
+
+- name: Display disk space header
+  ansible.builtin.debug:
+    msg:
+      - "--- Disk Space ---"
+
+- name: Display disk usage per instance
+  ansible.builtin.debug:
+    msg:
+      - "{{ item.item.metadata.name }}:"
+      - "{{ item.stdout_lines | default(['  unable to check']) | join('\n') }}"
+  loop: "{{ disk_results.results }}"
+  loop_control:
+    label: "{{ item.item.metadata.name }}"
+
+- name: Parse disk usage percentages
+  ansible.builtin.set_fact:
+    disk_usage_map: >-
+      {%- set result = {} -%}
+      {%- for item in disk_results.results -%}
+        {%- set pod_name = item.item.metadata.name -%}
+        {%- if item.rc | default(1) == 0 and item.stdout_lines | default([]) | length > 1 -%}
+          {%- set df_line = item.stdout_lines[-1] -%}
+          {%- set parts = df_line.split() -%}
+          {%- if parts | length >= 5 -%}
+            {%- set _ = result.update({pod_name: parts[4] | replace('%','') | int(default=0)}) -%}
+          {%- endif -%}
+        {%- endif -%}
+      {%- endfor -%}
+      {{ result }}

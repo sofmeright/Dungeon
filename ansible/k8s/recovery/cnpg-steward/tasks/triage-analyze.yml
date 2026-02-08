@@ -1,0 +1,228 @@
+---
+# triage-analyze.yml - Cross-instance comparison and per-instance assessment
+#
+# Requires: instance_controldata, cluster_status, primary_controldata, primary_timeline,
+#   streaming_replicas, missing_instances, crashloop_pods, disk_usage_map,
+#   data_comparison (set below), pvc_states, crash_reasons
+# Sets: data_comparison, instance_assessments (with needs_heal boolean)
+
+# =========================================================================
+# Cross-instance data comparison - determine who has most recent data
+# =========================================================================
+- name: Cross-instance data comparison
+  ansible.builtin.set_fact:
+    data_comparison: >-
+      {%- set primary_name = cluster_status.currentPrimary | default('') -%}
+      {%- set p_tl = primary_controldata.timeline | default('unknown') -%}
+      {%- set p_lsn = primary_controldata.checkpoint_location | default('unknown') -%}
+      {%- set state = {'most_advanced': primary_name, 'most_advanced_tl': p_tl | int(default=0), 'most_advanced_lsn': p_lsn} -%}
+      {%- set warnings = [] -%}
+      {%- set split_brain = [] -%}
+      {%- for inst in instance_controldata -%}
+        {%- if inst.pod != primary_name and inst.timeline != 'unknown' -%}
+          {%- set inst_tl = inst.timeline | int(default=0) -%}
+          {%- if inst_tl > state.most_advanced_tl -%}
+            {%- set _ = state.update({'most_advanced': inst.pod, 'most_advanced_tl': inst_tl, 'most_advanced_lsn': inst.checkpoint_location}) -%}
+            {%- set _ = split_brain.append(inst.pod + ' has timeline ' + inst.timeline + ' > primary timeline ' + p_tl) -%}
+          {%- elif inst_tl == state.most_advanced_tl and inst.checkpoint_location != 'unknown' and p_lsn != 'unknown' -%}
+            {%- set inst_lsn_parts = inst.checkpoint_location.split('/') -%}
+            {%- set p_lsn_parts = p_lsn.split('/') -%}
+            {%- if inst_lsn_parts | length == 2 and p_lsn_parts | length == 2 -%}
+              {%- set inst_lsn_val = inst_lsn_parts[0] | int(base=16, default=0) * 4294967296 + inst_lsn_parts[1] | int(base=16, default=0) -%}
+              {%- set p_lsn_val = p_lsn_parts[0] | int(base=16, default=0) * 4294967296 + p_lsn_parts[1] | int(base=16, default=0) -%}
+              {%- if inst_lsn_val > p_lsn_val -%}
+                {%- set _ = split_brain.append(inst.pod + ' LSN ' + inst.checkpoint_location + ' ahead of primary ' + p_lsn + ' on same timeline') -%}
+              {%- endif -%}
+            {%- endif -%}
+          {%- endif -%}
+        {%- endif -%}
+      {%- endfor -%}
+      {%- set safe = split_brain | length == 0 -%}
+      {%- if safe -%}
+        {%- set _ = warnings.append('OK: Primary ' + primary_name + ' has the most recent data (timeline ' + p_tl + ', LSN ' + p_lsn + ')') -%}
+      {%- else -%}
+        {%- for sb in split_brain -%}
+          {%- set _ = warnings.append('SPLIT-BRAIN RISK: ' + sb) -%}
+        {%- endfor -%}
+      {%- endif -%}
+      {{ {'most_advanced': state.most_advanced,
+          'most_advanced_tl': state.most_advanced_tl,
+          'most_advanced_lsn': state.most_advanced_lsn,
+          'warnings': warnings,
+          'split_brain_details': split_brain,
+          'safe_to_heal': safe} }}
+
+- name: Display data comparison
+  ansible.builtin.debug:
+    msg:
+      - "--- Data Freshness Check ---"
+      - "{{ item }}"
+  loop: "{{ data_comparison.warnings }}"
+
+- name: CRITICAL WARNING - split-brain detected
+  ansible.builtin.debug:
+    msg:
+      - ""
+      - "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+      - "  CRITICAL: POTENTIAL SPLIT-BRAIN DETECTED"
+      - "  A non-primary instance has MORE RECENT data than the primary!"
+      - "  Most advanced instance: {{ data_comparison.most_advanced }}"
+      - "  DO NOT blindly heal - review the data above and decide manually."
+      - "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+      - ""
+  when: not data_comparison.safe_to_heal
+
+- name: Flag timeline divergence
+  ansible.builtin.debug:
+    msg: "DIVERGENCE: {{ item.pod }} is on timeline {{ item.timeline }} but primary is on timeline {{ primary_timeline }}"
+  loop: "{{ instance_controldata }}"
+  loop_control:
+    label: "{{ item.pod }}"
+  when:
+    - primary_timeline != 'unknown'
+    - item.timeline != 'unknown'
+    - item.timeline != primary_timeline
+    - item.pod != cluster_status.currentPrimary | default('')
+
+# =========================================================================
+# Build per-instance assessment with needs_heal boolean
+# =========================================================================
+- name: Build per-instance assessment
+  ansible.builtin.set_fact:
+    instance_assessments: >-
+      {%- set result = [] -%}
+      {%- set primary_name = cluster_status.currentPrimary | default('') -%}
+      {%- set p_tl = primary_controldata.timeline | default('unknown') | trim -%}
+      {%- set p_lsn = primary_controldata.checkpoint_location | default('unknown') | trim -%}
+      {%- set p_lsn_parts = p_lsn.split('/') if p_lsn != 'unknown' else [] -%}
+      {%- set p_lsn_val = p_lsn_parts[0] | int(base=16, default=0) * 4294967296 + p_lsn_parts[1] | int(base=16, default=0) if p_lsn_parts | length == 2 else 0 -%}
+      {%- set safe = data_comparison.safe_to_heal -%}
+      {%- for inst in instance_controldata -%}
+        {%- set is_primary = inst.pod == primary_name -%}
+        {%- set is_missing = inst.pod in missing_instances -%}
+        {%- set is_crashloop = inst.pod in (crashloop_pods | map(attribute='metadata.name') | list) -%}
+        {%- set is_streaming = inst.pod in streaming_replicas -%}
+        {%- set disk_full = inst.crash_reason | default('') == 'disk_full' -%}
+        {%- set disk_pct = disk_usage_map.get(inst.pod, -1) if disk_usage_map is mapping else -1 -%}
+        {%- set has_data = inst.source | default('') != 'none' -%}
+        {%- set inst_tl = inst.timeline | trim if inst.timeline != 'unknown' else 'unknown' -%}
+        {%- set inst_lsn = inst.checkpoint_location | trim if inst.checkpoint_location != 'unknown' else 'unknown' -%}
+        {%- set inst_lsn_parts = inst_lsn.split('/') if inst_lsn != 'unknown' else [] -%}
+        {%- set inst_lsn_val = inst_lsn_parts[0] | int(base=16, default=0) * 4294967296 + inst_lsn_parts[1] | int(base=16, default=0) if inst_lsn_parts | length == 2 else 0 -%}
+        {%- set same_tl = inst_tl == p_tl and inst_tl != 'unknown' -%}
+        {%- set behind_tl = inst_tl != 'unknown' and p_tl != 'unknown' and inst_tl | int(default=0) < p_tl | int(default=0) -%}
+        {%- set behind_lsn = same_tl and inst_lsn_val < p_lsn_val -%}
+        {%- set ahead_lsn = same_tl and inst_lsn_val > p_lsn_val -%}
+        {%- set ahead_tl = inst_tl != 'unknown' and p_tl != 'unknown' and inst_tl | int(default=0) > p_tl | int(default=0) -%}
+        {%- set notes = [] -%}
+        {%- set recommendation = '' -%}
+        {%- set needs_heal = false -%}
+        {%- set replica_num = inst.pod.split('-')[-1] -%}
+        {%- set heal_cmd = 'ansible-playbook k8s/recovery/cnpg-steward.yml \\\n'
+          + '      -e cluster_name=' + cluster_name + ' \\\n'
+          + '      -e namespace=' + namespace + ' \\\n'
+          + '      -e mode=repair \\\n'
+          + '      -e replica_number=' + replica_num -%}
+        {%- if is_primary -%}
+          {%- if disk_full or disk_pct >= 90 -%}
+            {%- set _ = notes.append('PRIMARY - disk full/low') -%}
+            {%- set recommendation = 'Primary disk is full. Expand PVC storage in the Cluster spec.' -%}
+          {%- else -%}
+            {%- set _ = notes.append('PRIMARY - healthy') -%}
+            {%- set recommendation = 'No action needed.' -%}
+          {%- endif -%}
+        {%- elif not safe -%}
+          {# Split-brain: this instance may have data ahead of primary #}
+          {%- if ahead_tl or ahead_lsn -%}
+            {%- set _ = notes.append('AHEAD OF PRIMARY - potential split-brain') -%}
+            {%- set recommendation = 'MANUAL REVIEW REQUIRED. This instance has data ahead of the primary. '
+              + 'Do NOT heal without understanding the data state. '
+              + 'Consider promoting this instance or performing manual data recovery.' -%}
+          {%- elif not has_data -%}
+            {%- set _ = notes.append('NO DATA - cannot assess during split-brain') -%}
+            {%- set recommendation = 'MANUAL REVIEW REQUIRED. Cannot determine this instance state. Resolve split-brain first.' -%}
+          {%- else -%}
+            {%- set _ = notes.append('behind primary but split-brain detected elsewhere') -%}
+            {%- set recommendation = 'MANUAL REVIEW REQUIRED. Split-brain detected in cluster. Resolve the split-brain before healing any replicas.' -%}
+          {%- endif -%}
+        {%- elif not has_data -%}
+          {%- set _ = notes.append('NO DATA - could not probe PVC') -%}
+          {%- set pvc_st = pvc_states[inst.pod] | default('MISSING') if pvc_states is mapping else 'unknown' -%}
+          {%- set _ = notes.append('PVC: ' + pvc_st) -%}
+          {%- if pvc_st == 'MISSING' -%}
+            {%- set recommendation = 'PVC is missing. Check CNPG operator logs.' -%}
+          {%- else -%}
+            {%- set recommendation = 'Could not probe PVC data. Check if pod can be scheduled and PVC can be mounted.' -%}
+          {%- endif -%}
+        {%- elif behind_tl -%}
+          {# Different (older) timeline than primary - needs heal #}
+          {%- set needs_heal = true -%}
+          {%- set _ = notes.append('behind: timeline ' + inst_tl + ' < primary ' + p_tl) -%}
+          {%- if disk_full -%}
+            {%- set _ = notes.append('disk full (WAL accumulation from being stuck)') -%}
+          {%- endif -%}
+          {%- set recommendation = 'Needs heal (pg_basebackup). Cannot catch up via streaming - different timeline.\n\n  ' + heal_cmd -%}
+        {%- elif same_tl and behind_lsn and is_streaming -%}
+          {# Same timeline, behind on checkpoint LSN but actively streaming - normal #}
+          {%- set _ = notes.append('healthy (streaming, checkpoint LSN slightly behind - normal)') -%}
+          {%- if disk_pct >= 90 -%}
+            {%- set _ = notes.append('disk low (' + disk_pct | string + '%)') -%}
+            {%- set recommendation = 'Streaming OK but disk usage is high. Consider expanding PVC storage.' -%}
+          {%- else -%}
+            {%- set recommendation = 'No action needed.' -%}
+          {%- endif -%}
+        {%- elif same_tl and behind_lsn -%}
+          {# Same timeline, behind on LSN, NOT streaming - may need help #}
+          {%- set _ = notes.append('same timeline, behind by LSN (' + inst_lsn + ' < ' + p_lsn + '), not streaming') -%}
+          {%- if disk_full -%}
+            {%- set needs_heal = true -%}
+            {%- set _ = notes.append('disk full (WAL accumulation from being stuck)') -%}
+            {%- set recommendation = 'Needs heal. Same timeline but disk full prevents catch-up.\n\n  ' + heal_cmd -%}
+          {%- elif is_missing -%}
+            {%- set _ = notes.append('no pod running') -%}
+            {%- set recommendation = 'Pod missing but data is on correct timeline. '
+              + 'CNPG should recreate the pod. If it does not, check cluster phase. '
+              + 'May catch up via streaming if WAL is still available.' -%}
+          {%- elif is_crashloop -%}
+            {%- set _ = notes.append('crash-looping') -%}
+            {%- set recommendation = 'Same timeline but crash-looping. Check pod logs for root cause. '
+              + 'If WAL is still available, may recover on restart. '
+              + 'Otherwise needs heal.\n\n  ' + heal_cmd -%}
+          {%- else -%}
+            {# Same timeline, behind, not streaming, not missing, not crashloop = needs heal #}
+            {%- set needs_heal = true -%}
+            {%- set recommendation = 'Not streaming. May catch up if WAL is still available. '
+              + 'Check replication slots above - if the slot has no restart_lsn, '
+              + 'WAL has been discarded and a heal is needed.\n\n  ' + heal_cmd -%}
+          {%- endif -%}
+        {%- elif same_tl and not behind_lsn -%}
+          {# Same timeline, same or ahead LSN - healthy #}
+          {%- if is_missing -%}
+            {%- set _ = notes.append('data current but no pod') -%}
+            {%- set recommendation = 'Data is current. CNPG should recreate the pod. If it does not, check cluster phase.' -%}
+          {%- elif is_crashloop -%}
+            {%- set _ = notes.append('data current but crash-looping') -%}
+            {%- set recommendation = 'Data is current but pod is crash-looping. Check pod logs for root cause.' -%}
+          {%- elif disk_pct >= 90 -%}
+            {%- set _ = notes.append('healthy but disk low (' + disk_pct | string + '%)') -%}
+            {%- set recommendation = 'Healthy but disk usage is high. Consider expanding PVC storage.' -%}
+          {%- else -%}
+            {%- set _ = notes.append('healthy') -%}
+            {%- set recommendation = 'No action needed.' -%}
+          {%- endif -%}
+        {%- else -%}
+          {# Unknown timeline #}
+          {%- set _ = notes.append('timeline unknown') -%}
+          {%- set recommendation = 'Could not determine timeline. Check instance manually.' -%}
+        {%- endif -%}
+        {%- set _ = result.append({
+          'pod': inst.pod,
+          'is_primary': is_primary,
+          'timeline': inst_tl,
+          'lsn': inst_lsn,
+          'notes': notes,
+          'recommendation': recommendation,
+          'needs_heal': needs_heal
+        }) -%}
+      {%- endfor -%}
+      {{ result }}

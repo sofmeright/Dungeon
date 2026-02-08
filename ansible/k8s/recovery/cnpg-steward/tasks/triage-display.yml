@@ -1,0 +1,48 @@
+---
+# triage-display.yml - Summary banner, per-instance table, recommendations
+#
+# Requires: cluster_name, namespace, cluster_status, cluster_instances,
+#   primary_timeline, primary_controldata, data_comparison, instance_assessments
+
+- name: Display summary
+  ansible.builtin.debug:
+    msg:
+      - ""
+      - "============================================================"
+      - "  TRIAGE SUMMARY"
+      - "============================================================"
+      - ""
+      - "Cluster: {{ cluster_name }} ({{ namespace }})"
+      - "Primary: {{ cluster_status.currentPrimary | default('Unknown') }} (timeline {{ primary_timeline | trim }}, LSN {{ primary_controldata.checkpoint_location | default('unknown') }})"
+      - "Phase: {{ cluster_status.phase | default('Unknown') }}"
+      - "Ready: {{ cluster_status.readyInstances | default(0) }}/{{ cluster_instances }}"
+      - "Safe to heal replicas: {{ 'YES - primary has most recent data' if data_comparison.safe_to_heal else 'NO - SPLIT-BRAIN DETECTED - review data above' }}"
+      - ""
+
+- name: Display per-instance assessment
+  ansible.builtin.debug:
+    msg:
+      - "{{ item.pod }}{{ ' [PRIMARY]' if item.is_primary else '' }}: {{ item.notes | join(', ') }}"
+      - "  Timeline: {{ item.timeline }} | LSN: {{ item.lsn }}"
+      - "  >> {{ item.recommendation }}"
+  loop: "{{ instance_assessments }}"
+  loop_control:
+    label: "{{ item.pod }}"
+
+- name: Display repair commands
+  vars:
+    heal_targets: "{{ instance_assessments | selectattr('needs_heal') | list }}"
+  ansible.builtin.debug:
+    msg:
+      - ""
+      - "--- Suggested Commands ---"
+      - "Repair all unhealthy replicas:"
+      - "  ansible-playbook k8s/recovery/cnpg-steward.yml -e cluster_name={{ cluster_name }} -e namespace={{ namespace }} -e mode=repair"
+      - ""
+      - "Repair a specific replica:"
+      - "  ansible-playbook k8s/recovery/cnpg-steward.yml -e cluster_name={{ cluster_name }} -e namespace={{ namespace }} -e mode=repair -e replica_number=<N>"
+  when: (instance_assessments | selectattr('needs_heal') | list) | length > 0
+
+- name: Triage complete
+  ansible.builtin.debug:
+    msg: "=== Triage complete ==="

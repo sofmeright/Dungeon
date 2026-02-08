@@ -1,0 +1,254 @@
+---
+# mode-repair.yml - Triage → safety gate → heal → post-status
+#
+# Two paths:
+#   Without replica_number: heal ALL unhealthy replicas
+#   With replica_number:    heal THAT specific replica
+#
+# Safety gates:
+#   Untargeted: split-brain → HARD STOP (no override)
+#   Targeted:   primary → HARD STOP; split-brain → fail (unless force); healthy → skip (unless force)
+
+# =========================================================================
+# Phase 1: Full triage
+# =========================================================================
+- name: "Repair: validate inputs"
+  ansible.builtin.include_tasks: validate.yml
+
+- name: "Repair: collect cluster data"
+  ansible.builtin.include_tasks: triage-collect.yml
+
+- name: "Repair: analyze instances"
+  ansible.builtin.include_tasks: triage-analyze.yml
+
+- name: "Repair: display triage results"
+  ansible.builtin.include_tasks: triage-display.yml
+
+# =========================================================================
+# Phase 2: Prepare common heal prerequisites
+# =========================================================================
+- name: Check if primary is running for heal
+  ansible.builtin.fail:
+    msg: "ABORT: Primary {{ cluster_status.currentPrimary | default('Unknown') }} is not running. Cannot heal replicas without a healthy primary."
+  when: not primary_is_running
+
+- name: Get primary pod info for heal
+  kubernetes.core.k8s_info:
+    api_version: v1
+    kind: Pod
+    name: "{{ cluster_status.currentPrimary }}"
+    namespace: "{{ namespace }}"
+  register: _repair_primary_pod
+
+- name: Verify primary is ready
+  ansible.builtin.fail:
+    msg: "ABORT: Primary {{ cluster_status.currentPrimary }} is not ready. Fix primary first."
+  when: >
+    _repair_primary_pod.resources | length == 0 or
+    not (_repair_primary_pod.resources[0].status.containerStatuses[0].ready | default(false))
+
+- name: Set primary IP
+  ansible.builtin.set_fact:
+    primary_ip: "{{ _repair_primary_pod.resources[0].status.podIP }}"
+
+- name: Get postgres UID from primary
+  kubernetes.core.k8s_exec:
+    namespace: "{{ namespace }}"
+    pod: "{{ cluster_status.currentPrimary }}"
+    container: postgres
+    command: id -u postgres
+  register: _repair_uid_result
+  failed_when: false
+
+- name: Get postgres GID from primary
+  kubernetes.core.k8s_exec:
+    namespace: "{{ namespace }}"
+    pod: "{{ cluster_status.currentPrimary }}"
+    container: postgres
+    command: id -g postgres
+  register: _repair_gid_result
+  failed_when: false
+
+- name: Set postgres UID/GID
+  ansible.builtin.set_fact:
+    postgres_uid: "{{ _repair_uid_result.stdout | default('26') | trim }}"
+    postgres_gid: "{{ _repair_gid_result.stdout | default('26') | trim }}"
+
+- name: Display postgres UID/GID
+  ansible.builtin.debug:
+    msg: "Postgres UID/GID: {{ postgres_uid }}/{{ postgres_gid }}"
+
+# =========================================================================
+# Phase 3: Branch on targeted vs untargeted repair
+# =========================================================================
+
+# ------- TARGETED REPAIR (replica_number is set) -------
+- name: "Targeted repair for replica {{ replica_number | default('N/A') }}"
+  when: replica_number is defined
+  block:
+    - name: Set target pod name
+      ansible.builtin.set_fact:
+        _repair_target_pod: "{{ cluster_name }}-{{ replica_number }}"
+
+    # Safety gate: target is primary → HARD STOP
+    - name: "SAFETY GATE - Target is primary"
+      ansible.builtin.fail:
+        msg: "ABORT: {{ _repair_target_pod }} is the PRIMARY. Cannot heal primary. Use switchover first."
+      when: _repair_target_pod == cluster_status.currentPrimary | default('')
+
+    # Find the target's assessment
+    - name: Find target assessment
+      ansible.builtin.set_fact:
+        _repair_target_assessment: "{{ instance_assessments | selectattr('pod', 'eq', _repair_target_pod) | first | default({}) }}"
+
+    - name: Verify target exists in assessments
+      ansible.builtin.fail:
+        msg: "ABORT: {{ _repair_target_pod }} not found in instance assessments. Check cluster_name and replica_number."
+      when: _repair_target_assessment | length == 0
+
+    # Safety gate: split-brain → fail unless force
+    - name: "SAFETY GATE - Split-brain detected (targeted)"
+      ansible.builtin.fail:
+        msg: >-
+          ABORT: Split-brain detected in cluster. Healing {{ _repair_target_pod }} may cause DATA LOSS.
+          If you have reviewed the triage output and deliberately chosen which data to keep,
+          re-run with -e force=true to override.
+      when:
+        - not data_comparison.safe_to_heal
+        - not (force | bool)
+
+    - name: "WARNING - Force override: healing during split-brain"
+      ansible.builtin.debug:
+        msg:
+          - "WARNING: force=true - proceeding despite split-brain detection."
+          - "Data on {{ _repair_target_pod }} will be DESTROYED and replaced from primary."
+      when:
+        - not data_comparison.safe_to_heal
+        - force | bool
+
+    # Safety gate: target is healthy → skip unless force
+    - name: "SAFETY GATE - Target is healthy"
+      ansible.builtin.debug:
+        msg: "Instance {{ _repair_target_pod }} is healthy and does not need healing. Nothing to do."
+      when:
+        - not (_repair_target_assessment.needs_heal | default(false))
+        - not (force | bool)
+
+    - name: "Skip heal for healthy target"
+      ansible.builtin.meta: end_play
+      when:
+        - not (_repair_target_assessment.needs_heal | default(false))
+        - not (force | bool)
+
+    - name: "WARNING - Force override: healing healthy instance"
+      ansible.builtin.debug:
+        msg: "WARNING: force=true - healing {{ _repair_target_pod }} even though it appears healthy."
+      when:
+        - not (_repair_target_assessment.needs_heal | default(false))
+        - force | bool
+
+    # Verify target PVC exists
+    - name: Check target PVC exists
+      kubernetes.core.k8s_info:
+        api_version: v1
+        kind: PersistentVolumeClaim
+        name: "{{ _repair_target_pod }}"
+        namespace: "{{ namespace }}"
+      register: _repair_target_pvc
+      failed_when: _repair_target_pvc.resources | length == 0
+
+    # Heal the target
+    - name: "Heal {{ _repair_target_pod }}"
+      ansible.builtin.include_tasks: heal-instance.yml
+      vars:
+        heal_target_pod: "{{ _repair_target_pod }}"
+        heal_target_pvc: "{{ _repair_target_pod }}"
+
+    # Display final status
+    - name: Get final cluster status (targeted)
+      kubernetes.core.k8s_info:
+        api_version: postgresql.cnpg.io/v1
+        kind: Cluster
+        name: "{{ cluster_name }}"
+        namespace: "{{ namespace }}"
+      register: _repair_final_cluster
+
+    - name: Display final cluster state (targeted)
+      ansible.builtin.debug:
+        msg:
+          - "=== Final Status ==="
+          - "Cluster: {{ _repair_final_cluster.resources[0].status.phase }}"
+          - "Ready: {{ _repair_final_cluster.resources[0].status.readyInstances | default(0) }}/{{ _repair_final_cluster.resources[0].spec.instances }}"
+
+    - name: Get final pod list (targeted)
+      kubernetes.core.k8s_info:
+        api_version: v1
+        kind: Pod
+        namespace: "{{ namespace }}"
+        label_selectors:
+          - "cnpg.io/cluster={{ cluster_name }}"
+      register: _repair_final_pods
+
+    - name: Display pod status (targeted)
+      ansible.builtin.debug:
+        msg: "{{ item.metadata.name }}: {{ item.status.phase }} ready={{ item.status.containerStatuses[0].ready | default(false) }}"
+      loop: "{{ _repair_final_pods.resources }}"
+      loop_control:
+        label: "{{ item.metadata.name }}"
+
+# ------- UNTARGETED REPAIR (heal all unhealthy) -------
+- name: "Untargeted repair - heal all unhealthy replicas"
+  when: replica_number is not defined
+  block:
+    # Safety gate: split-brain → HARD STOP (no override)
+    - name: "SAFETY GATE - Split-brain detected (untargeted)"
+      ansible.builtin.fail:
+        msg: >-
+          HARD STOP: Split-brain detected in cluster. Cannot auto-heal all replicas.
+          Admin must review the triage output above, determine which instance has the correct data,
+          then use targeted repair: -e mode=repair -e replica_number=<N>
+      when: not data_comparison.safe_to_heal
+
+    # Compute heal targets
+    - name: Compute heal targets
+      ansible.builtin.set_fact:
+        _repair_heal_targets: "{{ instance_assessments | selectattr('needs_heal') | list }}"
+
+    # Nothing to heal → done
+    - name: "Nothing to heal"
+      ansible.builtin.debug:
+        msg: "All replicas are healthy. Nothing to heal."
+      when: _repair_heal_targets | length == 0
+
+    - name: "Skip heal when nothing to do"
+      ansible.builtin.meta: end_play
+      when: _repair_heal_targets | length == 0
+
+    # Display repair plan
+    - name: Display repair plan
+      ansible.builtin.debug:
+        msg:
+          - ""
+          - "=== Repair Plan ==="
+          - "The following instances will be healed sequentially:"
+          - "{% for t in _repair_heal_targets %}  - {{ t.pod }} ({{ t.notes | join(', ') }})\n{% endfor %}"
+
+    # Heal each target sequentially
+    - name: "Heal unhealthy replicas"
+      ansible.builtin.include_tasks: heal-instance.yml
+      vars:
+        heal_target_pod: "{{ item.pod }}"
+        heal_target_pvc: "{{ item.pod }}"
+      loop: "{{ _repair_heal_targets }}"
+      loop_control:
+        label: "{{ item.pod }}"
+
+    # Post-repair: re-run triage to show final state
+    - name: "Post-repair: re-collecting cluster data"
+      ansible.builtin.include_tasks: triage-collect.yml
+
+    - name: "Post-repair: re-analyzing instances"
+      ansible.builtin.include_tasks: triage-analyze.yml
+
+    - name: "Post-repair: displaying final results"
+      ansible.builtin.include_tasks: triage-display.yml

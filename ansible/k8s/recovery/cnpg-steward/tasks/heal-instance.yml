@@ -1,0 +1,396 @@
+---
+# heal-instance.yml - Heal a single CNPG replica via fence/clear/basebackup/unfence
+#
+# Expected variables (set by caller):
+#   heal_target_pod     - pod name to heal (e.g. "zitadel-postgres-3")
+#   heal_target_pvc     - PVC name (same as pod name for CNPG)
+#   primary_ip          - IP of the current primary pod
+#   postgres_uid        - UID of postgres user in container
+#   postgres_gid        - GID of postgres user in container
+#   cluster_name        - CNPG cluster name
+#   namespace           - Kubernetes namespace
+#   cluster_spec        - Cluster spec (for imageName)
+#   heal_timeout        - timeout for pg_basebackup (default 600)
+#   delete_timeout      - timeout for aggressive delete loop (default 300)
+
+- name: "Set derived heal variables for {{ heal_target_pod }}"
+  ansible.builtin.set_fact:
+    _heal_ca_secret: "{{ cluster_name }}-ca"
+    _heal_replication_secret: "{{ cluster_name }}-replication"
+    _heal_pod_name: "{{ cluster_name }}-heal-{{ heal_target_pod.split('-')[-1] }}-{{ ansible_date_time.epoch }}"
+    _heal_fence_applied: false
+    _heal_pod_created: false
+
+- name: "Display heal plan for {{ heal_target_pod }}"
+  ansible.builtin.debug:
+    msg:
+      - "--- Healing {{ heal_target_pod }} ---"
+      - "1. Fence instance (CNPG stops managing it)"
+      - "2. Create heal pod, then aggressively delete fenced pod"
+      - "3. Clear pgdata on PVC {{ heal_target_pvc }} (PVC preserved)"
+      - "4. Run pg_basebackup from primary ({{ primary_ip }})"
+      - "5. Remove fence (CNPG takes over the replica)"
+
+- name: "Heal {{ heal_target_pod }}"
+  block:
+    # === STEP 1: Fence the instance (append to existing list) ===
+    - name: "STEP 1 - Get current fence list for {{ heal_target_pod }}"
+      kubernetes.core.k8s_info:
+        api_version: postgresql.cnpg.io/v1
+        kind: Cluster
+        name: "{{ cluster_name }}"
+        namespace: "{{ namespace }}"
+      register: _heal_cluster_info
+
+    - name: "STEP 1 - Parse current fence list for {{ heal_target_pod }}"
+      ansible.builtin.set_fact:
+        _heal_existing_fence: "{{ _heal_cluster_info.resources[0].metadata.annotations['cnpg.io/fencedInstances'] | default('[]') | from_json }}"
+
+    - name: "STEP 1 - Build fence list with {{ heal_target_pod }}"
+      ansible.builtin.set_fact:
+        _heal_new_fence_list: "{{ (_heal_existing_fence + [heal_target_pod]) | unique }}"
+
+    - name: "STEP 1 - Apply fence for {{ heal_target_pod }}"
+      kubernetes.core.k8s:
+        state: patched
+        api_version: postgresql.cnpg.io/v1
+        kind: Cluster
+        name: "{{ cluster_name }}"
+        namespace: "{{ namespace }}"
+        definition:
+          metadata:
+            annotations:
+              cnpg.io/fencedInstances: "{{ _heal_new_fence_list | to_json }}"
+      when: heal_target_pod not in _heal_existing_fence
+
+    - name: "STEP 1 - Already fenced: {{ heal_target_pod }}"
+      ansible.builtin.debug:
+        msg: "Instance {{ heal_target_pod }} already fenced."
+      when: heal_target_pod in _heal_existing_fence
+
+    - name: "Track fence state for {{ heal_target_pod }}"
+      ansible.builtin.set_fact:
+        _heal_fence_applied: true
+
+    - name: "Wait for fence to take effect on {{ heal_target_pod }}"
+      ansible.builtin.pause:
+        seconds: 3
+
+    # === STEP 2: Create heal pod FIRST (it will wait for PVC) ===
+    - name: "STEP 2 - Create heal pod for {{ heal_target_pod }}"
+      kubernetes.core.k8s:
+        state: present
+        definition:
+          apiVersion: v1
+          kind: Pod
+          metadata:
+            name: "{{ _heal_pod_name }}"
+            namespace: "{{ namespace }}"
+          spec:
+            restartPolicy: Never
+            securityContext:
+              runAsUser: "{{ postgres_uid | int }}"
+              runAsGroup: "{{ postgres_gid | int }}"
+              fsGroup: "{{ postgres_gid | int }}"
+            containers:
+              - name: healer
+                image: "{{ cluster_spec.imageName }}"
+                command:
+                  - sh
+                  - -c
+                  - |
+                    set -e
+                    echo "=== Step 1: Clearing pgdata ==="
+                    if [ -f /var/lib/postgresql/data/pgdata/PG_VERSION ]; then
+                      echo "WARNING: Found existing PG_VERSION file. Proceeding with clear..."
+                    fi
+                    rm -rf /var/lib/postgresql/data/pgdata/*
+                    rm -rf /var/lib/postgresql/data/pgdata/.[!.]*
+                    rm -rf /var/lib/postgresql/data/lost+found 2>/dev/null || true
+                    echo "pgdata cleared."
+
+                    echo "=== Step 2: Setting up TLS certificates ==="
+                    mkdir -p /tmp/certs
+                    cp /certs/ca/ca.crt /tmp/certs/
+                    cp /certs/replication/tls.crt /tmp/certs/
+                    cp /certs/replication/tls.key /tmp/certs/
+                    chmod 600 /tmp/certs/tls.key
+                    echo "TLS certs ready."
+
+                    echo "=== Step 3: Running pg_basebackup ==="
+                    pg_basebackup -h {{ primary_ip }} -p 5432 -U streaming_replica \
+                      -D /var/lib/postgresql/data/pgdata \
+                      -Fp -Xs -P -R \
+                      --checkpoint=fast \
+                      -d "sslmode=verify-ca sslcert=/tmp/certs/tls.crt sslkey=/tmp/certs/tls.key sslrootcert=/tmp/certs/ca.crt"
+
+                    echo "=== pg_basebackup complete! ==="
+                volumeMounts:
+                  - name: pgdata
+                    mountPath: /var/lib/postgresql/data
+                  - name: ca-certs
+                    mountPath: /certs/ca
+                    readOnly: true
+                  - name: replication-certs
+                    mountPath: /certs/replication
+                    readOnly: true
+            volumes:
+              - name: pgdata
+                persistentVolumeClaim:
+                  claimName: "{{ heal_target_pvc }}"
+              - name: ca-certs
+                secret:
+                  secretName: "{{ _heal_ca_secret }}"
+                  items:
+                    - key: ca.crt
+                      path: ca.crt
+              - name: replication-certs
+                secret:
+                  secretName: "{{ _heal_replication_secret }}"
+                  items:
+                    - key: tls.crt
+                      path: tls.crt
+                    - key: tls.key
+                      path: tls.key
+
+    - name: "Track heal pod created for {{ heal_target_pod }}"
+      ansible.builtin.set_fact:
+        _heal_pod_created: true
+
+    - name: "Wait for heal pod to be registered for {{ heal_target_pod }}"
+      ansible.builtin.pause:
+        seconds: 2
+
+    # === STEP 3: Aggressively delete target pod until heal pod gets PVC ===
+    - name: "STEP 3 - Aggressively delete {{ heal_target_pod }} until heal pod acquires PVC"
+      ansible.builtin.shell: |
+        python3 << 'PYEOF'
+        import time, sys
+        from kubernetes import client, config
+
+        config.load_kube_config()
+        v1 = client.CoreV1Api()
+
+        ns = "{{ namespace }}"
+        target = "{{ heal_target_pod }}"
+        healer = "{{ _heal_pod_name }}"
+        timeout = {{ delete_timeout }}
+
+        elapsed = 0
+        delete_count = 0
+        while elapsed < timeout:
+            try:
+                hp = v1.read_namespaced_pod_status(healer, ns)
+                phase = hp.status.phase
+            except Exception:
+                phase = "Pending"
+
+            if phase in ("Running", "Succeeded"):
+                print("HEAL_ACQUIRED delete_count=%d" % delete_count)
+                sys.exit(0)
+            if phase == "Failed":
+                print("HEAL_FAILED")
+                sys.exit(1)
+
+            try:
+                v1.delete_namespaced_pod(
+                    target, ns,
+                    grace_period_seconds=0,
+                    propagation_policy="Background",
+                )
+                delete_count += 1
+                if delete_count % 10 == 0:
+                    print("Deleted %d times, heal pod status: %s" % (delete_count, phase), file=sys.stderr)
+            except client.exceptions.ApiException as e:
+                if e.status != 404:
+                    print("Delete error: %s" % e.reason, file=sys.stderr)
+
+            time.sleep(1)
+            elapsed += 1
+
+        print("TIMEOUT after %ds, heal pod never acquired PVC" % timeout)
+        sys.exit(1)
+        PYEOF
+      args:
+        executable: /bin/bash
+      register: _heal_delete_loop_result
+      changed_when: "'HEAL_ACQUIRED' in _heal_delete_loop_result.stdout"
+      failed_when: _heal_delete_loop_result.rc != 0
+
+    - name: "Display PVC acquisition result for {{ heal_target_pod }}"
+      ansible.builtin.debug:
+        msg: "{{ _heal_delete_loop_result.stdout_lines | last }}"
+
+    # === STEP 4: Wait for heal pod to complete pg_basebackup ===
+    - name: "STEP 4 - Wait for heal pod to complete for {{ heal_target_pod }}"
+      kubernetes.core.k8s_info:
+        api_version: v1
+        kind: Pod
+        name: "{{ _heal_pod_name }}"
+        namespace: "{{ namespace }}"
+      register: _heal_status
+      until: >
+        _heal_status.resources | length > 0 and
+        _heal_status.resources[0].status.phase in ['Succeeded', 'Failed']
+      retries: "{{ (heal_timeout / 10) | int }}"
+      delay: 10
+
+    - name: "Fetch heal pod logs for {{ heal_target_pod }}"
+      kubernetes.core.k8s_log:
+        name: "{{ _heal_pod_name }}"
+        namespace: "{{ namespace }}"
+      register: _heal_logs
+      failed_when: false
+
+    - name: "Show heal pod logs for {{ heal_target_pod }}"
+      ansible.builtin.debug:
+        msg: "{{ _heal_logs.log_lines | default(['(no logs)']) }}"
+
+    - name: "Check if heal pod succeeded for {{ heal_target_pod }}"
+      ansible.builtin.fail:
+        msg: "Heal pod FAILED for {{ heal_target_pod }}! See logs above."
+      when: _heal_status.resources[0].status.phase == 'Failed'
+
+    # === Cleanup heal pod ===
+    - name: "Delete heal pod for {{ heal_target_pod }}"
+      kubernetes.core.k8s:
+        state: absent
+        api_version: v1
+        kind: Pod
+        name: "{{ _heal_pod_name }}"
+        namespace: "{{ namespace }}"
+        delete_options:
+          gracePeriodSeconds: 0
+
+    - name: "Track heal pod cleaned for {{ heal_target_pod }}"
+      ansible.builtin.set_fact:
+        _heal_pod_created: false
+
+    - name: "Wait for heal pod cleanup for {{ heal_target_pod }}"
+      ansible.builtin.pause:
+        seconds: 5
+
+    # === STEP 5: Remove fence (only our target, preserve others) ===
+    - name: "STEP 5 - Get current fence list after heal for {{ heal_target_pod }}"
+      kubernetes.core.k8s_info:
+        api_version: postgresql.cnpg.io/v1
+        kind: Cluster
+        name: "{{ cluster_name }}"
+        namespace: "{{ namespace }}"
+      register: _heal_post_cluster_info
+
+    - name: "STEP 5 - Parse current fence list after heal for {{ heal_target_pod }}"
+      ansible.builtin.set_fact:
+        _heal_current_fence: "{{ _heal_post_cluster_info.resources[0].metadata.annotations['cnpg.io/fencedInstances'] | default('[]') | from_json }}"
+
+    - name: "STEP 5 - Build remaining fence list without {{ heal_target_pod }}"
+      ansible.builtin.set_fact:
+        _heal_remaining_fence: "{{ _heal_current_fence | reject('eq', heal_target_pod) | list }}"
+
+    - name: "STEP 5 - Remove fence annotation (target was only fenced instance)"
+      kubernetes.core.k8s:
+        state: patched
+        api_version: postgresql.cnpg.io/v1
+        kind: Cluster
+        name: "{{ cluster_name }}"
+        namespace: "{{ namespace }}"
+        definition:
+          metadata:
+            annotations:
+              cnpg.io/fencedInstances: null
+      when: _heal_remaining_fence | length == 0
+
+    - name: "STEP 5 - Update fence list (other instances remain fenced)"
+      kubernetes.core.k8s:
+        state: patched
+        api_version: postgresql.cnpg.io/v1
+        kind: Cluster
+        name: "{{ cluster_name }}"
+        namespace: "{{ namespace }}"
+        definition:
+          metadata:
+            annotations:
+              cnpg.io/fencedInstances: "{{ _heal_remaining_fence | to_json }}"
+      when: _heal_remaining_fence | length > 0
+
+    - name: "Track fence removed for {{ heal_target_pod }}"
+      ansible.builtin.set_fact:
+        _heal_fence_applied: false
+
+    # === Post-heal: delete old pod to clear CrashLoopBackOff history ===
+    - name: "Delete {{ heal_target_pod }} to clear CrashLoopBackOff history"
+      kubernetes.core.k8s:
+        state: absent
+        api_version: v1
+        kind: Pod
+        name: "{{ heal_target_pod }}"
+        namespace: "{{ namespace }}"
+        delete_options:
+          gracePeriodSeconds: 0
+      failed_when: false
+
+    - name: "Wait for CNPG to recreate {{ heal_target_pod }}"
+      ansible.builtin.pause:
+        seconds: 5
+
+    - name: "Wait for {{ heal_target_pod }} to come back online"
+      kubernetes.core.k8s_info:
+        api_version: v1
+        kind: Pod
+        name: "{{ heal_target_pod }}"
+        namespace: "{{ namespace }}"
+      register: _heal_target_status
+      until: >
+        _heal_target_status.resources | length > 0 and
+        _heal_target_status.resources[0].status.containerStatuses[0].ready | default(false)
+      retries: 30
+      delay: 10
+      failed_when: false
+
+    - name: "Heal complete for {{ heal_target_pod }}"
+      ansible.builtin.debug:
+        msg: "Replica {{ heal_target_pod }} has been healed!"
+
+  # === RESCUE: Cleanup on failure ===
+  rescue:
+    - name: "RESCUE - Fetch heal pod logs for {{ heal_target_pod }}"
+      kubernetes.core.k8s_log:
+        name: "{{ _heal_pod_name }}"
+        namespace: "{{ namespace }}"
+      register: _heal_rescue_logs
+      failed_when: false
+      when: _heal_pod_created
+
+    - name: "RESCUE - Display heal pod logs for {{ heal_target_pod }}"
+      ansible.builtin.debug:
+        msg: "{{ _heal_rescue_logs.log_lines | default(['(no logs available)']) }}"
+      when: _heal_pod_created and _heal_rescue_logs.log is defined
+
+    - name: "RESCUE - Delete heal pod for {{ heal_target_pod }}"
+      kubernetes.core.k8s:
+        state: absent
+        api_version: v1
+        kind: Pod
+        name: "{{ _heal_pod_name }}"
+        namespace: "{{ namespace }}"
+        delete_options:
+          gracePeriodSeconds: 0
+      failed_when: false
+      when: _heal_pod_created
+
+    - name: "RESCUE - Fence left in place for {{ heal_target_pod }}"
+      ansible.builtin.debug:
+        msg:
+          - "HEAL FAILED - fence left in place for safety."
+          - "Instance {{ heal_target_pod }} is still fenced."
+          - ""
+          - "To remove fence manually:"
+          - "  kubectl annotate cluster {{ cluster_name }} -n {{ namespace }} cnpg.io/fencedInstances-"
+          - ""
+          - "Or to remove only {{ heal_target_pod }} from fence list:"
+          - "  kubectl get cluster {{ cluster_name }} -n {{ namespace }} -o jsonpath='{.metadata.annotations.cnpg\\.io/fencedInstances}'"
+      when: _heal_fence_applied
+
+    - name: "RESCUE - Propagate failure for {{ heal_target_pod }}"
+      ansible.builtin.fail:
+        msg: "Heal operation failed for {{ heal_target_pod }}. See logs above."
