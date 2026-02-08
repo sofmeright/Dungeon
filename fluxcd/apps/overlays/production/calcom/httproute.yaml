@@ -3,6 +3,10 @@ kind: HTTPRoute
 metadata:
   name: calcom
   namespace: hyrule-castle
+  annotations:
+    gatus.home-operations.com/endpoint: |
+      conditions:
+        - "[STATUS] == 200"
 spec:
   parentRefs:
     - name: cell-membrane-gateway
