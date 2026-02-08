@@ -75,3 +75,29 @@ spec:
       replicas: 0
     backend:
       replicas: 0
+  # Patch sidecar container to add writable /tmp (required by k8s-sidecar
+  # v1.30.11+ for Python multiprocessing Unix sockets) while keeping
+  # readOnlyRootFilesystem: true
+  postRenderers:
+    - kustomize:
+        patches:
+          - target:
+              kind: StatefulSet
+              name: loki
+            patch: |
+              apiVersion: apps/v1
+              kind: StatefulSet
+              metadata:
+                name: loki
+              spec:
+                template:
+                  spec:
+                    containers:
+                      - name: loki-sc-rules
+                        volumeMounts:
+                          - name: sidecar-tmp
+                            mountPath: /tmp
+                    volumes:
+                      - name: sidecar-tmp
+                        emptyDir:
+                          sizeLimit: 64Mi
