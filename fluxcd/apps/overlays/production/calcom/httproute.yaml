@@ -6,8 +6,8 @@ metadata:
   annotations:
     gatus.home-operations.com/endpoint: |
       conditions:
-        - "[STATUS] < 400"
-        - "[BODY] != no healthy upstream"
+        - "[STATUS] == any(200, 302)"
+        - "[BODY] != pat(*no healthy upstream*)"
         - "[RESPONSE_TIME] < 5000"
 spec:
   parentRefs:

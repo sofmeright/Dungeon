@@ -35,6 +35,10 @@ spec:
           volumeMounts:
             - name: yarn-dir
               mountPath: /calcom/.yarn
+            - name: turbo-dir
+              mountPath: /calcom/.turbo
       volumes:
         - name: yarn-dir
+          emptyDir: {}
+        - name: turbo-dir
           emptyDir: {}
