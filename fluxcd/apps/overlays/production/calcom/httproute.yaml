@@ -7,6 +7,8 @@ metadata:
     gatus.home-operations.com/endpoint: |
       conditions:
         - "[STATUS] < 400"
+        - "[BODY] != no healthy upstream"
+        - "[RESPONSE_TIME] < 5000"
 spec:
   parentRefs:
     - name: cell-membrane-gateway
