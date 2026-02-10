@@ -10,6 +10,14 @@ spec:
         runAsGroup: 1032
         fsGroup: 1032
       runtimeClassName: nvidia
+      containers:
+        - name: libretranslate
+          env:
+            - name: HOME
+              value: /home/libretranslate
+          volumeMounts:
+            - name: models
+              mountPath: /home/libretranslate/.local
   volumeClaimTemplates:
     - metadata:
         name: models
