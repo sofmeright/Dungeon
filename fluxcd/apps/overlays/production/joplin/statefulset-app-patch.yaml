@@ -14,3 +14,5 @@ spec:
           env:
             - name: APP_BASE_URL
               value: "https://joplin.optcp.com"
+            - name: PM2_HOME
+              value: /tmp/pm2
