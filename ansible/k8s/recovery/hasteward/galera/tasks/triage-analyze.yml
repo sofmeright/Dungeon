@@ -1,0 +1,287 @@
+---
+# triage-analyze.yml - Cross-instance comparison and per-instance assessment
+#
+# Mirrors cnpg-steward's triage-analyze.yml:
+#   - Cross-instance data comparison (seqno = LSN equivalent, UUID = timeline equivalent)
+#   - Per-instance assessment with needs_heal boolean
+#
+# Requires: instance_grastate, wsrep_status_map, effective_seqno_map, expected_nodes,
+#   running_pods, missing_nodes, crashloop_pods, pvc_states, disk_usage_map,
+#   crash_reasons, any_node_running_ready, all_nodes_down, cluster_has_primary,
+#   best_seqno_node, most_advanced_node, galera_recovery
+# Sets: data_comparison, instance_assessments (with needs_heal boolean)
+
+# =========================================================================
+# Cross-instance data comparison - who has the most recent data?
+# Mirrors cnpg-steward: compare every instance's seqno against the most advanced
+# =========================================================================
+- name: Cross-instance data comparison
+  ansible.builtin.set_fact:
+    data_comparison: >-
+      {%- set warnings = [] -%}
+      {%- set split_brain = [] -%}
+      {#- --- UUID divergence check (= timeline divergence in CNPG) --- -#}
+      {%- set uuids = [] -%}
+      {%- for inst in instance_grastate -%}
+        {%- if inst.uuid != 'unknown' and inst.uuid != '00000000-0000-0000-0000-000000000000' -%}
+          {%- if inst.uuid not in uuids -%}
+            {%- set _ = uuids.append(inst.uuid) -%}
+          {%- endif -%}
+        {%- endif -%}
+      {%- endfor -%}
+      {%- set wsrep_uuids = [] -%}
+      {%- for name, ws in (wsrep_status_map if wsrep_status_map is mapping else {}).items() -%}
+        {%- if ws.wsrep_cluster_state_uuid is defined and ws.wsrep_cluster_state_uuid not in wsrep_uuids -%}
+          {%- set _ = wsrep_uuids.append(ws.wsrep_cluster_state_uuid) -%}
+        {%- endif -%}
+      {%- endfor -%}
+      {%- set all_uuids = (uuids + wsrep_uuids) | unique | list -%}
+      {%- if all_uuids | length > 1 -%}
+        {%- set _ = split_brain.append('Multiple cluster UUIDs detected: ' + all_uuids | join(', ')) -%}
+      {%- endif -%}
+      {#- --- Non-primary component check --- -#}
+      {%- set non_primary_nodes = [] -%}
+      {%- for name, ws in (wsrep_status_map if wsrep_status_map is mapping else {}).items() -%}
+        {%- if ws.wsrep_cluster_status is defined and ws.wsrep_cluster_status != 'Primary' -%}
+          {%- set _ = non_primary_nodes.append(name + ' cluster_status=' + ws.wsrep_cluster_status) -%}
+        {%- endif -%}
+      {%- endfor -%}
+      {%- if non_primary_nodes | length > 0 -%}
+        {%- set _ = split_brain.append('Non-primary nodes: ' + non_primary_nodes | join(', ')) -%}
+      {%- endif -%}
+      {#- --- Seqno comparison (mirrors cnpg LSN comparison) --- -#}
+      {#-Find the most advanced node among Primary-component members -#}
+      {%- set primary_members = [] -%}
+      {%- for name, ws in (wsrep_status_map if wsrep_status_map is mapping else {}).items() -%}
+        {%- if ws.wsrep_cluster_status is defined and ws.wsrep_cluster_status == 'Primary' -%}
+          {%- set _ = primary_members.append(name) -%}
+        {%- endif -%}
+      {%- endfor -%}
+      {%- set eff = effective_seqno_map if effective_seqno_map is mapping else {} -%}
+      {%- set best_primary = {'pod': '', 'seqno': -2} -%}
+      {%- for pm in primary_members -%}
+        {%- set pm_seqno = eff.get(pm, {}).effective_seqno | default(-1) | int -%}
+        {%- if pm_seqno > best_primary.seqno -%}
+          {%- set _ = best_primary.update({'pod': pm, 'seqno': pm_seqno}) -%}
+        {%- endif -%}
+      {%- endfor -%}
+      {#-Check if any non-primary-component node has higher seqno -#}
+      {%- for pod_name, seqno_info in eff.items() -%}
+        {%- if pod_name not in primary_members and seqno_info.effective_seqno | int > best_primary.seqno and seqno_info.effective_seqno | int > 0 -%}
+          {%- set _ = split_brain.append(pod_name + ' has seqno '
+            + seqno_info.effective_seqno | string + ' > primary best '
+            + best_primary.seqno | string + ' (' + best_primary.pod + ')') -%}
+        {%- endif -%}
+      {%- endfor -%}
+      {#- --- Build result --- -#}
+      {%- set safe = split_brain | length == 0 -%}
+      {%- set ma = most_advanced_node if most_advanced_node is mapping else {'pod': 'unknown', 'seqno': -1} -%}
+      {%- if safe -%}
+        {%- if primary_members | length > 0 -%}
+          {%- set _ = warnings.append('OK: Primary component (' + primary_members | join(', ') + ') has the most recent data (best seqno: ' + best_primary.seqno | string + ')') -%}
+        {%- else -%}
+          {%- set _ = warnings.append('WARNING: No nodes in Primary component. Most advanced: ' + ma.pod + ' (seqno: ' + ma.seqno | string + ')') -%}
+        {%- endif -%}
+      {%- else -%}
+        {%- for sb in split_brain -%}
+          {%- set _ = warnings.append('SPLIT-BRAIN RISK: ' + sb) -%}
+        {%- endfor -%}
+      {%- endif -%}
+      {{- {'most_advanced': ma.pod,
+          'most_advanced_seqno': ma.seqno,
+          'primary_members': primary_members,
+          'best_primary_seqno': best_primary.seqno,
+          'warnings': warnings,
+          'split_brain_details': split_brain,
+          'safe_to_heal': safe} }}
+
+- name: Display data comparison
+  ansible.builtin.debug:
+    msg:
+      - "--- Data Freshness Check ---"
+      - "{{ item }}"
+  loop: "{{ data_comparison.warnings }}"
+
+- name: CRITICAL WARNING - split-brain detected
+  ansible.builtin.debug:
+    msg:
+      - ""
+      - "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+      - "  CRITICAL: POTENTIAL SPLIT-BRAIN DETECTED"
+      - "  A non-primary node has MORE RECENT data than the primary component!"
+      - "  Most advanced node: {{ data_comparison.most_advanced }} (seqno: {{ data_comparison.most_advanced_seqno }})"
+      - "  DO NOT blindly heal - review the data above and decide manually."
+      - "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+      - ""
+  when: not data_comparison.safe_to_heal
+
+# =========================================================================
+# Build per-instance assessment with needs_heal boolean
+# Mirrors cnpg-steward: primary check, timeline check, LSN comparison, streaming
+# =========================================================================
+- name: Build per-instance assessment
+  ansible.builtin.set_fact:
+    instance_assessments: >-
+      {%- set result = [] -%}
+      {%- set running_names = running_pods | map(attribute='metadata.name') | list -%}
+      {%- set crashloop_names = crashloop_pods | map(attribute='metadata.name') | list -%}
+      {%- set safe = data_comparison.safe_to_heal -%}
+      {%- set primary_members = data_comparison.primary_members -%}
+      {%- set best_primary_seqno = data_comparison.best_primary_seqno | int -%}
+      {%- set eff = effective_seqno_map if effective_seqno_map is mapping else {} -%}
+      {%- set du = disk_usage_map if disk_usage_map is mapping else {} -%}
+      {%- set cr = crash_reasons if crash_reasons is mapping else {} -%}
+      {%- for inst in instance_grastate -%}
+        {%- set is_missing = inst.pod in missing_nodes -%}
+        {%- set is_crashloop = inst.pod in crashloop_names -%}
+        {%- set is_running = inst.pod in running_names and inst.pod not in crashloop_names -%}
+        {%- set is_in_primary = inst.pod in primary_members -%}
+        {%- set ws = (wsrep_status_map if wsrep_status_map is mapping else {}).get(inst.pod, {}) -%}
+        {%- set wsrep_state = ws.get('wsrep_local_state', '') | int(default=0) -%}
+        {%- set wsrep_state_comment = ws.get('wsrep_local_state_comment', 'unknown') -%}
+        {%- set wsrep_connected = ws.get('wsrep_connected', 'OFF') -%}
+        {%- set wsrep_ready = ws.get('wsrep_ready', 'OFF') -%}
+        {%- set wsrep_cluster_status = ws.get('wsrep_cluster_status', 'unknown') -%}
+        {%- set wsrep_committed = ws.get('wsrep_last_committed', '') | int(default=-1) -%}
+        {%- set has_data = inst.source != 'none' -%}
+        {%- set node_seqno = eff.get(inst.pod, {}).effective_seqno | default(-1) | int -%}
+        {%- set seqno_source = eff.get(inst.pod, {}).source | default('none') -%}
+        {%- set seqno_lag = best_primary_seqno - node_seqno if best_primary_seqno > 0 and node_seqno > 0 else -1 -%}
+        {%- set disk_pct = du.get(inst.pod, -1) -%}
+        {%- set disk_full = cr.get(inst.pod, '') == 'disk_full' -%}
+        {%- set data_current = node_seqno > 0 and best_primary_seqno > 0 and seqno_lag <= 0 -%}
+        {%- set node_num = inst.pod.split('-')[-1] -%}
+        {%- set heal_cmd = 'ansible-playbook k8s/recovery/hasteward.yml \\\n'
+          + '      -e engine=galera \\\n'
+          + '      -e mariadb_name=' + mariadb_name + ' \\\n'
+          + '      -e namespace=' + namespace + ' \\\n'
+          + '      -e mode=repair \\\n'
+          + '      -e node_number=' + node_num -%}
+        {%- set notes = [] -%}
+        {%- set recommendation = '' -%}
+        {%- set needs_heal = false -%}
+        {%- if not safe -%}
+          {#-Split-brain: mirrors cnpg "not safe" branch -#}
+          {%- if not is_in_primary and node_seqno > best_primary_seqno and node_seqno > 0 -%}
+            {%- set _ = notes.append('AHEAD OF PRIMARY COMPONENT (seqno ' + node_seqno | string + ' > ' + best_primary_seqno | string + ')') -%}
+            {%- set recommendation = 'MANUAL REVIEW REQUIRED. This node has data ahead of the primary component. '
+              + 'Do NOT heal without understanding the data state.' -%}
+          {%- elif not has_data -%}
+            {%- set _ = notes.append('NO DATA - cannot assess during split-brain') -%}
+            {%- set recommendation = 'MANUAL REVIEW REQUIRED. Cannot determine this node state. Resolve split-brain first.' -%}
+          {%- else -%}
+            {%- set _ = notes.append('split-brain detected in cluster') -%}
+            {%- set recommendation = 'MANUAL REVIEW REQUIRED. Split-brain detected. Resolve before healing.\n\n  '
+              + heal_cmd + ' \\\n      -e force=true' -%}
+          {%- endif -%}
+        {%- elif is_running and wsrep_state == 4 and wsrep_connected == 'ON' and wsrep_ready == 'ON' and wsrep_cluster_status == 'Primary' -%}
+          {#-Fully synced and healthy - mirrors cnpg "same timeline, same LSN, streaming" -#}
+          {%- if disk_full or disk_pct >= 90 -%}
+            {%- set _ = notes.append('healthy but disk low (' + disk_pct | string + '%)') -%}
+            {%- set recommendation = 'Synced and healthy but disk usage is high. Consider expanding PVC storage.' -%}
+          {%- else -%}
+            {%- set _ = notes.append('healthy (Synced, connected, ready)') -%}
+            {%- if seqno_lag > 0 -%}
+              {%- set _ = notes.append('seqno lag: ' + seqno_lag | string + ' behind best') -%}
+            {%- endif -%}
+            {%- set recommendation = 'No action needed.' -%}
+          {%- endif -%}
+        {%- elif is_running and wsrep_state >= 1 and wsrep_state <= 3 and wsrep_connected == 'ON' -%}
+          {#-Transitional state - mirrors cnpg "same timeline, behind LSN, streaming" -#}
+          {%- set _ = notes.append('transitional (' + wsrep_state_comment + ') - catching up') -%}
+          {%- if seqno_lag > 0 -%}
+            {%- set _ = notes.append('seqno lag: ' + seqno_lag | string) -%}
+          {%- endif -%}
+          {%- set recommendation = 'Node is in transitional state (' + wsrep_state_comment + '). '
+            + 'Wait for it to reach Synced (state 4). If stuck, may need heal.\n\n  ' + heal_cmd -%}
+        {%- elif is_running and (wsrep_connected == 'OFF' or wsrep_ready == 'OFF') -%}
+          {#-Disconnected - mirrors cnpg "different timeline" (irrecoverable via streaming) -#}
+          {%- set needs_heal = true -%}
+          {%- set _ = notes.append('disconnected (connected=' + wsrep_connected + ', ready=' + wsrep_ready + ')') -%}
+          {%- if disk_full -%}
+            {%- set _ = notes.append('disk full (possible cause of disconnect)') -%}
+          {%- endif -%}
+          {%- if node_seqno > 0 -%}
+            {%- set _ = notes.append('last known seqno: ' + node_seqno | string) -%}
+          {%- endif -%}
+          {%- set recommendation = 'Node is disconnected from cluster. Needs heal (grastate wipe + SST rejoin).\n\n  ' + heal_cmd -%}
+        {%- elif is_running and wsrep_cluster_status != 'Primary' and wsrep_cluster_status != 'unknown' -%}
+          {#-Non-primary component -#}
+          {%- set needs_heal = true -%}
+          {%- set _ = notes.append('non-primary component (' + wsrep_cluster_status + ')') -%}
+          {%- set recommendation = 'Node is in non-primary component. Needs heal.\n\n  ' + heal_cmd -%}
+        {%- elif is_running and ws | length == 0 -%}
+          {#-Running but wsrep query failed -#}
+          {%- set needs_heal = true -%}
+          {%- set _ = notes.append('running but wsrep query failed') -%}
+          {%- if node_seqno > 0 -%}
+            {%- set _ = notes.append('last known seqno: ' + node_seqno | string) -%}
+          {%- endif -%}
+          {%- set recommendation = 'Could not query wsrep status. MariaDB may not be accepting connections. Needs heal.\n\n  ' + heal_cmd -%}
+        {%- elif is_crashloop -%}
+          {#-Crash-looping - mirrors cnpg conservative approach: data current = don't auto-heal -#}
+          {%- set _ = notes.append('crash-looping') -%}
+          {%- if disk_full -%}
+            {%- set needs_heal = true -%}
+            {%- set _ = notes.append('disk full (cause of crash)') -%}
+            {%- set recommendation = 'Crash-looping due to disk full. Needs heal or PVC expansion.\n\n  ' + heal_cmd -%}
+          {%- elif data_current -%}
+            {%- set _ = notes.append('data current (seqno: ' + node_seqno | string + ')') -%}
+            {%- set recommendation = 'Data is current but pod is crash-looping. Check pod logs for root cause. '
+              + 'May recover on restart. Otherwise needs heal.\n\n  ' + heal_cmd -%}
+          {%- else -%}
+            {%- set needs_heal = true -%}
+            {%- if node_seqno > 0 -%}
+              {%- set _ = notes.append('last known seqno: ' + node_seqno | string) -%}
+            {%- endif -%}
+            {%- set recommendation = 'Pod is crash-looping with stale data. Needs heal.\n\n  ' + heal_cmd -%}
+          {%- endif -%}
+        {%- elif is_missing and has_data -%}
+          {#-Missing pod - mirrors cnpg conservative approach: data current = don't auto-heal -#}
+          {%- set _ = notes.append('no pod running') -%}
+          {%- if data_current -%}
+            {%- set _ = notes.append('data current (seqno: ' + node_seqno | string + ')') -%}
+            {%- set recommendation = 'Data is current. MariaDB operator should recreate the pod. '
+              + 'If stuck, check MariaDB CR status.' -%}
+          {%- else -%}
+            {%- set needs_heal = true -%}
+            {%- if node_seqno > 0 -%}
+              {%- set _ = notes.append('last known seqno: ' + node_seqno | string) -%}
+            {%- endif -%}
+            {%- set recommendation = 'Pod missing with stale data. MariaDB operator should recreate. '
+              + 'If stuck, needs heal.\n\n  ' + heal_cmd -%}
+          {%- endif -%}
+        {%- elif is_missing -%}
+          {#-Missing pod, no data -#}
+          {%- set _ = notes.append('NO DATA - no pod, could not probe PVC') -%}
+          {%- set recommendation = 'Could not determine state. Check if PVC can be mounted.' -%}
+        {%- else -%}
+          {%- set _ = notes.append('unknown state') -%}
+          {%- set recommendation = 'Could not determine state. Check node manually.' -%}
+        {%- endif -%}
+        {%- set _ = result.append({
+          'pod': inst.pod,
+          'node_number': node_num,
+          'is_running': is_running,
+          'is_crashloop': is_crashloop,
+          'is_missing': is_missing,
+          'is_in_primary': is_in_primary,
+          'wsrep_state': wsrep_state,
+          'wsrep_state_comment': wsrep_state_comment,
+          'wsrep_connected': wsrep_connected,
+          'wsrep_ready': wsrep_ready,
+          'wsrep_cluster_status': wsrep_cluster_status,
+          'uuid': inst.uuid,
+          'seqno': inst.seqno,
+          'effective_seqno': node_seqno,
+          'seqno_source': seqno_source,
+          'seqno_lag': seqno_lag,
+          'safe_to_bootstrap': inst.safe_to_bootstrap,
+          'disk_pct': disk_pct,
+          'crash_reason': cr.get(inst.pod, ''),
+          'notes': notes,
+          'recommendation': recommendation,
+          'needs_heal': needs_heal
+        }) -%}
+      {%- endfor -%}
+      {{- result }}

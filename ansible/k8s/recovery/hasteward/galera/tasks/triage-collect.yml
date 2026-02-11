@@ -1,0 +1,612 @@
+---
+# triage-collect.yml - Pod discovery, grastate.dat reads, wsrep status, PVC checks
+#
+# Requires: mariadb_spec, mariadb_status, replicas (from validate.yml)
+# Sets: expected_nodes, running_pods, non_running_pods, missing_nodes,
+#   crashloop_pods, instance_grastate, wsrep_status_map, pvc_states,
+#   disk_usage_map, crash_reasons, effective_seqno_map,
+#   any_node_running_ready, all_nodes_down, cluster_has_primary,
+#   best_seqno_node, most_advanced_node
+
+# =========================================================================
+# Pod discovery and missing instances
+# =========================================================================
+- name: Build expected node list
+  ansible.builtin.set_fact:
+    expected_nodes: >-
+      {{ range(replicas | int) | map('regex_replace', '^(.*)$', mariadb_name + '-\1') | list }}
+
+- name: Get all MariaDB pods
+  kubernetes.core.k8s_info:
+    api_version: v1
+    kind: Pod
+    namespace: "{{ namespace }}"
+    label_selectors:
+      - "app.kubernetes.io/instance={{ mariadb_name }}"
+  register: all_pods
+
+- name: Categorize pods
+  ansible.builtin.set_fact:
+    running_pods: "{{ all_pods.resources | selectattr('status.phase', 'eq', 'Running') | list }}"
+    non_running_pods: "{{ all_pods.resources | rejectattr('status.phase', 'eq', 'Running') | list }}"
+    found_pod_names: "{{ all_pods.resources | map(attribute='metadata.name') | list }}"
+
+- name: Identify missing nodes (expected but no pod)
+  ansible.builtin.set_fact:
+    missing_nodes: "{{ expected_nodes | difference(found_pod_names) }}"
+
+- name: Identify crash-looping pods
+  ansible.builtin.set_fact:
+    crashloop_pods: >-
+      {{ running_pods | selectattr('status.containerStatuses', 'defined')
+         | selectattr('status.containerStatuses.0.ready', 'eq', false)
+         | list }}
+
+- name: Display pod overview
+  ansible.builtin.debug:
+    msg:
+      - "--- Pod Overview ---"
+      - "Expected nodes: {{ expected_nodes | join(', ') }}"
+      - "Running: {{ running_pods | map(attribute='metadata.name') | list | join(', ') | default('none') }}"
+      - "Non-running: {{ non_running_pods | map(attribute='metadata.name') | list | join(', ') | default('none') }}"
+      - "Missing (no pod): {{ missing_nodes | join(', ') | default('none') }}"
+      - "Crash-looping: {{ crashloop_pods | map(attribute='metadata.name') | list | join(', ') | default('none') }}"
+
+- name: Display non-running pod details
+  ansible.builtin.debug:
+    msg: >-
+      {{ item.metadata.name }}:
+      phase={{ item.status.phase }}
+      reason={{ (item.status.containerStatuses | default([{}]) | first).state.waiting.reason
+        | default((item.status.containerStatuses | default([{}]) | first).state.terminated.reason
+        | default('N/A')) }}
+      restarts={{ (item.status.containerStatuses | default([{}]) | first).restartCount | default(0) }}
+  loop: "{{ non_running_pods }}"
+  loop_control:
+    label: "{{ item.metadata.name }}"
+  when: non_running_pods | length > 0
+
+# =========================================================================
+# PVC checks - storage and galera config PVCs
+# =========================================================================
+- name: Check storage PVCs for all expected nodes
+  kubernetes.core.k8s_info:
+    api_version: v1
+    kind: PersistentVolumeClaim
+    name: "storage-{{ item }}"
+    namespace: "{{ namespace }}"
+  loop: "{{ expected_nodes }}"
+  register: storage_pvc_checks
+
+- name: Check galera config PVCs for all expected nodes
+  kubernetes.core.k8s_info:
+    api_version: v1
+    kind: PersistentVolumeClaim
+    name: "galera-{{ item }}"
+    namespace: "{{ namespace }}"
+  loop: "{{ expected_nodes }}"
+  register: galera_pvc_checks
+
+- name: Build PVC state map
+  ansible.builtin.set_fact:
+    pvc_states: >-
+      {%- set result = {} -%}
+      {%- for check in storage_pvc_checks.results -%}
+        {%- set node_name = check.item -%}
+        {%- set storage_exists = check.resources | length > 0 -%}
+        {%- set galera_check = galera_pvc_checks.results | selectattr('item', 'eq', node_name) | first | default({}) -%}
+        {%- set galera_exists = (galera_check.resources | default([])) | length > 0 -%}
+        {%- set _ = result.update({node_name: {
+          'storage': 'Bound' if storage_exists else 'MISSING',
+          'galera': 'Bound' if galera_exists else 'MISSING'
+        }}) -%}
+      {%- endfor -%}
+      {{- result }}
+
+- name: Display PVC state
+  ansible.builtin.debug:
+    msg: >-
+      {{ item.key }}:
+      storage={{ item.value.storage }}
+      galera={{ item.value.galera }}
+  loop: "{{ pvc_states | dict2items }}"
+  loop_control:
+    label: "{{ item.key }}"
+
+- name: Fail if any storage PVCs are missing
+  ansible.builtin.fail:
+    msg: >-
+      ABORTING: Missing storage PVCs detected!
+      Missing: {{ pvc_states | dict2items | selectattr('value.storage', 'eq', 'MISSING') | map(attribute='key') | list | join(', ') }}
+      This could indicate data loss. Resolve missing PVCs before proceeding.
+  when: (pvc_states | dict2items | selectattr('value.storage', 'eq', 'MISSING') | list) | length > 0
+
+# =========================================================================
+# grastate.dat reads - exec on running, PVC probe on non-running
+# =========================================================================
+- name: Identify healthy running pods (running + ready)
+  ansible.builtin.set_fact:
+    healthy_running_pods: >-
+      {{ running_pods | rejectattr('metadata.name', 'in',
+         crashloop_pods | map(attribute='metadata.name') | list) | list }}
+
+- name: Read grastate.dat from healthy running pods
+  kubernetes.core.k8s_exec:
+    namespace: "{{ namespace }}"
+    pod: "{{ item.metadata.name }}"
+    container: mariadb
+    command: cat /var/lib/mysql/grastate.dat
+  loop: "{{ healthy_running_pods }}"
+  loop_control:
+    label: "{{ item.metadata.name }}"
+  register: healthy_grastate_results
+  failed_when: false
+
+- name: Read grastate.dat from crash-looping pods
+  kubernetes.core.k8s_exec:
+    namespace: "{{ namespace }}"
+    pod: "{{ item.metadata.name }}"
+    container: mariadb
+    command: cat /var/lib/mysql/grastate.dat
+  loop: "{{ crashloop_pods }}"
+  loop_control:
+    label: "{{ item.metadata.name }}"
+  register: crashloop_grastate_results
+  failed_when: false
+  when: crashloop_pods | length > 0
+
+- name: Identify nodes needing PVC probe for grastate
+  ansible.builtin.set_fact:
+    probe_nodes: >-
+      {%- set result = [] -%}
+      {%- set have_data = [] -%}
+      {%- for item in healthy_grastate_results.results | default([]) -%}
+        {%- if item.rc is defined and item.rc == 0 -%}
+          {%- set _ = have_data.append(item.item.metadata.name) -%}
+        {%- endif -%}
+      {%- endfor -%}
+      {%- for item in crashloop_grastate_results.results | default([]) -%}
+        {%- if item.rc is defined and item.rc == 0 -%}
+          {%- set _ = have_data.append(item.item.metadata.name) -%}
+        {%- endif -%}
+      {%- endfor -%}
+      {%- set pod_nodes = {} -%}
+      {%- for pod in all_pods.resources -%}
+        {%- set _ = pod_nodes.update({pod.metadata.name: pod.spec.nodeName | default('')}) -%}
+      {%- endfor -%}
+      {%- for node_name in expected_nodes -%}
+        {%- if node_name not in have_data and pvc_states[node_name].storage == 'Bound' -%}
+          {%- set _ = result.append({'name': node_name, 'node': pod_nodes.get(node_name, '')}) -%}
+        {%- endif -%}
+      {%- endfor -%}
+      {{- result }}
+
+- name: Display PVC probe plan
+  ansible.builtin.debug:
+    msg: "Probing PVC data for stranded nodes: {{ probe_nodes | map(attribute='name') | list | join(', ') }}"
+  when: probe_nodes | length > 0
+
+- name: Create probe pods for stranded PVCs
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: v1
+      kind: Pod
+      metadata:
+        name: "{{ item.name }}-triage-probe"
+        namespace: "{{ namespace }}"
+        labels:
+          hasteward-triage: probe
+      spec:
+        restartPolicy: Never
+        nodeSelector: "{{ {'kubernetes.io/hostname': item.node} if item.node else omit }}"
+        securityContext:
+          runAsUser: 0
+        containers:
+          - name: probe
+            image: docker.io/library/busybox:latest
+            command: ["cat", "/var/lib/mysql/grastate.dat"]
+            volumeMounts:
+              - name: storage
+                mountPath: /var/lib/mysql
+                readOnly: true
+        volumes:
+          - name: storage
+            persistentVolumeClaim:
+              claimName: "storage-{{ item.name }}"
+  loop: "{{ probe_nodes }}"
+  loop_control:
+    label: "{{ item.name }}"
+  register: probe_pod_creation
+  failed_when: false
+  when: probe_nodes | length > 0
+
+- name: Wait for probe pods to complete
+  kubernetes.core.k8s_info:
+    api_version: v1
+    kind: Pod
+    name: "{{ item.name }}-triage-probe"
+    namespace: "{{ namespace }}"
+  loop: "{{ probe_nodes }}"
+  loop_control:
+    label: "{{ item.name }}"
+  register: probe_pod_status
+  until: >-
+    probe_pod_status.resources | length == 0
+    or probe_pod_status.resources[0].status.phase | default('Pending') in ['Succeeded', 'Failed']
+  retries: 30
+  delay: 5
+  failed_when: false
+  when: probe_nodes | length > 0
+
+- name: Collect probe pod logs
+  kubernetes.core.k8s_log:
+    name: "{{ item.name }}-triage-probe"
+    namespace: "{{ namespace }}"
+    container: probe
+  loop: "{{ probe_nodes }}"
+  loop_control:
+    label: "{{ item.name }}"
+  register: probe_logs
+  failed_when: false
+  when: probe_nodes | length > 0
+
+- name: Delete probe pods
+  kubernetes.core.k8s:
+    state: absent
+    api_version: v1
+    kind: Pod
+    name: "{{ item.name }}-triage-probe"
+    namespace: "{{ namespace }}"
+    delete_options:
+      gracePeriodSeconds: 0
+  loop: "{{ probe_nodes }}"
+  loop_control:
+    label: "{{ item.name }}"
+  failed_when: false
+  when: probe_nodes | length > 0
+
+# =========================================================================
+# Parse grastate.dat from all sources into unified instance_grastate
+# =========================================================================
+- name: Build instance_grastate from all sources
+  ansible.builtin.set_fact:
+    instance_grastate: >-
+      {%- set result = [] -%}
+      {%- set probed = {} -%}
+      {%- if probe_logs.results is defined -%}
+        {%- for pr in probe_logs.results -%}
+          {%- if pr.log is defined and pr.log | length > 0 -%}
+            {%- set lines = pr.log.split('\n') -%}
+            {%- set uuid_line = lines | select('match', '^uuid:') | first | default('') -%}
+            {%- set seqno_line = lines | select('match', '^seqno:') | first | default('') -%}
+            {%- set safe_line = lines | select('match', '^safe_to_bootstrap:') | first | default('') -%}
+            {%- set _ = probed.update({pr.item.name: {
+              'uuid': uuid_line.split(':',1)[1] | trim if ':' in uuid_line else 'unknown',
+              'seqno': seqno_line.split(':',1)[1] | trim if ':' in seqno_line else '-1',
+              'safe_to_bootstrap': safe_line.split(':',1)[1] | trim if ':' in safe_line else '0'
+            }}) -%}
+          {%- endif -%}
+        {%- endfor -%}
+      {%- endif -%}
+      {%- macro parse_grastate(lines) -%}
+        {%- set uuid_line = lines | select('match', '^uuid:') | first | default('') -%}
+        {%- set seqno_line = lines | select('match', '^seqno:') | first | default('') -%}
+        {%- set safe_line = lines | select('match', '^safe_to_bootstrap:') | first | default('') -%}
+        {{ {
+          'uuid': uuid_line.split(':',1)[1] | trim if ':' in uuid_line else 'unknown',
+          'seqno': seqno_line.split(':',1)[1] | trim if ':' in seqno_line else '-1',
+          'safe_to_bootstrap': safe_line.split(':',1)[1] | trim if ':' in safe_line else '0'
+        } | to_json }}
+      {%- endmacro -%}
+      {%- for item in healthy_grastate_results.results | default([]) -%}
+        {%- set pod_name = item.item.metadata.name -%}
+        {%- if item.rc is defined and item.rc == 0 -%}
+          {%- set lines = item.stdout_lines | default([]) -%}
+          {%- set uuid_line = lines | select('match', '^uuid:') | first | default('') -%}
+          {%- set seqno_line = lines | select('match', '^seqno:') | first | default('') -%}
+          {%- set safe_line = lines | select('match', '^safe_to_bootstrap:') | first | default('') -%}
+          {%- set _ = result.append({
+            'pod': pod_name,
+            'source': 'exec',
+            'reachable': true,
+            'uuid': uuid_line.split(':',1)[1] | trim if ':' in uuid_line else 'unknown',
+            'seqno': seqno_line.split(':',1)[1] | trim if ':' in seqno_line else '-1',
+            'safe_to_bootstrap': safe_line.split(':',1)[1] | trim if ':' in safe_line else '0'
+          }) -%}
+        {%- endif -%}
+      {%- endfor -%}
+      {%- for item in crashloop_grastate_results.results | default([]) -%}
+        {%- set pod_name = item.item.metadata.name -%}
+        {%- if item.rc is defined and item.rc == 0 -%}
+          {%- set lines = item.stdout_lines | default([]) -%}
+          {%- set uuid_line = lines | select('match', '^uuid:') | first | default('') -%}
+          {%- set seqno_line = lines | select('match', '^seqno:') | first | default('') -%}
+          {%- set safe_line = lines | select('match', '^safe_to_bootstrap:') | first | default('') -%}
+          {%- set _ = result.append({
+            'pod': pod_name,
+            'source': 'exec_crashloop',
+            'reachable': false,
+            'uuid': uuid_line.split(':',1)[1] | trim if ':' in uuid_line else 'unknown',
+            'seqno': seqno_line.split(':',1)[1] | trim if ':' in seqno_line else '-1',
+            'safe_to_bootstrap': safe_line.split(':',1)[1] | trim if ':' in safe_line else '0'
+          }) -%}
+        {%- endif -%}
+      {%- endfor -%}
+      {%- for node_name in expected_nodes -%}
+        {%- if node_name not in (result | map(attribute='pod') | list) -%}
+          {%- if node_name in probed -%}
+            {%- set pd = probed[node_name] -%}
+            {%- set _ = result.append({
+              'pod': node_name,
+              'source': 'pvc_probe',
+              'reachable': false,
+              'uuid': pd.uuid,
+              'seqno': pd.seqno,
+              'safe_to_bootstrap': pd.safe_to_bootstrap
+            }) -%}
+          {%- else -%}
+            {%- set _ = result.append({
+              'pod': node_name,
+              'source': 'none',
+              'reachable': false,
+              'uuid': 'unknown',
+              'seqno': '-1',
+              'safe_to_bootstrap': '0'
+            }) -%}
+          {%- endif -%}
+        {%- endif -%}
+      {%- endfor -%}
+      {{- result }}
+
+- name: Display grastate analysis
+  ansible.builtin.debug:
+    msg:
+      - "--- Grastate Analysis ---"
+
+- name: Display per-instance grastate
+  vars:
+    _src: "{{ item.source | default('exec') }}"
+    _src_label: "{{ {'pvc_probe': '(from PVC probe - pod not running)', 'exec_crashloop': '(from crashloop pod)', 'none': '(NO DATA - could not probe)'}.get(_src, '') }}"
+  ansible.builtin.debug:
+    msg:
+      - "{{ item.pod }}{{ ' ' + _src_label if _src_label else '' }}"
+      - "  UUID: {{ item.uuid }}"
+      - "  Seqno: {{ item.seqno }}"
+      - "  Safe to bootstrap: {{ item.safe_to_bootstrap }}"
+  loop: "{{ instance_grastate }}"
+  loop_control:
+    label: "{{ item.pod }}"
+
+# =========================================================================
+# wsrep status from running+ready pods
+# =========================================================================
+- name: Query wsrep status from healthy running pods
+  kubernetes.core.k8s_exec:
+    namespace: "{{ namespace }}"
+    pod: "{{ item.metadata.name }}"
+    container: mariadb
+    command: >
+      mariadb -u root -p{{ mariadb_root_password }} --batch --skip-column-names -e
+      "SELECT VARIABLE_NAME, VARIABLE_VALUE FROM information_schema.GLOBAL_STATUS
+       WHERE VARIABLE_NAME IN (
+         'wsrep_local_state', 'wsrep_local_state_comment',
+         'wsrep_cluster_status', 'wsrep_cluster_size',
+         'wsrep_connected', 'wsrep_ready',
+         'wsrep_local_recv_queue', 'wsrep_local_send_queue',
+         'wsrep_cluster_state_uuid',
+         'wsrep_last_committed',
+         'wsrep_flow_control_paused'
+       ) ORDER BY VARIABLE_NAME"
+  no_log: true
+  loop: "{{ healthy_running_pods }}"
+  loop_control:
+    label: "{{ item.metadata.name }}"
+  register: wsrep_results
+  failed_when: false
+
+- name: Build wsrep status map
+  ansible.builtin.set_fact:
+    wsrep_status_map: >-
+      {%- set result = {} -%}
+      {%- for item in wsrep_results.results | default([]) -%}
+        {%- set pod_name = item.item.metadata.name -%}
+        {%- if item.rc is defined and item.rc == 0 -%}
+          {%- set vars = {} -%}
+          {%- for line in item.stdout_lines | default([]) -%}
+            {%- set parts = line.split('\t') -%}
+            {%- if parts | length >= 2 -%}
+              {%- set _ = vars.update({parts[0] | lower: parts[1]}) -%}
+            {%- endif -%}
+          {%- endfor -%}
+          {%- set _ = result.update({pod_name: vars}) -%}
+        {%- else -%}
+          {%- set _ = result.update({pod_name: {}}) -%}
+        {%- endif -%}
+      {%- endfor -%}
+      {{- result }}
+
+- name: Display wsrep status header
+  ansible.builtin.debug:
+    msg:
+      - "--- Wsrep Status ---"
+
+- name: Display wsrep status per node
+  ansible.builtin.debug:
+    msg:
+      - "{{ item.key }}:"
+      - "  local_state: {{ item.value.wsrep_local_state | default('?') }} ({{ item.value.wsrep_local_state_comment | default('?') }})"
+      - "  cluster_status: {{ item.value.wsrep_cluster_status | default('?') }}"
+      - "  cluster_size: {{ item.value.wsrep_cluster_size | default('?') }}"
+      - "  connected: {{ item.value.wsrep_connected | default('?') }}"
+      - "  ready: {{ item.value.wsrep_ready | default('?') }}"
+      - "  cluster_uuid: {{ item.value.wsrep_cluster_state_uuid | default('?') }}"
+      - "  last_committed: {{ item.value.wsrep_last_committed | default('?') }}"
+      - "  flow_control_paused: {{ item.value.wsrep_flow_control_paused | default('?') }}"
+  loop: "{{ wsrep_status_map | dict2items }}"
+  loop_control:
+    label: "{{ item.key }}"
+  when: wsrep_status_map | length > 0
+
+- name: Display no wsrep data warning
+  ansible.builtin.debug:
+    msg: "WARNING: No running+ready pods to query wsrep status from"
+  when: wsrep_status_map | length == 0
+
+# =========================================================================
+# Disk space on each running instance
+# =========================================================================
+- name: Check disk space on running instances
+  kubernetes.core.k8s_exec:
+    namespace: "{{ namespace }}"
+    pod: "{{ item.metadata.name }}"
+    container: mariadb
+    command: df -h /var/lib/mysql
+  loop: "{{ running_pods }}"
+  loop_control:
+    label: "{{ item.metadata.name }}"
+  register: disk_results
+  failed_when: false
+
+- name: Display disk space header
+  ansible.builtin.debug:
+    msg:
+      - "--- Disk Space ---"
+
+- name: Display disk usage per instance
+  ansible.builtin.debug:
+    msg:
+      - "{{ item.item.metadata.name }}:"
+      - "{{ item.stdout_lines | default(['  unable to check']) | join('\n') }}"
+  loop: "{{ disk_results.results }}"
+  loop_control:
+    label: "{{ item.item.metadata.name }}"
+
+- name: Parse disk usage percentages
+  ansible.builtin.set_fact:
+    disk_usage_map: >-
+      {%- set result = {} -%}
+      {%- for item in disk_results.results -%}
+        {%- set pod_name = item.item.metadata.name -%}
+        {%- if item.rc | default(1) == 0 and item.stdout_lines | default([]) | length > 1 -%}
+          {%- set df_line = item.stdout_lines[-1] -%}
+          {%- set parts = df_line.split() -%}
+          {%- if parts | length >= 5 -%}
+            {%- set _ = result.update({pod_name: parts[4] | replace('%','') | int(default=0)}) -%}
+          {%- endif -%}
+        {%- endif -%}
+      {%- endfor -%}
+      {{- result }}
+
+# =========================================================================
+# Crash log detection for crash-looping pods
+# =========================================================================
+- name: Fetch crash reason from logs for crash-looping pods
+  kubernetes.core.k8s_log:
+    name: "{{ item.metadata.name }}"
+    namespace: "{{ namespace }}"
+    container: mariadb
+  loop: "{{ crashloop_pods }}"
+  loop_control:
+    label: "{{ item.metadata.name }}"
+  register: crashloop_logs
+  failed_when: false
+  when: crashloop_pods | length > 0
+
+- name: Parse crash reasons from logs
+  ansible.builtin.set_fact:
+    crash_reasons: >-
+      {%- set result = {} -%}
+      {%- if crashloop_logs.results is defined -%}
+        {%- for log_result in crashloop_logs.results -%}
+          {%- if log_result.log is defined -%}
+            {%- set log_text = log_result.log -%}
+            {%- if 'No space left on device' in log_text or 'Disk is full' in log_text or 'disk full' in log_text -%}
+              {%- set _ = result.update({log_result.item.metadata.name: 'disk_full'}) -%}
+            {%- else -%}
+              {%- set _ = result.update({log_result.item.metadata.name: 'unknown'}) -%}
+            {%- endif -%}
+          {%- endif -%}
+        {%- endfor -%}
+      {%- endif -%}
+      {{- result }}
+
+# =========================================================================
+# Build effective seqno per instance (best of: wsrep_last_committed > CR recovered > grastate)
+# This mirrors cnpg-steward's per-instance timeline+LSN from pg_controldata
+# =========================================================================
+- name: Build effective seqno map
+  ansible.builtin.set_fact:
+    effective_seqno_map: >-
+      {%- set result = {} -%}
+      {%- set cr_recovered = (galera_recovery.recovered | default({})) if galera_recovery is mapping else {} -%}
+      {%- set cr_state = (galera_recovery.state | default({})) if galera_recovery is mapping else {} -%}
+      {%- for inst in instance_grastate -%}
+        {%- set pod_name = inst.pod -%}
+        {%- set ws = (wsrep_status_map if wsrep_status_map is mapping else {}).get(pod_name, {}) -%}
+        {%- set wsrep_committed = ws.get('wsrep_last_committed', '') | int(default=-1) -%}
+        {%- set cr_rec_seqno = (cr_recovered.get(pod_name, {}).seqno | default(-1)) | int(default=-1) -%}
+        {%- set cr_state_seqno = (cr_state.get(pod_name, {}).seqno | default(-1)) | int(default=-1) -%}
+        {%- set grastate_seqno = inst.seqno | int(default=-1) -%}
+        {%- set effective = [wsrep_committed, cr_rec_seqno, cr_state_seqno, grastate_seqno] | max -%}
+        {%- set source = 'wsrep_last_committed' if wsrep_committed == effective and wsrep_committed > -1
+            else 'cr_recovered' if cr_rec_seqno == effective and cr_rec_seqno > -1
+            else 'cr_state' if cr_state_seqno == effective and cr_state_seqno > -1
+            else 'grastate' if grastate_seqno == effective and grastate_seqno > -1
+            else 'none' -%}
+        {%- set _ = result.update({pod_name: {
+          'effective_seqno': effective,
+          'source': source,
+          'wsrep_last_committed': wsrep_committed,
+          'cr_recovered_seqno': cr_rec_seqno,
+          'grastate_seqno': grastate_seqno
+        }}) -%}
+      {%- endfor -%}
+      {{- result }}
+
+- name: Display effective seqno analysis
+  ansible.builtin.debug:
+    msg:
+      - "--- Effective Seqno (data freshness) ---"
+
+- name: Display per-instance effective seqno
+  ansible.builtin.debug:
+    msg: >-
+      {{ item.key }}:
+      effective_seqno={{ item.value.effective_seqno }}
+      (source={{ item.value.source }},
+      wsrep_last_committed={{ item.value.wsrep_last_committed }},
+      cr_recovered={{ item.value.cr_recovered_seqno }},
+      grastate={{ item.value.grastate_seqno }})
+  loop: "{{ effective_seqno_map | dict2items }}"
+  loop_control:
+    label: "{{ item.key }}"
+
+# =========================================================================
+# Determine cluster-wide state facts
+# =========================================================================
+- name: Determine primary/donor status
+  ansible.builtin.set_fact:
+    any_node_running_ready: "{{ healthy_running_pods | length > 0 }}"
+    all_nodes_down: "{{ running_pods | length == 0 }}"
+    cluster_has_primary: >-
+      {{ wsrep_status_map | dict2items
+         | selectattr('value.wsrep_cluster_status', 'defined')
+         | selectattr('value.wsrep_cluster_status', 'eq', 'Primary')
+         | list | length > 0 }}
+    best_seqno_node: >-
+      {%- set best = {'pod': '', 'seqno': -2} -%}
+      {%- for pod_name, seqno_info in (effective_seqno_map if effective_seqno_map is mapping else {}).items() -%}
+        {%- if seqno_info.effective_seqno | int > best.seqno -%}
+          {%- set _ = best.update({'pod': pod_name, 'seqno': seqno_info.effective_seqno | int}) -%}
+        {%- endif -%}
+      {%- endfor -%}
+      {{ best }}
+    most_advanced_node: >-
+      {%- set best = {'pod': '', 'seqno': -2} -%}
+      {%- for pod_name, seqno_info in (effective_seqno_map if effective_seqno_map is mapping else {}).items() -%}
+        {%- if seqno_info.effective_seqno | int > best.seqno -%}
+          {%- set _ = best.update({'pod': pod_name, 'seqno': seqno_info.effective_seqno | int}) -%}
+        {%- endif -%}
+      {%- endfor -%}
+      {{ best }}

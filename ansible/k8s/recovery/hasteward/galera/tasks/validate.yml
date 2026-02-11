@@ -1,0 +1,67 @@
+---
+# validate.yml - Shared input validation and MariaDB CR fact gathering
+#
+# Sets: mariadb_spec, mariadb_status, replicas, ready_condition, galera_condition,
+#       galera_recovery, is_suspended
+
+- name: Validate required variables
+  ansible.builtin.assert:
+    that:
+      - mariadb_name is defined
+      - namespace is defined
+    fail_msg: "Required variables: mariadb_name, namespace"
+
+- name: Display header
+  ansible.builtin.debug:
+    msg:
+      - "=== HA Steward / Galera ({{ mode }}) ==="
+      - "MariaDB: {{ mariadb_name }}"
+      - "Namespace: {{ namespace }}"
+      - "Timestamp: {{ ansible_date_time.iso8601 }}"
+
+- name: Get MariaDB CR
+  kubernetes.core.k8s_info:
+    api_version: k8s.mariadb.com/v1alpha1
+    kind: MariaDB
+    name: "{{ mariadb_name }}"
+    namespace: "{{ namespace }}"
+  register: mariadb_info
+  failed_when: mariadb_info.resources | length == 0
+
+- name: Set MariaDB facts
+  ansible.builtin.set_fact:
+    mariadb_spec: "{{ mariadb_info.resources[0].spec }}"
+    mariadb_status: "{{ mariadb_info.resources[0].status | default({}) }}"
+    replicas: "{{ mariadb_info.resources[0].spec.replicas }}"
+    ready_condition: "{{ (mariadb_info.resources[0].status.conditions | default([]) | selectattr('type', 'eq', 'Ready') | first) | default({}) }}"
+    galera_condition: "{{ (mariadb_info.resources[0].status.conditions | default([]) | selectattr('type', 'eq', 'GaleraReady') | first) | default({}) }}"
+    galera_recovery: "{{ mariadb_info.resources[0].status.galeraRecovery | default({}) }}"
+    is_suspended: "{{ mariadb_info.resources[0].spec.suspend | default(false) | bool }}"
+    _root_pw_secret_name: "{{ mariadb_info.resources[0].spec.rootPasswordSecretKeyRef.name }}"
+    _root_pw_secret_key: "{{ mariadb_info.resources[0].spec.rootPasswordSecretKeyRef.key }}"
+
+- name: Get root password secret
+  kubernetes.core.k8s_info:
+    api_version: v1
+    kind: Secret
+    name: "{{ _root_pw_secret_name }}"
+    namespace: "{{ namespace }}"
+  register: _root_pw_secret_info
+  failed_when: _root_pw_secret_info.resources | length == 0
+  no_log: true
+
+- name: Set root password fact
+  ansible.builtin.set_fact:
+    mariadb_root_password: "{{ _root_pw_secret_info.resources[0].data[_root_pw_secret_key] | b64decode }}"
+  no_log: true
+
+- name: Display cluster status
+  ansible.builtin.debug:
+    msg:
+      - "--- MariaDB Status ---"
+      - "Ready: {{ ready_condition.status | default('Unknown') }}"
+      - "GaleraReady: {{ galera_condition.status | default('Unknown') }}"
+      - "Replicas: {{ replicas }}"
+      - "Image: {{ mariadb_spec.image | default('Unknown') }}"
+      - "Suspended: {{ is_suspended }}"
+      - "Galera recovery: {{ galera_recovery | default({}) | to_nice_json if galera_recovery | length > 0 else 'none' }}"

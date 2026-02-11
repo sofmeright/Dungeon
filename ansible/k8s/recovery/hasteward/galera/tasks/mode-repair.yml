@@ -1,0 +1,218 @@
+---
+# mode-repair.yml - Triage -> safety gate -> heal -> post-status
+#
+# Two paths:
+#   Without node_number: heal ALL unhealthy nodes
+#   With node_number:    heal THAT specific node
+#
+# Safety gates:
+#   Untargeted: split-brain -> HARD STOP (no override)
+#   Targeted:   split-brain -> fail (unless force); healthy -> skip (unless force)
+
+# =========================================================================
+# Phase 1: Full triage
+# =========================================================================
+- name: "Repair: validate inputs"
+  ansible.builtin.include_tasks: validate.yml
+
+- name: "Repair: collect cluster data"
+  ansible.builtin.include_tasks: triage-collect.yml
+
+- name: "Repair: analyze instances"
+  ansible.builtin.include_tasks: triage-analyze.yml
+
+- name: "Repair: display triage results"
+  ansible.builtin.include_tasks: triage-display.yml
+
+# =========================================================================
+# Phase 2: Safety gate - need at least one healthy node to act as donor
+# =========================================================================
+- name: Check for at least one healthy donor node
+  ansible.builtin.fail:
+    msg: >-
+      ABORT: No healthy donor nodes found. All nodes are down or unhealthy.
+      Cannot heal without a running donor to provide SST.
+      If the entire cluster is down, the mariadb-operator's galera.recovery
+      should handle bootstrap. Check MariaDB CR status.
+  when: not any_node_running_ready
+
+# =========================================================================
+# Phase 3: Branch on targeted vs untargeted repair
+# =========================================================================
+
+# ------- TARGETED REPAIR (node_number is set) -------
+- name: "Targeted repair for node {{ node_number | default('N/A') }}"
+  when: node_number is defined
+  block:
+    - name: Set target pod name
+      ansible.builtin.set_fact:
+        _repair_target_pod: "{{ mariadb_name }}-{{ node_number }}"
+
+    # Find the target's assessment
+    - name: Find target assessment
+      ansible.builtin.set_fact:
+        _repair_target_assessment: "{{ instance_assessments | selectattr('pod', 'eq', _repair_target_pod) | first | default({}) }}"
+
+    - name: Verify target exists in assessments
+      ansible.builtin.fail:
+        msg: "ABORT: {{ _repair_target_pod }} not found in instance assessments. Check mariadb_name and node_number."
+      when: _repair_target_assessment | length == 0
+
+    # Safety gate: target is in primary component and healthy → warn (no healing needed)
+    - name: "SAFETY GATE - Target is active primary component member"
+      ansible.builtin.debug:
+        msg: >-
+          WARNING: {{ _repair_target_pod }} is an active member of the Primary component
+          (wsrep_local_state=Synced, connected, ready). Healing will destroy its data and
+          force SST rejoin. This is equivalent to healing a healthy primary in CNPG.
+      when:
+        - _repair_target_assessment.is_in_primary | default(false)
+        - not (_repair_target_assessment.needs_heal | default(false))
+        - not (force | bool)
+
+    # Safety gate: split-brain -> fail unless force
+    - name: "SAFETY GATE - Split-brain detected (targeted)"
+      ansible.builtin.fail:
+        msg: >-
+          ABORT: Split-brain detected in cluster. Healing {{ _repair_target_pod }} may cause DATA LOSS.
+          If you have reviewed the triage output and deliberately chosen which data to keep,
+          re-run with -e force=true to override.
+      when:
+        - not data_comparison.safe_to_heal
+        - not (force | bool)
+
+    - name: "WARNING - Force override: healing during split-brain"
+      ansible.builtin.debug:
+        msg:
+          - "WARNING: force=true - proceeding despite split-brain detection."
+          - "Data on {{ _repair_target_pod }} will be DESTROYED and replaced via SST from donor."
+      when:
+        - not data_comparison.safe_to_heal
+        - force | bool
+
+    # Safety gate: target is healthy -> skip unless force
+    - name: "SAFETY GATE - Target is healthy"
+      ansible.builtin.debug:
+        msg: "Node {{ _repair_target_pod }} is healthy and does not need healing. Nothing to do."
+      when:
+        - not (_repair_target_assessment.needs_heal | default(false))
+        - not (force | bool)
+
+    - name: "Skip heal for healthy target"
+      ansible.builtin.meta: end_play
+      when:
+        - not (_repair_target_assessment.needs_heal | default(false))
+        - not (force | bool)
+
+    - name: "WARNING - Force override: healing healthy node"
+      ansible.builtin.debug:
+        msg: "WARNING: force=true - healing {{ _repair_target_pod }} even though it appears healthy."
+      when:
+        - not (_repair_target_assessment.needs_heal | default(false))
+        - force | bool
+
+    # Verify target storage PVC exists
+    - name: Check target storage PVC exists
+      kubernetes.core.k8s_info:
+        api_version: v1
+        kind: PersistentVolumeClaim
+        name: "storage-{{ _repair_target_pod }}"
+        namespace: "{{ namespace }}"
+      register: _repair_target_pvc
+      failed_when: _repair_target_pvc.resources | length == 0
+
+    # Heal the target
+    - name: "Heal {{ _repair_target_pod }}"
+      ansible.builtin.include_tasks: heal-node.yml
+      vars:
+        heal_target_pod: "{{ _repair_target_pod }}"
+        heal_target_node: "{{ node_number }}"
+
+    # Display final status
+    - name: Get final MariaDB status (targeted)
+      kubernetes.core.k8s_info:
+        api_version: k8s.mariadb.com/v1alpha1
+        kind: MariaDB
+        name: "{{ mariadb_name }}"
+        namespace: "{{ namespace }}"
+      register: _repair_final_mariadb
+
+    - name: Display final cluster state (targeted)
+      ansible.builtin.debug:
+        msg:
+          - "=== Final Status ==="
+          - "Ready: {{ (_repair_final_mariadb.resources[0].status.conditions | default([]) | selectattr('type', 'eq', 'Ready') | first | default({})).status | default('Unknown') }}"
+          - "GaleraReady: {{ (_repair_final_mariadb.resources[0].status.conditions | default([]) | selectattr('type', 'eq', 'GaleraReady') | first | default({})).status | default('Unknown') }}"
+
+    - name: Get final pod list (targeted)
+      kubernetes.core.k8s_info:
+        api_version: v1
+        kind: Pod
+        namespace: "{{ namespace }}"
+        label_selectors:
+          - "app.kubernetes.io/instance={{ mariadb_name }}"
+      register: _repair_final_pods
+
+    - name: Display pod status (targeted)
+      ansible.builtin.debug:
+        msg: "{{ item.metadata.name }}: {{ item.status.phase }} ready={{ (item.status.containerStatuses | default([{}]) | first).ready | default(false) }}"
+      loop: "{{ _repair_final_pods.resources }}"
+      loop_control:
+        label: "{{ item.metadata.name }}"
+
+# ------- UNTARGETED REPAIR (heal all unhealthy) -------
+- name: "Untargeted repair - heal all unhealthy nodes"
+  when: node_number is not defined
+  block:
+    # Safety gate: split-brain -> HARD STOP (no override)
+    - name: "SAFETY GATE - Split-brain detected (untargeted)"
+      ansible.builtin.fail:
+        msg: >-
+          HARD STOP: Split-brain detected in cluster. Cannot auto-heal all nodes.
+          Admin must review the triage output above, determine which node has the correct data,
+          then use targeted repair: -e mode=repair -e node_number=<N>
+      when: not data_comparison.safe_to_heal
+
+    # Compute heal targets
+    - name: Compute heal targets
+      ansible.builtin.set_fact:
+        _repair_heal_targets: "{{ instance_assessments | selectattr('needs_heal') | list }}"
+
+    # Nothing to heal -> done
+    - name: "Nothing to heal"
+      ansible.builtin.debug:
+        msg: "All nodes are healthy. Nothing to heal."
+      when: _repair_heal_targets | length == 0
+
+    - name: "Skip heal when nothing to do"
+      ansible.builtin.meta: end_play
+      when: _repair_heal_targets | length == 0
+
+    # Display repair plan
+    - name: Display repair plan
+      ansible.builtin.debug:
+        msg:
+          - ""
+          - "=== Repair Plan ==="
+          - "The following nodes will be healed sequentially:"
+          - "{% for t in _repair_heal_targets %}  - {{ t.pod }} ({{ t.notes | join(', ') }})\n{% endfor %}"
+
+    # Heal each target sequentially
+    - name: "Heal unhealthy nodes"
+      ansible.builtin.include_tasks: heal-node.yml
+      vars:
+        heal_target_pod: "{{ item.pod }}"
+        heal_target_node: "{{ item.node_number }}"
+      loop: "{{ _repair_heal_targets }}"
+      loop_control:
+        label: "{{ item.pod }}"
+
+    # Post-repair: re-run triage to show final state
+    - name: "Post-repair: re-collecting cluster data"
+      ansible.builtin.include_tasks: triage-collect.yml
+
+    - name: "Post-repair: re-analyzing instances"
+      ansible.builtin.include_tasks: triage-analyze.yml
+
+    - name: "Post-repair: displaying final results"
+      ansible.builtin.include_tasks: triage-display.yml

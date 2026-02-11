@@ -1,0 +1,442 @@
+---
+# heal-node.yml - Heal a single Galera node via suspend/scale/wipe/resume
+#
+# Port of galera-heal-node.sh logic to Ansible with block/rescue/always.
+#
+# Expected variables (set by caller):
+#   heal_target_pod     - pod name to heal (e.g. "osticket-mariadb-0")
+#   heal_target_node    - node number (e.g. "0")
+#   mariadb_name        - MariaDB CR name
+#   namespace           - Kubernetes namespace
+#   replicas            - total replica count
+#   heal_timeout        - timeout for pod readiness (default 300)
+#   delete_timeout      - timeout for pod termination (default 300)
+
+- name: "Set derived heal variables for {{ heal_target_pod }}"
+  ansible.builtin.set_fact:
+    _heal_storage_pvc: "storage-{{ heal_target_pod }}"
+    _heal_galera_pvc: "galera-{{ heal_target_pod }}"
+    _heal_storage_helper: "{{ mariadb_name }}-heal-storage-{{ heal_target_node }}-{{ ansible_date_time.epoch }}"
+    _heal_galera_helper: "{{ mariadb_name }}-heal-galera-{{ heal_target_node }}-{{ ansible_date_time.epoch }}"
+    _heal_suspended: false
+    _heal_scaled_down: false
+    _heal_original_replicas: "{{ replicas | int }}"
+
+- name: "Check if galera config PVC exists for {{ heal_target_pod }}"
+  kubernetes.core.k8s_info:
+    api_version: v1
+    kind: PersistentVolumeClaim
+    name: "{{ _heal_galera_pvc }}"
+    namespace: "{{ namespace }}"
+  register: _heal_galera_pvc_check
+
+- name: "Set galera PVC flag for {{ heal_target_pod }}"
+  ansible.builtin.set_fact:
+    _heal_has_galera_pvc: "{{ _heal_galera_pvc_check.resources | length > 0 }}"
+
+- name: "Determine scale strategy for {{ heal_target_pod }}"
+  ansible.builtin.set_fact:
+    _heal_scale_strategy: "{{ 'partial' if heal_target_node | int == (replicas | int - 1) else 'full' }}"
+    _heal_scale_target: "{{ heal_target_node | int if heal_target_node | int == (replicas | int - 1) else 0 }}"
+
+- name: "Display heal plan for {{ heal_target_pod }}"
+  ansible.builtin.debug:
+    msg:
+      - "--- Healing {{ heal_target_pod }} ---"
+      - "Strategy: {{ _heal_scale_strategy }} (scale to {{ _heal_scale_target }})"
+      - "1. Suspend MariaDB CR (operator stops reconciling)"
+      - "2. Scale down StatefulSet to {{ _heal_scale_target }} (release PVCs)"
+      - "3. Wipe grastate.dat + galera.cache on storage PVC"
+      - "{{ '4. Remove bootstrap config from galera PVC' if _heal_has_galera_pvc else '4. (no galera PVC)' }}"
+      - "5. Scale back up, resume CR (node rejoins via SST)"
+
+- name: "Heal {{ heal_target_pod }}"
+  block:
+    # === STEP 1: Suspend MariaDB CR ===
+    - name: "STEP 1 - Suspend MariaDB CR for {{ heal_target_pod }}"
+      kubernetes.core.k8s:
+        state: patched
+        api_version: k8s.mariadb.com/v1alpha1
+        kind: MariaDB
+        name: "{{ mariadb_name }}"
+        namespace: "{{ namespace }}"
+        definition:
+          spec:
+            suspend: true
+
+    - name: "Track suspension for {{ heal_target_pod }}"
+      ansible.builtin.set_fact:
+        _heal_suspended: true
+
+    - name: "Wait for suspension to take effect for {{ heal_target_pod }}"
+      ansible.builtin.pause:
+        seconds: 3
+
+    # === STEP 2: Scale down StatefulSet ===
+    - name: "STEP 2 - Scale StatefulSet to {{ _heal_scale_target }} for {{ heal_target_pod }}"
+      kubernetes.core.k8s_scale:
+        api_version: apps/v1
+        kind: StatefulSet
+        name: "{{ mariadb_name }}"
+        namespace: "{{ namespace }}"
+        replicas: "{{ _heal_scale_target | int }}"
+        wait: false
+
+    - name: "Track scale-down for {{ heal_target_pod }}"
+      ansible.builtin.set_fact:
+        _heal_scaled_down: true
+
+    - name: "Wait for {{ heal_target_pod }} to terminate"
+      kubernetes.core.k8s_info:
+        api_version: v1
+        kind: Pod
+        name: "{{ heal_target_pod }}"
+        namespace: "{{ namespace }}"
+      register: _heal_pod_gone
+      until: _heal_pod_gone.resources | length == 0
+      retries: "{{ (delete_timeout | int / 5) | int }}"
+      delay: 5
+
+    - name: "Confirm pod terminated for {{ heal_target_pod }}"
+      ansible.builtin.debug:
+        msg: "Pod {{ heal_target_pod }} terminated, PVCs released."
+
+    # === STEP 3: Wipe grastate.dat + galera.cache on storage PVC ===
+    - name: "STEP 3 - Create storage helper pod for {{ heal_target_pod }}"
+      kubernetes.core.k8s:
+        state: present
+        definition:
+          apiVersion: v1
+          kind: Pod
+          metadata:
+            name: "{{ _heal_storage_helper }}"
+            namespace: "{{ namespace }}"
+            labels:
+              hasteward: heal-storage
+          spec:
+            restartPolicy: Never
+            securityContext:
+              runAsUser: 0
+            containers:
+              - name: healer
+                image: docker.io/library/busybox:latest
+                command:
+                  - sh
+                  - -c
+                  - |
+                    set -e
+                    echo "=== Current grastate.dat ==="
+                    cat /var/lib/mysql/grastate.dat 2>/dev/null || echo "not found"
+                    echo ""
+                    echo "=== Wiping grastate.dat ==="
+                    printf '%s\n' \
+                      '# GALERA saved state' \
+                      'version: 2.1' \
+                      'uuid:    00000000-0000-0000-0000-000000000000' \
+                      'seqno:   -1' \
+                      'safe_to_bootstrap: 0' \
+                      > /var/lib/mysql/grastate.dat
+                    echo "New grastate.dat:"
+                    cat /var/lib/mysql/grastate.dat
+                    echo ""
+                    echo "=== Removing galera.cache ==="
+                    rm -f /var/lib/mysql/galera.cache
+                    echo "galera.cache removed"
+                    echo "=== Done! ==="
+                volumeMounts:
+                  - name: storage
+                    mountPath: /var/lib/mysql
+            volumes:
+              - name: storage
+                persistentVolumeClaim:
+                  claimName: "{{ _heal_storage_pvc }}"
+
+    - name: "Wait for storage helper to complete for {{ heal_target_pod }}"
+      kubernetes.core.k8s_info:
+        api_version: v1
+        kind: Pod
+        name: "{{ _heal_storage_helper }}"
+        namespace: "{{ namespace }}"
+      register: _heal_storage_status
+      until: >
+        _heal_storage_status.resources | length > 0 and
+        _heal_storage_status.resources[0].status.phase in ['Succeeded', 'Failed']
+      retries: 30
+      delay: 5
+
+    - name: "Fetch storage helper logs for {{ heal_target_pod }}"
+      kubernetes.core.k8s_log:
+        name: "{{ _heal_storage_helper }}"
+        namespace: "{{ namespace }}"
+      register: _heal_storage_logs
+      failed_when: false
+
+    - name: "Show storage helper logs for {{ heal_target_pod }}"
+      ansible.builtin.debug:
+        msg: "{{ _heal_storage_logs.log_lines | default(['(no logs)']) }}"
+
+    - name: "Check storage helper succeeded for {{ heal_target_pod }}"
+      ansible.builtin.fail:
+        msg: "Storage helper pod FAILED for {{ heal_target_pod }}!"
+      when: _heal_storage_status.resources[0].status.phase == 'Failed'
+
+    - name: "Delete storage helper pod for {{ heal_target_pod }}"
+      kubernetes.core.k8s:
+        state: absent
+        api_version: v1
+        kind: Pod
+        name: "{{ _heal_storage_helper }}"
+        namespace: "{{ namespace }}"
+        delete_options:
+          gracePeriodSeconds: 0
+      failed_when: false
+
+    - name: "Wait for storage helper cleanup for {{ heal_target_pod }}"
+      ansible.builtin.pause:
+        seconds: 2
+
+    # === STEP 4: Remove bootstrap config from galera PVC (if exists) ===
+    - name: "STEP 4 - Create galera config helper for {{ heal_target_pod }}"
+      kubernetes.core.k8s:
+        state: present
+        definition:
+          apiVersion: v1
+          kind: Pod
+          metadata:
+            name: "{{ _heal_galera_helper }}"
+            namespace: "{{ namespace }}"
+            labels:
+              hasteward: heal-galera
+          spec:
+            restartPolicy: Never
+            securityContext:
+              runAsUser: 0
+            containers:
+              - name: healer
+                image: docker.io/library/busybox:latest
+                command:
+                  - sh
+                  - -c
+                  - |
+                    set -e
+                    echo "=== Current galera config ==="
+                    ls -la /galera/
+                    echo ""
+                    if [ -f /galera/1-bootstrap.cnf ]; then
+                      echo "=== Found bootstrap config ==="
+                      cat /galera/1-bootstrap.cnf
+                      echo ""
+                      echo "=== Removing 1-bootstrap.cnf ==="
+                      rm -f /galera/1-bootstrap.cnf
+                      echo "Bootstrap config removed!"
+                    else
+                      echo "No 1-bootstrap.cnf found (OK)"
+                    fi
+                    echo ""
+                    echo "=== Final galera config ==="
+                    ls -la /galera/
+                    echo "=== Done! ==="
+                volumeMounts:
+                  - name: galera
+                    mountPath: /galera
+            volumes:
+              - name: galera
+                persistentVolumeClaim:
+                  claimName: "{{ _heal_galera_pvc }}"
+      when: _heal_has_galera_pvc | bool
+
+    - name: "Wait for galera config helper to complete for {{ heal_target_pod }}"
+      kubernetes.core.k8s_info:
+        api_version: v1
+        kind: Pod
+        name: "{{ _heal_galera_helper }}"
+        namespace: "{{ namespace }}"
+      register: _heal_galera_status
+      until: >
+        _heal_galera_status.resources | length > 0 and
+        _heal_galera_status.resources[0].status.phase in ['Succeeded', 'Failed']
+      retries: 30
+      delay: 5
+      when: _heal_has_galera_pvc | bool
+
+    - name: "Fetch galera config helper logs for {{ heal_target_pod }}"
+      kubernetes.core.k8s_log:
+        name: "{{ _heal_galera_helper }}"
+        namespace: "{{ namespace }}"
+      register: _heal_galera_logs
+      failed_when: false
+      when: _heal_has_galera_pvc | bool
+
+    - name: "Show galera config helper logs for {{ heal_target_pod }}"
+      ansible.builtin.debug:
+        msg: "{{ _heal_galera_logs.log_lines | default(['(no logs)']) }}"
+      when: _heal_has_galera_pvc | bool
+
+    - name: "Check galera config helper succeeded for {{ heal_target_pod }}"
+      ansible.builtin.fail:
+        msg: "Galera config helper pod FAILED for {{ heal_target_pod }}!"
+      when:
+        - _heal_has_galera_pvc | bool
+        - _heal_galera_status.resources[0].status.phase == 'Failed'
+
+    - name: "Delete galera config helper pod for {{ heal_target_pod }}"
+      kubernetes.core.k8s:
+        state: absent
+        api_version: v1
+        kind: Pod
+        name: "{{ _heal_galera_helper }}"
+        namespace: "{{ namespace }}"
+        delete_options:
+          gracePeriodSeconds: 0
+      failed_when: false
+      when: _heal_has_galera_pvc | bool
+
+    - name: "Wait for galera helper cleanup for {{ heal_target_pod }}"
+      ansible.builtin.pause:
+        seconds: 2
+      when: _heal_has_galera_pvc | bool
+
+    # === STEP 5: Scale back up and resume CR ===
+    - name: "STEP 5 - Clear stale recovery pods for {{ heal_target_pod }}"
+      kubernetes.core.k8s:
+        state: absent
+        api_version: v1
+        kind: Pod
+        namespace: "{{ namespace }}"
+        label_selectors:
+          - "app.kubernetes.io/instance={{ mariadb_name }}"
+          - "k8s.mariadb.com/recovery=true"
+      failed_when: false
+
+    - name: "Wait after recovery pod cleanup for {{ heal_target_pod }}"
+      ansible.builtin.pause:
+        seconds: 2
+
+    - name: "STEP 5 - Scale StatefulSet back to {{ _heal_original_replicas }} for {{ heal_target_pod }}"
+      kubernetes.core.k8s_scale:
+        api_version: apps/v1
+        kind: StatefulSet
+        name: "{{ mariadb_name }}"
+        namespace: "{{ namespace }}"
+        replicas: "{{ _heal_original_replicas | int }}"
+        wait: false
+
+    - name: "Track scale restored for {{ heal_target_pod }}"
+      ansible.builtin.set_fact:
+        _heal_scaled_down: false
+
+    - name: "STEP 5 - Resume MariaDB CR for {{ heal_target_pod }}"
+      kubernetes.core.k8s:
+        state: patched
+        api_version: k8s.mariadb.com/v1alpha1
+        kind: MariaDB
+        name: "{{ mariadb_name }}"
+        namespace: "{{ namespace }}"
+        definition:
+          spec:
+            suspend: false
+
+    - name: "Track CR resumed for {{ heal_target_pod }}"
+      ansible.builtin.set_fact:
+        _heal_suspended: false
+
+    - name: "Wait for {{ heal_target_pod }} to come back online"
+      kubernetes.core.k8s_info:
+        api_version: v1
+        kind: Pod
+        name: "{{ heal_target_pod }}"
+        namespace: "{{ namespace }}"
+      register: _heal_target_status
+      until: >
+        _heal_target_status.resources | length > 0 and
+        (_heal_target_status.resources[0].status.containerStatuses | default([{}]) | first).ready | default(false)
+      retries: "{{ (heal_timeout | int / 10) | int }}"
+      delay: 10
+      failed_when: false
+
+    - name: "Check final pod status for {{ heal_target_pod }}"
+      ansible.builtin.debug:
+        msg: >-
+          {{ heal_target_pod }}:
+          phase={{ (_heal_target_status.resources[0].status.phase | default('Unknown')) if _heal_target_status.resources | length > 0 else 'NotFound' }}
+          ready={{ ((_heal_target_status.resources[0].status.containerStatuses | default([{}]) | first).ready | default(false)) if _heal_target_status.resources | length > 0 else false }}
+
+    - name: "Heal complete for {{ heal_target_pod }}"
+      ansible.builtin.debug:
+        msg: "Node {{ heal_target_pod }} has been healed!"
+      when: >
+        _heal_target_status.resources | length > 0 and
+        (_heal_target_status.resources[0].status.containerStatuses | default([{}]) | first).ready | default(false)
+
+    - name: "Heal timeout warning for {{ heal_target_pod }}"
+      ansible.builtin.debug:
+        msg: "WARNING: {{ heal_target_pod }} did not become ready within timeout. SST may still be in progress. Check pod status manually."
+      when: >
+        _heal_target_status.resources | length == 0 or
+        not ((_heal_target_status.resources[0].status.containerStatuses | default([{}]) | first).ready | default(false))
+
+  # === RESCUE: Cleanup on failure ===
+  rescue:
+    - name: "RESCUE - Delete storage helper pod for {{ heal_target_pod }}"
+      kubernetes.core.k8s:
+        state: absent
+        api_version: v1
+        kind: Pod
+        name: "{{ _heal_storage_helper }}"
+        namespace: "{{ namespace }}"
+        delete_options:
+          gracePeriodSeconds: 0
+      failed_when: false
+
+    - name: "RESCUE - Delete galera config helper pod for {{ heal_target_pod }}"
+      kubernetes.core.k8s:
+        state: absent
+        api_version: v1
+        kind: Pod
+        name: "{{ _heal_galera_helper }}"
+        namespace: "{{ namespace }}"
+        delete_options:
+          gracePeriodSeconds: 0
+      failed_when: false
+      when: _heal_has_galera_pvc | bool
+
+    - name: "RESCUE - Restore scale if needed for {{ heal_target_pod }}"
+      kubernetes.core.k8s_scale:
+        api_version: apps/v1
+        kind: StatefulSet
+        name: "{{ mariadb_name }}"
+        namespace: "{{ namespace }}"
+        replicas: "{{ _heal_original_replicas | int }}"
+        wait: false
+      when: _heal_scaled_down
+      failed_when: false
+
+    - name: "RESCUE - Resume CR if needed for {{ heal_target_pod }}"
+      kubernetes.core.k8s:
+        state: patched
+        api_version: k8s.mariadb.com/v1alpha1
+        kind: MariaDB
+        name: "{{ mariadb_name }}"
+        namespace: "{{ namespace }}"
+        definition:
+          spec:
+            suspend: false
+      when: _heal_suspended
+      failed_when: false
+
+    - name: "RESCUE - Recovery info for {{ heal_target_pod }}"
+      ansible.builtin.debug:
+        msg:
+          - "HEAL FAILED for {{ heal_target_pod }}."
+          - "{{ 'CR was resumed and scale restored.' if _heal_suspended or _heal_scaled_down else 'No cleanup needed.' }}"
+          - ""
+          - "To check status:"
+          - "  kubectl get mariadb {{ mariadb_name }} -n {{ namespace }}"
+          - "  kubectl get pods -n {{ namespace }} -l app.kubernetes.io/instance={{ mariadb_name }}"
+          - ""
+          - "To manually resume if still suspended:"
+          - "  kubectl patch mariadb {{ mariadb_name }} -n {{ namespace }} --type=merge -p '{\"spec\":{\"suspend\":false}}'"
+
+    - name: "RESCUE - Propagate failure for {{ heal_target_pod }}"
+      ansible.builtin.fail:
+        msg: "Heal operation failed for {{ heal_target_pod }}. See logs above."

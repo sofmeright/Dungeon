@@ -1,0 +1,62 @@
+---
+# hasteward.yml - Unified HA Database Steward
+#
+# Modes:
+#   triage  - Read-only diagnostic. Triage all instances, display assessment. (default)
+#   repair  - Triage all, safety gate, heal unhealthy nodes, re-triage.
+#
+# Engines:
+#   galera  - MariaDB Galera clusters (mariadb-operator)
+#
+# Usage (Galera):
+#   docker run --rm \
+#     -v ~/.kube:/root/.kube:ro \
+#     -v /srv/dungeon/ansible:/app:ro \
+#     prplanit/ansible-oci:2.20.1-v2 \
+#     ansible-playbook k8s/recovery/hasteward.yml \
+#       -e engine=galera \
+#       -e mariadb_name=osticket-mariadb \
+#       -e namespace=hyrule-castle \
+#       -e mode=triage
+#
+# Repair all unhealthy nodes:
+#   ... -e mode=repair
+#
+# Repair a specific node:
+#   ... -e mode=repair -e node_number=2
+#
+# Force repair a healthy node (targeted only):
+#   ... -e mode=repair -e node_number=2 -e force=true
+
+- name: HA Steward
+  hosts: localhost
+  connection: local
+  gather_facts: true
+
+  vars:
+    mode: triage
+    force: false
+    heal_timeout: 300
+    delete_timeout: 300
+    _valid_modes:
+      - triage
+      - repair
+    _valid_engines:
+      - galera
+
+  tasks:
+    - name: Validate engine
+      ansible.builtin.assert:
+        that:
+          - engine is defined
+          - engine in _valid_engines
+        fail_msg: "Required: -e engine=<engine>. Valid engines: {{ _valid_engines | join(', ') }}"
+
+    - name: Validate mode
+      ansible.builtin.assert:
+        that:
+          - mode in _valid_modes
+        fail_msg: "Invalid mode '{{ mode }}'. Valid modes: {{ _valid_modes | join(', ') }}"
+
+    - name: "Run {{ engine }} engine: {{ mode }}"
+      ansible.builtin.include_tasks: "hasteward/{{ engine }}/tasks/mode-{{ mode }}.yml"

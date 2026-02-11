@@ -1,0 +1,17 @@
+---
+# mode-triage.yml - Read-only diagnostic mode
+#
+# Runs: validate -> collect -> analyze -> display
+# No mutations beyond ephemeral probe pods.
+
+- name: "Triage: validate inputs"
+  ansible.builtin.include_tasks: validate.yml
+
+- name: "Triage: collect cluster data"
+  ansible.builtin.include_tasks: triage-collect.yml
+
+- name: "Triage: analyze instances"
+  ansible.builtin.include_tasks: triage-analyze.yml
+
+- name: "Triage: display results"
+  ansible.builtin.include_tasks: triage-display.yml

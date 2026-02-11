@@ -1,0 +1,65 @@
+---
+# triage-display.yml - Summary banner, per-instance table, recommendations
+#
+# Mirrors cnpg-steward triage-display.yml format.
+#
+# Requires: mariadb_name, namespace, replicas, ready_condition, galera_condition,
+#   data_comparison, instance_assessments, all_nodes_down, best_seqno_node, most_advanced_node
+
+- name: Display summary
+  ansible.builtin.debug:
+    msg:
+      - ""
+      - "============================================================"
+      - "  TRIAGE SUMMARY"
+      - "============================================================"
+      - ""
+      - "Cluster: {{ mariadb_name }} ({{ namespace }})"
+      - "Ready: {{ ready_condition.status | default('Unknown') }} | GaleraReady: {{ galera_condition.status | default('Unknown') }}"
+      - "Replicas: {{ replicas }}"
+      - "Most advanced node: {{ data_comparison.most_advanced }} (seqno: {{ data_comparison.most_advanced_seqno }})"
+      - "Primary component: {{ data_comparison.primary_members | join(', ') | default('NONE') }} (best seqno: {{ data_comparison.best_primary_seqno }})"
+      - "Safe to heal nodes: {{ 'YES - primary component has most recent data' if data_comparison.safe_to_heal else 'NO - SPLIT-BRAIN DETECTED - review data above' }}"
+      - "All nodes down: {{ all_nodes_down }}"
+      - ""
+
+- name: Display per-instance assessment
+  ansible.builtin.debug:
+    msg:
+      - "{{ item.pod }}{{ ' [PRIMARY COMPONENT]' if item.is_in_primary else '' }}{{ ' [DISK FULL]' if item.crash_reason | default('') == 'disk_full' else '' }}: {{ item.notes | join(', ') }}"
+      - "  Wsrep: state={{ item.wsrep_state }} ({{ item.wsrep_state_comment }}) connected={{ item.wsrep_connected }} ready={{ item.wsrep_ready }} cluster={{ item.wsrep_cluster_status }}"
+      - "  Seqno: effective={{ item.effective_seqno }} (source={{ item.seqno_source }}){{ ' lag=' + item.seqno_lag | string if item.seqno_lag >= 0 else '' }}"
+      - "  Grastate: uuid={{ item.uuid }} seqno={{ item.seqno }} safe_to_bootstrap={{ item.safe_to_bootstrap }}"
+      - "  Disk: {{ item.disk_pct | string + '%' if item.disk_pct | default(-1) >= 0 else 'N/A' }}"
+      - "  >> {{ item.recommendation }}"
+  loop: "{{ instance_assessments }}"
+  loop_control:
+    label: "{{ item.pod }}"
+
+- name: Display repair commands
+  vars:
+    heal_targets: "{{ instance_assessments | selectattr('needs_heal') | list }}"
+  ansible.builtin.debug:
+    msg:
+      - ""
+      - "--- Suggested Commands ---"
+      - "Repair all unhealthy nodes:"
+      - "  ansible-playbook k8s/recovery/hasteward.yml -e engine=galera -e mariadb_name={{ mariadb_name }} -e namespace={{ namespace }} -e mode=repair"
+      - ""
+      - "Repair a specific node:"
+      - "  ansible-playbook k8s/recovery/hasteward.yml -e engine=galera -e mariadb_name={{ mariadb_name }} -e namespace={{ namespace }} -e mode=repair -e node_number=<N>"
+  when: (instance_assessments | selectattr('needs_heal') | list) | length > 0
+
+- name: Display bootstrap suggestion
+  ansible.builtin.debug:
+    msg:
+      - ""
+      - "--- Full Cluster Down ---"
+      - "All nodes are down. Best bootstrap candidate: {{ best_seqno_node.pod }} (seqno: {{ best_seqno_node.seqno }})"
+      - "The mariadb-operator should handle recovery automatically via galera.recovery."
+      - "If stuck, check the MariaDB CR status.galeraRecovery field."
+  when: all_nodes_down
+
+- name: Triage complete
+  ansible.builtin.debug:
+    msg: "=== Triage complete ==="

@@ -12,6 +12,12 @@
   - STAY ON TASK when following directions. NO BAND AID, NO FUCKING WORK AROUNDS. IF YOU THINK WE NEED TO GIVE UP or regroup and re-evaluate. ASK. DONT MAKE THE CALL ON YOUR OWN to find alternative solutions or FIND A SHORTCUT. I CAN FIND MY OWN WAYS TO BASTARDIZE THINGS I DONT NEED YOUR FUCKING HELP. I want things done exactly how I ask. If I am to be offered an alternative, conversation should stop till I tell you if I agree/disagree with the alternative proposed.
   - **NEVER drain nodes or force delete database pods without explicit permission** - causes unrecoverable PostgreSQL/MariaDB WAL corruption and RBD data loss. Safe procedure: cordon → audit stateful workloads → migrate database primaries gracefully → drain with --grace-period=300.
   - **NEVER delete PVCs for CNPG-managed PostgreSQL clusters** - deleting PVCs corrupts the CNPG instance index and breaks cluster management. To heal a stuck/diverged replica, use `ansible-playbook k8s/recovery/cnpg-steward.yml -e cluster_name=<name> -e namespace=<ns> -e mode=repair -e replica_number=<N>` which triages the cluster, then fences the instance, clears pgdata on the existing PVC, runs pg_basebackup from the primary, then unfences. Use `mode=triage` for read-only diagnostics.
+  - **hasteward** (`ansible/k8s/recovery/hasteward.yml`) - Unified HA Database Steward for Galera clusters (future: CNPG migration)
+    - `mode=triage` - read-only diagnostic, triages all nodes (grastate.dat, wsrep status, PVC checks)
+    - `mode=repair` - triage → safety gate → heal all unhealthy nodes → re-triage
+    - `mode=repair -e node_number=N` - triage → safety gate → heal specific node
+    - `force=true` - override split-brain/healthy checks (targeted repair only)
+    - Example: `ansible-playbook k8s/recovery/hasteward.yml -e engine=galera -e mariadb_name=osticket-mariadb -e namespace=hyrule-castle -e mode=repair -e node_number=0`
 
 - FluxCD Infrastructure Structure:
   - `fluxcd/infrastructure/controllers/base` should contain TEMPLATED infrastructure resources WITHOUT any environment-specific values including: no hardcoded namespaces, image tags, replicas, storage classes, LoadBalancer IPs, cluster-specific annotations (lbipam.cilium.io/*), domain names, URLs, etc.
