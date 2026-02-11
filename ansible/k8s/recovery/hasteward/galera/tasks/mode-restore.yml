@@ -1,0 +1,52 @@
+---
+# mode-restore.yml - Restore a Galera cluster from a backup
+#
+# Galera always uses dump method. Finds a healthy node, then restores.
+
+# =========================================================================
+# Phase 1: Validate and gather cluster info
+# =========================================================================
+- name: "Restore: validate inputs"
+  ansible.builtin.include_tasks: validate.yml
+
+# =========================================================================
+# Phase 2: Find healthy target pod
+# =========================================================================
+- name: Get all MariaDB pods
+  kubernetes.core.k8s_info:
+    api_version: v1
+    kind: Pod
+    namespace: "{{ namespace }}"
+    label_selectors:
+      - "app.kubernetes.io/instance={{ cluster_name }}"
+  register: _restore_all_pods
+
+- name: Find healthy running pods
+  ansible.builtin.set_fact:
+    _restore_healthy_pods: >-
+      {{ _restore_all_pods.resources
+         | selectattr('status.phase', 'eq', 'Running')
+         | selectattr('status.containerStatuses', 'defined')
+         | selectattr('status.containerStatuses.0.ready', 'eq', true)
+         | list }}
+
+- name: Fail if no healthy pods
+  ansible.builtin.fail:
+    msg: >-
+      ABORT: No healthy running pods found for {{ cluster_name }} in {{ namespace }}.
+      Cannot restore without a running, ready target node.
+  when: _restore_healthy_pods | length == 0
+
+- name: Select restore target pod
+  ansible.builtin.set_fact:
+    _restore_target_pod: "{{ _restore_healthy_pods[0].metadata.name }}"
+
+- name: Display target selection
+  ansible.builtin.debug:
+    msg: "Selected restore target: {{ _restore_target_pod }}"
+
+# =========================================================================
+# Phase 3: Run restore
+# =========================================================================
+- name: "Restore from dump"
+  ansible.builtin.include_tasks: restore-dump.yml

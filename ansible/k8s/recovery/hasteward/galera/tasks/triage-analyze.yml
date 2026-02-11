@@ -153,10 +153,10 @@
         {%- set node_num = inst.pod.split('-')[-1] -%}
         {%- set heal_cmd = 'ansible-playbook k8s/recovery/hasteward.yml \\\n'
           + '      -e engine=galera \\\n'
-          + '      -e mariadb_name=' + mariadb_name + ' \\\n'
+          + '      -e cluster_name=' + cluster_name + ' \\\n'
           + '      -e namespace=' + namespace + ' \\\n'
           + '      -e mode=repair \\\n'
-          + '      -e node_number=' + node_num -%}
+          + '      -e instance_number=' + node_num -%}
         {%- set notes = [] -%}
         {%- set recommendation = '' -%}
         {%- set needs_heal = false -%}
@@ -261,7 +261,7 @@
         {%- endif -%}
         {%- set _ = result.append({
           'pod': inst.pod,
-          'node_number': node_num,
+          'instance_number': node_num,
           'is_running': is_running,
           'is_crashloop': is_crashloop,
           'is_missing': is_missing,

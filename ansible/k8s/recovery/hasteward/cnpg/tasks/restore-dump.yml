@@ -1,0 +1,178 @@
+---
+# restore-dump.yml - Restore a gzipped SQL dump to CNPG primary via psql
+#
+# Requires: cluster_name, namespace, cluster_spec, cluster_status, cluster_instances (from validate.yml)
+# Optional: backup_file - specific file to restore (defaults to latest in backups_path/<ns>/<cluster>/)
+
+- name: Set backup directory
+  ansible.builtin.set_fact:
+    _restore_dir: "{{ backups_path }}/{{ namespace }}/{{ cluster_name }}"
+
+- name: Find backup file to restore
+  when: backup_file is not defined
+  block:
+    - name: List available backups
+      ansible.builtin.find:
+        paths: "{{ _restore_dir }}"
+        patterns:
+          - "*-backup.sql.gz"
+          - "*-escrow.sql.gz"
+        file_type: file
+      register: _restore_available_files
+
+    - name: Fail if no backups found
+      ansible.builtin.fail:
+        msg: >-
+          No backup files found in {{ _restore_dir }}.
+          Expected files matching *-backup.sql.gz or *-escrow.sql.gz.
+      when: _restore_available_files.files | length == 0
+
+    - name: Select latest backup
+      ansible.builtin.set_fact:
+        _restore_file: "{{ (_restore_available_files.files | sort(attribute='mtime') | last).path }}"
+
+- name: Use specified backup file
+  ansible.builtin.set_fact:
+    _restore_file: "{{ backup_file }}"
+  when: backup_file is defined
+
+- name: Verify restore file exists
+  ansible.builtin.stat:
+    path: "{{ _restore_file }}"
+  register: _restore_file_stat
+  failed_when: not _restore_file_stat.stat.exists or _restore_file_stat.stat.size == 0
+
+- name: Display restore plan
+  ansible.builtin.debug:
+    msg:
+      - "--- Dump Restore ---"
+      - "File: {{ _restore_file }}"
+      - "Size: {{ '%.1f MB' | format(_restore_file_stat.stat.size / 1048576) }}"
+      - "Primary: {{ cluster_status.currentPrimary }}"
+
+- name: Verify primary is running and ready
+  kubernetes.core.k8s_info:
+    api_version: v1
+    kind: Pod
+    name: "{{ cluster_status.currentPrimary }}"
+    namespace: "{{ namespace }}"
+  register: _restore_primary_pod
+  failed_when: >
+    _restore_primary_pod.resources | length == 0 or
+    _restore_primary_pod.resources[0].status.phase != 'Running' or
+    not (_restore_primary_pod.resources[0].status.containerStatuses[0].ready | default(false))
+
+- name: Get replica instance names (non-primary)
+  ansible.builtin.set_fact:
+    _restore_replica_instances: >-
+      {{ cluster_status.instanceNames | default([])
+         | reject('eq', cluster_status.currentPrimary)
+         | list }}
+
+- name: Fence replica instances before restore
+  kubernetes.core.k8s:
+    state: patched
+    api_version: postgresql.cnpg.io/v1
+    kind: Cluster
+    name: "{{ cluster_name }}"
+    namespace: "{{ namespace }}"
+    definition:
+      metadata:
+        annotations:
+          cnpg.io/fencedInstances: "{{ _restore_replica_instances | to_json }}"
+  when: _restore_replica_instances | length > 0
+
+- name: Display fencing status
+  ansible.builtin.debug:
+    msg: "Fenced replicas: {{ _restore_replica_instances | join(', ') }}"
+  when: _restore_replica_instances | length > 0
+
+- name: Stream restore from gzipped file to psql
+  ansible.builtin.shell:
+    cmd: |
+      python3 -u << 'PYEOF'
+      from kubernetes import client, config
+      from kubernetes.stream import stream
+      import gzip, sys, time
+
+      pod = "{{ cluster_status.currentPrimary }}"
+      ns = "{{ namespace }}"
+      backup_path = "{{ _restore_file }}"
+
+      try:
+          config.load_incluster_config()
+      except config.ConfigException:
+          config.load_kube_config()
+      v1 = client.CoreV1Api()
+      resp = stream(v1.connect_get_namespaced_pod_exec,
+          name=pod, namespace=ns,
+          command=['psql', '-U', 'postgres'],
+          container='postgres',
+          stdout=True, stderr=True, stdin=True, tty=False,
+          _preload_content=False)
+      bytes_read = 0
+      last_progress = time.time()
+      with gzip.open(backup_path, 'rt', encoding='utf-8') as f:
+          while True:
+              chunk = f.read(65536)
+              if not chunk:
+                  break
+              resp.write_stdin(chunk)
+              bytes_read += len(chunk)
+              if time.time() - last_progress >= 30:
+                  mb = bytes_read / (1024 * 1024)
+                  print("PROGRESS restored=%.1f MB" % mb, file=sys.stderr)
+                  last_progress = time.time()
+      resp.write_stdin('\n\\q\n')
+      # drain remaining output
+      while resp.is_open():
+          resp.update(timeout=5)
+          if resp.peek_stdout():
+              print(resp.read_stdout(), end='')
+          if resp.peek_stderr():
+              print(resp.read_stderr(), file=sys.stderr, end='')
+      resp.close()
+      mb = bytes_read / (1024 * 1024)
+      print("RESTORE_OK bytes=%d (%.1f MB)" % (bytes_read, mb))
+      PYEOF
+  register: _restore_dump_result
+  changed_when: "'RESTORE_OK' in _restore_dump_result.stdout"
+  failed_when: "'RESTORE_OK' not in _restore_dump_result.stdout"
+
+- name: Display restore result
+  ansible.builtin.debug:
+    msg:
+      - "--- Restore Complete ---"
+      - "{{ _restore_dump_result.stdout }}"
+
+- name: Unfence replica instances
+  kubernetes.core.k8s:
+    state: patched
+    api_version: postgresql.cnpg.io/v1
+    kind: Cluster
+    name: "{{ cluster_name }}"
+    namespace: "{{ namespace }}"
+    definition:
+      metadata:
+        annotations:
+          cnpg.io/fencedInstances: "[]"
+  when: _restore_replica_instances | length > 0
+
+- name: Delete replica pods to force clean re-sync
+  kubernetes.core.k8s:
+    state: absent
+    api_version: v1
+    kind: Pod
+    name: "{{ item }}"
+    namespace: "{{ namespace }}"
+    delete_options:
+      gracePeriodSeconds: 0
+  loop: "{{ _restore_replica_instances }}"
+  failed_when: false
+  when: _restore_replica_instances | length > 0
+
+- name: Display post-restore info
+  ansible.builtin.debug:
+    msg:
+      - "Replicas unfenced and deleted — they will re-sync from primary via streaming replication."
+      - "Monitor with: kubectl get pods -n {{ namespace }} -l cnpg.io/cluster={{ cluster_name }}"

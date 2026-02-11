@@ -1,0 +1,69 @@
+---
+# backup-native.yml - Create CNPG Backup CRD using barmanObjectStore
+#
+# Requires: cluster_name, namespace, cluster_spec (from validate.yml)
+
+- name: Verify barmanObjectStore is configured
+  ansible.builtin.fail:
+    msg: >-
+      barmanObjectStore not configured on cluster '{{ cluster_name }}'.
+      Use -e backup_method=dump or configure S3 backup on the CNPG Cluster CR
+      (spec.backup.barmanObjectStore).
+  when: cluster_spec.backup is not defined or cluster_spec.backup.barmanObjectStore is not defined
+
+- name: Set backup CRD name
+  ansible.builtin.set_fact:
+    _native_backup_name: "{{ cluster_name }}-{{ ansible_date_time.iso8601_basic_short | lower }}"
+
+- name: Display native backup plan
+  ansible.builtin.debug:
+    msg:
+      - "--- Native S3 Backup ---"
+      - "Backup CR: {{ _native_backup_name }}"
+      - "Cluster: {{ cluster_name }}"
+      - "Method: barmanObjectStore"
+
+- name: Create CNPG Backup CRD
+  kubernetes.core.k8s:
+    state: present
+    definition:
+      apiVersion: postgresql.cnpg.io/v1
+      kind: Backup
+      metadata:
+        name: "{{ _native_backup_name }}"
+        namespace: "{{ namespace }}"
+      spec:
+        cluster:
+          name: "{{ cluster_name }}"
+        method: barmanObjectStore
+
+- name: Wait for Backup to complete
+  kubernetes.core.k8s_info:
+    api_version: postgresql.cnpg.io/v1
+    kind: Backup
+    name: "{{ _native_backup_name }}"
+    namespace: "{{ namespace }}"
+  register: _native_backup_status
+  until: >
+    _native_backup_status.resources | length > 0 and
+    (_native_backup_status.resources[0].status.phase | default('') in ['completed', 'failed'])
+  retries: 120
+  delay: 10
+
+- name: Check backup result
+  ansible.builtin.set_fact:
+    _native_backup_phase: "{{ _native_backup_status.resources[0].status.phase | default('unknown') }}"
+    _native_backup_destination: "{{ _native_backup_status.resources[0].status.destinationPath | default('N/A') }}"
+
+- name: Display backup result
+  ansible.builtin.debug:
+    msg:
+      - "--- Native Backup Result ---"
+      - "Status: {{ _native_backup_phase }}"
+      - "Destination: {{ _native_backup_destination }}"
+      - "Backup CR: {{ _native_backup_name }}"
+
+- name: Fail if backup failed
+  ansible.builtin.fail:
+    msg: "Native backup '{{ _native_backup_name }}' failed. Check CNPG Backup CR status for details."
+  when: _native_backup_phase != 'completed'

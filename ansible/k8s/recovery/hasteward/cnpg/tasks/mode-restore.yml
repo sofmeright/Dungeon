@@ -1,0 +1,25 @@
+---
+# mode-restore.yml - Restore a CNPG cluster from a backup
+#
+# Currently supports dump restore only.
+# Native S3 PITR restore (via bootstrap.recovery) is future work.
+
+# =========================================================================
+# Phase 1: Validate and gather cluster info
+# =========================================================================
+- name: "Restore: validate inputs"
+  ansible.builtin.include_tasks: validate.yml
+
+# =========================================================================
+# Phase 2: Dispatch based on backup_method
+# =========================================================================
+- name: "Fail on native restore (not yet implemented)"
+  ansible.builtin.fail:
+    msg: >-
+      Native S3 restore (PITR via bootstrap.recovery) is not yet implemented.
+      Use -e backup_method=dump to restore from a SQL dump file.
+  when: backup_method == 'native'
+
+- name: "Restore from dump"
+  ansible.builtin.include_tasks: restore-dump.yml
+  when: backup_method == 'dump'

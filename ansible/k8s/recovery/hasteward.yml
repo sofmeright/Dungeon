@@ -1,12 +1,17 @@
 ---
-# hasteward.yml - Unified HA Database Steward
+# hasteward.yml - HASteward (High Availability Steward)
+# Ansible playbook that standardizes recovery logic for common stateful services
+# (PostgreSQL, MariaDB) to safely revive stalled replicas where possible.
 #
 # Modes:
 #   triage  - Read-only diagnostic. Triage all instances, display assessment. (default)
-#   repair  - Triage all, safety gate, heal unhealthy nodes, re-triage.
+#   repair  - Triage all, safety gate, escrow backup, heal unhealthy instances, re-triage.
+#   backup  - Take a backup of the cluster (dump or native).
+#   restore - Restore a cluster from a backup.
 #
 # Engines:
 #   galera  - MariaDB Galera clusters (mariadb-operator)
+#   cnpg    - CloudNativePG PostgreSQL clusters
 #
 # Usage (Galera):
 #   docker run --rm \
@@ -15,20 +20,42 @@
 #     prplanit/ansible-oci:2.20.1-v2 \
 #     ansible-playbook k8s/recovery/hasteward.yml \
 #       -e engine=galera \
-#       -e mariadb_name=osticket-mariadb \
+#       -e cluster_name=osticket-mariadb \
 #       -e namespace=hyrule-castle \
 #       -e mode=triage
 #
-# Repair all unhealthy nodes:
-#   ... -e mode=repair
+# Usage (CNPG):
+#   ... ansible-playbook k8s/recovery/hasteward.yml \
+#       -e engine=cnpg \
+#       -e cluster_name=zitadel-postgres \
+#       -e namespace=zeldas-lullaby \
+#       -e mode=triage
 #
-# Repair a specific node:
-#   ... -e mode=repair -e node_number=2
+# Repair all unhealthy instances:
+#   ... -e mode=repair -e backups_path=/backups
 #
-# Force repair a healthy node (targeted only):
-#   ... -e mode=repair -e node_number=2 -e force=true
+# Repair a specific instance:
+#   ... -e mode=repair -e instance_number=2 -e backups_path=/backups
+#
+# Force repair a healthy instance (targeted only):
+#   ... -e mode=repair -e instance_number=2 -e force=true -e backups_path=/backups
+#
+# Repair without escrow backup (accept the risk):
+#   ... -e mode=repair -e no_escrow=true
+#
+# Backup a cluster (dump method):
+#   ... -e mode=backup -e backups_path=/backups
+#
+# Backup a CNPG cluster (native S3 via barmanObjectStore):
+#   ... -e mode=backup -e backup_method=native
+#
+# Restore from latest backup:
+#   ... -e mode=restore -e backups_path=/backups
+#
+# Restore from specific file:
+#   ... -e mode=restore -e backups_path=/backups -e backup_file=/backups/ns/cluster/file.sql.gz
 
-- name: HA Steward
+- name: HASteward
   hosts: localhost
   connection: local
   gather_facts: true
@@ -36,13 +63,19 @@
   vars:
     mode: triage
     force: false
-    heal_timeout: 300
+    no_escrow: false
+    retain_escrow: false
+    backup_method: dump
+    heal_timeout: 600
     delete_timeout: 300
     _valid_modes:
       - triage
       - repair
+      - backup
+      - restore
     _valid_engines:
       - galera
+      - cnpg
 
   tasks:
     - name: Validate engine
@@ -57,6 +90,29 @@
         that:
           - mode in _valid_modes
         fail_msg: "Invalid mode '{{ mode }}'. Valid modes: {{ _valid_modes | join(', ') }}"
+
+    - name: Validate backups_path for repair mode
+      ansible.builtin.assert:
+        that:
+          - backups_path is defined or (no_escrow | bool)
+        fail_msg: >-
+          Repair mode requires -e backups_path=/path/to/backups for escrow.
+          Pass -e no_escrow=true to proceed without.
+      when: mode == 'repair'
+
+    - name: Validate backups_path for backup mode (dump)
+      ansible.builtin.assert:
+        that:
+          - backups_path is defined
+        fail_msg: "Backup mode requires -e backups_path=/path/to/backups"
+      when: mode == 'backup' and backup_method != 'native'
+
+    - name: Validate backups_path for restore mode
+      ansible.builtin.assert:
+        that:
+          - backups_path is defined
+        fail_msg: "Restore mode requires -e backups_path=/path/to/backups"
+      when: mode == 'restore'
 
     - name: "Run {{ engine }} engine: {{ mode }}"
       ansible.builtin.include_tasks: "hasteward/{{ engine }}/tasks/mode-{{ mode }}.yml"

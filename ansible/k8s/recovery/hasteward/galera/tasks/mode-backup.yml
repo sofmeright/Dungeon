@@ -1,0 +1,53 @@
+---
+# mode-backup.yml - Take a backup of a Galera cluster
+#
+# Galera always uses dump method (no native S3 equivalent).
+# Finds a healthy donor pod, then calls backup-dump.yml.
+
+# =========================================================================
+# Phase 1: Validate and gather cluster info
+# =========================================================================
+- name: "Backup: validate inputs"
+  ansible.builtin.include_tasks: validate.yml
+
+# =========================================================================
+# Phase 2: Find healthy donor pod
+# =========================================================================
+- name: Get all MariaDB pods
+  kubernetes.core.k8s_info:
+    api_version: v1
+    kind: Pod
+    namespace: "{{ namespace }}"
+    label_selectors:
+      - "app.kubernetes.io/instance={{ cluster_name }}"
+  register: _backup_all_pods
+
+- name: Find healthy running pods
+  ansible.builtin.set_fact:
+    _backup_healthy_pods: >-
+      {{ _backup_all_pods.resources
+         | selectattr('status.phase', 'eq', 'Running')
+         | selectattr('status.containerStatuses', 'defined')
+         | selectattr('status.containerStatuses.0.ready', 'eq', true)
+         | list }}
+
+- name: Fail if no healthy donor pods
+  ansible.builtin.fail:
+    msg: >-
+      ABORT: No healthy running pods found for {{ cluster_name }} in {{ namespace }}.
+      Cannot take a backup without a running, ready donor.
+  when: _backup_healthy_pods | length == 0
+
+- name: Select donor pod
+  ansible.builtin.set_fact:
+    _backup_donor_pod: "{{ _backup_healthy_pods[0].metadata.name }}"
+
+- name: Display donor selection
+  ansible.builtin.debug:
+    msg: "Selected donor: {{ _backup_donor_pod }} ({{ _backup_healthy_pods | length }} healthy pods available)"
+
+# =========================================================================
+# Phase 3: Run backup
+# =========================================================================
+- name: "Backup via dump method"
+  ansible.builtin.include_tasks: backup-dump.yml

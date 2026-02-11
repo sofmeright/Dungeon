@@ -1,0 +1,23 @@
+---
+# mode-backup.yml - Take a backup of a CNPG cluster
+#
+# Dispatches to dump or native backup based on backup_method.
+#   dump (default): pg_dumpall streamed to backups_path
+#   native: CNPG Backup CRD via barmanObjectStore
+
+# =========================================================================
+# Phase 1: Validate and gather cluster info
+# =========================================================================
+- name: "Backup: validate inputs"
+  ansible.builtin.include_tasks: validate.yml
+
+# =========================================================================
+# Phase 2: Dispatch based on backup_method
+# =========================================================================
+- name: "Backup via dump method"
+  ansible.builtin.include_tasks: backup-dump.yml
+  when: backup_method == 'dump'
+
+- name: "Backup via native (barmanObjectStore) method"
+  ansible.builtin.include_tasks: backup-native.yml
+  when: backup_method == 'native'

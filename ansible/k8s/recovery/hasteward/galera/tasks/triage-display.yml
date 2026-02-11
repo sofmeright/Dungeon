@@ -3,7 +3,7 @@
 #
 # Mirrors cnpg-steward triage-display.yml format.
 #
-# Requires: mariadb_name, namespace, replicas, ready_condition, galera_condition,
+# Requires: cluster_name, namespace, replicas, ready_condition, galera_condition,
 #   data_comparison, instance_assessments, all_nodes_down, best_seqno_node, most_advanced_node
 
 - name: Display summary
@@ -14,7 +14,7 @@
       - "  TRIAGE SUMMARY"
       - "============================================================"
       - ""
-      - "Cluster: {{ mariadb_name }} ({{ namespace }})"
+      - "Cluster: {{ cluster_name }} ({{ namespace }})"
       - "Ready: {{ ready_condition.status | default('Unknown') }} | GaleraReady: {{ galera_condition.status | default('Unknown') }}"
       - "Replicas: {{ replicas }}"
       - "Most advanced node: {{ data_comparison.most_advanced }} (seqno: {{ data_comparison.most_advanced_seqno }})"
@@ -44,10 +44,10 @@
       - ""
       - "--- Suggested Commands ---"
       - "Repair all unhealthy nodes:"
-      - "  ansible-playbook k8s/recovery/hasteward.yml -e engine=galera -e mariadb_name={{ mariadb_name }} -e namespace={{ namespace }} -e mode=repair"
+      - "  ansible-playbook k8s/recovery/hasteward.yml -e engine=galera -e cluster_name={{ cluster_name }} -e namespace={{ namespace }} -e mode=repair"
       - ""
-      - "Repair a specific node:"
-      - "  ansible-playbook k8s/recovery/hasteward.yml -e engine=galera -e mariadb_name={{ mariadb_name }} -e namespace={{ namespace }} -e mode=repair -e node_number=<N>"
+      - "Repair a specific instance:"
+      - "  ansible-playbook k8s/recovery/hasteward.yml -e engine=galera -e cluster_name={{ cluster_name }} -e namespace={{ namespace }} -e mode=repair -e instance_number=<N>"
   when: (instance_assessments | selectattr('needs_heal') | list) | length > 0
 
 - name: Display bootstrap suggestion

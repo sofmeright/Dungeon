@@ -2,8 +2,8 @@
 # mode-repair.yml - Triage -> safety gate -> heal -> post-status
 #
 # Two paths:
-#   Without node_number: heal ALL unhealthy nodes
-#   With node_number:    heal THAT specific node
+#   Without instance_number: heal ALL unhealthy nodes
+#   With instance_number:    heal THAT specific node
 #
 # Safety gates:
 #   Untargeted: split-brain -> HARD STOP (no override)
@@ -37,16 +37,40 @@
   when: not any_node_running_ready
 
 # =========================================================================
+# Phase 2.5: Escrow backup (before any destructive operations)
+# =========================================================================
+- name: "Select donor for escrow backup"
+  ansible.builtin.set_fact:
+    _backup_donor_pod: "{{ healthy_running_pods[0].metadata.name }}"
+  when: not (no_escrow | bool)
+
+- name: "Escrow backup from donor"
+  ansible.builtin.include_tasks: backup-dump.yml
+  vars:
+    _backup_type: "{{ 'backup' if (retain_escrow | bool) else 'escrow' }}"
+  when: not (no_escrow | bool)
+
+- name: Set escrow path fact
+  ansible.builtin.set_fact:
+    _escrow_path: "{{ _backup_path | default('') }}"
+  when: not (no_escrow | bool)
+
+- name: "WARNING - Proceeding without escrow"
+  ansible.builtin.debug:
+    msg: "no_escrow=true - proceeding without escrow backup."
+  when: no_escrow | bool
+
+# =========================================================================
 # Phase 3: Branch on targeted vs untargeted repair
 # =========================================================================
 
-# ------- TARGETED REPAIR (node_number is set) -------
-- name: "Targeted repair for node {{ node_number | default('N/A') }}"
-  when: node_number is defined
+# ------- TARGETED REPAIR (instance_number is set) -------
+- name: "Targeted repair for instance {{ instance_number | default('N/A') }}"
+  when: instance_number is defined
   block:
     - name: Set target pod name
       ansible.builtin.set_fact:
-        _repair_target_pod: "{{ mariadb_name }}-{{ node_number }}"
+        _repair_target_pod: "{{ cluster_name }}-{{ instance_number }}"
 
     # Find the target's assessment
     - name: Find target assessment
@@ -55,7 +79,7 @@
 
     - name: Verify target exists in assessments
       ansible.builtin.fail:
-        msg: "ABORT: {{ _repair_target_pod }} not found in instance assessments. Check mariadb_name and node_number."
+        msg: "ABORT: {{ _repair_target_pod }} not found in instance assessments. Check cluster_name and instance_number."
       when: _repair_target_assessment | length == 0
 
     # Safety gate: target is in primary component and healthy → warn (no healing needed)
@@ -126,14 +150,14 @@
       ansible.builtin.include_tasks: heal-node.yml
       vars:
         heal_target_pod: "{{ _repair_target_pod }}"
-        heal_target_node: "{{ node_number }}"
+        heal_target_instance: "{{ instance_number }}"
 
     # Display final status
     - name: Get final MariaDB status (targeted)
       kubernetes.core.k8s_info:
         api_version: k8s.mariadb.com/v1alpha1
         kind: MariaDB
-        name: "{{ mariadb_name }}"
+        name: "{{ cluster_name }}"
         namespace: "{{ namespace }}"
       register: _repair_final_mariadb
 
@@ -150,7 +174,7 @@
         kind: Pod
         namespace: "{{ namespace }}"
         label_selectors:
-          - "app.kubernetes.io/instance={{ mariadb_name }}"
+          - "app.kubernetes.io/instance={{ cluster_name }}"
       register: _repair_final_pods
 
     - name: Display pod status (targeted)
@@ -160,9 +184,26 @@
       loop_control:
         label: "{{ item.metadata.name }}"
 
+    - name: "Remove escrow (targeted repair succeeded)"
+      ansible.builtin.file:
+        path: "{{ _escrow_path }}"
+        state: absent
+      when:
+        - _escrow_path is defined
+        - _escrow_path | length > 0
+        - not (retain_escrow | bool)
+
+    - name: "Backup retained (targeted)"
+      ansible.builtin.debug:
+        msg: "Pre-heal backup retained at: {{ _escrow_path }}"
+      when:
+        - _escrow_path is defined
+        - _escrow_path | length > 0
+        - retain_escrow | bool
+
 # ------- UNTARGETED REPAIR (heal all unhealthy) -------
 - name: "Untargeted repair - heal all unhealthy nodes"
-  when: node_number is not defined
+  when: instance_number is not defined
   block:
     # Safety gate: split-brain -> HARD STOP (no override)
     - name: "SAFETY GATE - Split-brain detected (untargeted)"
@@ -170,7 +211,7 @@
         msg: >-
           HARD STOP: Split-brain detected in cluster. Cannot auto-heal all nodes.
           Admin must review the triage output above, determine which node has the correct data,
-          then use targeted repair: -e mode=repair -e node_number=<N>
+          then use targeted repair: -e mode=repair -e instance_number=<N>
       when: not data_comparison.safe_to_heal
 
     # Compute heal targets
@@ -202,7 +243,7 @@
       ansible.builtin.include_tasks: heal-node.yml
       vars:
         heal_target_pod: "{{ item.pod }}"
-        heal_target_node: "{{ item.node_number }}"
+        heal_target_instance: "{{ item.instance_number }}"
       loop: "{{ _repair_heal_targets }}"
       loop_control:
         label: "{{ item.pod }}"
@@ -216,3 +257,20 @@
 
     - name: "Post-repair: displaying final results"
       ansible.builtin.include_tasks: triage-display.yml
+
+    - name: "Remove escrow (untargeted repair succeeded)"
+      ansible.builtin.file:
+        path: "{{ _escrow_path }}"
+        state: absent
+      when:
+        - _escrow_path is defined
+        - _escrow_path | length > 0
+        - not (retain_escrow | bool)
+
+    - name: "Backup retained (untargeted)"
+      ansible.builtin.debug:
+        msg: "Pre-heal backup retained at: {{ _escrow_path }}"
+      when:
+        - _escrow_path is defined
+        - _escrow_path | length > 0
+        - retain_escrow | bool

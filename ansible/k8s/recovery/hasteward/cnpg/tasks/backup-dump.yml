@@ -1,0 +1,109 @@
+---
+# backup-dump.yml - Stream pg_dumpall from primary to gzipped file
+#
+# Requires: cluster_name, namespace, cluster_status (from validate.yml)
+# Optional: _backup_type (default: 'backup') - set to 'escrow' for repair escrow
+# Sets: _backup_path, _backup_size_human
+
+- name: Set backup type default
+  ansible.builtin.set_fact:
+    _backup_type: "{{ _backup_type | default('backup') }}"
+
+- name: Set backup filename
+  ansible.builtin.set_fact:
+    _backup_dir: "{{ backups_path }}/{{ namespace }}/{{ cluster_name }}"
+    _backup_filename: "{{ namespace }}-{{ cluster_name }}-cnpg-{{ ansible_date_time.iso8601_basic_short }}-{{ _backup_type }}.sql.gz"
+
+- name: Set full backup path
+  ansible.builtin.set_fact:
+    _backup_path: "{{ _backup_dir }}/{{ _backup_filename }}"
+
+- name: Display backup plan
+  ansible.builtin.debug:
+    msg:
+      - "--- Dump Backup ---"
+      - "Type: {{ _backup_type }}"
+      - "Primary: {{ cluster_status.currentPrimary }}"
+      - "Destination: {{ _backup_path }}"
+
+- name: Verify primary is running and ready
+  kubernetes.core.k8s_info:
+    api_version: v1
+    kind: Pod
+    name: "{{ cluster_status.currentPrimary }}"
+    namespace: "{{ namespace }}"
+  register: _backup_primary_pod
+  failed_when: >
+    _backup_primary_pod.resources | length == 0 or
+    _backup_primary_pod.resources[0].status.phase != 'Running' or
+    not (_backup_primary_pod.resources[0].status.containerStatuses[0].ready | default(false))
+
+- name: Create backup directory
+  ansible.builtin.file:
+    path: "{{ _backup_dir }}"
+    state: directory
+    mode: "0750"
+
+- name: Stream pg_dumpall to gzipped file
+  ansible.builtin.shell:
+    cmd: |
+      python3 -u << 'PYEOF'
+      from kubernetes import client, config
+      from kubernetes.stream import stream
+      import gzip, sys, os, time
+
+      pod = "{{ cluster_status.currentPrimary }}"
+      ns = "{{ namespace }}"
+      backup_path = "{{ _backup_path }}"
+
+      try:
+          config.load_incluster_config()
+      except config.ConfigException:
+          config.load_kube_config()
+      v1 = client.CoreV1Api()
+      resp = stream(v1.connect_get_namespaced_pod_exec,
+          name=pod, namespace=ns,
+          command=['pg_dumpall', '-U', 'postgres'],
+          container='postgres',
+          stdout=True, stderr=True, stdin=False, tty=False,
+          _preload_content=False)
+      bytes_written = 0
+      last_progress = time.time()
+      with gzip.open(backup_path, 'wt', encoding='utf-8') as f:
+          while resp.is_open():
+              resp.update(timeout=60)
+              if resp.peek_stdout():
+                  chunk = resp.read_stdout()
+                  f.write(chunk)
+                  bytes_written += len(chunk)
+                  if time.time() - last_progress >= 30:
+                      mb = bytes_written / (1024 * 1024)
+                      print("PROGRESS streamed=%.1f MB" % mb, file=sys.stderr)
+                      last_progress = time.time()
+              if resp.peek_stderr():
+                  err = resp.read_stderr()
+                  print(err, file=sys.stderr, end='')
+      resp.close()
+      mb = bytes_written / (1024 * 1024)
+      print("BACKUP_OK bytes=%d (%.1f MB)" % (bytes_written, mb))
+      PYEOF
+  register: _backup_dump_result
+  changed_when: "'BACKUP_OK' in _backup_dump_result.stdout"
+  failed_when: "'BACKUP_OK' not in _backup_dump_result.stdout"
+
+- name: Verify backup file exists and has content
+  ansible.builtin.stat:
+    path: "{{ _backup_path }}"
+  register: _backup_file_stat
+  failed_when: not _backup_file_stat.stat.exists or _backup_file_stat.stat.size == 0
+
+- name: Set backup size for display
+  ansible.builtin.set_fact:
+    _backup_size_human: "{{ '%.1f MB' | format(_backup_file_stat.stat.size / 1048576) }}"
+
+- name: Display backup result
+  ansible.builtin.debug:
+    msg:
+      - "Backup saved: {{ _backup_path }}"
+      - "Size: {{ _backup_size_human }} (compressed)"
+      - "Stream output: {{ _backup_dump_result.stdout }}"

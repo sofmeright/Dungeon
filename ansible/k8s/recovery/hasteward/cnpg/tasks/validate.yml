@@ -13,7 +13,7 @@
 - name: Display header
   ansible.builtin.debug:
     msg:
-      - "=== CNPG Steward ({{ mode }}) ==="
+      - "=== HASteward / CNPG ({{ mode }}) ==="
       - "Cluster: {{ cluster_name }}"
       - "Namespace: {{ namespace }}"
       - "Timestamp: {{ ansible_date_time.iso8601 }}"

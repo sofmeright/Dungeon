@@ -1,0 +1,104 @@
+---
+# backup-dump.yml - Stream mysqldump from a healthy donor to gzipped file
+#
+# Requires: cluster_name, namespace, mariadb_root_password (from validate.yml)
+#           _backup_donor_pod - healthy pod to dump from (set by caller)
+# Optional: _backup_type (default: 'backup') - set to 'escrow' for repair escrow
+# Sets: _backup_path, _backup_size_human
+
+- name: Set backup type default
+  ansible.builtin.set_fact:
+    _backup_type: "{{ _backup_type | default('backup') }}"
+
+- name: Set backup filename
+  ansible.builtin.set_fact:
+    _backup_dir: "{{ backups_path }}/{{ namespace }}/{{ cluster_name }}"
+    _backup_filename: "{{ namespace }}-{{ cluster_name }}-galera-{{ ansible_date_time.iso8601_basic_short }}-{{ _backup_type }}.sql.gz"
+
+- name: Set full backup path
+  ansible.builtin.set_fact:
+    _backup_path: "{{ _backup_dir }}/{{ _backup_filename }}"
+
+- name: Display backup plan
+  ansible.builtin.debug:
+    msg:
+      - "--- Dump Backup ---"
+      - "Type: {{ _backup_type }}"
+      - "Donor: {{ _backup_donor_pod }}"
+      - "Destination: {{ _backup_path }}"
+
+- name: Create backup directory
+  ansible.builtin.file:
+    path: "{{ _backup_dir }}"
+    state: directory
+    mode: "0750"
+
+- name: Stream mysqldump to gzipped file
+  ansible.builtin.shell:
+    cmd: |
+      python3 -u << 'PYEOF'
+      from kubernetes import client, config
+      from kubernetes.stream import stream
+      import gzip, sys, os, time
+
+      pod = "{{ _backup_donor_pod }}"
+      ns = "{{ namespace }}"
+      backup_path = "{{ _backup_path }}"
+      root_pw = """{{ mariadb_root_password }}"""
+
+      try:
+          config.load_incluster_config()
+      except config.ConfigException:
+          config.load_kube_config()
+      v1 = client.CoreV1Api()
+      resp = stream(v1.connect_get_namespaced_pod_exec,
+          name=pod, namespace=ns,
+          command=['mysqldump', '-u', 'root', '-p' + root_pw,
+                   '--all-databases', '--single-transaction',
+                   '--routines', '--triggers', '--events'],
+          container='mariadb',
+          stdout=True, stderr=True, stdin=False, tty=False,
+          _preload_content=False)
+      bytes_written = 0
+      last_progress = time.time()
+      with gzip.open(backup_path, 'wt', encoding='utf-8') as f:
+          while resp.is_open():
+              resp.update(timeout=60)
+              if resp.peek_stdout():
+                  chunk = resp.read_stdout()
+                  f.write(chunk)
+                  bytes_written += len(chunk)
+                  if time.time() - last_progress >= 30:
+                      mb = bytes_written / (1024 * 1024)
+                      print("PROGRESS streamed=%.1f MB" % mb, file=sys.stderr)
+                      last_progress = time.time()
+              if resp.peek_stderr():
+                  err = resp.read_stderr()
+                  # mysqldump prints a warning about password on CLI, ignore it
+                  if 'Using a password on the command line' not in err:
+                      print(err, file=sys.stderr, end='')
+      resp.close()
+      mb = bytes_written / (1024 * 1024)
+      print("BACKUP_OK bytes=%d (%.1f MB)" % (bytes_written, mb))
+      PYEOF
+  no_log: true
+  register: _backup_dump_result
+  changed_when: "'BACKUP_OK' in _backup_dump_result.stdout"
+  failed_when: "'BACKUP_OK' not in _backup_dump_result.stdout"
+
+- name: Verify backup file exists and has content
+  ansible.builtin.stat:
+    path: "{{ _backup_path }}"
+  register: _backup_file_stat
+  failed_when: not _backup_file_stat.stat.exists or _backup_file_stat.stat.size == 0
+
+- name: Set backup size for display
+  ansible.builtin.set_fact:
+    _backup_size_human: "{{ '%.1f MB' | format(_backup_file_stat.stat.size / 1048576) }}"
+
+- name: Display backup result
+  ansible.builtin.debug:
+    msg:
+      - "Backup saved: {{ _backup_path }}"
+      - "Size: {{ _backup_size_human }} (compressed)"
+      - "Stream output: {{ _backup_dump_result.stdout }}"

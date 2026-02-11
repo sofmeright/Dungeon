@@ -14,7 +14,7 @@
 - name: Build expected node list
   ansible.builtin.set_fact:
     expected_nodes: >-
-      {{ range(replicas | int) | map('regex_replace', '^(.*)$', mariadb_name + '-\1') | list }}
+      {{ range(replicas | int) | map('regex_replace', '^(.*)$', cluster_name + '-\1') | list }}
 
 - name: Get all MariaDB pods
   kubernetes.core.k8s_info:
@@ -22,7 +22,7 @@
     kind: Pod
     namespace: "{{ namespace }}"
     label_selectors:
-      - "app.kubernetes.io/instance={{ mariadb_name }}"
+      - "app.kubernetes.io/instance={{ cluster_name }}"
   register: all_pods
 
 - name: Categorize pods

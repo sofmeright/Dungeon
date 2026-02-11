@@ -37,10 +37,10 @@
       - ""
       - "--- Suggested Commands ---"
       - "Repair all unhealthy replicas:"
-      - "  ansible-playbook k8s/recovery/cnpg-steward.yml -e cluster_name={{ cluster_name }} -e namespace={{ namespace }} -e mode=repair"
+      - "  ansible-playbook k8s/recovery/hasteward.yml -e engine=cnpg -e cluster_name={{ cluster_name }} -e namespace={{ namespace }} -e mode=repair"
       - ""
-      - "Repair a specific replica:"
-      - "  ansible-playbook k8s/recovery/cnpg-steward.yml -e cluster_name={{ cluster_name }} -e namespace={{ namespace }} -e mode=repair -e replica_number=<N>"
+      - "Repair a specific instance:"
+      - "  ansible-playbook k8s/recovery/hasteward.yml -e engine=cnpg -e cluster_name={{ cluster_name }} -e namespace={{ namespace }} -e mode=repair -e instance_number=<N>"
   when: (instance_assessments | selectattr('needs_heal') | list) | length > 0
 
 - name: Triage complete

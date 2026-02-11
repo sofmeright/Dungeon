@@ -118,11 +118,12 @@
         {%- set recommendation = '' -%}
         {%- set needs_heal = false -%}
         {%- set replica_num = inst.pod.split('-')[-1] -%}
-        {%- set heal_cmd = 'ansible-playbook k8s/recovery/cnpg-steward.yml \\\n'
+        {%- set heal_cmd = 'ansible-playbook k8s/recovery/hasteward.yml \\\n'
+          + '      -e engine=cnpg \\\n'
           + '      -e cluster_name=' + cluster_name + ' \\\n'
           + '      -e namespace=' + namespace + ' \\\n'
           + '      -e mode=repair \\\n'
-          + '      -e replica_number=' + replica_num -%}
+          + '      -e instance_number=' + replica_num -%}
         {%- if is_primary -%}
           {%- if disk_full or disk_pct >= 90 -%}
             {%- set _ = notes.append('PRIMARY - disk full/low') -%}

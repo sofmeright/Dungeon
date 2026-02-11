@@ -7,15 +7,15 @@
 - name: Validate required variables
   ansible.builtin.assert:
     that:
-      - mariadb_name is defined
+      - cluster_name is defined
       - namespace is defined
-    fail_msg: "Required variables: mariadb_name, namespace"
+    fail_msg: "Required variables: cluster_name, namespace"
 
 - name: Display header
   ansible.builtin.debug:
     msg:
-      - "=== HA Steward / Galera ({{ mode }}) ==="
-      - "MariaDB: {{ mariadb_name }}"
+      - "=== HASteward / Galera ({{ mode }}) ==="
+      - "MariaDB: {{ cluster_name }}"
       - "Namespace: {{ namespace }}"
       - "Timestamp: {{ ansible_date_time.iso8601 }}"
 
@@ -23,7 +23,7 @@
   kubernetes.core.k8s_info:
     api_version: k8s.mariadb.com/v1alpha1
     kind: MariaDB
-    name: "{{ mariadb_name }}"
+    name: "{{ cluster_name }}"
     namespace: "{{ namespace }}"
   register: mariadb_info
   failed_when: mariadb_info.resources | length == 0

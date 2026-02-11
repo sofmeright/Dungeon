@@ -1,0 +1,115 @@
+---
+# restore-dump.yml - Restore a gzipped SQL dump to a Galera node via mysql
+#
+# Requires: cluster_name, namespace, mariadb_root_password (from validate.yml)
+#           _restore_target_pod - healthy pod to restore into (set by caller)
+# Optional: backup_file - specific file to restore (defaults to latest)
+
+- name: Set backup directory
+  ansible.builtin.set_fact:
+    _restore_dir: "{{ backups_path }}/{{ namespace }}/{{ cluster_name }}"
+
+- name: Find backup file to restore
+  when: backup_file is not defined
+  block:
+    - name: List available backups
+      ansible.builtin.find:
+        paths: "{{ _restore_dir }}"
+        patterns:
+          - "*-backup.sql.gz"
+          - "*-escrow.sql.gz"
+        file_type: file
+      register: _restore_available_files
+
+    - name: Fail if no backups found
+      ansible.builtin.fail:
+        msg: >-
+          No backup files found in {{ _restore_dir }}.
+          Expected files matching *-backup.sql.gz or *-escrow.sql.gz.
+      when: _restore_available_files.files | length == 0
+
+    - name: Select latest backup
+      ansible.builtin.set_fact:
+        _restore_file: "{{ (_restore_available_files.files | sort(attribute='mtime') | last).path }}"
+
+- name: Use specified backup file
+  ansible.builtin.set_fact:
+    _restore_file: "{{ backup_file }}"
+  when: backup_file is defined
+
+- name: Verify restore file exists
+  ansible.builtin.stat:
+    path: "{{ _restore_file }}"
+  register: _restore_file_stat
+  failed_when: not _restore_file_stat.stat.exists or _restore_file_stat.stat.size == 0
+
+- name: Display restore plan
+  ansible.builtin.debug:
+    msg:
+      - "--- Dump Restore ---"
+      - "File: {{ _restore_file }}"
+      - "Size: {{ '%.1f MB' | format(_restore_file_stat.stat.size / 1048576) }}"
+      - "Target: {{ _restore_target_pod }}"
+
+- name: Stream restore from gzipped file to mysql
+  ansible.builtin.shell:
+    cmd: |
+      python3 -u << 'PYEOF'
+      from kubernetes import client, config
+      from kubernetes.stream import stream
+      import gzip, sys, time
+
+      pod = "{{ _restore_target_pod }}"
+      ns = "{{ namespace }}"
+      backup_path = "{{ _restore_file }}"
+      root_pw = """{{ mariadb_root_password }}"""
+
+      try:
+          config.load_incluster_config()
+      except config.ConfigException:
+          config.load_kube_config()
+      v1 = client.CoreV1Api()
+      resp = stream(v1.connect_get_namespaced_pod_exec,
+          name=pod, namespace=ns,
+          command=['mysql', '-u', 'root', '-p' + root_pw],
+          container='mariadb',
+          stdout=True, stderr=True, stdin=True, tty=False,
+          _preload_content=False)
+      bytes_read = 0
+      last_progress = time.time()
+      with gzip.open(backup_path, 'rt', encoding='utf-8') as f:
+          while True:
+              chunk = f.read(65536)
+              if not chunk:
+                  break
+              resp.write_stdin(chunk)
+              bytes_read += len(chunk)
+              if time.time() - last_progress >= 30:
+                  mb = bytes_read / (1024 * 1024)
+                  print("PROGRESS restored=%.1f MB" % mb, file=sys.stderr)
+                  last_progress = time.time()
+      resp.write_stdin('\nquit\n')
+      # drain remaining output
+      while resp.is_open():
+          resp.update(timeout=5)
+          if resp.peek_stdout():
+              print(resp.read_stdout(), end='')
+          if resp.peek_stderr():
+              err = resp.read_stderr()
+              if 'Using a password on the command line' not in err:
+                  print(err, file=sys.stderr, end='')
+      resp.close()
+      mb = bytes_read / (1024 * 1024)
+      print("RESTORE_OK bytes=%d (%.1f MB)" % (bytes_read, mb))
+      PYEOF
+  no_log: true
+  register: _restore_dump_result
+  changed_when: "'RESTORE_OK' in _restore_dump_result.stdout"
+  failed_when: "'RESTORE_OK' not in _restore_dump_result.stdout"
+
+- name: Display restore result
+  ansible.builtin.debug:
+    msg:
+      - "--- Restore Complete ---"
+      - "{{ _restore_dump_result.stdout }}"
+      - "Galera replication will propagate the restored data to other nodes."

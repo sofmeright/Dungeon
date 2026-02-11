@@ -1,0 +1,168 @@
+---
+# hasteward-job.yaml - Run HASteward as a Kubernetes Job
+#
+# Downloads playbook files from Flux source-controller, runs hasteward
+# with the specified parameters, writes backups to a mounted PVC.
+#
+# Prerequisites (one-time):
+#   kubectl apply -f hasteward-job.yaml -l app.kubernetes.io/component=rbac
+#
+# Run (edit the Job args, then):
+#   kubectl apply -f hasteward-job.yaml -l app.kubernetes.io/component=job
+#
+# Parameters (set in Job args):
+#   -e engine=<cnpg|galera>         (required)
+#   -e cluster_name=<name>          (required)
+#   -e namespace=<ns>               (required)
+#   -e mode=<triage|repair|backup|restore>
+#   -e backups_path=/backups        (required for repair/backup/restore)
+#   -e instance_number=<N>          (optional, repair only)
+#   -e force=true                   (optional, targeted repair only)
+#   -e no_escrow=true               (optional, skip escrow)
+#   -e retain_escrow=true           (optional, keep escrow after repair)
+#   -e backup_method=<dump|native>  (optional, default: dump)
+#   -e backup_file=<path>           (optional, restore only)
+#
+# Flux source-controller artifact URL pattern (standard on any Flux cluster):
+#   http://source-controller.flux-system.svc.cluster.local/gitrepository/<git-ns>/<git-name>/latest.tar.gz
+
+# --- RBAC (apply once) ---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: hasteward
+  namespace: fairy-bottle
+  labels:
+    app.kubernetes.io/name: hasteward
+    app.kubernetes.io/component: rbac
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: hasteward
+  labels:
+    app.kubernetes.io/name: hasteward
+    app.kubernetes.io/component: rbac
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cluster-admin
+subjects:
+  - kind: ServiceAccount
+    name: hasteward
+    namespace: fairy-bottle
+---
+# --- Backups PV (apply once) ---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: fairy-bottle-hasteward-backups-pv
+  labels:
+    app.kubernetes.io/name: hasteward
+    app.kubernetes.io/component: storage
+spec:
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  claimRef:
+    apiVersion: v1
+    kind: PersistentVolumeClaim
+    name: hasteward-backups
+    namespace: fairy-bottle
+  csi:
+    driver: gorons-bracelet.cephfs.csi.ceph.com
+    nodeStageSecretRef:
+      name: csi-cephfs-node
+      namespace: gorons-bracelet
+    volumeAttributes:
+      clusterID: 0985467c-d8f3-4483-b27f-f0a512397ec2
+      fsName: Seed_Bank
+      staticVolume: "true"
+      rootPath: /dungeon/hdd/hasteward/backups
+    volumeHandle: fairy-bottle-hasteward-backups
+---
+# --- Backups PVC (apply once) ---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: hasteward-backups
+  namespace: fairy-bottle
+  labels:
+    app.kubernetes.io/name: hasteward
+    app.kubernetes.io/component: storage
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 1Gi
+  volumeName: fairy-bottle-hasteward-backups-pv
+  storageClassName: ""
+---
+# --- Job (edit args, apply per-run) ---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: hasteward-run
+  namespace: fairy-bottle
+  labels:
+    app.kubernetes.io/name: hasteward
+    app.kubernetes.io/component: job
+spec:
+  ttlSecondsAfterFinished: 3600
+  backoffLimit: 0
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: hasteward
+    spec:
+      serviceAccountName: hasteward
+      restartPolicy: Never
+      initContainers:
+        - name: fetch-playbooks
+          image: docker.io/alpine/k8s:1.34.0
+          command:
+            - sh
+            - -c
+            - |
+              wget -qO /tmp/repo.tar.gz \
+                http://source-controller.flux-system.svc.cluster.local/gitrepository/flux-system/flux-system/latest.tar.gz
+              tar xzf /tmp/repo.tar.gz -C /workspace
+              echo "Playbooks fetched:"
+              ls /workspace/ansible/k8s/recovery/hasteward*
+          volumeMounts:
+            - name: workspace
+              mountPath: /workspace
+      containers:
+        - name: hasteward
+          image: docker.io/prplanit/ansible-oci:2.20.1-v2
+          workingDir: /workspace/ansible
+          command:
+            - ansible-playbook
+            - k8s/recovery/hasteward.yml
+          # --- EDIT THESE ARGS PER RUN ---
+          args:
+            - -e
+            - engine=galera
+            - -e
+            - cluster_name=kimai-mariadb
+            - -e
+            - namespace=temple-of-time
+            - -e
+            - mode=repair
+            - -e
+            - backups_path=/backups
+          volumeMounts:
+            - name: workspace
+              mountPath: /workspace
+              readOnly: true
+            - name: backups
+              mountPath: /backups
+      volumes:
+        - name: workspace
+          emptyDir: {}
+        - name: backups
+          persistentVolumeClaim:
+            claimName: hasteward-backups
