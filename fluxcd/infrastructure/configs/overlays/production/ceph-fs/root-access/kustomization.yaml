@@ -16,3 +16,4 @@ resources:
   - cephfs-init-penpot.yaml
   - cephfs-init-shlink.yaml
   - cephfs-init-tacticalrmm.yaml
+  - cephfs-init-hasteward.yaml
