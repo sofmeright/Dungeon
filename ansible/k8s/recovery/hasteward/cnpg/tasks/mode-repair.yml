@@ -279,7 +279,32 @@
       loop_control:
         label: "{{ item.pod }}"
 
-    # Post-repair: re-run triage to show final state
+    # Post-repair: wait for cluster to stabilize before re-triage
+    - name: "Post-repair: waiting for cluster to stabilize"
+      ansible.builtin.debug:
+        msg: "Waiting 30s for CNPG operator to reconcile and pods to stabilize..."
+
+    - name: "Post-repair: stabilization wait"
+      ansible.builtin.pause:
+        seconds: 30
+
+    - name: "Post-repair: wait for all pods to be Running and Ready"
+      kubernetes.core.k8s_info:
+        api_version: v1
+        kind: Pod
+        namespace: "{{ namespace }}"
+        label_selectors:
+          - "cnpg.io/cluster={{ cluster_name }}"
+      register: _post_repair_pods
+      until: >-
+        _post_repair_pods.resources | length == (cluster_spec.instances | int) and
+        (_post_repair_pods.resources | selectattr('status.phase', 'eq', 'Running') | list | length) == (cluster_spec.instances | int) and
+        (_post_repair_pods.resources | selectattr('status.containerStatuses', 'defined')
+          | selectattr('status.containerStatuses.0.ready', 'eq', true) | list | length) == (cluster_spec.instances | int)
+      retries: 30
+      delay: 10
+      failed_when: false
+
     - name: "Post-repair: re-collecting cluster data"
       ansible.builtin.include_tasks: triage-collect.yml
 

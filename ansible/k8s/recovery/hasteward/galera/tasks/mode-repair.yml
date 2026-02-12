@@ -41,19 +41,34 @@
 # =========================================================================
 - name: "Select donor for escrow backup"
   ansible.builtin.set_fact:
-    _backup_donor_pod: "{{ healthy_running_pods[0].metadata.name }}"
-  when: not (no_escrow | bool)
+    _backup_donor_pod: "{{ data_comparison.primary_members[0] }}"
+  when:
+    - not (no_escrow | bool)
+    - data_comparison.primary_members | length > 0
+
+- name: "Escrow donor fallback warning"
+  ansible.builtin.debug:
+    msg: >-
+      WARNING: No nodes in Primary component for escrow. Skipping escrow backup.
+      All nodes may be down or wsrep not responding. Proceeding without escrow.
+  when:
+    - not (no_escrow | bool)
+    - data_comparison.primary_members | length == 0
 
 - name: "Escrow backup from donor"
   ansible.builtin.include_tasks: backup-dump.yml
   vars:
     _backup_type: "{{ 'backup' if (retain_escrow | bool) else 'escrow' }}"
-  when: not (no_escrow | bool)
+  when:
+    - not (no_escrow | bool)
+    - _backup_donor_pod is defined
 
 - name: Set escrow path fact
   ansible.builtin.set_fact:
     _escrow_path: "{{ _backup_path | default('') }}"
-  when: not (no_escrow | bool)
+  when:
+    - not (no_escrow | bool)
+    - _backup_donor_pod is defined
 
 - name: "WARNING - Proceeding without escrow"
   ansible.builtin.debug:
@@ -248,7 +263,32 @@
       loop_control:
         label: "{{ item.pod }}"
 
-    # Post-repair: re-run triage to show final state
+    # Post-repair: wait for cluster to stabilize before re-triage
+    - name: "Post-repair: waiting for cluster to stabilize"
+      ansible.builtin.debug:
+        msg: "Waiting 30s for MariaDB operator to reconcile and pods to stabilize..."
+
+    - name: "Post-repair: stabilization wait"
+      ansible.builtin.pause:
+        seconds: 30
+
+    - name: "Post-repair: wait for all pods to be Running and Ready"
+      kubernetes.core.k8s_info:
+        api_version: v1
+        kind: Pod
+        namespace: "{{ namespace }}"
+        label_selectors:
+          - "app.kubernetes.io/instance={{ cluster_name }}"
+      register: _post_repair_pods
+      until: >-
+        _post_repair_pods.resources | length == (replicas | int) and
+        (_post_repair_pods.resources | selectattr('status.phase', 'eq', 'Running') | list | length) == (replicas | int) and
+        (_post_repair_pods.resources | selectattr('status.containerStatuses', 'defined')
+          | selectattr('status.containerStatuses.0.ready', 'eq', true) | list | length) == (replicas | int)
+      retries: 30
+      delay: 10
+      failed_when: false
+
     - name: "Post-repair: re-collecting cluster data"
       ansible.builtin.include_tasks: triage-collect.yml
 

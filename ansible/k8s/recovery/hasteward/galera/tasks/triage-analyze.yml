@@ -66,13 +66,18 @@
         {%- endif -%}
       {%- endfor -%}
       {#-Check if any non-primary-component node has higher seqno -#}
-      {%- for pod_name, seqno_info in eff.items() -%}
-        {%- if pod_name not in primary_members and seqno_info.effective_seqno | int > best_primary.seqno and seqno_info.effective_seqno | int > 0 -%}
-          {%- set _ = split_brain.append(pod_name + ' has seqno '
-            + seqno_info.effective_seqno | string + ' > primary best '
-            + best_primary.seqno | string + ' (' + best_primary.pod + ')') -%}
-        {%- endif -%}
-      {%- endfor -%}
+      {#-Only compare when we actually have primary members with wsrep data. -#}
+      {#-If no primary members exist (wsrep unavailable), skip seqno comparison -#}
+      {#-to avoid false split-brain during cluster reformation. -#}
+      {%- if primary_members | length > 0 -%}
+        {%- for pod_name, seqno_info in eff.items() -%}
+          {%- if pod_name not in primary_members and seqno_info.effective_seqno | int > best_primary.seqno and seqno_info.effective_seqno | int > 0 -%}
+            {%- set _ = split_brain.append(pod_name + ' has seqno '
+              + seqno_info.effective_seqno | string + ' > primary best '
+              + best_primary.seqno | string + ' (' + best_primary.pod + ')') -%}
+          {%- endif -%}
+        {%- endfor -%}
+      {%- endif -%}
       {#- --- Build result --- -#}
       {%- set safe = split_brain | length == 0 -%}
       {%- set ma = most_advanced_node if most_advanced_node is mapping else {'pod': 'unknown', 'seqno': -1} -%}
