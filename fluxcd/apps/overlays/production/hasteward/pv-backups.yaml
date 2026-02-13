@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: fairy-bottle-hasteward-backups-pv
+spec:
+  capacity:
+    storage: 1Gi
+  accessModes:
+    - ReadWriteMany
+  persistentVolumeReclaimPolicy: Retain
+  claimRef:
+    apiVersion: v1
+    kind: PersistentVolumeClaim
+    name: hasteward-backups
+    namespace: fairy-bottle
+  csi:
+    driver: gorons-bracelet.cephfs.csi.ceph.com
+    nodeStageSecretRef:
+      name: csi-cephfs-node
+      namespace: gorons-bracelet
+    volumeAttributes:
+      clusterID: 0985467c-d8f3-4483-b27f-f0a512397ec2
+      fsName: Seed_Bank
+      staticVolume: "true"
+      rootPath: /dungeon/hdd/hasteward/backups
+    volumeHandle: fairy-bottle-hasteward-backups

@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: hasteward-backups
+spec:
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: PLACEHOLDER_STORAGE
+  volumeName: PLACEHOLDER_PV_NAME
+  storageClassName: ""
