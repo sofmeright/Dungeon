@@ -4,6 +4,7 @@ kind: Kustomization
 resources:
   - weave-gitops-secret.enc.yaml
   - weave-gitops-values.yaml
+  - httproute-xylem.yaml
 
 patches:
   - target:

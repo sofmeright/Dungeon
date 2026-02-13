@@ -3,6 +3,7 @@ kind: Kustomization
 namespace: lens-of-truth
 resources:
   - ../../../../base/wazuh
+  - httproute-xylem.yaml
 patches:
   - path: manager-statefulset-patch.yaml
   - path: indexer-statefulset-patch.yaml
