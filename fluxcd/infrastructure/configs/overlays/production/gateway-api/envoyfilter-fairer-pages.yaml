@@ -41,7 +41,7 @@ spec:
                     return
                   end
 
-                  -- Skip redirect for JSON API responses
+                  -- Skip for JSON API responses
                   local content_type = response_handle:headers():get("content-type") or ""
                   if string.match(content_type, "application/json") then
                     return
@@ -58,9 +58,23 @@ spec:
                   }
 
                   if error_codes[status_num] then
-                    -- Redirect to fairer-pages error page
-                    response_handle:headers():replace(":status", "302")
-                    response_handle:headers():add("location", "/fairer-pages/playlist/random/" .. status .. ".html")
+                    -- Serve error page in-place via iframe — preserves browser URL
+                    local html = '<!DOCTYPE html><html><head><meta charset="UTF-8">'
+                      .. '<title>Error ' .. status .. '</title>'
+                      .. '<style>*{margin:0;padding:0}html,body{height:100%%;overflow:hidden}'
+                      .. 'iframe{width:100%%;height:100%%;border:none}</style></head>'
+                      .. '<body><iframe src="/fairer-pages/playlist/random/'
+                      .. status .. '.html"></iframe></body></html>'
+
+                    response_handle:headers():replace("content-type", "text/html; charset=utf-8")
+                    response_handle:headers():remove("content-encoding")
+                    response_handle:headers():replace("content-length", tostring(#html))
+                    response_handle:headers():add("cache-control", "no-cache, no-store, must-revalidate")
                     response_handle:headers():add("x-original-status", status)
+
+                    local body = response_handle:body()
+                    if body then
+                      body:setBytes(html)
+                    end
                   end
                 end

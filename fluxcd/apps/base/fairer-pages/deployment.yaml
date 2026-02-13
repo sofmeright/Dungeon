@@ -16,10 +16,22 @@ spec:
     spec:
       containers:
         - name: fairer-pages
-          image: docker.io/prplanit/fairer-pages:v0.0.11
+          image: docker.io/prplanit/fairer-pages:v0.0.12
           ports:
-            - containerPort: 80
+            - containerPort: 8080
               name: http
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 10000
+            runAsGroup: 10000
+            readOnlyRootFilesystem: true
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+          volumeMounts:
+            - name: tmp
+              mountPath: /tmp
           resources:
             requests:
               memory: "64Mi"
@@ -27,3 +39,7 @@ spec:
             limits:
               memory: "128Mi"
               cpu: "100m"
+      volumes:
+        - name: tmp
+          emptyDir:
+            sizeLimit: 16Mi
