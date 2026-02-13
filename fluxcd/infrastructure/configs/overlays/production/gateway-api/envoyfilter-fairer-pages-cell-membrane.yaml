@@ -58,7 +58,7 @@ spec:
                     local html = '<!DOCTYPE html><html><head><meta charset="UTF-8">'
                       .. '<title>Error ' .. status .. '</title>'
                       .. '<style>*{margin:0;padding:0}html,body{height:100%;overflow:hidden}'
-                      .. 'iframe{width:100%;height:100%;border:none}</style></head>'
+                      .. 'iframe{width:100%;height:100%;border:none;overflow:hidden}</style></head>'
                       .. '<body><iframe src="/fairer-pages/playlist/random/'
                       .. status .. '.html"></iframe></body></html>'
 
