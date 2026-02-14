@@ -13,51 +13,81 @@ spec:
       labels:
         app: monica
     spec:
+      initContainers:
+        - name: copy-app
+          image: PLACEHOLDER_IMAGE
+          command: ['sh', '-c', 'cp -a /var/www/html/. /app-files/']
+          volumeMounts:
+            - name: app-files
+              mountPath: /app-files
       containers:
-      - name: monica
-        image: PLACEHOLDER_IMAGE
-        ports:
-        - containerPort: 80
-          name: http
-          protocol: TCP
-        env:
-        - name: APP_URL
-          value: "PLACEHOLDER_APP_URL"
-        - name: APP_TRUSTED_PROXIES
-          value: "*"
-        - name: APP_KEY
-          valueFrom:
-            secretKeyRef:
-              name: monica-secrets
-              key: app_key
-        - name: DB_HOST
-          value: "monica-db"
-        - name: DB_USERNAME
-          valueFrom:
-            secretKeyRef:
-              name: monica-secrets
-              key: db_username
-        - name: DB_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: monica-secrets
-              key: db_password
-        volumeMounts:
-        - name: data
-          mountPath: /var/www/html/storage
+        - name: nginx
+          image: PLACEHOLDER_NGINX_IMAGE
+          ports:
+            - containerPort: 80
+              name: http
+              protocol: TCP
+          volumeMounts:
+            - name: nginx-config
+              mountPath: /etc/nginx/conf.d
+            - name: app-files
+              mountPath: /var/www/html
+              readOnly: true
+          resources:
+            requests:
+              memory: 32Mi
+              cpu: 10m
+            limits:
+              memory: 64Mi
+              cpu: 100m
+        - name: monica
+          image: PLACEHOLDER_IMAGE
+          env:
+            - name: APP_URL
+              value: "PLACEHOLDER_APP_URL"
+            - name: APP_TRUSTED_PROXIES
+              value: "*"
+            - name: APP_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: monica-secrets
+                  key: app_key
+            - name: DB_HOST
+              value: "monica-db"
+            - name: DB_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: monica-secrets
+                  key: db_username
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: monica-secrets
+                  key: db_password
+          volumeMounts:
+            - name: data
+              mountPath: /var/www/html/storage
+            - name: app-files
+              mountPath: /var/www/html
+          resources:
+            requests:
+              memory: 512Mi
+              cpu: 200m
+            limits:
+              memory: 1Gi
+              cpu: 1000m
+      volumes:
+        - name: nginx-config
+          configMap:
+            name: monica-nginx
+        - name: app-files
+          emptyDir: {}
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        storageClassName: PLACEHOLDER_STORAGE_CLASS
         resources:
           requests:
-            memory: 512Mi
-            cpu: 200m
-          limits:
-            memory: 1Gi
-            cpu: 1000m
-  volumeClaimTemplates:
-  - metadata:
-      name: data
-    spec:
-      accessModes: [ "ReadWriteOnce" ]
-      storageClassName: PLACEHOLDER_STORAGE_CLASS
-      resources:
-        requests:
-          storage: 10Gi
+            storage: 10Gi

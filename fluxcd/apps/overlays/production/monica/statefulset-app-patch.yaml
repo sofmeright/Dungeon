@@ -6,21 +6,28 @@ spec:
   replicas: 1
   template:
     spec:
+      initContainers:
+        - name: copy-app
+          image: docker.io/monica:4.1.2-fpm-alpine
       containers:
-      - name: monica
-        image: docker.io/monica:4.1.2-fpm-alpine
-        env:
-        - name: APP_URL
-          value: "https://monica.pcfae.com"
-        volumeMounts:
-        - name: pedestal-of-time-monica-data
-          mountPath: /var/www/html/storage
+        - name: nginx
+          image: docker.io/nginx:1.28.2-alpine
+        - name: monica
+          image: docker.io/monica:4.1.2-fpm-alpine
+          env:
+            - name: APP_URL
+              value: "https://monica.pcfae.com"
+          volumeMounts:
+            - name: pedestal-of-time-monica-data
+              mountPath: /var/www/html/storage
+            - name: app-files
+              mountPath: /var/www/html
   volumeClaimTemplates:
-  - metadata:
-      name: pedestal-of-time-monica-data
-    spec:
-      accessModes: ["ReadWriteOnce"]
-      storageClassName: ceph-rbd-retain
-      resources:
-        requests:
-          storage: 10Gi
+    - metadata:
+        name: pedestal-of-time-monica-data
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        storageClassName: ceph-rbd-retain
+        resources:
+          requests:
+            storage: 10Gi
