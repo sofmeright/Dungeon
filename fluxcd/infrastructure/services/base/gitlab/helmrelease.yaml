@@ -12,7 +12,7 @@ spec:
   chart:
     spec:
       chart: gitlab
-      version: "9.8.3"  # GitLab v18.8.3
+      version: "9.8.4"  # GitLab v18.8.3
       sourceRef:
         kind: HelmRepository
         name: gitlab
