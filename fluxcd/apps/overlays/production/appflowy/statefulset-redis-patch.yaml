@@ -12,7 +12,7 @@ spec:
         fsGroup: 1000
       containers:
         - name: redis
-          image: docker.io/redis:8.4.0-alpine
+          image: docker.io/redis:8.6.0-alpine
           resources:
             requests:
               memory: "512Mi"
