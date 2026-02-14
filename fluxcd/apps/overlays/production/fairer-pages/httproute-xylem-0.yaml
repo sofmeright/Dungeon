@@ -4,10 +4,7 @@ metadata:
   name: fairer-pages-xylem-0
   namespace: tingle-tuner
   annotations:
-    gatus.home-operations.com/endpoint: |
-      conditions:
-        - "[STATUS] == 200"
-        - "[RESPONSE_TIME] < 5000"
+    gatus.home-operations.com/enabled: "false"
 spec:
   parentRefs:
     - name: xylem-gateway
