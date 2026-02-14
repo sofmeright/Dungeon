@@ -3,6 +3,8 @@ kind: HTTPRoute
 metadata:
   name: fairer-pages-xylem-2
   namespace: tingle-tuner
+  annotations:
+    gatus.home-operations.com/enabled: "false"
 spec:
   parentRefs:
     - name: xylem-gateway
@@ -10,8 +12,10 @@ spec:
   hostnames:
     # Note: 16 hostnames max should be assigned to each "httproute-<name>-<#>.yaml"
 
+    - "hass.pcfae.com"
     - "hosts.pcfae.com"
     - "hrconvert2.pcfae.com"
+    - "hubble.pcfae.com"
     - "images.pcfae.com"
     - "inventory.pcfae.com"
     - "invoice.pcfae.com"
@@ -24,8 +28,6 @@ spec:
     - "lidarr.pcfae.com"
     - "links.pcfae.com"
     - "loki.pcfae.com"
-    - "lubelogger.pcfae.com"
-    - "mail.pcfae.com"
   rules:
     - matches:
         - path:
