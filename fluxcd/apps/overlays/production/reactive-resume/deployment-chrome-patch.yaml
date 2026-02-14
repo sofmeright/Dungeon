@@ -11,4 +11,4 @@ spec:
         runAsGroup: 999
       containers:
         - name: chrome
-          image: ghcr.io/browserless/chromium@sha256:75928b6ce72502be734f4dd9573917b06d28c30117e0eb260c52a53b47dc5e07
+          image: ghcr.io/browserless/chromium@sha256:ca3fca1093897b11dd1319d6b28d42d86ba5e2cff0fdfbdd4dcf448a0b76c795
