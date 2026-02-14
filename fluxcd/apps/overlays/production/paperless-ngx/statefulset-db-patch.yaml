@@ -12,7 +12,7 @@ spec:
         fsGroup: 70
       containers:
         - name: postgres
-          image: docker.io/postgres:18.1-alpine3.23
+          image: docker.io/postgres:18.2-alpine3.23
           volumeMounts:
             - name: pedestal-of-time-paperless-postgres
               mountPath: /var/lib/postgresql/data
