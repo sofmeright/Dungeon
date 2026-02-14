@@ -15,7 +15,7 @@ spec:
           securityContext:
             runAsUser: 1000
             runAsGroup: 1000
-          image: ghcr.io/thephaseless/byparr:2.0.1
+          image: ghcr.io/thephaseless/byparr:2.1.0
           env:
             - name: TZ
               value: "America/Los_Angeles"
