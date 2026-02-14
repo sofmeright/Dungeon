@@ -11,10 +11,3 @@ data:
       title: PrecisionPlanIT Status
       header: Service Status
       logo: https://precisionplanit.com/img/favicon.png
-    endpoints:
-      - name: gatus
-        group: core
-        url: "http://localhost:8080/health"
-        interval: 60s
-        conditions:
-          - "[STATUS] == 200"
