@@ -14,7 +14,7 @@ spec:
         - name: jcr-pcfae-dungeon-pull-secret
       containers:
         - name: postgres
-          image: docker.io/library/postgres:18.1-alpine3.23
+          image: docker.io/library/postgres:18.2-alpine3.23
   volumeClaimTemplates:
     - metadata:
         name: tingle-tuner-lenpaste-postgres
