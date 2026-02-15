@@ -24,7 +24,6 @@ resources:
   # Remote Access & Dashboards
   - guacamole
   - homarr
-  - kasm
   - organizr
   - rustdesk-server
   - tacticalrmm
