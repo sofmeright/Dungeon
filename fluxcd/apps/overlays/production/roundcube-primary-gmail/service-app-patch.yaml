@@ -3,6 +3,7 @@ kind: Service
 metadata:
   name: roundcube-primary-gmail
 spec:
+  type: ClusterIP
   ports:
     - $patch: replace
     - name: http

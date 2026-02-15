@@ -18,6 +18,9 @@ patches:
       name: romm
     patch: |-
       - op: replace
+        path: /spec/type
+        value: ClusterIP
+      - op: replace
         path: /spec/ports/0/port
         value: 7007
       - op: replace

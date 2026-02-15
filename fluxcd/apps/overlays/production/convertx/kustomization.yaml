@@ -10,3 +10,10 @@ resources:
 
 patches:
   - path: statefulset-patch.yaml
+  - target:
+      kind: Service
+      name: convertx
+    patch: |-
+      - op: replace
+        path: /spec/type
+        value: ClusterIP

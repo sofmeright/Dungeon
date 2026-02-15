@@ -3,6 +3,7 @@ kind: Service
 metadata:
   name: wikijs-vegan
 spec:
+  type: ClusterIP
   ports:
     - $patch: replace
     - name: http
