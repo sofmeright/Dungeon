@@ -1,9 +1,6 @@
-apiVersion: v1
-kind: Service
-metadata:
-  name: uptime-kuma
-spec:
-  ports:
+- op: replace
+  path: /spec/ports
+  value:
     - port: 3001
       targetPort: 3001
       protocol: TCP
