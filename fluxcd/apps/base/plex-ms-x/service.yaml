@@ -4,7 +4,6 @@ metadata:
   name: plex-ms-x
 spec:
   type: ClusterIP
-  externalTrafficPolicy: Cluster
   selector:
     app: plex-ms-x
   ports:

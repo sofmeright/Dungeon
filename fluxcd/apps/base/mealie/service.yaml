@@ -9,4 +9,3 @@ spec:
     - port: 9000
       targetPort: 9000
   type: ClusterIP
-  externalTrafficPolicy: Cluster

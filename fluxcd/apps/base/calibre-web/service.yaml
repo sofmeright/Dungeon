@@ -6,7 +6,6 @@ metadata:
     app: calibre-web
 spec:
   type: ClusterIP
-  externalTrafficPolicy: Cluster
   selector:
     app: calibre-web
   ports:
