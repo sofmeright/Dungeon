@@ -16,3 +16,9 @@ spec:
               value: "https://joplin.optcp.com"
             - name: PM2_HOME
               value: /tmp/pm2
+          volumeMounts:
+            - name: logs
+              mountPath: /home/joplin/packages/server/logs
+      volumes:
+        - name: logs
+          emptyDir: {}
