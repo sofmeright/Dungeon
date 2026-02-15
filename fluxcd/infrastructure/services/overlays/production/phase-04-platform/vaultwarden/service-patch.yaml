@@ -1,4 +1,7 @@
 - op: replace
+  path: /spec/type
+  value: ClusterIP
+- op: replace
   path: /spec/ports/0/port
   value: 80
 - op: replace

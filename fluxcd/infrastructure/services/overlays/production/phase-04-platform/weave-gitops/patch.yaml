@@ -9,6 +9,8 @@ spec:
       name: weave-gitops-values
       valuesKey: values.yaml
   values:
+    service:
+      type: ClusterIP
     resources:
       requests:
         cpu: 100m
