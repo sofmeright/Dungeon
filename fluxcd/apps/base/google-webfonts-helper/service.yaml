@@ -3,11 +3,11 @@ kind: Service
 metadata:
   name: google-webfonts-helper
 spec:
-  type: LoadBalancer
+  type: ClusterIP
   selector:
     app: google-webfonts-helper
   ports:
-  - name: http
-    port: PLACEHOLDER_HTTP_PORT
-    targetPort: http
-    protocol: TCP
+    - name: http
+      port: PLACEHOLDER_HTTP_PORT
+      targetPort: http
+      protocol: TCP

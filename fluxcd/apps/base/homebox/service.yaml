@@ -3,11 +3,11 @@ kind: Service
 metadata:
   name: homebox
 spec:
-  type: LoadBalancer
+  type: ClusterIP
   selector:
     app: homebox
   ports:
-  - port: 7745
-    targetPort: 7745
-    protocol: TCP
-    name: http
+    - port: 7745
+      targetPort: 7745
+      protocol: TCP
+      name: http

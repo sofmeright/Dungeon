@@ -5,9 +5,9 @@ metadata:
 spec:
   type: ClusterIP
   ports:
-  - port: 3306
-    targetPort: 3306
-    name: mysql
+    - port: 3306
+      targetPort: 3306
+      name: mysql
   selector:
     app: erpnext-mariadb
 ---
@@ -18,9 +18,9 @@ metadata:
 spec:
   type: ClusterIP
   ports:
-  - port: 6379
-    targetPort: 6379
-    name: redis
+    - port: 6379
+      targetPort: 6379
+      name: redis
   selector:
     app: erpnext-redis-cache
 ---
@@ -31,9 +31,9 @@ metadata:
 spec:
   type: ClusterIP
   ports:
-  - port: 6379
-    targetPort: 6379
-    name: redis
+    - port: 6379
+      targetPort: 6379
+      name: redis
   selector:
     app: erpnext-redis-queue
 ---
@@ -44,9 +44,9 @@ metadata:
 spec:
   type: ClusterIP
   ports:
-  - port: 8000
-    targetPort: 8000
-    name: backend
+    - port: 8000
+      targetPort: 8000
+      name: backend
   selector:
     app: erpnext-sites
 ---
@@ -57,9 +57,9 @@ metadata:
 spec:
   type: ClusterIP
   ports:
-  - port: 9000
-    targetPort: 9000
-    name: websocket
+    - port: 9000
+      targetPort: 9000
+      name: websocket
   selector:
     app: erpnext-websocket
 ---
@@ -68,10 +68,10 @@ kind: Service
 metadata:
   name: erpnext-frontend
 spec:
-  type: LoadBalancer
+  type: ClusterIP
   ports:
-  - port: 8080
-    targetPort: 8080
-    name: http
+    - port: 8080
+      targetPort: 8080
+      name: http
   selector:
     app: erpnext-frontend

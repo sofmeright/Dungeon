@@ -3,12 +3,12 @@ kind: Service
 metadata:
   name: projectsend
 spec:
-  type: LoadBalancer
+  type: ClusterIP
   ports:
-  - port: 80
-    targetPort: http
-    protocol: TCP
-    name: http
+    - port: 80
+      targetPort: http
+      protocol: TCP
+      name: http
   selector:
     app: projectsend
 ---
@@ -19,9 +19,9 @@ metadata:
 spec:
   type: ClusterIP
   ports:
-  - port: 3306
-    targetPort: mysql
-    protocol: TCP
-    name: mysql
+    - port: 3306
+      targetPort: mysql
+      protocol: TCP
+      name: mysql
   selector:
     app: projectsend-db

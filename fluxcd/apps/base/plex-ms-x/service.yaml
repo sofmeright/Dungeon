@@ -3,40 +3,40 @@ kind: Service
 metadata:
   name: plex-ms-x
 spec:
-  type: LoadBalancer
+  type: ClusterIP
   externalTrafficPolicy: Cluster
   selector:
     app: plex-ms-x
   ports:
-  - port: 32419
-    targetPort: 32400
-    protocol: TCP
-    name: plex
-  - port: 8325
-    targetPort: 8324
-    protocol: TCP
-    name: roku-companion
-  - port: 32470
-    targetPort: 32469
-    protocol: TCP
-    name: dlna-tcp
-  - port: 1902
-    targetPort: 1900
-    protocol: UDP
-    name: dlna-udp
-  - port: 32415
-    targetPort: 32410
-    protocol: UDP
-    name: gdm-1
-  - port: 32416
-    targetPort: 32412
-    protocol: UDP
-    name: gdm-2
-  - port: 32417
-    targetPort: 32413
-    protocol: UDP
-    name: gdm-3
-  - port: 32418
-    targetPort: 32414
-    protocol: UDP
-    name: gdm-4
+    - port: 32419
+      targetPort: 32400
+      protocol: TCP
+      name: plex
+    - port: 8325
+      targetPort: 8324
+      protocol: TCP
+      name: roku-companion
+    - port: 32470
+      targetPort: 32469
+      protocol: TCP
+      name: dlna-tcp
+    - port: 1902
+      targetPort: 1900
+      protocol: UDP
+      name: dlna-udp
+    - port: 32415
+      targetPort: 32410
+      protocol: UDP
+      name: gdm-1
+    - port: 32416
+      targetPort: 32412
+      protocol: UDP
+      name: gdm-2
+    - port: 32417
+      targetPort: 32413
+      protocol: UDP
+      name: gdm-3
+    - port: 32418
+      targetPort: 32414
+      protocol: UDP
+      name: gdm-4

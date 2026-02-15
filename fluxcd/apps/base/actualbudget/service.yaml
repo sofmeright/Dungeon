@@ -3,11 +3,11 @@ kind: Service
 metadata:
   name: actualbudget
 spec:
-  type: LoadBalancer
+  type: ClusterIP
   selector:
     app: actualbudget
   ports:
-  - port: 5006
-    targetPort: 5006
-    protocol: TCP
-    name: http
+    - port: 5006
+      targetPort: 5006
+      protocol: TCP
+      name: http

@@ -3,14 +3,14 @@ kind: Service
 metadata:
   name: photoprism
 spec:
-  type: LoadBalancer
+  type: ClusterIP
   selector:
     app: photoprism
   ports:
-  - name: http
-    port: 2342
-    targetPort: 2342
-    protocol: TCP
+    - name: http
+      port: 2342
+      targetPort: 2342
+      protocol: TCP
 ---
 apiVersion: v1
 kind: Service
@@ -21,7 +21,7 @@ spec:
   selector:
     app: photoprism-mariadb
   ports:
-  - name: mysql
-    port: 3306
-    targetPort: 3306
-    protocol: TCP
+    - name: mysql
+      port: 3306
+      targetPort: 3306
+      protocol: TCP

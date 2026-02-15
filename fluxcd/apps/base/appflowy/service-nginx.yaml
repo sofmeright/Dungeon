@@ -9,16 +9,16 @@ metadata:
     lbipam.cilium.io/ips: PLACEHOLDER_NGINX_IP
     lbipam.cilium.io/sharing-key: PLACEHOLDER_SHARING_KEY
 spec:
-  type: LoadBalancer
+  type: ClusterIP
   selector:
     app: appflowy
     component: nginx
   ports:
-  - name: http
-    port: 80
-    targetPort: http
-    protocol: TCP
-  - name: https
-    port: 443
-    targetPort: https
-    protocol: TCP
+    - name: http
+      port: 80
+      targetPort: http
+      protocol: TCP
+    - name: https
+      port: 443
+      targetPort: https
+      protocol: TCP

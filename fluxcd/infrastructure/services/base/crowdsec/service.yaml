@@ -8,14 +8,14 @@ metadata:
 spec:
   type: ClusterIP
   ports:
-  - name: api
-    port: 8080
-    targetPort: 8080
-    protocol: TCP
-  - name: prometheus
-    port: 6060
-    targetPort: 6060
-    protocol: TCP
+    - name: api
+      port: 8080
+      targetPort: 8080
+      protocol: TCP
+    - name: prometheus
+      port: 6060
+      targetPort: 6060
+      protocol: TCP
   selector:
     app: crowdsec
     component: engine
@@ -28,12 +28,12 @@ metadata:
     app: crowdsec-dashboard
     component: dashboard
 spec:
-  type: LoadBalancer
+  type: ClusterIP
   ports:
-  - name: http
-    port: 3000
-    targetPort: 3000
-    protocol: TCP
+    - name: http
+      port: 3000
+      targetPort: 3000
+      protocol: TCP
   selector:
     app: crowdsec-dashboard
     component: dashboard
@@ -48,10 +48,10 @@ metadata:
 spec:
   clusterIP: None
   ports:
-  - name: metrics
-    port: 2112
-    targetPort: 2112
-    protocol: TCP
+    - name: metrics
+      port: 2112
+      targetPort: 2112
+      protocol: TCP
   selector:
     app: crowdsec-cloudflare-bouncer
     component: bouncer

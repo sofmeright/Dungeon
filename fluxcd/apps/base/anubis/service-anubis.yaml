@@ -6,15 +6,15 @@ metadata:
     lbipam.cilium.io/ips: PLACEHOLDER_ANUBIS_IP
     lbipam.cilium.io/sharing-key: PLACEHOLDER_SHARING_KEY
 spec:
-  type: LoadBalancer
+  type: ClusterIP
   selector:
     app: anubis
   ports:
-  - port: 8080
-    targetPort: 8080
-    protocol: TCP
-    name: http
-  - port: 9090
-    targetPort: 9090
-    protocol: TCP
-    name: metrics
+    - port: 8080
+      targetPort: 8080
+      protocol: TCP
+      name: http
+    - port: 9090
+      targetPort: 9090
+      protocol: TCP
+      name: metrics

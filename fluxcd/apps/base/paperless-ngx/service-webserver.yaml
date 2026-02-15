@@ -3,11 +3,11 @@ kind: Service
 metadata:
   name: paperless-webserver
 spec:
-  type: LoadBalancer
+  type: ClusterIP
   selector:
     app: paperless-webserver
   ports:
-  - port: 8000
-    targetPort: 8000
-    protocol: TCP
-    name: http
+    - port: 8000
+      targetPort: 8000
+      protocol: TCP
+      name: http

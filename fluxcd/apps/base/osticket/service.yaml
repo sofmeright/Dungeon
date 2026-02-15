@@ -3,10 +3,10 @@ kind: Service
 metadata:
   name: osticket-app
 spec:
-  type: LoadBalancer
+  type: ClusterIP
   ports:
-  - port: 8184
-    targetPort: 80
-    name: http
+    - port: 8184
+      targetPort: 80
+      name: http
   selector:
     app: osticket-app

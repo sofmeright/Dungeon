@@ -3,15 +3,15 @@ kind: Service
 metadata:
   name: draw-io
 spec:
-  type: LoadBalancer
+  type: ClusterIP
   selector:
     app: draw-io
   ports:
-  - name: http
-    port: PLACEHOLDER_HTTP_PORT
-    targetPort: http
-    protocol: TCP
-  - name: https
-    port: PLACEHOLDER_HTTPS_PORT
-    targetPort: https
-    protocol: TCP
+    - name: http
+      port: PLACEHOLDER_HTTP_PORT
+      targetPort: http
+      protocol: TCP
+    - name: https
+      port: PLACEHOLDER_HTTPS_PORT
+      targetPort: https
+      protocol: TCP

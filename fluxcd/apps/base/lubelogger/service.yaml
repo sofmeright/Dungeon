@@ -3,11 +3,11 @@ kind: Service
 metadata:
   name: lubelogger
 spec:
-  type: LoadBalancer
+  type: ClusterIP
   selector:
     app: lubelogger
   ports:
-  - port: 8080
-    targetPort: 8080
-    protocol: TCP
-    name: http
+    - port: 8080
+      targetPort: 8080
+      protocol: TCP
+      name: http

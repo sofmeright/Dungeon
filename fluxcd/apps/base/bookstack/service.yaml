@@ -3,14 +3,14 @@ kind: Service
 metadata:
   name: bookstack
 spec:
-  type: LoadBalancer
+  type: ClusterIP
   selector:
     app: bookstack
   ports:
-  - port: 6875
-    targetPort: 443
-    protocol: TCP
-    name: https
+    - port: 6875
+      targetPort: 443
+      protocol: TCP
+      name: https
 ---
 apiVersion: v1
 kind: Service
@@ -21,7 +21,7 @@ spec:
   selector:
     app: bookstack-db
   ports:
-  - port: 3306
-    targetPort: 3306
-    protocol: TCP
-    name: mysql
+    - port: 3306
+      targetPort: 3306
+      protocol: TCP
+      name: mysql

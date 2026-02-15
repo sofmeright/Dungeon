@@ -3,11 +3,11 @@ kind: Service
 metadata:
   name: dailytxt
 spec:
-  type: LoadBalancer
+  type: ClusterIP
   selector:
     app: dailytxt
   ports:
-  - port: 8765
-    targetPort: 8765
-    protocol: TCP
-    name: http
+    - port: 8765
+      targetPort: 8765
+      protocol: TCP
+      name: http

@@ -5,12 +5,12 @@ metadata:
   labels:
     app: calibre-web
 spec:
-  type: LoadBalancer
+  type: ClusterIP
   externalTrafficPolicy: Cluster
   selector:
     app: calibre-web
   ports:
-  - name: web
-    port: 8083
-    targetPort: 8083
-    protocol: TCP
+    - name: web
+      port: 8083
+      targetPort: 8083
+      protocol: TCP
