@@ -11,7 +11,7 @@ spec:
         fsGroup: 1000
       containers:
         - name: filebrowser
-          image: docker.io/filebrowser/filebrowser:v2.58.0
+          image: docker.io/filebrowser/filebrowser:v2.59.0
   volumeClaimTemplates:
     - metadata:
         name: database
