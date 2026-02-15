@@ -1,0 +1,18 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: enamorafoto-site
+spec:
+  parentRefs:
+    - name: phloem-gateway
+      namespace: kokiri-forest
+  hostnames:
+    - "enamorafoto.com"
+  rules:
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /
+      backendRefs:
+        - name: enamorafoto-site
+          port: 4016

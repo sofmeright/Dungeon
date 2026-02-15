@@ -7,12 +7,9 @@ resources:
   - ../../../base/plex-ms-x
   - persistent-volumes.yaml
   - persistent-volume-claims.yaml
+  - httproute-xylem.yaml
 
 patches:
-  - path: service-patch.yaml
-    target:
-      kind: Service
-      name: plex-ms-x
   - path: statefulset-patch.yaml
     target:
       kind: StatefulSet

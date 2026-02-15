@@ -3,11 +3,11 @@ kind: Service
 metadata:
   name: supermicro-license-generator
 spec:
-  type: LoadBalancer
+  type: ClusterIP
   selector:
     app: supermicro-license-generator
   ports:
-  - name: http
-    port: PLACEHOLDER_HTTP_PORT
-    targetPort: http
-    protocol: TCP
+    - name: http
+      port: PLACEHOLDER_HTTP_PORT
+      targetPort: http
+      protocol: TCP

@@ -23,11 +23,3 @@ patches:
       - op: replace
         path: /spec/ports/0/targetPort
         value: 7007
-      - op: replace
-        path: /spec/type
-        value: LoadBalancer
-      - op: add
-        path: /metadata/annotations
-        value:
-          lbipam.cilium.io/ips: "172.22.30.231"
-          lbipam.cilium.io/sharing-key: "shooting-gallery"

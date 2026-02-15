@@ -11,10 +11,6 @@ resources:
   - httproute-xylem.yaml
 
 patches:
-  - path: service-patch.yaml
-    target:
-      kind: Service
-      name: calibre-web
   - path: deployment-patch.yaml
     target:
       kind: Deployment

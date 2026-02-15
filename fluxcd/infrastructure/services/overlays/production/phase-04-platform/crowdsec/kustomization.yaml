@@ -16,7 +16,6 @@ patches:
   # PVC patches
   - path: pvc-dashboard-patch.yaml
   # Service patches
-  - path: service-patch.yaml
   # ConfigMap patches
   - path: configmap-acquis-nginx-patch.yaml
   - path: configmap-acquis-bitwarden-patch.yaml

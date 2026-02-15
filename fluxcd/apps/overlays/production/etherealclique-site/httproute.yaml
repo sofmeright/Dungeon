@@ -1,0 +1,18 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: etherealclique-site
+spec:
+  parentRefs:
+    - name: phloem-gateway
+      namespace: kokiri-forest
+  hostnames:
+    - "etherealclique.com"
+  rules:
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /
+      backendRefs:
+        - name: etherealclique-site
+          port: 4017

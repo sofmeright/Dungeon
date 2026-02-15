@@ -5,6 +5,7 @@ namespace: lost-woods
 
 resources:
   - ../../../base/enamorafoto-site
+  - httproute.yaml
 
 patches:
   - path: deployment-patch.yaml

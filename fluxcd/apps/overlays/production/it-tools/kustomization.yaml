@@ -12,10 +12,6 @@ patches:
     target:
       kind: Service
       name: it-tools
-  - path: cilium-lb-patch.yaml
-    target:
-      kind: Service
-      name: it-tools
   - path: deployment-patch.yaml
     target:
       kind: Deployment

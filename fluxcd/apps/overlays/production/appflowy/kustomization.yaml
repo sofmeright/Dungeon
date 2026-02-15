@@ -18,7 +18,6 @@ patches:
   - path: deployment-worker-patch.yaml
   - path: deployment-web-patch.yaml
   - path: deployment-nginx-patch.yaml
-  - path: service-nginx-patch.yaml
   - path: externalsecret-postgres-app-patch.yaml
   - path: externalsecret-shared-patch.yaml
   - path: externalsecret-cloud-patch.yaml

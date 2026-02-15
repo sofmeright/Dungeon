@@ -14,15 +14,6 @@ patches:
       name: anirra
     patch: |-
       - op: replace
-        path: /spec/type
-        value: LoadBalancer
-      - op: add
-        path: /metadata/annotations
-        value:
-          lbipam.cilium.io/ips: "172.22.30.33"
-          lbipam.cilium.io/sharing-key: "great-sea"
-          lbipam.cilium.io/sharing-cross-namespace: "*"
-      - op: replace
         path: /spec/ports
         value:
           - name: frontend

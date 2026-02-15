@@ -4,7 +4,6 @@ namespace: temple-of-time
 resources:
   - ../../../base/immich
   - httproute.yaml
-  - service-loadbalancer.yaml
   - persistent-volumes.yaml
   - persistent-volume-claims.yaml
 patches:

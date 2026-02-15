@@ -13,10 +13,6 @@ patches:
     target:
       kind: StatefulSet
       name: echo-ip
-  - path: service-patch.yaml
-    target:
-      kind: Service
-      name: echo-ip
   - path: externalsecret-patch.yaml
     target:
       kind: ExternalSecret

@@ -18,10 +18,6 @@ patches:
     target:
       kind: StatefulSet
       name: bookstack-db
-  - path: service-patch.yaml
-    target:
-      kind: Service
-      name: bookstack
   - path: externalsecret-patch.yaml
     target:
       kind: ExternalSecret

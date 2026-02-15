@@ -16,10 +16,6 @@ patches:
     target:
       kind: StatefulSet
       name: mealie-postgres
-  - path: service-patch.yaml
-    target:
-      kind: Service
-      name: mealie
   - target:
       kind: StatefulSet
       name: mealie

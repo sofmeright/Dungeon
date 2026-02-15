@@ -3,6 +3,7 @@ kind: Kustomization
 namespace: temple-of-time
 resources:
   - ../../../base/projectsend
+  - httproute-xylem.yaml
 patches:
   - path: service-patch.yaml
     target:
