@@ -16,10 +16,10 @@ spec:
               name: PLACEHOLDER_DOLIBARR_DATA
             - $patch: delete
               name: PLACEHOLDER_DOLIBARR_CONFIG
-            - name: hyrule-castle-dolibarr-data
-              mountPath: /var/www/html
-            - name: hyrule-castle-dolibarr-config
+            - name: hyrule-castle-dolibarr-documents
               mountPath: /var/www/documents
+            - name: hyrule-castle-dolibarr-custom
+              mountPath: /var/www/html/custom
           env:
             - name: DOLI_URL_ROOT
               value: "https://dolibarr.prplanit.com"
@@ -34,16 +34,7 @@ spec:
               memory: "2Gi"
   volumeClaimTemplates:
     - metadata:
-        name: hyrule-castle-dolibarr-data
-      spec:
-        accessModes:
-          - ReadWriteOnce
-        storageClassName: ceph-rbd
-        resources:
-          requests:
-            storage: 20Gi
-    - metadata:
-        name: hyrule-castle-dolibarr-config
+        name: hyrule-castle-dolibarr-documents
       spec:
         accessModes:
           - ReadWriteOnce
@@ -51,3 +42,12 @@ spec:
         resources:
           requests:
             storage: 5Gi
+    - metadata:
+        name: hyrule-castle-dolibarr-custom
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        storageClassName: ceph-rbd
+        resources:
+          requests:
+            storage: 1Gi
