@@ -13,7 +13,7 @@ spec:
   parentRefs:
     - name: xylem-gateway
       namespace: arylls-lookout
-      sectionName: https
+      sectionName: https-pcfae
   hostnames:
     - "guacamole.pcfae.com"
   rules:

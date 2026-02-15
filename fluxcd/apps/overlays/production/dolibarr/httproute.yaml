@@ -5,16 +5,16 @@ metadata:
   namespace: hyrule-castle
 spec:
   parentRefs:
-  - name: cell-membrane-gateway
-    namespace: hyrule-castle
-    sectionName: https
+    - name: cell-membrane-gateway
+      namespace: hyrule-castle
+      sectionName: https-prplanit
   hostnames:
-  - "dolibarr.prplanit.com"
+    - "dolibarr.prplanit.com"
   rules:
-  - matches:
-    - path:
-        type: PathPrefix
-        value: /
-    backendRefs:
-    - name: dolibarr-web
-      port: 80
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /
+      backendRefs:
+        - name: dolibarr-web
+          port: 80
