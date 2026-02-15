@@ -41,7 +41,7 @@ spec:
         storageClassName: ceph-rbd
         resources:
           requests:
-            storage: 5Gi
+            storage: 512Mi
     - metadata:
         name: hyrule-castle-dolibarr-custom
       spec:
@@ -50,4 +50,4 @@ spec:
         storageClassName: ceph-rbd
         resources:
           requests:
-            storage: 1Gi
+            storage: 128Mi
