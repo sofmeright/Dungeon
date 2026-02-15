@@ -6,29 +6,37 @@ spec:
   replicas: 1
   template:
     spec:
+      securityContext:
+        runAsUser: 999
+        runAsGroup: 999
+        fsGroup: 999
       containers:
-      - name: mariadb
-        image: docker.io/linuxserver/mariadb:11.4.8
-        env:
-        - name: TZ
-          value: "Etc/UTC"
+        - name: mariadb
+          image: docker.io/mariadb:11.4.10
+          ports:
+            - containerPort: 3306
+              name: mysql
+              protocol: TCP
+          env:
+            - name: TZ
+              value: "Etc/UTC"
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: 1000m
+              memory: 512Mi
+          volumeMounts:
+            - name: kokiri-forest-linkstack-mariadb
+              mountPath: /var/lib/mysql
+  volumeClaimTemplates:
+    - metadata:
+        name: kokiri-forest-linkstack-mariadb
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        storageClassName: ceph-rbd
         resources:
           requests:
-            cpu: 100m
-            memory: 256Mi
-          limits:
-            cpu: 1000m
-            memory: 512Mi
-        volumeMounts:
-        - name: kokiri-forest-linkstack-mariadb
-          mountPath: /var/lib/mysql
-  volumeClaimTemplates:
-  - metadata:
-      name: kokiri-forest-linkstack-mariadb
-    spec:
-      accessModes:
-      - ReadWriteOnce
-      storageClassName: ceph-rbd
-      resources:
-        requests:
-          storage: 10Gi
+            storage: 10Gi
