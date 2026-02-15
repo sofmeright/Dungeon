@@ -6,10 +6,6 @@ resources:
   - httproute-xylem.yaml
 patches:
   - path: statefulset-patch.yaml
-  - path: service-patch.yaml
-    target:
-      kind: Service
-      name: netalertx
   - target:
       version: v1
       kind: Service

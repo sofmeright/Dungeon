@@ -7,10 +7,6 @@ patches:
   - path: statefulset-patch.yaml
   - path: httproute-patch.yaml
   - path: vault-secret-patch.yaml
-  - path: service-patch.yaml
-    target:
-      kind: Service
-      name: umami
   - target:
       version: v1
       kind: Service

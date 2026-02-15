@@ -14,4 +14,3 @@ patches:
   - path: postgres-cluster-patch.yaml
   - path: redis-patch.yaml
   - path: helmrelease-patch.yaml
-  - path: loadbalancer-service-patch.yaml

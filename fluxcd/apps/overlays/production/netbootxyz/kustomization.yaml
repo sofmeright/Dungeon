@@ -3,11 +3,8 @@ kind: Kustomization
 namespace: compass
 resources:
   - ../../../base/netbootxyz
+  - httproute-xylem.yaml
 patches:
-  - path: service-patch.yaml
-    target:
-      kind: Service
-      name: netbootxyz
   - path: service-tftp-patch.yaml
     target:
       kind: Service

@@ -5,4 +5,3 @@ resources:
   - postgres-cluster.yaml
   - redis-statefulset.yaml
   - helmrelease.yaml
-  - loadbalancer-service.yaml

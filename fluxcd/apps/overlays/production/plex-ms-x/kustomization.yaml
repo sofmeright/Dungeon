@@ -14,4 +14,8 @@ patches:
     target:
       kind: StatefulSet
       name: plex-ms-x
+  - path: service-patch.yaml
+    target:
+      kind: Service
+      name: plex-ms-x
   - path: storage-patch.yaml

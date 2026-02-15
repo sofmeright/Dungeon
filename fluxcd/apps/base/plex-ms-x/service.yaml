@@ -3,7 +3,7 @@ kind: Service
 metadata:
   name: plex-ms-x
 spec:
-  type: ClusterIP
+  type: PLACEHOLDER_SERVICE_TYPE
   selector:
     app: plex-ms-x
   ports:

@@ -5,18 +5,18 @@ metadata:
 spec:
   type: LoadBalancer
   ports:
-  - port: 53
-    targetPort: 53
-    protocol: TCP
-    name: dns-tcp
-  - port: 53
-    targetPort: 53
-    protocol: UDP
-    name: dns-udp
-  - port: 853
-    targetPort: 853
-    protocol: TCP
-    name: dns-tls
+    - port: 53
+      targetPort: 53
+      protocol: TCP
+      name: dns-tcp
+    - port: 53
+      targetPort: 53
+      protocol: UDP
+      name: dns-udp
+    - port: 853
+      targetPort: 853
+      protocol: TCP
+      name: dns-tls
   selector:
     app: adguard
 ---
@@ -25,11 +25,11 @@ kind: Service
 metadata:
   name: adguard-web
 spec:
-  type: LoadBalancer
+  type: ClusterIP
   ports:
-  - port: 8080
-    targetPort: 80
-    protocol: TCP
-    name: web
+    - port: 8080
+      targetPort: 80
+      protocol: TCP
+      name: web
   selector:
     app: adguard

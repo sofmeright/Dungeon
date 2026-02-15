@@ -13,10 +13,6 @@ patches:
     target:
       kind: Service
       name: searxng
-  - path: cilium-lb-patch.yaml
-    target:
-      kind: Service
-      name: searxng
   - path: settings-patch.yaml
     target:
       kind: ConfigMap

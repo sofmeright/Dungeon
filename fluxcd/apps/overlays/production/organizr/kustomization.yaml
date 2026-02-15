@@ -10,7 +10,3 @@ patches:
     target:
       kind: StatefulSet
       name: organizr
-  - path: service-patch.yaml
-    target:
-      kind: Service
-      name: organizr

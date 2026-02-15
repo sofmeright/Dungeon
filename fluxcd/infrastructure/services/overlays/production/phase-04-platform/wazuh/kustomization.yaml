@@ -11,7 +11,6 @@ patches:
   - path: dashboard-resources-patch.yaml
   - path: manager-service-patch.yaml
   - path: indexer-service-patch.yaml
-  - path: dashboard-service-patch.yaml
   - path: manager-externalsecret-patch.yaml
   - path: dashboard-externalsecret-patch.yaml
   - path: ssl-externalsecret-patch.yaml

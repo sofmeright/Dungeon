@@ -3,11 +3,8 @@ kind: Kustomization
 namespace: tingle-tuner
 resources:
   - ../../../base/faster-whisper
+  - httproute-xylem.yaml
 patches:
-  - path: service-patch.yaml
-    target:
-      kind: Service
-      name: faster-whisper
   - path: statefulset-patch.yaml
     target:
       kind: StatefulSet
