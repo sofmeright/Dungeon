@@ -6,8 +6,8 @@ spec:
   template:
     spec:
       securityContext:
-        runAsUser: 1000
-        runAsGroup: 1000
+        runAsUser: 1001
+        runAsGroup: 1001
       containers:
         - name: joplin
           image: docker.io/joplin/server:3.5.2
@@ -16,9 +16,3 @@ spec:
               value: "https://joplin.optcp.com"
             - name: PM2_HOME
               value: /tmp/pm2
-          volumeMounts:
-            - name: logs
-              mountPath: /home/joplin/packages/server/logs
-      volumes:
-        - name: logs
-          emptyDir: {}
