@@ -3,18 +3,18 @@ kind: Service
 metadata:
   name: netbootxyz
 spec:
-  type: LoadBalancer
+  type: ClusterIP
   selector:
     app: netbootxyz
   ports:
-  - port: 3101
-    targetPort: web-app
-    protocol: TCP
-    name: web-app
-  - port: 8101
-    targetPort: http
-    protocol: TCP
-    name: http
+    - port: 3101
+      targetPort: web-app
+      protocol: TCP
+      name: web-app
+    - port: 8101
+      targetPort: http
+      protocol: TCP
+      name: http
 ---
 apiVersion: v1
 kind: Service
@@ -25,7 +25,7 @@ spec:
   selector:
     app: netbootxyz
   ports:
-  - port: 69
-    targetPort: tftp
-    protocol: UDP
-    name: tftp
+    - port: 69
+      targetPort: tftp
+      protocol: UDP
+      name: tftp
