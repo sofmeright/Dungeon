@@ -17,4 +17,4 @@ spec:
             value: /
       backendRefs:
         - name: dolibarr-web
-          port: 80
+          port: 40118
