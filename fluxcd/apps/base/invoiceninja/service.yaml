@@ -5,9 +5,9 @@ metadata:
 spec:
   type: ClusterIP
   ports:
-  - port: 3306
-    targetPort: 3306
-    name: mysql
+    - port: 3306
+      targetPort: 3306
+      name: mysql
   selector:
     app: invoiceninja-mysql
 ---
@@ -18,9 +18,9 @@ metadata:
 spec:
   type: ClusterIP
   ports:
-  - port: 6379
-    targetPort: 6379
-    name: redis
+    - port: 6379
+      targetPort: 6379
+      name: redis
   selector:
     app: invoiceninja-redis
 ---
@@ -31,9 +31,9 @@ metadata:
 spec:
   type: ClusterIP
   ports:
-  - port: 9000
-    targetPort: 9000
-    name: fastcgi
+    - port: 9000
+      targetPort: 9000
+      name: fastcgi
   selector:
     app: invoiceninja-app
 ---
@@ -42,10 +42,10 @@ kind: Service
 metadata:
   name: invoiceninja-nginx
 spec:
-  type: LoadBalancer
+  type: ClusterIP
   ports:
-  - port: 80
-    targetPort: 80
-    name: http
+    - port: 80
+      targetPort: 80
+      name: http
   selector:
     app: invoiceninja-app

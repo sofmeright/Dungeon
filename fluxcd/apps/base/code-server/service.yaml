@@ -3,10 +3,10 @@ kind: Service
 metadata:
   name: code-server
 spec:
-  type: LoadBalancer
+  type: ClusterIP
   ports:
-  - port: 8443
-    targetPort: 8443
-    name: https
+    - port: 8443
+      targetPort: 8443
+      name: https
   selector:
     app: code-server

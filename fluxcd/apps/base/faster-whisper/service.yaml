@@ -3,11 +3,11 @@ kind: Service
 metadata:
   name: faster-whisper
 spec:
-  type: LoadBalancer
+  type: ClusterIP
   selector:
     app: faster-whisper
   ports:
-  - port: 10300
-    targetPort: http
-    protocol: TCP
-    name: http
+    - port: 10300
+      targetPort: http
+      protocol: TCP
+      name: http
