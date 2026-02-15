@@ -28,8 +28,8 @@ spec:
     - "netbox.prplanit.com"
     - "ntfy.prplanit.com"
     - "orangehrm.prplanit.com"
-    - "osticket.prplanit.com"
     - "pbx.prplanit.com"
+    - "penpot.prplanit.com"
   rules:
     - matches:
         - path:

@@ -13,9 +13,9 @@ spec:
     # Note: 16 hostnames max should be assigned to each "httproute-<name>-<#>.yaml"
 
     # prplanit.com subdomains (continued)
-    - "penpot.prplanit.com"
     - "quay.prplanit.com"
     - "sso.prplanit.com"
+    - "support.prplanit.com"
     - "trmm.prplanit.com"
     - "vw.prplanit.com"
   rules:
