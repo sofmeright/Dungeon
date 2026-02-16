@@ -10,7 +10,7 @@ spec:
     spec:
       containers:
         - name: overseerr
-          image: docker.io/sctx/overseerr:1.34.0
+          image: docker.io/sctx/overseerr:1.35.0
           env:
             - name: TZ
               value: "America/Los_Angeles"
