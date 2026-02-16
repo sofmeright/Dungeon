@@ -13,19 +13,19 @@ spec:
         app: librespeed-speedtest
     spec:
       containers:
-      - name: librespeed-speedtest
-        image: PLACEHOLDER_IMAGE
-        ports:
-        - containerPort: 8080
-          name: http
-          protocol: TCP
-        envFrom:
-        - secretRef:
-            name: PLACEHOLDER_SECRET
-        resources:
-          requests:
-            cpu: PLACEHOLDER_CPU
-            memory: PLACEHOLDER_MEMORY
-          limits:
-            cpu: PLACEHOLDER_CPU_LIMIT
-            memory: PLACEHOLDER_MEMORY_LIMIT
+        - name: librespeed-speedtest
+          image: PLACEHOLDER_IMAGE
+          ports:
+            - containerPort: 8080
+              name: http
+              protocol: TCP
+          envFrom:
+            - configMapRef:
+                name: PLACEHOLDER_CONFIGMAP
+          resources:
+            requests:
+              cpu: PLACEHOLDER_CPU
+              memory: PLACEHOLDER_MEMORY
+            limits:
+              cpu: PLACEHOLDER_CPU_LIMIT
+              memory: PLACEHOLDER_MEMORY_LIMIT

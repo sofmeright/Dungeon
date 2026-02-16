@@ -6,15 +6,15 @@ spec:
   template:
     spec:
       containers:
-      - name: librespeed-speedtest
-        image: ghcr.io/librespeed/speedtest:5.5.1
-        resources:
-          requests:
-            cpu: 100m
-            memory: 128Mi
-          limits:
-            cpu: 500m
-            memory: 512Mi
-        envFrom:
-        - secretRef:
-            name: librespeed-speedtest-secrets
+        - name: librespeed-speedtest
+          image: ghcr.io/librespeed/speedtest:5.5.1
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
+          envFrom:
+            - configMapRef:
+                name: librespeed-speedtest-config

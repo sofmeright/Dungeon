@@ -6,4 +6,4 @@ resources:
   - httproute-xylem.yaml
 patches:
   - path: deployment-patch.yaml
-  - path: externalsecret-patch.yaml
+  - path: configmap-patch.yaml

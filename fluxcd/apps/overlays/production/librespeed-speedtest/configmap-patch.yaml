@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: librespeed-speedtest-config
+data:
+  MODE: "standalone"
+  TELEMETRY: "false"
+  TITLE: "PrecisionPlanIT.com: (Internal) Speed Test"
