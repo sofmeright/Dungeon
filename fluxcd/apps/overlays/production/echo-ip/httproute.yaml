@@ -24,4 +24,4 @@ spec:
             value: /
       backendRefs:
         - name: echo-ip
-          port: 80
+          port: 8080
