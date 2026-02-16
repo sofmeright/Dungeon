@@ -19,5 +19,7 @@ spec:
               cpu: 500m
               memory: 512Mi
           envFrom:
+            - configMapRef:
+                name: openspeedtest-config
             - secretRef:
                 name: openspeedtest-secrets

@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: openspeedtest-config
+data:
+  DOMAIN_NAME: PLACEHOLDER_DOMAIN_NAME
+  ENABLE_LETSENCRYPT: PLACEHOLDER_ENABLE_LETSENCRYPT
