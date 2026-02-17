@@ -7,20 +7,20 @@ spec:
   template:
     spec:
       containers:
-      - name: plex-ms-x
-        image: docker.io/plexinc/pms-docker:1.40.2.8395-c67dce28e
-        env:
-        - name: ADVERTISE_IP
-          value: "http://172.22.30.124:32419/"
-        volumeMounts:
-        - name: config
-          mountPath: /config
-        - name: transcode
-          mountPath: /transcode
+        - name: plex-ms-x
+          image: docker.io/plexinc/pms-docker:1.40.2.8395-c67dce28e
+          env:
+            - name: ADVERTISE_IP
+              value: "http://172.22.30.124:32419/,https://plexx.pcfae.com/"
+          volumeMounts:
+            - name: config
+              mountPath: /config
+            - name: transcode
+              mountPath: /transcode
       volumes:
-      - name: config
-        persistentVolumeClaim:
-          claimName: kai-plex-ms-x-config
-      - name: transcode
-        persistentVolumeClaim:
-          claimName: kai-plex-ms-x-transcode
+        - name: config
+          persistentVolumeClaim:
+            claimName: kai-plex-ms-x-config
+        - name: transcode
+          persistentVolumeClaim:
+            claimName: kai-plex-ms-x-transcode
