@@ -8,6 +8,11 @@ spec:
       labels:
         istio.io/dataplane-mode: none
     spec:
+      initContainers:
+        - name: set-host-whitelist
+          env:
+            - name: SAB_HOST_WHITELIST
+              value: "sabnzbd.pcfae.com"
       containers:
         - name: sabnzbd
           image: docker.io/linuxserver/sabnzbd:4.5.5

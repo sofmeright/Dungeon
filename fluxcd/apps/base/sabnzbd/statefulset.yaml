@@ -13,6 +13,30 @@ spec:
       labels:
         app: sabnzbd
     spec:
+      initContainers:
+        - name: set-host-whitelist
+          image: docker.io/busybox:latest
+          command:
+            - sh
+            - -c
+            - |
+              INI="/config/sabnzbd.ini"
+              if [ ! -f "$INI" ]; then
+                echo "No config yet, skipping host_whitelist patch"
+                exit 0
+              fi
+              if grep -q '^host_whitelist' "$INI"; then
+                sed -i "s|^host_whitelist.*|host_whitelist = ${SAB_HOST_WHITELIST}|" "$INI"
+              else
+                sed -i "/^\[misc\]/a host_whitelist = ${SAB_HOST_WHITELIST}" "$INI"
+              fi
+              echo "host_whitelist set to: ${SAB_HOST_WHITELIST}"
+          env:
+            - name: SAB_HOST_WHITELIST
+              value: PLACEHOLDER_HOST_WHITELIST
+          volumeMounts:
+            - name: config
+              mountPath: /config
       containers:
         - name: sabnzbd
           image: docker.io/linuxserver/sabnzbd:PLACEHOLDER_IMAGE_TAG
