@@ -6,3 +6,4 @@ resources:
   - service-db.yaml
   - service-app.yaml
   - vault-secret.yaml
+  - configmap-nginx.yaml

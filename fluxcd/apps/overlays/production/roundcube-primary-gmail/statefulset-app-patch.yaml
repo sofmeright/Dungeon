@@ -27,6 +27,14 @@ spec:
           volumeMounts:
             - name: pedestal-of-time-roundcube-primary-gmail-html
               mountPath: /var/www/html
+        - name: nginx
+          image: docker.io/nginx:1.27-alpine
+          volumeMounts:
+            - $patch: delete
+              name: html
+            - name: pedestal-of-time-roundcube-primary-gmail-html
+              mountPath: /var/www/html
+              readOnly: true
   volumeClaimTemplates:
     - metadata:
         name: pedestal-of-time-roundcube-primary-gmail-html
