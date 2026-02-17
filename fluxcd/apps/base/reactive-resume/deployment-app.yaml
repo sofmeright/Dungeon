@@ -43,16 +43,6 @@ spec:
                 secretKeyRef:
                   name: reactive-resume-secrets
                   key: database_url
-            - name: ACCESS_TOKEN_SECRET
-              valueFrom:
-                secretKeyRef:
-                  name: reactive-resume-secrets
-                  key: access_token_secret
-            - name: REFRESH_TOKEN_SECRET
-              valueFrom:
-                secretKeyRef:
-                  name: reactive-resume-secrets
-                  key: refresh_token_secret
             - name: MAIL_FROM
               value: PLACEHOLDER_MAIL_FROM
             - name: STORAGE_ENDPOINT
