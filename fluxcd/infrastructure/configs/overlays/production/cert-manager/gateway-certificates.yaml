@@ -165,3 +165,16 @@ spec:
     kind: ClusterIssuer
   dnsNames:
     - "astralfocal.com"
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: etherealclique-com-tls
+spec:
+  secretName: etherealclique-com-tls
+  issuerRef:
+    name: letsencrypt-production
+    kind: ClusterIssuer
+  dnsNames:
+    - "*.etherealclique.com"
+    - "etherealclique.com"

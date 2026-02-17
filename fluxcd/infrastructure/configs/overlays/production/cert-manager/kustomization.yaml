@@ -106,3 +106,10 @@ patches:
     target:
       kind: Certificate
       name: astralfocal-com-tls
+  - patch: |-
+      - op: add
+        path: /metadata/namespace
+        value: kokiri-forest
+    target:
+      kind: Certificate
+      name: etherealclique-com-tls

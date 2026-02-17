@@ -4,10 +4,10 @@ metadata:
   name: enamorafoto-site
 spec:
   parentRefs:
-    - name: phloem-gateway
-      namespace: kokiri-forest
+    - name: cell-membrane-gateway
+      namespace: hyrule-castle
   hostnames:
-    - "enamorafoto.com"
+    - "enamorafoto.operationtimecapsule.com"
   rules:
     - matches:
         - path:

@@ -111,3 +111,27 @@ spec:
         certificateRefs:
           - kind: Secret
             name: astralfocal-com-tls
+    - name: https-etherealclique
+      protocol: HTTPS
+      port: 443
+      hostname: "*.etherealclique.com"
+      allowedRoutes:
+        namespaces:
+          from: All
+      tls:
+        mode: Terminate
+        certificateRefs:
+          - kind: Secret
+            name: etherealclique-com-tls
+    - name: https-etherealclique-bare
+      protocol: HTTPS
+      port: 443
+      hostname: "etherealclique.com"
+      allowedRoutes:
+        namespaces:
+          from: All
+      tls:
+        mode: Terminate
+        certificateRefs:
+          - kind: Secret
+            name: etherealclique-com-tls
