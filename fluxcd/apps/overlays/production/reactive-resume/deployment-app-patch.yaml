@@ -7,12 +7,12 @@ spec:
   template:
     spec:
       containers:
-      - name: app
-        image: docker.io/amruthpillai/reactive-resume:v5.0.9
-        env:
-        - name: PUBLIC_URL
-          value: "https://resume.sofmeright.com"
-        - name: STORAGE_URL
-          value: "https://resume.sofmeright.com/storage/default"
-        - name: MAIL_FROM
-          value: "noreply@sofmeright.com"
+        - name: app
+          image: docker.io/amruthpillai/reactive-resume:v5.0.9
+          env:
+            - name: APP_URL
+              value: "https://resume.sofmeright.com"
+            - name: STORAGE_URL
+              value: "https://resume.sofmeright.com/storage/default"
+            - name: MAIL_FROM
+              value: "noreply@sofmeright.com"
