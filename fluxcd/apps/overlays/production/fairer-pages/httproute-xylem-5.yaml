@@ -20,7 +20,7 @@ spec:
     - "translate.pcfae.com"
     - "uptime.pcfae.com"
     - "vault.pcfae.com"
-    - "wazuh.pcfae.com"
+    - "siem.pcfae.com"
     - "web.pcfae.com"
     - "z2m.pcfae.com"
   rules:
