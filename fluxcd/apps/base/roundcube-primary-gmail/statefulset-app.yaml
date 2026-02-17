@@ -52,9 +52,9 @@ spec:
               memory: 512Mi
               cpu: 500m
         - name: nginx
-          image: docker.io/nginx:alpine
+          image: docker.io/nginxinc/nginx-unprivileged:alpine
           ports:
-            - containerPort: 80
+            - containerPort: 8080
               name: http
               protocol: TCP
           volumeMounts:

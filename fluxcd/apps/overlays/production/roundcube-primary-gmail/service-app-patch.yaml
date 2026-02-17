@@ -8,5 +8,5 @@ spec:
     - $patch: replace
     - name: http
       port: 9001
-      targetPort: 80
+      targetPort: 8080
       protocol: TCP

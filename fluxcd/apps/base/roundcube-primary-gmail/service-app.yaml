@@ -7,7 +7,7 @@ spec:
   selector:
     app: roundcube-primary-gmail
   ports:
-  - name: http
-    port: PLACEHOLDER_PORT
-    targetPort: 80
-    protocol: TCP
+    - name: http
+      port: PLACEHOLDER_PORT
+      targetPort: 8080
+      protocol: TCP
