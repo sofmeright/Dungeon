@@ -35,6 +35,9 @@ spec:
             - name: pedestal-of-time-roundcube-primary-gmail-html
               mountPath: /var/www/html
               readOnly: true
+            - name: nginx-config
+              mountPath: /etc/nginx/conf.d/default.conf
+              subPath: default.conf
   volumeClaimTemplates:
     - metadata:
         name: pedestal-of-time-roundcube-primary-gmail-html
