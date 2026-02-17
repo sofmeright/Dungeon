@@ -32,6 +32,8 @@ spec:
               value: https://cal.prplanit.com
             - name: NEXT_PUBLIC_API_V2_URL
               value: https://cal.prplanit.com/api/v2
+            - name: NEXTAUTH_URL
+              value: https://cal.prplanit.com
           volumeMounts:
             - name: yarn-dir
               mountPath: /calcom/.yarn
