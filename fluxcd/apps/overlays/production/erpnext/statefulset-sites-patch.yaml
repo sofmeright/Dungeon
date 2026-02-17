@@ -8,6 +8,13 @@ spec:
       securityContext:
         fsGroup: 1000
       initContainers:
+        - name: copy-assets
+          image: docker.io/frappe/erpnext:v15.97.0
+          volumeMounts:
+            - $patch: delete
+              name: PLACEHOLDER_SITES_DATA
+            - name: sites-data
+              mountPath: /mnt/sites
         - name: configurator
           image: docker.io/frappe/erpnext:v15.97.0
           volumeMounts:

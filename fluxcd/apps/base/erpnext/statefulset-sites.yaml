@@ -14,6 +14,21 @@ spec:
         app: erpnext-sites
     spec:
       initContainers:
+        - name: copy-assets
+          image: PLACEHOLDER_ERPNEXT_IMAGE
+          command:
+            - bash
+            - -c
+            - |
+              echo "Copying assets from image to sites volume...";
+              cp -r /home/frappe/frappe-bench/sites/assets \
+                /mnt/sites/assets;
+              cp -f /home/frappe/frappe-bench/sites/apps.json \
+                /mnt/sites/apps.json 2>/dev/null || true;
+              echo "Assets copied successfully.";
+          volumeMounts:
+            - name: PLACEHOLDER_SITES_DATA
+              mountPath: /mnt/sites
         - name: configurator
           image: PLACEHOLDER_ERPNEXT_IMAGE
           command:
@@ -30,7 +45,6 @@ spec:
               bench set-config -g redis_queue "redis://$REDIS_QUEUE";
               bench set-config -g redis_socketio "redis://$REDIS_QUEUE";
               bench set-config -gp socketio_port $SOCKETIO_PORT;
-              bench setup assets;
           env:
             - name: DB_HOST
               value: "erpnext-mariadb"
