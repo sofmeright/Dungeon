@@ -8,6 +8,12 @@ metadata:
     lbipam.cilium.io/sharing-key: "zeldas-lullaby"
     lbipam.cilium.io/sharing-cross-namespace: "*"
     service.cilium.io/loadbalancer-mode: "dsr"
+    gatus.home-operations.com/endpoint: |
+      group: Infrastructure
+      url: http://172.22.30.86:8200/v1/sys/health
+      interval: 60s
+      conditions:
+        - "[STATUS] == 200"
 spec:
   type: LoadBalancer
   externalTrafficPolicy: Cluster
