@@ -60,6 +60,8 @@ spec:
             - containerPort: 8080
               name: http
           env:
+            - name: WEBAPP_CONTEXT
+              value: "ROOT"
             - name: GUACD_HOSTNAME
               value: "guacamole-guacd"
             - name: GUACD_PORT
