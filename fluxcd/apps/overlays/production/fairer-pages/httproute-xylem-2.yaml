@@ -26,7 +26,6 @@ spec:
     - "kms.pcfae.com"
     - "lidarr.pcfae.com"
     - "links.pcfae.com"
-    - "loki.pcfae.com"
   rules:
     - matches:
         - path:
