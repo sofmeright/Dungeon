@@ -3,7 +3,7 @@ kind: StatefulSet
 metadata:
   name: bagisto-demo
 spec:
-  serviceName: bagisto-demo
+  serviceName: bagisto
   replicas: PLACEHOLDER_REPLICAS
   selector:
     matchLabels:
