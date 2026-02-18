@@ -28,7 +28,7 @@ patches:
         value: "ceph-rbd-hdd"
       - op: replace
         path: /spec/volumeClaimTemplates/0/spec/resources/requests/storage
-        value: "48Gi"
+        value: "128Gi"
   - target:
       kind: Deployment
       name: vminsert
