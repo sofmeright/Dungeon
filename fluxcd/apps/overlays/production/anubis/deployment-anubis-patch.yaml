@@ -15,7 +15,7 @@ spec:
         runAsGroup: 1000
       containers:
         - name: anubis
-          image: ghcr.io/techarohq/anubis:v1.24.0
+          image: ghcr.io/techarohq/anubis:v1.25.0
           env:
             - name: DIFFICULTY
               value: "4"
