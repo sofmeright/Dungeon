@@ -5,7 +5,6 @@ namespace: temple-of-time
 
 resources:
   - ../../../base/joplin
-  - httproute.yaml
   - httproute-xylem.yaml
 
 patches:

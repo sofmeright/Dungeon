@@ -19,7 +19,6 @@ spec:
     # optcp.com subdomains
     - "books.optcp.com"
     - "flix.optcp.com"
-    - "joplin.optcp.com"
     - "jseer.optcp.com"
     - "lwd.optcp.com"
     - "ncloud.optcp.com"

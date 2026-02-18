@@ -13,6 +13,6 @@ spec:
           image: docker.io/joplin/server:3.5.2
           env:
             - name: APP_BASE_URL
-              value: "https://joplin.optcp.com"
+              value: "https://joplin.pcfae.com"
             - name: PM2_HOME
               value: /tmp/pm2
