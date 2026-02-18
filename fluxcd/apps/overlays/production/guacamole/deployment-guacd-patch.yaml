@@ -10,7 +10,7 @@ spec:
         runAsGroup: 1000
       containers:
         - name: guacd
-          image: docker.io/guacamole/guacd@sha256:3ee7b2a8ae4a8934b8e646f57a354abb48ab64f3ae9fb648534d3f03af420b09
+          image: docker.io/guacamole/guacd@sha256:f7a30a267182f1cdbcfbf85cf5f1e1c8b13786c4a821d8ff9dc3574a2ab975e9
           resources:
             requests:
               cpu: "250m"
