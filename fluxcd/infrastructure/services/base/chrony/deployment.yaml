@@ -13,51 +13,87 @@ spec:
         app: chrony
     spec:
       containers:
-      - name: chrony
-        image: PLACEHOLDER_IMAGE
-        ports:
-        - containerPort: 123
-          protocol: UDP
-          name: ntp
-        envFrom:
-        - configMapRef:
-            name: chrony-config
-        securityContext:
-          runAsUser: 0
-          capabilities:
-            add:
-            - NET_BIND_SERVICE
-            # Add SYS_TIME only if ENABLE_SYSCLK is true in production overlay
-            # - SYS_TIME
-        volumeMounts:
-        - name: chrony-etc
-          mountPath: /etc/chrony
-        - name: chrony-run
-          mountPath: /run/chrony
-        - name: chrony-var
-          mountPath: /var/lib/chrony
-        # Uncomment if PTP hardware support is needed
-        # - name: ptp-device
-        #   mountPath: /dev/ptp0
-        resources:
-          requests:
-            memory: "16Mi"
-            cpu: "10m"
-          limits:
-            memory: "64Mi"
-            cpu: "100m"
+        - name: chrony
+          image: PLACEHOLDER_IMAGE
+          ports:
+            - containerPort: 123
+              protocol: UDP
+              name: ntp
+          livenessProbe:
+            exec:
+              command: ["chronyc", "-n", "tracking"]
+            initialDelaySeconds: 30
+            periodSeconds: 60
+            failureThreshold: 3
+          readinessProbe:
+            exec:
+              command: ["chronyc", "-n", "tracking"]
+            initialDelaySeconds: 10
+            periodSeconds: 30
+            failureThreshold: 2
+          envFrom:
+            - configMapRef:
+                name: chrony-config
+          securityContext:
+            runAsUser: 0
+            capabilities:
+              add:
+                - NET_BIND_SERVICE
+                # Add SYS_TIME only if ENABLE_SYSCLK is true in production overlay
+                # - SYS_TIME
+          volumeMounts:
+            - name: chrony-etc
+              mountPath: /etc/chrony
+            - name: chrony-run
+              mountPath: /run/chrony
+            - name: chrony-var
+              mountPath: /var/lib/chrony
+              # Uncomment if PTP hardware support is needed
+              # - name: ptp-device
+              #   mountPath: /dev/ptp0
+          resources:
+            requests:
+              memory: "16Mi"
+              cpu: "10m"
+            limits:
+              memory: "64Mi"
+              cpu: "100m"
+        - name: ntp-healthcheck
+          image: PLACEHOLDER_SIDECAR_IMAGE
+          command:
+            - sh
+            - -c
+            - |
+              while true; do
+                if chronyc -n tracking >/dev/null 2>&1; then
+                  printf 'HTTP/1.1 200 OK\r\nConnection: close\r\nContent-Length: 2\r\n\r\nOK'
+                else
+                  printf 'HTTP/1.1 503 Service Unavailable\r\nConnection: close\r\nContent-Length: 4\r\n\r\nFAIL'
+                fi | nc -l -p 8080 >/dev/null 2>&1
+              done
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+              name: health
+          resources:
+            requests:
+              cpu: 5m
+              memory: 8Mi
+            limits:
+              cpu: 20m
+              memory: 16Mi
       volumes:
-      - name: chrony-etc
-        emptyDir:
-          medium: Memory
-          sizeLimit: 1Mi
-      - name: chrony-run
-        emptyDir:
-          sizeLimit: 1Mi
-      - name: chrony-var
-        emptyDir:
-          medium: Memory
-          sizeLimit: 4Mi
+        - name: chrony-etc
+          emptyDir:
+            medium: Memory
+            sizeLimit: 1Mi
+        - name: chrony-run
+          emptyDir:
+            sizeLimit: 1Mi
+        - name: chrony-var
+          emptyDir:
+            medium: Memory
+            sizeLimit: 4Mi
       # Uncomment if PTP hardware support is needed
       # - name: ptp-device
       #   hostPath:

@@ -3,6 +3,12 @@ kind: HTTPRoute
 metadata:
   name: shlink-public
   namespace: temple-of-time
+  annotations:
+    gatus.home-operations.com/endpoint: |
+      conditions:
+        - "[STATUS] == 200"
+        - "[RESPONSE_TIME] < 5000"
+      url: https://sh.uni2.cc/rest/health
 spec:
   parentRefs:
     - name: cell-membrane-gateway

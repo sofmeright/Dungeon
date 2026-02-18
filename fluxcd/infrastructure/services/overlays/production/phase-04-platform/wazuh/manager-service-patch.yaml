@@ -5,5 +5,11 @@ metadata:
   annotations:
     lbipam.cilium.io/ips: "172.22.30.119"
     lbipam.cilium.io/sharing-key: "lens-of-truth"
+    gatus.home-operations.com/endpoint: |
+      group: Infrastructure
+      url: tcp://172.22.30.119:55000
+      interval: 60s
+      conditions:
+        - "[CONNECTED] == true"
 spec:
   type: LoadBalancer

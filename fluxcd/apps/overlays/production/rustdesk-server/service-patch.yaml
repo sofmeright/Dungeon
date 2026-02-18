@@ -5,6 +5,12 @@ metadata:
   annotations:
     lbipam.cilium.io/ips: "172.22.30.8"
     lbipam.cilium.io/sharing-key: "hookshot"
+    gatus.home-operations.com/endpoint: |
+      group: Infrastructure
+      url: tcp://172.22.30.8:41116
+      interval: 60s
+      conditions:
+        - "[CONNECTED] == true"
 spec:
   type: LoadBalancer
 ---

@@ -7,7 +7,9 @@ spec:
   template:
     spec:
       imagePullSecrets:
-      - name: jcr-pcfae-dungeon-pull-secret
+        - name: jcr-pcfae-dungeon-pull-secret
       containers:
-      - name: chrony
-        image: docker.io/simonrupf/chronyd:0.7.1
+        - name: chrony
+          image: docker.io/simonrupf/chronyd:0.7.1
+        - name: ntp-healthcheck
+          image: docker.io/simonrupf/chronyd:0.7.1

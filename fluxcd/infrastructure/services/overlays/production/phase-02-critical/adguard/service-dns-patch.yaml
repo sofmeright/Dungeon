@@ -10,3 +10,11 @@
 - op: add
   path: /spec/externalTrafficPolicy
   value: "Local"
+- op: add
+  path: /metadata/annotations/gatus.home-operations.com~1endpoint
+  value: |
+    group: Infrastructure
+    url: dns://172.22.30.122
+    interval: 60s
+    conditions:
+      - "[DNS_RCODE] == NOERROR"

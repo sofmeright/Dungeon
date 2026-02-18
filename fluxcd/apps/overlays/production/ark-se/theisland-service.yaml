@@ -6,6 +6,12 @@ metadata:
     lbipam.cilium.io/ips: "172.22.30.231"
     lbipam.cilium.io/sharing-key: shooting-gallery
     lbipam.cilium.io/sharing-cross-namespace: "*"
+    gatus.home-operations.com/endpoint: |
+      group: Game Servers
+      url: tcp://172.22.30.231:7797
+      interval: 60s
+      conditions:
+        - "[CONNECTED] == true"
 spec:
   type: LoadBalancer
   externalTrafficPolicy: Cluster
@@ -16,23 +22,23 @@ spec:
   selector:
     app: ark-se-tmc-theisland
   ports:
-  - port: 7797
-    targetPort: 7797
-    protocol: UDP
-    name: theisland-game-udp
-  - port: 7797
-    targetPort: 7797
-    protocol: TCP
-    name: theisland-game-tcp
-  - port: 27057
-    targetPort: 27057
-    protocol: UDP
-    name: theisland-query-udp
-  - port: 27057
-    targetPort: 27057
-    protocol: TCP
-    name: theisland-query-tcp
-  - port: 27095
-    targetPort: 27095
-    protocol: TCP
-    name: theisland-rcon
+    - port: 7797
+      targetPort: 7797
+      protocol: UDP
+      name: theisland-game-udp
+    - port: 7797
+      targetPort: 7797
+      protocol: TCP
+      name: theisland-game-tcp
+    - port: 27057
+      targetPort: 27057
+      protocol: UDP
+      name: theisland-query-udp
+    - port: 27057
+      targetPort: 27057
+      protocol: TCP
+      name: theisland-query-tcp
+    - port: 27095
+      targetPort: 27095
+      protocol: TCP
+      name: theisland-rcon

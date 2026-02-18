@@ -5,5 +5,11 @@ metadata:
   annotations:
     lbipam.cilium.io/ips: "172.22.30.101"
     lbipam.cilium.io/sharing-key: "gorons-bracelet"
+    gatus.home-operations.com/endpoint: |
+      group: Infrastructure
+      url: http://172.22.30.101
+      interval: 60s
+      conditions:
+        - "[STATUS] == 200"
 spec:
   type: LoadBalancer

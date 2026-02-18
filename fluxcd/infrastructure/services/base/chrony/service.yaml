@@ -6,9 +6,13 @@ spec:
   selector:
     app: chrony
   ports:
-  - name: ntp
-    port: 123
-    targetPort: 123
-    protocol: UDP
+    - name: ntp
+      port: 123
+      targetPort: 123
+      protocol: UDP
+    - name: health
+      port: 8080
+      targetPort: 8080
+      protocol: TCP
   type: LoadBalancer
   externalTrafficPolicy: Cluster
