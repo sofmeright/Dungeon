@@ -3,7 +3,7 @@ kind: StatefulSet
 metadata:
   name: bagisto-demo
 spec:
-  serviceName: bagisto
+  serviceName: bagisto-demo
   replicas: PLACEHOLDER_REPLICAS
   selector:
     matchLabels:
@@ -13,36 +13,113 @@ spec:
       labels:
         app: bagisto-demo
     spec:
+      initContainers:
+        - name: copy-app
+          image: PLACEHOLDER_IMAGE
+          command:
+            - sh
+            - -c
+            - |
+              if [ ! -f /data/artisan ]; then
+                echo "PVC is empty, copying application files..."
+                cp -a /var/www/html/. /data/
+                echo "Application files copied successfully"
+              else
+                echo "Application files already exist, skipping copy"
+              fi
+          volumeMounts:
+            - name: PLACEHOLDER_NAMESPACE-bagisto-demo-app
+              mountPath: /data
+        - name: configure-env
+          image: docker.io/busybox:latest
+          command:
+            - sh
+            - -c
+            - |
+              ENV="/data/.env"
+              if [ ! -f "$ENV" ]; then
+                echo "ERROR: No .env file found"
+                exit 1
+              fi
+              sed -i "s|^DB_HOST=.*|DB_HOST=\"bagisto-demo-db\"|" "$ENV"
+              sed -i "s|^DB_DATABASE=.*|DB_DATABASE=\"${MYSQL_DATABASE}\"|" "$ENV"
+              sed -i "s|^DB_USERNAME=.*|DB_USERNAME=\"${MYSQL_USER}\"|" "$ENV"
+              sed -i "s|^DB_PASSWORD=.*|DB_PASSWORD=\"${MYSQL_PASSWORD}\"|" "$ENV"
+              sed -i "s|^APP_URL=.*|APP_URL=${APP_URL}|" "$ENV"
+              sed -i "s|^APP_ENV=.*|APP_ENV=production|" "$ENV"
+              sed -i "s|^APP_DEBUG=.*|APP_DEBUG=false|" "$ENV"
+              echo "Environment configured:"
+              grep -E "^(DB_HOST|DB_DATABASE|DB_USERNAME|APP_URL|APP_ENV)=" "$ENV"
+          env:
+            - name: MYSQL_DATABASE
+              valueFrom:
+                secretKeyRef:
+                  name: bagisto-demo-secrets
+                  key: MYSQL_DATABASE
+            - name: MYSQL_USER
+              valueFrom:
+                secretKeyRef:
+                  name: bagisto-demo-secrets
+                  key: MYSQL_USER
+            - name: MYSQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: bagisto-demo-secrets
+                  key: MYSQL_PASSWORD
+            - name: APP_URL
+              value: PLACEHOLDER_APP_URL
+          volumeMounts:
+            - name: PLACEHOLDER_NAMESPACE-bagisto-demo-app
+              mountPath: /data
+        - name: setup-db
+          image: PLACEHOLDER_IMAGE
+          command:
+            - sh
+            - -c
+            - |
+              cd /var/www/html
+              if [ ! -f /var/www/html/.installed ]; then
+                echo "First run: migrating and seeding database..."
+                php artisan migrate --force
+                php artisan db:seed --force
+                php artisan storage:link --force
+                touch /var/www/html/.installed
+                echo "Installation complete"
+              else
+                echo "Running pending migrations..."
+                php artisan migrate --force
+                echo "Migrations complete"
+              fi
+          volumeMounts:
+            - name: PLACEHOLDER_NAMESPACE-bagisto-demo-app
+              mountPath: /var/www/html
       containers:
-      - name: bagisto-demo
-        image: PLACEHOLDER_IMAGE
-        ports:
-        - containerPort: 80
-          name: http
-        env:
-        - name: USER_UID
-          value: PLACEHOLDER_USER_UID
-        envFrom:
-        - secretRef:
-            name: bagisto-demo-secrets
+        - name: bagisto-demo
+          image: PLACEHOLDER_IMAGE
+          command:
+            - /usr/sbin/apachectl
+            - -D
+            - FOREGROUND
+          ports:
+            - containerPort: 80
+              name: http
+          volumeMounts:
+            - name: PLACEHOLDER_NAMESPACE-bagisto-demo-app
+              mountPath: /var/www/html
+          resources:
+            requests:
+              cpu: PLACEHOLDER_CPU_REQUEST
+              memory: PLACEHOLDER_MEMORY_REQUEST
+            limits:
+              cpu: PLACEHOLDER_CPU_LIMIT
+              memory: PLACEHOLDER_MEMORY_LIMIT
+  volumeClaimTemplates:
+    - metadata:
+        name: PLACEHOLDER_NAMESPACE-bagisto-demo-app
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        storageClassName: PLACEHOLDER_STORAGE_CLASS
         resources:
           requests:
-            cpu: PLACEHOLDER_CPU_REQUEST
-            memory: PLACEHOLDER_MEMORY_REQUEST
-          limits:
-            cpu: PLACEHOLDER_CPU_LIMIT
-            memory: PLACEHOLDER_MEMORY_LIMIT
-        volumeMounts:
-        - name: PLACEHOLDER_NAMESPACE-bagisto-demo-app
-          mountPath: /var/www/html
-        workingDir: /var/www/html/
-  volumeClaimTemplates:
-  - metadata:
-      name: PLACEHOLDER_NAMESPACE-bagisto-demo-app
-    spec:
-      accessModes:
-      - ReadWriteOnce
-      storageClassName: PLACEHOLDER_STORAGE_CLASS
-      resources:
-        requests:
-          storage: PLACEHOLDER_APP_STORAGE_SIZE
+            storage: PLACEHOLDER_APP_STORAGE_SIZE

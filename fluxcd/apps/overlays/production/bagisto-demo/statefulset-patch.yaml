@@ -6,29 +6,44 @@ spec:
   replicas: 1
   template:
     spec:
+      initContainers:
+        - name: copy-app
+          image: docker.io/webkul/bagisto:2.3.11
+          volumeMounts:
+            - name: hyrule-castle-bagisto-demo-app
+              mountPath: /data
+        - name: configure-env
+          env:
+            - name: APP_URL
+              value: "https://bagisto.pcfae.com"
+          volumeMounts:
+            - name: hyrule-castle-bagisto-demo-app
+              mountPath: /data
+        - name: setup-db
+          image: docker.io/webkul/bagisto:2.3.11
+          volumeMounts:
+            - name: hyrule-castle-bagisto-demo-app
+              mountPath: /var/www/html
       containers:
-      - name: bagisto-demo
-        image: docker.io/webkul/apache-php@sha256:a9d4cf60bb8b1e6a8d9c720152918b6fe08248c1bf4c41301a8c9950f6920ac5
-        env:
-        - name: USER_UID
-          value: "1000"
+        - name: bagisto-demo
+          image: docker.io/webkul/bagisto:2.3.11
+          resources:
+            requests:
+              cpu: 100m
+              memory: 512Mi
+            limits:
+              cpu: 2000m
+              memory: 2Gi
+          volumeMounts:
+            - name: hyrule-castle-bagisto-demo-app
+              mountPath: /var/www/html
+  volumeClaimTemplates:
+    - metadata:
+        name: hyrule-castle-bagisto-demo-app
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        storageClassName: ceph-rbd
         resources:
           requests:
-            cpu: 100m
-            memory: 512Mi
-          limits:
-            cpu: 2000m
-            memory: 2Gi
-        volumeMounts:
-        - name: hyrule-castle-bagisto-demo-app
-          mountPath: /var/www/html
-  volumeClaimTemplates:
-  - metadata:
-      name: hyrule-castle-bagisto-demo-app
-    spec:
-      accessModes:
-      - ReadWriteOnce
-      storageClassName: ceph-rbd
-      resources:
-        requests:
-          storage: 10Gi
+            storage: 10Gi
