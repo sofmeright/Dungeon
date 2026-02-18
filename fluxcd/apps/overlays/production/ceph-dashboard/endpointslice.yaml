@@ -1,0 +1,22 @@
+apiVersion: discovery.k8s.io/v1
+kind: EndpointSlice
+metadata:
+  name: ceph-dashboard
+  labels:
+    kubernetes.io/service-name: ceph-dashboard
+addressType: IPv6
+endpoints:
+  - addresses:
+      - "fc00:f1:ada:104e:1ace::1"
+  - addresses:
+      - "fc00:f1:ada:104e:1ace::2"
+  - addresses:
+      - "fc00:f1:ada:104e:1ace::3"
+  - addresses:
+      - "fc00:f1:ada:104e:1ace::4"
+  - addresses:
+      - "fc00:f1:ada:104e:1ace::5"
+ports:
+  - name: https
+    port: 8443
+    protocol: TCP

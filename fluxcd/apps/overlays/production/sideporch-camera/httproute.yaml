@@ -1,0 +1,18 @@
+apiVersion: gateway.networking.k8s.io/v1
+kind: HTTPRoute
+metadata:
+  name: sideporch-camera
+spec:
+  parentRefs:
+    - name: xylem-gateway
+      namespace: arylls-lookout
+  hostnames:
+    - "sideporch.pcfae.com"
+  rules:
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /
+      backendRefs:
+        - name: sideporch-camera
+          port: 443

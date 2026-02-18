@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: sideporch-camera
+spec:
+  type: ExternalName
+  externalName: sideporch.prplanit.internal
