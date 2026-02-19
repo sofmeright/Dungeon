@@ -16,7 +16,7 @@
     group: Infrastructure
     url: "172.22.30.122"
     dns:
-      query-name: "prplanit.com"
+      query-name: "dns.prplanit.internal"
       query-type: "A"
     interval: 60s
     conditions:
