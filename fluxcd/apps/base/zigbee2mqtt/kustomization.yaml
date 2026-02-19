@@ -4,4 +4,5 @@ resources:
   - statefulset.yaml
   - service.yaml
   - configmap.yaml
+  - configmap-external-converters.yaml
   - externalsecret.yaml

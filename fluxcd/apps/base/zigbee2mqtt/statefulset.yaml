@@ -52,10 +52,16 @@ spec:
           volumeMounts:
             - name: data
               mountPath: /app/data
+            - name: external-converters
+              mountPath: /app/data/external_converters
+              readOnly: true
       volumes:
         - name: config
           configMap:
             name: zigbee2mqtt-config
+        - name: external-converters
+          configMap:
+            name: zigbee2mqtt-external-converters
   volumeClaimTemplates:
     - metadata:
         name: data

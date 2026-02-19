@@ -1,0 +1,61 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: zigbee2mqtt-external-converters
+data:
+  kwikset_99140_139_temperature.js: |
+    const fz = require('zigbee-herdsman-converters/converters/fromZigbee');
+    const tz = require('zigbee-herdsman-converters/converters/toZigbee');
+    const reporting = require('zigbee-herdsman-converters/lib/reporting');
+
+    const fzLocal = {
+        temperature: {
+            cluster: 'msTemperatureMeasurement',
+            type: ['attributeReport', 'readResponse'],
+            convert: (model, msg, publish, options, meta) => {
+                const temperature = msg.data.measuredValue / 100;
+                return {temperature};
+            },
+        },
+    };
+
+    const definition = {
+        zigbeeModel: ['SMARTCODE_CONVERT_GEN1_W3'],
+        model: '99140-139',
+        vendor: 'Kwikset',
+        description: 'Home connect smart lock conversion kit with temperature',
+        fromZigbee: [fz.lock, fz.lock_operation_event, fz.battery, fzLocal.temperature],
+        toZigbee: [tz.lock],
+        exposes: (device, options) => {
+            const e = require('zigbee-herdsman-converters/lib/exposes').presets;
+            return [e.lock(), e.battery(), e.action(['lock', 'unlock', 'lock_failure_invalid_pin_or_id',
+                'lock_failure_invalid_schedule', 'unlock_failure_invalid_pin_or_id',
+                'unlock_failure_invalid_schedule', 'jammed', 'manual_lock', 'manual_unlock',
+                'rf_lock', 'rf_unlock', 'keypad_lock', 'keypad_unlock']),
+                e.numeric('temperature', 'r').withUnit('°C').withDescription('Measured temperature')];
+        },
+        configure: async (device, coordinatorEndpoint, logger) => {
+            const endpoint = device.getEndpoint(2);
+            await reporting.bind(endpoint, coordinatorEndpoint, ['closuresDoorLock', 'genPowerCfg', 'msTemperatureMeasurement']);
+            await endpoint.configureReporting('closuresDoorLock', [{
+                attribute: 'lockState',
+                minimumReportInterval: 0,
+                maximumReportInterval: 3600,
+                reportableChange: 0,
+            }]);
+            await endpoint.configureReporting('genPowerCfg', [{
+                attribute: 'batteryPercentageRemaining',
+                minimumReportInterval: 0,
+                maximumReportInterval: 21600,
+                reportableChange: 0,
+            }]);
+            await endpoint.configureReporting('msTemperatureMeasurement', [{
+                attribute: 'measuredValue',
+                minimumReportInterval: 60,
+                maximumReportInterval: 300,
+                reportableChange: 50,
+            }]);
+        },
+    };
+
+    module.exports = definition;
