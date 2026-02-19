@@ -3,6 +3,9 @@ kind: HTTPRoute
 metadata:
   name: jellyseerr
   namespace: swift-sail
+  annotations:
+    gatus.home-operations.com/endpoint: |
+      group: "Downloads & Media (Swift Sail⛵)"
 spec:
   parentRefs:
     - name: cell-membrane-gateway

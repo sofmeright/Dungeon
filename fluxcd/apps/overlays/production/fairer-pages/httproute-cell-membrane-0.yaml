@@ -4,6 +4,8 @@ metadata:
   name: fairer-pages-cell-membrane-0
   namespace: tingle-tuner
   annotations:
+    gatus.home-operations.com/endpoint: |
+      group: "Tools & Utilities (Tingle Tuner🔧)"
     gatus.home-operations.com/enabled: "false"
 spec:
   parentRefs:

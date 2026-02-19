@@ -2,6 +2,9 @@ apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
 metadata:
   name: it-tools-xylem
+  annotations:
+    gatus.home-operations.com/endpoint: |
+      group: "Tools & Utilities (Tingle Tuner🔧)"
 spec:
   parentRefs:
     - name: xylem-gateway

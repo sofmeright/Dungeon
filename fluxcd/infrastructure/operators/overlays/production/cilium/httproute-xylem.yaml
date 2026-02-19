@@ -3,6 +3,9 @@ kind: HTTPRoute
 metadata:
   name: hubble-xylem
   namespace: kube-system
+  annotations:
+    gatus.home-operations.com/endpoint: |
+      group: "Cluster Infrastructure (Kube System⚙️)"
 spec:
   parentRefs:
     - name: xylem-gateway

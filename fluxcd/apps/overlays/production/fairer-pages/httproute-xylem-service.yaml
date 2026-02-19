@@ -5,6 +5,7 @@ metadata:
   namespace: tingle-tuner
   annotations:
     gatus.home-operations.com/endpoint: |
+      group: "Tools & Utilities (Tingle Tuner🔧)"
       conditions:
         - "[STATUS] == 200"
         - "[RESPONSE_TIME] < 5000"

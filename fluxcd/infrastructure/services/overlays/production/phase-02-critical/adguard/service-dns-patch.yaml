@@ -13,7 +13,7 @@
 - op: add
   path: /metadata/annotations/gatus.home-operations.com~1endpoint
   value: |
-    group: Infrastructure
+    group: "DNS & Network (Compass🧭)"
     url: "172.22.30.122"
     dns:
       query-name: "dns.prplanit.internal"

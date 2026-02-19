@@ -4,6 +4,7 @@ metadata:
   name: linkstack-xylem
   annotations:
     gatus.home-operations.com/endpoint: |
+      group: "Personal Sites (Kokiri Forest🌿)"
       conditions:
         - "[STATUS] == any(200, 302)"
         - "[BODY] != pat(*Fairer Pages*)"

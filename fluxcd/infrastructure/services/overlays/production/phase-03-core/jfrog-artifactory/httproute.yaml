@@ -3,18 +3,21 @@ kind: HTTPRoute
 metadata:
   name: jfrog-artifactory-jcr
   namespace: compass
+  annotations:
+    gatus.home-operations.com/endpoint: |
+      group: "Business Apps (Hyrule Castle🏰)"
 spec:
   parentRefs:
-  - name: xylem-gateway
-    namespace: arylls-lookout
-    sectionName: https
+    - name: xylem-gateway
+      namespace: arylls-lookout
+      sectionName: https
   hostnames:
-  - "jcr.pcfae.com"
+    - "jcr.pcfae.com"
   rules:
-  - matches:
-    - path:
-        type: PathPrefix
-        value: /
-    backendRefs:
-    - name: jfrog-artifactory-jcr
-      port: 8082
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /
+      backendRefs:
+        - name: jfrog-artifactory-jcr
+          port: 8082

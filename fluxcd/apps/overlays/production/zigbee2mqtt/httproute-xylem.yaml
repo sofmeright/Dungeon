@@ -2,6 +2,9 @@ apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
 metadata:
   name: zigbee2mqtt-xylem
+  annotations:
+    gatus.home-operations.com/endpoint: |
+      group: "Security & IoT (Lens of Truth🔍)"
 spec:
   parentRefs:
     - name: xylem-gateway

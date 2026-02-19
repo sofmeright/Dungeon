@@ -5,6 +5,7 @@ metadata:
   namespace: zeldas-lullaby
   annotations:
     gatus.home-operations.com/endpoint: |
+      group: "Administration (Zelda's Lullaby🎵)"
       conditions:
         - "[STATUS] == any(200, 302)"
         - "[BODY] != pat(*Fairer Pages*)"

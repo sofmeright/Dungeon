@@ -5,6 +5,7 @@ metadata:
   namespace: hyrule-castle
   annotations:
     gatus.home-operations.com/endpoint: |
+      group: "Business Apps (Hyrule Castle🏰)"
       conditions:
         - "[STATUS] == any(200, 302)"
         - "[BODY] != pat(*no healthy upstream*)"

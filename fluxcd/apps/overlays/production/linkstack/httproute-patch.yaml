@@ -2,17 +2,20 @@ apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
 metadata:
   name: linkstack
+  annotations:
+    gatus.home-operations.com/endpoint: |
+      group: "Personal Sites (Kokiri Forest🌿)"
 spec:
   parentRefs:
-  - name: phloem-gateway
-    namespace: kokiri-forest
+    - name: phloem-gateway
+      namespace: kokiri-forest
   hostnames:
-  - ls.sofmeright.com
+    - ls.sofmeright.com
   rules:
-  - matches:
-    - path:
-        type: PathPrefix
-        value: /
-    backendRefs:
-    - name: linkstack
-      port: 40323
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /
+      backendRefs:
+        - name: linkstack
+          port: 40323

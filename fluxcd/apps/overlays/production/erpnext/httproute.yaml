@@ -3,6 +3,9 @@ kind: HTTPRoute
 metadata:
   name: erpnext-frontend
   namespace: hyrule-castle
+  annotations:
+    gatus.home-operations.com/endpoint: |
+      group: "Business Apps (Hyrule Castle🏰)"
 spec:
   parentRefs:
     - name: cell-membrane-gateway

@@ -2,13 +2,16 @@ apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
 metadata:
   name: immich
+  annotations:
+    gatus.home-operations.com/endpoint: |
+      group: "Content & Media (Temple of Time🏛️)"
 spec:
   parentRefs:
-  - name: xylem-gateway
-    namespace: arylls-lookout
+    - name: xylem-gateway
+      namespace: arylls-lookout
   hostnames:
-  - images.pcfae.com
+    - images.pcfae.com
   rules:
-  - backendRefs:
-    - name: immich
-      port: 2283
+    - backendRefs:
+        - name: immich
+          port: 2283

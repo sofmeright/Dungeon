@@ -4,6 +4,7 @@ metadata:
   name: joplin-xylem
   annotations:
     gatus.home-operations.com/endpoint: |
+      group: "Content & Media (Temple of Time🏛️)"
       conditions:
         - "[STATUS] == any(200, 302)"
         - "[BODY] != pat(*Fairer Pages*)"

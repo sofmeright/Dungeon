@@ -4,6 +4,7 @@ metadata:
   name: monica-xylem
   annotations:
     gatus.home-operations.com/endpoint: |
+      group: "Private Apps (Pedestal of Time⚔️)"
       conditions:
         - "[STATUS] == any(200, 302)"
         - "[BODY] != pat(*Fairer Pages*)"

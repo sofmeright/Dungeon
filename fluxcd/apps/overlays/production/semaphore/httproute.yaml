@@ -2,17 +2,20 @@ apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
 metadata:
   name: semaphore
+  annotations:
+    gatus.home-operations.com/endpoint: |
+      group: "Administration (Zelda's Lullaby🎵)"
 spec:
   parentRefs:
-  - name: xylem-gateway
-    namespace: arylls-lookout
+    - name: xylem-gateway
+      namespace: arylls-lookout
   hostnames:
-  - "ansible.pcfae.com"
+    - "ansible.pcfae.com"
   rules:
-  - matches:
-    - path:
-        type: PathPrefix
-        value: /
-    backendRefs:
-    - name: semaphore
-      port: 3000
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /
+      backendRefs:
+        - name: semaphore
+          port: 3000

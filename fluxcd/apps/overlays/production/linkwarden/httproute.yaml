@@ -3,6 +3,9 @@ kind: HTTPRoute
 metadata:
   name: linkwarden
   namespace: temple-of-time
+  annotations:
+    gatus.home-operations.com/endpoint: |
+      group: "Content & Media (Temple of Time🏛️)"
 spec:
   parentRefs:
     - name: cell-membrane-gateway

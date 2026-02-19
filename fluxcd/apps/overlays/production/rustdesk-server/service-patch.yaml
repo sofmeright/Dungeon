@@ -6,7 +6,7 @@ metadata:
     lbipam.cilium.io/ips: "172.22.30.8"
     lbipam.cilium.io/sharing-key: "hookshot"
     gatus.home-operations.com/endpoint: |
-      group: Infrastructure
+      group: "Remote Access (Hookshot🪝)"
       url: tcp://172.22.30.8:41116
       interval: 60s
       conditions:
@@ -22,7 +22,7 @@ metadata:
     lbipam.cilium.io/ips: "172.22.30.8"
     lbipam.cilium.io/sharing-key: "hookshot"
     gatus.home-operations.com/endpoint: |
-      group: Infrastructure
+      group: "Remote Access (Hookshot🪝)"
       url: tcp://172.22.30.8:41117
       interval: 60s
       conditions:

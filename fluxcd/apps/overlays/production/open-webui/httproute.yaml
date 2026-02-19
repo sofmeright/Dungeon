@@ -3,18 +3,21 @@ kind: HTTPRoute
 metadata:
   name: open-webui
   namespace: temple-of-time
+  annotations:
+    gatus.home-operations.com/endpoint: |
+      group: "Content & Media (Temple of Time🏛️)"
 spec:
   parentRefs:
-  - name: xylem-gateway
-    namespace: arylls-lookout
-    sectionName: https-pcfae
+    - name: xylem-gateway
+      namespace: arylls-lookout
+      sectionName: https-pcfae
   hostnames:
-  - "ai.pcfae.com"
+    - "ai.pcfae.com"
   rules:
-  - matches:
-    - path:
-        type: PathPrefix
-        value: /
-    backendRefs:
-    - name: open-webui
-      port: 3003
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /
+      backendRefs:
+        - name: open-webui
+          port: 3003

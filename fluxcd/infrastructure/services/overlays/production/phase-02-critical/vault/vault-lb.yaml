@@ -9,7 +9,7 @@ metadata:
     lbipam.cilium.io/sharing-cross-namespace: "*"
     service.cilium.io/loadbalancer-mode: "dsr"
     gatus.home-operations.com/endpoint: |
-      group: Infrastructure
+      group: "Administration (Zelda's Lullaby🎵)"
       url: http://172.22.30.86:8200/v1/sys/health
       interval: 60s
       conditions:

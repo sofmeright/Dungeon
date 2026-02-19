@@ -3,6 +3,9 @@ kind: HTTPRoute
 metadata:
   name: code-server
   namespace: tingle-tuner
+  annotations:
+    gatus.home-operations.com/endpoint: |
+      group: "Tools & Utilities (Tingle Tuner🔧)"
 spec:
   parentRefs:
     - name: xylem-gateway

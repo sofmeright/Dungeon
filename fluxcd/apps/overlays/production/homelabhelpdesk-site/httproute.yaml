@@ -3,6 +3,9 @@ kind: HTTPRoute
 metadata:
   name: homelabhelpdesk-site
   namespace: lost-woods
+  annotations:
+    gatus.home-operations.com/endpoint: |
+      group: "Discovery & Dashboards (Lost Woods🌲)"
 spec:
   parentRefs:
     - name: cell-membrane-gateway

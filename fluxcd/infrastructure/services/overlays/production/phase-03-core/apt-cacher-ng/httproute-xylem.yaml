@@ -4,6 +4,7 @@ metadata:
   name: apt-cacher-ng-xylem
   annotations:
     gatus.home-operations.com/endpoint: |
+      group: "Business Apps (Hyrule Castle🏰)"
       conditions:
         - "[STATUS] == 406"
         - "[RESPONSE_TIME] < 5000"

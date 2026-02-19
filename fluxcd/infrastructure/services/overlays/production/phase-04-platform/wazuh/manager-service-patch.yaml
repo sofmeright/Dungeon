@@ -6,7 +6,7 @@ metadata:
     lbipam.cilium.io/ips: "172.22.30.119"
     lbipam.cilium.io/sharing-key: "lens-of-truth"
     gatus.home-operations.com/endpoint: |
-      group: Infrastructure
+      group: "Security & IoT (Lens of Truth🔍)"
       url: tcp://172.22.30.119:55000
       interval: 60s
       conditions:

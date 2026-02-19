@@ -4,6 +4,7 @@ metadata:
   name: sabnzbd-xylem
   annotations:
     gatus.home-operations.com/endpoint: |
+      group: "Downloads & Media (Swift Sail⛵)"
       conditions:
         - "[STATUS] == any(200, 302)"
         - "[BODY] != pat(*Fairer Pages*)"

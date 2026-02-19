@@ -5,6 +5,7 @@ metadata:
   namespace: temple-of-time
   annotations:
     gatus.home-operations.com/endpoint: |
+      group: "Content & Media (Temple of Time🏛️)"
       conditions:
         - "[STATUS] == 200"
         - "[RESPONSE_TIME] < 5000"
@@ -29,6 +30,9 @@ kind: HTTPRoute
 metadata:
   name: shlink-internal
   namespace: temple-of-time
+  annotations:
+    gatus.home-operations.com/endpoint: |
+      group: "Content & Media (Temple of Time🏛️)"
 spec:
   parentRefs:
     - name: xylem-gateway
@@ -49,6 +53,9 @@ kind: HTTPRoute
 metadata:
   name: shlink-web-client
   namespace: temple-of-time
+  annotations:
+    gatus.home-operations.com/endpoint: |
+      group: "Content & Media (Temple of Time🏛️)"
 spec:
   parentRefs:
     - name: xylem-gateway

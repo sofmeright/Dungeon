@@ -5,6 +5,7 @@ metadata:
   namespace: zeldas-lullaby
   annotations:
     gatus.home-operations.com/endpoint: |
+      group: "Remote Access (Hookshot🪝)"
       conditions:
         - "[STATUS] == any(200, 302)"
         - "[BODY] != pat(*Fairer Pages*)"

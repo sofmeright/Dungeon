@@ -3,6 +3,9 @@ kind: HTTPRoute
 metadata:
   name: netbird
   namespace: zeldas-lullaby
+  annotations:
+    gatus.home-operations.com/endpoint: |
+      group: "Administration (Zelda's Lullaby🎵)"
 spec:
   parentRefs:
     - name: cell-membrane-gateway

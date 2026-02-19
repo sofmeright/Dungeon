@@ -2,13 +2,16 @@ apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
 metadata:
   name: libretranslate
+  annotations:
+    gatus.home-operations.com/endpoint: |
+      group: "Tools & Utilities (Tingle Tuner🔧)"
 spec:
   parentRefs:
-  - name: xylem-gateway
-    namespace: arylls-lookout
+    - name: xylem-gateway
+      namespace: arylls-lookout
   hostnames:
-  - translate.pcfae.com
+    - translate.pcfae.com
   rules:
-  - backendRefs:
-    - name: libretranslate
-      port: 5000
+    - backendRefs:
+        - name: libretranslate
+          port: 5000
