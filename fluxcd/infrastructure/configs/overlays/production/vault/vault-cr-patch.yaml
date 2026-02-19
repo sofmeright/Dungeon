@@ -108,7 +108,7 @@ spec:
               - email
               - "urn:zitadel:iam:org:project:roles"
             bound_claims:
-              "urn:zitadel:iam:org:project:roles": "Admin"
+              roles: "Admin"
     secrets:
       - path: operationtimecapsule
         type: kv
