@@ -26,11 +26,17 @@ spec:
               else
                 echo "configuration.yaml already exists, skipping."
               fi
+              echo "Syncing external converters..."
+              mkdir -p /app/data/external_converters
+              cp /seed-converters/*.mjs /app/data/external_converters/ 2>/dev/null || true
+              echo "External converters synced."
           volumeMounts:
             - name: data
               mountPath: /app/data
             - name: config
               mountPath: /seed
+            - name: external-converters
+              mountPath: /seed-converters
       containers:
         - name: zigbee2mqtt
           image: ghcr.io/koenkk/zigbee2mqtt:PLACEHOLDER_TAG
@@ -52,9 +58,6 @@ spec:
           volumeMounts:
             - name: data
               mountPath: /app/data
-            - name: external-converters
-              mountPath: /app/data/external_converters
-              readOnly: true
       volumes:
         - name: config
           configMap:
