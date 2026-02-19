@@ -31,3 +31,11 @@ patches:
     target:
       kind: Deployment
       name: zitadel-login-v2
+  - path: redis-replication-patch.yaml
+    target:
+      kind: RedisReplication
+      name: zitadel-redis
+  - path: externalsecret-redis-patch.yaml
+    target:
+      kind: ExternalSecret
+      name: zitadel-redis-password

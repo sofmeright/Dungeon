@@ -66,6 +66,12 @@ spec:
                 secretKeyRef:
                   name: zitadel-secrets
                   key: SMTP_PASSWORD
+            # Redis cache password
+            - name: ZITADEL_CACHES_CONNECTORS_REDIS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: zitadel-redis-password
+                  key: password
             # LoginV2 feature configuration
             - name: ZITADEL_DEFAULTINSTANCE_FEATURES_LOGINV2_REQUIRED
               value: "true"

@@ -1,0 +1,35 @@
+apiVersion: redis.redis.opstreelabs.in/v1beta2
+kind: RedisSentinel
+metadata:
+  name: zitadel-sentinel
+spec:
+  clusterSize: 3
+  podSecurityContext:
+    runAsUser: 1000
+    runAsGroup: 1000
+    fsGroup: 1000
+  kubernetesConfig:
+    image: quay.io/opstree/redis-sentinel:v7.4.7
+    imagePullPolicy: IfNotPresent
+    redisSecret:
+      name: zitadel-redis-password
+      key: password
+    resources:
+      requests:
+        cpu: 50m
+        memory: 64Mi
+      limits:
+        cpu: 200m
+        memory: 128Mi
+  redisSentinelConfig:
+    redisReplicationName: zitadel-redis
+    masterGroupName: zitadel-redis
+    redisPort: "6379"
+    quorum: "2"
+    parallelSyncs: "1"
+    failoverTimeout: "180000"
+    downAfterMilliseconds: "30000"
+    redisReplicationPassword:
+      secretKeyRef:
+        name: zitadel-redis-password
+        key: password

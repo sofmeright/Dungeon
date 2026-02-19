@@ -106,3 +106,28 @@ data:
       MaxFailureCount: 5
       BulkLimit: 200
       Customizations: {}
+
+    # Cache Configuration (Redis-backed, shared across all 3 Zitadel pods)
+    Caches:
+      Connectors:
+        Redis:
+          Enabled: true
+          Addr: zitadel-redis-master.zeldas-lullaby.svc.cluster.local:6379
+          CircuitBreaker:
+            Interval: 0
+            MaxConsecutiveFailures: 5
+            MaxFailureRatio: 0.1
+            Timeout: 60s
+            MaxRetryRequests: 1
+      Instance:
+        Connector: "redis"
+        MaxAge: 1h
+        LastUsage: 10m
+      Organization:
+        Connector: "redis"
+        MaxAge: 1h
+        LastUsage: 10m
+      Milestones:
+        Connector: "redis"
+        MaxAge: 1h
+        LastUsage: 10m

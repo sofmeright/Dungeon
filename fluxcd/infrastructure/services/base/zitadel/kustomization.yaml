@@ -13,3 +13,7 @@ resources:
   - admin-sa-provision-job.yaml
   - login-v2-deployment.yaml
   - login-v2-service.yaml
+  - redis-replication.yaml
+  - redis-sentinel.yaml
+  - redis-configmap.yaml
+  - externalsecret-redis.yaml
