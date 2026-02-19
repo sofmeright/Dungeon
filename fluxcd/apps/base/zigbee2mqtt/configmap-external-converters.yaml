@@ -4,10 +4,10 @@ metadata:
   name: zigbee2mqtt-external-converters
 data:
   kwikset_99140_139_temperature.mjs: |
-    import fz from 'zigbee-herdsman-converters/converters/fromZigbee.js';
-    import tz from 'zigbee-herdsman-converters/converters/toZigbee.js';
-    import * as reporting from 'zigbee-herdsman-converters/lib/reporting.js';
-    import {presets as e} from 'zigbee-herdsman-converters/lib/exposes.js';
+    import fz from 'zigbee-herdsman-converters/converters/fromZigbee';
+    import tz from 'zigbee-herdsman-converters/converters/toZigbee';
+    import * as reporting from 'zigbee-herdsman-converters/lib/reporting';
+    import {presets as e} from 'zigbee-herdsman-converters/lib/exposes';
 
     const fzLocal = {
         temperature: {
