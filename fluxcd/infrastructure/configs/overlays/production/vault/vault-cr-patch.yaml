@@ -4,6 +4,12 @@ metadata:
   name: vault
 spec:
   image: docker.io/hashicorp/vault:1.21.3
+  envsConfig:
+    - name: VAULT_OIDC_CLIENT_SECRET
+      valueFrom:
+        secretKeyRef:
+          name: vault-oidc-credentials
+          key: client-secret
   vaultPodSpec:
     imagePullSecrets:
       - name: jcr-pcfae-dungeon-pull-secret
@@ -62,6 +68,11 @@ spec:
           path "zeldas-letter/metadata/apps/zitadel" {
             capabilities = ["read", "list"]
           }
+      - name: vault-admin
+        rules: |
+          path "*" {
+            capabilities = ["create", "read", "update", "delete", "list", "sudo"]
+          }
     auth:
       - type: kubernetes
         config:
@@ -78,6 +89,26 @@ spec:
             bound_service_account_namespaces: ["zeldas-lullaby"]
             policies: ["zitadel-provisioner"]
             ttl: 1h
+      - type: oidc
+        config:
+          oidc_discovery_url: https://sso.prplanit.com
+          oidc_client_id: "360752964924708521"
+          oidc_client_secret: '${ env `VAULT_OIDC_CLIENT_SECRET` }'
+          default_role: vault-admin
+        roles:
+          - name: vault-admin
+            user_claim: sub
+            policies: ["vault-admin"]
+            allowed_redirect_uris:
+              - https://vault.pcfae.com/ui/vault/auth/oidc/oidc/callback
+              - http://localhost:8250/oidc/callback
+            oidc_scopes:
+              - openid
+              - profile
+              - email
+              - "urn:zitadel:iam:org:project:roles"
+            bound_claims:
+              "urn:zitadel:iam:org:project:roles": "Admin"
     secrets:
       - path: operationtimecapsule
         type: kv
