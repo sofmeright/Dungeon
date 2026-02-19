@@ -14,7 +14,7 @@
   path: /metadata/annotations/gatus.home-operations.com~1endpoint
   value: |
     group: Infrastructure
-    url: dns://172.22.30.122
+    url: dns://prplanit.com@172.22.30.122
     interval: 60s
     conditions:
       - "[DNS_RCODE] == NOERROR"
