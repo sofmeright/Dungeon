@@ -27,6 +27,7 @@ spec:
                 echo "configuration.yaml already exists, skipping."
               fi
               echo "Syncing external converters..."
+              rm -rf /app/data/external_converters
               mkdir -p /app/data/external_converters
               cp /seed-converters/*.mjs /app/data/external_converters/ 2>/dev/null || true
               echo "External converters synced."
