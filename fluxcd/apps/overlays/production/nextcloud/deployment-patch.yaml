@@ -50,7 +50,7 @@ spec:
     spec:
       containers:
         - name: notify-push
-          image: docker.io/nextcloud/aio-notify-push:20250210
+          image: docker.io/nextcloud/aio-notify-push:20250325_084656
           env:
             - name: NEXTCLOUD_URL
               value: "http://nextcloud.temple-of-time.svc.cluster.local"
@@ -64,7 +64,7 @@ spec:
     spec:
       containers:
         - name: imaginary
-          image: docker.io/nextcloud/aio-imaginary:20250210
+          image: docker.io/nextcloud/aio-imaginary:20260218_123804
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -75,7 +75,7 @@ spec:
     spec:
       containers:
         - name: signaling
-          image: docker.io/strukturag/nextcloud-spreed-signaling:1.3.3
+          image: docker.io/strukturag/nextcloud-spreed-signaling:e78e914
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -86,7 +86,7 @@ spec:
     spec:
       containers:
         - name: whiteboard
-          image: ghcr.io/nextcloud-releases/whiteboard:1.0.4
+          image: docker.io/nextcloud/aio-whiteboard:20260218_123804
           env:
             - name: NEXTCLOUD_URL
               value: "https://ncloud.optcp.com"
