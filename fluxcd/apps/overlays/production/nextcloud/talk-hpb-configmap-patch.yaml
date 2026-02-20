@@ -11,7 +11,7 @@ data:
     debug = false
 
     [sessions]
-    hashkey = nextcloud-talk-hpb-session-key
+    hashkey = PLACEHOLDER_HASH_KEY
 
     [backend]
     backends = backend-1
@@ -21,11 +21,7 @@ data:
 
     [backend-1]
     url = https://ncloud.optcp.com
-    secret = TALK_HPB_SECRET_PLACEHOLDER
+    secret = PLACEHOLDER_TALK_SECRET
 
     [nats]
-    url = nats://localhost:4222
-
-    [turn]
-    apikey = nextcloud-turn-api-key
-    servers = turn:172.22.30.86:3478
+    url = nats://loopback

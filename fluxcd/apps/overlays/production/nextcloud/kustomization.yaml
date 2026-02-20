@@ -9,15 +9,20 @@ resources:
   - cephfs-html-pv.yaml
 
 patches:
-  - path: deployment-patch.yaml
-  - path: configmap-patch.yaml
+  - path: helmrelease-patch.yaml
+    target:
+      kind: HelmRelease
+      name: nextcloud
+  - path: aux-configmap-patch.yaml
   - path: externalsecret-patch.yaml
   - path: postgres-cluster-patch.yaml
   - path: postgres-credentials-patch.yaml
   - path: redis-replication-patch.yaml
   - path: externalsecret-redis-patch.yaml
-  - path: collabora-patch.yaml
   - path: clamav-patch.yaml
   - path: elasticsearch-patch.yaml
   - path: talk-hpb-configmap-patch.yaml
+  - path: talk-hpb-patch.yaml
+  - path: notify-push-patch.yaml
+  - path: whiteboard-patch.yaml
   - path: externalsecret-postgres-backup-patch.yaml

@@ -14,6 +14,28 @@ spec:
       labels:
         app: nextcloud-talk-hpb
     spec:
+      initContainers:
+        - name: render-config
+          image: docker.io/alpine/k8s:1.34.0
+          command:
+            - sh
+            - -c
+            - |
+              cp /template/server.conf /config/server.conf
+              sed -i "s|PLACEHOLDER_HASH_KEY|${TALK_HPB_SECRET}|g" /config/server.conf
+              sed -i "s|PLACEHOLDER_TALK_SECRET|${TALK_HPB_SECRET}|g" /config/server.conf
+          env:
+            - name: TALK_HPB_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: nextcloud-secrets
+                  key: TALK_HPB_SECRET
+          volumeMounts:
+            - name: config-template
+              mountPath: /template
+              readOnly: true
+            - name: config
+              mountPath: /config
       containers:
         - name: signaling
           image: docker.io/strukturag/nextcloud-spreed-signaling:latest
@@ -45,6 +67,8 @@ spec:
               cpu: 500m
               memory: 256Mi
       volumes:
-        - name: config
+        - name: config-template
           configMap:
             name: nextcloud-talk-hpb-config
+        - name: config
+          emptyDir: {}

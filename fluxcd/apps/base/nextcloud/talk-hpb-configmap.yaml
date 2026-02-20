@@ -26,8 +26,4 @@ data:
     secret = PLACEHOLDER_TALK_SECRET
 
     [nats]
-    url = nats://localhost:4222
-
-    [turn]
-    apikey = PLACEHOLDER_TURN_API_KEY
-    servers = turn:PLACEHOLDER_TURN_SERVER
+    url = nats://loopback

@@ -1,0 +1,122 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: nextcloud
+spec:
+  chart:
+    spec:
+      version: "8.9.1"
+  values:
+    image:
+      tag: "31.0.10"
+
+    replicaCount: 3
+
+    nextcloud:
+      host: ncloud.optcp.com
+      trustedDomains:
+        - ncloud.optcp.com
+        - ncloud.pcfae.com
+
+      mail:
+        enabled: true
+        fromAddress: ncloud
+        domain: gmail.com
+        smtp:
+          host: smtp.gmail.com
+          secure: tls
+          port: 587
+          authtype: LOGIN
+
+      extraEnv:
+        - name: TRUSTED_PROXIES
+          value: "192.168.144.0/20"
+        - name: OVERWRITECLIURL
+          value: "https://ncloud.optcp.com"
+        - name: OVERWRITEPROTOCOL
+          value: "https"
+        - name: PHP_MEMORY_LIMIT
+          value: "1G"
+        - name: PHP_UPLOAD_LIMIT
+          value: "16G"
+        - name: MAIL_FROM_ADDRESS
+          valueFrom:
+            secretKeyRef:
+              name: nextcloud-secrets
+              key: MAIL_FROM_ADDRESS
+
+      objectStore:
+        s3:
+          enabled: true
+          host: ceph-rgw.gorons-bracelet.svc.cluster.local
+          bucket: nextcloud
+          port: "80"
+          ssl: false
+          region: us-east-1
+          usePathStyle: true
+          autoCreate: false
+          existingSecret: nextcloud-secrets
+          secretKeys:
+            accessKey: OBJECTSTORE_S3_KEY
+            secretKey: OBJECTSTORE_S3_SECRET
+
+      strategy:
+        type: RollingUpdate
+        rollingUpdate:
+          maxUnavailable: 1
+          maxSurge: 0
+
+    externalDatabase:
+      host: nextcloud-postgres-rw
+      database: nextcloud
+
+    externalRedis:
+      host: nextcloud-redis-master
+
+    persistence:
+      enabled: true
+      existingClaim: nextcloud-html
+
+    cronjob:
+      enabled: true
+      type: sidecar
+
+    startupProbe:
+      initialDelaySeconds: 30
+      periodSeconds: 10
+      failureThreshold: 30
+
+    livenessProbe:
+      initialDelaySeconds: 120
+      periodSeconds: 30
+
+    readinessProbe:
+      initialDelaySeconds: 30
+      periodSeconds: 15
+
+    resources:
+      requests:
+        cpu: 200m
+        memory: 512Mi
+      limits:
+        cpu: 2
+        memory: 2Gi
+
+    collabora:
+      enabled: true
+      fullnameOverride: nextcloud-collabora
+      collabora:
+        aliasgroups:
+          - host: "https://ncloud.optcp.com:443"
+        server_name: ncloud.optcp.com
+        extra_params: "--o:ssl.enable=false --o:ssl.termination=true"
+      securityContext:
+        capabilities:
+          add:
+            - MKNOD
+            - FOWNER
+            - SYS_CHROOT
+        allowPrivilegeEscalation: true
+
+    imaginary:
+      enabled: true

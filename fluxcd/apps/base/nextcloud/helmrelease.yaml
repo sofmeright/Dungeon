@@ -1,0 +1,100 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: nextcloud
+spec:
+  releaseName: nextcloud
+  interval: 30m
+  chart:
+    spec:
+      chart: nextcloud
+      sourceRef:
+        kind: HelmRepository
+        name: nextcloud
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    remediation:
+      retries: 3
+  values:
+    fullnameOverride: "nextcloud"
+
+    image:
+      repository: docker.io/library/nextcloud
+      flavor: apache
+
+    nextcloud:
+      host: PLACEHOLDER_HOST
+      existingSecret:
+        enabled: true
+        secretName: nextcloud-secrets
+        usernameKey: NEXTCLOUD_ADMIN_USER
+        passwordKey: NEXTCLOUD_ADMIN_PASSWORD
+        smtpUsernameKey: SMTP_NAME
+        smtpPasswordKey: SMTP_PASSWORD
+
+      mail:
+        enabled: false
+
+      trustedDomains: []
+
+      objectStore:
+        s3:
+          enabled: false
+
+      strategy:
+        type: Recreate
+
+    # Disable all bundled databases — external only
+    internalDatabase:
+      enabled: false
+    postgresql:
+      enabled: false
+    mariadb:
+      enabled: false
+    redis:
+      enabled: false
+
+    externalDatabase:
+      enabled: true
+      type: postgresql
+      existingSecret:
+        enabled: true
+        secretName: nextcloud-secrets
+        usernameKey: POSTGRES_USER
+        passwordKey: POSTGRES_PASSWORD
+
+    externalRedis:
+      enabled: true
+      existingSecret:
+        enabled: true
+        secretName: nextcloud-secrets
+        passwordKey: REDIS_HOST_PASSWORD
+
+    persistence:
+      enabled: false
+
+    cronjob:
+      enabled: false
+
+    startupProbe:
+      enabled: true
+      initialDelaySeconds: 30
+      periodSeconds: 10
+      failureThreshold: 30
+
+    livenessProbe:
+      enabled: true
+
+    readinessProbe:
+      enabled: true
+
+    collabora:
+      enabled: false
+
+    imaginary:
+      enabled: false
+
+    ingress:
+      enabled: false

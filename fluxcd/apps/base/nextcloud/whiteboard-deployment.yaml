@@ -29,6 +29,20 @@ spec:
                 secretKeyRef:
                   name: nextcloud-secrets
                   key: WHITEBOARD_JWT_SECRET
+            - name: STORAGE_STRATEGY
+              value: "redis"
+            - name: REDIS_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: nextcloud-aux-config
+                  key: REDIS_HOST
+            - name: REDIS_HOST_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: nextcloud-secrets
+                  key: REDIS_HOST_PASSWORD
+            - name: REDIS_URL
+              value: "redis://:$(REDIS_HOST_PASSWORD)@$(REDIS_HOST):6379"
           readinessProbe:
             tcpSocket:
               port: http

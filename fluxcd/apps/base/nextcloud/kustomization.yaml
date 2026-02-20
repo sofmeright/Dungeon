@@ -1,11 +1,10 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
-  # Core
-  - deployment.yaml
-  - deployment-cron.yaml
-  - service.yaml
-  - configmap.yaml
+  # Core (Helm chart)
+  - repository.yaml
+  - helmrelease.yaml
+  - aux-configmap.yaml
   - externalsecret.yaml
   # Database
   - postgres-cluster.yaml
@@ -16,12 +15,7 @@ resources:
   - redis-replication.yaml
   - redis-sentinel.yaml
   - externalsecret-redis.yaml
-  # Collaboration
-  - collabora-deployment.yaml
-  - collabora-service.yaml
   # Processing
-  - imaginary-deployment.yaml
-  - imaginary-service.yaml
   - clamav-statefulset.yaml
   - clamav-service.yaml
   # Real-time

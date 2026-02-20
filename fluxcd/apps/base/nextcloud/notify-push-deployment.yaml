@@ -22,17 +22,17 @@ spec:
               containerPort: 7867
               protocol: TCP
           env:
-            - name: NEXTCLOUD_URL
-              value: PLACEHOLDER_NEXTCLOUD_URL
+            - name: NEXTCLOUD_HOST
+              value: PLACEHOLDER_NEXTCLOUD_HOST
             - name: POSTGRES_HOST
               valueFrom:
                 configMapKeyRef:
-                  name: nextcloud-config
+                  name: nextcloud-aux-config
                   key: POSTGRES_HOST
             - name: POSTGRES_DB
               valueFrom:
                 configMapKeyRef:
-                  name: nextcloud-config
+                  name: nextcloud-aux-config
                   key: POSTGRES_DB
             - name: POSTGRES_USER
               valueFrom:
@@ -47,7 +47,7 @@ spec:
             - name: REDIS_HOST
               valueFrom:
                 configMapKeyRef:
-                  name: nextcloud-config
+                  name: nextcloud-aux-config
                   key: REDIS_HOST
             - name: REDIS_HOST_PASSWORD
               valueFrom:

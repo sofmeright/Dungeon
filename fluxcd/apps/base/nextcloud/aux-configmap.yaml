@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nextcloud-aux-config
+  labels:
+    app: nextcloud
+data:
+  POSTGRES_HOST: PLACEHOLDER_POSTGRES_HOST
+  POSTGRES_DB: PLACEHOLDER_POSTGRES_DB
+  REDIS_HOST: PLACEHOLDER_REDIS_HOST

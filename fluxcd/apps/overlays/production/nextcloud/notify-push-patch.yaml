@@ -1,0 +1,13 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nextcloud-notify-push
+spec:
+  template:
+    spec:
+      containers:
+        - name: notify-push
+          image: docker.io/nextcloud/aio-notify-push:20250325_084656
+          env:
+            - name: NEXTCLOUD_HOST
+              value: "ncloud.optcp.com"
