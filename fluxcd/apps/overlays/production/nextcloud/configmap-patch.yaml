@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nextcloud-config
+data:
+  POSTGRES_HOST: nextcloud-postgres-rw
+  POSTGRES_DB: nextcloud
+  REDIS_HOST: nextcloud-redis-master
+  NEXTCLOUD_TRUSTED_DOMAINS: ncloud.optcp.com ncloud.pcfae.com
+  TRUSTED_PROXIES: 192.168.144.0/20
+  OVERWRITECLIURL: https://ncloud.optcp.com
+  PHP_MEMORY_LIMIT: 1G
+  PHP_UPLOAD_LIMIT: 16G
+  OBJECTSTORE_S3_HOST: ceph-rgw.gorons-bracelet.svc.cluster.local
+  OBJECTSTORE_S3_BUCKET: nextcloud
+  OBJECTSTORE_S3_PORT: "80"
+  OBJECTSTORE_S3_SSL: "false"
+  OBJECTSTORE_S3_REGION: us-east-1

@@ -1,0 +1,79 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nextcloud-notify-push
+  labels:
+    app: nextcloud-notify-push
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nextcloud-notify-push
+  template:
+    metadata:
+      labels:
+        app: nextcloud-notify-push
+    spec:
+      containers:
+        - name: notify-push
+          image: docker.io/nextcloud/aio-notify-push:latest
+          ports:
+            - name: http
+              containerPort: 7867
+              protocol: TCP
+          env:
+            - name: NEXTCLOUD_URL
+              value: PLACEHOLDER_NEXTCLOUD_URL
+            - name: POSTGRES_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: nextcloud-config
+                  key: POSTGRES_HOST
+            - name: POSTGRES_DB
+              valueFrom:
+                configMapKeyRef:
+                  name: nextcloud-config
+                  key: POSTGRES_DB
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: nextcloud-secrets
+                  key: POSTGRES_USER
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: nextcloud-secrets
+                  key: POSTGRES_PASSWORD
+            - name: REDIS_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: nextcloud-config
+                  key: REDIS_HOST
+            - name: REDIS_HOST_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: nextcloud-secrets
+                  key: REDIS_HOST_PASSWORD
+            - name: DATABASE_URL
+              value: "postgres://$(POSTGRES_USER):$(POSTGRES_PASSWORD)@$(POSTGRES_HOST)/$(POSTGRES_DB)"
+            - name: DATABASE_PREFIX
+              value: "oc_"
+          readinessProbe:
+            httpGet:
+              path: /push/test/cookie
+              port: http
+            initialDelaySeconds: 15
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /push/test/cookie
+              port: http
+            initialDelaySeconds: 30
+            periodSeconds: 30
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              cpu: 500m
+              memory: 256Mi

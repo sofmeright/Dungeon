@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nextcloud-collabora
+  labels:
+    app: nextcloud-collabora
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nextcloud-collabora
+  template:
+    metadata:
+      labels:
+        app: nextcloud-collabora
+    spec:
+      containers:
+        - name: collabora
+          image: docker.io/collabora/code:latest
+          ports:
+            - name: http
+              containerPort: 9980
+              protocol: TCP
+          env:
+            - name: domain
+              value: PLACEHOLDER_DOMAIN_REGEX
+            - name: server_name
+              value: PLACEHOLDER_SERVER_NAME
+            - name: extra_params
+              value: "--o:ssl.enable=false --o:ssl.termination=true"
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+              scheme: HTTP
+            initialDelaySeconds: 15
+            periodSeconds: 10
+            timeoutSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+              scheme: HTTP
+            initialDelaySeconds: 30
+            periodSeconds: 30
+            timeoutSeconds: 10
+          resources:
+            requests:
+              cpu: 200m
+              memory: 512Mi
+            limits:
+              cpu: 2
+              memory: 2Gi

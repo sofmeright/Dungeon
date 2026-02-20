@@ -1,0 +1,20 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: nextcloud-clamav
+spec:
+  template:
+    spec:
+      containers:
+        - name: clamav
+          image: docker.io/clamav/clamav:1.4.2
+  volumeClaimTemplates:
+    - metadata:
+        name: db
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        storageClassName: ceph-rbd
+        resources:
+          requests:
+            storage: 2Gi

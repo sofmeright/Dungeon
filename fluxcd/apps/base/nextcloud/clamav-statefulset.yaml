@@ -1,0 +1,60 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: nextcloud-clamav
+  labels:
+    app: nextcloud-clamav
+spec:
+  serviceName: nextcloud-clamav
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nextcloud-clamav
+  template:
+    metadata:
+      labels:
+        app: nextcloud-clamav
+    spec:
+      containers:
+        - name: clamav
+          image: docker.io/clamav/clamav:stable
+          ports:
+            - name: clamd
+              containerPort: 3310
+              protocol: TCP
+          env:
+            - name: CLAMAV_NO_FRESHCLAMD
+              value: "false"
+            - name: CLAMAV_NO_MILTERD
+              value: "true"
+          volumeMounts:
+            - name: db
+              mountPath: /var/lib/clamav
+          readinessProbe:
+            tcpSocket:
+              port: clamd
+            initialDelaySeconds: 60
+            periodSeconds: 15
+          livenessProbe:
+            tcpSocket:
+              port: clamd
+            initialDelaySeconds: 120
+            periodSeconds: 30
+            failureThreshold: 5
+          resources:
+            requests:
+              cpu: 100m
+              memory: 512Mi
+            limits:
+              cpu: 1
+              memory: 2Gi
+  volumeClaimTemplates:
+    - metadata:
+        name: db
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        storageClassName: PLACEHOLDER_STORAGE_CLASS
+        resources:
+          requests:
+            storage: PLACEHOLDER_STORAGE_SIZE

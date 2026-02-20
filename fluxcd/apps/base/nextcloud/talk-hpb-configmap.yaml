@@ -1,0 +1,33 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nextcloud-talk-hpb-config
+  labels:
+    app: nextcloud-talk-hpb
+data:
+  server.conf: |
+    [http]
+    listen = 0.0.0.0:8080
+
+    [app]
+    debug = false
+
+    [sessions]
+    hashkey = PLACEHOLDER_HASH_KEY
+
+    [backend]
+    backends = backend-1
+    allowall = false
+    timeout = 10
+    connectionsperhost = 8
+
+    [backend-1]
+    url = PLACEHOLDER_NEXTCLOUD_URL
+    secret = PLACEHOLDER_TALK_SECRET
+
+    [nats]
+    url = nats://localhost:4222
+
+    [turn]
+    apikey = PLACEHOLDER_TURN_API_KEY
+    servers = turn:PLACEHOLDER_TURN_SERVER

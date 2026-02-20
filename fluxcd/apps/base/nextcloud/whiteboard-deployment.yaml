@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nextcloud-whiteboard
+  labels:
+    app: nextcloud-whiteboard
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nextcloud-whiteboard
+  template:
+    metadata:
+      labels:
+        app: nextcloud-whiteboard
+    spec:
+      containers:
+        - name: whiteboard
+          image: ghcr.io/nextcloud-releases/whiteboard:latest
+          ports:
+            - name: http
+              containerPort: 3002
+              protocol: TCP
+          env:
+            - name: NEXTCLOUD_URL
+              value: PLACEHOLDER_NEXTCLOUD_URL
+            - name: JWT_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: nextcloud-secrets
+                  key: WHITEBOARD_JWT_SECRET
+          readinessProbe:
+            tcpSocket:
+              port: http
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          livenessProbe:
+            tcpSocket:
+              port: http
+            initialDelaySeconds: 15
+            periodSeconds: 30
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              cpu: 500m
+              memory: 256Mi

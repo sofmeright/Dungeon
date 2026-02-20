@@ -1,0 +1,27 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: nextcloud-postgres
+spec:
+  instances: 3
+
+  postgresql:
+    parameters:
+      shared_buffers: "512MB"
+      max_connections: "200"
+
+  bootstrap:
+    initdb:
+      database: nextcloud
+      owner: nextcloud
+
+  enableSuperuserAccess: true
+
+  storage:
+    storageClass: ceph-rbd
+    size: 5Gi
+
+  backup:
+    barmanObjectStore:
+      destinationPath: s3://nextcloud-backups/postgresql
+      endpointURL: http://ceph-rgw.gorons-bracelet.svc.cluster.local

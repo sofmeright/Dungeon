@@ -1,0 +1,43 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: nextcloud-postgres
+spec:
+  instances: PLACEHOLDER_INSTANCES
+
+  affinity:
+    podAntiAffinityType: required
+
+  postgresql:
+    parameters:
+      shared_buffers: "PLACEHOLDER_SHARED_BUFFERS"
+      max_connections: "PLACEHOLDER_MAX_CONNECTIONS"
+      max_slot_wal_keep_size: "800MB"
+
+  bootstrap:
+    initdb:
+      database: PLACEHOLDER_DB_NAME
+      owner: PLACEHOLDER_DB_USER
+      secret:
+        name: nextcloud-postgres-credentials
+
+  storage:
+    storageClass: PLACEHOLDER_STORAGE_CLASS
+    size: PLACEHOLDER_STORAGE_SIZE
+
+  backup:
+    barmanObjectStore:
+      destinationPath: PLACEHOLDER_BACKUP_DESTINATION
+      endpointURL: PLACEHOLDER_S3_ENDPOINT
+      s3Credentials:
+        accessKeyId:
+          name: nextcloud-postgres-backup-s3
+          key: ACCESS_KEY_ID
+        secretAccessKey:
+          name: nextcloud-postgres-backup-s3
+          key: SECRET_ACCESS_KEY
+      wal:
+        compression: gzip
+      data:
+        compression: gzip
+    retentionPolicy: "30d"

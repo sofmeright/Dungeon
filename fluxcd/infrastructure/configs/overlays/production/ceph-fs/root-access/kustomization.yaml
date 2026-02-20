@@ -17,3 +17,4 @@ resources:
   - cephfs-init-shlink.yaml
   - cephfs-init-tacticalrmm.yaml
   - cephfs-init-hasteward.yaml
+  - cephfs-init-nextcloud.yaml

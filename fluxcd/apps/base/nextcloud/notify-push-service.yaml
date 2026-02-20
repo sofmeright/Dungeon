@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: nextcloud-notify-push
+  labels:
+    app: nextcloud-notify-push
+spec:
+  type: ClusterIP
+  ports:
+    - name: http
+      port: 7867
+      targetPort: http
+      protocol: TCP
+  selector:
+    app: nextcloud-notify-push

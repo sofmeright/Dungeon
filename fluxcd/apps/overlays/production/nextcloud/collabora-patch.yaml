@@ -1,0 +1,15 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nextcloud-collabora
+spec:
+  template:
+    spec:
+      containers:
+        - name: collabora
+          image: docker.io/collabora/code:24.04.11.1.1
+          env:
+            - name: domain
+              value: "ncloud\\.optcp\\.com|ncloud\\.pcfae\\.com"
+            - name: server_name
+              value: "ncloud.optcp.com"

@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nextcloud-talk-hpb
+  labels:
+    app: nextcloud-talk-hpb
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nextcloud-talk-hpb
+  template:
+    metadata:
+      labels:
+        app: nextcloud-talk-hpb
+    spec:
+      containers:
+        - name: signaling
+          image: docker.io/strukturag/nextcloud-spreed-signaling:latest
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          volumeMounts:
+            - name: config
+              mountPath: /config
+              readOnly: true
+          readinessProbe:
+            httpGet:
+              path: /api/v1/welcome
+              port: http
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /api/v1/welcome
+              port: http
+            initialDelaySeconds: 15
+            periodSeconds: 30
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              cpu: 500m
+              memory: 256Mi
+      volumes:
+        - name: config
+          configMap:
+            name: nextcloud-talk-hpb-config

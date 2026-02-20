@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nextcloud-imaginary
+  labels:
+    app: nextcloud-imaginary
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nextcloud-imaginary
+  template:
+    metadata:
+      labels:
+        app: nextcloud-imaginary
+    spec:
+      containers:
+        - name: imaginary
+          image: docker.io/nextcloud/aio-imaginary:latest
+          ports:
+            - name: http
+              containerPort: 9000
+              protocol: TCP
+          readinessProbe:
+            tcpSocket:
+              port: http
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          livenessProbe:
+            tcpSocket:
+              port: http
+            initialDelaySeconds: 15
+            periodSeconds: 30
+          resources:
+            requests:
+              cpu: 50m
+              memory: 128Mi
+            limits:
+              cpu: 2
+              memory: 1Gi

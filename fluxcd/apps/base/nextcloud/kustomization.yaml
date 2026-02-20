@@ -1,0 +1,39 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  # Core
+  - deployment.yaml
+  - deployment-cron.yaml
+  - service.yaml
+  - configmap.yaml
+  - externalsecret.yaml
+  # Database
+  - postgres-cluster.yaml
+  - postgres-credentials.yaml
+  - externalsecret-postgres-backup.yaml
+  # Cache
+  - redis-configmap.yaml
+  - redis-replication.yaml
+  - redis-sentinel.yaml
+  - externalsecret-redis.yaml
+  # Collaboration
+  - collabora-deployment.yaml
+  - collabora-service.yaml
+  # Processing
+  - imaginary-deployment.yaml
+  - imaginary-service.yaml
+  - clamav-statefulset.yaml
+  - clamav-service.yaml
+  # Real-time
+  - notify-push-deployment.yaml
+  - notify-push-service.yaml
+  # Communication
+  - talk-hpb-deployment.yaml
+  - talk-hpb-service.yaml
+  - talk-hpb-configmap.yaml
+  # Search
+  - elasticsearch-statefulset.yaml
+  - elasticsearch-service.yaml
+  # Whiteboard
+  - whiteboard-deployment.yaml
+  - whiteboard-service.yaml

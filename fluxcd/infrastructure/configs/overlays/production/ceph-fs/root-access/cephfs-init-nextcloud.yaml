@@ -1,0 +1,31 @@
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: cephfs-init-nextcloud
+spec:
+  ttlSecondsAfterFinished: 300
+  template:
+    spec:
+      restartPolicy: OnFailure
+      containers:
+        - name: setup
+          image: docker.io/prplanit/ansible-oci:2.20.1-v2
+          command:
+            - ansible-playbook
+            - /scripts/cephfs-init-rootpaths.yml
+            - -e
+            - path=/dungeon/nvme/apps/nextcloud/html owner=33:33 mode=0755
+          volumeMounts:
+            - name: cephfs-root
+              mountPath: /cephfs
+            - name: setup-script
+              mountPath: /scripts
+              readOnly: true
+      volumes:
+        - name: cephfs-root
+          persistentVolumeClaim:
+            claimName: gorons-bracelet-cephfs-root
+        - name: setup-script
+          configMap:
+            name: cephfs-setup-script
