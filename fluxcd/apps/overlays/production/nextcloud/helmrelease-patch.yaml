@@ -39,11 +39,6 @@ spec:
           value: "1G"
         - name: PHP_UPLOAD_LIMIT
           value: "16G"
-        - name: MAIL_FROM_ADDRESS
-          valueFrom:
-            secretKeyRef:
-              name: nextcloud-secrets
-              key: MAIL_FROM_ADDRESS
 
       objectStore:
         s3:
@@ -137,6 +132,9 @@ spec:
             - FOWNER
             - SYS_CHROOT
         allowPrivilegeEscalation: true
+
+    service:
+      port: 80
 
     imaginary:
       enabled: true

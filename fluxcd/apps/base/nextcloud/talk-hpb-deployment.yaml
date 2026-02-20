@@ -39,6 +39,9 @@ spec:
       containers:
         - name: signaling
           image: docker.io/strukturag/nextcloud-spreed-signaling:latest
+          args:
+            - -config
+            - /config/server.conf
           ports:
             - name: http
               containerPort: 8080

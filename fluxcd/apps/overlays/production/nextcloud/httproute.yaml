@@ -21,6 +21,12 @@ spec:
         - path:
             type: PathPrefix
             value: /push
+      filters:
+        - type: URLRewrite
+          urlRewrite:
+            path:
+              type: ReplacePrefixMatch
+              replacePrefixMatch: /
       backendRefs:
         - name: nextcloud-notify-push
           port: 7867
@@ -44,6 +50,12 @@ spec:
         - path:
             type: PathPrefix
             value: /standalone-signaling
+      filters:
+        - type: URLRewrite
+          urlRewrite:
+            path:
+              type: ReplacePrefixMatch
+              replacePrefixMatch: /
       backendRefs:
         - name: nextcloud-talk-hpb
           port: 8080
@@ -51,6 +63,12 @@ spec:
         - path:
             type: PathPrefix
             value: /whiteboard
+      filters:
+        - type: URLRewrite
+          urlRewrite:
+            path:
+              type: ReplacePrefixMatch
+              replacePrefixMatch: /
       backendRefs:
         - name: nextcloud-whiteboard
           port: 3002
@@ -81,6 +99,12 @@ spec:
         - path:
             type: PathPrefix
             value: /push
+      filters:
+        - type: URLRewrite
+          urlRewrite:
+            path:
+              type: ReplacePrefixMatch
+              replacePrefixMatch: /
       backendRefs:
         - name: nextcloud-notify-push
           port: 7867
@@ -104,6 +128,12 @@ spec:
         - path:
             type: PathPrefix
             value: /standalone-signaling
+      filters:
+        - type: URLRewrite
+          urlRewrite:
+            path:
+              type: ReplacePrefixMatch
+              replacePrefixMatch: /
       backendRefs:
         - name: nextcloud-talk-hpb
           port: 8080
@@ -111,6 +141,12 @@ spec:
         - path:
             type: PathPrefix
             value: /whiteboard
+      filters:
+        - type: URLRewrite
+          urlRewrite:
+            path:
+              type: ReplacePrefixMatch
+              replacePrefixMatch: /
       backendRefs:
         - name: nextcloud-whiteboard
           port: 3002

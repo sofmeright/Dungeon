@@ -31,7 +31,8 @@ data:
     replica-priority 100
 
     # Memory
-    maxmemory-policy noeviction
+    maxmemory 200mb
+    maxmemory-policy allkeys-lru
 
     # Logging
     loglevel notice

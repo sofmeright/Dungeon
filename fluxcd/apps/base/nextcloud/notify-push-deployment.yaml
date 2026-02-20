@@ -64,13 +64,13 @@ spec:
               value: "redis://:$(REDIS_HOST_PASSWORD)@$(REDIS_HOST):6379"
           readinessProbe:
             httpGet:
-              path: /push/test/cookie
+              path: /test/cookie
               port: http
             initialDelaySeconds: 15
             periodSeconds: 10
           livenessProbe:
             httpGet:
-              path: /push/test/cookie
+              path: /test/cookie
               port: http
             initialDelaySeconds: 30
             periodSeconds: 30

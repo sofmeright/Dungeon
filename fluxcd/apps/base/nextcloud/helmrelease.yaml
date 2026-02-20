@@ -21,7 +21,7 @@ spec:
     fullnameOverride: "nextcloud"
 
     image:
-      repository: docker.io/library/nextcloud
+      repository: library/nextcloud
       flavor: apache
 
     nextcloud:
@@ -33,6 +33,7 @@ spec:
         passwordKey: NEXTCLOUD_ADMIN_PASSWORD
         smtpUsernameKey: SMTP_NAME
         smtpPasswordKey: SMTP_PASSWORD
+        smtpHostKey: SMTP_HOST
 
       mail:
         enabled: false
