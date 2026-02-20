@@ -17,6 +17,12 @@ spec:
       containers:
         - name: collabora
           image: docker.io/collabora/code:latest
+          securityContext:
+            capabilities:
+              add:
+                - MKNOD
+                - FOWNER
+                - SYS_CHROOT
           ports:
             - name: http
               containerPort: 9980
