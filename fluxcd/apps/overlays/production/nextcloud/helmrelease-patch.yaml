@@ -40,21 +40,6 @@ spec:
         - name: PHP_UPLOAD_LIMIT
           value: "16G"
 
-      objectStore:
-        s3:
-          enabled: true
-          host: ceph-rgw.gorons-bracelet.svc.cluster.local
-          bucket: nextcloud
-          port: "80"
-          ssl: false
-          region: us-east-1
-          usePathStyle: true
-          autoCreate: false
-          existingSecret: nextcloud-secrets
-          secretKeys:
-            accessKey: OBJECTSTORE_S3_KEY
-            secretKey: OBJECTSTORE_S3_SECRET
-
       defaultConfigs:
         imaginary.config.php: true
 
