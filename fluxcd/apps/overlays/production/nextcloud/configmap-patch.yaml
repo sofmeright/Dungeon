@@ -11,6 +11,10 @@ data:
   OVERWRITECLIURL: https://ncloud.optcp.com
   PHP_MEMORY_LIMIT: 1G
   PHP_UPLOAD_LIMIT: 16G
+  SMTP_HOST: smtp.gmail.com
+  SMTP_PORT: "587"
+  SMTP_SECURE: "tls"
+  MAIL_DOMAIN: gmail.com
   OBJECTSTORE_S3_HOST: ceph-rgw.gorons-bracelet.svc.cluster.local
   OBJECTSTORE_S3_BUCKET: nextcloud
   OBJECTSTORE_S3_PORT: "80"
