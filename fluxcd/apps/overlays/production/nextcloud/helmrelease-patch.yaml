@@ -60,6 +60,26 @@ spec:
             accessKey: OBJECTSTORE_S3_KEY
             secretKey: OBJECTSTORE_S3_SECRET
 
+      defaultConfigs:
+        imaginary.config.php: true
+
+      configs:
+        cron.config.php: |-
+          <?php
+          $CONFIG = array(
+            'backgroundjobs_mode' => 'cron',
+          );
+        session.config.php: |-
+          <?php
+          if (getenv('REDIS_HOST')) {
+            ini_set('session.save_handler', 'redis');
+            ini_set('session.save_path',
+              'tcp://' . getenv('REDIS_HOST') . ':'
+              . (getenv('REDIS_HOST_PORT') ?: '6379')
+              . '?auth=' . getenv('REDIS_HOST_PASSWORD')
+            );
+          }
+
       strategy:
         type: RollingUpdate
         rollingUpdate:

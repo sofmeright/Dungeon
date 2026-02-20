@@ -16,14 +16,16 @@ spec:
     spec:
       containers:
         - name: notify-push
-          image: docker.io/nextcloud/aio-notify-push:latest
+          image: docker.io/icewind1991/notify_push:latest
           ports:
             - name: http
               containerPort: 7867
               protocol: TCP
           env:
-            - name: NEXTCLOUD_HOST
-              value: PLACEHOLDER_NEXTCLOUD_HOST
+            - name: PORT
+              value: "7867"
+            - name: NEXTCLOUD_URL
+              value: PLACEHOLDER_NEXTCLOUD_URL
             - name: POSTGRES_HOST
               valueFrom:
                 configMapKeyRef:
@@ -44,6 +46,10 @@ spec:
                 secretKeyRef:
                   name: nextcloud-secrets
                   key: POSTGRES_PASSWORD
+            - name: DATABASE_URL
+              value: "postgres://$(POSTGRES_USER):$(POSTGRES_PASSWORD)@$(POSTGRES_HOST)/$(POSTGRES_DB)"
+            - name: DATABASE_PREFIX
+              value: "oc_"
             - name: REDIS_HOST
               valueFrom:
                 configMapKeyRef:
@@ -54,10 +60,8 @@ spec:
                 secretKeyRef:
                   name: nextcloud-secrets
                   key: REDIS_HOST_PASSWORD
-            - name: DATABASE_URL
-              value: "postgres://$(POSTGRES_USER):$(POSTGRES_PASSWORD)@$(POSTGRES_HOST)/$(POSTGRES_DB)"
-            - name: DATABASE_PREFIX
-              value: "oc_"
+            - name: REDIS_URL
+              value: "redis://:$(REDIS_HOST_PASSWORD)@$(REDIS_HOST):6379"
           readinessProbe:
             httpGet:
               path: /push/test/cookie
