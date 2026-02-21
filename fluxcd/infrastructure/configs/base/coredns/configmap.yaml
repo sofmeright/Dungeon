@@ -1,34 +1,47 @@
 # CoreDNS ConfigMap - base template
 # Upstream DNS servers configured in overlay
+# Split server blocks: cluster.local and INTERNAL_DOMAIN preserve AAAA,
+# catch-all strips AAAA (no public IPv6 egress with ULA addressing)
 apiVersion: v1
 kind: ConfigMap
 metadata:
   name: coredns
 data:
   Corefile: |
+    cluster.local:53 in-addr.arpa:53 ip6.arpa:53 {
+        errors
+        kubernetes cluster.local in-addr.arpa ip6.arpa {
+           pods insecure
+           fallthrough in-addr.arpa ip6.arpa
+           ttl 30
+        }
+        forward . UPSTREAM_DNS
+        cache 30
+        loop
+        reload
+        loadbalance
+    }
+    INTERNAL_DOMAIN:53 {
+        errors
+        forward . UPSTREAM_DNS
+        cache 30
+        loop
+        reload
+    }
     .:53 {
         errors
         health {
            lameduck 5s
         }
         ready
-        kubernetes cluster.local in-addr.arpa ip6.arpa {
-           pods insecure
-           fallthrough in-addr.arpa ip6.arpa
-           ttl 30
-        }
         prometheus :9153
         template IN AAAA {
-           match "^(?!.*\.(cluster\.local|prplanit\.internal)\.).*$"
            rcode NODATA
         }
         forward . UPSTREAM_DNS {
            max_concurrent 1000
         }
-        cache 30 {
-           disable success cluster.local
-           disable denial cluster.local
-        }
+        cache 30
         loop
         reload
         loadbalance
