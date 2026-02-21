@@ -24,7 +24,7 @@ data:
       create: true
       viewSecretsResourceNames: ["cluster-user-auth", "oidc-auth"]
       # Allow impersonation of users and OIDC groups
-      impersonationResourceNames: ["kai", "Admin"]
+      impersonationResourceNames: ["kai", "admin"]
       impersonationResources: ["users", "groups"]
       additionalRules:
         - apiGroups: [""]

@@ -25,5 +25,5 @@ roleRef:
   name: weave-gitops-read-only
 subjects:
   - kind: Group
-    name: Admin
+    name: admin
     apiGroup: rbac.authorization.k8s.io
