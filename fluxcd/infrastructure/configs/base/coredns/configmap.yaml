@@ -36,7 +36,7 @@ data:
         ready
         prometheus :9153
         template IN AAAA {
-           rcode NODATA
+           rcode NOERROR
         }
         forward . UPSTREAM_DNS {
            max_concurrent 1000
