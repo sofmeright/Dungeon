@@ -1,4 +1,4 @@
-# Give the user "kai" permissions to view resources
+# Give the user "kai" permissions to view resources (user-account auth)
 # This user doesn't need to exist - Kubernetes will check permissions when impersonated
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
@@ -9,6 +9,21 @@ roleRef:
   kind: ClusterRole
   name: weave-gitops-read-only
 subjects:
-- kind: User
-  name: kai
+  - kind: User
+    name: kai
+    apiGroup: rbac.authorization.k8s.io
+---
+# OIDC group binding - Zitadel "Admin" project role gets full access
+# Add more groups here as needed (e.g., Viewer, Developer)
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: weave-gitops-oidc-admin
+roleRef:
   apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: weave-gitops-read-only
+subjects:
+  - kind: Group
+    name: Admin
+    apiGroup: rbac.authorization.k8s.io

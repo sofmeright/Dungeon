@@ -9,28 +9,30 @@ data:
     # Admin user configuration
     adminUser:
       create: false  # Disable admin user completely
-    
-    # Use user-account auth method with external secret
+
+    # Enable both user-account and OIDC auth methods
     additionalArgs:
-      - --auth-methods=user-account
-    
+      - --auth-methods=user-account,oidc
+
+    # OIDC configuration (Zitadel PKCE - no client secret)
+    oidcSecret: oidc-auth
+
     # RBAC configuration with impersonation for multi-namespace visibility
     rbac:
       create: true
       viewSecretsResourceNames: ["cluster-user-auth", "oidc-auth"]
-      # Allow impersonation of the user "kai"
-      impersonationResourceNames: ["kai"]
+      # Allow impersonation of users and OIDC groups
+      impersonationResourceNames: ["kai", "Admin"]
       impersonationResources: ["users", "groups"]
       additionalRules:
         - apiGroups: [""]
-          resources: ["users"]
+          resources: ["users", "groups"]
           verbs: ["impersonate"]
-          resourceNames: ["kai"]
-    
+
     # Additional security settings
     metrics:
       enabled: true
-    
+
     # Service configuration - use LoadBalancer with Cilium LB IPAM
     service:
       type: LoadBalancer
@@ -38,7 +40,7 @@ data:
         io.cilium/lb-ipam-ips: "172.22.30.137"
         io.cilium/lb-ipam-sharing-key: "gossip-stone"
       port: 9001
-    
+
     # Disable ingress since we're using LoadBalancer
     ingress:
       enabled: false
