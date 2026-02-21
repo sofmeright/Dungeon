@@ -29,7 +29,7 @@ spec:
           image: docker.io/busybox:1.37
       containers:
         - name: app
-          image: docker.io/invoiceninja/invoiceninja-debian:5.12.64
+          image: docker.io/invoiceninja/invoiceninja-debian:5.12.65
           env:
             - name: APP_URL
               value: "https://invoiceninja.prplanit.com"
