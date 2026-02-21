@@ -12,7 +12,7 @@ spec:
         - name: postgres
           image: docker.io/postgres:14
         - name: semaphore
-          image: docker.io/semaphoreui/semaphore:v2.17.8
+          image: docker.io/semaphoreui/semaphore:v2.17.14
           securityContext:
             runAsUser: 1000
             runAsGroup: 1000
