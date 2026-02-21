@@ -108,7 +108,7 @@ spec:
               - email
               - offline_access
             bound_claims:
-              roles: "admin"
+              roles: "Admin"
     secrets:
       - path: operationtimecapsule
         type: kv
