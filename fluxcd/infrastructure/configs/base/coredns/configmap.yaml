@@ -18,6 +18,10 @@ data:
            ttl 30
         }
         prometheus :9153
+        template IN AAAA {
+           match "^(?!.*\.(cluster\.local|prplanit\.internal)\.).*$"
+           rcode NODATA
+        }
         forward . UPSTREAM_DNS {
            max_concurrent 1000
         }

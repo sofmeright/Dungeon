@@ -17,6 +17,10 @@ data:
            ttl 30
         }
         prometheus :9153
+        template IN AAAA {
+           match "^(?!.*\.(cluster\.local|prplanit\.internal)\.).*$"
+           rcode NODATA
+        }
         forward . 10.0.0.1 10.0.0.2 {
            max_concurrent 1000
         }
