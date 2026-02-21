@@ -17,12 +17,15 @@ spec:
       interval: 12h
   values:
     fullnameOverride: "alloy"
-    alloy:
-      image:
-        registry: docker.io
-        repository: grafana/alloy
-        tag: "v1.13.1"
 
+    # Image at top level - this is where the chart template reads from
+    # (not alloy.image which is silently ignored)
+    image:
+      registry: docker.io
+      repository: grafana/alloy
+      tag: "v1.13.1"
+
+    alloy:
       configMap:
         create: true
         content: ""  # Will be provided by ConfigMap
@@ -31,6 +34,7 @@ spec:
         enabled: false
 
       mounts:
+        varlog: true           # /var/log for loki.source.file pod log collection
         dockercontainers: false
 
     controller:
@@ -41,11 +45,3 @@ spec:
 
     rbac:
       create: true
-
-    resources:
-      requests:
-        memory: 128Mi
-        cpu: 100m
-      limits:
-        memory: 512Mi
-        cpu: 500m

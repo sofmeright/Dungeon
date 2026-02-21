@@ -5,11 +5,6 @@ metadata:
 spec:
   targetNamespace: gossip-stone
   values:
-    # Run on all nodes including control plane
-    tolerations:
-      - key: node-role.kubernetes.io/control-plane
-        operator: Exists
-        effect: NoSchedule
     alloy:
       extraAnnotations:
         prometheus.io/scrape: "true"
@@ -17,30 +12,19 @@ spec:
       configMap:
         create: false
         name: "alloy-config"
+      clustering:
+        enabled: true
       resources:
         requests:
           cpu: 100m
-          memory: 512Mi
+          memory: 256Mi
         limits:
           cpu: "3"
-          memory: 6Gi
-  postRenderers:
-    - kustomize:
-        patches:
-          - target:
-              kind: DaemonSet
-              name: alloy
-            patch: |-
-              apiVersion: apps/v1
-              kind: DaemonSet
-              metadata:
-                name: alloy
-              spec:
-                template:
-                  spec:
-                    hostNetwork: true
-                    dnsPolicy: ClusterFirstWithHostNet
-                    tolerations:
-                      - key: node-role.kubernetes.io/control-plane
-                        operator: Exists
-                        effect: NoSchedule
+          memory: 2Gi
+    controller:
+      hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet
+      tolerations:
+        - key: node-role.kubernetes.io/control-plane
+          operator: Exists
+          effect: NoSchedule

@@ -4,58 +4,70 @@ metadata:
   name: alloy-config
 data:
   config.alloy: |
+    // ==========================================================================
     // Kubernetes Service Discovery
+    // Node-scoped where possible to minimize API server load and memory usage.
+    // Each DaemonSet pod only watches objects relevant to its own node.
+    // ==========================================================================
+
+    // Pods on this node only (field selector reduces cache from ~650 to ~60 pods)
     discovery.kubernetes "pods" {
       role = "pod"
+      selectors {
+        role  = "pod"
+        field = "spec.nodeName=" + env("HOSTNAME")
+      }
     }
 
+    // This node only (1 node instead of 10)
     discovery.kubernetes "nodes" {
       role = "node"
+      selectors {
+        role  = "node"
+        field = "metadata.name=" + env("HOSTNAME")
+      }
     }
 
+    // Services cluster-wide (needed for annotation-based scraping, relatively small)
     discovery.kubernetes "services" {
       role = "service"
     }
 
+    // Endpoints scoped to kube-system only (used solely for CoreDNS discovery)
     discovery.kubernetes "endpoints" {
       role = "endpoints"
+      namespaces {
+        names = ["kube-system"]
+      }
     }
 
-    discovery.kubernetes "endpointslices" {
-      role = "endpointslice"
-    }
+    // Removed: endpointslices (unused - nothing referenced it)
+    // Removed: ingresses (unused - nothing referenced it)
 
-    discovery.kubernetes "ingresses" {
-      role = "ingress"
-    }
-
+    // ==========================================================================
     // Prometheus Remote Write - Direct to VictoriaMetrics vminsert
-    // VictoriaMetrics architecture: Alloy → vminsert → vmstorage (replicated)
+    // ==========================================================================
     prometheus.remote_write "default" {
       endpoint {
         url = "http://vminsert.gossip-stone.svc.cluster.local:8480/insert/0/prometheus/api/v1/write"
 
-        // Queue config tuned for stability - minimal parallelism
-        // Distributors have limited memory, keep load gentle
         queue_config {
-          capacity          = 2500
-          max_shards        = 4
-          min_shards        = 1
+          capacity             = 2500
+          max_shards           = 4
+          min_shards           = 1
           max_samples_per_send = 500
           batch_send_deadline  = "15s"
-          min_backoff       = "500ms"
-          max_backoff       = "30s"
-          retry_on_http_429 = true
+          min_backoff          = "500ms"
+          max_backoff          = "30s"
+          retry_on_http_429    = true
         }
       }
     }
 
+    // ==========================================================================
     // Global metric relabeling - drop high-cardinality metrics and bloated labels
-    // 1. Drop histogram buckets (_bucket) - keeps _sum/_count for rate and avg latency
-    // 2. Drop per-device blkio metrics - too granular, not useful for health monitoring
-    // 3. Drop bloated container_label_* fields from cAdvisor
-    // 4. Drop high-cardinality GitLab per-worker/per-endpoint metrics - massive cardinality
-    prometheus.relabel "drop_container_labels" {
+    // ==========================================================================
+    prometheus.relabel "drop_high_cardinality" {
       forward_to = [prometheus.remote_write.default.receiver]
 
       // DROP: Histogram buckets - massive cardinality, _sum/_count give rate + avg latency
@@ -72,17 +84,14 @@ data:
         action        = "drop"
       }
 
-      // DROP: All GitLab and Sidekiq metrics - rely on logs for GitLab monitoring
-      // GitLab exposes 10,000+ high-cardinality internal metrics that are only useful
-      // for debugging GitLab itself. For operational monitoring, use logs + basic k8s metrics.
+      // DROP: All GitLab and Sidekiq metrics - 10,000+ high-cardinality internal metrics
       rule {
         source_labels = ["__name__"]
         regex         = "(gitlab|sidekiq)_.+"
         action        = "drop"
       }
 
-      // DROP: Kubernetes API server metrics for rarely-used CRD resources
-      // Keeps common resources (pods, nodes, services, deployments, etc.)
+      // DROP: API server metrics for rarely-used CRD resources
       rule {
         source_labels = ["__name__", "resource"]
         regex         = "apiserver_.+;(ipaddresses|resourceclaims|operatorconfigs|cephobjectzones|redissentinels)"
@@ -96,42 +105,37 @@ data:
         action        = "drop"
       }
 
-      // Step 1: Rename labels we want to keep to temporary names
+      // Preserve select container_label_* fields via temp labels, then drop the rest
       rule {
         source_labels = ["container_label_com_docker_compose_project"]
         target_label  = "compose_project_temp"
         regex         = "(.*)"
         replacement   = "$1"
       }
-
       rule {
         source_labels = ["container_label_com_docker_compose_service"]
         target_label  = "compose_service_temp"
         regex         = "(.*)"
         replacement   = "$1"
       }
-
       rule {
         source_labels = ["container_label_com_docker_compose_config_hash"]
         target_label  = "compose_config_hash_temp"
         regex         = "(.*)"
         replacement   = "$1"
       }
-
       rule {
         source_labels = ["container_label_com_docker_compose_container_number"]
         target_label  = "compose_container_number_temp"
         regex         = "(.*)"
         replacement   = "$1"
       }
-
       rule {
         source_labels = ["container_label_com_docker_compose_image"]
         target_label  = "compose_image_temp"
         regex         = "(.*)"
         replacement   = "$1"
       }
-
       rule {
         source_labels = ["container_label_com_docker_compose_project_working_dir"]
         target_label  = "compose_working_dir_temp"
@@ -139,48 +143,43 @@ data:
         replacement   = "$1"
       }
 
-      // Step 2: Drop ALL container_label_* labels
+      // Drop ALL container_label_* labels
       rule {
         action = "labeldrop"
         regex  = "container_label_.*"
       }
 
-      // Step 3: Rename temp labels back to proper names
+      // Rename temp labels back to proper names
       rule {
         source_labels = ["compose_project_temp"]
         target_label  = "compose_project"
         regex         = "(.*)"
         replacement   = "$1"
       }
-
       rule {
         source_labels = ["compose_service_temp"]
         target_label  = "compose_service"
         regex         = "(.*)"
         replacement   = "$1"
       }
-
       rule {
         source_labels = ["compose_config_hash_temp"]
         target_label  = "compose_config_hash"
         regex         = "(.*)"
         replacement   = "$1"
       }
-
       rule {
         source_labels = ["compose_container_number_temp"]
         target_label  = "compose_container_number"
         regex         = "(.*)"
         replacement   = "$1"
       }
-
       rule {
         source_labels = ["compose_image_temp"]
         target_label  = "compose_image"
         regex         = "(.*)"
         replacement   = "$1"
       }
-
       rule {
         source_labels = ["compose_working_dir_temp"]
         target_label  = "compose_working_dir"
@@ -188,72 +187,58 @@ data:
         replacement   = "$1"
       }
 
-      // Step 4: Drop temp labels
+      // Drop temp labels
       rule {
         action = "labeldrop"
         regex  = "compose_(project|service|config_hash|container_number|image|working_dir)_temp"
       }
     }
 
-    // Built-in Node Exporter - exposes host metrics from each K8s node
+    // ==========================================================================
+    // NODE-LOCAL METRICS (no clustering - each DaemonSet pod scrapes its own node)
+    // ==========================================================================
+
+    // Built-in Node Exporter - host metrics from each K8s node
     prometheus.exporter.unix "node_metrics" {
-      // Use default collectors (CPU, memory, disk, network, filesystem, etc.)
     }
 
-    // Scrape local node metrics from unix exporter
     prometheus.scrape "node_exporter" {
       targets    = prometheus.exporter.unix.node_metrics.targets
-      forward_to = [prometheus.relabel.drop_container_labels.receiver]
+      forward_to = [prometheus.relabel.drop_high_cardinality.receiver]
 
       scrape_interval = "30s"
       scrape_timeout  = "10s"
     }
 
-    // Relabel nodes for kubelet scraping
+    // Relabel for kubelet scraping (local node only via field selector on discovery)
     discovery.relabel "kubelet" {
       targets = discovery.kubernetes.nodes.targets
 
-      // Keep only the local node (filter by HOSTNAME env var)
-      rule {
-        source_labels = ["__meta_kubernetes_node_name"]
-        regex         = env("HOSTNAME")
-        action        = "keep"
-      }
-
-      // Target kubelet metrics endpoint
       rule {
         source_labels = ["__meta_kubernetes_node_name"]
         target_label  = "__address__"
         replacement   = "$1:10250"
       }
-
-      // Set metrics path to kubelet endpoint
       rule {
         replacement  = "/metrics"
         target_label = "__metrics_path__"
       }
-
-      // Add job label for kubelet metrics
       rule {
         replacement  = "kubelet"
         target_label = "job"
       }
-
-      // Add node label
       rule {
         source_labels = ["__meta_kubernetes_node_name"]
         target_label  = "node"
       }
     }
 
-    // Scrape kubelet metrics (kubelet-specific metrics)
     prometheus.scrape "kubelet" {
       targets    = discovery.relabel.kubelet.output
-      forward_to = [prometheus.relabel.drop_container_labels.receiver]
+      forward_to = [prometheus.relabel.drop_high_cardinality.receiver]
 
-      scheme          = "https"
+      scheme            = "https"
       bearer_token_file = "/var/run/secrets/kubernetes.io/serviceaccount/token"
-
       tls_config {
         insecure_skip_verify = true
       }
@@ -262,51 +247,35 @@ data:
       scrape_timeout  = "10s"
     }
 
-    // Relabel nodes for cAdvisor scraping
+    // cAdvisor (local node only)
     discovery.relabel "cadvisor" {
       targets = discovery.kubernetes.nodes.targets
 
-      // Keep only the local node (filter by HOSTNAME env var)
-      rule {
-        source_labels = ["__meta_kubernetes_node_name"]
-        regex         = env("HOSTNAME")
-        action        = "keep"
-      }
-
-      // Target kubelet cAdvisor metrics endpoint
       rule {
         source_labels = ["__meta_kubernetes_node_name"]
         target_label  = "__address__"
         replacement   = "$1:10250"
       }
-
-      // Set metrics path to cAdvisor endpoint
       rule {
         replacement  = "/metrics/cadvisor"
         target_label = "__metrics_path__"
       }
-
-      // Add job label for cAdvisor metrics
       rule {
         replacement  = "cadvisor"
         target_label = "job"
       }
-
-      // Add node label
       rule {
         source_labels = ["__meta_kubernetes_node_name"]
         target_label  = "node"
       }
     }
 
-    // Scrape cAdvisor metrics (container metrics from kubelet)
     prometheus.scrape "cadvisor" {
       targets    = discovery.relabel.cadvisor.output
-      forward_to = [prometheus.relabel.drop_container_labels.receiver]
+      forward_to = [prometheus.relabel.drop_high_cardinality.receiver]
 
-      scheme          = "https"
+      scheme            = "https"
       bearer_token_file = "/var/run/secrets/kubernetes.io/serviceaccount/token"
-
       tls_config {
         insecure_skip_verify = true
       }
@@ -315,51 +284,35 @@ data:
       scrape_timeout  = "10s"
     }
 
-    // Relabel nodes for resource metrics scraping (includes volume stats when enabled)
+    // Kubelet resource metrics (local node only)
     discovery.relabel "kubelet_resource" {
       targets = discovery.kubernetes.nodes.targets
 
-      // Keep only the local node (filter by HOSTNAME env var)
-      rule {
-        source_labels = ["__meta_kubernetes_node_name"]
-        regex         = env("HOSTNAME")
-        action        = "keep"
-      }
-
-      // Target kubelet resource metrics endpoint
       rule {
         source_labels = ["__meta_kubernetes_node_name"]
         target_label  = "__address__"
         replacement   = "$1:10250"
       }
-
-      // Set metrics path to resource endpoint
       rule {
         replacement  = "/metrics/resource"
         target_label = "__metrics_path__"
       }
-
-      // Add job label for kubelet resource metrics
       rule {
         replacement  = "kubelet"
         target_label = "job"
       }
-
-      // Add node label
       rule {
         source_labels = ["__meta_kubernetes_node_name"]
         target_label  = "node"
       }
     }
 
-    // Scrape kubelet resource metrics (volume stats, pod resource metrics)
     prometheus.scrape "kubelet_resource" {
       targets    = discovery.relabel.kubelet_resource.output
-      forward_to = [prometheus.relabel.drop_container_labels.receiver]
+      forward_to = [prometheus.relabel.drop_high_cardinality.receiver]
 
-      scheme          = "https"
+      scheme            = "https"
       bearer_token_file = "/var/run/secrets/kubernetes.io/serviceaccount/token"
-
       tls_config {
         insecure_skip_verify = true
       }
@@ -368,51 +321,35 @@ data:
       scrape_timeout  = "10s"
     }
 
-    // Relabel nodes for probes metrics scraping
+    // Kubelet probes metrics (local node only)
     discovery.relabel "kubelet_probes" {
       targets = discovery.kubernetes.nodes.targets
 
-      // Keep only the local node (filter by HOSTNAME env var)
-      rule {
-        source_labels = ["__meta_kubernetes_node_name"]
-        regex         = env("HOSTNAME")
-        action        = "keep"
-      }
-
-      // Target kubelet probes metrics endpoint
       rule {
         source_labels = ["__meta_kubernetes_node_name"]
         target_label  = "__address__"
         replacement   = "$1:10250"
       }
-
-      // Set metrics path to probes endpoint
       rule {
         replacement  = "/metrics/probes"
         target_label = "__metrics_path__"
       }
-
-      // Add job label for kubelet probes metrics
       rule {
         replacement  = "kubelet"
         target_label = "job"
       }
-
-      // Add node label
       rule {
         source_labels = ["__meta_kubernetes_node_name"]
         target_label  = "node"
       }
     }
 
-    // Scrape kubelet probes metrics (liveness/readiness probe metrics)
     prometheus.scrape "kubelet_probes" {
       targets    = discovery.relabel.kubelet_probes.output
-      forward_to = [prometheus.relabel.drop_container_labels.receiver]
+      forward_to = [prometheus.relabel.drop_high_cardinality.receiver]
 
-      scheme          = "https"
+      scheme            = "https"
       bearer_token_file = "/var/run/secrets/kubernetes.io/serviceaccount/token"
-
       tls_config {
         insecure_skip_verify = true
       }
@@ -421,59 +358,87 @@ data:
       scrape_timeout  = "10s"
     }
 
-    // Relabel kube-state-metrics for scraping
-    discovery.relabel "kube_state_metrics" {
-      targets = discovery.kubernetes.services.targets
+    // ==========================================================================
+    // NODE-LOCAL POD METRICS (no clustering - field selector scopes to this node)
+    // Each DaemonSet pod scrapes only pods on its own node. Across 10 nodes,
+    // all annotated pods get scraped exactly once.
+    // ==========================================================================
 
-      // Keep only kube-state-metrics service
+    discovery.relabel "pods_metrics" {
+      targets = discovery.kubernetes.pods.targets
+
+      // Only scrape pods with prometheus.io/scrape=true annotation
       rule {
-        source_labels = ["__meta_kubernetes_service_name"]
-        regex         = "kube-state-metrics"
+        source_labels = ["__meta_kubernetes_pod_annotation_prometheus_io_scrape"]
+        regex         = "true"
         action        = "keep"
       }
 
-      // Keep only gossip-stone namespace
+      // Honor prometheus.io/path annotation
       rule {
-        source_labels = ["__meta_kubernetes_namespace"]
-        regex         = "gossip-stone"
-        action        = "keep"
+        source_labels = ["__meta_kubernetes_pod_annotation_prometheus_io_path"]
+        regex         = "(.+)"
+        target_label  = "__metrics_path__"
       }
 
-      // Use service port
+      // Honor prometheus.io/port annotation
       rule {
-        source_labels = ["__meta_kubernetes_service_name", "__meta_kubernetes_endpoint_port_name"]
-        regex         = "kube-state-metrics;http-metrics"
-        action        = "keep"
+        source_labels = ["__address__", "__meta_kubernetes_pod_annotation_prometheus_io_port"]
+        regex         = "([^:]+)(?::\\d+)?;(\\d+)"
+        replacement   = "$1:$2"
+        target_label  = "__address__"
       }
 
-      // Add service and namespace labels
+      // Drop Mimir pods - they use memberlist and have separate ServiceMonitor
       rule {
-        source_labels = ["__meta_kubernetes_service_name"]
-        target_label  = "service"
+        source_labels = ["__meta_kubernetes_pod_label_app_kubernetes_io_name"]
+        regex         = "mimir"
+        action        = "drop"
       }
 
       rule {
         source_labels = ["__meta_kubernetes_namespace"]
         target_label  = "namespace"
       }
-
-      // Add job label for kube-state-metrics
       rule {
-        replacement  = "kube-state-metrics"
-        target_label = "job"
+        source_labels = ["__meta_kubernetes_pod_name"]
+        target_label  = "pod"
+      }
+      rule {
+        source_labels = ["__meta_kubernetes_pod_container_name"]
+        target_label  = "container"
+      }
+      rule {
+        source_labels = ["__meta_kubernetes_pod_node_name"]
+        target_label  = "node"
+      }
+      // app label: prefer app.kubernetes.io/name, fall back to app label
+      // Order matters: fallback first, preferred second (last write wins)
+      rule {
+        source_labels = ["__meta_kubernetes_pod_label_app"]
+        regex         = "(.+)"
+        target_label  = "app"
+      }
+      rule {
+        source_labels = ["__meta_kubernetes_pod_label_app_kubernetes_io_name"]
+        regex         = "(.+)"
+        target_label  = "app"
       }
     }
 
-    // Scrape kube-state-metrics (Kubernetes object state)
-    prometheus.scrape "kube_state_metrics" {
-      targets    = discovery.relabel.kube_state_metrics.output
-      forward_to = [prometheus.relabel.drop_container_labels.receiver]
+    prometheus.scrape "kubernetes_pods" {
+      targets    = discovery.relabel.pods_metrics.output
+      forward_to = [prometheus.relabel.drop_high_cardinality.receiver]
 
       scrape_interval = "30s"
       scrape_timeout  = "10s"
     }
 
-    // Relabel control plane static pods (API server, scheduler, controller-manager)
+    // ==========================================================================
+    // NODE-LOCAL CONTROL PLANE METRICS (no clustering - field selector scopes to
+    // this node, so only CP alloy pods discover CP components)
+    // ==========================================================================
+
     discovery.relabel "control_plane" {
       targets = discovery.kubernetes.pods.targets
 
@@ -522,39 +487,30 @@ data:
         replacement   = "$1:6443"
       }
 
-      // Add component label
       rule {
         source_labels = ["__meta_kubernetes_pod_label_component"]
         target_label  = "component"
       }
-
-      // Add namespace label
       rule {
         source_labels = ["__meta_kubernetes_namespace"]
         target_label  = "namespace"
       }
-
-      // Add node label
       rule {
         source_labels = ["__meta_kubernetes_pod_node_name"]
         target_label  = "node"
       }
-
-      // Add job label from component
       rule {
         source_labels = ["__meta_kubernetes_pod_label_component"]
         target_label  = "job"
       }
     }
 
-    // Scrape control plane metrics
     prometheus.scrape "control_plane" {
       targets    = discovery.relabel.control_plane.output
-      forward_to = [prometheus.relabel.drop_container_labels.receiver]
+      forward_to = [prometheus.relabel.drop_high_cardinality.receiver]
 
-      scheme          = "https"
+      scheme            = "https"
       bearer_token_file = "/var/run/secrets/kubernetes.io/serviceaccount/token"
-
       tls_config {
         insecure_skip_verify = true
       }
@@ -563,293 +519,281 @@ data:
       scrape_timeout  = "10s"
     }
 
-    // Relabel CoreDNS for scraping
+    // ==========================================================================
+    // CLUSTER-WIDE METRICS (clustering enabled - distributed across DaemonSet pods)
+    // These targets exist cluster-wide; clustering ensures each is scraped by
+    // exactly one alloy instance instead of all 10.
+    // ==========================================================================
+
+    // Kube-state-metrics (single target)
+    discovery.relabel "kube_state_metrics" {
+      targets = discovery.kubernetes.services.targets
+
+      rule {
+        source_labels = ["__meta_kubernetes_service_name"]
+        regex         = "kube-state-metrics"
+        action        = "keep"
+      }
+      rule {
+        source_labels = ["__meta_kubernetes_namespace"]
+        regex         = "gossip-stone"
+        action        = "keep"
+      }
+      rule {
+        source_labels = ["__meta_kubernetes_service_name", "__meta_kubernetes_service_port_name"]
+        regex         = "kube-state-metrics;http-metrics"
+        action        = "keep"
+      }
+      rule {
+        source_labels = ["__meta_kubernetes_service_name"]
+        target_label  = "service"
+      }
+      rule {
+        source_labels = ["__meta_kubernetes_namespace"]
+        target_label  = "namespace"
+      }
+      rule {
+        replacement  = "kube-state-metrics"
+        target_label = "job"
+      }
+    }
+
+    prometheus.scrape "kube_state_metrics" {
+      targets    = discovery.relabel.kube_state_metrics.output
+      forward_to = [prometheus.relabel.drop_high_cardinality.receiver]
+
+      clustering {
+        enabled = true
+      }
+
+      scrape_interval = "30s"
+      scrape_timeout  = "10s"
+    }
+
+    // CoreDNS (endpoints scoped to kube-system)
     discovery.relabel "coredns" {
       targets = discovery.kubernetes.endpoints.targets
 
-      // Keep only kube-system namespace
       rule {
         source_labels = ["__meta_kubernetes_namespace"]
         regex         = "kube-system"
         action        = "keep"
       }
-
-      // Keep only coredns service or kube-dns
       rule {
         source_labels = ["__meta_kubernetes_service_name"]
         regex         = "(coredns|kube-dns)"
         action        = "keep"
       }
-
-      // Keep only metrics port
       rule {
         source_labels = ["__meta_kubernetes_endpoint_port_name"]
         regex         = "metrics"
         action        = "keep"
       }
-
-      // Add service label
       rule {
         source_labels = ["__meta_kubernetes_service_name"]
         target_label  = "service"
       }
-
-      // Add namespace label
       rule {
         source_labels = ["__meta_kubernetes_namespace"]
         target_label  = "namespace"
       }
-
-      // Add job label for coredns
       rule {
         replacement  = "coredns"
         target_label = "job"
       }
     }
 
-    // Scrape CoreDNS metrics
     prometheus.scrape "coredns" {
       targets    = discovery.relabel.coredns.output
-      forward_to = [prometheus.relabel.drop_container_labels.receiver]
-
-      scrape_interval = "30s"
-      scrape_timeout  = "10s"
-    }
-
-    // Relabel pod metrics targets for better organization
-    discovery.relabel "pods_metrics" {
-      targets = discovery.kubernetes.pods.targets
-
-      // Only scrape pods with prometheus.io/scrape=true annotation (opt-in)
-      rule {
-        source_labels = ["__meta_kubernetes_pod_annotation_prometheus_io_scrape"]
-        regex         = "true"
-        action        = "keep"
-      }
-
-      // Honor prometheus.io/path annotation for custom metrics paths
-      rule {
-        source_labels = ["__meta_kubernetes_pod_annotation_prometheus_io_path"]
-        regex         = "(.+)"
-        target_label  = "__metrics_path__"
-      }
-
-      // Honor prometheus.io/port annotation for custom metrics ports
-      rule {
-        source_labels = ["__address__", "__meta_kubernetes_pod_annotation_prometheus_io_port"]
-        regex         = "([^:]+)(?::\\d+)?;(\\d+)"
-        replacement   = "$1:$2"
-        target_label  = "__address__"
-      }
-
-      // Drop Mimir pods - they use memberlist and get overwhelmed by HTTP scrape attempts on port 7946
-      // Mimir exposes metrics via ServiceMonitor which is handled separately
-      rule {
-        source_labels = ["__meta_kubernetes_pod_label_app_kubernetes_io_name"]
-        regex         = "mimir"
-        action        = "drop"
-      }
-
-      // Add namespace label
-      rule {
-        source_labels = ["__meta_kubernetes_namespace"]
-        target_label  = "namespace"
-      }
-
-      // Add pod name
-      rule {
-        source_labels = ["__meta_kubernetes_pod_name"]
-        target_label  = "pod"
-      }
-
-      // Add container name
-      rule {
-        source_labels = ["__meta_kubernetes_pod_container_name"]
-        target_label  = "container"
-      }
-
-      // Add node name
-      rule {
-        source_labels = ["__meta_kubernetes_pod_node_name"]
-        target_label  = "node"
-      }
-
-      // Add app label from app.kubernetes.io/name
-      rule {
-        source_labels = ["__meta_kubernetes_pod_label_app_kubernetes_io_name"]
-        target_label  = "app"
-      }
-
-      // Fallback: add app label from pod label app
-      rule {
-        source_labels = ["__meta_kubernetes_pod_label_app"]
-        regex         = "^$"
-        target_label  = "app"
-      }
-    }
-
-    // Scrape Kubernetes Pods with prometheus.io annotations
-    prometheus.scrape "kubernetes_pods" {
-      targets = discovery.relabel.pods_metrics.output
-      forward_to = [prometheus.relabel.drop_container_labels.receiver]
+      forward_to = [prometheus.relabel.drop_high_cardinality.receiver]
 
       clustering {
-        enabled = false
+        enabled = true
       }
 
       scrape_interval = "30s"
       scrape_timeout  = "10s"
     }
 
-    // Relabel service metrics targets for better organization
+    // Service annotation-based scraping (cluster-wide)
     discovery.relabel "services_metrics" {
       targets = discovery.kubernetes.services.targets
 
-      // Only scrape services with prometheus.io/scrape=true annotation (opt-in)
       rule {
         source_labels = ["__meta_kubernetes_service_annotation_prometheus_io_scrape"]
         regex         = "true"
         action        = "keep"
       }
-
-      // Honor prometheus.io/path annotation for custom metrics paths
       rule {
         source_labels = ["__meta_kubernetes_service_annotation_prometheus_io_path"]
         regex         = "(.+)"
         target_label  = "__metrics_path__"
       }
-
-      // Honor prometheus.io/port annotation for custom metrics ports
       rule {
         source_labels = ["__address__", "__meta_kubernetes_service_annotation_prometheus_io_port"]
         regex         = "([^:]+)(?::\\d+)?;(\\d+)"
         replacement   = "$1:$2"
         target_label  = "__address__"
       }
-
-      // Drop Mimir services - they use memberlist and have their own scraping setup
       rule {
         source_labels = ["__meta_kubernetes_service_label_app_kubernetes_io_name"]
         regex         = "mimir"
         action        = "drop"
       }
-
-      // Add namespace label
       rule {
         source_labels = ["__meta_kubernetes_namespace"]
         target_label  = "namespace"
       }
-
-      // Add service name
       rule {
         source_labels = ["__meta_kubernetes_service_name"]
         target_label  = "service"
       }
-
-      // Add app label
       rule {
         source_labels = ["__meta_kubernetes_service_label_app_kubernetes_io_name"]
         target_label  = "app"
       }
     }
 
-    // Scrape Kubernetes Services with prometheus.io/scrape annotation
     prometheus.scrape "kubernetes_services" {
-      targets = discovery.relabel.services_metrics.output
-      forward_to = [prometheus.relabel.drop_container_labels.receiver]
+      targets    = discovery.relabel.services_metrics.output
+      forward_to = [prometheus.relabel.drop_high_cardinality.receiver]
 
       clustering {
-        enabled = false
+        enabled = true
       }
 
       scrape_interval = "30s"
       scrape_timeout  = "10s"
     }
 
-    // Loki Log Collection - Local K8s Loki
+    // Lighthouse Docker host exporters (static targets)
+    discovery.relabel "lighthouse_exporters" {
+      targets = [
+        {
+          __address__ = "10.55.6.137:9100",
+          job         = "node-exporter-lighthouse",
+          instance    = "lighthouse",
+        },
+        {
+          __address__ = "10.55.6.137:8098",
+          job         = "cadvisor-lighthouse",
+          instance    = "lighthouse",
+        },
+        {
+          __address__ = "10.55.6.137:9795",
+          job         = "eaton-ups-exporter",
+          instance    = "lighthouse",
+        },
+        {
+          __address__ = "10.55.6.137:9221",
+          job         = "proxmox-pve-exporter",
+          instance    = "lighthouse",
+        },
+      ]
+    }
+
+    prometheus.scrape "lighthouse_exporters" {
+      targets    = discovery.relabel.lighthouse_exporters.output
+      forward_to = [prometheus.relabel.drop_high_cardinality.receiver]
+
+      clustering {
+        enabled = true
+      }
+
+      scrape_interval = "30s"
+      scrape_timeout  = "10s"
+    }
+
+    // ==========================================================================
+    // LOG COLLECTION - Filesystem-based (loki.source.file)
+    // Reads from /var/log/pods/ on the local node. Inherently node-scoped,
+    // no API connections needed. Uses node-scoped pods discovery for metadata.
+    // ==========================================================================
+
     loki.write "default" {
       endpoint {
         url = "http://loki-gateway.gossip-stone.svc.cluster.local/loki/api/v1/push"
       }
     }
 
-    // Relabel pod targets for better log organization
+    // Build log file paths from pod discovery metadata
     discovery.relabel "pods_logs" {
       targets = discovery.kubernetes.pods.targets
 
-      // Keep namespace
+      // Construct __path__ from pod metadata: /var/log/pods/<ns>_<pod>_<uid>/<container>/*.log
+      rule {
+        source_labels = ["__meta_kubernetes_namespace", "__meta_kubernetes_pod_name", "__meta_kubernetes_pod_uid", "__meta_kubernetes_pod_container_name"]
+        separator     = "/"
+        regex         = "(.+)/(.+)/(.+)/(.+)"
+        replacement   = "/var/log/pods/$1_$2_$3/$4/*.log"
+        target_label  = "__path__"
+      }
+
       rule {
         source_labels = ["__meta_kubernetes_namespace"]
         target_label  = "namespace"
       }
-
-      // Keep pod name
       rule {
         source_labels = ["__meta_kubernetes_pod_name"]
         target_label  = "pod"
       }
-
-      // Keep container name
       rule {
         source_labels = ["__meta_kubernetes_pod_container_name"]
         target_label  = "container"
       }
-
-      // Add app label from pod label app.kubernetes.io/name or app
-      rule {
-        source_labels = ["__meta_kubernetes_pod_label_app_kubernetes_io_name"]
-        target_label  = "app"
-      }
+      // app label: prefer app.kubernetes.io/name, fall back to app label
       rule {
         source_labels = ["__meta_kubernetes_pod_label_app"]
+        regex         = "(.+)"
         target_label  = "app"
       }
-
-      // Add job label (use app or fallback to namespace/pod)
+      rule {
+        source_labels = ["__meta_kubernetes_pod_label_app_kubernetes_io_name"]
+        regex         = "(.+)"
+        target_label  = "app"
+      }
       rule {
         source_labels = ["app"]
         target_label  = "job"
       }
-      rule {
-        source_labels = ["namespace", "pod"]
-        separator     = "/"
-        target_label  = "job"
-        regex         = "^$"  // Only if job is empty
-      }
-
-      // Keep node name
       rule {
         source_labels = ["__meta_kubernetes_pod_node_name"]
         target_label  = "node"
       }
     }
 
-    // Collect logs from Kubernetes pods with proper labels
-    loki.source.kubernetes "pods" {
-      targets    = discovery.relabel.pods_logs.output
+    local.file_match "pod_logs" {
+      path_targets = discovery.relabel.pods_logs.output
+    }
+
+    loki.source.file "pod_logs" {
+      targets    = local.file_match.pod_logs.targets
+      forward_to = [loki.process.parse_cri.receiver]
+    }
+
+    // Parse CRI log format: <timestamp> <stream> <flags> <message>
+    loki.process "parse_cri" {
       forward_to = [loki.process.filter_noise.receiver]
+
+      stage.cri {}
     }
 
     // Filter out noisy non-actionable log lines
     loki.process "filter_noise" {
       forward_to = [loki.process.add_labels.receiver]
 
-      // DROP: Out-of-order metric errors - not actionable, monitor via prometheus_remote_write_samples_failed_total metric
       stage.drop {
         expression = "err-mimir-sample-timestamp-too-old"
       }
-
-      // DROP: Mimir ingester out-of-order warnings - same issue from different component
       stage.drop {
         expression = "sample has been rejected because another sample with a more recent timestamp"
       }
     }
 
-    // Add additional processing and labels
+    // Extract log level
     loki.process "add_labels" {
       forward_to = [loki.write.default.receiver]
 
-      // Extract log level from common patterns
       stage.regex {
         expression = "(?i)(?P<level>debug|info|warn|warning|error|fatal|critical)"
       }
@@ -858,43 +802,5 @@ data:
         values = {
           level = "",
         }
-      }
-    }
-
-    // Remote scrape targets (lighthouse Docker host @ 10.55.6.137)
-    discovery.relabel "lighthouse_exporters" {
-      targets = [
-        {
-          __address__ = "10.55.6.137:9100",
-          job = "node-exporter-lighthouse",
-          instance = "lighthouse",
-        },
-        {
-          __address__ = "10.55.6.137:8098",
-          job = "cadvisor-lighthouse",
-          instance = "lighthouse",
-        },
-        {
-          __address__ = "10.55.6.137:9795",
-          job = "eaton-ups-exporter",
-          instance = "lighthouse",
-        },
-        {
-          __address__ = "10.55.6.137:9221",
-          job = "proxmox-pve-exporter",
-          instance = "lighthouse",
-        },
-      ]
-    }
-
-    prometheus.scrape "lighthouse_exporters" {
-      targets    = discovery.relabel.lighthouse_exporters.output
-      forward_to = [prometheus.relabel.drop_container_labels.receiver]
-
-      scrape_interval = "30s"
-      scrape_timeout  = "10s"
-
-      clustering {
-        enabled = false
       }
     }

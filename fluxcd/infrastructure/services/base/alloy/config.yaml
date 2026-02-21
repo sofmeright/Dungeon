@@ -4,13 +4,21 @@ metadata:
   name: alloy-config
 data:
   config.alloy: |
-    // Kubernetes Service Discovery
+    // Kubernetes Service Discovery - node-scoped where possible
     discovery.kubernetes "pods" {
       role = "pod"
+      selectors {
+        role  = "pod"
+        field = "spec.nodeName=" + env("HOSTNAME")
+      }
     }
 
     discovery.kubernetes "nodes" {
       role = "node"
+      selectors {
+        role  = "node"
+        field = "metadata.name=" + env("HOSTNAME")
+      }
     }
 
     discovery.kubernetes "services" {
@@ -21,14 +29,6 @@ data:
       role = "endpoints"
     }
 
-    discovery.kubernetes "endpointslices" {
-      role = "endpointslice"
-    }
-
-    discovery.kubernetes "ingresses" {
-      role = "ingress"
-    }
-
     // Prometheus Remote Write - Placeholder (override in overlay)
     prometheus.remote_write "default" {
       endpoint {
@@ -36,99 +36,172 @@ data:
       }
     }
 
-    // Scrape Kubernetes Pods with prometheus.io annotations
-    prometheus.scrape "kubernetes_pods" {
+    // Relabel for pod annotation-based scraping (node-local via field selector)
+    discovery.relabel "pods_metrics" {
       targets = discovery.kubernetes.pods.targets
-      forward_to = [prometheus.remote_write.default.receiver]
 
-      clustering {
-        enabled = false
+      rule {
+        source_labels = ["__meta_kubernetes_pod_annotation_prometheus_io_scrape"]
+        regex         = "true"
+        action        = "keep"
+      }
+      rule {
+        source_labels = ["__meta_kubernetes_pod_annotation_prometheus_io_path"]
+        regex         = "(.+)"
+        target_label  = "__metrics_path__"
+      }
+      rule {
+        source_labels = ["__address__", "__meta_kubernetes_pod_annotation_prometheus_io_port"]
+        regex         = "([^:]+)(?::\\d+)?;(\\d+)"
+        replacement   = "$1:$2"
+        target_label  = "__address__"
+      }
+      rule {
+        source_labels = ["__meta_kubernetes_namespace"]
+        target_label  = "namespace"
+      }
+      rule {
+        source_labels = ["__meta_kubernetes_pod_name"]
+        target_label  = "pod"
+      }
+      rule {
+        source_labels = ["__meta_kubernetes_pod_container_name"]
+        target_label  = "container"
+      }
+      rule {
+        source_labels = ["__meta_kubernetes_pod_node_name"]
+        target_label  = "node"
+      }
+      rule {
+        source_labels = ["__meta_kubernetes_pod_label_app_kubernetes_io_name"]
+        target_label  = "app"
       }
     }
 
-    // Scrape Kubernetes Services with prometheus.io/scrape annotation
-    prometheus.scrape "kubernetes_services" {
+    prometheus.scrape "kubernetes_pods" {
+      targets    = discovery.relabel.pods_metrics.output
+      forward_to = [prometheus.remote_write.default.receiver]
+
+      scrape_interval = "30s"
+      scrape_timeout  = "10s"
+    }
+
+    // Service annotation-based scraping (cluster-wide, use clustering)
+    discovery.relabel "services_metrics" {
       targets = discovery.kubernetes.services.targets
-      forward_to = [prometheus.remote_write.default.receiver]
 
-      clustering {
-        enabled = false
+      rule {
+        source_labels = ["__meta_kubernetes_service_annotation_prometheus_io_scrape"]
+        regex         = "true"
+        action        = "keep"
+      }
+      rule {
+        source_labels = ["__meta_kubernetes_service_annotation_prometheus_io_path"]
+        regex         = "(.+)"
+        target_label  = "__metrics_path__"
+      }
+      rule {
+        source_labels = ["__address__", "__meta_kubernetes_service_annotation_prometheus_io_port"]
+        regex         = "([^:]+)(?::\\d+)?;(\\d+)"
+        replacement   = "$1:$2"
+        target_label  = "__address__"
+      }
+      rule {
+        source_labels = ["__meta_kubernetes_namespace"]
+        target_label  = "namespace"
+      }
+      rule {
+        source_labels = ["__meta_kubernetes_service_name"]
+        target_label  = "service"
+      }
+      rule {
+        source_labels = ["__meta_kubernetes_service_label_app_kubernetes_io_name"]
+        target_label  = "app"
       }
     }
 
-    // Loki Log Collection
+    prometheus.scrape "kubernetes_services" {
+      targets    = discovery.relabel.services_metrics.output
+      forward_to = [prometheus.remote_write.default.receiver]
+
+      clustering {
+        enabled = true
+      }
+
+      scrape_interval = "30s"
+      scrape_timeout  = "10s"
+    }
+
+    // Log Collection - filesystem-based (override in overlay with Loki URL)
     loki.write "default" {
       endpoint {
         url = "PLACEHOLDER_LOKI_URL"
       }
     }
 
-    // Relabel pod targets for better log organization
     discovery.relabel "pods_logs" {
       targets = discovery.kubernetes.pods.targets
 
-      // Keep namespace
+      rule {
+        source_labels = ["__meta_kubernetes_namespace", "__meta_kubernetes_pod_name", "__meta_kubernetes_pod_uid", "__meta_kubernetes_pod_container_name"]
+        separator     = "/"
+        regex         = "(.+)/(.+)/(.+)/(.+)"
+        replacement   = "/var/log/pods/$1_$2_$3/$4/*.log"
+        target_label  = "__path__"
+      }
       rule {
         source_labels = ["__meta_kubernetes_namespace"]
         target_label  = "namespace"
       }
-
-      // Keep pod name
       rule {
         source_labels = ["__meta_kubernetes_pod_name"]
         target_label  = "pod"
       }
-
-      // Keep container name
       rule {
         source_labels = ["__meta_kubernetes_pod_container_name"]
         target_label  = "container"
       }
-
-      // Add app label from pod label app.kubernetes.io/name or app
-      rule {
-        source_labels = ["__meta_kubernetes_pod_label_app_kubernetes_io_name"]
-        target_label  = "app"
-      }
+      // app label: prefer app.kubernetes.io/name, fall back to app label
       rule {
         source_labels = ["__meta_kubernetes_pod_label_app"]
+        regex         = "(.+)"
         target_label  = "app"
       }
-
-      // Add job label (use app or fallback to namespace/pod)
+      rule {
+        source_labels = ["__meta_kubernetes_pod_label_app_kubernetes_io_name"]
+        regex         = "(.+)"
+        target_label  = "app"
+      }
       rule {
         source_labels = ["app"]
         target_label  = "job"
       }
-      rule {
-        source_labels = ["namespace", "pod"]
-        separator     = "/"
-        target_label  = "job"
-        regex         = "^$"  // Only if job is empty
-      }
-
-      // Keep node name
       rule {
         source_labels = ["__meta_kubernetes_pod_node_name"]
         target_label  = "node"
       }
     }
 
-    // Collect logs from Kubernetes pods with proper labels
-    loki.source.kubernetes "pods" {
-      targets    = discovery.relabel.pods_logs.output
-      forward_to = [loki.process.add_labels.receiver]
+    local.file_match "pod_logs" {
+      path_targets = discovery.relabel.pods_logs.output
     }
 
-    // Add additional processing and labels
+    loki.source.file "pod_logs" {
+      targets    = local.file_match.pod_logs.targets
+      forward_to = [loki.process.parse_cri.receiver]
+    }
+
+    loki.process "parse_cri" {
+      forward_to = [loki.process.add_labels.receiver]
+      stage.cri {}
+    }
+
     loki.process "add_labels" {
       forward_to = [loki.write.default.receiver]
 
-      // Extract log level from common patterns
       stage.regex {
         expression = "(?i)(?P<level>debug|info|warn|warning|error|fatal|critical)"
       }
-
       stage.labels {
         values = {
           level = "",
@@ -136,28 +209,13 @@ data:
       }
     }
 
-    // Remote scrape targets (lighthouse Docker host)
+    // Remote scrape targets - Placeholder (override in overlay)
     discovery.relabel "lighthouse_exporters" {
       targets = [
         {
           __address__ = "PLACEHOLDER_LIGHTHOUSE_IP:9100",
-          job = "node-exporter-lighthouse",
-          instance = "lighthouse",
-        },
-        {
-          __address__ = "PLACEHOLDER_LIGHTHOUSE_IP:8098",
-          job = "cadvisor-lighthouse",
-          instance = "lighthouse",
-        },
-        {
-          __address__ = "PLACEHOLDER_LIGHTHOUSE_IP:9795",
-          job = "eaton-ups-exporter",
-          instance = "lighthouse",
-        },
-        {
-          __address__ = "PLACEHOLDER_LIGHTHOUSE_IP:9221",
-          job = "proxmox-pve-exporter",
-          instance = "lighthouse",
+          job         = "node-exporter-lighthouse",
+          instance    = "lighthouse",
         },
       ]
     }
@@ -165,6 +223,10 @@ data:
     prometheus.scrape "lighthouse_exporters" {
       targets    = discovery.relabel.lighthouse_exporters.output
       forward_to = [prometheus.remote_write.default.receiver]
+
+      clustering {
+        enabled = true
+      }
 
       scrape_interval = "30s"
       scrape_timeout  = "10s"
