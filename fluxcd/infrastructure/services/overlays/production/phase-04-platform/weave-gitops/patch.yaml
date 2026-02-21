@@ -9,6 +9,10 @@ spec:
       name: weave-gitops-values
       valuesKey: values.yaml
   values:
+    image:
+      registry: ghcr.io
+      repository: weaveworks/wego-app
+      tag: "v0.39.1-rc.1"
     service:
       type: ClusterIP
     resources:
