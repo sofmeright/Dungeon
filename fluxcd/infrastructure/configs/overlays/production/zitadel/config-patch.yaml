@@ -108,17 +108,20 @@ data:
       Customizations: {}
 
     # Cache Configuration (Redis-backed, shared across all 3 Zitadel pods)
+    # go-redis v10+ sends CLIENT maint_notifications during handshake which
+    # Redis 7.x rejects. This is harmless (auto-fallback) but the circuit
+    # breaker counts it as a failure. Relaxed thresholds to tolerate it.
     Caches:
       Connectors:
         Redis:
           Enabled: true
           Addr: zitadel-redis-master.zeldas-lullaby.svc.cluster.local:6379
           CircuitBreaker:
-            Interval: 0
-            MaxConsecutiveFailures: 5
-            MaxFailureRatio: 0.1
+            Interval: 30s
+            MaxConsecutiveFailures: 50
+            MaxFailureRatio: 0.5
             Timeout: 60s
-            MaxRetryRequests: 1
+            MaxRetryRequests: 3
       Instance:
         Connector: "redis"
         MaxAge: 1h
