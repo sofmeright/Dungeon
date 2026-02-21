@@ -10,8 +10,7 @@ spec:
       valuesKey: values.yaml
   values:
     image:
-      registry: ghcr.io
-      repository: weaveworks/wego-app
+      repository: ghcr.io/weaveworks/wego-app
       tag: "v0.39.1-rc.1"
     service:
       type: ClusterIP
