@@ -15,7 +15,9 @@ data:
       - --auth-methods=user-account,oidc
 
     # OIDC configuration (Zitadel PKCE - no client secret)
-    oidcSecret: oidc-auth
+    oidcSecret:
+      create: false
+      name: oidc-auth
 
     # RBAC configuration with impersonation for multi-namespace visibility
     rbac:
