@@ -56,7 +56,7 @@ spec:
                   name: homarr-redis-password
                   key: password
             - name: NEXTAUTH_URL
-              value: "http://172.22.30.223:7575"
+              value: "https://apptray.pcfae.com"
             - name: AUTH_PROVIDERS
               value: "credentials,oidc"
             - name: AUTH_LOGOUT_REDIRECT_URL
