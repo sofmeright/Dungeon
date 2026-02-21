@@ -30,7 +30,7 @@ spec:
             - name: SSO_AUTHORITY
               value: "https://sso.prplanit.com"
             - name: SSO_AUDIENCE_TRUSTED
-              value: "^315814(797100716034|911924047874)$"
+              value: "^(315814797100716034|315814911924047874|360752964924708521)$"
           volumeMounts:
             - $patch: replace
             - name: vaultwarden-data
