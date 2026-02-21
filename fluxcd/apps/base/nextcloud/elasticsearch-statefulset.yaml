@@ -28,7 +28,7 @@ spec:
             - vm.max_map_count=262144
       containers:
         - name: elasticsearch
-          image: docker.io/library/elasticsearch:8.17.0
+          image: docker.io/library/elasticsearch:8.19.11
           ports:
             - name: http
               containerPort: 9200
