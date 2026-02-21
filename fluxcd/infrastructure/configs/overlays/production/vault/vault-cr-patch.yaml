@@ -106,9 +106,9 @@ spec:
               - openid
               - profile
               - email
-              - "urn:zitadel:iam:org:project:roles"
+              - offline_access
             bound_claims:
-              roles: "Admin"
+              roles: "admin"
     secrets:
       - path: operationtimecapsule
         type: kv
