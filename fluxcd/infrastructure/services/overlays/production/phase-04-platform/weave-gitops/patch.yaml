@@ -9,9 +9,6 @@ spec:
       name: weave-gitops-values
       valuesKey: values.yaml
   values:
-    image:
-      repository: ghcr.io/weaveworks/weave-gitops/gitops-server
-      tag: "v0.39.0-rc.2"
     service:
       type: ClusterIP
     resources:
