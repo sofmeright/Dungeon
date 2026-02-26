@@ -13,7 +13,7 @@ spec:
     spec:
       containers:
         - name: vaultwarden
-          image: docker.io/vaultwarden/server:1.35.3
+          image: docker.io/vaultwarden/server:1.35.4
           env:
             - name: DOMAIN
               value: "https://vw.prplanit.com"
