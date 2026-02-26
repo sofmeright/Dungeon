@@ -23,7 +23,7 @@ spec:
     image:
       registry: docker.io
       repository: grafana/alloy
-      tag: "v1.13.1"
+      tag: "v1.13.2"
 
     alloy:
       configMap:
