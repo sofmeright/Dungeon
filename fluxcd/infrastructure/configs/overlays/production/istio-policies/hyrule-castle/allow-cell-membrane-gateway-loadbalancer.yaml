@@ -5,7 +5,7 @@ metadata:
 spec:
   selector:
     matchLabels:
-      istio: cell-membrane-gateway
+      gateway.networking.k8s.io/gateway-name: cell-membrane-gateway
   action: ALLOW
   rules:
     - from:
