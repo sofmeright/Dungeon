@@ -6,4 +6,5 @@ resources:
   - allow-intra-namespace.yaml
   - allow-ceph-rgw-loadbalancer.yaml
   - allow-cnpg-instance-callback.yaml
-  - allow-webhook-apiserver.yaml
+  - allow-webhook-cnpg.yaml
+  - allow-webhook-mariadb-operator.yaml

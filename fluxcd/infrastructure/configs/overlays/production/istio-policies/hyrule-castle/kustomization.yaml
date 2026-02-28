@@ -7,4 +7,4 @@ resources:
   - allow-cell-membrane-gateway-loadbalancer.yaml
   - allow-apt-cacher-ng-loadbalancer.yaml
   - allow-jfrog-loadbalancer.yaml
-  - allow-webhook-apiserver.yaml
+  - allow-webhook-gitlab-certmanager.yaml
