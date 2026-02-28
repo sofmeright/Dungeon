@@ -8,6 +8,9 @@ metadata:
     lbipam.cilium.io/sharing-cross-namespace: "*"
     service.cilium.io/loadbalancer-mode: "dsr"
 spec:
+  infrastructure:
+    labels:
+      policy.prplanit.com/metrics: "true"
   listeners:
     - name: http
       protocol: HTTP

@@ -4,6 +4,11 @@ metadata:
   name: grafana
 spec:
   values:
+    # Pod labels for Istio AuthorizationPolicy opt-in
+    podLabels:
+      policy.prplanit.com/ingress: "true"
+      policy.prplanit.com/metrics: "true"
+
     # Prometheus scraping
     podAnnotations:
       prometheus.io/scrape: "true"

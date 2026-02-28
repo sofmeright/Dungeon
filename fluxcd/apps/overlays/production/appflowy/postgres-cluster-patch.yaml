@@ -3,6 +3,10 @@ kind: Cluster
 metadata:
   name: appflowy-postgres
 spec:
+  inheritedMetadata:
+    labels:
+      policy.prplanit.com/cnpg: "managed"
+
   instances: 3
 
   postgresql:
@@ -18,12 +22,12 @@ spec:
         name: appflowy-postgres-app
       postInitSQLRefs:
         secretRefs:
-        - name: appflowy-postgres-init-sql
-          key: init.sql
+          - name: appflowy-postgres-init-sql
+            key: init.sql
       postInitApplicationSQLRefs:
         secretRefs:
-        - name: appflowy-postgres-init-sql
-          key: app-init.sql
+          - name: appflowy-postgres-init-sql
+            key: app-init.sql
 
   enableSuperuserAccess: true
 

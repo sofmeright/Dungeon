@@ -3,6 +3,10 @@ kind: Cluster
 metadata:
   name: calcom-postgres
 spec:
+  inheritedMetadata:
+    labels:
+      policy.prplanit.com/cnpg: "managed"
+
   storage:
     storageClass: ceph-rbd
     size: 10Gi

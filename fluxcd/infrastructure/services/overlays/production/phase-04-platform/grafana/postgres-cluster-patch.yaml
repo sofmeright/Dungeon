@@ -4,6 +4,10 @@ metadata:
   name: grafana-postgres
   namespace: gossip-stone
 spec:
+  inheritedMetadata:
+    labels:
+      policy.prplanit.com/cnpg: "managed"
+
   instances: 3
 
   affinity:

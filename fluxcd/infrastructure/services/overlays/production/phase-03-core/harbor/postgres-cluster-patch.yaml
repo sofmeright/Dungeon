@@ -3,6 +3,10 @@ kind: Cluster
 metadata:
   name: harbor-postgres
 spec:
+  inheritedMetadata:
+    labels:
+      policy.prplanit.com/cnpg: "managed"
+
   instances: 3
 
   bootstrap:

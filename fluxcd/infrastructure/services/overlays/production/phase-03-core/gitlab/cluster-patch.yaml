@@ -3,6 +3,10 @@ kind: Cluster
 metadata:
   name: gitlab-postgresql
 spec:
+  inheritedMetadata:
+    labels:
+      policy.prplanit.com/cnpg: "managed"
+
   storage:
     storageClass: ceph-rbd-retain
     size: 50Gi

@@ -12,6 +12,11 @@ patches:
       - op: replace
         path: /spec/storage/storageClass
         value: ceph-rbd
+      - op: add
+        path: /spec/inheritedMetadata
+        value:
+          labels:
+            policy.prplanit.com/cnpg: "managed"
     target:
       kind: Cluster
       name: netbird-postgres

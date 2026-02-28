@@ -4,3 +4,7 @@ metadata:
   name: cloudnative-pg
 spec:
   targetNamespace: gorons-bracelet
+  values:
+    podLabels:
+      policy.prplanit.com/cnpg: "managed"
+      policy.prplanit.com/metrics: "true"

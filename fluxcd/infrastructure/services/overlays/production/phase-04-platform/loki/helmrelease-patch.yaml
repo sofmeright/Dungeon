@@ -91,6 +91,9 @@ spec:
                 name: loki
               spec:
                 template:
+                  metadata:
+                    labels:
+                      policy.prplanit.com/metrics: "true"
                   spec:
                     containers:
                       - name: loki-sc-rules

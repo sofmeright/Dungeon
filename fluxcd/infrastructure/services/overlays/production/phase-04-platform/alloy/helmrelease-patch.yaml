@@ -4,6 +4,22 @@ metadata:
   name: alloy
 spec:
   targetNamespace: gossip-stone
+  postRenderers:
+    - kustomize:
+        patches:
+          - target:
+              kind: DaemonSet
+              name: alloy
+            patch: |
+              apiVersion: apps/v1
+              kind: DaemonSet
+              metadata:
+                name: alloy
+              spec:
+                template:
+                  metadata:
+                    labels:
+                      policy.prplanit.com/metrics: "true"
   values:
     alloy:
       extraAnnotations:

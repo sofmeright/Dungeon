@@ -12,6 +12,9 @@ spec:
         namespace: hyrule-castle
   values:
     global:
+      common:
+        labels:
+          policy.prplanit.com/ingress: "true"
       hosts:
         domain: prplanit.com
         gitlab:

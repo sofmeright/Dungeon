@@ -9,6 +9,9 @@ spec:
       name: weave-gitops-values
       valuesKey: values.yaml
   values:
+    podLabels:
+      policy.prplanit.com/ingress: "true"
+      policy.prplanit.com/metrics: "true"
     service:
       type: ClusterIP
     resources:

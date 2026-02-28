@@ -11,3 +11,16 @@ patches:
       - op: replace
         path: /subjects/0/namespace
         value: gossip-stone
+  - target:
+      kind: Deployment
+      name: kube-state-metrics
+    patch: |-
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: kube-state-metrics
+      spec:
+        template:
+          metadata:
+            labels:
+              policy.prplanit.com/metrics: "true"

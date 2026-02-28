@@ -3,6 +3,10 @@ kind: Cluster
 metadata:
   name: gatus-postgres
 spec:
+  inheritedMetadata:
+    labels:
+      policy.prplanit.com/cnpg: "managed"
+
   instances: 1
 
   bootstrap:

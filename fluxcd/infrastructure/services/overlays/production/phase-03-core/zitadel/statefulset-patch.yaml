@@ -4,3 +4,7 @@ metadata:
   name: zitadel
 spec:
   replicas: 3
+  template:
+    metadata:
+      labels:
+        policy.prplanit.com/ingress: "true"
