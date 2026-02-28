@@ -6,3 +6,4 @@ resources:
   - allow-intra-namespace.yaml
   - allow-ceph-rgw-loadbalancer.yaml
   - allow-cnpg-instance-callback.yaml
+  - allow-webhook-apiserver.yaml

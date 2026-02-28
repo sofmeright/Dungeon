@@ -7,3 +7,4 @@ resources:
   - allow-netbird-coturn-loadbalancer.yaml
   - allow-vault-lb-loadbalancer.yaml
   - allow-oidc-clients.yaml
+  - allow-webhook-apiserver.yaml
