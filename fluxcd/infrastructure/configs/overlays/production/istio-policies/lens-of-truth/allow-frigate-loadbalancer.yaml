@@ -1,0 +1,17 @@
+apiVersion: security.istio.io/v1
+kind: AuthorizationPolicy
+metadata:
+  name: allow-frigate-loadbalancer
+spec:
+  selector:
+    matchLabels:
+      app: frigate
+  action: ALLOW
+  rules:
+    - from:
+        - source:
+            notPrincipals:
+              - cluster.local/ns/*/sa/*
+      to:
+        - operation:
+            ports: ["5000", "8554", "8555"]

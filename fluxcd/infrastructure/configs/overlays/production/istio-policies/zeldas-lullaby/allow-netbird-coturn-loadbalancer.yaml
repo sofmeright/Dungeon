@@ -1,0 +1,17 @@
+apiVersion: security.istio.io/v1
+kind: AuthorizationPolicy
+metadata:
+  name: allow-netbird-coturn-loadbalancer
+spec:
+  selector:
+    matchLabels:
+      app: netbird-coturn
+  action: ALLOW
+  rules:
+    - from:
+        - source:
+            notPrincipals:
+              - cluster.local/ns/*/sa/*
+      to:
+        - operation:
+            ports: ["3478", "5349"]

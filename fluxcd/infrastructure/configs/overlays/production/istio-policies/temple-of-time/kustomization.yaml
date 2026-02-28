@@ -1,8 +1,8 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
-namespace: tingle-tuner
+namespace: temple-of-time
 resources:
   - ../../../../base/istio-policies
   - allow-intra-namespace.yaml
-  - allow-endlessh-go-loadbalancer.yaml
-  - allow-neko-loadbalancer.yaml
+  - allow-jellyfin-loadbalancer.yaml
+  - allow-plex-loadbalancer.yaml

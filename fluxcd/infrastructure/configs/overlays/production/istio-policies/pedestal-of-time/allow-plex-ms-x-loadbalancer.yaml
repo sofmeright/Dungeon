@@ -1,0 +1,17 @@
+apiVersion: security.istio.io/v1
+kind: AuthorizationPolicy
+metadata:
+  name: allow-plex-ms-x-loadbalancer
+spec:
+  selector:
+    matchLabels:
+      app: plex-ms-x
+  action: ALLOW
+  rules:
+    - from:
+        - source:
+            notPrincipals:
+              - cluster.local/ns/*/sa/*
+      to:
+        - operation:
+            ports: ["32400", "32415", "32416", "32417", "32418", "32419", "8324", "8325", "32469", "32470", "1900", "1902"]

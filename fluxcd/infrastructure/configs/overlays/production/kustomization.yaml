@@ -29,3 +29,4 @@ resources:
   - gitlab  # GitLab SMTP and OIDC credentials
   - chrony  # NTP server configuration
   - coredns  # Cluster DNS forward config
+  - istio-policies  # Istio AuthorizationPolicies for all meshed namespaces

@@ -1,0 +1,17 @@
+apiVersion: security.istio.io/v1
+kind: AuthorizationPolicy
+metadata:
+  name: allow-endlessh-go-loadbalancer
+spec:
+  selector:
+    matchLabels:
+      app: endlessh-go
+  action: ALLOW
+  rules:
+    - from:
+        - source:
+            notPrincipals:
+              - cluster.local/ns/*/sa/*
+      to:
+        - operation:
+            ports: ["2222", "2112"]

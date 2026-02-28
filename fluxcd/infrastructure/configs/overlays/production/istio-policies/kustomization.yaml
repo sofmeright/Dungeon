@@ -1,22 +1,21 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
-
-# NOTE: AuthorizationPolicies are NOT deployed yet
-# Enable incrementally per-namespace after testing with PERMISSIVE mTLS
-#
-# Rollout plan:
-# 1. First verify mTLS is working (istioctl proxy-status)
-# 2. Enable policies on one low-risk namespace (tingle-tuner)
-# 3. Verify apps still work
-# 4. Roll out to remaining namespaces
-#
-# Uncomment resources as you enable each namespace:
-
-resources: []
-# Common policies (applied to all meshed namespaces)
-# - allow-gateway-ingress.yaml
-# Per-namespace policies (uncomment as you enable)
-# - gossip-stone/
-# - tingle-tuner/
-# - temple-of-time/
-# - swift-sail/
+resources:
+  - arylls-lookout/
+  - compass/
+  - delivery-bag/
+  - fairy-bottle/
+  - gorons-bracelet/
+  - gossip-stone/
+  - hookshot/
+  - hyrule-castle/
+  - kokiri-forest/
+  - lens-of-truth/
+  - lost-woods/
+  - pedestal-of-time/
+  - shooting-gallery/
+  - swift-sail/
+  - temple-of-time/
+  - tingle-tuner/
+  - wallmaster/
+  - zeldas-lullaby/

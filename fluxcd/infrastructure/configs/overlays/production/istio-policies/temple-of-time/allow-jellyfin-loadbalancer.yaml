@@ -1,0 +1,17 @@
+apiVersion: security.istio.io/v1
+kind: AuthorizationPolicy
+metadata:
+  name: allow-jellyfin-loadbalancer
+spec:
+  selector:
+    matchLabels:
+      app: jellyfin
+  action: ALLOW
+  rules:
+    - from:
+        - source:
+            notPrincipals:
+              - cluster.local/ns/*/sa/*
+      to:
+        - operation:
+            ports: ["8096", "8920", "7359", "1900"]

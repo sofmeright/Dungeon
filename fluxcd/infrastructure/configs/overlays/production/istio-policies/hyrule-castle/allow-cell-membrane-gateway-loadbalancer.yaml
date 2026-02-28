@@ -1,0 +1,17 @@
+apiVersion: security.istio.io/v1
+kind: AuthorizationPolicy
+metadata:
+  name: allow-cell-membrane-gateway-loadbalancer
+spec:
+  selector:
+    matchLabels:
+      istio: cell-membrane-gateway
+  action: ALLOW
+  rules:
+    - from:
+        - source:
+            notPrincipals:
+              - cluster.local/ns/*/sa/*
+      to:
+        - operation:
+            ports: ["80", "443"]

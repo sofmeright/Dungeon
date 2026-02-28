@@ -1,14 +1,14 @@
 apiVersion: security.istio.io/v1
 kind: AuthorizationPolicy
 metadata:
-  name: allow-prometheus-scrape
+  name: allow-gatus-healthcheck
 spec:
   action: ALLOW
   rules:
     - from:
         - source:
             principals:
-              - cluster.local/ns/gossip-stone/sa/alloy
+              - cluster.local/ns/gossip-stone/sa/gatus
       to:
         - operation:
-            ports: ["9090", "9091", "9100", "9115", "9153", "9187", "9216", "15020"]
+            ports: ["80", "443", "3000", "5000", "8080", "8443", "9000"]

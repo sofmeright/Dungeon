@@ -1,14 +1,14 @@
 apiVersion: security.istio.io/v1
 kind: AuthorizationPolicy
 metadata:
-  name: allow-prometheus-scrape
+  name: allow-cnpg-operator
 spec:
   action: ALLOW
   rules:
     - from:
         - source:
             principals:
-              - cluster.local/ns/gossip-stone/sa/alloy
+              - cluster.local/ns/gorons-bracelet/sa/cloudnative-pg
       to:
         - operation:
-            ports: ["9090", "9091", "9100", "9115", "9153", "9187", "9216", "15020"]
+            ports: ["5432", "8000"]

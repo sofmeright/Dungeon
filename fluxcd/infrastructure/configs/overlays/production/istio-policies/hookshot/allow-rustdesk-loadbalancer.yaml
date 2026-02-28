@@ -1,0 +1,17 @@
+apiVersion: security.istio.io/v1
+kind: AuthorizationPolicy
+metadata:
+  name: allow-rustdesk-loadbalancer
+spec:
+  selector:
+    matchLabels:
+      app: rustdesk
+  action: ALLOW
+  rules:
+    - from:
+        - source:
+            notPrincipals:
+              - cluster.local/ns/*/sa/*
+      to:
+        - operation:
+            ports: ["41114", "41115", "41116", "41117", "41118", "41119"]

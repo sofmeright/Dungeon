@@ -1,7 +1,0 @@
-# Default deny all traffic in tingle-tuner namespace
-apiVersion: security.istio.io/v1
-kind: AuthorizationPolicy
-metadata:
-  name: default-deny
-spec:
-  {}
