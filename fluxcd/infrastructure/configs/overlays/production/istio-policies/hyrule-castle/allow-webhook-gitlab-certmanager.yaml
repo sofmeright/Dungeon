@@ -15,4 +15,4 @@ spec:
               - cluster.local/ns/*/sa/*
       to:
         - operation:
-            ports: ["443"]
+            ports: ["10250"]
