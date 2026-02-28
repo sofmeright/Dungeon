@@ -3,6 +3,9 @@ kind: AuthorizationPolicy
 metadata:
   name: allow-prometheus-scrape
 spec:
+  selector:
+    matchLabels:
+      policy.prplanit.com/metrics: "true"
   action: ALLOW
   rules:
     - from:

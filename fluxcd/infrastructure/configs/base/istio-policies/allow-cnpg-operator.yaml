@@ -3,6 +3,9 @@ kind: AuthorizationPolicy
 metadata:
   name: allow-cnpg-operator
 spec:
+  selector:
+    matchLabels:
+      policy.prplanit.com/cnpg: "managed"
   action: ALLOW
   rules:
     - from:

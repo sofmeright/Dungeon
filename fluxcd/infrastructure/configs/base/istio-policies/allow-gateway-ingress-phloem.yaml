@@ -3,6 +3,9 @@ kind: AuthorizationPolicy
 metadata:
   name: allow-gateway-ingress-phloem
 spec:
+  selector:
+    matchLabels:
+      policy.prplanit.com/ingress: "true"
   action: ALLOW
   rules:
     - from:

@@ -3,6 +3,9 @@ kind: AuthorizationPolicy
 metadata:
   name: allow-gatus-healthcheck
 spec:
+  selector:
+    matchLabels:
+      policy.prplanit.com/probe: "true"
   action: ALLOW
   rules:
     - from:
