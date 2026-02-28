@@ -8,5 +8,3 @@ spec:
     - from:
         - source:
             namespaces: ["gossip-stone"]
-      to:
-        - operation: {}

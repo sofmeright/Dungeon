@@ -8,5 +8,3 @@ spec:
     - from:
         - source:
             namespaces: ["hyrule-castle"]
-      to:
-        - operation: {}

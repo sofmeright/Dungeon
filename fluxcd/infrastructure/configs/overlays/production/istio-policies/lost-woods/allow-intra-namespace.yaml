@@ -8,5 +8,3 @@ spec:
     - from:
         - source:
             namespaces: ["lost-woods"]
-      to:
-        - operation: {}

@@ -8,5 +8,3 @@ spec:
     - from:
         - source:
             namespaces: ["lens-of-truth"]
-      to:
-        - operation: {}

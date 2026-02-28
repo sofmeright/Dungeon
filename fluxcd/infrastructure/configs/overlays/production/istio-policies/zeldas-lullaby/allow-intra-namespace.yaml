@@ -8,5 +8,3 @@ spec:
     - from:
         - source:
             namespaces: ["zeldas-lullaby"]
-      to:
-        - operation: {}

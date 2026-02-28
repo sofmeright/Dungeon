@@ -8,5 +8,3 @@ spec:
     - from:
         - source:
             namespaces: ["delivery-bag"]
-      to:
-        - operation: {}
