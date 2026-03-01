@@ -13,87 +13,88 @@ spec:
       labels:
         app: romm
     spec:
+      serviceAccountName: romm
       containers:
-      - name: romm
-        image: PLACEHOLDER_IMAGE
-        ports:
-        - containerPort: 7007
-          name: http
-          protocol: TCP
-        env:
-        - name: ROMM_PORT
-          value: "7007"
-        - name: DB_HOST
-          value: "romm-db"
-        - name: DB_NAME
-          value: "romm"
-        - name: DB_USER
-          valueFrom:
-            secretKeyRef:
-              name: romm-secrets
-              key: db-user
-        - name: DB_PASSWD
-          valueFrom:
-            secretKeyRef:
-              name: romm-secrets
-              key: db-password
-        - name: ROMM_AUTH_SECRET_KEY
-          valueFrom:
-            secretKeyRef:
-              name: romm-secrets
-              key: auth-secret-key
-        volumeMounts:
-        - name: shooting-gallery-romm-resources
-          mountPath: /romm/resources
-        - name: shooting-gallery-romm-redis
-          mountPath: /redis-data
-        - name: shooting-gallery-romm-assets
-          mountPath: /romm/assets
-        - name: shooting-gallery-romm-config
-          mountPath: /romm/config
+        - name: romm
+          image: PLACEHOLDER_IMAGE
+          ports:
+            - containerPort: 7007
+              name: http
+              protocol: TCP
+          env:
+            - name: ROMM_PORT
+              value: "7007"
+            - name: DB_HOST
+              value: "romm-db"
+            - name: DB_NAME
+              value: "romm"
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: romm-secrets
+                  key: db-user
+            - name: DB_PASSWD
+              valueFrom:
+                secretKeyRef:
+                  name: romm-secrets
+                  key: db-password
+            - name: ROMM_AUTH_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: romm-secrets
+                  key: auth-secret-key
+          volumeMounts:
+            - name: shooting-gallery-romm-resources
+              mountPath: /romm/resources
+            - name: shooting-gallery-romm-redis
+              mountPath: /redis-data
+            - name: shooting-gallery-romm-assets
+              mountPath: /romm/assets
+            - name: shooting-gallery-romm-config
+              mountPath: /romm/config
+            - name: smb-games
+              mountPath: /romm/library
+          resources:
+            requests:
+              cpu: 200m
+              memory: 512Mi
+            limits:
+              cpu: 2000m
+              memory: 2Gi
+      volumes:
         - name: smb-games
-          mountPath: /romm/library
+          persistentVolumeClaim:
+            claimName: shooting-gallery-romm-smb-games
+  volumeClaimTemplates:
+    - metadata:
+        name: shooting-gallery-romm-resources
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        storageClassName: PLACEHOLDER_STORAGE_CLASS
         resources:
           requests:
-            cpu: 200m
-            memory: 512Mi
-          limits:
-            cpu: 2000m
-            memory: 2Gi
-      volumes:
-      - name: smb-games
-        persistentVolumeClaim:
-          claimName: shooting-gallery-romm-smb-games
-  volumeClaimTemplates:
-  - metadata:
-      name: shooting-gallery-romm-resources
-    spec:
-      accessModes: ["ReadWriteOnce"]
-      storageClassName: PLACEHOLDER_STORAGE_CLASS
-      resources:
-        requests:
-          storage: 10Gi
-  - metadata:
-      name: shooting-gallery-romm-redis
-    spec:
-      accessModes: ["ReadWriteOnce"]
-      storageClassName: PLACEHOLDER_STORAGE_CLASS
-      resources:
-        requests:
-          storage: 5Gi
-  - metadata:
-      name: shooting-gallery-romm-assets
-    spec:
-      accessModes: ["ReadWriteOnce"]
-      storageClassName: PLACEHOLDER_STORAGE_CLASS
-      resources:
-        requests:
-          storage: 10Gi
-  - metadata:
-      name: shooting-gallery-romm-config
-    spec:
-      accessModes: ["ReadWriteOnce"]
-      storageClassName: PLACEHOLDER_STORAGE_CLASS
-      resources:
-        requests:
-          storage: 1Gi
+            storage: 10Gi
+    - metadata:
+        name: shooting-gallery-romm-redis
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        storageClassName: PLACEHOLDER_STORAGE_CLASS
+        resources:
+          requests:
+            storage: 5Gi
+    - metadata:
+        name: shooting-gallery-romm-assets
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        storageClassName: PLACEHOLDER_STORAGE_CLASS
+        resources:
+          requests:
+            storage: 10Gi
+    - metadata:
+        name: shooting-gallery-romm-config
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        storageClassName: PLACEHOLDER_STORAGE_CLASS
+        resources:
+          requests:
+            storage: 1Gi

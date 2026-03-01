@@ -13,6 +13,7 @@ spec:
       labels:
         app: romm-db
     spec:
+      serviceAccountName: romm-db
       containers:
         - name: mariadb
           image: PLACEHOLDER_IMAGE

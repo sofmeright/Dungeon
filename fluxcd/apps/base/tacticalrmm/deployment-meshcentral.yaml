@@ -12,6 +12,7 @@ spec:
       labels:
         app: tactical-meshcentral
     spec:
+      serviceAccountName: tactical-meshcentral
       containers:
         - name: meshcentral
           image: PLACEHOLDER_MESHCENTRAL_IMAGE

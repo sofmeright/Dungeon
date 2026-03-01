@@ -13,6 +13,7 @@ spec:
       labels:
         app: roundcube-primary-gmail
     spec:
+      serviceAccountName: roundcube-primary-gmail
       containers:
         - name: roundcube
           image: PLACEHOLDER_IMAGE

@@ -12,6 +12,7 @@ spec:
       labels:
         app: guacamole
     spec:
+      serviceAccountName: guacamole
       initContainers:
         - name: generate-initdb
           image: PLACEHOLDER_GUACAMOLE_IMAGE

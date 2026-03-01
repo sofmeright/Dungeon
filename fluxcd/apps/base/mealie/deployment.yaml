@@ -13,140 +13,141 @@ spec:
       labels:
         app: mealie
     spec:
+      serviceAccountName: mealie
       containers:
-      - name: mealie
-        image: PLACEHOLDER_IMAGE
-        ports:
-        - containerPort: 9000
-        env:
-        - name: ALLOW_SIGNUP
-          value: "true"
-        - name: PUID
-          value: "1000"
-        - name: PGID
-          value: "1000"
-        - name: TZ
-          value: "Etc/UTC"
-        - name: MAX_WORKERS
-          value: "1"
-        - name: WEB_CONCURRENCY
-          value: "1"
-        - name: BASE_URL
-          value: "PLACEHOLDER_BASE_URL"
-        - name: SMTP_HOST
-          value: "smtp.gmail.com"
-        - name: SMTP_PORT
-          value: "587"
-        - name: SMTP_FROM_NAME
-          valueFrom:
-            secretKeyRef:
-              name: mealie-smtp-secrets
-              key: smtp_name
-        - name: SMTP_AUTH_STRATEGY
-          value: "TLS"
-        - name: SMTP_FROM_EMAIL
-          valueFrom:
-            secretKeyRef:
-              name: mealie-smtp-secrets
-              key: smtp_email
-        - name: SMTP_USER
-          valueFrom:
-            secretKeyRef:
-              name: mealie-smtp-secrets
-              key: smtp_email
-        - name: SMTP_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: mealie-smtp-secrets
-              key: smtp_password
-        - name: DB_ENGINE
-          value: "postgres"
-        - name: POSTGRES_USER
-          valueFrom:
-            secretKeyRef:
-              name: mealie-app-secrets
-              key: postgres_user
-        - name: POSTGRES_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: mealie-app-secrets
-              key: postgres_password
-        - name: POSTGRES_SERVER
-          value: "mealie-postgres"
-        - name: POSTGRES_PORT
-          value: "5432"
-        - name: POSTGRES_DB
-          value: "mealie"
-        - name: THEME_DARK_PRIMARY
-          value: "#349722"
-        - name: THEME_LIGHT_PRIMARY
-          value: "#349722"
-        - name: THEME_DARK_ACCENT
-          value: "#ad9f11"
-        - name: THEME_LIGHT_ACCENT
-          value: "#ad9f11"
-        - name: THEME_DARK_SECONDARY
-          value: "#852297"
-        - name: THEME_LIGHT_SECONDARY
-          value: "#852297"
-        - name: THEME_DARK_SUCCESS
-          value: "#006838"
-        - name: THEME_LIGHT_SUCCESS
-          value: "#006838"
-        - name: THEME_DARK_INFO
-          value: "#24cc89"
-        - name: THEME_LIGHT_INFO
-          value: "#24cc89"
-        - name: THEME_DARK_WARNING
-          value: "#ef7d50"
-        - name: THEME_LIGHT_WARNING
-          value: "#ef7d50"
-        - name: THEME_DARK_ERROR
-          value: "#310937"
-        - name: THEME_LIGHT_ERROR
-          value: "#310937"
-        - name: OIDC_AUTH_ENABLED
-          value: "True"
-        - name: OIDC_SIGNUP_ENABLED
-          value: "False"
-        - name: OIDC_AUTO_REDIRECT
-          value: "False"
-        - name: OIDC_REMEMBER_ME
-          value: "False"
-        - name: OIDC_USER_CLAIM
-          value: "email"
-        - name: OIDC_NAME_CLAIM
-          value: "name"
-        - name: OIDC_PROVIDER_NAME
-          value: "PLACEHOLDER_OIDC_PROVIDER"
-        - name: OIDC_CONFIGURATION_URL
-          value: "PLACEHOLDER_OIDC_CONFIG_URL"
-        - name: OIDC_CLIENT_ID
-          valueFrom:
-            secretKeyRef:
-              name: mealie-app-secrets
-              key: oidc_client_id
-        - name: OIDC_CLIENT_SECRET
-          valueFrom:
-            secretKeyRef:
-              name: mealie-app-secrets
-              key: oidc_client_secret
-        volumeMounts:
-        - name: mealie-data
-          mountPath: /app/data
+        - name: mealie
+          image: PLACEHOLDER_IMAGE
+          ports:
+            - containerPort: 9000
+          env:
+            - name: ALLOW_SIGNUP
+              value: "true"
+            - name: PUID
+              value: "1000"
+            - name: PGID
+              value: "1000"
+            - name: TZ
+              value: "Etc/UTC"
+            - name: MAX_WORKERS
+              value: "1"
+            - name: WEB_CONCURRENCY
+              value: "1"
+            - name: BASE_URL
+              value: "PLACEHOLDER_BASE_URL"
+            - name: SMTP_HOST
+              value: "smtp.gmail.com"
+            - name: SMTP_PORT
+              value: "587"
+            - name: SMTP_FROM_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: mealie-smtp-secrets
+                  key: smtp_name
+            - name: SMTP_AUTH_STRATEGY
+              value: "TLS"
+            - name: SMTP_FROM_EMAIL
+              valueFrom:
+                secretKeyRef:
+                  name: mealie-smtp-secrets
+                  key: smtp_email
+            - name: SMTP_USER
+              valueFrom:
+                secretKeyRef:
+                  name: mealie-smtp-secrets
+                  key: smtp_email
+            - name: SMTP_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mealie-smtp-secrets
+                  key: smtp_password
+            - name: DB_ENGINE
+              value: "postgres"
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: mealie-app-secrets
+                  key: postgres_user
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mealie-app-secrets
+                  key: postgres_password
+            - name: POSTGRES_SERVER
+              value: "mealie-postgres"
+            - name: POSTGRES_PORT
+              value: "5432"
+            - name: POSTGRES_DB
+              value: "mealie"
+            - name: THEME_DARK_PRIMARY
+              value: "#349722"
+            - name: THEME_LIGHT_PRIMARY
+              value: "#349722"
+            - name: THEME_DARK_ACCENT
+              value: "#ad9f11"
+            - name: THEME_LIGHT_ACCENT
+              value: "#ad9f11"
+            - name: THEME_DARK_SECONDARY
+              value: "#852297"
+            - name: THEME_LIGHT_SECONDARY
+              value: "#852297"
+            - name: THEME_DARK_SUCCESS
+              value: "#006838"
+            - name: THEME_LIGHT_SUCCESS
+              value: "#006838"
+            - name: THEME_DARK_INFO
+              value: "#24cc89"
+            - name: THEME_LIGHT_INFO
+              value: "#24cc89"
+            - name: THEME_DARK_WARNING
+              value: "#ef7d50"
+            - name: THEME_LIGHT_WARNING
+              value: "#ef7d50"
+            - name: THEME_DARK_ERROR
+              value: "#310937"
+            - name: THEME_LIGHT_ERROR
+              value: "#310937"
+            - name: OIDC_AUTH_ENABLED
+              value: "True"
+            - name: OIDC_SIGNUP_ENABLED
+              value: "False"
+            - name: OIDC_AUTO_REDIRECT
+              value: "False"
+            - name: OIDC_REMEMBER_ME
+              value: "False"
+            - name: OIDC_USER_CLAIM
+              value: "email"
+            - name: OIDC_NAME_CLAIM
+              value: "name"
+            - name: OIDC_PROVIDER_NAME
+              value: "PLACEHOLDER_OIDC_PROVIDER"
+            - name: OIDC_CONFIGURATION_URL
+              value: "PLACEHOLDER_OIDC_CONFIG_URL"
+            - name: OIDC_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: mealie-app-secrets
+                  key: oidc_client_id
+            - name: OIDC_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: mealie-app-secrets
+                  key: oidc_client_secret
+          volumeMounts:
+            - name: mealie-data
+              mountPath: /app/data
+          resources:
+            requests:
+              memory: "512Mi"
+              cpu: "100m"
+            limits:
+              memory: "1Gi"
+              cpu: "1000m"
+  volumeClaimTemplates:
+    - metadata:
+        name: mealie-data
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        storageClassName: PLACEHOLDER_STORAGE_CLASS
         resources:
           requests:
-            memory: "512Mi"
-            cpu: "100m"
-          limits:
-            memory: "1Gi"
-            cpu: "1000m"
-  volumeClaimTemplates:
-  - metadata:
-      name: mealie-data
-    spec:
-      accessModes: [ "ReadWriteOnce" ]
-      storageClassName: PLACEHOLDER_STORAGE_CLASS
-      resources:
-        requests:
-          storage: 5Gi
+            storage: 5Gi

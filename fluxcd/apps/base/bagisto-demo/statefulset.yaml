@@ -13,6 +13,7 @@ spec:
       labels:
         app: bagisto-demo
     spec:
+      serviceAccountName: bagisto-demo
       initContainers:
         - name: copy-app
           image: PLACEHOLDER_IMAGE

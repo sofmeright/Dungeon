@@ -12,24 +12,25 @@ spec:
       labels:
         app: shlink-web-client
     spec:
+      serviceAccountName: shlink-web-client
       containers:
-      - name: shlink-web-client
-        image: PLACEHOLDER_IMAGE
-        ports:
-        - containerPort: 8080
-          name: http
-          protocol: TCP
-        volumeMounts:
-        - name: web-config
-          mountPath: /usr/share/nginx/html/conf.d/
-        resources:
-          requests:
-            cpu: 50m
-            memory: 64Mi
-          limits:
-            cpu: 200m
-            memory: 256Mi
+        - name: shlink-web-client
+          image: PLACEHOLDER_IMAGE
+          ports:
+            - containerPort: 8080
+              name: http
+              protocol: TCP
+          volumeMounts:
+            - name: web-config
+              mountPath: /usr/share/nginx/html/conf.d/
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              cpu: 200m
+              memory: 256Mi
       volumes:
-      - name: web-config
-        persistentVolumeClaim:
-          claimName: temple-of-time-shlink-web-config
+        - name: web-config
+          persistentVolumeClaim:
+            claimName: temple-of-time-shlink-web-config

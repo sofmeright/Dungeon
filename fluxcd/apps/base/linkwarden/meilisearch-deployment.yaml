@@ -12,47 +12,48 @@ spec:
       labels:
         app: linkwarden-meilisearch
     spec:
+      serviceAccountName: linkwarden-meilisearch
       containers:
-      - name: meilisearch
-        image: PLACEHOLDER_IMAGE
-        env:
-        - name: MEILI_MASTER_KEY
-          valueFrom:
-            secretKeyRef:
-              name: linkwarden-app-secrets
-              key: meili-master-key
-        - name: MEILI_ENV
-          value: "production"
-        ports:
-        - containerPort: 7700
-          name: meilisearch
-        volumeMounts:
-        - name: meilisearch-data
-          mountPath: /meili_data
+        - name: meilisearch
+          image: PLACEHOLDER_IMAGE
+          env:
+            - name: MEILI_MASTER_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: linkwarden-app-secrets
+                  key: meili-master-key
+            - name: MEILI_ENV
+              value: "production"
+          ports:
+            - containerPort: 7700
+              name: meilisearch
+          volumeMounts:
+            - name: meilisearch-data
+              mountPath: /meili_data
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "100m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 7700
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 7700
+            initialDelaySeconds: 5
+            periodSeconds: 5
+  volumeClaimTemplates:
+    - metadata:
+        name: meilisearch-data
+      spec:
+        accessModes: ["ReadWriteOnce"]
         resources:
           requests:
-            memory: "256Mi"
-            cpu: "100m"
-          limits:
-            memory: "512Mi"
-            cpu: "500m"
-        livenessProbe:
-          httpGet:
-            path: /health
-            port: 7700
-          initialDelaySeconds: 30
-          periodSeconds: 10
-        readinessProbe:
-          httpGet:
-            path: /health
-            port: 7700
-          initialDelaySeconds: 5
-          periodSeconds: 5
-  volumeClaimTemplates:
-  - metadata:
-      name: meilisearch-data
-    spec:
-      accessModes: [ "ReadWriteOnce" ]
-      resources:
-        requests:
-          storage: 2Gi
+            storage: 2Gi

@@ -12,25 +12,26 @@ spec:
       labels:
         app: erpnext-websocket
     spec:
+      serviceAccountName: erpnext-websocket
       containers:
-      - name: websocket
-        image: PLACEHOLDER_ERPNEXT_IMAGE
-        command:
-        - node
-        - /home/frappe/frappe-bench/apps/frappe/socketio.js
-        ports:
-        - containerPort: 9000
-          name: websocket
-        volumeMounts:
-        - name: sites-data
-          mountPath: /home/frappe/frappe-bench/sites
-          readOnly: true
-        - name: logs-data
-          mountPath: /home/frappe/frappe-bench/logs
+        - name: websocket
+          image: PLACEHOLDER_ERPNEXT_IMAGE
+          command:
+            - node
+            - /home/frappe/frappe-bench/apps/frappe/socketio.js
+          ports:
+            - containerPort: 9000
+              name: websocket
+          volumeMounts:
+            - name: sites-data
+              mountPath: /home/frappe/frappe-bench/sites
+              readOnly: true
+            - name: logs-data
+              mountPath: /home/frappe/frappe-bench/logs
       volumes:
-      - name: sites-data
-        persistentVolumeClaim:
-          claimName: PLACEHOLDER_SITES_PVC
-      - name: logs-data
-        persistentVolumeClaim:
-          claimName: PLACEHOLDER_LOGS_PVC
+        - name: sites-data
+          persistentVolumeClaim:
+            claimName: PLACEHOLDER_SITES_PVC
+        - name: logs-data
+          persistentVolumeClaim:
+            claimName: PLACEHOLDER_LOGS_PVC

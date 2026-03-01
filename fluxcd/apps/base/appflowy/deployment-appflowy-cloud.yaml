@@ -17,34 +17,35 @@ spec:
         app: appflowy-cloud
         component: backend
     spec:
+      serviceAccountName: appflowy-cloud
       containers:
-      - name: appflowy-cloud
-        image: PLACEHOLDER_APPFLOWY_CLOUD_IMAGE
-        ports:
-        - name: http
-          containerPort: 8000
-          protocol: TCP
-        # Environment variables configured in overlay patches
-        resources:
-          requests:
-            cpu: PLACEHOLDER_CPU_REQUEST
-            memory: PLACEHOLDER_MEMORY_REQUEST
-          limits:
-            cpu: PLACEHOLDER_CPU_LIMIT
-            memory: PLACEHOLDER_MEMORY_LIMIT
-        livenessProbe:
-          httpGet:
-            path: /api/health
-            port: http
-          initialDelaySeconds: 30
-          periodSeconds: 10
-          timeoutSeconds: 5
-          failureThreshold: 3
-        readinessProbe:
-          httpGet:
-            path: /api/health
-            port: http
-          initialDelaySeconds: 10
-          periodSeconds: 5
-          timeoutSeconds: 3
-          failureThreshold: 3
+        - name: appflowy-cloud
+          image: PLACEHOLDER_APPFLOWY_CLOUD_IMAGE
+          ports:
+            - name: http
+              containerPort: 8000
+              protocol: TCP
+          # Environment variables configured in overlay patches
+          resources:
+            requests:
+              cpu: PLACEHOLDER_CPU_REQUEST
+              memory: PLACEHOLDER_MEMORY_REQUEST
+            limits:
+              cpu: PLACEHOLDER_CPU_LIMIT
+              memory: PLACEHOLDER_MEMORY_LIMIT
+          livenessProbe:
+            httpGet:
+              path: /api/health
+              port: http
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /api/health
+              port: http
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            timeoutSeconds: 3
+            failureThreshold: 3

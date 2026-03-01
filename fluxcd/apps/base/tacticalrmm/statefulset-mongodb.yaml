@@ -13,6 +13,7 @@ spec:
       labels:
         app: tactical-mongodb
     spec:
+      serviceAccountName: tactical-mongodb
       initContainers:
         - name: create-initialized-marker
           image: PLACEHOLDER_BUSYBOX_IMAGE

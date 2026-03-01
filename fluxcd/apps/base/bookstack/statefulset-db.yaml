@@ -13,56 +13,57 @@ spec:
       labels:
         app: bookstack-db
     spec:
+      serviceAccountName: bookstack-db
       containers:
-      - name: mariadb
-        image: PLACEHOLDER_DB_IMAGE
-        env:
-        - name: PUID
-          value: "PLACEHOLDER_PUID"
-        - name: PGID
-          value: "PLACEHOLDER_PGID"
-        - name: TZ
-          value: "PLACEHOLDER_TZ"
-        - name: MYSQL_ROOT_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: bookstack-secrets
-              key: MYSQL_ROOT_PASSWORD
-        - name: MYSQL_DATABASE
-          valueFrom:
-            secretKeyRef:
-              name: bookstack-secrets
-              key: MYSQL_DATABASE
-        - name: MYSQL_USER
-          valueFrom:
-            secretKeyRef:
-              name: bookstack-secrets
-              key: MYSQL_USER
-        - name: MYSQL_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: bookstack-secrets
-              key: MYSQL_PASSWORD
-        ports:
-        - containerPort: 3306
-          name: mysql
-        volumeMounts:
-        - name: PLACEHOLDER_NAMESPACE-bookstack-db-data
-          mountPath: /config
+        - name: mariadb
+          image: PLACEHOLDER_DB_IMAGE
+          env:
+            - name: PUID
+              value: "PLACEHOLDER_PUID"
+            - name: PGID
+              value: "PLACEHOLDER_PGID"
+            - name: TZ
+              value: "PLACEHOLDER_TZ"
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: bookstack-secrets
+                  key: MYSQL_ROOT_PASSWORD
+            - name: MYSQL_DATABASE
+              valueFrom:
+                secretKeyRef:
+                  name: bookstack-secrets
+                  key: MYSQL_DATABASE
+            - name: MYSQL_USER
+              valueFrom:
+                secretKeyRef:
+                  name: bookstack-secrets
+                  key: MYSQL_USER
+            - name: MYSQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: bookstack-secrets
+                  key: MYSQL_PASSWORD
+          ports:
+            - containerPort: 3306
+              name: mysql
+          volumeMounts:
+            - name: PLACEHOLDER_NAMESPACE-bookstack-db-data
+              mountPath: /config
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
+  volumeClaimTemplates:
+    - metadata:
+        name: PLACEHOLDER_NAMESPACE-bookstack-db-data
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        storageClassName: PLACEHOLDER_STORAGE_CLASS
         resources:
           requests:
-            cpu: 100m
-            memory: 256Mi
-          limits:
-            cpu: 500m
-            memory: 512Mi
-  volumeClaimTemplates:
-  - metadata:
-      name: PLACEHOLDER_NAMESPACE-bookstack-db-data
-    spec:
-      accessModes:
-      - ReadWriteOnce
-      storageClassName: PLACEHOLDER_STORAGE_CLASS
-      resources:
-        requests:
-          storage: 5Gi
+            storage: 5Gi

@@ -13,6 +13,7 @@ spec:
       labels:
         app: lenpaste-app
     spec:
+      serviceAccountName: lenpaste-app
       containers:
         - name: lenpaste-app
           image: PLACEHOLDER_IMAGE
@@ -51,7 +52,8 @@ spec:
     - metadata:
         name: tingle-tuner-lenpaste-data
       spec:
-        accessModes: ["ReadWriteOnce"]
+        accessModes:
+          - ReadWriteOnce
         storageClassName: PLACEHOLDER_STORAGE_CLASS
         resources:
           requests:

@@ -15,6 +15,7 @@ spec:
         app: netbird
         component: management
     spec:
+      serviceAccountName: netbird-management
       initContainers:
         - name: config-generator
           image: docker.io/busybox:1.37.0

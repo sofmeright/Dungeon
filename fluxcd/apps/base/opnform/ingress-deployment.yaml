@@ -14,40 +14,41 @@ spec:
       labels:
         app: opnform-ingress
     spec:
+      serviceAccountName: opnform-ingress
       containers:
-      - name: nginx
-        image: docker.io/nginx:1
-        ports:
-        - name: http
-          containerPort: 80
-          protocol: TCP
-        env:
-        - name: NGINX_MAX_BODY_SIZE
-          value: "64m"
-        volumeMounts:
-        - name: nginx-config
-          mountPath: /etc/nginx/templates
-        livenessProbe:
-          exec:
-            command:
-            - nginx
-            - -t
-          initialDelaySeconds: 10
-          periodSeconds: 30
-        readinessProbe:
-          httpGet:
-            path: /
-            port: 80
-          initialDelaySeconds: 5
-          periodSeconds: 10
-        resources:
-          requests:
-            cpu: 50m
-            memory: 64Mi
-          limits:
-            cpu: 500m
-            memory: 256Mi
+        - name: nginx
+          image: docker.io/nginx:1
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
+          env:
+            - name: NGINX_MAX_BODY_SIZE
+              value: "64m"
+          volumeMounts:
+            - name: nginx-config
+              mountPath: /etc/nginx/templates
+          livenessProbe:
+            exec:
+              command:
+                - nginx
+                - -t
+            initialDelaySeconds: 10
+            periodSeconds: 30
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 80
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              cpu: 500m
+              memory: 256Mi
       volumes:
-      - name: nginx-config
-        configMap:
-          name: opnform-nginx-config
+        - name: nginx-config
+          configMap:
+            name: opnform-nginx-config

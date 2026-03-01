@@ -13,39 +13,40 @@ spec:
       labels:
         app: wikijs-vegan
     spec:
+      serviceAccountName: wikijs-vegan
       containers:
-      - name: wikijs
-        image: PLACEHOLDER_IMAGE
-        ports:
-        - containerPort: 3000
-          name: http
-          protocol: TCP
-        env:
-        - name: DB_TYPE
-          value: "postgres"
-        - name: DB_HOST
-          value: "wikijs-vegan-db"
-        - name: DB_PORT
-          value: "5432"
-        - name: DB_NAME
-          valueFrom:
-            secretKeyRef:
-              name: wikijs-vegan-secrets
-              key: postgres_db
-        - name: DB_USER
-          valueFrom:
-            secretKeyRef:
-              name: wikijs-vegan-secrets
-              key: postgres_user
-        - name: DB_PASS
-          valueFrom:
-            secretKeyRef:
-              name: wikijs-vegan-secrets
-              key: postgres_password
-        resources:
-          requests:
-            memory: 512Mi
-            cpu: 250m
-          limits:
-            memory: 1Gi
-            cpu: 1000m
+        - name: wikijs
+          image: PLACEHOLDER_IMAGE
+          ports:
+            - containerPort: 3000
+              name: http
+              protocol: TCP
+          env:
+            - name: DB_TYPE
+              value: "postgres"
+            - name: DB_HOST
+              value: "wikijs-vegan-db"
+            - name: DB_PORT
+              value: "5432"
+            - name: DB_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: wikijs-vegan-secrets
+                  key: postgres_db
+            - name: DB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: wikijs-vegan-secrets
+                  key: postgres_user
+            - name: DB_PASS
+              valueFrom:
+                secretKeyRef:
+                  name: wikijs-vegan-secrets
+                  key: postgres_password
+          resources:
+            requests:
+              memory: 512Mi
+              cpu: 250m
+            limits:
+              memory: 1Gi
+              cpu: 1000m

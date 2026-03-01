@@ -12,6 +12,7 @@ spec:
       labels:
         app: tactical-websockets
     spec:
+      serviceAccountName: tactical-websockets
       containers:
         - name: websockets
           image: PLACEHOLDER_TACTICAL_IMAGE

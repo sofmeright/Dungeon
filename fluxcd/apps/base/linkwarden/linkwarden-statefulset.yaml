@@ -13,165 +13,166 @@ spec:
       labels:
         app: linkwarden
     spec:
+      serviceAccountName: linkwarden
       initContainers:
-      - name: wait-for-postgres
-        image: PLACEHOLDER_POSTGRES_IMAGE
-        command:
-        - sh
-        - -c
-        - |
-          until pg_isready -h linkwarden-postgres -p 5432 -U postgres; do
-            echo "Waiting for PostgreSQL to be ready..."
-            sleep 2
-          done
-          echo "PostgreSQL is ready!"
-        env:
-        - name: PGPASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: linkwarden-app-secrets
-              key: postgres-password
-      - name: wait-for-meilisearch
-        image: PLACEHOLDER_CURL_IMAGE
-        command:
-        - sh
-        - -c
-        - |
-          until curl -f http://linkwarden-meilisearch:7700/health; do
-            echo "Waiting for Meilisearch to be ready..."
-            sleep 2
-          done
-          echo "Meilisearch is ready!"
+        - name: wait-for-postgres
+          image: PLACEHOLDER_POSTGRES_IMAGE
+          command:
+            - sh
+            - -c
+            - |
+              until pg_isready -h linkwarden-postgres -p 5432 -U postgres; do
+                echo "Waiting for PostgreSQL to be ready..."
+                sleep 2
+              done
+              echo "PostgreSQL is ready!"
+          env:
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: linkwarden-app-secrets
+                  key: postgres-password
+        - name: wait-for-meilisearch
+          image: PLACEHOLDER_CURL_IMAGE
+          command:
+            - sh
+            - -c
+            - |
+              until curl -f http://linkwarden-meilisearch:7700/health; do
+                echo "Waiting for Meilisearch to be ready..."
+                sleep 2
+              done
+              echo "Meilisearch is ready!"
       containers:
-      - name: linkwarden
-        image: PLACEHOLDER_IMAGE
-        ports:
-        - containerPort: 3000
-          name: http
-        env:
-        # Load all config from ConfigMap
-        - name: NEXTAUTH_URL
-          valueFrom:
-            configMapKeyRef:
-              name: linkwarden-config
-              key: NEXTAUTH_URL
-        - name: STORAGE_FOLDER
-          valueFrom:
-            configMapKeyRef:
-              name: linkwarden-config
-              key: STORAGE_FOLDER
-        - name: PAGINATION_TAKE_COUNT
-          valueFrom:
-            configMapKeyRef:
-              name: linkwarden-config
-              key: PAGINATION_TAKE_COUNT
-        - name: AUTOSCROLL_TIMEOUT
-          valueFrom:
-            configMapKeyRef:
-              name: linkwarden-config
-              key: AUTOSCROLL_TIMEOUT
-        - name: RE_ARCHIVE_LIMIT
-          valueFrom:
-            configMapKeyRef:
-              name: linkwarden-config
-              key: RE_ARCHIVE_LIMIT
-        - name: NEXT_PUBLIC_DISABLE_REGISTRATION
-          valueFrom:
-            configMapKeyRef:
-              name: linkwarden-config
-              key: NEXT_PUBLIC_DISABLE_REGISTRATION
-        - name: NEXT_PUBLIC_CREDENTIALS_ENABLED
-          valueFrom:
-            configMapKeyRef:
-              name: linkwarden-config
-              key: NEXT_PUBLIC_CREDENTIALS_ENABLED
-        - name: DISABLE_NEW_SSO_USERS
-          valueFrom:
-            configMapKeyRef:
-              name: linkwarden-config
-              key: DISABLE_NEW_SSO_USERS
-        - name: NEXT_PUBLIC_ADMIN
-          valueFrom:
-            configMapKeyRef:
-              name: linkwarden-config
-              key: NEXT_PUBLIC_ADMIN
-        - name: NEXT_PUBLIC_ZITADEL_ENABLED
-          valueFrom:
-            configMapKeyRef:
-              name: linkwarden-config
-              key: NEXT_PUBLIC_ZITADEL_ENABLED
-        - name: ZITADEL_CUSTOM_NAME
-          valueFrom:
-            configMapKeyRef:
-              name: linkwarden-config
-              key: ZITADEL_CUSTOM_NAME
-        - name: ZITADEL_ISSUER
-          valueFrom:
-            configMapKeyRef:
-              name: linkwarden-config
-              key: ZITADEL_ISSUER
-        - name: MEILI_HOST
-          valueFrom:
-            configMapKeyRef:
-              name: linkwarden-config
-              key: MEILI_HOST
-        # Load secrets from Vault
-        - name: NEXTAUTH_SECRET
-          valueFrom:
-            secretKeyRef:
-              name: linkwarden-app-secrets
-              key: nextauth-secret
-        - name: POSTGRES_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: linkwarden-app-secrets
-              key: postgres-password
-        - name: MEILI_MASTER_KEY
-          valueFrom:
-            secretKeyRef:
-              name: linkwarden-app-secrets
-              key: meili-master-key
-        - name: ZITADEL_CLIENT_ID
-          valueFrom:
-            secretKeyRef:
-              name: linkwarden-app-secrets
-              key: zitadel-client-id
-        - name: ZITADEL_CLIENT_SECRET
-          valueFrom:
-            secretKeyRef:
-              name: linkwarden-app-secrets
-              key: zitadel-client-secret
-        # Construct DATABASE_URL with password substitution
-        - name: DATABASE_URL
-          value: "postgresql://postgres:$(POSTGRES_PASSWORD)@linkwarden-postgres:5432/postgres"
-        volumeMounts:
-        - name: linkwarden-data
-          mountPath: /data/data
+        - name: linkwarden
+          image: PLACEHOLDER_IMAGE
+          ports:
+            - containerPort: 3000
+              name: http
+          env:
+            # Load all config from ConfigMap
+            - name: NEXTAUTH_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: linkwarden-config
+                  key: NEXTAUTH_URL
+            - name: STORAGE_FOLDER
+              valueFrom:
+                configMapKeyRef:
+                  name: linkwarden-config
+                  key: STORAGE_FOLDER
+            - name: PAGINATION_TAKE_COUNT
+              valueFrom:
+                configMapKeyRef:
+                  name: linkwarden-config
+                  key: PAGINATION_TAKE_COUNT
+            - name: AUTOSCROLL_TIMEOUT
+              valueFrom:
+                configMapKeyRef:
+                  name: linkwarden-config
+                  key: AUTOSCROLL_TIMEOUT
+            - name: RE_ARCHIVE_LIMIT
+              valueFrom:
+                configMapKeyRef:
+                  name: linkwarden-config
+                  key: RE_ARCHIVE_LIMIT
+            - name: NEXT_PUBLIC_DISABLE_REGISTRATION
+              valueFrom:
+                configMapKeyRef:
+                  name: linkwarden-config
+                  key: NEXT_PUBLIC_DISABLE_REGISTRATION
+            - name: NEXT_PUBLIC_CREDENTIALS_ENABLED
+              valueFrom:
+                configMapKeyRef:
+                  name: linkwarden-config
+                  key: NEXT_PUBLIC_CREDENTIALS_ENABLED
+            - name: DISABLE_NEW_SSO_USERS
+              valueFrom:
+                configMapKeyRef:
+                  name: linkwarden-config
+                  key: DISABLE_NEW_SSO_USERS
+            - name: NEXT_PUBLIC_ADMIN
+              valueFrom:
+                configMapKeyRef:
+                  name: linkwarden-config
+                  key: NEXT_PUBLIC_ADMIN
+            - name: NEXT_PUBLIC_ZITADEL_ENABLED
+              valueFrom:
+                configMapKeyRef:
+                  name: linkwarden-config
+                  key: NEXT_PUBLIC_ZITADEL_ENABLED
+            - name: ZITADEL_CUSTOM_NAME
+              valueFrom:
+                configMapKeyRef:
+                  name: linkwarden-config
+                  key: ZITADEL_CUSTOM_NAME
+            - name: ZITADEL_ISSUER
+              valueFrom:
+                configMapKeyRef:
+                  name: linkwarden-config
+                  key: ZITADEL_ISSUER
+            - name: MEILI_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: linkwarden-config
+                  key: MEILI_HOST
+            # Load secrets from Vault
+            - name: NEXTAUTH_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: linkwarden-app-secrets
+                  key: nextauth-secret
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: linkwarden-app-secrets
+                  key: postgres-password
+            - name: MEILI_MASTER_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: linkwarden-app-secrets
+                  key: meili-master-key
+            - name: ZITADEL_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: linkwarden-app-secrets
+                  key: zitadel-client-id
+            - name: ZITADEL_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: linkwarden-app-secrets
+                  key: zitadel-client-secret
+            # Construct DATABASE_URL with password substitution
+            - name: DATABASE_URL
+              value: "postgresql://postgres:$(POSTGRES_PASSWORD)@linkwarden-postgres:5432/postgres"
+          volumeMounts:
+            - name: linkwarden-data
+              mountPath: /data/data
+          resources:
+            requests:
+              memory: "512Mi"
+              cpu: "200m"
+            limits:
+              memory: "1Gi"
+              cpu: "1000m"
+          livenessProbe:
+            httpGet:
+              path: /
+              port: 3000
+            initialDelaySeconds: 60
+            periodSeconds: 30
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 3000
+            initialDelaySeconds: 30
+            periodSeconds: 10
+  volumeClaimTemplates:
+    - metadata:
+        name: linkwarden-data
+      spec:
+        accessModes:
+          - ReadWriteOnce
         resources:
           requests:
-            memory: "512Mi"
-            cpu: "200m"
-          limits:
-            memory: "1Gi"
-            cpu: "1000m"
-        livenessProbe:
-          httpGet:
-            path: /
-            port: 3000
-          initialDelaySeconds: 60
-          periodSeconds: 30
-        readinessProbe:
-          httpGet:
-            path: /
-            port: 3000
-          initialDelaySeconds: 30
-          periodSeconds: 10
-  volumeClaimTemplates:
-  - metadata:
-      name: linkwarden-data
-    spec:
-      accessModes:
-        - ReadWriteOnce
-      resources:
-        requests:
-          storage: 5Gi
+            storage: 5Gi

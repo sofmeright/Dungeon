@@ -17,38 +17,39 @@ spec:
         app: appflowy-ai
         component: ai-service
     spec:
+      serviceAccountName: appflowy-ai
       containers:
-      - name: appflowy-ai
-        image: PLACEHOLDER_AI_IMAGE
-        ports:
-        - name: http
-          containerPort: 5001
-          protocol: TCP
-        env:
-        # AI-specific secrets
-        - name: OPENAI_API_KEY
-          valueFrom:
-            secretKeyRef:
-              name: appflowy-ai-secrets
-              key: AI_OPENAI_API_KEY
-        - name: APPFLOWY_AI_DATABASE_URL
-          valueFrom:
-            secretKeyRef:
-              name: appflowy-ai-secrets
-              key: AI_DATABASE_URL
-        # JWT secret from shared secret
-        - name: GOTRUE_JWT_SECRET
-          valueFrom:
-            secretKeyRef:
-              name: appflowy-shared-secrets
-              key: GOTRUE_JWT_SECRET
-        envFrom:
-        - configMapRef:
-            name: appflowy-app-config
-        resources:
-          requests:
-            cpu: PLACEHOLDER_CPU_REQUEST
-            memory: PLACEHOLDER_MEMORY_REQUEST
-          limits:
-            cpu: PLACEHOLDER_CPU_LIMIT
-            memory: PLACEHOLDER_MEMORY_LIMIT
+        - name: appflowy-ai
+          image: PLACEHOLDER_AI_IMAGE
+          ports:
+            - name: http
+              containerPort: 5001
+              protocol: TCP
+          env:
+            # AI-specific secrets
+            - name: OPENAI_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: appflowy-ai-secrets
+                  key: AI_OPENAI_API_KEY
+            - name: APPFLOWY_AI_DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: appflowy-ai-secrets
+                  key: AI_DATABASE_URL
+            # JWT secret from shared secret
+            - name: GOTRUE_JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: appflowy-shared-secrets
+                  key: GOTRUE_JWT_SECRET
+          envFrom:
+            - configMapRef:
+                name: appflowy-app-config
+          resources:
+            requests:
+              cpu: PLACEHOLDER_CPU_REQUEST
+              memory: PLACEHOLDER_MEMORY_REQUEST
+            limits:
+              cpu: PLACEHOLDER_CPU_LIMIT
+              memory: PLACEHOLDER_MEMORY_LIMIT

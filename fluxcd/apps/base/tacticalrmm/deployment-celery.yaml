@@ -12,6 +12,7 @@ spec:
       labels:
         app: tactical-celery
     spec:
+      serviceAccountName: tactical-celery
       containers:
         - name: celery
           image: PLACEHOLDER_TACTICAL_IMAGE

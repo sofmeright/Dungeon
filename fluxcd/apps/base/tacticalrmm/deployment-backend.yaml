@@ -12,6 +12,7 @@ spec:
       labels:
         app: tactical-backend
     spec:
+      serviceAccountName: tactical-backend
       containers:
         - name: backend
           image: PLACEHOLDER_TACTICAL_IMAGE

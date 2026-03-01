@@ -14,57 +14,58 @@ spec:
       labels:
         app: opnform-client
     spec:
+      serviceAccountName: opnform-client
       containers:
-      - name: client
-        image: docker.io/jhumanj/opnform-client:1.13.1
-        ports:
-        - name: http
-          containerPort: 3000
-          protocol: TCP
-        env:
-        - name: NUXT_PUBLIC_APP_URL
-          value: PLACEHOLDER_APP_URL
-        - name: NUXT_PUBLIC_API_BASE
-          value: "/api"
-        - name: NUXT_PRIVATE_API_BASE
-          value: "http://opnform-ingress/api"
-        - name: NUXT_PUBLIC_ENV
-          value: "production"
-        - name: NUXT_PUBLIC_RE_CAPTCHA_SITE_KEY
-          valueFrom:
-            secretKeyRef:
-              name: opnform-secret
-              key: recaptcha-site-key
-        - name: RE_CAPTCHA_SECRET_KEY
-          valueFrom:
-            secretKeyRef:
-              name: opnform-secret
-              key: recaptcha-secret-key
-        - name: NUXT_PUBLIC_ROOT_REDIRECT_URL
-          value: "https://precisionplanit.com"
-        - name: NUXT_API_SECRET
-          valueFrom:
-            secretKeyRef:
-              name: opnform-secret
-              key: front-api-secret
-        livenessProbe:
-          httpGet:
-            path: /login
-            port: 3000
-          initialDelaySeconds: 45
-          periodSeconds: 30
-          timeoutSeconds: 10
-        readinessProbe:
-          httpGet:
-            path: /login
-            port: 3000
-          initialDelaySeconds: 30
-          periodSeconds: 10
-          timeoutSeconds: 10
-        resources:
-          requests:
-            cpu: 100m
-            memory: 256Mi
-          limits:
-            cpu: 1000m
-            memory: 1Gi
+        - name: client
+          image: docker.io/jhumanj/opnform-client:1.13.1
+          ports:
+            - name: http
+              containerPort: 3000
+              protocol: TCP
+          env:
+            - name: NUXT_PUBLIC_APP_URL
+              value: PLACEHOLDER_APP_URL
+            - name: NUXT_PUBLIC_API_BASE
+              value: "/api"
+            - name: NUXT_PRIVATE_API_BASE
+              value: "http://opnform-ingress/api"
+            - name: NUXT_PUBLIC_ENV
+              value: "production"
+            - name: NUXT_PUBLIC_RE_CAPTCHA_SITE_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: opnform-secret
+                  key: recaptcha-site-key
+            - name: RE_CAPTCHA_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: opnform-secret
+                  key: recaptcha-secret-key
+            - name: NUXT_PUBLIC_ROOT_REDIRECT_URL
+              value: "https://precisionplanit.com"
+            - name: NUXT_API_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: opnform-secret
+                  key: front-api-secret
+          livenessProbe:
+            httpGet:
+              path: /login
+              port: 3000
+            initialDelaySeconds: 45
+            periodSeconds: 30
+            timeoutSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /login
+              port: 3000
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 10
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: 1000m
+              memory: 1Gi

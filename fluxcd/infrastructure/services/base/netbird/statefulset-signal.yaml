@@ -15,6 +15,7 @@ spec:
         app: netbird
         component: signal
     spec:
+      serviceAccountName: netbird-signal
       containers:
         - name: signal
           image: PLACEHOLDER_IMAGE

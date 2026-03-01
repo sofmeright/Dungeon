@@ -13,108 +13,109 @@ spec:
       labels:
         app: penpot-backend
     spec:
+      serviceAccountName: penpot-backend
       containers:
-      - name: backend
-        image: PLACEHOLDER_IMAGE
-        ports:
-        - containerPort: 6060
-          name: http
-        env:
-        - name: PENPOT_FLAGS
-          value: "PLACEHOLDER_FLAGS"
-        - name: PENPOT_SECRET_KEY
-          valueFrom:
-            secretKeyRef:
-              name: penpot-secrets
-              key: secret_key
-        - name: PENPOT_PUBLIC_URI
-          value: "PLACEHOLDER_PUBLIC_URI"
-        - name: PENPOT_DATABASE_URI
-          value: "postgresql://penpot-postgres/penpot"
-        - name: PENPOT_DATABASE_USERNAME
-          value: "penpot"
-        - name: PENPOT_DATABASE_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: penpot-secrets
-              key: database_password
-        - name: PENPOT_REDIS_URI
-          value: "redis://penpot-redis/0"
-        - name: PENPOT_ASSETS_STORAGE_BACKEND
-          value: "assets-fs"
-        - name: PENPOT_STORAGE_ASSETS_FS_DIRECTORY
-          value: "/opt/data/assets"
-        - name: PENPOT_TELEMETRY_ENABLED
-          value: "true"
-        - name: PENPOT_SMTP_DEFAULT_FROM
-          valueFrom:
-            secretKeyRef:
-              name: penpot-secrets
-              key: smtp_username
-        - name: PENPOT_SMTP_DEFAULT_REPLY_TO
-          valueFrom:
-            secretKeyRef:
-              name: penpot-secrets
-              key: smtp_username
-        - name: PENPOT_SMTP_HOST
-          value: "PLACEHOLDER_SMTP_HOST"
-        - name: PENPOT_SMTP_PORT
-          value: "PLACEHOLDER_SMTP_PORT"
-        - name: PENPOT_SMTP_USERNAME
-          valueFrom:
-            secretKeyRef:
-              name: penpot-secrets
-              key: smtp_username
-        - name: PENPOT_SMTP_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: penpot-secrets
-              key: smtp_password
-        - name: PENPOT_SMTP_TLS
-          value: "false"
-        - name: PENPOT_SMTP_SSL
-          value: "true"
-        - name: PENPOT_OIDC_CLIENT_ID
-          valueFrom:
-            secretKeyRef:
-              name: penpot-secrets
-              key: oidc_client_id
-        - name: PENPOT_OIDC_CLIENT_SECRET
-          valueFrom:
-            secretKeyRef:
-              name: penpot-secrets
-              key: oidc_client_secret
-        - name: PENPOT_OIDC_BASE_URI
-          value: "PLACEHOLDER_OIDC_BASE_URI"
-        - name: PENPOT_OIDC_AUTH_URI
-          value: "PLACEHOLDER_OIDC_AUTH_URI"
-        - name: PENPOT_OIDC_TOKEN_URI
-          value: "PLACEHOLDER_OIDC_TOKEN_URI"
-        - name: PENPOT_OIDC_USER_INFO_SOURCE
-          value: "PLACEHOLDER_OIDC_USER_INFO_URI"
-        - name: PENPOT_OIDC_SCOPES
-          value: "openid profile email"
-        - name: PENPOT_OIDC_NAME_ATTR
-          value: "given_name"
-        - name: PENPOT_OIDC_EMAIL_ATTR
-          value: "email"
-        volumeMounts:
-        - name: temple-of-time-penpot-assets
-          mountPath: /opt/data/assets
+        - name: backend
+          image: PLACEHOLDER_IMAGE
+          ports:
+            - containerPort: 6060
+              name: http
+          env:
+            - name: PENPOT_FLAGS
+              value: "PLACEHOLDER_FLAGS"
+            - name: PENPOT_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: penpot-secrets
+                  key: secret_key
+            - name: PENPOT_PUBLIC_URI
+              value: "PLACEHOLDER_PUBLIC_URI"
+            - name: PENPOT_DATABASE_URI
+              value: "postgresql://penpot-postgres/penpot"
+            - name: PENPOT_DATABASE_USERNAME
+              value: "penpot"
+            - name: PENPOT_DATABASE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: penpot-secrets
+                  key: database_password
+            - name: PENPOT_REDIS_URI
+              value: "redis://penpot-redis/0"
+            - name: PENPOT_ASSETS_STORAGE_BACKEND
+              value: "assets-fs"
+            - name: PENPOT_STORAGE_ASSETS_FS_DIRECTORY
+              value: "/opt/data/assets"
+            - name: PENPOT_TELEMETRY_ENABLED
+              value: "true"
+            - name: PENPOT_SMTP_DEFAULT_FROM
+              valueFrom:
+                secretKeyRef:
+                  name: penpot-secrets
+                  key: smtp_username
+            - name: PENPOT_SMTP_DEFAULT_REPLY_TO
+              valueFrom:
+                secretKeyRef:
+                  name: penpot-secrets
+                  key: smtp_username
+            - name: PENPOT_SMTP_HOST
+              value: "PLACEHOLDER_SMTP_HOST"
+            - name: PENPOT_SMTP_PORT
+              value: "PLACEHOLDER_SMTP_PORT"
+            - name: PENPOT_SMTP_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: penpot-secrets
+                  key: smtp_username
+            - name: PENPOT_SMTP_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: penpot-secrets
+                  key: smtp_password
+            - name: PENPOT_SMTP_TLS
+              value: "false"
+            - name: PENPOT_SMTP_SSL
+              value: "true"
+            - name: PENPOT_OIDC_CLIENT_ID
+              valueFrom:
+                secretKeyRef:
+                  name: penpot-secrets
+                  key: oidc_client_id
+            - name: PENPOT_OIDC_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: penpot-secrets
+                  key: oidc_client_secret
+            - name: PENPOT_OIDC_BASE_URI
+              value: "PLACEHOLDER_OIDC_BASE_URI"
+            - name: PENPOT_OIDC_AUTH_URI
+              value: "PLACEHOLDER_OIDC_AUTH_URI"
+            - name: PENPOT_OIDC_TOKEN_URI
+              value: "PLACEHOLDER_OIDC_TOKEN_URI"
+            - name: PENPOT_OIDC_USER_INFO_SOURCE
+              value: "PLACEHOLDER_OIDC_USER_INFO_URI"
+            - name: PENPOT_OIDC_SCOPES
+              value: "openid profile email"
+            - name: PENPOT_OIDC_NAME_ATTR
+              value: "given_name"
+            - name: PENPOT_OIDC_EMAIL_ATTR
+              value: "email"
+          volumeMounts:
+            - name: temple-of-time-penpot-assets
+              mountPath: /opt/data/assets
+          resources:
+            requests:
+              memory: "512Mi"
+              cpu: "200m"
+            limits:
+              memory: "1Gi"
+              cpu: "1000m"
+  volumeClaimTemplates:
+    - metadata:
+        name: temple-of-time-penpot-assets
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        storageClassName: PLACEHOLDER_STORAGE_CLASS
         resources:
           requests:
-            memory: "512Mi"
-            cpu: "200m"
-          limits:
-            memory: "1Gi"
-            cpu: "1000m"
-  volumeClaimTemplates:
-  - metadata:
-      name: temple-of-time-penpot-assets
-    spec:
-      accessModes:
-      - ReadWriteOnce
-      storageClassName: PLACEHOLDER_STORAGE_CLASS
-      resources:
-        requests:
-          storage: PLACEHOLDER_STORAGE_SIZE
+            storage: PLACEHOLDER_STORAGE_SIZE

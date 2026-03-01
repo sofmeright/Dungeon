@@ -15,80 +15,81 @@ spec:
       labels:
         app.kubernetes.io/name: umami
     spec:
+      serviceAccountName: umami
       initContainers:
-      - name: wait-for-postgres
-        image: PLACEHOLDER_POSTGRES_IMAGE
-        command:
-        - sh
-        - -c
-        - |
-          until pg_isready -h umami-postgres -p 5432 -U ${POSTGRES_USER}; do
-            echo "Waiting for PostgreSQL to be ready..."
-            sleep 2
-          done
-          echo "PostgreSQL is ready!"
-        env:
-        - name: POSTGRES_USER
-          valueFrom:
-            secretKeyRef:
-              name: umami-app-secrets
-              key: postgres_user
+        - name: wait-for-postgres
+          image: PLACEHOLDER_POSTGRES_IMAGE
+          command:
+            - sh
+            - -c
+            - |
+              until pg_isready -h umami-postgres -p 5432 -U ${POSTGRES_USER}; do
+                echo "Waiting for PostgreSQL to be ready..."
+                sleep 2
+              done
+              echo "PostgreSQL is ready!"
+          env:
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: umami-app-secrets
+                  key: postgres_user
       containers:
-      - name: umami
-        image: PLACEHOLDER_IMAGE
-        ports:
-        - containerPort: 3000
-          name: http
-        env:
-        - name: DATABASE_TYPE
-          value: "postgresql"
-        - name: POSTGRES_USER
-          valueFrom:
-            secretKeyRef:
-              name: umami-app-secrets
-              key: postgres_user
-        - name: POSTGRES_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: umami-app-secrets
-              key: postgres_password
-        - name: POSTGRES_DB
-          valueFrom:
-            secretKeyRef:
-              name: umami-app-secrets
-              key: postgres_db
-        - name: DATABASE_URL
-          value: "postgresql://$(POSTGRES_USER):$(POSTGRES_PASSWORD)@umami-postgres:5432/$(POSTGRES_DB)"
-        - name: APP_SECRET
-          valueFrom:
-            secretKeyRef:
-              name: umami-app-secrets
-              key: app_secret
-        livenessProbe:
-          httpGet:
-            path: /api/heartbeat
-            port: 3000
-          initialDelaySeconds: 30
-          periodSeconds: 10
-        readinessProbe:
-          httpGet:
-            path: /api/heartbeat
-            port: 3000
-          initialDelaySeconds: 10
-          periodSeconds: 5
+        - name: umami
+          image: PLACEHOLDER_IMAGE
+          ports:
+            - containerPort: 3000
+              name: http
+          env:
+            - name: DATABASE_TYPE
+              value: "postgresql"
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: umami-app-secrets
+                  key: postgres_user
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: umami-app-secrets
+                  key: postgres_password
+            - name: POSTGRES_DB
+              valueFrom:
+                secretKeyRef:
+                  name: umami-app-secrets
+                  key: postgres_db
+            - name: DATABASE_URL
+              value: "postgresql://$(POSTGRES_USER):$(POSTGRES_PASSWORD)@umami-postgres:5432/$(POSTGRES_DB)"
+            - name: APP_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: umami-app-secrets
+                  key: app_secret
+          livenessProbe:
+            httpGet:
+              path: /api/heartbeat
+              port: 3000
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /api/heartbeat
+              port: 3000
+            initialDelaySeconds: 10
+            periodSeconds: 5
+          resources:
+            requests:
+              cpu: PLACEHOLDER_CPU_REQUEST
+              memory: PLACEHOLDER_MEMORY_REQUEST
+            limits:
+              cpu: PLACEHOLDER_CPU_LIMIT
+              memory: PLACEHOLDER_MEMORY_LIMIT
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        storageClassName: PLACEHOLDER_STORAGE_CLASS
         resources:
           requests:
-            cpu: PLACEHOLDER_CPU_REQUEST
-            memory: PLACEHOLDER_MEMORY_REQUEST
-          limits:
-            cpu: PLACEHOLDER_CPU_LIMIT
-            memory: PLACEHOLDER_MEMORY_LIMIT
-  volumeClaimTemplates:
-  - metadata:
-      name: data
-    spec:
-      accessModes: ["ReadWriteOnce"]
-      storageClassName: PLACEHOLDER_STORAGE_CLASS
-      resources:
-        requests:
-          storage: PLACEHOLDER_STORAGE_SIZE
+            storage: PLACEHOLDER_STORAGE_SIZE

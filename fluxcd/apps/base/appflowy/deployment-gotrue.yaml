@@ -17,38 +17,39 @@ spec:
         app: appflowy
         component: gotrue
     spec:
+      serviceAccountName: appflowy-gotrue
       containers:
-      - name: gotrue
-        image: PLACEHOLDER_GOTRUE_IMAGE
-        ports:
-        - name: http
-          containerPort: 9999
-          protocol: TCP
-        # Environment variables configured in overlay patches
-        resources:
-          requests:
-            cpu: PLACEHOLDER_CPU_REQUEST
-            memory: PLACEHOLDER_MEMORY_REQUEST
-          limits:
-            cpu: PLACEHOLDER_CPU_LIMIT
-            memory: PLACEHOLDER_MEMORY_LIMIT
-        livenessProbe:
-          exec:
-            command:
-            - /bin/sh
-            - -c
-            - curl -f http://127.0.0.1:9999/health || exit 1
-          initialDelaySeconds: 30
-          periodSeconds: 10
-          timeoutSeconds: 5
-          failureThreshold: 3
-        readinessProbe:
-          exec:
-            command:
-            - /bin/sh
-            - -c
-            - curl -f http://127.0.0.1:9999/health || exit 1
-          initialDelaySeconds: 10
-          periodSeconds: 5
-          timeoutSeconds: 3
-          failureThreshold: 3
+        - name: gotrue
+          image: PLACEHOLDER_GOTRUE_IMAGE
+          ports:
+            - name: http
+              containerPort: 9999
+              protocol: TCP
+          # Environment variables configured in overlay patches
+          resources:
+            requests:
+              cpu: PLACEHOLDER_CPU_REQUEST
+              memory: PLACEHOLDER_MEMORY_REQUEST
+            limits:
+              cpu: PLACEHOLDER_CPU_LIMIT
+              memory: PLACEHOLDER_MEMORY_LIMIT
+          livenessProbe:
+            exec:
+              command:
+                - /bin/sh
+                - -c
+                - curl -f http://127.0.0.1:9999/health || exit 1
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+          readinessProbe:
+            exec:
+              command:
+                - /bin/sh
+                - -c
+                - curl -f http://127.0.0.1:9999/health || exit 1
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            timeoutSeconds: 3
+            failureThreshold: 3

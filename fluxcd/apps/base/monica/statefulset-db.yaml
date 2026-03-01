@@ -13,47 +13,49 @@ spec:
       labels:
         app: monica-db
     spec:
+      serviceAccountName: monica-db
       containers:
-      - name: mariadb
-        image: PLACEHOLDER_IMAGE
-        env:
-        - name: MYSQL_ROOT_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: monica-secrets
-              key: mysql_root_password
-        - name: MYSQL_DATABASE
-          value: "monica"
-        - name: MYSQL_USER
-          valueFrom:
-            secretKeyRef:
-              name: monica-secrets
-              key: db_username
-        - name: MYSQL_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: monica-secrets
-              key: db_password
-        ports:
-        - containerPort: 3306
-          name: mysql
-          protocol: TCP
-        volumeMounts:
-        - name: mysql
-          mountPath: /var/lib/mysql
+        - name: mariadb
+          image: PLACEHOLDER_IMAGE
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: monica-secrets
+                  key: mysql_root_password
+            - name: MYSQL_DATABASE
+              value: "monica"
+            - name: MYSQL_USER
+              valueFrom:
+                secretKeyRef:
+                  name: monica-secrets
+                  key: db_username
+            - name: MYSQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: monica-secrets
+                  key: db_password
+          ports:
+            - containerPort: 3306
+              name: mysql
+              protocol: TCP
+          volumeMounts:
+            - name: mysql
+              mountPath: /var/lib/mysql
+          resources:
+            requests:
+              memory: 512Mi
+              cpu: 200m
+            limits:
+              memory: 1Gi
+              cpu: 1000m
+  volumeClaimTemplates:
+    - metadata:
+        name: mysql
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        storageClassName: PLACEHOLDER_STORAGE_CLASS
         resources:
           requests:
-            memory: 512Mi
-            cpu: 200m
-          limits:
-            memory: 1Gi
-            cpu: 1000m
-  volumeClaimTemplates:
-  - metadata:
-      name: mysql
-    spec:
-      accessModes: [ "ReadWriteOnce" ]
-      storageClassName: PLACEHOLDER_STORAGE_CLASS
-      resources:
-        requests:
-          storage: 10Gi
+            storage: 10Gi

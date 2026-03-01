@@ -12,6 +12,7 @@ spec:
       labels:
         app: tactical-nginx
     spec:
+      serviceAccountName: tactical-nginx
       containers:
         - name: nginx
           image: PLACEHOLDER_NGINX_IMAGE

@@ -13,57 +13,58 @@ spec:
       labels:
         app: photoprism-mariadb
     spec:
+      serviceAccountName: photoprism-mariadb
       containers:
-      - name: mariadb
-        image: docker.io/mariadb:11
-        args:
-        - --innodb-buffer-pool-size=512M
-        - --transaction-isolation=READ-COMMITTED
-        - --character-set-server=utf8mb4
-        - --collation-server=utf8mb4_unicode_ci
-        - --max-connections=512
-        - --innodb-rollback-on-timeout=OFF
-        - --innodb-lock-wait-timeout=120
-        ports:
-        - containerPort: 3306
-          name: mysql
-          protocol: TCP
-        env:
-        - name: MARIADB_AUTO_UPGRADE
-          value: "1"
-        - name: MARIADB_INITDB_SKIP_TZINFO
-          value: "1"
-        - name: MARIADB_DATABASE
-          valueFrom:
-            secretKeyRef:
-              name: photoprism-secret
-              key: database-name
-        - name: MARIADB_USER
-          valueFrom:
-            secretKeyRef:
-              name: photoprism-secret
-              key: database-user
-        - name: MARIADB_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: photoprism-secret
-              key: database-password
-        - name: MARIADB_ROOT_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: photoprism-secret
-              key: root-password
-        volumeMounts:
-        - name: database
-          mountPath: /var/lib/mysql
-        securityContext:
-          privileged: false
+        - name: mariadb
+          image: docker.io/mariadb:11
+          args:
+            - --innodb-buffer-pool-size=512M
+            - --transaction-isolation=READ-COMMITTED
+            - --character-set-server=utf8mb4
+            - --collation-server=utf8mb4_unicode_ci
+            - --max-connections=512
+            - --innodb-rollback-on-timeout=OFF
+            - --innodb-lock-wait-timeout=120
+          ports:
+            - containerPort: 3306
+              name: mysql
+              protocol: TCP
+          env:
+            - name: MARIADB_AUTO_UPGRADE
+              value: "1"
+            - name: MARIADB_INITDB_SKIP_TZINFO
+              value: "1"
+            - name: MARIADB_DATABASE
+              valueFrom:
+                secretKeyRef:
+                  name: photoprism-secret
+                  key: database-name
+            - name: MARIADB_USER
+              valueFrom:
+                secretKeyRef:
+                  name: photoprism-secret
+                  key: database-user
+            - name: MARIADB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: photoprism-secret
+                  key: database-password
+            - name: MARIADB_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: photoprism-secret
+                  key: root-password
+          volumeMounts:
+            - name: database
+              mountPath: /var/lib/mysql
+          securityContext:
+            privileged: false
   volumeClaimTemplates:
-  - metadata:
-      name: database
-    spec:
-      accessModes: ["ReadWriteOnce"]
-      storageClassName: PLACEHOLDER_STORAGE_CLASS
-      resources:
-        requests:
-          storage: 10Gi
+    - metadata:
+        name: database
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        storageClassName: PLACEHOLDER_STORAGE_CLASS
+        resources:
+          requests:
+            storage: 10Gi

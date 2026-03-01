@@ -13,6 +13,7 @@ spec:
       labels:
         app: photoprism-x-mariadb
     spec:
+      serviceAccountName: photoprism-x-mariadb
       containers:
         - name: mariadb
           image: docker.io/mariadb:11
@@ -62,7 +63,8 @@ spec:
     - metadata:
         name: database
       spec:
-        accessModes: ["ReadWriteOnce"]
+        accessModes:
+          - ReadWriteOnce
         storageClassName: PLACEHOLDER_STORAGE_CLASS
         resources:
           requests:

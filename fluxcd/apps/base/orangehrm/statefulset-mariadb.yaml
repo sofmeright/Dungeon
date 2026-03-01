@@ -13,39 +13,40 @@ spec:
       labels:
         app: orangehrm-mariadb
     spec:
+      serviceAccountName: orangehrm-mariadb
       containers:
-      - name: mariadb
-        image: PLACEHOLDER_MARIADB_IMAGE
-        ports:
-        - containerPort: 3306
-          name: mysql
-        env:
-        - name: MYSQL_ROOT_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: orangehrm-secrets
-              key: MYSQL_ROOT_PASSWORD
-        - name: MYSQL_ROOT_USER
-          value: "root"
-        - name: MYSQL_DATABASE
-          value: "orangehrm"
-        - name: MYSQL_USER
-          value: "orangehrm"
-        - name: MYSQL_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: orangehrm-secrets
-              key: MYSQL_PASS
-        volumeMounts:
-        - name: PLACEHOLDER_MARIADB_DATA
-          mountPath: /var/lib/mysql
+        - name: mariadb
+          image: PLACEHOLDER_MARIADB_IMAGE
+          ports:
+            - containerPort: 3306
+              name: mysql
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: orangehrm-secrets
+                  key: MYSQL_ROOT_PASSWORD
+            - name: MYSQL_ROOT_USER
+              value: "root"
+            - name: MYSQL_DATABASE
+              value: "orangehrm"
+            - name: MYSQL_USER
+              value: "orangehrm"
+            - name: MYSQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: orangehrm-secrets
+                  key: MYSQL_PASS
+          volumeMounts:
+            - name: PLACEHOLDER_MARIADB_DATA
+              mountPath: /var/lib/mysql
   volumeClaimTemplates:
-  - metadata:
-      name: PLACEHOLDER_MARIADB_DATA
-    spec:
-      accessModes:
-      - ReadWriteOnce
-      storageClassName: PLACEHOLDER_STORAGE_CLASS
-      resources:
-        requests:
-          storage: 10Gi
+    - metadata:
+        name: PLACEHOLDER_MARIADB_DATA
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        storageClassName: PLACEHOLDER_STORAGE_CLASS
+        resources:
+          requests:
+            storage: 10Gi

@@ -14,6 +14,7 @@ spec:
         app: netbird
         component: coturn
     spec:
+      serviceAccountName: netbird-coturn
       initContainers:
         - name: config-generator
           image: docker.io/busybox:1.37.0

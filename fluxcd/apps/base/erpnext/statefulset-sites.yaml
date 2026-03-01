@@ -13,6 +13,7 @@ spec:
       labels:
         app: erpnext-sites
     spec:
+      serviceAccountName: erpnext-sites
       initContainers:
         - name: copy-assets
           image: PLACEHOLDER_ERPNEXT_IMAGE

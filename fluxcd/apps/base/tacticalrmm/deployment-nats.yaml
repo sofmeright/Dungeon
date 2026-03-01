@@ -12,6 +12,7 @@ spec:
       labels:
         app: tactical-nats
     spec:
+      serviceAccountName: tactical-nats
       initContainers:
         - name: wait-for-nats-config
           image: PLACEHOLDER_BUSYBOX_IMAGE

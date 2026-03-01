@@ -13,6 +13,7 @@ spec:
       labels:
         app: penpot-exporter
     spec:
+      serviceAccountName: penpot-exporter
       containers:
         - name: exporter
           image: PLACEHOLDER_IMAGE

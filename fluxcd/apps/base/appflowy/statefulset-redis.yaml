@@ -13,16 +13,17 @@ spec:
       labels:
         app: appflowy-redis
     spec:
+      serviceAccountName: appflowy-redis
       containers:
-      - name: redis
-        image: PLACEHOLDER_REDIS_IMAGE
-        ports:
-        - containerPort: 6379
-          name: redis
-        resources:
-          requests:
-            memory: PLACEHOLDER_MEMORY_REQUEST
-            cpu: PLACEHOLDER_CPU_REQUEST
-          limits:
-            memory: PLACEHOLDER_MEMORY_LIMIT
-            cpu: PLACEHOLDER_CPU_LIMIT
+        - name: redis
+          image: PLACEHOLDER_REDIS_IMAGE
+          ports:
+            - containerPort: 6379
+              name: redis
+          resources:
+            requests:
+              memory: PLACEHOLDER_MEMORY_REQUEST
+              cpu: PLACEHOLDER_CPU_REQUEST
+            limits:
+              memory: PLACEHOLDER_MEMORY_LIMIT
+              cpu: PLACEHOLDER_CPU_LIMIT

@@ -13,35 +13,36 @@ spec:
       labels:
         app: guacamole-postgres
     spec:
+      serviceAccountName: guacamole-postgres
       containers:
-      - name: postgres
-        image: PLACEHOLDER_POSTGRES_IMAGE
-        ports:
-        - containerPort: 5432
-          name: postgres
-        env:
-        - name: POSTGRES_DB
-          value: "guacamole"
-        - name: POSTGRES_USER
-          valueFrom:
-            secretKeyRef:
-              name: guacamole-secrets
-              key: POSTGRES_USER
-        - name: POSTGRES_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: guacamole-secrets
-              key: POSTGRES_PASSWORD
-        volumeMounts:
-        - name: PLACEHOLDER_POSTGRES_DATA
-          mountPath: /var/lib/postgresql/data
+        - name: postgres
+          image: PLACEHOLDER_POSTGRES_IMAGE
+          ports:
+            - containerPort: 5432
+              name: postgres
+          env:
+            - name: POSTGRES_DB
+              value: "guacamole"
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: guacamole-secrets
+                  key: POSTGRES_USER
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: guacamole-secrets
+                  key: POSTGRES_PASSWORD
+          volumeMounts:
+            - name: PLACEHOLDER_POSTGRES_DATA
+              mountPath: /var/lib/postgresql/data
   volumeClaimTemplates:
-  - metadata:
-      name: PLACEHOLDER_POSTGRES_DATA
-    spec:
-      accessModes:
-      - ReadWriteOnce
-      storageClassName: PLACEHOLDER_STORAGE_CLASS
-      resources:
-        requests:
-          storage: 10Gi
+    - metadata:
+        name: PLACEHOLDER_POSTGRES_DATA
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        storageClassName: PLACEHOLDER_STORAGE_CLASS
+        resources:
+          requests:
+            storage: 10Gi

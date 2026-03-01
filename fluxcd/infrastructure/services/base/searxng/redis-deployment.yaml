@@ -12,6 +12,7 @@ spec:
       labels:
         app: searxng-redis
     spec:
+      serviceAccountName: searxng-redis
       securityContext:
         runAsUser: 999
         runAsGroup: 999

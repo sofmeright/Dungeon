@@ -13,43 +13,45 @@ spec:
       labels:
         app: reactive-resume-minio
     spec:
+      serviceAccountName: reactive-resume-minio
       containers:
-      - name: minio
-        image: PLACEHOLDER_MINIO_IMAGE
-        command:
-        - minio
-        - server
-        - /data
-        env:
-        - name: MINIO_ROOT_USER
-          valueFrom:
-            secretKeyRef:
-              name: reactive-resume-secrets
-              key: minio_root_user
-        - name: MINIO_ROOT_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: reactive-resume-secrets
-              key: minio_root_password
-        ports:
-        - containerPort: 9000
-          name: api
-        volumeMounts:
-        - name: minio-data
-          mountPath: /data
+        - name: minio
+          image: PLACEHOLDER_MINIO_IMAGE
+          command:
+            - minio
+            - server
+            - /data
+          env:
+            - name: MINIO_ROOT_USER
+              valueFrom:
+                secretKeyRef:
+                  name: reactive-resume-secrets
+                  key: minio_root_user
+            - name: MINIO_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: reactive-resume-secrets
+                  key: minio_root_password
+          ports:
+            - containerPort: 9000
+              name: api
+          volumeMounts:
+            - name: minio-data
+              mountPath: /data
+          resources:
+            requests:
+              memory: 256Mi
+              cpu: 100m
+            limits:
+              memory: 1Gi
+              cpu: 1000m
+  volumeClaimTemplates:
+    - metadata:
+        name: minio-data
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        storageClassName: PLACEHOLDER_STORAGE_CLASS
         resources:
           requests:
-            memory: 256Mi
-            cpu: 100m
-          limits:
-            memory: 1Gi
-            cpu: 1000m
-  volumeClaimTemplates:
-  - metadata:
-      name: minio-data
-    spec:
-      accessModes: ["ReadWriteOnce"]
-      storageClassName: PLACEHOLDER_STORAGE_CLASS
-      resources:
-        requests:
-          storage: PLACEHOLDER_MINIO_STORAGE
+            storage: PLACEHOLDER_MINIO_STORAGE

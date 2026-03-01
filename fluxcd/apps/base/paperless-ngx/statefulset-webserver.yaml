@@ -13,113 +13,118 @@ spec:
       labels:
         app: paperless-webserver
     spec:
+      serviceAccountName: paperless-webserver
       containers:
-      - name: paperless
-        image: PLACEHOLDER_IMAGE
-        ports:
-        - containerPort: 8000
-          name: http
-          protocol: TCP
-        env:
-        - name: PAPERLESS_REDIS
-          value: "redis://paperless-redis:6379"
-        - name: PAPERLESS_DBHOST
-          value: "paperless-db"
-        - name: PAPERLESS_DBNAME
-          value: "paperless"
-        - name: PAPERLESS_DBUSER
-          valueFrom:
-            secretKeyRef:
-              name: paperless-secrets
-              key: db_user
-        - name: PAPERLESS_DBPASS
-          valueFrom:
-            secretKeyRef:
-              name: paperless-secrets
-              key: db_password
-        - name: PAPERLESS_ACCOUNT_DEFAULT_GROUPS
-          value: "user"
-        - name: PAPERLESS_APPS
-          value: "allauth.socialaccount.providers.openid_connect"
-        - name: PAPERLESS_SOCIAL_AUTO_SIGNUP
-          value: "true"
-        - name: PAPERLESS_ACCOUNT_DEFAULT_HTTP_PROTOCOL
-          value: "https"
-        - name: PAPERLESS_ACCOUNT_EMAIL_VERIFICATION
-          value: "optional"
-        - name: PAPERLESS_DISABLE_REGULAR_LOGIN
-          value: "false"
-        - name: PAPERLESS_REDIRECT_LOGIN_TO_SSO
-          value: "false"
-        - name: PAPERLESS_ACCOUNT_SESSION_REMEMBER
-          value: "false"
-        - name: PAPERLESS_SESSION_COOKIE_AGE
-          value: "1209600"
-        - name: PAPERLESS_SOCIALACCOUNT_PROVIDERS
-          valueFrom:
-            secretKeyRef:
-              name: paperless-secrets
-              key: socialaccount_providers
-        - name: PAPERLESS_URL
-          value: "PLACEHOLDER_URL"
-        - name: PAPERLESS_CSRF_TRUSTED_ORIGINS
-          value: "PLACEHOLDER_CSRF_ORIGINS"
-        - name: PAPERLESS_ALLOWED_HOSTS
-          value: "PLACEHOLDER_ALLOWED_HOSTS"
-        - name: PAPERLESS_CORS_ALLOWED_HOSTS
-          value: "PLACEHOLDER_CORS_HOSTS"
-        - name: PAPERLESS_TRUSTED_PROXIES
-          value: "10.0.0.0/8,172.16.0.0/12,192.168.0.0/16"
-        - name: PAPERLESS_ADMIN_USER
-          value: "PLACEHOLDER_ADMIN_USER"
-        - name: PAPERLESS_SOCIAL_ACCOUNT_SYNC_GROUPS
-          value: "false"
-        volumeMounts:
-        - name: data
-          mountPath: /usr/src/paperless/data
-        - name: media
-          mountPath: /usr/src/paperless/media
-        - name: export
-          mountPath: /usr/src/paperless/export
-        - name: consume
-          mountPath: /usr/src/paperless/consume
+        - name: paperless
+          image: PLACEHOLDER_IMAGE
+          ports:
+            - containerPort: 8000
+              name: http
+              protocol: TCP
+          env:
+            - name: PAPERLESS_REDIS
+              value: "redis://paperless-redis:6379"
+            - name: PAPERLESS_DBHOST
+              value: "paperless-db"
+            - name: PAPERLESS_DBNAME
+              value: "paperless"
+            - name: PAPERLESS_DBUSER
+              valueFrom:
+                secretKeyRef:
+                  name: paperless-secrets
+                  key: db_user
+            - name: PAPERLESS_DBPASS
+              valueFrom:
+                secretKeyRef:
+                  name: paperless-secrets
+                  key: db_password
+            - name: PAPERLESS_ACCOUNT_DEFAULT_GROUPS
+              value: "user"
+            - name: PAPERLESS_APPS
+              value: "allauth.socialaccount.providers.openid_connect"
+            - name: PAPERLESS_SOCIAL_AUTO_SIGNUP
+              value: "true"
+            - name: PAPERLESS_ACCOUNT_DEFAULT_HTTP_PROTOCOL
+              value: "https"
+            - name: PAPERLESS_ACCOUNT_EMAIL_VERIFICATION
+              value: "optional"
+            - name: PAPERLESS_DISABLE_REGULAR_LOGIN
+              value: "false"
+            - name: PAPERLESS_REDIRECT_LOGIN_TO_SSO
+              value: "false"
+            - name: PAPERLESS_ACCOUNT_SESSION_REMEMBER
+              value: "false"
+            - name: PAPERLESS_SESSION_COOKIE_AGE
+              value: "1209600"
+            - name: PAPERLESS_SOCIALACCOUNT_PROVIDERS
+              valueFrom:
+                secretKeyRef:
+                  name: paperless-secrets
+                  key: socialaccount_providers
+            - name: PAPERLESS_URL
+              value: "PLACEHOLDER_URL"
+            - name: PAPERLESS_CSRF_TRUSTED_ORIGINS
+              value: "PLACEHOLDER_CSRF_ORIGINS"
+            - name: PAPERLESS_ALLOWED_HOSTS
+              value: "PLACEHOLDER_ALLOWED_HOSTS"
+            - name: PAPERLESS_CORS_ALLOWED_HOSTS
+              value: "PLACEHOLDER_CORS_HOSTS"
+            - name: PAPERLESS_TRUSTED_PROXIES
+              value: "10.0.0.0/8,172.16.0.0/12,192.168.0.0/16"
+            - name: PAPERLESS_ADMIN_USER
+              value: "PLACEHOLDER_ADMIN_USER"
+            - name: PAPERLESS_SOCIAL_ACCOUNT_SYNC_GROUPS
+              value: "false"
+          volumeMounts:
+            - name: data
+              mountPath: /usr/src/paperless/data
+            - name: media
+              mountPath: /usr/src/paperless/media
+            - name: export
+              mountPath: /usr/src/paperless/export
+            - name: consume
+              mountPath: /usr/src/paperless/consume
+          resources:
+            requests:
+              memory: 1Gi
+              cpu: 500m
+            limits:
+              memory: 2Gi
+              cpu: 2000m
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        storageClassName: PLACEHOLDER_STORAGE_CLASS
         resources:
           requests:
-            memory: 1Gi
-            cpu: 500m
-          limits:
-            memory: 2Gi
-            cpu: 2000m
-  volumeClaimTemplates:
-  - metadata:
-      name: data
-    spec:
-      accessModes: [ "ReadWriteOnce" ]
-      storageClassName: PLACEHOLDER_STORAGE_CLASS
-      resources:
-        requests:
-          storage: 10Gi
-  - metadata:
-      name: media
-    spec:
-      accessModes: [ "ReadWriteOnce" ]
-      storageClassName: PLACEHOLDER_STORAGE_CLASS
-      resources:
-        requests:
-          storage: 20Gi
-  - metadata:
-      name: export
-    spec:
-      accessModes: [ "ReadWriteOnce" ]
-      storageClassName: PLACEHOLDER_STORAGE_CLASS
-      resources:
-        requests:
-          storage: 5Gi
-  - metadata:
-      name: consume
-    spec:
-      accessModes: [ "ReadWriteOnce" ]
-      storageClassName: PLACEHOLDER_STORAGE_CLASS
-      resources:
-        requests:
-          storage: 5Gi
+            storage: 10Gi
+    - metadata:
+        name: media
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        storageClassName: PLACEHOLDER_STORAGE_CLASS
+        resources:
+          requests:
+            storage: 20Gi
+    - metadata:
+        name: export
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        storageClassName: PLACEHOLDER_STORAGE_CLASS
+        resources:
+          requests:
+            storage: 5Gi
+    - metadata:
+        name: consume
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        storageClassName: PLACEHOLDER_STORAGE_CLASS
+        resources:
+          requests:
+            storage: 5Gi

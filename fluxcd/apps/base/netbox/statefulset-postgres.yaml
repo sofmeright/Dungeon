@@ -13,32 +13,33 @@ spec:
       labels:
         app: netbox-postgres
     spec:
+      serviceAccountName: netbox-postgres
       containers:
-      - name: postgres
-        image: PLACEHOLDER_POSTGRES_IMAGE
-        ports:
-        - containerPort: 5432
-          name: postgres
-        env:
-        - name: POSTGRES_DB
-          value: "netbox"
-        - name: POSTGRES_USER
-          value: "netbox"
-        - name: POSTGRES_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: netbox-secrets
-              key: POSTGRES_PASSWORD
-        volumeMounts:
-        - name: PLACEHOLDER_POSTGRES_DATA
-          mountPath: /var/lib/postgresql/data
+        - name: postgres
+          image: PLACEHOLDER_POSTGRES_IMAGE
+          ports:
+            - containerPort: 5432
+              name: postgres
+          env:
+            - name: POSTGRES_DB
+              value: "netbox"
+            - name: POSTGRES_USER
+              value: "netbox"
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: netbox-secrets
+                  key: POSTGRES_PASSWORD
+          volumeMounts:
+            - name: PLACEHOLDER_POSTGRES_DATA
+              mountPath: /var/lib/postgresql/data
   volumeClaimTemplates:
-  - metadata:
-      name: PLACEHOLDER_POSTGRES_DATA
-    spec:
-      accessModes:
-      - ReadWriteOnce
-      storageClassName: PLACEHOLDER_STORAGE_CLASS
-      resources:
-        requests:
-          storage: 20Gi
+    - metadata:
+        name: PLACEHOLDER_POSTGRES_DATA
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        storageClassName: PLACEHOLDER_STORAGE_CLASS
+        resources:
+          requests:
+            storage: 20Gi

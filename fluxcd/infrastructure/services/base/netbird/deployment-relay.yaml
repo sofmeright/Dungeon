@@ -14,6 +14,7 @@ spec:
         app: netbird
         component: relay
     spec:
+      serviceAccountName: netbird-relay
       containers:
         - name: relay
           image: PLACEHOLDER_IMAGE

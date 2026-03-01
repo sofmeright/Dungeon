@@ -3,7 +3,7 @@ kind: Kustomization
 
 resources:
   - postgres-cluster.yaml
-  - zitadel-serviceaccount.yaml
+  - serviceaccounts.yaml
   - zitadel-rbac.yaml
   - zitadel-clusterrole.yaml
   - zitadel-statefulset.yaml

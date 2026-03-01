@@ -12,9 +12,10 @@ spec:
       labels:
         app: erpnext-redis-cache
     spec:
+      serviceAccountName: erpnext-redis-cache
       containers:
-      - name: redis
-        image: PLACEHOLDER_REDIS_IMAGE
-        ports:
-        - containerPort: 6379
-          name: redis
+        - name: redis
+          image: PLACEHOLDER_REDIS_IMAGE
+          ports:
+            - containerPort: 6379
+              name: redis

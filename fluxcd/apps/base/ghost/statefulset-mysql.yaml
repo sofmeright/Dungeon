@@ -13,45 +13,46 @@ spec:
       labels:
         app: ghost-mysql
     spec:
+      serviceAccountName: ghost-mysql
       containers:
-      - name: mysql
-        image: PLACEHOLDER_MYSQL_IMAGE
-        env:
-        - name: MYSQL_DATABASE
-          value: ghost_db
-        - name: MYSQL_USER
-          value: ghost
-        - name: MYSQL_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: ghost-mysql-secret
-              key: mysql_user_password
-        - name: MYSQL_ROOT_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: ghost-mysql-secret
-              key: mysql_root_password
-        - name: MYSQL_ROOT_HOST
-          value: "%"
-        ports:
-        - containerPort: 3306
-          name: mysql
-        volumeMounts:
-        - name: mysql-data
-          mountPath: /var/lib/mysql
+        - name: mysql
+          image: PLACEHOLDER_MYSQL_IMAGE
+          env:
+            - name: MYSQL_DATABASE
+              value: ghost_db
+            - name: MYSQL_USER
+              value: ghost
+            - name: MYSQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: ghost-mysql-secret
+                  key: mysql_user_password
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: ghost-mysql-secret
+                  key: mysql_root_password
+            - name: MYSQL_ROOT_HOST
+              value: "%"
+          ports:
+            - containerPort: 3306
+              name: mysql
+          volumeMounts:
+            - name: mysql-data
+              mountPath: /var/lib/mysql
+          resources:
+            requests:
+              memory: 512Mi
+              cpu: 250m
+            limits:
+              memory: 2Gi
+              cpu: 1000m
+  volumeClaimTemplates:
+    - metadata:
+        name: mysql-data
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        storageClassName: PLACEHOLDER_STORAGE_CLASS
         resources:
           requests:
-            memory: 512Mi
-            cpu: 250m
-          limits:
-            memory: 2Gi
-            cpu: 1000m
-  volumeClaimTemplates:
-  - metadata:
-      name: mysql-data
-    spec:
-      accessModes: ["ReadWriteOnce"]
-      storageClassName: PLACEHOLDER_STORAGE_CLASS
-      resources:
-        requests:
-          storage: PLACEHOLDER_MYSQL_STORAGE
+            storage: PLACEHOLDER_MYSQL_STORAGE

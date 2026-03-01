@@ -13,51 +13,52 @@ spec:
       labels:
         app: invoiceninja-mysql
     spec:
+      serviceAccountName: invoiceninja-mysql
       containers:
-      - name: mysql
-        image: PLACEHOLDER_MYSQL_IMAGE
-        ports:
-        - containerPort: 3306
-          name: mysql
-        env:
-        - name: MYSQL_DATABASE
-          valueFrom:
-            secretKeyRef:
-              name: invoiceninja-secrets
-              key: DB_DATABASE
-        - name: MYSQL_USER
-          valueFrom:
-            secretKeyRef:
-              name: invoiceninja-secrets
-              key: DB_USERNAME
-        - name: MYSQL_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: invoiceninja-secrets
-              key: DB_PASSWORD
-        - name: MYSQL_ROOT_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: invoiceninja-secrets
-              key: DB_ROOT_PASSWORD
-        volumeMounts:
-        - name: PLACEHOLDER_MYSQL_DATA
-          mountPath: /var/lib/mysql
-        livenessProbe:
-          exec:
-            command:
-            - sh
-            - -c
-            - mysqladmin ping -h localhost -u$MYSQL_USER -p$MYSQL_PASSWORD
-          initialDelaySeconds: 30
-          periodSeconds: 10
+        - name: mysql
+          image: PLACEHOLDER_MYSQL_IMAGE
+          ports:
+            - containerPort: 3306
+              name: mysql
+          env:
+            - name: MYSQL_DATABASE
+              valueFrom:
+                secretKeyRef:
+                  name: invoiceninja-secrets
+                  key: DB_DATABASE
+            - name: MYSQL_USER
+              valueFrom:
+                secretKeyRef:
+                  name: invoiceninja-secrets
+                  key: DB_USERNAME
+            - name: MYSQL_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: invoiceninja-secrets
+                  key: DB_PASSWORD
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: invoiceninja-secrets
+                  key: DB_ROOT_PASSWORD
+          volumeMounts:
+            - name: PLACEHOLDER_MYSQL_DATA
+              mountPath: /var/lib/mysql
+          livenessProbe:
+            exec:
+              command:
+                - sh
+                - -c
+                - mysqladmin ping -h localhost -u$MYSQL_USER -p$MYSQL_PASSWORD
+            initialDelaySeconds: 30
+            periodSeconds: 10
   volumeClaimTemplates:
-  - metadata:
-      name: PLACEHOLDER_MYSQL_DATA
-    spec:
-      accessModes:
-      - ReadWriteOnce
-      storageClassName: PLACEHOLDER_STORAGE_CLASS
-      resources:
-        requests:
-          storage: 20Gi
+    - metadata:
+        name: PLACEHOLDER_MYSQL_DATA
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        storageClassName: PLACEHOLDER_STORAGE_CLASS
+        resources:
+          requests:
+            storage: 20Gi

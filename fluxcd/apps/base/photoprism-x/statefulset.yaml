@@ -13,6 +13,7 @@ spec:
       labels:
         app: photoprism-x
     spec:
+      serviceAccountName: photoprism-x
       runtimeClassName: nvidia
       containers:
         - name: photoprism
@@ -169,7 +170,8 @@ spec:
     - metadata:
         name: storage
       spec:
-        accessModes: ["ReadWriteOnce"]
+        accessModes:
+          - ReadWriteOnce
         storageClassName: PLACEHOLDER_STORAGE_CLASS
         resources:
           requests:

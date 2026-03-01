@@ -13,48 +13,49 @@ spec:
       labels:
         app: erpnext-mariadb
     spec:
+      serviceAccountName: erpnext-mariadb
       containers:
-      - name: mariadb
-        image: PLACEHOLDER_MARIADB_IMAGE
-        ports:
-        - containerPort: 3306
-          name: mysql
-        command:
-        - --character-set-server=utf8mb4
-        - --collation-server=utf8mb4_unicode_ci
-        - --skip-character-set-client-handshake
-        - --skip-innodb-read-only-compressed
-        env:
-        - name: MYSQL_ROOT_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: erpnext-secrets
-              key: MYSQL_ROOT_PASSWORD
-        - name: MARIADB_ROOT_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: erpnext-secrets
-              key: MYSQL_ROOT_PASSWORD
-        volumeMounts:
-        - name: PLACEHOLDER_MARIADB_DATA
-          mountPath: /var/lib/mysql
-        livenessProbe:
-          exec:
-            command:
-            - sh
-            - -c
-            - mysqladmin ping -h localhost --password=$MYSQL_ROOT_PASSWORD
-          initialDelaySeconds: 30
-          periodSeconds: 10
-          timeoutSeconds: 5
-          failureThreshold: 3
+        - name: mariadb
+          image: PLACEHOLDER_MARIADB_IMAGE
+          ports:
+            - containerPort: 3306
+              name: mysql
+          command:
+            - --character-set-server=utf8mb4
+            - --collation-server=utf8mb4_unicode_ci
+            - --skip-character-set-client-handshake
+            - --skip-innodb-read-only-compressed
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: erpnext-secrets
+                  key: MYSQL_ROOT_PASSWORD
+            - name: MARIADB_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: erpnext-secrets
+                  key: MYSQL_ROOT_PASSWORD
+          volumeMounts:
+            - name: PLACEHOLDER_MARIADB_DATA
+              mountPath: /var/lib/mysql
+          livenessProbe:
+            exec:
+              command:
+                - sh
+                - -c
+                - mysqladmin ping -h localhost --password=$MYSQL_ROOT_PASSWORD
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
   volumeClaimTemplates:
-  - metadata:
-      name: PLACEHOLDER_MARIADB_DATA
-    spec:
-      accessModes:
-      - ReadWriteOnce
-      storageClassName: PLACEHOLDER_STORAGE_CLASS
-      resources:
-        requests:
-          storage: 20Gi
+    - metadata:
+        name: PLACEHOLDER_MARIADB_DATA
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        storageClassName: PLACEHOLDER_STORAGE_CLASS
+        resources:
+          requests:
+            storage: 20Gi

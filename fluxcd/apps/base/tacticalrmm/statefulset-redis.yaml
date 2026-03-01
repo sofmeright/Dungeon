@@ -13,6 +13,7 @@ spec:
       labels:
         app: tactical-redis
     spec:
+      serviceAccountName: tactical-redis
       initContainers:
         - name: create-initialized-marker
           image: PLACEHOLDER_BUSYBOX_IMAGE

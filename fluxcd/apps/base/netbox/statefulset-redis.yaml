@@ -13,24 +13,25 @@ spec:
       labels:
         app: netbox-redis
     spec:
+      serviceAccountName: netbox-redis
       containers:
-      - name: redis
-        image: PLACEHOLDER_REDIS_IMAGE
-        command:
-        - redis-server
-        ports:
-        - containerPort: 6379
-          name: redis
-        volumeMounts:
-        - name: PLACEHOLDER_REDIS_DATA
-          mountPath: /data
+        - name: redis
+          image: PLACEHOLDER_REDIS_IMAGE
+          command:
+            - redis-server
+          ports:
+            - containerPort: 6379
+              name: redis
+          volumeMounts:
+            - name: PLACEHOLDER_REDIS_DATA
+              mountPath: /data
   volumeClaimTemplates:
-  - metadata:
-      name: PLACEHOLDER_REDIS_DATA
-    spec:
-      accessModes:
-      - ReadWriteOnce
-      storageClassName: PLACEHOLDER_STORAGE_CLASS
-      resources:
-        requests:
-          storage: 5Gi
+    - metadata:
+        name: PLACEHOLDER_REDIS_DATA
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        storageClassName: PLACEHOLDER_STORAGE_CLASS
+        resources:
+          requests:
+            storage: 5Gi

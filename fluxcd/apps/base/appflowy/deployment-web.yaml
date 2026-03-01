@@ -17,47 +17,48 @@ spec:
         app: appflowy-web
         component: frontend
     spec:
+      serviceAccountName: appflowy-web
       containers:
-      - name: appflowy-web
-        image: PLACEHOLDER_WEB_IMAGE
-        ports:
-        - name: http
-          containerPort: 3000
-          protocol: TCP
-        envFrom:
-        - configMapRef:
-            name: appflowy-app-config
-        env:
-        - name: AF_BASE_URL
-          valueFrom:
-            configMapKeyRef:
-              name: appflowy-app-config
-              key: APPFLOWY_BASE_URL
-        - name: AF_GOTRUE_URL
-          valueFrom:
-            configMapKeyRef:
-              name: appflowy-app-config
-              key: API_EXTERNAL_URL
-        resources:
-          requests:
-            cpu: PLACEHOLDER_CPU_REQUEST
-            memory: PLACEHOLDER_MEMORY_REQUEST
-          limits:
-            cpu: PLACEHOLDER_CPU_LIMIT
-            memory: PLACEHOLDER_MEMORY_LIMIT
-        livenessProbe:
-          httpGet:
-            path: /
-            port: http
-          initialDelaySeconds: 30
-          periodSeconds: 10
-          timeoutSeconds: 5
-          failureThreshold: 3
-        readinessProbe:
-          httpGet:
-            path: /
-            port: http
-          initialDelaySeconds: 10
-          periodSeconds: 5
-          timeoutSeconds: 3
-          failureThreshold: 3
+        - name: appflowy-web
+          image: PLACEHOLDER_WEB_IMAGE
+          ports:
+            - name: http
+              containerPort: 3000
+              protocol: TCP
+          envFrom:
+            - configMapRef:
+                name: appflowy-app-config
+          env:
+            - name: AF_BASE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: appflowy-app-config
+                  key: APPFLOWY_BASE_URL
+            - name: AF_GOTRUE_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: appflowy-app-config
+                  key: API_EXTERNAL_URL
+          resources:
+            requests:
+              cpu: PLACEHOLDER_CPU_REQUEST
+              memory: PLACEHOLDER_MEMORY_REQUEST
+            limits:
+              cpu: PLACEHOLDER_CPU_LIMIT
+              memory: PLACEHOLDER_MEMORY_LIMIT
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 10
+            periodSeconds: 5
+            timeoutSeconds: 3
+            failureThreshold: 3

@@ -12,6 +12,7 @@ spec:
       labels:
         app: searxng
     spec:
+      serviceAccountName: searxng
       securityContext:
         fsGroup: 977
         runAsUser: 977

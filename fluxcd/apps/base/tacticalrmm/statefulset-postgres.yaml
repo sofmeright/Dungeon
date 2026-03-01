@@ -13,6 +13,7 @@ spec:
       labels:
         app: tactical-postgres
     spec:
+      serviceAccountName: tactical-postgres
       containers:
         - name: postgres
           image: PLACEHOLDER_POSTGRES_IMAGE
