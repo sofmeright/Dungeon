@@ -58,6 +58,8 @@ spec:
           commonName: "172.22.30.71"
 
     nginx:
+      podLabels:
+        policy.prplanit.com/ingress: "true"
       image:
         repository: docker.io/goharbor/nginx-photon
 
