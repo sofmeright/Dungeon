@@ -118,3 +118,10 @@ spec:
               - op: add
                 path: /spec/template/spec/serviceAccountName
                 value: nextcloud-imaginary
+          - target:
+              kind: Deployment
+              name: nextcloud-collabora
+            patch: |-
+              - op: add
+                path: /spec/template/spec/serviceAccountName
+                value: nextcloud-collabora
