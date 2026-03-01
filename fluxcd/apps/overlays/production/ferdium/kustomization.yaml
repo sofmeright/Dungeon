@@ -13,3 +13,7 @@ patches:
     target:
       kind: Service
       name: ferdium
+  - path: service-ferdium-ingress-patch.yaml
+    target:
+      kind: Service
+      name: ferdium

@@ -18,3 +18,7 @@ patches:
             port: 20211
             protocol: TCP
             targetPort: 20211
+  - path: service-netalertx-ingress-patch.yaml
+    target:
+      kind: Service
+      name: netalertx

@@ -19,3 +19,7 @@ patches:
       kind: Service
       name: plex-ms-x
   - path: storage-patch.yaml
+  - path: service-plex-ms-x-ingress-patch.yaml
+    target:
+      kind: Service
+      name: plex-ms-x

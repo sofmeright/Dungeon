@@ -13,3 +13,7 @@ patches:
     target:
       kind: ConfigMap
       name: zigbee2mqtt-config
+  - path: service-zigbee2mqtt-ingress-patch.yaml
+    target:
+      kind: Service
+      name: zigbee2mqtt

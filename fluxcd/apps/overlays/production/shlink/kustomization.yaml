@@ -14,3 +14,11 @@ patches:
   - path: statefulset-db-patch.yaml
   - path: deployment-web-client-patch.yaml
   - path: service-patch.yaml
+  - path: service-shlink-web-client-ingress-patch.yaml
+    target:
+      kind: Service
+      name: shlink-web-client
+  - path: service-shlink-app-ingress-patch.yaml
+    target:
+      kind: Service
+      name: shlink-app

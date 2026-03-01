@@ -18,3 +18,7 @@ patches:
     target:
       kind: Service
       name: speedtest-tracker
+  - path: service-speedtest-tracker-ingress-patch.yaml
+    target:
+      kind: Service
+      name: speedtest-tracker

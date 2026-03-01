@@ -11,3 +11,7 @@ patches:
       name: photoprism
   - path: storageclass-patch.yaml
   - path: pv-secretref-patch.yaml
+  - path: service-photoprism-ingress-patch.yaml
+    target:
+      kind: Service
+      name: photoprism

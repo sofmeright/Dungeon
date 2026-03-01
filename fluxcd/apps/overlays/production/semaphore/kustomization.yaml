@@ -13,3 +13,7 @@ patches:
     target:
       kind: ExternalSecret
       name: semaphore-secrets
+  - path: service-semaphore-ingress-patch.yaml
+    target:
+      kind: Service
+      name: semaphore

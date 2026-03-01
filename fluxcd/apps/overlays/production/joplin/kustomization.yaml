@@ -20,3 +20,7 @@ patches:
     target:
       kind: ExternalSecret
       name: joplin-secrets
+  - path: service-joplin-app-ingress-patch.yaml
+    target:
+      kind: Service
+      name: joplin-app

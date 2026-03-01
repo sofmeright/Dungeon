@@ -13,3 +13,7 @@ patches:
     target:
       kind: Service
       name: supermicro-license-generator
+  - path: service-supermicro-license-generator-ingress-patch.yaml
+    target:
+      kind: Service
+      name: supermicro-license-generator

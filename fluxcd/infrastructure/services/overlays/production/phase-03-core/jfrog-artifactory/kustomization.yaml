@@ -10,3 +10,7 @@ patches:
   - path: statefulset-artifactory-patch.yaml
   - path: service-artifactory-patch.yaml
   - path: externalsecret-patch.yaml
+  - path: service-jfrog-artifactory-jcr-ingress-patch.yaml
+    target:
+      kind: Service
+      name: jfrog-artifactory-jcr

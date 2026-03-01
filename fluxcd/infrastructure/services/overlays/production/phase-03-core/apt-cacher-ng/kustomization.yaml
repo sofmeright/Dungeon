@@ -13,3 +13,7 @@ patches:
     target:
       kind: StatefulSet
       name: apt-cacher-ng
+  - path: service-apt-cacher-ng-ingress-patch.yaml
+    target:
+      kind: Service
+      name: apt-cacher-ng

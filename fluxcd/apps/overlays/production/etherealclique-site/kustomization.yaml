@@ -16,3 +16,7 @@ patches:
     target:
       kind: Service
       name: etherealclique-site
+  - path: service-etherealclique-site-ingress-patch.yaml
+    target:
+      kind: Service
+      name: etherealclique-site

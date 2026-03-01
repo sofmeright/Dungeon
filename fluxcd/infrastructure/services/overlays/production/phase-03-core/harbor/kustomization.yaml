@@ -14,3 +14,7 @@ patches:
   - path: postgres-cluster-patch.yaml
   - path: redis-patch.yaml
   - path: helmrelease-patch.yaml
+  - path: service-harbor-ingress-patch.yaml
+    target:
+      kind: Service
+      name: harbor

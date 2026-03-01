@@ -10,3 +10,7 @@ resources:
 patches:
   - path: statefulset-patch.yaml
   - path: externalsecret-patch.yaml
+  - path: service-sabnzbd-ingress-patch.yaml
+    target:
+      kind: Service
+      name: sabnzbd

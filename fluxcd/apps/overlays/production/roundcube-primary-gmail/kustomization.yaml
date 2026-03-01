@@ -21,3 +21,7 @@ patches:
     target:
       kind: ExternalSecret
       name: roundcube-primary-gmail-secrets
+  - path: service-roundcube-primary-gmail-ingress-patch.yaml
+    target:
+      kind: Service
+      name: roundcube-primary-gmail

@@ -17,3 +17,7 @@ patches:
     patch: |-
       - op: remove
         path: /spec/volumeClaimTemplates
+  - path: service-immich-ingress-patch.yaml
+    target:
+      kind: Service
+      name: immich

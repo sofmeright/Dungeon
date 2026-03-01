@@ -13,3 +13,7 @@ patches:
     target:
       kind: Service
       name: filebrowser
+  - path: service-filebrowser-ingress-patch.yaml
+    target:
+      kind: Service
+      name: filebrowser

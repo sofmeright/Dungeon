@@ -13,3 +13,7 @@ patches:
     target:
       kind: Service
       name: hrconvert2
+  - path: service-hrconvert2-ingress-patch.yaml
+    target:
+      kind: Service
+      name: hrconvert2

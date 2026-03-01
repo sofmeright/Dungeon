@@ -22,3 +22,7 @@ patches:
     target:
       kind: ExternalSecret
       name: bookstack-secrets
+  - path: service-bookstack-ingress-patch.yaml
+    target:
+      kind: Service
+      name: bookstack

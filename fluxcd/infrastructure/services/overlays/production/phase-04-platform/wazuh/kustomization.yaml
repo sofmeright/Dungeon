@@ -14,3 +14,7 @@ patches:
   - path: manager-externalsecret-patch.yaml
   - path: dashboard-externalsecret-patch.yaml
   - path: ssl-externalsecret-patch.yaml
+  - path: service-wazuh-dashboard-ingress-patch.yaml
+    target:
+      kind: Service
+      name: wazuh-dashboard

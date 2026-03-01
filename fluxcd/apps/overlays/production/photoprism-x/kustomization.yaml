@@ -15,3 +15,7 @@ patches:
   - path: externalsecret-patch.yaml
   - path: pv-smb-patch.yaml
   - path: storageclass-patch.yaml
+  - path: service-photoprism-x-ingress-patch.yaml
+    target:
+      kind: Service
+      name: photoprism-x

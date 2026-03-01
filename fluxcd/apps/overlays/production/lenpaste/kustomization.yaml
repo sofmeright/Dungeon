@@ -13,3 +13,7 @@ patches:
   - path: statefulset-app-patch.yaml
   - path: statefulset-postgres-patch.yaml
   - path: service-patch.yaml
+  - path: service-lenpaste-app-ingress-patch.yaml
+    target:
+      kind: Service
+      name: lenpaste-app

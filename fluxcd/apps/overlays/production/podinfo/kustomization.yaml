@@ -12,3 +12,7 @@ patches:
     target:
       kind: HelmRelease
       name: podinfo
+  - path: service-podinfo-ingress-patch.yaml
+    target:
+      kind: Service
+      name: podinfo

@@ -24,3 +24,7 @@ patches:
       - op: add
         path: /metadata/namespace
         value: flux-system
+  - path: service-hubble-ui-ingress-patch.yaml
+    target:
+      kind: Service
+      name: hubble-ui

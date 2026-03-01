@@ -8,3 +8,7 @@ patches:
   - path: statefulset-remove-vct.yaml
   - path: statefulset-patch.yaml
   - path: externalsecret-patch.yaml
+  - path: service-code-server-ingress-patch.yaml
+    target:
+      kind: Service
+      name: code-server

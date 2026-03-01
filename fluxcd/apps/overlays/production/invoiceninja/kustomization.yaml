@@ -17,3 +17,7 @@ patches:
       kind: Service
       name: invoiceninja-nginx
   - path: externalsecret-patch.yaml
+  - path: service-invoiceninja-nginx-ingress-patch.yaml
+    target:
+      kind: Service
+      name: invoiceninja-nginx

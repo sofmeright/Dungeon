@@ -9,3 +9,7 @@ patches:
     target:
       kind: StatefulSet
       name: libretranslate
+  - path: service-libretranslate-ingress-patch.yaml
+    target:
+      kind: Service
+      name: libretranslate

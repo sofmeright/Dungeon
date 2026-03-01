@@ -14,3 +14,7 @@ patches:
       kind: StatefulSet
       name: downloadarrs
   - path: externalsecret-patch.yaml
+  - path: service-downloadarrs-ingress-patch.yaml
+    target:
+      kind: Service
+      name: downloadarrs

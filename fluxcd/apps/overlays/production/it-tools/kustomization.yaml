@@ -16,3 +16,7 @@ patches:
     target:
       kind: Deployment
       name: it-tools
+  - path: service-it-tools-ingress-patch.yaml
+    target:
+      kind: Service
+      name: it-tools

@@ -19,3 +19,7 @@ patches:
     target:
       kind: ConfigMap
       name: home-assistant-config
+  - path: service-home-assistant-ingress-patch.yaml
+    target:
+      kind: Service
+      name: home-assistant

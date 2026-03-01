@@ -13,3 +13,7 @@ patches:
     target:
       kind: Service
       name: google-webfonts-helper
+  - path: service-google-webfonts-helper-ingress-patch.yaml
+    target:
+      kind: Service
+      name: google-webfonts-helper

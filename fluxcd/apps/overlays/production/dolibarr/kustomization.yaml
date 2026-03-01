@@ -12,3 +12,7 @@ patches:
       kind: Service
       name: dolibarr-web
   - path: externalsecret-patch.yaml
+  - path: service-dolibarr-web-ingress-patch.yaml
+    target:
+      kind: Service
+      name: dolibarr-web

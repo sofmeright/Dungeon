@@ -15,3 +15,7 @@ patches:
       kind: Service
       name: orangehrm
   - path: externalsecret-patch.yaml
+  - path: service-orangehrm-ingress-patch.yaml
+    target:
+      kind: Service
+      name: orangehrm

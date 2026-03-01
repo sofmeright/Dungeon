@@ -11,3 +11,7 @@ resources:
 patches:
   - path: statefulset-patch.yaml
   - path: pvc-smb-xxx-media-patch.yaml
+  - path: service-whisparr-ingress-patch.yaml
+    target:
+      kind: Service
+      name: whisparr

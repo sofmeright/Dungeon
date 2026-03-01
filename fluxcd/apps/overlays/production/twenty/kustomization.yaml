@@ -14,3 +14,7 @@ patches:
   - path: statefulset-postgres-patch.yaml
   - path: statefulset-redis-patch.yaml
   - path: service-patch.yaml
+  - path: service-twenty-app-ingress-patch.yaml
+    target:
+      kind: Service
+      name: twenty-app

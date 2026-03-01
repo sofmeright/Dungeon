@@ -20,3 +20,7 @@ patches:
     target:
       kind: StatefulSet
       name: bagisto-demo-db
+  - path: service-bagisto-demo-ingress-patch.yaml
+    target:
+      kind: Service
+      name: bagisto-demo

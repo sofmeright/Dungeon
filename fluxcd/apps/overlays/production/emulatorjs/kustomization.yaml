@@ -9,3 +9,7 @@ patches:
     target:
       kind: StatefulSet
       name: emulatorjs
+  - path: service-emulatorjs-ingress-patch.yaml
+    target:
+      kind: Service
+      name: emulatorjs

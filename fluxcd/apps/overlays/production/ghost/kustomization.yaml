@@ -9,3 +9,7 @@ patches:
   - path: statefulset-ghost-patch.yaml
   - path: statefulset-mysql-patch.yaml
   - path: externalsecret-patch.yaml
+  - path: service-ghost-ingress-patch.yaml
+    target:
+      kind: Service
+      name: ghost

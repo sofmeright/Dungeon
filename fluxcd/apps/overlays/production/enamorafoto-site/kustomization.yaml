@@ -16,3 +16,7 @@ patches:
     target:
       kind: Service
       name: enamorafoto-site
+  - path: service-enamorafoto-site-ingress-patch.yaml
+    target:
+      kind: Service
+      name: enamorafoto-site

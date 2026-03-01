@@ -12,3 +12,7 @@ patches:
     target:
       kind: Service
       name: ntfy
+  - path: service-ntfy-ingress-patch.yaml
+    target:
+      kind: Service
+      name: ntfy

@@ -18,3 +18,7 @@ patches:
             port: 8353
             protocol: TCP
             targetPort: 8090
+  - path: service-beszel-ingress-patch.yaml
+    target:
+      kind: Service
+      name: beszel

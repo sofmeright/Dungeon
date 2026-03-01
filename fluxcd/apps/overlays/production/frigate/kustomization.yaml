@@ -24,3 +24,7 @@ patches:
     target:
       kind: Service
       name: frigate-webrtc-udp
+  - path: service-frigate-ingress-patch.yaml
+    target:
+      kind: Service
+      name: frigate

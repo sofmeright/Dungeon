@@ -26,3 +26,7 @@ patches:
       - op: replace
         path: /spec/ports/0/targetPort
         value: 7007
+  - path: service-romm-ingress-patch.yaml
+    target:
+      kind: Service
+      name: romm

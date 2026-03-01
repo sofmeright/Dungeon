@@ -16,3 +16,7 @@ patches:
     target:
       kind: Service
       name: precisionplanit-site
+  - path: service-precisionplanit-site-ingress-patch.yaml
+    target:
+      kind: Service
+      name: precisionplanit-site

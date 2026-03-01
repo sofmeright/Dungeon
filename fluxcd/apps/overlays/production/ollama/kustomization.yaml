@@ -9,3 +9,7 @@ patches:
     target:
       kind: StatefulSet
       name: ollama
+  - path: service-ollama-ingress-patch.yaml
+    target:
+      kind: Service
+      name: ollama

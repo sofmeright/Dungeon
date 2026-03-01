@@ -24,3 +24,7 @@ patches:
   - path: externalsecret-patch.yaml
   # HTTPRoute patch
   - path: httproute-patch.yaml
+  - path: service-crowdsec-dashboard-ingress-patch.yaml
+    target:
+      kind: Service
+      name: crowdsec-dashboard

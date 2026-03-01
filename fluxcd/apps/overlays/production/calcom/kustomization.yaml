@@ -20,3 +20,7 @@ patches:
     target:
       kind: ExternalSecret
       name: calcom-secrets
+  - path: service-calcom-ingress-patch.yaml
+    target:
+      kind: Service
+      name: calcom

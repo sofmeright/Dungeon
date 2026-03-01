@@ -34,3 +34,7 @@ patches:
     target:
       kind: ExternalSecret
       name: homarr-redis-password
+  - path: service-homarr-ingress-patch.yaml
+    target:
+      kind: Service
+      name: homarr

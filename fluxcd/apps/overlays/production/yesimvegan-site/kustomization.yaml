@@ -16,3 +16,7 @@ patches:
     target:
       kind: Service
       name: yesimvegan-site
+  - path: service-yesimvegan-site-ingress-patch.yaml
+    target:
+      kind: Service
+      name: yesimvegan-site

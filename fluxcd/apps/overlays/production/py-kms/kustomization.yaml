@@ -10,3 +10,7 @@ resources:
 patches:
   - path: statefulset-patch.yaml
   - path: service-patch.yaml
+  - path: service-py-kms-ingress-patch.yaml
+    target:
+      kind: Service
+      name: py-kms

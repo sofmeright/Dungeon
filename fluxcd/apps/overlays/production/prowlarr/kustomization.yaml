@@ -12,3 +12,7 @@ resources:
 patches:
   - path: statefulset-patch.yaml
   - path: externalsecret-patch.yaml
+  - path: service-prowlarr-ingress-patch.yaml
+    target:
+      kind: Service
+      name: prowlarr

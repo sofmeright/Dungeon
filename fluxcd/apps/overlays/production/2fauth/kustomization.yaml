@@ -9,3 +9,7 @@ patches:
     target:
       kind: StatefulSet
       name: twofauth
+  - path: service-twofauth-ingress-patch.yaml
+    target:
+      kind: Service
+      name: twofauth

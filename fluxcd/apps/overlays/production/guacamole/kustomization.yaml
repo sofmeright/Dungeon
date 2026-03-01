@@ -22,3 +22,7 @@ patches:
       kind: Service
       name: guacamole
   - path: externalsecret-patch.yaml
+  - path: service-guacamole-ingress-patch.yaml
+    target:
+      kind: Service
+      name: guacamole

@@ -17,3 +17,7 @@ patches:
       kind: Service
       name: netbox-server
   - path: externalsecret-patch.yaml
+  - path: service-netbox-server-ingress-patch.yaml
+    target:
+      kind: Service
+      name: netbox-server

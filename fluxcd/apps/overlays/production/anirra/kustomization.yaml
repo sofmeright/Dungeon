@@ -20,3 +20,7 @@ patches:
             port: 3000
             protocol: TCP
             targetPort: frontend
+  - path: service-anirra-ingress-patch.yaml
+    target:
+      kind: Service
+      name: anirra

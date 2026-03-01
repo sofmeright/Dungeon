@@ -11,3 +11,7 @@ patches:
   - path: cephfs-storage-patch.yaml
   - path: app-url-patch.yaml
   - path: service-patch.yaml
+  - path: service-opnform-ingress-ingress-patch.yaml
+    target:
+      kind: Service
+      name: opnform-ingress

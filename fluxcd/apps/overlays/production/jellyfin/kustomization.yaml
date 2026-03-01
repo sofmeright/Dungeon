@@ -23,3 +23,7 @@ patches:
     patch: |-
       - op: remove
         path: /spec/volumeClaimTemplates
+  - path: service-jellyfin-ingress-patch.yaml
+    target:
+      kind: Service
+      name: jellyfin

@@ -19,3 +19,7 @@ patches:
             port: 3475
             protocol: TCP
             targetPort: 3000
+  - path: service-umami-ingress-patch.yaml
+    target:
+      kind: Service
+      name: umami

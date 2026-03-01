@@ -21,3 +21,7 @@ patches:
     target:
       kind: ExternalSecret
       name: wikijs-vegan-secrets
+  - path: service-wikijs-vegan-ingress-patch.yaml
+    target:
+      kind: Service
+      name: wikijs-vegan

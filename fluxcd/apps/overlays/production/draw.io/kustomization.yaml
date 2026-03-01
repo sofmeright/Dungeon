@@ -16,3 +16,7 @@ patches:
     target:
       kind: HTTPRoute
       name: draw-io
+  - path: service-draw-io-ingress-patch.yaml
+    target:
+      kind: Service
+      name: draw-io

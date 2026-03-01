@@ -12,3 +12,7 @@ patches:
   - path: statefulset-app-patch.yaml
   - path: statefulset-db-patch.yaml
   - path: service-patch.yaml
+  - path: service-unifi-app-ingress-patch.yaml
+    target:
+      kind: Service
+      name: unifi-app

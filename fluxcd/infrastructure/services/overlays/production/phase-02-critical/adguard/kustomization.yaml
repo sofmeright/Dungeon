@@ -41,3 +41,7 @@ patches:
     target:
       kind: ExternalSecret
       name: adguardhome-sync-config
+  - path: service-adguard-web-ingress-patch.yaml
+    target:
+      kind: Service
+      name: adguard-web

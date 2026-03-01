@@ -9,3 +9,7 @@ patches:
     target:
       kind: StatefulSet
       name: homebox
+  - path: service-homebox-ingress-patch.yaml
+    target:
+      kind: Service
+      name: homebox

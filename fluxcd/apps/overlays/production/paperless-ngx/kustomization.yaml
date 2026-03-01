@@ -17,3 +17,7 @@ patches:
     target:
       kind: StatefulSet
       name: paperless-webserver
+  - path: service-paperless-webserver-ingress-patch.yaml
+    target:
+      kind: Service
+      name: paperless-webserver

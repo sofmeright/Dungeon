@@ -9,3 +9,7 @@ patches:
     target:
       kind: StatefulSet
       name: lubelogger
+  - path: service-lubelogger-ingress-patch.yaml
+    target:
+      kind: Service
+      name: lubelogger

@@ -42,3 +42,7 @@ patches:
     patch: |-
       - op: remove
         path: /spec/volumeClaimTemplates
+  - path: service-linkwarden-ingress-patch.yaml
+    target:
+      kind: Service
+      name: linkwarden

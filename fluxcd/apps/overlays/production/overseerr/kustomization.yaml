@@ -11,3 +11,7 @@ resources:
 patches:
   - path: statefulset-patch.yaml
   - path: externalsecret-patch.yaml
+  - path: service-overseerr-ingress-patch.yaml
+    target:
+      kind: Service
+      name: overseerr

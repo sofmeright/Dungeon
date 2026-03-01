@@ -35,3 +35,7 @@ patches:
     target:
       kind: HTTPRoute
       name: linkstack
+  - path: service-linkstack-ingress-patch.yaml
+    target:
+      kind: Service
+      name: linkstack

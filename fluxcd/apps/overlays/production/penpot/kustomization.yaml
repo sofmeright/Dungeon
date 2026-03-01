@@ -31,3 +31,7 @@ patches:
     target:
       kind: ExternalSecret
       name: penpot-secrets
+  - path: service-penpot-frontend-ingress-patch.yaml
+    target:
+      kind: Service
+      name: penpot-frontend

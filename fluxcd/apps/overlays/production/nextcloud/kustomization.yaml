@@ -26,3 +26,23 @@ patches:
   - path: notify-push-patch.yaml
   - path: whiteboard-patch.yaml
   - path: externalsecret-postgres-backup-patch.yaml
+  - path: service-nextcloud-ingress-patch.yaml
+    target:
+      kind: Service
+      name: nextcloud
+  - path: service-nextcloud-collabora-ingress-patch.yaml
+    target:
+      kind: Service
+      name: nextcloud-collabora
+  - path: service-nextcloud-talk-hpb-ingress-patch.yaml
+    target:
+      kind: Service
+      name: nextcloud-talk-hpb
+  - path: service-nextcloud-notify-push-ingress-patch.yaml
+    target:
+      kind: Service
+      name: nextcloud-notify-push
+  - path: service-nextcloud-whiteboard-ingress-patch.yaml
+    target:
+      kind: Service
+      name: nextcloud-whiteboard

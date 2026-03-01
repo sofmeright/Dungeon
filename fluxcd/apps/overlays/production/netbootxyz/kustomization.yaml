@@ -13,3 +13,7 @@ patches:
     target:
       kind: StatefulSet
       name: netbootxyz
+  - path: service-netbootxyz-ingress-patch.yaml
+    target:
+      kind: Service
+      name: netbootxyz

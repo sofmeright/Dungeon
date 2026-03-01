@@ -21,3 +21,7 @@ patches:
     target:
       kind: CronJob
       name: echo-ip-geoip-update
+  - path: service-echo-ip-ingress-patch.yaml
+    target:
+      kind: Service
+      name: echo-ip

@@ -17,3 +17,7 @@ patches:
     target:
       kind: StatefulSet
       name: projectsend-db
+  - path: service-projectsend-ingress-patch.yaml
+    target:
+      kind: Service
+      name: projectsend

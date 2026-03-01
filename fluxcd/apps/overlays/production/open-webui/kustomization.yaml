@@ -19,3 +19,7 @@ patches:
   - path: redis-statefulset-patch.yaml
   - path: redis-sentinel-patch.yaml
   - path: externalsecret-redis-patch.yaml
+  - path: service-open-webui-ingress-patch.yaml
+    target:
+      kind: Service
+      name: open-webui

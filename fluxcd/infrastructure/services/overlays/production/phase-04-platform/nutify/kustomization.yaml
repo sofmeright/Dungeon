@@ -13,3 +13,7 @@ patches:
     target:
       kind: StatefulSet
       name: nutify
+  - path: service-nutify-ingress-patch.yaml
+    target:
+      kind: Service
+      name: nutify

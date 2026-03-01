@@ -11,3 +11,7 @@ patches:
     target:
       kind: Service
       name: uptime-kuma
+  - path: service-uptime-kuma-ingress-patch.yaml
+    target:
+      kind: Service
+      name: uptime-kuma

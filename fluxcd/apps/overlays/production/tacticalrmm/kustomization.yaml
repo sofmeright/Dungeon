@@ -79,6 +79,10 @@ patches:
     target:
       kind: Service
       name: tactical-meshcentral
+  - path: service-tactical-nginx-ingress-patch.yaml
+    target:
+      kind: Service
+      name: tactical-nginx
 
 # Replacements run after the namespace transformer, so they can correct the
 # RBAC namespace from hookshot → hyrule-castle. Both values are derived from

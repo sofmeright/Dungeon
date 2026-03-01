@@ -147,3 +147,19 @@ patches:
     target:
       kind: StatefulSet
       name: netbird-signal
+  - path: service-netbird-management-ingress-patch.yaml
+    target:
+      kind: Service
+      name: netbird-management
+  - path: service-netbird-signal-ingress-patch.yaml
+    target:
+      kind: Service
+      name: netbird-signal
+  - path: service-netbird-dashboard-ingress-patch.yaml
+    target:
+      kind: Service
+      name: netbird-dashboard
+  - path: service-netbird-relay-ingress-patch.yaml
+    target:
+      kind: Service
+      name: netbird-relay

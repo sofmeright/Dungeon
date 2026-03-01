@@ -34,3 +34,7 @@ patches:
       kind: ExternalSecret
       metadata:
         name: appflowy-postgres-init-sql
+  - path: service-appflowy-nginx-ingress-patch.yaml
+    target:
+      kind: Service
+      name: appflowy-nginx

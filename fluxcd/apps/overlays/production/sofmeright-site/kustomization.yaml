@@ -16,3 +16,7 @@ patches:
     target:
       kind: Service
       name: sofmeright-site
+  - path: service-sofmeright-site-ingress-patch.yaml
+    target:
+      kind: Service
+      name: sofmeright-site

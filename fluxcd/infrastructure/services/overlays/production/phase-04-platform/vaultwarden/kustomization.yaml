@@ -23,3 +23,7 @@ patches:
     target:
       kind: Service
       name: vaultwarden
+  - path: service-vaultwarden-ingress-patch.yaml
+    target:
+      kind: Service
+      name: vaultwarden

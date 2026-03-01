@@ -10,3 +10,7 @@ patches:
   - path: deployment-chrome-patch.yaml
   - path: deployment-app-patch.yaml
   - path: externalsecret-patch.yaml
+  - path: service-reactive-resume-app-ingress-patch.yaml
+    target:
+      kind: Service
+      name: reactive-resume-app

@@ -28,3 +28,7 @@ patches:
     patch: |-
       - op: remove
         path: /spec/volumeClaimTemplates
+  - path: service-mealie-ingress-patch.yaml
+    target:
+      kind: Service
+      name: mealie

@@ -16,3 +16,7 @@ patches:
       kind: Service
       name: osticket-app
   - path: externalsecret-patch.yaml
+  - path: service-osticket-app-ingress-patch.yaml
+    target:
+      kind: Service
+      name: osticket-app

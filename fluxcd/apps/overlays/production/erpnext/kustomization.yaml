@@ -23,3 +23,7 @@ patches:
       kind: Service
       name: erpnext-frontend
   - path: externalsecret-patch.yaml
+  - path: service-erpnext-frontend-ingress-patch.yaml
+    target:
+      kind: Service
+      name: erpnext-frontend

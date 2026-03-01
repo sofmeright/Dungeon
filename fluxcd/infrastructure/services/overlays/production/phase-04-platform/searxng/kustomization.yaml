@@ -28,3 +28,7 @@ patches:
       metadata:
         name: searxng-data
       $patch: delete
+  - path: service-searxng-ingress-patch.yaml
+    target:
+      kind: Service
+      name: searxng

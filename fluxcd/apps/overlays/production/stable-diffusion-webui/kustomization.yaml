@@ -9,3 +9,7 @@ patches:
     target:
       kind: StatefulSet
       name: stable-diffusion-webui
+  - path: service-stable-diffusion-webui-ingress-patch.yaml
+    target:
+      kind: Service
+      name: stable-diffusion-webui

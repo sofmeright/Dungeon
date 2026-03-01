@@ -16,3 +16,7 @@ patches:
     target:
       kind: Service
       name: homelabhelpdesk-site
+  - path: service-homelabhelpdesk-site-ingress-patch.yaml
+    target:
+      kind: Service
+      name: homelabhelpdesk-site
