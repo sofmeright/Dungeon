@@ -4,6 +4,7 @@ metadata:
   name: zitadel-sentinel
 spec:
   clusterSize: 3
+  serviceAccountName: zitadel-sentinel
   podSecurityContext:
     runAsUser: 1000
     runAsGroup: 1000

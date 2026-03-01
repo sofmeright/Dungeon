@@ -4,6 +4,7 @@ metadata:
   name: gitlab-sentinel
 spec:
   clusterSize: 3
+  serviceAccountName: gitlab-sentinel
   podSecurityContext:
     runAsUser: 1000
     runAsGroup: 1000

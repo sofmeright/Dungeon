@@ -4,6 +4,7 @@ metadata:
   name: nextcloud-redis
 spec:
   clusterSize: 3
+  serviceAccountName: nextcloud-redis
   podSecurityContext:
     runAsUser: 1000
     runAsGroup: 1000

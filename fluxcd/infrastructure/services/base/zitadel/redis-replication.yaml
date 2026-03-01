@@ -4,6 +4,7 @@ metadata:
   name: zitadel-redis
 spec:
   clusterSize: 3
+  serviceAccountName: zitadel-redis
   podSecurityContext:
     runAsUser: 1000
     runAsGroup: 1000

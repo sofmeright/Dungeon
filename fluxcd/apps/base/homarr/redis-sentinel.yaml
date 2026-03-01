@@ -4,6 +4,7 @@ metadata:
   name: homarr-sentinel
 spec:
   clusterSize: 3
+  serviceAccountName: homarr-sentinel
   podSecurityContext:
     runAsUser: 1000
     runAsGroup: 1000

@@ -4,6 +4,7 @@ metadata:
   name: homarr-redis
 spec:
   clusterSize: 3
+  serviceAccountName: homarr-redis
   podSecurityContext:
     runAsUser: 1000
     runAsGroup: 1000

@@ -4,6 +4,7 @@ metadata:
   name: gitlab-redis
 spec:
   clusterSize: 3
+  serviceAccountName: gitlab-redis
   podSecurityContext:
     runAsUser: 1000
     runAsGroup: 1000

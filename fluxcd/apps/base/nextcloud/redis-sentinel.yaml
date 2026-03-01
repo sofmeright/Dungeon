@@ -4,6 +4,7 @@ metadata:
   name: nextcloud-sentinel
 spec:
   clusterSize: 3
+  serviceAccountName: nextcloud-sentinel
   podSecurityContext:
     runAsUser: 1000
     runAsGroup: 1000
