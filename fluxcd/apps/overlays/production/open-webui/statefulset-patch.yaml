@@ -5,60 +5,65 @@ metadata:
 spec:
   replicas: 3
   template:
+    metadata:
+      labels:
+        policy.prplanit.com/ingress: "true"
     spec:
       containers:
-      - name: open-webui
-        image: ghcr.io/open-webui/open-webui:v0.7.2
-        env:
-        - name: POSTGRES_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: open-webui-postgres-credentials
-              key: password
-        - name: REDIS_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: open-webui-redis-password
-              key: password
-        - name: OLLAMA_BASE_URLS
-          value: "http://glicynia:11434,http://wisteria:11434,http://dock:11434,http://Leaf-Cutter:11434,http://anchorage:11434,http://172.22.30.107:11434"
-        - name: DATABASE_URL
-          value: "postgresql://openwebui:$(POSTGRES_PASSWORD)@open-webui-postgres-rw.temple-of-time.svc.cluster.local:5432/openwebui"
-        - name: REDIS_URL
-          value: "redis://:$(REDIS_PASSWORD)@open-webui-redis:6379/0"
-        - name: REDIS_SENTINEL_HOSTS
-          value: "open-webui-sentinel-0.open-webui-sentinel-headless.temple-of-time.svc.cluster.local,open-webui-sentinel-1.open-webui-sentinel-headless.temple-of-time.svc.cluster.local,open-webui-sentinel-2.open-webui-sentinel-headless.temple-of-time.svc.cluster.local"
-        - name: REDIS_SENTINEL_PORT
-          value: "26379"
-        - name: WEBSOCKET_REDIS_URL
-          value: "redis://:$(REDIS_PASSWORD)@open-webui-redis:6379/0"
-        - name: WEBSOCKET_SENTINEL_HOSTS
-          value: "open-webui-sentinel-0.open-webui-sentinel-headless.temple-of-time.svc.cluster.local,open-webui-sentinel-1.open-webui-sentinel-headless.temple-of-time.svc.cluster.local,open-webui-sentinel-2.open-webui-sentinel-headless.temple-of-time.svc.cluster.local"
-        - name: WEBSOCKET_SENTINEL_PORT
-          value: "26379"
-        - name: ENABLE_WEBSOCKET_SUPPORT
-          value: "true"
-        - name: WEBSOCKET_MANAGER
-          value: "redis"
-        volumeMounts:
-        - $patch: delete
-          name: PLACEHOLDER_DATA
-        - name: temple-of-time-open-webui-data
-          mountPath: /app/backend/data
+        - name: open-webui
+          image: ghcr.io/open-webui/open-webui:v0.7.2
+          env:
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: open-webui-postgres-credentials
+                  key: password
+            - name: REDIS_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: open-webui-redis-password
+                  key: password
+            - name: OLLAMA_BASE_URLS
+              value: "http://glicynia:11434,http://wisteria:11434,http://dock:11434,http://Leaf-Cutter:11434,http://anchorage:11434,http://172.22.30.107:11434"
+            - name: DATABASE_URL
+              value: "postgresql://openwebui:$(POSTGRES_PASSWORD)@open-webui-postgres-rw.temple-of-time.svc.cluster.local:5432/openwebui"
+            - name: REDIS_URL
+              value: "redis://:$(REDIS_PASSWORD)@open-webui-redis:6379/0"
+            - name: REDIS_SENTINEL_HOSTS
+              # yamllint disable-line rule:line-length
+              value: "open-webui-sentinel-0.open-webui-sentinel-headless.temple-of-time.svc.cluster.local,open-webui-sentinel-1.open-webui-sentinel-headless.temple-of-time.svc.cluster.local,open-webui-sentinel-2.open-webui-sentinel-headless.temple-of-time.svc.cluster.local"
+            - name: REDIS_SENTINEL_PORT
+              value: "26379"
+            - name: WEBSOCKET_REDIS_URL
+              value: "redis://:$(REDIS_PASSWORD)@open-webui-redis:6379/0"
+            - name: WEBSOCKET_SENTINEL_HOSTS
+              # yamllint disable-line rule:line-length
+              value: "open-webui-sentinel-0.open-webui-sentinel-headless.temple-of-time.svc.cluster.local,open-webui-sentinel-1.open-webui-sentinel-headless.temple-of-time.svc.cluster.local,open-webui-sentinel-2.open-webui-sentinel-headless.temple-of-time.svc.cluster.local"
+            - name: WEBSOCKET_SENTINEL_PORT
+              value: "26379"
+            - name: ENABLE_WEBSOCKET_SUPPORT
+              value: "true"
+            - name: WEBSOCKET_MANAGER
+              value: "redis"
+          volumeMounts:
+            - $patch: delete
+              name: PLACEHOLDER_DATA
+            - name: temple-of-time-open-webui-data
+              mountPath: /app/backend/data
+          resources:
+            requests:
+              cpu: "500m"
+              memory: "1Gi"
+            limits:
+              cpu: "2000m"
+              memory: "4Gi"
+  volumeClaimTemplates:
+    - metadata:
+        name: temple-of-time-open-webui-data
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        storageClassName: ceph-rbd
         resources:
           requests:
-            cpu: "500m"
-            memory: "1Gi"
-          limits:
-            cpu: "2000m"
-            memory: "4Gi"
-  volumeClaimTemplates:
-  - metadata:
-      name: temple-of-time-open-webui-data
-    spec:
-      accessModes:
-      - ReadWriteOnce
-      storageClassName: ceph-rbd
-      resources:
-        requests:
-          storage: 10Gi
+            storage: 10Gi

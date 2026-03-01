@@ -3,16 +3,20 @@ kind: StatefulSet
 metadata:
   name: ollama
 spec:
-  volumeClaimTemplates:
-  - metadata:
-      name: data
+  template:
+    metadata:
       labels:
-        app: ollama
-        volume-type: data
-    spec:
-      storageClassName: ceph-rbd
-      accessModes:
-      - ReadWriteOnce
-      resources:
-        requests:
-          storage: 100Gi
+        policy.prplanit.com/ingress: "true"
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+        labels:
+          app: ollama
+          volume-type: data
+      spec:
+        storageClassName: ceph-rbd
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 100Gi

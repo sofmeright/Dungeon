@@ -4,6 +4,9 @@ metadata:
   name: photoprism
 spec:
   template:
+    metadata:
+      labels:
+        policy.prplanit.com/ingress: "true"
     spec:
       securityContext:
         runAsUser: 2432

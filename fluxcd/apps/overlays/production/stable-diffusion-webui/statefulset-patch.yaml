@@ -4,58 +4,61 @@ metadata:
   name: stable-diffusion-webui
 spec:
   template:
+    metadata:
+      labels:
+        policy.prplanit.com/ingress: "true"
     spec:
       initContainers:
-      - name: fix-permissions
-        image: docker.io/busybox:1.37
-        command:
-        - sh
-        - -c
-        - |
-          chown -R 1000:1111 /models /outputs
-          chmod -R 755 /models /outputs
-        volumeMounts:
-        - name: data
-          mountPath: /models
-        - name: output
-          mountPath: /outputs
-        securityContext:
-          runAsUser: 0
+        - name: fix-permissions
+          image: docker.io/busybox:1.37
+          command:
+            - sh
+            - -c
+            - |
+              chown -R 1000:1111 /models /outputs
+              chmod -R 755 /models /outputs
+          volumeMounts:
+            - name: data
+              mountPath: /models
+            - name: output
+              mountPath: /outputs
+          securityContext:
+            runAsUser: 0
       containers:
-      - name: webui
-        image: ghcr.io/ai-dock/stable-diffusion-webui:v2-cuda-12.1.1-base-22.04-v1.10.1
-        env:
-        - name: WEBUI_PORT
-          value: "7860"
-        - name: DIRECT_ADDRESS
-          value: "0.0.0.0"
-        - name: DIRECT_ADDRESS_GET_WAN
-          value: "false"
-        - name: WEB_ENABLE_AUTH
-          value: "false"
-        - name: CLI_ARGS
-          value: "--allow-code --medvram --xformers --enable-insecure-extension-access --api --listen --port 7860"
-        volumeMounts:
-        - name: data
-          mountPath: /opt/stable-diffusion-webui/models
-        - name: output
-          mountPath: /opt/stable-diffusion-webui/outputs
+        - name: webui
+          image: ghcr.io/ai-dock/stable-diffusion-webui:v2-cuda-12.1.1-base-22.04-v1.10.1
+          env:
+            - name: WEBUI_PORT
+              value: "7860"
+            - name: DIRECT_ADDRESS
+              value: "0.0.0.0"
+            - name: DIRECT_ADDRESS_GET_WAN
+              value: "false"
+            - name: WEB_ENABLE_AUTH
+              value: "false"
+            - name: CLI_ARGS
+              value: "--allow-code --medvram --xformers --enable-insecure-extension-access --api --listen --port 7860"
+          volumeMounts:
+            - name: data
+              mountPath: /opt/stable-diffusion-webui/models
+            - name: output
+              mountPath: /opt/stable-diffusion-webui/outputs
   volumeClaimTemplates:
-  - metadata:
-      name: data
-    spec:
-      accessModes:
-      - ReadWriteOnce
-      storageClassName: ceph-rbd
-      resources:
-        requests:
-          storage: 100Gi
-  - metadata:
-      name: output
-    spec:
-      accessModes:
-      - ReadWriteOnce
-      storageClassName: ceph-rbd
-      resources:
-        requests:
-          storage: 200Gi
+    - metadata:
+        name: data
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        storageClassName: ceph-rbd
+        resources:
+          requests:
+            storage: 100Gi
+    - metadata:
+        name: output
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        storageClassName: ceph-rbd
+        resources:
+          requests:
+            storage: 200Gi
