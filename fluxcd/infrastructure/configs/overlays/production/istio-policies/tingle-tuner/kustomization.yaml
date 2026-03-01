@@ -3,6 +3,9 @@ kind: Kustomization
 namespace: tingle-tuner
 resources:
   - ../../../../base/istio-policies
-  - allow-intra-namespace.yaml
+  - allow-intra-breakglass.yaml
+  - allow-lenpaste-app-to-lenpaste-postgres.yaml
+  - allow-podinfo-to-podinfo-redis.yaml
+  - allow-searxng-to-searxng-redis.yaml
   - allow-endlessh-go-loadbalancer.yaml
   - allow-neko-loadbalancer.yaml

@@ -1,0 +1,17 @@
+apiVersion: security.istio.io/v1
+kind: AuthorizationPolicy
+metadata:
+  name: allow-lenpaste-app-to-lenpaste-postgres
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: lenpaste-postgres
+  action: ALLOW
+  rules:
+    - from:
+        - source:
+            principals:
+              - cluster.local/ns/tingle-tuner/sa/lenpaste-app
+      to:
+        - operation:
+            ports: ["5432"]

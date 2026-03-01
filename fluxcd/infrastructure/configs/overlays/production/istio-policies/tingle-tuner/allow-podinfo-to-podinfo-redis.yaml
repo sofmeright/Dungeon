@@ -1,0 +1,17 @@
+apiVersion: security.istio.io/v1
+kind: AuthorizationPolicy
+metadata:
+  name: allow-podinfo-to-podinfo-redis
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: podinfo-redis
+  action: ALLOW
+  rules:
+    - from:
+        - source:
+            principals:
+              - cluster.local/ns/tingle-tuner/sa/podinfo
+      to:
+        - operation:
+            ports: ["6379"]
