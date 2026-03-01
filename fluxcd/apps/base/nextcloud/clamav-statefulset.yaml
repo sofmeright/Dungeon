@@ -15,6 +15,7 @@ spec:
       labels:
         app: nextcloud-clamav
     spec:
+      serviceAccountName: nextcloud-clamav
       containers:
         - name: clamav
           image: docker.io/clamav/clamav:stable

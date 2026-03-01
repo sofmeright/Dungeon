@@ -15,6 +15,7 @@ spec:
       labels:
         app: nextcloud-elasticsearch
     spec:
+      serviceAccountName: nextcloud-elasticsearch
       securityContext:
         fsGroup: 1000
       initContainers:

@@ -17,6 +17,9 @@ spec:
   # Default values
   # https://github.com/stefanprodan/podinfo/blob/master/charts/podinfo/values.yaml
   values:
+    serviceAccount:
+      enabled: true
+      name: podinfo
     redis:
       enabled: true
       repository: public.ecr.aws/docker/library/redis

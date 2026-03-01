@@ -31,15 +31,22 @@ spec:
     # Harbor components - use placeholder for HA settings
     portal:
       replicas: PLACEHOLDER_PORTAL_REPLICAS
+      serviceAccountName: harbor-portal
 
     core:
       replicas: PLACEHOLDER_CORE_REPLICAS
+      serviceAccountName: harbor-core
 
     jobservice:
       replicas: PLACEHOLDER_JOBSERVICE_REPLICAS
+      serviceAccountName: harbor-jobservice
 
     registry:
       replicas: PLACEHOLDER_REGISTRY_REPLICAS
+      serviceAccountName: harbor-registry
+
+    nginx:
+      serviceAccountName: harbor-nginx
 
     # Disable internal PostgreSQL - we'll use external/operator
     database:

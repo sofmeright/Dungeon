@@ -21,6 +21,10 @@ spec:
     global:
       edition: ce  # Community Edition
 
+      serviceAccount:
+        enabled: true
+        create: true
+
       hosts:
         domain: PLACEHOLDER_DOMAIN
         gitlab:

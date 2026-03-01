@@ -14,6 +14,7 @@ spec:
       labels:
         app: nextcloud-notify-push
     spec:
+      serviceAccountName: nextcloud-notify-push
       containers:
         - name: notify-push
           image: docker.io/icewind1991/notify_push:latest

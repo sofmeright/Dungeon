@@ -20,6 +20,12 @@ spec:
   values:
     fullnameOverride: "nextcloud"
 
+    rbac:
+      enabled: true
+      serviceaccount:
+        create: true
+        name: nextcloud
+
     image:
       repository: library/nextcloud
       flavor: apache
@@ -93,9 +99,22 @@ spec:
 
     collabora:
       enabled: false
+      serviceAccount:
+        create: true
+        name: nextcloud-collabora
 
     imaginary:
       enabled: false
 
     ingress:
       enabled: false
+  postRenderers:
+    - kustomize:
+        patches:
+          - target:
+              kind: Deployment
+              name: nextcloud-imaginary
+            patch: |-
+              - op: add
+                path: /spec/template/spec/serviceAccountName
+                value: nextcloud-imaginary
