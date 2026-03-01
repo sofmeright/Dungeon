@@ -1,0 +1,43 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: mutate-redis-sentinel-sa
+spec:
+  background: true
+  rules:
+    - name: set-sentinel-sa-on-statefulset
+      match:
+        any:
+          - resources:
+              kinds: [StatefulSet]
+              selector:
+                matchLabels:
+                  redis_setup_type: sentinel
+      preconditions:
+        all:
+          - key: "{{ request.object.metadata.labels.app || '' }}"
+            operator: NotEquals
+            value: ""
+      mutate:
+        patchStrategicMerge:
+          spec:
+            template:
+              spec:
+                serviceAccountName: "{{ request.object.metadata.labels.app | regex_replace_all('-sentinel$', '') }}"
+    - name: set-sentinel-sa-on-pod
+      match:
+        any:
+          - resources:
+              kinds: [Pod]
+              selector:
+                matchLabels:
+                  redis_setup_type: sentinel
+      preconditions:
+        all:
+          - key: "{{ request.object.metadata.labels.app || '' }}"
+            operator: NotEquals
+            value: ""
+      mutate:
+        patchStrategicMerge:
+          spec:
+            serviceAccountName: "{{ request.object.metadata.labels.app | regex_replace_all('-sentinel$', '') }}"

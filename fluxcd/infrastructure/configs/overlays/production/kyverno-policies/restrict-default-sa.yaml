@@ -1,0 +1,90 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: restrict-default-sa
+spec:
+  validationFailureAction: Audit
+  background: true
+  rules:
+    - name: restrict-default-sa-pods
+      match:
+        any:
+          - resources:
+              kinds: [Pod]
+              namespaces:
+                - arylls-lookout
+                - compass
+                - delivery-bag
+                - fairy-bottle
+                - gorons-bracelet
+                - gossip-stone
+                - hookshot
+                - hyrule-castle
+                - kokiri-forest
+                - lens-of-truth
+                - lost-woods
+                - pedestal-of-time
+                - shooting-gallery
+                - swift-sail
+                - temple-of-time
+                - tingle-tuner
+                - wallmaster
+                - zeldas-lullaby
+      exclude:
+        any:
+          - resources:
+              selector:
+                matchLabels:
+                  app.kubernetes.io/name: kyverno
+      validate:
+        message: "Pods must specify a non-default serviceAccountName in ambient mesh namespaces."
+        deny:
+          conditions:
+            any:
+              - key: "{{ request.object.spec.serviceAccountName || '' }}"
+                operator: Equals
+                value: ""
+              - key: "{{ request.object.spec.serviceAccountName || '' }}"
+                operator: Equals
+                value: "default"
+    - name: restrict-default-sa-controllers
+      match:
+        any:
+          - resources:
+              kinds: [Deployment, StatefulSet, DaemonSet, Job, CronJob]
+              namespaces:
+                - arylls-lookout
+                - compass
+                - delivery-bag
+                - fairy-bottle
+                - gorons-bracelet
+                - gossip-stone
+                - hookshot
+                - hyrule-castle
+                - kokiri-forest
+                - lens-of-truth
+                - lost-woods
+                - pedestal-of-time
+                - shooting-gallery
+                - swift-sail
+                - temple-of-time
+                - tingle-tuner
+                - wallmaster
+                - zeldas-lullaby
+      exclude:
+        any:
+          - resources:
+              selector:
+                matchLabels:
+                  app.kubernetes.io/name: kyverno
+      validate:
+        message: "Controllers must specify a non-default serviceAccountName in ambient mesh namespaces."
+        deny:
+          conditions:
+            any:
+              - key: "{{ request.object.spec.template.spec.serviceAccountName || '' }}"
+                operator: Equals
+                value: ""
+              - key: "{{ request.object.spec.template.spec.serviceAccountName || '' }}"
+                operator: Equals
+                value: "default"

@@ -30,3 +30,4 @@ resources:
   - chrony  # NTP server configuration
   - coredns  # Cluster DNS forward config
   - istio-policies  # Istio AuthorizationPolicies for all meshed namespaces
+  - kyverno-policies  # Kyverno ClusterPolicies for SA enforcement and sentinel SA mutation
