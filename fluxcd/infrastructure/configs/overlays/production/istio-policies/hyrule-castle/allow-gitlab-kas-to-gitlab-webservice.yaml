@@ -1,17 +1,17 @@
 apiVersion: security.istio.io/v1
 kind: AuthorizationPolicy
 metadata:
-  name: allow-jfrog-artifactory-jcr-to-jfrog-artifactory-postgres
+  name: allow-gitlab-kas-to-gitlab-webservice
 spec:
   selector:
     matchLabels:
-      app: jfrog-artifactory-postgres
+      app: gitlab-webservice
   action: ALLOW
   rules:
     - from:
         - source:
             principals:
-              - cluster.local/ns/hyrule-castle/sa/jfrog-artifactory-jcr
+              - cluster.local/ns/hyrule-castle/sa/gitlab-kas
       to:
         - operation:
-            ports: ["5433"]
+            ports: ["8181"]

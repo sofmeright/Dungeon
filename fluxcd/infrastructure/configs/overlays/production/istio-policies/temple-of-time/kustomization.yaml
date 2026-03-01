@@ -24,5 +24,6 @@ resources:
   - allow-reactive-resume-app-to-reactive-resume-minio.yaml
   - allow-linkwarden-to-linkwarden-postgres.yaml
   - allow-linkwarden-to-linkwarden-meilisearch.yaml
+  - allow-open-webui-to-open-webui-sentinel.yaml
   - allow-jellyfin-loadbalancer.yaml
   - allow-plex-loadbalancer.yaml

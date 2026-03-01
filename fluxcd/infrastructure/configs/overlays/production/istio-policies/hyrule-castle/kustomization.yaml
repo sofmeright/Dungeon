@@ -21,6 +21,12 @@ resources:
   - allow-gitlab-to-gitlab-postgresql.yaml
   - allow-gitlab-to-gitlab-redis.yaml
   - allow-jfrog-artifactory-jcr-to-jfrog-artifactory-postgres.yaml
+  - allow-gitlab-to-gitlab-sentinel.yaml
+  - allow-gitlab-kas-to-gitlab-webservice.yaml
+  - allow-harbor-core-to-harbor-registry.yaml
+  - allow-harbor-core-to-harbor-jobservice.yaml
+  - allow-harbor-to-harbor-portal.yaml
+  - allow-opnform-ingress-to-opnform-client.yaml
   - allow-cell-membrane-gateway-loadbalancer.yaml
   - allow-apt-cacher-ng-loadbalancer.yaml
   - allow-jfrog-loadbalancer.yaml

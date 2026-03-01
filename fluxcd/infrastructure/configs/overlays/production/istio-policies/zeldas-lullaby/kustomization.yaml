@@ -10,6 +10,9 @@ resources:
   - allow-netbird-management-to-netbird-postgres.yaml
   - allow-netbox-server-to-netbox-postgres.yaml
   - allow-netbox-server-to-netbox-redis.yaml
+  - allow-external-secrets-to-vault.yaml
+  - allow-bank-vaults-operator-to-vault.yaml
+  - allow-vault-to-vault.yaml
   - allow-netbird-coturn-loadbalancer.yaml
   - allow-vault-lb-loadbalancer.yaml
   - allow-oidc-clients.yaml

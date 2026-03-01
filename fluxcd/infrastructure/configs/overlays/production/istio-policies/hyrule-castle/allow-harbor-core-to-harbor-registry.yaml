@@ -1,17 +1,18 @@
 apiVersion: security.istio.io/v1
 kind: AuthorizationPolicy
 metadata:
-  name: allow-jfrog-artifactory-jcr-to-jfrog-artifactory-postgres
+  name: allow-harbor-core-to-harbor-registry
 spec:
   selector:
     matchLabels:
-      app: jfrog-artifactory-postgres
+      app: harbor
+      component: registry
   action: ALLOW
   rules:
     - from:
         - source:
             principals:
-              - cluster.local/ns/hyrule-castle/sa/jfrog-artifactory-jcr
+              - cluster.local/ns/hyrule-castle/sa/harbor-core
       to:
         - operation:
-            ports: ["5433"]
+            ports: ["5000", "8080"]
