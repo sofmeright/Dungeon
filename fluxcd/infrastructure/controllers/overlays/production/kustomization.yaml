@@ -5,4 +5,5 @@ resources:
   - kube-vip
   - ceph-csi
   - cifs-csi
+  - kyverno
   - metrics-server

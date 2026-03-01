@@ -16,5 +16,4 @@ resources:
   - ./redis-operator
   - ./snapshot-controller
   - ./strimzi-kafka-operator
-  - ./kyverno
   - ./velero
