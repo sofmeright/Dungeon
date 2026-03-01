@@ -1,0 +1,16 @@
+# Deny all mesh traffic from pods using the default ServiceAccount.
+# DENY policies are evaluated before ALLOW in Istio, so this overrides
+# allow-intra-namespace for default SA pods.
+# Non-mesh traffic (LoadBalancer, external, kube-system) does not have
+# SPIFFE principals and is unaffected by this policy.
+apiVersion: security.istio.io/v1
+kind: AuthorizationPolicy
+metadata:
+  name: deny-default-sa
+spec:
+  action: DENY
+  rules:
+    - from:
+        - source:
+            principals:
+              - "spiffe://*/sa/default"

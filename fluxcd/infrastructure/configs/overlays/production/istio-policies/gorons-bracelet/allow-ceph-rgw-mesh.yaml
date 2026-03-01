@@ -11,10 +11,13 @@ spec:
     - from:
         - source:
             principals:
-              - cluster.local/ns/temple-of-time/sa/default
               - cluster.local/ns/temple-of-time/sa/nextcloud-postgres
-              - cluster.local/ns/hyrule-castle/sa/default
+              - cluster.local/ns/temple-of-time/sa/appflowy-cloud
               - cluster.local/ns/hyrule-castle/sa/gitlab-postgresql
+              - cluster.local/ns/hyrule-castle/sa/gitlab-sidekiq
+              - cluster.local/ns/hyrule-castle/sa/gitlab-webservice
+              - cluster.local/ns/hyrule-castle/sa/gitlab-toolbox
+              - cluster.local/ns/hyrule-castle/sa/gitlab-registry
               - cluster.local/ns/gossip-stone/sa/loki
       to:
         - operation:
