@@ -8,6 +8,9 @@ spec:
     type: Recreate
     rollingUpdate: null
   template:
+    metadata:
+      labels:
+        policy.prplanit.com/ingress: "true"
     spec:
       containers:
         - name: calibre-web

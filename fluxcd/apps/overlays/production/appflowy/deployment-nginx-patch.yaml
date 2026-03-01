@@ -5,23 +5,26 @@ metadata:
 spec:
   replicas: 3
   template:
+    metadata:
+      labels:
+        policy.prplanit.com/ingress: "true"
     spec:
       containers:
-      - name: nginx
-        image: docker.io/nginx:1.29.5-alpine
-        volumeMounts:
-        - name: nginx-config
-          mountPath: /etc/nginx/nginx.conf
-          subPath: nginx.conf
-          readOnly: true
-        resources:
-          requests:
-            memory: "256Mi"
-            cpu: "250m"
-          limits:
-            memory: "512Mi"
-            cpu: "500m"
+        - name: nginx
+          image: docker.io/nginx:1.29.5-alpine
+          volumeMounts:
+            - name: nginx-config
+              mountPath: /etc/nginx/nginx.conf
+              subPath: nginx.conf
+              readOnly: true
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "250m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
       volumes:
-      - name: nginx-config
-        configMap:
-          name: appflowy-nginx-config
+        - name: nginx-config
+          configMap:
+            name: appflowy-nginx-config

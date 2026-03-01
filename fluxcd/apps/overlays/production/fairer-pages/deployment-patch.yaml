@@ -1,0 +1,9 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fairer-pages
+spec:
+  template:
+    metadata:
+      labels:
+        policy.prplanit.com/ingress: "true"

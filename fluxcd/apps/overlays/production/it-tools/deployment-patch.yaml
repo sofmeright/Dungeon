@@ -5,6 +5,9 @@ metadata:
 spec:
   replicas: 3
   template:
+    metadata:
+      labels:
+        policy.prplanit.com/ingress: "true"
     spec:
       securityContext:
         runAsUser: 101

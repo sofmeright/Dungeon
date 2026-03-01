@@ -1,0 +1,9 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: opnform-ingress
+spec:
+  template:
+    metadata:
+      labels:
+        policy.prplanit.com/ingress: "true"

@@ -4,6 +4,9 @@ metadata:
   name: sofmeright-site
 spec:
   template:
+    metadata:
+      labels:
+        policy.prplanit.com/ingress: "true"
     spec:
       imagePullSecrets:
         - name: cr-pcfae-admin-pull-secret

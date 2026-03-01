@@ -15,3 +15,7 @@ patches:
     target:
       kind: Service
       name: opnform-ingress
+  - path: deployment-ingress-patch.yaml
+    target:
+      kind: Deployment
+      name: opnform-ingress
