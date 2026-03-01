@@ -13,6 +13,7 @@ spec:
       labels:
         app: home-assistant
     spec:
+      serviceAccountName: home-assistant
       initContainers:
         - name: seed-config
           image: docker.io/alpine/k8s:PLACEHOLDER_TAG

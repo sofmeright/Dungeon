@@ -13,6 +13,7 @@ spec:
       labels:
         app: mosquitto
     spec:
+      serviceAccountName: mosquitto
       initContainers:
         - name: init-passwd
           image: docker.io/eclipse-mosquitto:PLACEHOLDER_TAG

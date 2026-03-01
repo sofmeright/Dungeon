@@ -3,6 +3,7 @@ kind: Kustomization
 resources:
   - statefulset.yaml
   - service.yaml
+  - serviceaccount.yaml
   - configmap.yaml
   - configmap-external-converters.yaml
   - externalsecret.yaml

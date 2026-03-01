@@ -13,6 +13,7 @@ spec:
       labels:
         app: ark-sa-tmc-theisland
     spec:
+      serviceAccountName: ark-sa-tmc-theisland
       enableServiceLinks: false
       imagePullSecrets:
         - name: jcr-pcfae-dungeon-pull-secret

@@ -12,10 +12,10 @@ spec:
     name: ark-sa-tmc-admin-list-source
     creationPolicy: Owner
   data:
-  - secretKey: AdminListURL
-    remoteRef:
-      key: apps/ark-sa-tmc
-      property: AdminListURL
+    - secretKey: AdminListURL
+      remoteRef:
+        key: apps/ark-sa-tmc
+        property: AdminListURL
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -155,31 +155,32 @@ spec:
       annotations:
         vault-data-version: "1"
     spec:
+      serviceAccountName: ark-sa-tmc-admin-list-server
       containers:
-      - name: nginx
-        image: docker.io/library/nginx:alpine
-        ports:
-        - containerPort: 80
-          name: http
-        volumeMounts:
-        - name: nginx-conf
-          mountPath: /etc/nginx/nginx.conf
-          subPath: nginx.conf
-        - name: njs-script
-          mountPath: /etc/nginx/njs
-        - name: vault-data
-          mountPath: /vault-data
-          readOnly: true
+        - name: nginx
+          image: docker.io/library/nginx:alpine
+          ports:
+            - containerPort: 80
+              name: http
+          volumeMounts:
+            - name: nginx-conf
+              mountPath: /etc/nginx/nginx.conf
+              subPath: nginx.conf
+            - name: njs-script
+              mountPath: /etc/nginx/njs
+            - name: vault-data
+              mountPath: /vault-data
+              readOnly: true
       volumes:
-      - name: nginx-conf
-        configMap:
-          name: ark-sa-tmc-admin-list-nginx-conf
-      - name: njs-script
-        configMap:
-          name: ark-sa-tmc-admin-list-njs
-      - name: vault-data
-        secret:
-          secretName: ark-sa-tmc-admin-list-source
+        - name: nginx-conf
+          configMap:
+            name: ark-sa-tmc-admin-list-nginx-conf
+        - name: njs-script
+          configMap:
+            name: ark-sa-tmc-admin-list-njs
+        - name: vault-data
+          secret:
+            secretName: ark-sa-tmc-admin-list-source
 ---
 apiVersion: v1
 kind: Service
@@ -193,7 +194,7 @@ spec:
   selector:
     app: ark-sa-tmc-admin-list-server
   ports:
-  - port: 28019
-    targetPort: 80
-    protocol: TCP
-    name: http
+    - port: 28019
+      targetPort: 80
+      protocol: TCP
+      name: http

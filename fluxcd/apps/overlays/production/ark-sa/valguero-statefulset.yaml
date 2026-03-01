@@ -13,6 +13,7 @@ spec:
       labels:
         app: ark-sa-tmc-valguero
     spec:
+      serviceAccountName: ark-sa-tmc-valguero
       enableServiceLinks: false
       imagePullSecrets:
         - name: jcr-pcfae-dungeon-pull-secret

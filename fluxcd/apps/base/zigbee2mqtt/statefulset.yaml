@@ -13,6 +13,7 @@ spec:
       labels:
         app: zigbee2mqtt
     spec:
+      serviceAccountName: zigbee2mqtt
       initContainers:
         - name: seed-config
           image: docker.io/busybox:PLACEHOLDER_TAG
