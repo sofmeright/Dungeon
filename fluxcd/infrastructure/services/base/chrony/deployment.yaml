@@ -12,6 +12,7 @@ spec:
       labels:
         app: chrony
     spec:
+      serviceAccountName: chrony
       containers:
         - name: chrony
           image: PLACEHOLDER_IMAGE

@@ -14,6 +14,7 @@ spec:
       labels:
         app: yesimvegan-site
     spec:
+      serviceAccountName: yesimvegan-site
       containers:
         - name: yesimvegan-site
           image: PLACEHOLDER_IMAGE

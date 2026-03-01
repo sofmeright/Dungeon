@@ -21,6 +21,7 @@ spec:
         runAsUser: 1000
         runAsGroup: 1000
         fsGroup: 1000
+      serviceAccountName: prometheus-exporter-eaton-ups
       containers:
         - name: exporter
           image: PLACEHOLDER_IMAGE

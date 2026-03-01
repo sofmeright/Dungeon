@@ -12,6 +12,7 @@ spec:
       labels:
         app: supermicro-license-generator
     spec:
+      serviceAccountName: supermicro-license-generator
       containers:
         - name: supermicro-license-generator
           image: PLACEHOLDER_IMAGE

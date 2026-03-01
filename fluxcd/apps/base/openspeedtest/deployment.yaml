@@ -12,6 +12,7 @@ spec:
       labels:
         app: openspeedtest
     spec:
+      serviceAccountName: openspeedtest
       imagePullSecrets:
         - name: PLACEHOLDER_IMAGE_PULL_SECRET
       containers:

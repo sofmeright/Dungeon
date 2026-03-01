@@ -15,6 +15,7 @@ spec:
         prometheus.io/scrape: "true"
         prometheus.io/port: "9221"
     spec:
+      serviceAccountName: prometheus-exporter-pve
       containers:
         - name: exporter
           image: PLACEHOLDER_IMAGE

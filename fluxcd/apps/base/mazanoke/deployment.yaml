@@ -14,17 +14,18 @@ spec:
       labels:
         app: mazanoke
     spec:
+      serviceAccountName: mazanoke
       containers:
-      - name: mazanoke
-        image: ghcr.io/civilblur/mazanoke:v1.1.5
-        ports:
-        - name: http
-          containerPort: 80
-          protocol: TCP
-        resources:
-          requests:
-            cpu: 10m
-            memory: 32Mi
-          limits:
-            cpu: 500m
-            memory: 128Mi
+        - name: mazanoke
+          image: ghcr.io/civilblur/mazanoke:v1.1.5
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
+          resources:
+            requests:
+              cpu: 10m
+              memory: 32Mi
+            limits:
+              cpu: 500m
+              memory: 128Mi

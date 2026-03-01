@@ -14,6 +14,7 @@ spec:
       labels:
         app: fairer-pages
     spec:
+      serviceAccountName: fairer-pages
       containers:
         - name: fairer-pages
           image: docker.io/prplanit/fairer-pages:v0.0.14

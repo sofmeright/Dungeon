@@ -12,48 +12,49 @@ spec:
       labels:
         app: anubis
     spec:
+      serviceAccountName: anubis
       containers:
-      - name: anubis
-        image: PLACEHOLDER_ANUBIS_IMAGE
-        ports:
-        - containerPort: 8080
-          name: http
-        - containerPort: 9090
-          name: metrics
-        env:
-        - name: BIND
-          value: ":8080"
-        - name: DIFFICULTY
-          value: PLACEHOLDER_DIFFICULTY
-        - name: METRICS_BIND
-          value: ":9090"
-        - name: SERVE_ROBOTS_TXT
-          value: PLACEHOLDER_SERVE_ROBOTS
-        - name: TARGET
-          value: PLACEHOLDER_TARGET
-        - name: POLICY_FNAME
-          value: "/data/cfg/botPolicy.json"
-        - name: OG_PASSTHROUGH
-          value: PLACEHOLDER_OG_PASSTHROUGH
-        - name: OG_EXPIRY_TIME
-          value: PLACEHOLDER_OG_EXPIRY_TIME
-        - name: ED25519_PRIVATE_KEY_HEX
-          valueFrom:
-            secretKeyRef:
-              name: anubis-secrets
-              key: ed25519_key
-        volumeMounts:
-        - name: bot-policy
-          mountPath: /data/cfg
-          readOnly: true
-        resources:
-          requests:
-            memory: PLACEHOLDER_MEMORY_REQUEST
-            cpu: PLACEHOLDER_CPU_REQUEST
-          limits:
-            memory: PLACEHOLDER_MEMORY_LIMIT
-            cpu: PLACEHOLDER_CPU_LIMIT
+        - name: anubis
+          image: PLACEHOLDER_ANUBIS_IMAGE
+          ports:
+            - containerPort: 8080
+              name: http
+            - containerPort: 9090
+              name: metrics
+          env:
+            - name: BIND
+              value: ":8080"
+            - name: DIFFICULTY
+              value: PLACEHOLDER_DIFFICULTY
+            - name: METRICS_BIND
+              value: ":9090"
+            - name: SERVE_ROBOTS_TXT
+              value: PLACEHOLDER_SERVE_ROBOTS
+            - name: TARGET
+              value: PLACEHOLDER_TARGET
+            - name: POLICY_FNAME
+              value: "/data/cfg/botPolicy.json"
+            - name: OG_PASSTHROUGH
+              value: PLACEHOLDER_OG_PASSTHROUGH
+            - name: OG_EXPIRY_TIME
+              value: PLACEHOLDER_OG_EXPIRY_TIME
+            - name: ED25519_PRIVATE_KEY_HEX
+              valueFrom:
+                secretKeyRef:
+                  name: anubis-secrets
+                  key: ed25519_key
+          volumeMounts:
+            - name: bot-policy
+              mountPath: /data/cfg
+              readOnly: true
+          resources:
+            requests:
+              memory: PLACEHOLDER_MEMORY_REQUEST
+              cpu: PLACEHOLDER_CPU_REQUEST
+            limits:
+              memory: PLACEHOLDER_MEMORY_LIMIT
+              cpu: PLACEHOLDER_CPU_LIMIT
       volumes:
-      - name: bot-policy
-        configMap:
-          name: anubis-bot-policy
+        - name: bot-policy
+          configMap:
+            name: anubis-bot-policy

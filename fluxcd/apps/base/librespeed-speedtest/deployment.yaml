@@ -12,6 +12,7 @@ spec:
       labels:
         app: librespeed-speedtest
     spec:
+      serviceAccountName: librespeed-speedtest
       containers:
         - name: librespeed-speedtest
           image: PLACEHOLDER_IMAGE

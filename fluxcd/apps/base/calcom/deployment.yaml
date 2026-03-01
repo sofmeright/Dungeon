@@ -12,6 +12,7 @@ spec:
       labels:
         app: calcom
     spec:
+      serviceAccountName: calcom
       containers:
         - name: calcom
           image: PLACEHOLDER_IMAGE

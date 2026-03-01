@@ -12,32 +12,33 @@ spec:
       labels:
         app: graphite-exporter-truenas
     spec:
+      serviceAccountName: graphite-exporter-truenas
       containers:
-      - name: graphite-exporter
-        image: PLACEHOLDER_IMAGE
-        args:
-          - '--graphite.mapping-config=/etc/graphite_mappings.yaml'
-          - '--graphite.listen-address=:2003'
-        ports:
-        - containerPort: 2003
-          name: graphite
-          protocol: TCP
-        - containerPort: 9108
-          name: metrics
-          protocol: TCP
-        volumeMounts:
-        - name: config
-          mountPath: /etc/graphite_mappings.yaml
-          subPath: graphite_mappings.yaml
-          readOnly: true
-        resources:
-          requests:
-            cpu: PLACEHOLDER_CPU
-            memory: PLACEHOLDER_MEMORY
-          limits:
-            cpu: PLACEHOLDER_CPU_LIMIT
-            memory: PLACEHOLDER_MEMORY_LIMIT
+        - name: graphite-exporter
+          image: PLACEHOLDER_IMAGE
+          args:
+            - '--graphite.mapping-config=/etc/graphite_mappings.yaml'
+            - '--graphite.listen-address=:2003'
+          ports:
+            - containerPort: 2003
+              name: graphite
+              protocol: TCP
+            - containerPort: 9108
+              name: metrics
+              protocol: TCP
+          volumeMounts:
+            - name: config
+              mountPath: /etc/graphite_mappings.yaml
+              subPath: graphite_mappings.yaml
+              readOnly: true
+          resources:
+            requests:
+              cpu: PLACEHOLDER_CPU
+              memory: PLACEHOLDER_MEMORY
+            limits:
+              cpu: PLACEHOLDER_CPU_LIMIT
+              memory: PLACEHOLDER_MEMORY_LIMIT
       volumes:
-      - name: config
-        configMap:
-          name: graphite-mappings-truenas
+        - name: config
+          configMap:
+            name: graphite-mappings-truenas

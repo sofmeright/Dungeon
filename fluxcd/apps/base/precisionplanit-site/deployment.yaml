@@ -14,6 +14,7 @@ spec:
       labels:
         app: precisionplanit-site
     spec:
+      serviceAccountName: precisionplanit-site
       containers:
         - name: precisionplanit-site
           image: PLACEHOLDER_IMAGE
