@@ -9,7 +9,6 @@ spec:
     runAsGroup: 1000
     fsGroup: 1000
   kubernetesConfig:
-    serviceAccountName: zitadel-redis
     image: quay.io/opstree/redis:v7.4.7
     imagePullPolicy: IfNotPresent
     redisSecret:

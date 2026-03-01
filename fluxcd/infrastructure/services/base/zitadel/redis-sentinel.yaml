@@ -9,7 +9,6 @@ spec:
     runAsGroup: 1000
     fsGroup: 1000
   kubernetesConfig:
-    serviceAccountName: zitadel-sentinel
     image: quay.io/opstree/redis-sentinel:v7.4.7
     imagePullPolicy: IfNotPresent
     redisSecret:
