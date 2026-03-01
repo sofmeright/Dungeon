@@ -15,6 +15,7 @@ spec:
       labels:
         app.kubernetes.io/name: ntfy
     spec:
+      serviceAccountName: ntfy
       containers:
         - name: ntfy
           image: binwiederhier/ntfy:PLACEHOLDER_VERSION

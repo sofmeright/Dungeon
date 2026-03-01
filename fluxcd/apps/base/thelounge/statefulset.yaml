@@ -13,6 +13,7 @@ spec:
       labels:
         app: thelounge
     spec:
+      serviceAccountName: thelounge
       containers:
         - name: thelounge
           image: ghcr.io/thelounge/thelounge:PLACEHOLDER_IMAGE_TAG

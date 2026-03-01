@@ -13,100 +13,101 @@ spec:
       labels:
         app: ark-se-tmc
     spec:
+      serviceAccountName: ark-se-tmc
       enableServiceLinks: false
       securityContext:
         fsGroup: 1001
       containers:
-      - name: theisland
-        image: docker.io/drpsychick/arkserver:latest-v1.6.62
-        ports:
-        - containerPort: 7797
-          protocol: UDP
-          name: game-udp
-        - containerPort: 7797
-          protocol: TCP
-          name: game-tcp
-        - containerPort: 27057
-          protocol: UDP
-          name: query-udp
-        - containerPort: 27057
-          protocol: TCP
-          name: query-tcp
-        - containerPort: 27095
-          protocol: TCP
-          name: rcon
-        env:
-        - name: am_ark_SessionName
-          value: "ARK Server - The Island"
-        - name: am_serverMap
-          value: TheIsland
-        - name: am_ark_QueryPort
-          value: "27057"
-        - name: am_ark_Port
-          value: "7797"
-        - name: am_ark_RCONPort
-          value: "27095"
-        - name: am_arkNoPortDecrement
-          value: "true"
-        - name: am_ark_MaxPlayers
-          value: "10"
-        - name: am_arkAutoUpdateOnStart
-          value: "true"
-        - name: ARKCLUSTER
-          value: "true"
-        - name: am_arkflag_ForceAllowCaveFlyers
-          value: "true"
-        - name: am_arkflag_crossplay
-          value: "true"
-        - name: ARKSERVER_SHARED
-          value: "/arkserver"
-        resources:
-          limits:
-            memory: 16Gi
-          requests:
-            memory: 12Gi
-            cpu: 2000m
-        stdin: true
-        tty: true
-        volumeMounts:
-        - name: ark-data
-          mountPath: /ark
-        - name: ark-saved
-          mountPath: /arkserver/ShooterGame/Saved
-        - name: ark-cluster
-          mountPath: /arkserver/ShooterGame/Saved/clusters
-        - name: ark-serverfiles
-          mountPath: /arkserver
+        - name: theisland
+          image: docker.io/drpsychick/arkserver:latest-v1.6.62
+          ports:
+            - containerPort: 7797
+              protocol: UDP
+              name: game-udp
+            - containerPort: 7797
+              protocol: TCP
+              name: game-tcp
+            - containerPort: 27057
+              protocol: UDP
+              name: query-udp
+            - containerPort: 27057
+              protocol: TCP
+              name: query-tcp
+            - containerPort: 27095
+              protocol: TCP
+              name: rcon
+          env:
+            - name: am_ark_SessionName
+              value: "ARK Server - The Island"
+            - name: am_serverMap
+              value: TheIsland
+            - name: am_ark_QueryPort
+              value: "27057"
+            - name: am_ark_Port
+              value: "7797"
+            - name: am_ark_RCONPort
+              value: "27095"
+            - name: am_arkNoPortDecrement
+              value: "true"
+            - name: am_ark_MaxPlayers
+              value: "10"
+            - name: am_arkAutoUpdateOnStart
+              value: "true"
+            - name: ARKCLUSTER
+              value: "true"
+            - name: am_arkflag_ForceAllowCaveFlyers
+              value: "true"
+            - name: am_arkflag_crossplay
+              value: "true"
+            - name: ARKSERVER_SHARED
+              value: "/arkserver"
+          resources:
+            limits:
+              memory: 16Gi
+            requests:
+              memory: 12Gi
+              cpu: 2000m
+          stdin: true
+          tty: true
+          volumeMounts:
+            - name: ark-data
+              mountPath: /ark
+            - name: ark-saved
+              mountPath: /arkserver/ShooterGame/Saved
+            - name: ark-cluster
+              mountPath: /arkserver/ShooterGame/Saved/clusters
+            - name: ark-serverfiles
+              mountPath: /arkserver
   volumeClaimTemplates:
-  - metadata:
-      name: ark-data
-    spec:
-      accessModes:
-      - ReadWriteOnce
-      resources:
-        requests:
-          storage: 50Gi
-  - metadata:
-      name: ark-saved
-    spec:
-      accessModes:
-      - ReadWriteOnce
-      resources:
-        requests:
-          storage: 50Gi
-  - metadata:
-      name: ark-cluster
-    spec:
-      accessModes:
-      - ReadWriteOnce
-      resources:
-        requests:
-          storage: 20Gi
-  - metadata:
-      name: ark-serverfiles
-    spec:
-      accessModes:
-      - ReadWriteOnce
-      resources:
-        requests:
-          storage: 250Gi
+    - metadata:
+        name: ark-data
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 50Gi
+    - metadata:
+        name: ark-saved
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 50Gi
+    - metadata:
+        name: ark-cluster
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 20Gi
+    - metadata:
+        name: ark-serverfiles
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 250Gi

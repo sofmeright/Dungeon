@@ -13,171 +13,172 @@ spec:
       labels:
         app: immich
     spec:
+      serviceAccountName: immich
       enableServiceLinks: false
       initContainers:
-      - name: fix-library-permissions
-        image: docker.io/library/busybox:latest
-        command:
-        - sh
-        - -c
-        - chown -R 1000:1000 /usr/src/app/upload && chmod -R 755 /usr/src/app/upload
-        volumeMounts:
-        - name: library
-          mountPath: /usr/src/app/upload
-      - name: fix-postgres-permissions
-        image: docker.io/library/busybox:latest
-        command:
-        - sh
-        - -c
-        - chown -R 999:999 /var/lib/postgresql/data && chmod -R 700 /var/lib/postgresql/data
-        volumeMounts:
-        - name: postgres
-          mountPath: /var/lib/postgresql/data
+        - name: fix-library-permissions
+          image: docker.io/library/busybox:latest
+          command:
+            - sh
+            - -c
+            - chown -R 1000:1000 /usr/src/app/upload && chmod -R 755 /usr/src/app/upload
+          volumeMounts:
+            - name: library
+              mountPath: /usr/src/app/upload
+        - name: fix-postgres-permissions
+          image: docker.io/library/busybox:latest
+          command:
+            - sh
+            - -c
+            - chown -R 999:999 /var/lib/postgresql/data && chmod -R 700 /var/lib/postgresql/data
+          volumeMounts:
+            - name: postgres
+              mountPath: /var/lib/postgresql/data
       containers:
-      - name: immich-server
-        image: ghcr.io/immich-app/immich-server:v2.5.6
-        ports:
-        - containerPort: 2283
-          name: http
-        env:
-        - name: IMMICH_PORT
-          value: "2283"
-        - name: DB_HOSTNAME
-          value: localhost
-        - name: DB_PORT
-          value: "5432"
-        - name: DB_USERNAME
-          valueFrom:
-            secretKeyRef:
-              name: immich-db
-              key: username
-        - name: DB_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: immich-db
-              key: password
-        - name: DB_DATABASE_NAME
-          valueFrom:
-            secretKeyRef:
-              name: immich-db
-              key: database
-        - name: REDIS_HOSTNAME
-          value: localhost
-        - name: REDIS_PORT
-          value: "6379"
-        - name: NVIDIA_VISIBLE_DEVICES
-          value: "all"
-        - name: NVIDIA_DRIVER_CAPABILITIES
-          value: "all"
-        resources:
-          limits:
-            nvidia.com/gpu: 1
-        volumeMounts:
-        - name: library
-          mountPath: /usr/src/app/upload
-      - name: immich-machine-learning
-        image: ghcr.io/immich-app/immich-machine-learning:v2.5.0-cuda
-        env:
-        - name: DB_HOSTNAME
-          value: localhost
-        - name: DB_USERNAME
-          valueFrom:
-            secretKeyRef:
-              name: immich-db
-              key: username
-        - name: DB_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: immich-db
-              key: password
-        - name: DB_DATABASE_NAME
-          valueFrom:
-            secretKeyRef:
-              name: immich-db
-              key: database
-        - name: REDIS_HOSTNAME
-          value: localhost
-        - name: NVIDIA_VISIBLE_DEVICES
-          value: "all"
-        - name: NVIDIA_DRIVER_CAPABILITIES
-          value: "all"
-        resources:
-          limits:
-            nvidia.com/gpu: 1
-        volumeMounts:
-        - name: model-cache
-          mountPath: /cache
-      - name: redis
-        image: docker.io/library/redis:6.2-alpine
-        ports:
-        - containerPort: 6379
-          name: redis
-      - name: postgres
-        image: docker.io/tensorchord/pgvecto-rs:pg14-v0.2.0
-        securityContext:
-          runAsUser: 999
-          runAsGroup: 999
-        args:
-        - -c
-        - shared_preload_libraries=vectors.so
-        - -c
-        - search_path="$user", public, vectors
-        - -c
-        - logging_collector=on
-        - -c
-        - max_wal_size=2GB
-        - -c
-        - shared_buffers=512MB
-        - -c
-        - wal_compression=on
-        env:
-        - name: POSTGRES_DB
-          valueFrom:
-            secretKeyRef:
-              name: immich-db
-              key: database
-        - name: POSTGRES_USER
-          valueFrom:
-            secretKeyRef:
-              name: immich-db
-              key: username
-        - name: POSTGRES_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: immich-db
-              key: password
-        - name: POSTGRES_INITDB_ARGS
-          value: "--data-checksums"
-        - name: PGDATA
-          value: "/var/lib/postgresql/data/pgdata"
-        ports:
-        - containerPort: 5432
-          name: postgres
-        volumeMounts:
+        - name: immich-server
+          image: ghcr.io/immich-app/immich-server:v2.5.6
+          ports:
+            - containerPort: 2283
+              name: http
+          env:
+            - name: IMMICH_PORT
+              value: "2283"
+            - name: DB_HOSTNAME
+              value: localhost
+            - name: DB_PORT
+              value: "5432"
+            - name: DB_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: immich-db
+                  key: username
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: immich-db
+                  key: password
+            - name: DB_DATABASE_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: immich-db
+                  key: database
+            - name: REDIS_HOSTNAME
+              value: localhost
+            - name: REDIS_PORT
+              value: "6379"
+            - name: NVIDIA_VISIBLE_DEVICES
+              value: "all"
+            - name: NVIDIA_DRIVER_CAPABILITIES
+              value: "all"
+          resources:
+            limits:
+              nvidia.com/gpu: 1
+          volumeMounts:
+            - name: library
+              mountPath: /usr/src/app/upload
+        - name: immich-machine-learning
+          image: ghcr.io/immich-app/immich-machine-learning:v2.5.0-cuda
+          env:
+            - name: DB_HOSTNAME
+              value: localhost
+            - name: DB_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: immich-db
+                  key: username
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: immich-db
+                  key: password
+            - name: DB_DATABASE_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: immich-db
+                  key: database
+            - name: REDIS_HOSTNAME
+              value: localhost
+            - name: NVIDIA_VISIBLE_DEVICES
+              value: "all"
+            - name: NVIDIA_DRIVER_CAPABILITIES
+              value: "all"
+          resources:
+            limits:
+              nvidia.com/gpu: 1
+          volumeMounts:
+            - name: model-cache
+              mountPath: /cache
+        - name: redis
+          image: docker.io/library/redis:6.2-alpine
+          ports:
+            - containerPort: 6379
+              name: redis
         - name: postgres
-          mountPath: /var/lib/postgresql/data
+          image: docker.io/tensorchord/pgvecto-rs:pg14-v0.2.0
+          securityContext:
+            runAsUser: 999
+            runAsGroup: 999
+          args:
+            - -c
+            - shared_preload_libraries=vectors.so
+            - -c
+            - search_path="$user", public, vectors
+            - -c
+            - logging_collector=on
+            - -c
+            - max_wal_size=2GB
+            - -c
+            - shared_buffers=512MB
+            - -c
+            - wal_compression=on
+          env:
+            - name: POSTGRES_DB
+              valueFrom:
+                secretKeyRef:
+                  name: immich-db
+                  key: database
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: immich-db
+                  key: username
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: immich-db
+                  key: password
+            - name: POSTGRES_INITDB_ARGS
+              value: "--data-checksums"
+            - name: PGDATA
+              value: "/var/lib/postgresql/data/pgdata"
+          ports:
+            - containerPort: 5432
+              name: postgres
+          volumeMounts:
+            - name: postgres
+              mountPath: /var/lib/postgresql/data
   volumeClaimTemplates:
-  - metadata:
-      name: library
-    spec:
-      accessModes:
-      - ReadWriteOnce
-      resources:
-        requests:
-          storage: 100Gi
-  - metadata:
-      name: model-cache
-    spec:
-      accessModes:
-      - ReadWriteOnce
-      resources:
-        requests:
-          storage: 10Gi
-  - metadata:
-      name: postgres
-    spec:
-      accessModes:
-      - ReadWriteOnce
-      resources:
-        requests:
-          storage: 20Gi
+    - metadata:
+        name: library
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 100Gi
+    - metadata:
+        name: model-cache
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 10Gi
+    - metadata:
+        name: postgres
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 20Gi

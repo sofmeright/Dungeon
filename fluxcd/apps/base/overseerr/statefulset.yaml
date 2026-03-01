@@ -13,6 +13,7 @@ spec:
       labels:
         app: overseerr
     spec:
+      serviceAccountName: overseerr
       containers:
         - name: overseerr
           image: docker.io/sctx/overseerr:PLACEHOLDER_IMAGE_TAG

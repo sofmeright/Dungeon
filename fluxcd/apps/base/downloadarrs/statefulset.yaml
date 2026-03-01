@@ -13,6 +13,7 @@ spec:
       labels:
         app: downloadarrs
     spec:
+      serviceAccountName: downloadarrs
       initContainers:
         - name: cross-seed-config-init
           image: docker.io/busybox:latest

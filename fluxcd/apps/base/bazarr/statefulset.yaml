@@ -13,6 +13,7 @@ spec:
       labels:
         app: bazarr
     spec:
+      serviceAccountName: bazarr
       containers:
         - name: bazarr
           image: docker.io/linuxserver/bazarr:PLACEHOLDER_IMAGE_TAG

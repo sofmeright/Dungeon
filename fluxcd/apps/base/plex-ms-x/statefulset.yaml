@@ -13,78 +13,79 @@ spec:
       labels:
         app: plex-ms-x
     spec:
+      serviceAccountName: plex-ms-x
       runtimeClassName: nvidia
       containers:
-      - name: plex-ms-x
-        image: PLACEHOLDER_IMAGE
-        env:
-        - name: ADVERTISE_IP
-          value: "PLEX_ADVERTISE_IP_PLACEHOLDER"
-        - name: CHANGE_CONFIG_DIR_OWNERSHIP
-          value: "false"
-        - name: PUID
-          value: "2343"
-        - name: PGID
-          value: "3007"
-        - name: TZ
-          value: "America/Los_Angeles"
-        - name: NVIDIA_VISIBLE_DEVICES
-          value: "all"
-        - name: NVIDIA_DRIVER_CAPABILITIES
-          value: "all"
-        - name: PLEX_CLAIM
-          valueFrom:
-            secretKeyRef:
-              name: plex-ms-x-claim
-              key: claim
-              optional: true
-        ports:
-        - containerPort: 32400
-          name: plex
-          protocol: TCP
-        - containerPort: 8324
-          name: roku-companion
-          protocol: TCP
-        - containerPort: 32469
-          name: dlna
-          protocol: TCP
-        - containerPort: 1900
-          name: dlna-udp
-          protocol: UDP
-        - containerPort: 32410
-          name: gdm1
-          protocol: UDP
-        - containerPort: 32412
-          name: gdm2
-          protocol: UDP
-        - containerPort: 32413
-          name: gdm3
-          protocol: UDP
-        - containerPort: 32414
-          name: gdm4
-          protocol: UDP
-        volumeMounts:
-        - name: config
-          mountPath: /config
-        - name: transcode
-          mountPath: /transcode
-        - name: media-movies
-          mountPath: /media/Movies
-        - name: media-photos
-          mountPath: /media/Photos
-        resources:
-          requests:
-            memory: 2Gi
-            cpu: 1000m
-            nvidia.com/gpu: 1
-          limits:
-            memory: 8Gi
-            cpu: 4000m
-            nvidia.com/gpu: 1
+        - name: plex-ms-x
+          image: PLACEHOLDER_IMAGE
+          env:
+            - name: ADVERTISE_IP
+              value: "PLEX_ADVERTISE_IP_PLACEHOLDER"
+            - name: CHANGE_CONFIG_DIR_OWNERSHIP
+              value: "false"
+            - name: PUID
+              value: "2343"
+            - name: PGID
+              value: "3007"
+            - name: TZ
+              value: "America/Los_Angeles"
+            - name: NVIDIA_VISIBLE_DEVICES
+              value: "all"
+            - name: NVIDIA_DRIVER_CAPABILITIES
+              value: "all"
+            - name: PLEX_CLAIM
+              valueFrom:
+                secretKeyRef:
+                  name: plex-ms-x-claim
+                  key: claim
+                  optional: true
+          ports:
+            - containerPort: 32400
+              name: plex
+              protocol: TCP
+            - containerPort: 8324
+              name: roku-companion
+              protocol: TCP
+            - containerPort: 32469
+              name: dlna
+              protocol: TCP
+            - containerPort: 1900
+              name: dlna-udp
+              protocol: UDP
+            - containerPort: 32410
+              name: gdm1
+              protocol: UDP
+            - containerPort: 32412
+              name: gdm2
+              protocol: UDP
+            - containerPort: 32413
+              name: gdm3
+              protocol: UDP
+            - containerPort: 32414
+              name: gdm4
+              protocol: UDP
+          volumeMounts:
+            - name: config
+              mountPath: /config
+            - name: transcode
+              mountPath: /transcode
+            - name: media-movies
+              mountPath: /media/Movies
+            - name: media-photos
+              mountPath: /media/Photos
+          resources:
+            requests:
+              memory: 2Gi
+              cpu: 1000m
+              nvidia.com/gpu: 1
+            limits:
+              memory: 8Gi
+              cpu: 4000m
+              nvidia.com/gpu: 1
       volumes:
-      - name: media-movies
-        persistentVolumeClaim:
-          claimName: plex-ms-x-media-movies
-      - name: media-photos
-        persistentVolumeClaim:
-          claimName: plex-ms-x-media-photos
+        - name: media-movies
+          persistentVolumeClaim:
+            claimName: plex-ms-x-media-movies
+        - name: media-photos
+          persistentVolumeClaim:
+            claimName: plex-ms-x-media-photos

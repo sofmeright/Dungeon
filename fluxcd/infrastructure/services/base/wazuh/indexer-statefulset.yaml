@@ -13,74 +13,75 @@ spec:
       labels:
         app: wazuh-indexer
     spec:
+      serviceAccountName: wazuh-indexer
       hostname: wazuh-indexer
       securityContext:
         fsGroup: 1000
       containers:
-      - name: wazuh-indexer
-        image: PLACEHOLDER_IMAGE
-        ports:
-        - containerPort: 9200
-          name: http
-          protocol: TCP
-        envFrom:
-        - secretRef:
-            name: PLACEHOLDER_ENV_SECRET
-        securityContext:
-          capabilities:
-            add:
-            - IPC_LOCK
-            - SYS_RESOURCE
+        - name: wazuh-indexer
+          image: PLACEHOLDER_IMAGE
+          ports:
+            - containerPort: 9200
+              name: http
+              protocol: TCP
+          envFrom:
+            - secretRef:
+                name: PLACEHOLDER_ENV_SECRET
+          securityContext:
+            capabilities:
+              add:
+                - IPC_LOCK
+                - SYS_RESOURCE
+          resources:
+            requests:
+              cpu: PLACEHOLDER_CPU
+              memory: PLACEHOLDER_MEMORY
+            limits:
+              cpu: PLACEHOLDER_CPU_LIMIT
+              memory: PLACEHOLDER_MEMORY_LIMIT
+          volumeMounts:
+            - name: wazuh-indexer-data
+              mountPath: /var/lib/wazuh-indexer
+            - name: indexer-config
+              mountPath: /usr/share/wazuh-indexer/opensearch.yml
+              subPath: wazuh.indexer.yml
+            - name: indexer-config
+              mountPath: /usr/share/wazuh-indexer/opensearch-security/internal_users.yml
+              subPath: internal_users.yml
+            - name: indexer-security-config
+              mountPath: /etc/wazuh-indexer/opensearch-security/config.yml
+              subPath: config.yml
+            - name: ssl-certs
+              mountPath: /usr/share/wazuh-indexer/certs/root-ca.pem
+              subPath: root-ca.pem
+            - name: ssl-certs
+              mountPath: /usr/share/wazuh-indexer/certs/wazuh.indexer.key
+              subPath: wazuh.indexer-key.pem
+            - name: ssl-certs
+              mountPath: /usr/share/wazuh-indexer/certs/wazuh.indexer.pem
+              subPath: wazuh.indexer.pem
+            - name: ssl-certs
+              mountPath: /usr/share/wazuh-indexer/certs/admin.pem
+              subPath: admin.pem
+            - name: ssl-certs
+              mountPath: /usr/share/wazuh-indexer/certs/admin-key.pem
+              subPath: admin-key.pem
+      volumes:
+        - name: indexer-config
+          configMap:
+            name: PLACEHOLDER_INDEXER_CONFIG
+        - name: indexer-security-config
+          configMap:
+            name: PLACEHOLDER_INDEXER_SECURITY_CONFIG
+        - name: ssl-certs
+          secret:
+            secretName: PLACEHOLDER_SSL_SECRET
+  volumeClaimTemplates:
+    - metadata:
+        name: wazuh-indexer-data
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        storageClassName: PLACEHOLDER_STORAGE_CLASS
         resources:
           requests:
-            cpu: PLACEHOLDER_CPU
-            memory: PLACEHOLDER_MEMORY
-          limits:
-            cpu: PLACEHOLDER_CPU_LIMIT
-            memory: PLACEHOLDER_MEMORY_LIMIT
-        volumeMounts:
-        - name: wazuh-indexer-data
-          mountPath: /var/lib/wazuh-indexer
-        - name: indexer-config
-          mountPath: /usr/share/wazuh-indexer/opensearch.yml
-          subPath: wazuh.indexer.yml
-        - name: indexer-config
-          mountPath: /usr/share/wazuh-indexer/opensearch-security/internal_users.yml
-          subPath: internal_users.yml
-        - name: indexer-security-config
-          mountPath: /etc/wazuh-indexer/opensearch-security/config.yml
-          subPath: config.yml
-        - name: ssl-certs
-          mountPath: /usr/share/wazuh-indexer/certs/root-ca.pem
-          subPath: root-ca.pem
-        - name: ssl-certs
-          mountPath: /usr/share/wazuh-indexer/certs/wazuh.indexer.key
-          subPath: wazuh.indexer-key.pem
-        - name: ssl-certs
-          mountPath: /usr/share/wazuh-indexer/certs/wazuh.indexer.pem
-          subPath: wazuh.indexer.pem
-        - name: ssl-certs
-          mountPath: /usr/share/wazuh-indexer/certs/admin.pem
-          subPath: admin.pem
-        - name: ssl-certs
-          mountPath: /usr/share/wazuh-indexer/certs/admin-key.pem
-          subPath: admin-key.pem
-      volumes:
-      - name: indexer-config
-        configMap:
-          name: PLACEHOLDER_INDEXER_CONFIG
-      - name: indexer-security-config
-        configMap:
-          name: PLACEHOLDER_INDEXER_SECURITY_CONFIG
-      - name: ssl-certs
-        secret:
-          secretName: PLACEHOLDER_SSL_SECRET
-  volumeClaimTemplates:
-  - metadata:
-      name: wazuh-indexer-data
-    spec:
-      accessModes: ["ReadWriteOnce"]
-      storageClassName: PLACEHOLDER_STORAGE_CLASS
-      resources:
-        requests:
-          storage: PLACEHOLDER_STORAGE_SIZE
+            storage: PLACEHOLDER_STORAGE_SIZE

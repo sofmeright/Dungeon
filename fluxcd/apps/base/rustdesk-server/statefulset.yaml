@@ -13,6 +13,7 @@ spec:
       labels:
         app: rustdesk
     spec:
+      serviceAccountName: rustdesk
       containers:
         - name: hbbs
           image: PLACEHOLDER_IMAGE

@@ -13,6 +13,7 @@ spec:
       labels:
         app: byparr
     spec:
+      serviceAccountName: byparr
       containers:
         - name: byparr
           image: ghcr.io/thephaseless/byparr:PLACEHOLDER_IMAGE_TAG

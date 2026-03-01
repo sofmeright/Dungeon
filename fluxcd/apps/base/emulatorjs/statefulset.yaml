@@ -13,54 +13,55 @@ spec:
       labels:
         app: emulatorjs
     spec:
+      serviceAccountName: emulatorjs
       containers:
-      - name: emulatorjs
-        image: PLACEHOLDER_IMAGE
-        ports:
-        - containerPort: 3000
-          name: frontend
-          protocol: TCP
-        - containerPort: 80
-          name: http
-          protocol: TCP
-        - containerPort: 4001
-          name: ipfs
-          protocol: TCP
-        env:
-        - name: PUID
-          value: "1000"
-        - name: PGID
-          value: "1000"
-        - name: TZ
-          value: "Etc/UTC"
-        volumeMounts:
-        - name: config
-          mountPath: /config
-        - name: data
-          mountPath: /data
+        - name: emulatorjs
+          image: PLACEHOLDER_IMAGE
+          ports:
+            - containerPort: 3000
+              name: frontend
+              protocol: TCP
+            - containerPort: 80
+              name: http
+              protocol: TCP
+            - containerPort: 4001
+              name: ipfs
+              protocol: TCP
+          env:
+            - name: PUID
+              value: "1000"
+            - name: PGID
+              value: "1000"
+            - name: TZ
+              value: "Etc/UTC"
+          volumeMounts:
+            - name: config
+              mountPath: /config
+            - name: data
+              mountPath: /data
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "100m"
+            limits:
+              memory: "1Gi"
+              cpu: "1000m"
+  volumeClaimTemplates:
+    - metadata:
+        name: config
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        storageClassName: PLACEHOLDER_STORAGE_CLASS
         resources:
           requests:
-            memory: "256Mi"
-            cpu: "100m"
-          limits:
-            memory: "1Gi"
-            cpu: "1000m"
-  volumeClaimTemplates:
-  - metadata:
-      name: config
-    spec:
-      accessModes:
-        - ReadWriteOnce
-      storageClassName: PLACEHOLDER_STORAGE_CLASS
-      resources:
-        requests:
-          storage: PLACEHOLDER_CONFIG_STORAGE
-  - metadata:
-      name: data
-    spec:
-      accessModes:
-        - ReadWriteOnce
-      storageClassName: PLACEHOLDER_STORAGE_CLASS
-      resources:
-        requests:
-          storage: PLACEHOLDER_DATA_STORAGE
+            storage: PLACEHOLDER_CONFIG_STORAGE
+    - metadata:
+        name: data
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        storageClassName: PLACEHOLDER_STORAGE_CLASS
+        resources:
+          requests:
+            storage: PLACEHOLDER_DATA_STORAGE

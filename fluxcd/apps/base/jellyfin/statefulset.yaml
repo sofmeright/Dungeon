@@ -13,6 +13,7 @@ spec:
       labels:
         app: jellyfin
     spec:
+      serviceAccountName: jellyfin
       containers:
         - name: jellyfin
           image: docker.io/jellyfin/jellyfin:latest

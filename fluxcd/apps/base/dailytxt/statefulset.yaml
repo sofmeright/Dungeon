@@ -13,6 +13,7 @@ spec:
       labels:
         app: dailytxt
     spec:
+      serviceAccountName: dailytxt
       containers:
         - name: dailytxt
           image: PLACEHOLDER_IMAGE

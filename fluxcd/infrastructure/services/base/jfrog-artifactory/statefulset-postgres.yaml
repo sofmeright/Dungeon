@@ -13,47 +13,48 @@ spec:
       labels:
         app: jfrog-artifactory-postgres
     spec:
+      serviceAccountName: jfrog-artifactory-postgres
       containers:
-      - name: postgres
-        image: PLACEHOLDER_POSTGRES_IMAGE
-        ports:
-        - containerPort: 5433
-          name: postgres
-        env:
-        - name: PGPORT
-          value: "5433"
-        - name: POSTGRES_DB
-          valueFrom:
-            secretKeyRef:
-              name: jfrog-artifactory-secrets
-              key: POSTGRES_DB
-        - name: POSTGRES_USER
-          valueFrom:
-            secretKeyRef:
-              name: jfrog-artifactory-secrets
-              key: POSTGRES_USER
-        - name: POSTGRES_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: jfrog-artifactory-secrets
-              key: POSTGRES_PASSWORD
-        volumeMounts:
-        - name: PLACEHOLDER_POSTGRES_DATA
-          mountPath: /var/lib/postgresql/data
+        - name: postgres
+          image: PLACEHOLDER_POSTGRES_IMAGE
+          ports:
+            - containerPort: 5433
+              name: postgres
+          env:
+            - name: PGPORT
+              value: "5433"
+            - name: POSTGRES_DB
+              valueFrom:
+                secretKeyRef:
+                  name: jfrog-artifactory-secrets
+                  key: POSTGRES_DB
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: jfrog-artifactory-secrets
+                  key: POSTGRES_USER
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: jfrog-artifactory-secrets
+                  key: POSTGRES_PASSWORD
+          volumeMounts:
+            - name: PLACEHOLDER_POSTGRES_DATA
+              mountPath: /var/lib/postgresql/data
+          resources:
+            requests:
+              cpu: PLACEHOLDER_CPU_REQUEST
+              memory: PLACEHOLDER_MEMORY_REQUEST
+            limits:
+              cpu: PLACEHOLDER_CPU_LIMIT
+              memory: PLACEHOLDER_MEMORY_LIMIT
+  volumeClaimTemplates:
+    - metadata:
+        name: PLACEHOLDER_POSTGRES_DATA
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        storageClassName: PLACEHOLDER_STORAGE_CLASS
         resources:
           requests:
-            cpu: PLACEHOLDER_CPU_REQUEST
-            memory: PLACEHOLDER_MEMORY_REQUEST
-          limits:
-            cpu: PLACEHOLDER_CPU_LIMIT
-            memory: PLACEHOLDER_MEMORY_LIMIT
-  volumeClaimTemplates:
-  - metadata:
-      name: PLACEHOLDER_POSTGRES_DATA
-    spec:
-      accessModes:
-      - ReadWriteOnce
-      storageClassName: PLACEHOLDER_STORAGE_CLASS
-      resources:
-        requests:
-          storage: PLACEHOLDER_STORAGE_SIZE
+            storage: PLACEHOLDER_STORAGE_SIZE

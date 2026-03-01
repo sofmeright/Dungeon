@@ -13,49 +13,50 @@ spec:
       labels:
         app: apt-cacher-ng
     spec:
+      serviceAccountName: apt-cacher-ng
       initContainers:
-      - name: init
-        image: PLACEHOLDER_IMAGE
-        command: ["true"]
+        - name: init
+          image: PLACEHOLDER_IMAGE
+          command: ["true"]
       containers:
-      - name: apt-cacher-ng
-        image: PLACEHOLDER_IMAGE
-        ports:
-        - containerPort: 3142
-          name: http
-        env:
-        - name: MAX_THREADS
-          value: PLACEHOLDER_MAX_THREADS
-        - name: NETWORK_TIMEOUT
-          value: PLACEHOLDER_NETWORK_TIMEOUT
-        resources:
-          limits:
-            memory: PLACEHOLDER_MEMORY_LIMIT
-            cpu: PLACEHOLDER_CPU_LIMIT
-          requests:
-            memory: PLACEHOLDER_MEMORY_REQUEST
-            cpu: PLACEHOLDER_CPU_REQUEST
-        volumeMounts:
-        - name: compass-apt-cacher-ng-cache
-          mountPath: /var/cache/apt-cacher-ng
-        - name: compass-apt-cacher-ng-logs
-          mountPath: /var/log/apt-cacher-ng
+        - name: apt-cacher-ng
+          image: PLACEHOLDER_IMAGE
+          ports:
+            - containerPort: 3142
+              name: http
+          env:
+            - name: MAX_THREADS
+              value: PLACEHOLDER_MAX_THREADS
+            - name: NETWORK_TIMEOUT
+              value: PLACEHOLDER_NETWORK_TIMEOUT
+          resources:
+            limits:
+              memory: PLACEHOLDER_MEMORY_LIMIT
+              cpu: PLACEHOLDER_CPU_LIMIT
+            requests:
+              memory: PLACEHOLDER_MEMORY_REQUEST
+              cpu: PLACEHOLDER_CPU_REQUEST
+          volumeMounts:
+            - name: compass-apt-cacher-ng-cache
+              mountPath: /var/cache/apt-cacher-ng
+            - name: compass-apt-cacher-ng-logs
+              mountPath: /var/log/apt-cacher-ng
   volumeClaimTemplates:
-  - metadata:
-      name: compass-apt-cacher-ng-cache
-    spec:
-      accessModes:
-      - ReadWriteOnce
-      storageClassName: PLACEHOLDER_STORAGE_CLASS
-      resources:
-        requests:
-          storage: PLACEHOLDER_CACHE_STORAGE_SIZE
-  - metadata:
-      name: compass-apt-cacher-ng-logs
-    spec:
-      accessModes:
-      - ReadWriteOnce
-      storageClassName: PLACEHOLDER_STORAGE_CLASS
-      resources:
-        requests:
-          storage: PLACEHOLDER_LOGS_STORAGE_SIZE
+    - metadata:
+        name: compass-apt-cacher-ng-cache
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        storageClassName: PLACEHOLDER_STORAGE_CLASS
+        resources:
+          requests:
+            storage: PLACEHOLDER_CACHE_STORAGE_SIZE
+    - metadata:
+        name: compass-apt-cacher-ng-logs
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        storageClassName: PLACEHOLDER_STORAGE_CLASS
+        resources:
+          requests:
+            storage: PLACEHOLDER_LOGS_STORAGE_SIZE

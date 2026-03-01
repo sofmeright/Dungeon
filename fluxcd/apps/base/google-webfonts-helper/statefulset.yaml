@@ -13,22 +13,23 @@ spec:
       labels:
         app: google-webfonts-helper
     spec:
+      serviceAccountName: google-webfonts-helper
       containers:
-      - name: google-webfonts-helper
-        image: PLACEHOLDER_IMAGE
-        ports:
-        - containerPort: 8080
-          name: http
-        env:
-        - name: GOOGLE_FONTS_API_KEY
-          valueFrom:
-            secretKeyRef:
-              name: google-webfonts-helper-secrets
-              key: GOOGLE_FONTS_API_KEY
-        resources:
-          requests:
-            cpu: PLACEHOLDER_CPU_REQUEST
-            memory: PLACEHOLDER_MEMORY_REQUEST
-          limits:
-            cpu: PLACEHOLDER_CPU_LIMIT
-            memory: PLACEHOLDER_MEMORY_LIMIT
+        - name: google-webfonts-helper
+          image: PLACEHOLDER_IMAGE
+          ports:
+            - containerPort: 8080
+              name: http
+          env:
+            - name: GOOGLE_FONTS_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: google-webfonts-helper-secrets
+                  key: GOOGLE_FONTS_API_KEY
+          resources:
+            requests:
+              cpu: PLACEHOLDER_CPU_REQUEST
+              memory: PLACEHOLDER_MEMORY_REQUEST
+            limits:
+              cpu: PLACEHOLDER_CPU_LIMIT
+              memory: PLACEHOLDER_MEMORY_LIMIT

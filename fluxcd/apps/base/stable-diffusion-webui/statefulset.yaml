@@ -13,6 +13,7 @@ spec:
       labels:
         app: stable-diffusion-webui
     spec:
+      serviceAccountName: stable-diffusion-webui
       containers:
         - name: webui
           image: PLACEHOLDER_IMAGE

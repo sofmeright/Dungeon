@@ -13,6 +13,7 @@ spec:
       labels:
         app: nutify
     spec:
+      serviceAccountName: nutify
       containers:
         - name: nutify
           image: cr.pcfae.com/prplanit/nutify-ssh@sha256:2566846f241b14668fa90a9fff43cddaa90c6ee0f6886447b82bd8bac3882063

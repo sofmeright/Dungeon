@@ -13,6 +13,7 @@ spec:
       labels:
         app: faster-whisper
     spec:
+      serviceAccountName: faster-whisper
       containers:
         - name: faster-whisper
           image: docker.io/linuxserver/faster-whisper:gpu

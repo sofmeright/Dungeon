@@ -13,6 +13,7 @@ spec:
       labels:
         app: filebrowser
     spec:
+      serviceAccountName: filebrowser
       securityContext:
         fsGroup: 1000
       containers:

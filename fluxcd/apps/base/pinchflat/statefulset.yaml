@@ -13,6 +13,7 @@ spec:
       labels:
         app: pinchflat
     spec:
+      serviceAccountName: pinchflat
       securityContext:
         fsGroup: 3141
       containers:

@@ -17,36 +17,37 @@ spec:
         app: crowdsec-dashboard
         component: dashboard
     spec:
+      serviceAccountName: crowdsec-dashboard
       imagePullSecrets:
-      - name: PLACEHOLDER_IMAGE_PULL_SECRET
+        - name: PLACEHOLDER_IMAGE_PULL_SECRET
       containers:
-      - name: dashboard
-        image: PLACEHOLDER_DASHBOARD_IMAGE
-        ports:
-        - name: http
-          containerPort: 3000
-          protocol: TCP
-        env:
-        - name: MB_DB_FILE
-          value: /data/metabase.db
-        - name: MGID
-          value: "1000"
-        volumeMounts:
-        - name: dashboard-data
-          mountPath: /data
-        - name: metabase-data
-          mountPath: /metabase-data
-        resources:
-          requests:
-            cpu: PLACEHOLDER_CPU_REQUEST
-            memory: PLACEHOLDER_MEMORY_REQUEST
-          limits:
-            cpu: PLACEHOLDER_CPU_LIMIT
-            memory: PLACEHOLDER_MEMORY_LIMIT
+        - name: dashboard
+          image: PLACEHOLDER_DASHBOARD_IMAGE
+          ports:
+            - name: http
+              containerPort: 3000
+              protocol: TCP
+          env:
+            - name: MB_DB_FILE
+              value: /data/metabase.db
+            - name: MGID
+              value: "1000"
+          volumeMounts:
+            - name: dashboard-data
+              mountPath: /data
+            - name: metabase-data
+              mountPath: /metabase-data
+          resources:
+            requests:
+              cpu: PLACEHOLDER_CPU_REQUEST
+              memory: PLACEHOLDER_MEMORY_REQUEST
+            limits:
+              cpu: PLACEHOLDER_CPU_LIMIT
+              memory: PLACEHOLDER_MEMORY_LIMIT
       volumes:
-      - name: dashboard-data
-        persistentVolumeClaim:
-          claimName: crowdsec-dashboard-data
-      - name: metabase-data
-        persistentVolumeClaim:
-          claimName: crowdsec-metabase-data
+        - name: dashboard-data
+          persistentVolumeClaim:
+            claimName: crowdsec-dashboard-data
+        - name: metabase-data
+          persistentVolumeClaim:
+            claimName: crowdsec-metabase-data

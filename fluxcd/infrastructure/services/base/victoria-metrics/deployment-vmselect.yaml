@@ -12,6 +12,7 @@ spec:
       labels:
         app: vmselect
     spec:
+      serviceAccountName: vmselect
       containers:
         - name: vmselect
           image: PLACEHOLDER_IMAGE

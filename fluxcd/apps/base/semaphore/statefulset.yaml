@@ -13,6 +13,7 @@ spec:
       labels:
         app: semaphore
     spec:
+      serviceAccountName: semaphore
       securityContext:
         fsGroup: PLACEHOLDER_GID
       containers:

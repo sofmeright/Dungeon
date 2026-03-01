@@ -13,6 +13,7 @@ spec:
       labels:
         app: twofauth
     spec:
+      serviceAccountName: twofauth
       containers:
         - name: twofauth
           image: PLACEHOLDER_IMAGE

@@ -13,6 +13,7 @@ spec:
       labels:
         app: sabnzbd
     spec:
+      serviceAccountName: sabnzbd
       initContainers:
         - name: set-host-whitelist
           image: docker.io/busybox:latest

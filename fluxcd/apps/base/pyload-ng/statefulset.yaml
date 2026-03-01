@@ -13,6 +13,7 @@ spec:
       labels:
         app: pyload-ng
     spec:
+      serviceAccountName: pyload-ng
       containers:
         - name: pyload-ng
           image: docker.io/linuxserver/pyload-ng:PLACEHOLDER_IMAGE_TAG

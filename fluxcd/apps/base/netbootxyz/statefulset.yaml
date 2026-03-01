@@ -13,53 +13,54 @@ spec:
       labels:
         app: netbootxyz
     spec:
+      serviceAccountName: netbootxyz
       containers:
-      - name: netbootxyz
-        image: ghcr.io/netbootxyz/netbootxyz:0.7.6-nbxyz10
-        ports:
-        - containerPort: 3000
-          name: web-app
-        - containerPort: 80
-          name: http
-        - containerPort: 69
-          name: tftp
-          protocol: UDP
-        env:
-        - name: PUID
-          value: "1000"
-        - name: PGID
-          value: "1000"
-        - name: TZ
-          value: "Etc/UTC"
-        - name: MENU_VERSION
-          value: "2.0.87"
-        - name: PORT_RANGE
-          value: "30000:30010"
-        - name: SUBFOLDER
-          value: "/"
-        - name: NGINX_PORT
-          value: "80"
-        - name: WEB_APP_PORT
-          value: "3000"
-        volumeMounts:
-        - name: config
-          mountPath: /config
-        - name: assets
-          mountPath: /assets
+        - name: netbootxyz
+          image: ghcr.io/netbootxyz/netbootxyz:0.7.6-nbxyz10
+          ports:
+            - containerPort: 3000
+              name: web-app
+            - containerPort: 80
+              name: http
+            - containerPort: 69
+              name: tftp
+              protocol: UDP
+          env:
+            - name: PUID
+              value: "1000"
+            - name: PGID
+              value: "1000"
+            - name: TZ
+              value: "Etc/UTC"
+            - name: MENU_VERSION
+              value: "2.0.87"
+            - name: PORT_RANGE
+              value: "30000:30010"
+            - name: SUBFOLDER
+              value: "/"
+            - name: NGINX_PORT
+              value: "80"
+            - name: WEB_APP_PORT
+              value: "3000"
+          volumeMounts:
+            - name: config
+              mountPath: /config
+            - name: assets
+              mountPath: /assets
   volumeClaimTemplates:
-  - metadata:
-      name: config
-    spec:
-      accessModes:
-      - ReadWriteOnce
-      resources:
-        requests:
-          storage: 5Gi
-  - metadata:
-      name: assets
-    spec:
-      accessModes:
-      - ReadWriteOnce
-      resources:
-        requests:
-          storage: 10Gi
+    - metadata:
+        name: config
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 5Gi
+    - metadata:
+        name: assets
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 10Gi

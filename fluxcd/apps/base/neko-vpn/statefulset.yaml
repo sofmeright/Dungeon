@@ -13,6 +13,7 @@ spec:
       labels:
         app: neko-vpn
     spec:
+      serviceAccountName: neko-vpn
       containers:
         # Gluetun VPN Gateway
         - name: gluetun

@@ -15,6 +15,7 @@ spec:
       labels:
         app: kimai
     spec:
+      serviceAccountName: kimai
       securityContext:
         fsGroup: 33
       volumes:

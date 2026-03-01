@@ -13,62 +13,63 @@ spec:
       labels:
         app: wazuh-dashboard
     spec:
+      serviceAccountName: wazuh-dashboard
       hostname: wazuh-dashboard
       initContainers:
-      - name: fix-permissions
-        image: docker.io/busybox:latest
-        command: ['sh', '-c', 'chown -R 1000:1000 /usr/share/wazuh-dashboard/data']
-        volumeMounts:
-        - name: dashboard-data
-          mountPath: /usr/share/wazuh-dashboard/data
+        - name: fix-permissions
+          image: docker.io/busybox:latest
+          command: ['sh', '-c', 'chown -R 1000:1000 /usr/share/wazuh-dashboard/data']
+          volumeMounts:
+            - name: dashboard-data
+              mountPath: /usr/share/wazuh-dashboard/data
       containers:
-      - name: wazuh-dashboard
-        image: PLACEHOLDER_IMAGE
-        ports:
-        - containerPort: 5601
-          name: http
-          protocol: TCP
-        envFrom:
-        - secretRef:
-            name: PLACEHOLDER_ENV_SECRET
+        - name: wazuh-dashboard
+          image: PLACEHOLDER_IMAGE
+          ports:
+            - containerPort: 5601
+              name: http
+              protocol: TCP
+          envFrom:
+            - secretRef:
+                name: PLACEHOLDER_ENV_SECRET
+          resources:
+            requests:
+              cpu: PLACEHOLDER_CPU
+              memory: PLACEHOLDER_MEMORY
+            limits:
+              cpu: PLACEHOLDER_CPU_LIMIT
+              memory: PLACEHOLDER_MEMORY_LIMIT
+          volumeMounts:
+            - name: dashboard-secrets
+              mountPath: /usr/share/wazuh-dashboard/config/opensearch_dashboards.yml
+              subPath: opensearch_dashboards.yml
+            - name: dashboard-secrets
+              mountPath: /usr/share/wazuh-dashboard/config/wazuh.yml
+              subPath: wazuh.yml
+            - name: dashboard-data
+              mountPath: /usr/share/wazuh-dashboard/data
+            - name: ssl-certs
+              mountPath: /usr/share/wazuh-dashboard/certs/wazuh-dashboard.pem
+              subPath: wazuh.dashboard.pem
+            - name: ssl-certs
+              mountPath: /usr/share/wazuh-dashboard/certs/wazuh-dashboard-key.pem
+              subPath: wazuh.dashboard-key.pem
+            - name: ssl-certs
+              mountPath: /usr/share/wazuh-dashboard/certs/root-ca.pem
+              subPath: root-ca.pem
+      volumes:
+        - name: dashboard-secrets
+          secret:
+            secretName: PLACEHOLDER_DASHBOARD_SECRETS
+        - name: ssl-certs
+          secret:
+            secretName: PLACEHOLDER_SSL_SECRET
+  volumeClaimTemplates:
+    - metadata:
+        name: dashboard-data
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        storageClassName: PLACEHOLDER_STORAGE_CLASS
         resources:
           requests:
-            cpu: PLACEHOLDER_CPU
-            memory: PLACEHOLDER_MEMORY
-          limits:
-            cpu: PLACEHOLDER_CPU_LIMIT
-            memory: PLACEHOLDER_MEMORY_LIMIT
-        volumeMounts:
-        - name: dashboard-secrets
-          mountPath: /usr/share/wazuh-dashboard/config/opensearch_dashboards.yml
-          subPath: opensearch_dashboards.yml
-        - name: dashboard-secrets
-          mountPath: /usr/share/wazuh-dashboard/config/wazuh.yml
-          subPath: wazuh.yml
-        - name: dashboard-data
-          mountPath: /usr/share/wazuh-dashboard/data
-        - name: ssl-certs
-          mountPath: /usr/share/wazuh-dashboard/certs/wazuh-dashboard.pem
-          subPath: wazuh.dashboard.pem
-        - name: ssl-certs
-          mountPath: /usr/share/wazuh-dashboard/certs/wazuh-dashboard-key.pem
-          subPath: wazuh.dashboard-key.pem
-        - name: ssl-certs
-          mountPath: /usr/share/wazuh-dashboard/certs/root-ca.pem
-          subPath: root-ca.pem
-      volumes:
-      - name: dashboard-secrets
-        secret:
-          secretName: PLACEHOLDER_DASHBOARD_SECRETS
-      - name: ssl-certs
-        secret:
-          secretName: PLACEHOLDER_SSL_SECRET
-  volumeClaimTemplates:
-  - metadata:
-      name: dashboard-data
-    spec:
-      accessModes: ["ReadWriteOnce"]
-      storageClassName: PLACEHOLDER_STORAGE_CLASS
-      resources:
-        requests:
-          storage: PLACEHOLDER_STORAGE_SIZE
+            storage: PLACEHOLDER_STORAGE_SIZE

@@ -13,6 +13,7 @@ spec:
       labels:
         app: ollama
     spec:
+      serviceAccountName: ollama
       containers:
         - name: ollama
           image: docker.io/ollama/ollama:0.16.3

@@ -13,6 +13,7 @@ spec:
       labels:
         app: openwakeword
     spec:
+      serviceAccountName: openwakeword
       containers:
         - name: openwakeword
           image: docker.io/rhasspy/wyoming-openwakeword:PLACEHOLDER_TAG

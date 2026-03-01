@@ -15,83 +15,84 @@ spec:
       labels:
         app.kubernetes.io/name: anirra
     spec:
+      serviceAccountName: anirra
       initContainers:
-      - name: config-init
-        image: docker.io/library/busybox:latest
-        command:
-        - sh
-        - -c
-        - |
-          cat > /config/config.yaml <<EOF
-          sonarr:
-            - url: ${SONARR_URL}
-              api_key: ${SONARR_API_KEY}
-          radarr:
-            - url: ${RADARR_URL}
-              api_key: ${RADARR_API_KEY}
-          EOF
-          echo "Generated config.yaml:"
-          cat /config/config.yaml
-        env:
-        - name: SONARR_URL
-          valueFrom:
-            configMapKeyRef:
-              name: anirra-config
-              key: sonarr-url
-        - name: RADARR_URL
-          valueFrom:
-            configMapKeyRef:
-              name: anirra-config
-              key: radarr-url
-        - name: SONARR_API_KEY
-          valueFrom:
-            secretKeyRef:
-              name: anirra-secrets
-              key: sonarr-api-key
-        - name: RADARR_API_KEY
-          valueFrom:
-            secretKeyRef:
-              name: anirra-secrets
-              key: radarr-api-key
-        volumeMounts:
-        - name: config
-          mountPath: /config
+        - name: config-init
+          image: docker.io/library/busybox:latest
+          command:
+            - sh
+            - -c
+            - |
+              cat > /config/config.yaml <<EOF
+              sonarr:
+                - url: ${SONARR_URL}
+                  api_key: ${SONARR_API_KEY}
+              radarr:
+                - url: ${RADARR_URL}
+                  api_key: ${RADARR_API_KEY}
+              EOF
+              echo "Generated config.yaml:"
+              cat /config/config.yaml
+          env:
+            - name: SONARR_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: anirra-config
+                  key: sonarr-url
+            - name: RADARR_URL
+              valueFrom:
+                configMapKeyRef:
+                  name: anirra-config
+                  key: radarr-url
+            - name: SONARR_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: anirra-secrets
+                  key: sonarr-api-key
+            - name: RADARR_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: anirra-secrets
+                  key: radarr-api-key
+          volumeMounts:
+            - name: config
+              mountPath: /config
       containers:
-      - name: anirra
-        image: jpyles0524/anirra:xiFwhijN
-        command: ["bash", "/start.sh"]
-        ports:
-        - name: frontend
-          containerPort: 3000
-          protocol: TCP
-        - name: backend
-          containerPort: 8000
-          protocol: TCP
-        env:
-        - name: APP_LEVEL
-          value: "PROD"
-        volumeMounts:
-        - name: data
-          mountPath: /project/data
+        - name: anirra
+          image: jpyles0524/anirra:xiFwhijN
+          command: ["bash", "/start.sh"]
+          ports:
+            - name: frontend
+              containerPort: 3000
+              protocol: TCP
+            - name: backend
+              containerPort: 8000
+              protocol: TCP
+          env:
+            - name: APP_LEVEL
+              value: "PROD"
+          volumeMounts:
+            - name: data
+              mountPath: /project/data
+            - name: config
+              mountPath: /project/config.yaml
+              subPath: config.yaml
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
+      volumes:
         - name: config
-          mountPath: /project/config.yaml
-          subPath: config.yaml
+          emptyDir: {}
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+      spec:
+        accessModes:
+          - ReadWriteOnce
         resources:
           requests:
-            cpu: 100m
-            memory: 256Mi
-          limits:
-            cpu: 500m
-            memory: 512Mi
-      volumes:
-      - name: config
-        emptyDir: {}
-  volumeClaimTemplates:
-  - metadata:
-      name: data
-    spec:
-      accessModes:
-      - ReadWriteOnce
-      resources:
-        requests:
-          storage: 5Gi
+            storage: 5Gi

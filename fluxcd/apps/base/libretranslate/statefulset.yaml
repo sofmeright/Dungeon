@@ -13,6 +13,7 @@ spec:
       labels:
         app: libretranslate
     spec:
+      serviceAccountName: libretranslate
       affinity:
         nodeAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:

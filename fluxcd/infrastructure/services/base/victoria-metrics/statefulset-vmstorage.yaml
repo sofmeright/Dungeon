@@ -13,6 +13,7 @@ spec:
       labels:
         app: vmstorage
     spec:
+      serviceAccountName: vmstorage
       containers:
         - name: vmstorage
           image: PLACEHOLDER_IMAGE

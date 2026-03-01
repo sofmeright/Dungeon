@@ -15,6 +15,7 @@ spec:
       labels:
         app: echo-ip
     spec:
+      serviceAccountName: echo-ip
       initContainers:
         - name: geoip-update
           image: docker.io/maxmindinc/geoipupdate:v7.1.1

@@ -13,103 +13,104 @@ spec:
       labels:
         app: ark-sa-tmc
     spec:
+      serviceAccountName: ark-sa-tmc
       enableServiceLinks: false
       securityContext:
         fsGroup: 7777
       containers:
-      - name: theisland
-        image: docker.io/acekorneya/asa_server:2_1_latest
-        ports:
-        - containerPort: 8777
-          protocol: UDP
-          name: game
-        - containerPort: 8777
-          protocol: TCP
-          name: game-tcp
-        - containerPort: 28020
-          protocol: TCP
-          name: rcon
-        - containerPort: 8778
-          protocol: UDP
-          name: query
-        env:
-        - name: PUID
-          value: "1001"
-        - name: PGID
-          value: "1001"
-        - name: INSTANCE_NAME
-          value: theisland
-        - name: TZ
-          value: UTC
-        - name: MAP_NAME
-          value: TheIsland_WP
-        - name: SESSION_NAME
-          value: "ARK Server - The Island"
-        - name: SERVER_ADMIN_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: ark-asa-admin
-              key: admin-password
-        - name: SERVER_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: ark-asa-admin
-              key: server-password
-        - name: ASA_PORT
-          value: "8777"
-        - name: QUERY_PORT
-          value: "8778"
-        - name: RCON_PORT
-          value: "28020"
-        - name: MAX_PLAYERS
-          value: "70"
-        - name: CLUSTER_ID
-          value: "ark-cluster"
-        - name: RCON_ENABLED
-          value: "TRUE"
-        - name: UPDATE_SERVER
-          value: "TRUE"
-        - name: CHECK_FOR_UPDATE_INTERVAL
-          value: "24"
-        - name: BATTLEEYE
-          value: "FALSE"
-        - name: CUSTOM_SERVER_ARGS
-          value: "-Crossplay"
-        resources:
-          limits:
-            memory: 16Gi
-          requests:
-            memory: 12Gi
-            cpu: 2000m
-        volumeMounts:
-        - name: ark-serverfiles
-          mountPath: /home/pok/arkserver
-        - name: ark-cluster
-          mountPath: /home/pok/arkserver/ShooterGame/Saved/clusters
-        - name: ark-saved
-          mountPath: /home/pok/arkserver/ShooterGame/Saved
+        - name: theisland
+          image: docker.io/acekorneya/asa_server:2_1_latest
+          ports:
+            - containerPort: 8777
+              protocol: UDP
+              name: game
+            - containerPort: 8777
+              protocol: TCP
+              name: game-tcp
+            - containerPort: 28020
+              protocol: TCP
+              name: rcon
+            - containerPort: 8778
+              protocol: UDP
+              name: query
+          env:
+            - name: PUID
+              value: "1001"
+            - name: PGID
+              value: "1001"
+            - name: INSTANCE_NAME
+              value: theisland
+            - name: TZ
+              value: UTC
+            - name: MAP_NAME
+              value: TheIsland_WP
+            - name: SESSION_NAME
+              value: "ARK Server - The Island"
+            - name: SERVER_ADMIN_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: ark-asa-admin
+                  key: admin-password
+            - name: SERVER_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: ark-asa-admin
+                  key: server-password
+            - name: ASA_PORT
+              value: "8777"
+            - name: QUERY_PORT
+              value: "8778"
+            - name: RCON_PORT
+              value: "28020"
+            - name: MAX_PLAYERS
+              value: "70"
+            - name: CLUSTER_ID
+              value: "ark-cluster"
+            - name: RCON_ENABLED
+              value: "TRUE"
+            - name: UPDATE_SERVER
+              value: "TRUE"
+            - name: CHECK_FOR_UPDATE_INTERVAL
+              value: "24"
+            - name: BATTLEEYE
+              value: "FALSE"
+            - name: CUSTOM_SERVER_ARGS
+              value: "-Crossplay"
+          resources:
+            limits:
+              memory: 16Gi
+            requests:
+              memory: 12Gi
+              cpu: 2000m
+          volumeMounts:
+            - name: ark-serverfiles
+              mountPath: /home/pok/arkserver
+            - name: ark-cluster
+              mountPath: /home/pok/arkserver/ShooterGame/Saved/clusters
+            - name: ark-saved
+              mountPath: /home/pok/arkserver/ShooterGame/Saved
   volumeClaimTemplates:
-  - metadata:
-      name: ark-serverfiles
-    spec:
-      accessModes:
-      - ReadWriteOnce
-      resources:
-        requests:
-          storage: 250Gi
-  - metadata:
-      name: ark-cluster
-    spec:
-      accessModes:
-      - ReadWriteOnce
-      resources:
-        requests:
-          storage: 20Gi
-  - metadata:
-      name: ark-saved
-    spec:
-      accessModes:
-      - ReadWriteOnce
-      resources:
-        requests:
-          storage: 50Gi
+    - metadata:
+        name: ark-serverfiles
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 250Gi
+    - metadata:
+        name: ark-cluster
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 20Gi
+    - metadata:
+        name: ark-saved
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 50Gi

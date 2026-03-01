@@ -12,6 +12,7 @@ spec:
       labels:
         app: vminsert
     spec:
+      serviceAccountName: vminsert
       containers:
         - name: vminsert
           image: PLACEHOLDER_IMAGE

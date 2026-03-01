@@ -13,6 +13,7 @@ spec:
       labels:
         app: piper
     spec:
+      serviceAccountName: piper
       containers:
         - name: piper
           image: docker.io/rhasspy/wyoming-piper:PLACEHOLDER_TAG

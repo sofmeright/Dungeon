@@ -13,6 +13,7 @@ spec:
       labels:
         app: minecraft
     spec:
+      serviceAccountName: minecraft
       containers:
         - name: minecraft
           image: docker.io/itzg/minecraft-server:java25

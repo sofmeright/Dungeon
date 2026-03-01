@@ -18,84 +18,85 @@ spec:
         app: crowdsec
         component: engine
     spec:
+      serviceAccountName: crowdsec
       containers:
-      - name: crowdsec
-        image: PLACEHOLDER_CROWDSEC_IMAGE
-        ports:
-        - name: api
-          containerPort: 8080
-          protocol: TCP
-        - name: prometheus
-          containerPort: 6060
-          protocol: TCP
-        env:
-        - name: COLLECTIONS
-          value: "crowdsecurity/traefik crowdsecurity/http-cve crowdsecurity/whitelist-good-actors crowdsecurity/iptables crowdsecurity/linux crowdsecurity/nginx crowdsecurity/sshd"
-        - name: GID
-          value: "1000"
-        - name: CUSTOM_HOSTNAME
-          value: PLACEHOLDER_HOSTNAME
-        livenessProbe:
-          httpGet:
-            path: /health
-            port: 8080
-          initialDelaySeconds: 30
-          periodSeconds: 30
-          timeoutSeconds: 10
-        readinessProbe:
-          httpGet:
-            path: /health
-            port: 8080
-          initialDelaySeconds: 30
-          periodSeconds: 30
-          timeoutSeconds: 10
-        volumeMounts:
-        - name: PLACEHOLDER_NAMESPACE-crowdsec-data
-          mountPath: /var/lib/crowdsec/data
+        - name: crowdsec
+          image: PLACEHOLDER_CROWDSEC_IMAGE
+          ports:
+            - name: api
+              containerPort: 8080
+              protocol: TCP
+            - name: prometheus
+              containerPort: 6060
+              protocol: TCP
+          env:
+            - name: COLLECTIONS
+              value: "crowdsecurity/traefik crowdsecurity/http-cve crowdsecurity/whitelist-good-actors crowdsecurity/iptables crowdsecurity/linux crowdsecurity/nginx crowdsecurity/sshd"
+            - name: GID
+              value: "1000"
+            - name: CUSTOM_HOSTNAME
+              value: PLACEHOLDER_HOSTNAME
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 30
+            periodSeconds: 30
+            timeoutSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 30
+            periodSeconds: 30
+            timeoutSeconds: 10
+          volumeMounts:
+            - name: PLACEHOLDER_NAMESPACE-crowdsec-data
+              mountPath: /var/lib/crowdsec/data
+            - name: acquis-nginx
+              mountPath: /etc/crowdsec/acquis.d/10-nginx-loki.yaml
+              subPath: 10-nginx-loki.yaml
+            - name: acquis-bitwarden
+              mountPath: /etc/crowdsec/acquis.d/20-bitwarden-loki.yaml
+              subPath: 20-bitwarden-loki.yaml
+            - name: whitelist
+              mountPath: /etc/crowdsec/parsers/s02-enrich/whitelists.yaml
+              subPath: whitelists.yaml
+            - name: bitwarden-parser
+              mountPath: /etc/crowdsec/parsers/s02-parse/prplanit/bitwarden.yaml
+              subPath: bitwarden.yaml
+            - name: bitwarden-scenario
+              mountPath: /etc/crowdsec/scenarios/prplanit/bitwarden-bf.yaml
+              subPath: bitwarden-bf.yaml
+          resources:
+            requests:
+              cpu: PLACEHOLDER_CPU_REQUEST
+              memory: PLACEHOLDER_MEMORY_REQUEST
+            limits:
+              cpu: PLACEHOLDER_CPU_LIMIT
+              memory: PLACEHOLDER_MEMORY_LIMIT
+      volumes:
         - name: acquis-nginx
-          mountPath: /etc/crowdsec/acquis.d/10-nginx-loki.yaml
-          subPath: 10-nginx-loki.yaml
+          configMap:
+            name: crowdsec-acquis-nginx
         - name: acquis-bitwarden
-          mountPath: /etc/crowdsec/acquis.d/20-bitwarden-loki.yaml
-          subPath: 20-bitwarden-loki.yaml
+          configMap:
+            name: crowdsec-acquis-bitwarden
         - name: whitelist
-          mountPath: /etc/crowdsec/parsers/s02-enrich/whitelists.yaml
-          subPath: whitelists.yaml
+          configMap:
+            name: crowdsec-whitelist
         - name: bitwarden-parser
-          mountPath: /etc/crowdsec/parsers/s02-parse/prplanit/bitwarden.yaml
-          subPath: bitwarden.yaml
+          configMap:
+            name: crowdsec-bitwarden-parser
         - name: bitwarden-scenario
-          mountPath: /etc/crowdsec/scenarios/prplanit/bitwarden-bf.yaml
-          subPath: bitwarden-bf.yaml
+          configMap:
+            name: crowdsec-bitwarden-scenario
+  volumeClaimTemplates:
+    - metadata:
+        name: PLACEHOLDER_NAMESPACE-crowdsec-data
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        storageClassName: PLACEHOLDER_STORAGE_CLASS
         resources:
           requests:
-            cpu: PLACEHOLDER_CPU_REQUEST
-            memory: PLACEHOLDER_MEMORY_REQUEST
-          limits:
-            cpu: PLACEHOLDER_CPU_LIMIT
-            memory: PLACEHOLDER_MEMORY_LIMIT
-      volumes:
-      - name: acquis-nginx
-        configMap:
-          name: crowdsec-acquis-nginx
-      - name: acquis-bitwarden
-        configMap:
-          name: crowdsec-acquis-bitwarden
-      - name: whitelist
-        configMap:
-          name: crowdsec-whitelist
-      - name: bitwarden-parser
-        configMap:
-          name: crowdsec-bitwarden-parser
-      - name: bitwarden-scenario
-        configMap:
-          name: crowdsec-bitwarden-scenario
-  volumeClaimTemplates:
-  - metadata:
-      name: PLACEHOLDER_NAMESPACE-crowdsec-data
-    spec:
-      accessModes: ["ReadWriteOnce"]
-      storageClassName: PLACEHOLDER_STORAGE_CLASS
-      resources:
-        requests:
-          storage: PLACEHOLDER_STORAGE_SIZE
+            storage: PLACEHOLDER_STORAGE_SIZE
