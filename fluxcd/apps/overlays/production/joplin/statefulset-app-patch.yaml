@@ -4,6 +4,9 @@ metadata:
   name: joplin-app
 spec:
   template:
+    metadata:
+      labels:
+        policy.prplanit.com/ingress: "true"
     spec:
       securityContext:
         runAsUser: 1001

@@ -5,6 +5,9 @@ metadata:
 spec:
   replicas: 1
   template:
+    metadata:
+      labels:
+        policy.prplanit.com/ingress: "true"
     spec:
       initContainers:
         - name: wait-for-postgres
@@ -39,6 +42,9 @@ metadata:
 spec:
   replicas: 1
   template:
+    metadata:
+      labels:
+        policy.prplanit.com/ingress: "true"
     spec:
       securityContext:
         runAsUser: 70

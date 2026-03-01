@@ -4,19 +4,22 @@ metadata:
   name: organizr
 spec:
   template:
+    metadata:
+      labels:
+        policy.prplanit.com/ingress: "true"
     spec:
       containers:
-      - name: organizr
-        volumeMounts:
-        - name: lost-woods-organizr-config
-          mountPath: /config
+        - name: organizr
+          volumeMounts:
+            - name: lost-woods-organizr-config
+              mountPath: /config
   volumeClaimTemplates:
-  - metadata:
-      name: lost-woods-organizr-config
-    spec:
-      accessModes:
-      - ReadWriteOnce
-      storageClassName: ceph-rbd-retain
-      resources:
-        requests:
-          storage: 2Gi
+    - metadata:
+        name: lost-woods-organizr-config
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        storageClassName: ceph-rbd-retain
+        resources:
+          requests:
+            storage: 2Gi

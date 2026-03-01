@@ -3,22 +3,26 @@ kind: StatefulSet
 metadata:
   name: netbootxyz
 spec:
+  template:
+    metadata:
+      labels:
+        policy.prplanit.com/ingress: "true"
   volumeClaimTemplates:
-  - metadata:
-      name: config
-    spec:
-      accessModes:
-      - ReadWriteOnce
-      storageClassName: ceph-rbd
-      resources:
-        requests:
-          storage: 5Gi
-  - metadata:
-      name: assets
-    spec:
-      accessModes:
-      - ReadWriteOnce
-      storageClassName: ceph-rbd
-      resources:
-        requests:
-          storage: 10Gi
+    - metadata:
+        name: config
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        storageClassName: ceph-rbd
+        resources:
+          requests:
+            storage: 5Gi
+    - metadata:
+        name: assets
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        storageClassName: ceph-rbd
+        resources:
+          requests:
+            storage: 10Gi

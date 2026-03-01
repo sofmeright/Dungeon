@@ -4,6 +4,9 @@ metadata:
   name: bookstack
 spec:
   template:
+    metadata:
+      labels:
+        policy.prplanit.com/ingress: "true"
     spec:
       initContainers:
         - name: wait-for-db

@@ -4,24 +4,27 @@ metadata:
   name: anirra
 spec:
   template:
+    metadata:
+      labels:
+        policy.prplanit.com/ingress: "true"
     spec:
       containers:
-      - name: anirra
-        image: docker.io/jpyles0524/anirra:xiFwhijN
+        - name: anirra
+          image: docker.io/jpyles0524/anirra:xiFwhijN
+          resources:
+            requests:
+              cpu: 200m
+              memory: 512Mi
+            limits:
+              cpu: 1000m
+              memory: 2Gi
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+      spec:
+        storageClassName: ceph-rbd
+        accessModes:
+          - ReadWriteOnce
         resources:
           requests:
-            cpu: 200m
-            memory: 512Mi
-          limits:
-            cpu: 1000m
-            memory: 2Gi
-  volumeClaimTemplates:
-  - metadata:
-      name: data
-    spec:
-      storageClassName: ceph-rbd
-      accessModes:
-      - ReadWriteOnce
-      resources:
-        requests:
-          storage: 5Gi
+            storage: 5Gi

@@ -4,32 +4,35 @@ metadata:
   name: orangehrm
 spec:
   template:
+    metadata:
+      labels:
+        policy.prplanit.com/ingress: "true"
     spec:
       initContainers:
-      - name: wait-for-mariadb
-        image: docker.io/busybox:1.37
+        - name: wait-for-mariadb
+          image: docker.io/busybox:1.37
       containers:
-      - name: orangehrm
-        image: docker.io/orangehrm/orangehrm:5.8
-        volumeMounts:
-        - $patch: delete
-          name: PLACEHOLDER_ORANGEHRM_DATA
-        - name: hyrule-castle-orangehrm-data
-          mountPath: /orangehrm
+        - name: orangehrm
+          image: docker.io/orangehrm/orangehrm:5.8
+          volumeMounts:
+            - $patch: delete
+              name: PLACEHOLDER_ORANGEHRM_DATA
+            - name: hyrule-castle-orangehrm-data
+              mountPath: /orangehrm
+          resources:
+            requests:
+              cpu: "500m"
+              memory: "1Gi"
+            limits:
+              cpu: "2000m"
+              memory: "4Gi"
+  volumeClaimTemplates:
+    - metadata:
+        name: hyrule-castle-orangehrm-data
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        storageClassName: ceph-rbd
         resources:
           requests:
-            cpu: "500m"
-            memory: "1Gi"
-          limits:
-            cpu: "2000m"
-            memory: "4Gi"
-  volumeClaimTemplates:
-  - metadata:
-      name: hyrule-castle-orangehrm-data
-    spec:
-      accessModes:
-      - ReadWriteOnce
-      storageClassName: ceph-rbd
-      resources:
-        requests:
-          storage: 5Gi
+            storage: 5Gi

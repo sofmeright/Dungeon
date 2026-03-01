@@ -5,6 +5,9 @@ metadata:
 spec:
   replicas: 1
   template:
+    metadata:
+      labels:
+        policy.prplanit.com/ingress: "true"
     spec:
       containers:
         - name: xbackbone

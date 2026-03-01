@@ -4,6 +4,9 @@ metadata:
   name: invoiceninja-app
 spec:
   template:
+    metadata:
+      labels:
+        policy.prplanit.com/ingress: "true"
     spec:
       securityContext:
         fsGroup: 82

@@ -4,6 +4,9 @@ metadata:
   name: code-server
 spec:
   template:
+    metadata:
+      labels:
+        policy.prplanit.com/ingress: "true"
     spec:
       affinity:
         nodeAffinity:

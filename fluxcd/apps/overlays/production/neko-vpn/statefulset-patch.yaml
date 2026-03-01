@@ -7,6 +7,7 @@ spec:
   template:
     metadata:
       labels:
+        policy.prplanit.com/ingress: "true"
         istio.io/dataplane-mode: none
     spec:
       affinity:

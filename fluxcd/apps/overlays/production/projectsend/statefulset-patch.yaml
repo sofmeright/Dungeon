@@ -5,45 +5,48 @@ metadata:
 spec:
   replicas: 1
   template:
+    metadata:
+      labels:
+        policy.prplanit.com/ingress: "true"
     spec:
       containers:
-      - name: projectsend
-        image: docker.io/linuxserver/projectsend:version-r1945
-        env:
-        - name: PUID
-          value: "1000"
-        - name: PGID
-          value: "1000"
-        - name: TZ
-          value: "America/Los_Angeles"
+        - name: projectsend
+          image: docker.io/linuxserver/projectsend:version-r1945
+          env:
+            - name: PUID
+              value: "1000"
+            - name: PGID
+              value: "1000"
+            - name: TZ
+              value: "America/Los_Angeles"
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: 1000m
+              memory: 1Gi
+          volumeMounts:
+            - name: temple-of-time-projectsend-config
+              mountPath: /config
+            - name: temple-of-time-projectsend-data
+              mountPath: /data
+  volumeClaimTemplates:
+    - metadata:
+        name: temple-of-time-projectsend-config
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        storageClassName: ceph-rbd
         resources:
           requests:
-            cpu: 100m
-            memory: 256Mi
-          limits:
-            cpu: 1000m
-            memory: 1Gi
-        volumeMounts:
-        - name: temple-of-time-projectsend-config
-          mountPath: /config
-        - name: temple-of-time-projectsend-data
-          mountPath: /data
-  volumeClaimTemplates:
-  - metadata:
-      name: temple-of-time-projectsend-config
-    spec:
-      accessModes:
-      - ReadWriteOnce
-      storageClassName: ceph-rbd
-      resources:
-        requests:
-          storage: 1Gi
-  - metadata:
-      name: temple-of-time-projectsend-data
-    spec:
-      accessModes:
-      - ReadWriteOnce
-      storageClassName: ceph-rbd
-      resources:
-        requests:
-          storage: 50Gi
+            storage: 1Gi
+    - metadata:
+        name: temple-of-time-projectsend-data
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        storageClassName: ceph-rbd
+        resources:
+          requests:
+            storage: 50Gi
