@@ -7,6 +7,8 @@ spec:
     spec:
       version: ">=1.0.0"
   values:
+    podLabels:
+      policy.prplanit.com/ingress: "true"
     ingress:
       hosts:
         - host: podinfo.production

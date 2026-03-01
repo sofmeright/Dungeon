@@ -4,6 +4,9 @@ metadata:
   name: nextcloud-whiteboard
 spec:
   template:
+    metadata:
+      labels:
+        policy.prplanit.com/ingress: "true"
     spec:
       containers:
         - name: whiteboard

@@ -7,6 +7,9 @@ spec:
     spec:
       version: "8.9.1"
   values:
+    podLabels:
+      policy.prplanit.com/ingress: "true"
+
     image:
       tag: "31.0.10"
 
@@ -105,6 +108,8 @@ spec:
     collabora:
       enabled: true
       fullnameOverride: nextcloud-collabora
+      podLabels:
+        policy.prplanit.com/ingress: "true"
       image:
         repository: docker.io/collabora/code
         tag: "25.04.9.1.1"

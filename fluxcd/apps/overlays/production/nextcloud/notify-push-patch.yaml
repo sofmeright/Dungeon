@@ -4,6 +4,9 @@ metadata:
   name: nextcloud-notify-push
 spec:
   template:
+    metadata:
+      labels:
+        policy.prplanit.com/ingress: "true"
     spec:
       containers:
         - name: notify-push

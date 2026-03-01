@@ -4,6 +4,9 @@ metadata:
   name: nextcloud-talk-hpb
 spec:
   template:
+    metadata:
+      labels:
+        policy.prplanit.com/ingress: "true"
     spec:
       initContainers:
         - name: render-config
