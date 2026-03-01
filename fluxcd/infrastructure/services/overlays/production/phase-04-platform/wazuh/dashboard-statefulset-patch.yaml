@@ -5,15 +5,18 @@ metadata:
 spec:
   replicas: 1
   template:
+    metadata:
+      labels:
+        policy.prplanit.com/ingress: "true"
     spec:
       imagePullSecrets:
         - name: jcr-pcfae-dungeon-pull-secret
   volumeClaimTemplates:
-  - metadata:
-      name: dashboard-data
-    spec:
-      accessModes: ["ReadWriteOnce"]
-      storageClassName: ceph-rbd
-      resources:
-        requests:
-          storage: 10Gi
+    - metadata:
+        name: dashboard-data
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        storageClassName: ceph-rbd
+        resources:
+          requests:
+            storage: 10Gi

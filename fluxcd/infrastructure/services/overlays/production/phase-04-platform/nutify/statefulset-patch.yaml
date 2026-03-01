@@ -4,61 +4,64 @@ metadata:
   name: nutify
 spec:
   template:
+    metadata:
+      labels:
+        policy.prplanit.com/ingress: "true"
     spec:
       imagePullSecrets:
-      - name: cr-pcfae-admin-pull-secret
+        - name: cr-pcfae-admin-pull-secret
   volumeClaimTemplates:
-  - metadata:
-      name: gossip-stone-nutify-logs
-    spec:
-      accessModes:
-      - ReadWriteOnce
-      storageClassName: ceph-rbd
-      resources:
-        requests:
-          storage: 1Gi
-  - metadata:
-      name: gossip-stone-nutify-instance
-    spec:
-      accessModes:
-      - ReadWriteOnce
-      storageClassName: ceph-rbd
-      resources:
-        requests:
-          storage: 2Gi
-  - metadata:
-      name: gossip-stone-nutify-ssl
-    spec:
-      accessModes:
-      - ReadWriteOnce
-      storageClassName: ceph-rbd
-      resources:
-        requests:
-          storage: 100Mi
-  - metadata:
-      name: gossip-stone-nutify-nut-config
-    spec:
-      accessModes:
-      - ReadWriteOnce
-      storageClassName: ceph-rbd
-      resources:
-        requests:
-          storage: 100Mi
-  - metadata:
-      name: gossip-stone-nutify-ssh
-    spec:
-      accessModes:
-      - ReadWriteOnce
-      storageClassName: ceph-rbd
-      resources:
-        requests:
-          storage: 100Mi
-  - metadata:
-      name: gossip-stone-nutify-script
-    spec:
-      accessModes:
-      - ReadWriteOnce
-      storageClassName: ceph-rbd
-      resources:
-        requests:
-          storage: 100Mi
+    - metadata:
+        name: gossip-stone-nutify-logs
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        storageClassName: ceph-rbd
+        resources:
+          requests:
+            storage: 1Gi
+    - metadata:
+        name: gossip-stone-nutify-instance
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        storageClassName: ceph-rbd
+        resources:
+          requests:
+            storage: 2Gi
+    - metadata:
+        name: gossip-stone-nutify-ssl
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        storageClassName: ceph-rbd
+        resources:
+          requests:
+            storage: 100Mi
+    - metadata:
+        name: gossip-stone-nutify-nut-config
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        storageClassName: ceph-rbd
+        resources:
+          requests:
+            storage: 100Mi
+    - metadata:
+        name: gossip-stone-nutify-ssh
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        storageClassName: ceph-rbd
+        resources:
+          requests:
+            storage: 100Mi
+    - metadata:
+        name: gossip-stone-nutify-script
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        storageClassName: ceph-rbd
+        resources:
+          requests:
+            storage: 100Mi

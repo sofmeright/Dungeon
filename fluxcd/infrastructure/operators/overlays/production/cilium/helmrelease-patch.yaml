@@ -88,5 +88,7 @@ spec:
     # Hubble UI service configuration
     hubble:
       ui:
+        podLabels:
+          policy.prplanit.com/ingress: "true"
         service:
           type: ClusterIP

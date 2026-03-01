@@ -1,0 +1,9 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: netbird-signal
+spec:
+  template:
+    metadata:
+      labels:
+        policy.prplanit.com/ingress: "true"

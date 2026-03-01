@@ -5,54 +5,57 @@ metadata:
 spec:
   replicas: 2
   template:
+    metadata:
+      labels:
+        policy.prplanit.com/ingress: "true"
     spec:
       imagePullSecrets:
-      - name: jcr-pcfae-dungeon-pull-secret
+        - name: jcr-pcfae-dungeon-pull-secret
       initContainers:
-      - name: copy-config
-        image: docker.io/busybox:1.37
-        command:
-        - sh
-        - -c
-        - |
-          if [ ! -f /opt/adguardhome/conf/AdGuardHome.yaml ]; then
-            echo "Copying and updating initial config..."
-            cp /tmp/config/AdGuardHome.yaml /tmp/processed-config.yaml
-            sed -i "s|ADGUARD_PASSWORD_PLACEHOLDER|${ADGUARD_PASSWORD}|g" /tmp/processed-config.yaml
-            cp /tmp/processed-config.yaml /opt/adguardhome/conf/AdGuardHome.yaml
-          else
-            echo "Config already exists, skipping..."
-          fi
-        env:
-        - name: ADGUARD_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: adguard-secret
-              key: admin-password
-        volumeMounts:
-        - name: config-template
-          mountPath: /tmp/config
-        - name: adguard-conf
-          mountPath: /opt/adguardhome/conf
+        - name: copy-config
+          image: docker.io/busybox:1.37
+          command:
+            - sh
+            - -c
+            - |
+              if [ ! -f /opt/adguardhome/conf/AdGuardHome.yaml ]; then
+                echo "Copying and updating initial config..."
+                cp /tmp/config/AdGuardHome.yaml /tmp/processed-config.yaml
+                sed -i "s|ADGUARD_PASSWORD_PLACEHOLDER|${ADGUARD_PASSWORD}|g" /tmp/processed-config.yaml
+                cp /tmp/processed-config.yaml /opt/adguardhome/conf/AdGuardHome.yaml
+              else
+                echo "Config already exists, skipping..."
+              fi
+          env:
+            - name: ADGUARD_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: adguard-secret
+                  key: admin-password
+          volumeMounts:
+            - name: config-template
+              mountPath: /tmp/config
+            - name: adguard-conf
+              mountPath: /opt/adguardhome/conf
       containers:
-      - name: adguard
-        image: docker.io/adguard/adguardhome:v0.107.72
+        - name: adguard
+          image: docker.io/adguard/adguardhome:v0.107.72
   volumeClaimTemplates:
-  - metadata:
-      name: adguard-data
-    spec:
-      accessModes:
-        - ReadWriteOnce
-      storageClassName: ceph-rbd
-      resources:
-        requests:
-          storage: 5Gi
-  - metadata:
-      name: adguard-conf
-    spec:
-      accessModes:
-        - ReadWriteOnce
-      storageClassName: ceph-rbd
-      resources:
-        requests:
-          storage: 1Gi
+    - metadata:
+        name: adguard-data
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        storageClassName: ceph-rbd
+        resources:
+          requests:
+            storage: 5Gi
+    - metadata:
+        name: adguard-conf
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        storageClassName: ceph-rbd
+        resources:
+          requests:
+            storage: 1Gi

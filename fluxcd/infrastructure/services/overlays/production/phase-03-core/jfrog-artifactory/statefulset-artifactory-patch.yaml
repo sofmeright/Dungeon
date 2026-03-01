@@ -4,88 +4,91 @@ metadata:
   name: jfrog-artifactory-jcr
 spec:
   template:
+    metadata:
+      labels:
+        policy.prplanit.com/ingress: "true"
     spec:
       securityContext:
         fsGroup: 1030
       initContainers:
-      - $patch: replace
-      - name: fix-permissions
-        image: docker.io/busybox:1.37
-        command:
-        - sh
-        - -c
-        - |
-          chown -R 1030:1030 /var/opt/jfrog/artifactory
-          chmod -R 755 /var/opt/jfrog/artifactory
-        volumeMounts:
-        - name: hyrule-castle-jfrog-artifactory-data
-          mountPath: /var/opt/jfrog/artifactory
-      - name: wait-for-postgres
-        image: docker.io/busybox:1.37
-        command:
-        - sh
-        - -c
-        - |
-          until nc -z jfrog-artifactory-postgres 5433; do
-            echo "Waiting for postgres..."
-            sleep 2
-          done
+        - $patch: replace
+        - name: fix-permissions
+          image: docker.io/busybox:1.37
+          command:
+            - sh
+            - -c
+            - |
+              chown -R 1030:1030 /var/opt/jfrog/artifactory
+              chmod -R 755 /var/opt/jfrog/artifactory
+          volumeMounts:
+            - name: hyrule-castle-jfrog-artifactory-data
+              mountPath: /var/opt/jfrog/artifactory
+        - name: wait-for-postgres
+          image: docker.io/busybox:1.37
+          command:
+            - sh
+            - -c
+            - |
+              until nc -z jfrog-artifactory-postgres 5433; do
+                echo "Waiting for postgres..."
+                sleep 2
+              done
       containers:
-      - name: artifactory
-        image: releases-docker.jfrog.io/jfrog/artifactory-jcr:7.133.10
-        env:
-        - $patch: replace
-        - name: JF_ROUTER_ENTRYPOINTS_EXTERNALPORT
-          value: "8082"
-        - name: JF_SHARED_DATABASE_TYPE
-          value: "postgresql"
-        - name: JF_SHARED_DATABASE_USERNAME
-          valueFrom:
-            secretKeyRef:
-              name: jfrog-artifactory-secrets
-              key: POSTGRES_USER
-        - name: JF_SHARED_DATABASE_PASSWORD
-          valueFrom:
-            secretKeyRef:
-              name: jfrog-artifactory-secrets
-              key: POSTGRES_PASSWORD
-        - name: JF_SHARED_DATABASE_URL
-          value: "jdbc:postgresql://jfrog-artifactory-postgres:5433/artifactory"
-        - name: JF_SHARED_DATABASE_DRIVER
-          value: "org.postgresql.Driver"
-        - name: JF_SHARED_NODE_IP
-          valueFrom:
-            fieldRef:
-              fieldPath: status.podIP
-        - name: JF_SHARED_NODE_ID
-          value: "dungeon-artifactory"
-        - name: JF_SHARED_NODE_NAME
-          value: "dungeon-artifactory"
-        volumeMounts:
-        - $patch: replace
-        - name: hyrule-castle-jfrog-artifactory-data
-          mountPath: /var/opt/jfrog/artifactory
+        - name: artifactory
+          image: releases-docker.jfrog.io/jfrog/artifactory-jcr:7.133.10
+          env:
+            - $patch: replace
+            - name: JF_ROUTER_ENTRYPOINTS_EXTERNALPORT
+              value: "8082"
+            - name: JF_SHARED_DATABASE_TYPE
+              value: "postgresql"
+            - name: JF_SHARED_DATABASE_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: jfrog-artifactory-secrets
+                  key: POSTGRES_USER
+            - name: JF_SHARED_DATABASE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: jfrog-artifactory-secrets
+                  key: POSTGRES_PASSWORD
+            - name: JF_SHARED_DATABASE_URL
+              value: "jdbc:postgresql://jfrog-artifactory-postgres:5433/artifactory"
+            - name: JF_SHARED_DATABASE_DRIVER
+              value: "org.postgresql.Driver"
+            - name: JF_SHARED_NODE_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+            - name: JF_SHARED_NODE_ID
+              value: "dungeon-artifactory"
+            - name: JF_SHARED_NODE_NAME
+              value: "dungeon-artifactory"
+          volumeMounts:
+            - $patch: replace
+            - name: hyrule-castle-jfrog-artifactory-data
+              mountPath: /var/opt/jfrog/artifactory
+            - name: system-yaml
+              mountPath: /opt/jfrog/artifactory/var/etc/system.yaml
+              subPath: system.yaml
+          resources:
+            requests:
+              cpu: "1000m"
+              memory: "2Gi"
+            limits:
+              cpu: "4000m"
+              memory: "8Gi"
+      volumes:
         - name: system-yaml
-          mountPath: /opt/jfrog/artifactory/var/etc/system.yaml
-          subPath: system.yaml
+          configMap:
+            name: jfrog-artifactory-system-yaml
+  volumeClaimTemplates:
+    - metadata:
+        name: hyrule-castle-jfrog-artifactory-data
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        storageClassName: ceph-rbd
         resources:
           requests:
-            cpu: "1000m"
-            memory: "2Gi"
-          limits:
-            cpu: "4000m"
-            memory: "8Gi"
-      volumes:
-      - name: system-yaml
-        configMap:
-          name: jfrog-artifactory-system-yaml
-  volumeClaimTemplates:
-  - metadata:
-      name: hyrule-castle-jfrog-artifactory-data
-    spec:
-      accessModes:
-      - ReadWriteOnce
-      storageClassName: ceph-rbd
-      resources:
-        requests:
-          storage: 100Gi
+            storage: 100Gi

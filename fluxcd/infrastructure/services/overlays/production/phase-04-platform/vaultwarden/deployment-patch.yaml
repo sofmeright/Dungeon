@@ -10,6 +10,9 @@ spec:
       maxSurge: 1
       maxUnavailable: 0
   template:
+    metadata:
+      labels:
+        policy.prplanit.com/ingress: "true"
     spec:
       containers:
         - name: vaultwarden
