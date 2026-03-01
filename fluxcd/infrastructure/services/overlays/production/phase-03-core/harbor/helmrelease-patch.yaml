@@ -101,7 +101,7 @@ spec:
           bucket: harbor
           accesskey: ""  # Injected by valuesFrom
           secretkey: ""  # Injected by valuesFrom
-          regionendpoint: http://172.22.30.101
+          regionendpoint: http://ceph-rgw.gorons-bracelet.svc.cluster.local
           secure: false
 
     # Admin password from existing secret

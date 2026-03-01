@@ -18,6 +18,9 @@ spec:
               - cluster.local/ns/hyrule-castle/sa/gitlab-webservice
               - cluster.local/ns/hyrule-castle/sa/gitlab-toolbox
               - cluster.local/ns/hyrule-castle/sa/gitlab-registry
+              - cluster.local/ns/hyrule-castle/sa/harbor-registry
+              - cluster.local/ns/hyrule-castle/sa/harbor-core
+              - cluster.local/ns/hyrule-castle/sa/harbor-jobservice
               - cluster.local/ns/gossip-stone/sa/loki
       to:
         - operation:
