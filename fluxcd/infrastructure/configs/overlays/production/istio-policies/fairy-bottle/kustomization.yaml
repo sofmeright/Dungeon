@@ -3,4 +3,4 @@ kind: Kustomization
 namespace: fairy-bottle
 resources:
   - ../../../../base/istio-policies
-  - allow-intra-namespace.yaml
+  - allow-intra-breakglass.yaml

@@ -3,7 +3,24 @@ kind: Kustomization
 namespace: hyrule-castle
 resources:
   - ../../../../base/istio-policies
-  - allow-intra-namespace.yaml
+  - allow-intra-breakglass.yaml
+  - allow-calcom-to-calcom-postgres.yaml
+  - allow-bookstack-to-bookstack-db.yaml
+  - allow-orangehrm-to-orangehrm-mariadb.yaml
+  - allow-dolibarr-web-to-dolibarr-mariadb.yaml
+  - allow-invoiceninja-app-to-invoiceninja-mysql.yaml
+  - allow-invoiceninja-app-to-invoiceninja-redis.yaml
+  - allow-bagisto-demo-to-bagisto-demo-db.yaml
+  - allow-opnform-to-opnform-postgres.yaml
+  - allow-opnform-to-opnform-redis.yaml
+  - allow-erpnext-to-erpnext-mariadb.yaml
+  - allow-erpnext-to-erpnext-redis-cache.yaml
+  - allow-erpnext-to-erpnext-redis-queue.yaml
+  - allow-harbor-to-harbor-postgres.yaml
+  - allow-harbor-to-harbor-redis.yaml
+  - allow-gitlab-to-gitlab-postgresql.yaml
+  - allow-gitlab-to-gitlab-redis.yaml
+  - allow-jfrog-artifactory-jcr-to-jfrog-artifactory-postgres.yaml
   - allow-cell-membrane-gateway-loadbalancer.yaml
   - allow-apt-cacher-ng-loadbalancer.yaml
   - allow-jfrog-loadbalancer.yaml

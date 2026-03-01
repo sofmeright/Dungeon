@@ -1,0 +1,17 @@
+apiVersion: security.istio.io/v1
+kind: AuthorizationPolicy
+metadata:
+  name: allow-dolibarr-web-to-dolibarr-mariadb
+spec:
+  selector:
+    matchLabels:
+      app: dolibarr-mariadb
+  action: ALLOW
+  rules:
+    - from:
+        - source:
+            principals:
+              - cluster.local/ns/hyrule-castle/sa/dolibarr-web
+      to:
+        - operation:
+            ports: ["3306"]

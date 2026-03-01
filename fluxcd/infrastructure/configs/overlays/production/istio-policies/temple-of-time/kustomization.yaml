@@ -3,6 +3,26 @@ kind: Kustomization
 namespace: temple-of-time
 resources:
   - ../../../../base/istio-policies
-  - allow-intra-namespace.yaml
+  - allow-intra-breakglass.yaml
+  - allow-nextcloud-to-nextcloud-postgres.yaml
+  - allow-nextcloud-to-nextcloud-redis.yaml
+  - allow-open-webui-to-open-webui-postgres.yaml
+  - allow-open-webui-to-open-webui-redis.yaml
+  - allow-penpot-to-penpot-postgres.yaml
+  - allow-penpot-to-penpot-redis.yaml
+  - allow-penpot-exporter-to-penpot-frontend.yaml
+  - allow-appflowy-to-appflowy-postgres.yaml
+  - allow-appflowy-to-appflowy-redis.yaml
+  - allow-appflowy-cloud-to-appflowy-gotrue.yaml
+  - allow-kimai-to-kimai-mariadb.yaml
+  - allow-joplin-app-to-joplin-postgres.yaml
+  - allow-shlink-app-to-shlink-db.yaml
+  - allow-shlink-web-client-to-shlink-app.yaml
+  - allow-wikijs-vegan-to-wikijs-vegan-db.yaml
+  - allow-reactive-resume-app-to-reactive-resume-postgres.yaml
+  - allow-reactive-resume-app-to-reactive-resume-chrome.yaml
+  - allow-reactive-resume-app-to-reactive-resume-minio.yaml
+  - allow-linkwarden-to-linkwarden-postgres.yaml
+  - allow-linkwarden-to-linkwarden-meilisearch.yaml
   - allow-jellyfin-loadbalancer.yaml
   - allow-plex-loadbalancer.yaml

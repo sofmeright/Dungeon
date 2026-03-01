@@ -5,7 +5,7 @@ metadata:
 spec:
   selector:
     matchLabels:
-      app.kubernetes.io/name: podinfo-redis
+      app: podinfo-redis
   action: ALLOW
   rules:
     - from:

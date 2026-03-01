@@ -3,4 +3,6 @@ kind: Kustomization
 namespace: lost-woods
 resources:
   - ../../../../base/istio-policies
-  - allow-intra-namespace.yaml
+  - allow-intra-breakglass.yaml
+  - allow-homarr-to-homarr-postgres.yaml
+  - allow-homarr-to-homarr-redis.yaml

@@ -3,5 +3,11 @@ kind: Kustomization
 namespace: hookshot
 resources:
   - ../../../../base/istio-policies
-  - allow-intra-namespace.yaml
+  - allow-intra-breakglass.yaml
+  - allow-guacamole-to-guacamole-postgres.yaml
+  - allow-guacamole-to-guacamole-guacd.yaml
+  - allow-tactical-to-tactical-postgres.yaml
+  - allow-tactical-to-tactical-redis.yaml
+  - allow-tactical-to-tactical-mongodb.yaml
+  - allow-tactical-backend-to-tactical-nats.yaml
   - allow-rustdesk-loadbalancer.yaml

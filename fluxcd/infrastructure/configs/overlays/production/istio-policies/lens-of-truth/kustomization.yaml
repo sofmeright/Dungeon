@@ -3,6 +3,7 @@ kind: Kustomization
 namespace: lens-of-truth
 resources:
   - ../../../../base/istio-policies
-  - allow-intra-namespace.yaml
+  - allow-intra-breakglass.yaml
+  - allow-zigbee2mqtt-to-mosquitto.yaml
   - allow-frigate-loadbalancer.yaml
   - allow-wazuh-manager-loadbalancer.yaml

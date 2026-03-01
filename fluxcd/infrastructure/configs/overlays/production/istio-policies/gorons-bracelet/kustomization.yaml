@@ -3,7 +3,7 @@ kind: Kustomization
 namespace: gorons-bracelet
 resources:
   - ../../../../base/istio-policies
-  - allow-intra-namespace.yaml
+  - allow-intra-breakglass.yaml
   - allow-ceph-rgw-loadbalancer.yaml
   - allow-cnpg-instance-callback.yaml
   - allow-webhook-cnpg.yaml

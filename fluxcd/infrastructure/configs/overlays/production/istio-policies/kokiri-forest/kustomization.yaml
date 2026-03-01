@@ -3,5 +3,6 @@ kind: Kustomization
 namespace: kokiri-forest
 resources:
   - ../../../../base/istio-policies
-  - allow-intra-namespace.yaml
+  - allow-intra-breakglass.yaml
+  - allow-linkstack-to-linkstack-db.yaml
   - allow-phloem-gateway-loadbalancer.yaml

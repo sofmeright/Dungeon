@@ -1,0 +1,17 @@
+apiVersion: security.istio.io/v1
+kind: AuthorizationPolicy
+metadata:
+  name: allow-romm-to-romm-db
+spec:
+  selector:
+    matchLabels:
+      app: romm-db
+  action: ALLOW
+  rules:
+    - from:
+        - source:
+            principals:
+              - cluster.local/ns/shooting-gallery/sa/romm
+      to:
+        - operation:
+            ports: ["3306"]

@@ -3,7 +3,7 @@ kind: Kustomization
 namespace: compass
 resources:
   - ../../../../base/istio-policies
-  - allow-intra-namespace.yaml
+  - allow-intra-breakglass.yaml
   - allow-dns-loadbalancer.yaml
   - allow-ntp-loadbalancer.yaml
   - allow-netbootxyz-loadbalancer.yaml

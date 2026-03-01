@@ -1,0 +1,19 @@
+apiVersion: security.istio.io/v1
+kind: AuthorizationPolicy
+metadata:
+  name: allow-harbor-to-harbor-redis
+spec:
+  selector:
+    matchLabels:
+      app: harbor-redis
+  action: ALLOW
+  rules:
+    - from:
+        - source:
+            principals:
+              - cluster.local/ns/hyrule-castle/sa/harbor-core
+              - cluster.local/ns/hyrule-castle/sa/harbor-jobservice
+              - cluster.local/ns/hyrule-castle/sa/harbor-registry
+      to:
+        - operation:
+            ports: ["6379"]

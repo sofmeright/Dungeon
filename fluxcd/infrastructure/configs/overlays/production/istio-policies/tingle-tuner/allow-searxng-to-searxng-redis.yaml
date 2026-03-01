@@ -5,7 +5,7 @@ metadata:
 spec:
   selector:
     matchLabels:
-      app.kubernetes.io/name: searxng-redis
+      app: searxng-redis
   action: ALLOW
   rules:
     - from:

@@ -1,0 +1,17 @@
+apiVersion: security.istio.io/v1
+kind: AuthorizationPolicy
+metadata:
+  name: allow-netbird-management-to-netbird-postgres
+spec:
+  selector:
+    matchLabels:
+      cnpg.io/cluster: netbird-postgres
+  action: ALLOW
+  rules:
+    - from:
+        - source:
+            principals:
+              - cluster.local/ns/zeldas-lullaby/sa/netbird-management
+      to:
+        - operation:
+            ports: ["5432"]

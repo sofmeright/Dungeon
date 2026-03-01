@@ -3,7 +3,13 @@ kind: Kustomization
 namespace: zeldas-lullaby
 resources:
   - ../../../../base/istio-policies
-  - allow-intra-namespace.yaml
+  - allow-intra-breakglass.yaml
+  - allow-vaultwarden-to-vaultwarden-postgres.yaml
+  - allow-zitadel-to-zitadel-postgres.yaml
+  - allow-zitadel-to-zitadel-redis.yaml
+  - allow-netbird-management-to-netbird-postgres.yaml
+  - allow-netbox-server-to-netbox-postgres.yaml
+  - allow-netbox-server-to-netbox-redis.yaml
   - allow-netbird-coturn-loadbalancer.yaml
   - allow-vault-lb-loadbalancer.yaml
   - allow-oidc-clients.yaml

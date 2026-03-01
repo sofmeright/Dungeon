@@ -3,7 +3,11 @@ kind: Kustomization
 namespace: gossip-stone
 resources:
   - ../../../../base/istio-policies
-  - allow-intra-namespace.yaml
+  - allow-intra-breakglass.yaml
+  - allow-gatus-to-gatus-postgres.yaml
+  - allow-grafana-to-grafana-postgres.yaml
+  - allow-umami-to-umami-postgres.yaml
+  - allow-speedtest-tracker-to-speedtest-tracker-postgres.yaml
   - allow-graphite-exporter-loadbalancer.yaml
   - allow-nutify-loadbalancer.yaml
   - allow-prom-exporter-eaton-ups-loadbalancer.yaml

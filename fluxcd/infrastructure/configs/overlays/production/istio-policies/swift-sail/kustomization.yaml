@@ -3,5 +3,6 @@ kind: Kustomization
 namespace: swift-sail
 resources:
   - ../../../../base/istio-policies
-  - allow-intra-namespace.yaml
+  - allow-intra-breakglass.yaml
+  - allow-downloadarrs-to-prowlarr.yaml
   - allow-py-kms-loadbalancer.yaml
