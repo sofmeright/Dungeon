@@ -9,3 +9,4 @@ resources:
   - allow-monica-to-monica-db.yaml
   - allow-roundcube-primary-gmail-to-roundcube-primary-gmail-db.yaml
   - allow-plex-ms-x-loadbalancer.yaml
+  - allow-gateway-ingress-xylem.yaml

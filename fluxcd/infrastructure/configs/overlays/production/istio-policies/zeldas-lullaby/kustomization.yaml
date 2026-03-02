@@ -18,3 +18,5 @@ resources:
   - allow-oidc-clients.yaml
   - allow-webhook-external-secrets.yaml
   - allow-webhook-kyverno.yaml
+  - allow-gateway-ingress-xylem.yaml
+  - allow-gateway-ingress-cell-membrane.yaml

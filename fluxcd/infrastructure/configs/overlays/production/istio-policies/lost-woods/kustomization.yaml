@@ -6,3 +6,6 @@ resources:
   - allow-intra-breakglass.yaml
   - allow-homarr-to-homarr-postgres.yaml
   - allow-homarr-to-homarr-redis.yaml
+  - allow-gateway-ingress-xylem.yaml
+  - allow-gateway-ingress-phloem.yaml
+  - allow-gateway-ingress-cell-membrane.yaml

@@ -6,3 +6,5 @@ resources:
   - allow-intra-breakglass.yaml
   - allow-downloadarrs-to-prowlarr.yaml
   - allow-py-kms-loadbalancer.yaml
+  - allow-gateway-ingress-xylem.yaml
+  - allow-gateway-ingress-cell-membrane.yaml

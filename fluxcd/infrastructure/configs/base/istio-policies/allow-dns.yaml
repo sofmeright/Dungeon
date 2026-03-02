@@ -7,9 +7,10 @@ metadata:
 spec:
   action: ALLOW
   rules:
-    - to:
+    - from:
+        - source:
+            principals:
+              - cluster.local/ns/kube-system/sa/coredns
+      to:
         - operation:
             ports: ["53"]
-      from:
-        - source:
-            namespaces: ["kube-system"]

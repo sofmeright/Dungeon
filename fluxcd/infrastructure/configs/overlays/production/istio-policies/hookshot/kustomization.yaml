@@ -11,3 +11,5 @@ resources:
   - allow-tactical-to-tactical-mongodb.yaml
   - allow-tactical-backend-to-tactical-nats.yaml
   - allow-rustdesk-loadbalancer.yaml
+  - allow-gateway-ingress-xylem.yaml
+  - allow-gateway-ingress-cell-membrane.yaml

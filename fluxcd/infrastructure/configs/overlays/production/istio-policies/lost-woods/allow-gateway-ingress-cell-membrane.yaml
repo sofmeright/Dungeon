@@ -1,3 +1,7 @@
+# DERIVED: ports from HTTPRoute backendRefs targeting this namespace.
+# Inputs: kubectl get httproutes.gateway.networking.k8s.io -A -o json
+# Key: (gateway parentRef -> {xylem|phloem|cell-membrane}) + backendRef.port
+# Regenerate; do not hand-edit.
 apiVersion: security.istio.io/v1
 kind: AuthorizationPolicy
 metadata:
@@ -12,3 +16,6 @@ spec:
         - source:
             principals:
               - cluster.local/ns/hyrule-castle/sa/cell-membrane-gateway-istio
+      to:
+        - operation:
+            ports: ["80", "4016", "4018", "4021"]

@@ -31,3 +31,5 @@ resources:
   - allow-apt-cacher-ng-loadbalancer.yaml
   - allow-jfrog-loadbalancer.yaml
   - allow-webhook-gitlab-certmanager.yaml
+  - allow-gateway-ingress-xylem.yaml
+  - allow-gateway-ingress-cell-membrane.yaml

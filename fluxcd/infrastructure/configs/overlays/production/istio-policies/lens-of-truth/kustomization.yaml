@@ -7,3 +7,5 @@ resources:
   - allow-zigbee2mqtt-to-mosquitto.yaml
   - allow-frigate-loadbalancer.yaml
   - allow-wazuh-manager-loadbalancer.yaml
+  - allow-gateway-ingress-xylem.yaml
+  - allow-gateway-ingress-phloem.yaml

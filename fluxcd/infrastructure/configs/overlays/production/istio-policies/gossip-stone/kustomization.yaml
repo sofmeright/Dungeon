@@ -13,3 +13,6 @@ resources:
   - allow-nutify-loadbalancer.yaml
   - allow-prom-exporter-eaton-ups-loadbalancer.yaml
   - allow-prom-exporter-pve-loadbalancer.yaml
+  - allow-gateway-ingress-xylem.yaml
+  - allow-gateway-ingress-phloem.yaml
+  - allow-gateway-ingress-cell-membrane.yaml

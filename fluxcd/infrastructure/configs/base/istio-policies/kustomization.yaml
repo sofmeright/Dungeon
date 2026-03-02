@@ -7,6 +7,3 @@ resources:
   - allow-prometheus.yaml
   - allow-gatus.yaml
   - allow-cnpg-operator.yaml
-  - allow-gateway-ingress-xylem.yaml
-  - allow-gateway-ingress-phloem.yaml
-  - allow-gateway-ingress-cell-membrane.yaml

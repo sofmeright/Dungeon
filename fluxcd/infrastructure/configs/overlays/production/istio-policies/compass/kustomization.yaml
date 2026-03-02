@@ -7,3 +7,5 @@ resources:
   - allow-dns-loadbalancer.yaml
   - allow-ntp-loadbalancer.yaml
   - allow-netbootxyz-loadbalancer.yaml
+  - allow-gateway-ingress-xylem.yaml
+  - allow-gateway-ingress-cell-membrane.yaml
