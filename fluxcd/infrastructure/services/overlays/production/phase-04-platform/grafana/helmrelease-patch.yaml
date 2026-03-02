@@ -19,9 +19,7 @@ spec:
 
     # Generous startup probe — alerting provisioning + plugin install can take minutes
     startupProbe:
-      httpGet:
-        path: /api/health
-        port: 3000
+      enabled: true
       initialDelaySeconds: 30
       periodSeconds: 10
       failureThreshold: 30
