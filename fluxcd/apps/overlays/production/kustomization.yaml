@@ -112,7 +112,6 @@ resources:
   - fusionpbx-external
   # - home-assistant-external  # Replaced by in-cluster home-assistant
   - mailcow-external
-  - nextcloud-external
   - nextcloud
   # Static Sites
   - fairer-pages

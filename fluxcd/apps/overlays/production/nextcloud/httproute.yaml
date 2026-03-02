@@ -1,7 +1,7 @@
 apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
 metadata:
-  name: nextcloud-public
+  name: nextcloud
   namespace: temple-of-time
   annotations:
     gatus.home-operations.com/endpoint: |
@@ -83,7 +83,7 @@ spec:
 apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
 metadata:
-  name: nextcloud-internal
+  name: nextcloud-xylem
   namespace: temple-of-time
   annotations:
     gatus.home-operations.com/endpoint: |
