@@ -1,0 +1,35 @@
+apiVersion: security.istio.io/v1
+kind: AuthorizationPolicy
+metadata:
+  name: allow-redis-operator
+spec:
+  selector:
+    matchLabels:
+      redis_setup_type: replication
+  action: ALLOW
+  rules:
+    - from:
+        - source:
+            principals:
+              - cluster.local/ns/gorons-bracelet/sa/redis-operator
+      to:
+        - operation:
+            ports: ["6379"]
+---
+apiVersion: security.istio.io/v1
+kind: AuthorizationPolicy
+metadata:
+  name: allow-redis-operator-sentinel
+spec:
+  selector:
+    matchLabels:
+      redis_setup_type: sentinel
+  action: ALLOW
+  rules:
+    - from:
+        - source:
+            principals:
+              - cluster.local/ns/gorons-bracelet/sa/redis-operator
+      to:
+        - operation:
+            ports: ["26379"]
