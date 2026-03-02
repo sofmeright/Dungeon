@@ -17,6 +17,16 @@ spec:
     # HA configuration
     replicas: 3
 
+    # Generous startup probe — alerting provisioning + plugin install can take minutes
+    startupProbe:
+      httpGet:
+        path: /api/health
+        port: 3000
+      initialDelaySeconds: 30
+      periodSeconds: 10
+      failureThreshold: 30
+      timeoutSeconds: 5
+
     # Disable built-in persistence - using PostgreSQL instead
     persistence:
       enabled: false
