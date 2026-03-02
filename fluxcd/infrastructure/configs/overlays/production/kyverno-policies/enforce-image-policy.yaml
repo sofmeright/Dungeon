@@ -46,9 +46,9 @@ spec:
             deny:
               conditions:
                 any:
-                  - key: "{{ element.image }}"
-                    operator: EndsWith
-                    value: ":latest"
+                  - key: "{{ regex_match('.*:latest$', element.image) }}"
+                    operator: Equals
+                    value: true
                   - key: "{{ contains(element.image, ':') || contains(element.image, '@sha256:') }}"
                     operator: Equals
                     value: false
@@ -56,9 +56,9 @@ spec:
             deny:
               conditions:
                 any:
-                  - key: "{{ element.image }}"
-                    operator: EndsWith
-                    value: ":latest"
+                  - key: "{{ regex_match('.*:latest$', element.image) }}"
+                    operator: Equals
+                    value: true
                   - key: "{{ contains(element.image, ':') || contains(element.image, '@sha256:') }}"
                     operator: Equals
                     value: false
@@ -66,9 +66,9 @@ spec:
             deny:
               conditions:
                 any:
-                  - key: "{{ element.image }}"
-                    operator: EndsWith
-                    value: ":latest"
+                  - key: "{{ regex_match('.*:latest$', element.image) }}"
+                    operator: Equals
+                    value: true
                   - key: "{{ contains(element.image, ':') || contains(element.image, '@sha256:') }}"
                     operator: Equals
                     value: false
@@ -110,9 +110,9 @@ spec:
             deny:
               conditions:
                 any:
-                  - key: "{{ element.image }}"
-                    operator: EndsWith
-                    value: ":latest"
+                  - key: "{{ regex_match('.*:latest$', element.image) }}"
+                    operator: Equals
+                    value: true
                   - key: "{{ contains(element.image, ':') || contains(element.image, '@sha256:') }}"
                     operator: Equals
                     value: false
@@ -120,9 +120,9 @@ spec:
             deny:
               conditions:
                 any:
-                  - key: "{{ element.image }}"
-                    operator: EndsWith
-                    value: ":latest"
+                  - key: "{{ regex_match('.*:latest$', element.image) }}"
+                    operator: Equals
+                    value: true
                   - key: "{{ contains(element.image, ':') || contains(element.image, '@sha256:') }}"
                     operator: Equals
                     value: false
