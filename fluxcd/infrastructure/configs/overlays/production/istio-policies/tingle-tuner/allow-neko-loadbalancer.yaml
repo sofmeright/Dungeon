@@ -14,7 +14,7 @@ spec:
               - cluster.local/ns/*/sa/*
       to:
         - operation:
-            ports: ["3478", "5340", "62001", "62002"]
+            ports: ["5340", "62001", "62002"]
 ---
 apiVersion: security.istio.io/v1
 kind: AuthorizationPolicy
@@ -23,7 +23,7 @@ metadata:
 spec:
   selector:
     matchLabels:
-      app: neko-gateway
+      app: stunner
   action: ALLOW
   rules:
     - from:
@@ -32,4 +32,4 @@ spec:
               - cluster.local/ns/*/sa/*
       to:
         - operation:
-            ports: ["3478", "5340", "62001", "62002"]
+            ports: ["3478"]

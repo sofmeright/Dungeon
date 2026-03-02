@@ -5,7 +5,8 @@ metadata:
 spec:
   selector:
     matchLabels:
-      app: netbird-coturn
+      app: netbird
+      component: coturn
   action: ALLOW
   rules:
     - from:

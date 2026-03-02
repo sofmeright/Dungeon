@@ -14,4 +14,4 @@ spec:
               - cluster.local/ns/*/sa/*
       to:
         - operation:
-            ports: ["1688", "9168"]
+            ports: ["1688", "8080"]

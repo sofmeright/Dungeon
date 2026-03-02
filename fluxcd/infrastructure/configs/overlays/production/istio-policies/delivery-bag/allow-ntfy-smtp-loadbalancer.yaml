@@ -5,7 +5,7 @@ metadata:
 spec:
   selector:
     matchLabels:
-      app: ntfy
+      app.kubernetes.io/name: ntfy
   action: ALLOW
   rules:
     - from:
