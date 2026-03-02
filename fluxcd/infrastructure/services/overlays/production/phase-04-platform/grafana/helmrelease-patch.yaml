@@ -53,6 +53,11 @@ spec:
     datasources:
       datasources.yaml:
         apiVersion: 1
+        deleteDatasources:
+          - name: VictoriaMetrics
+            orgId: 1
+          - name: Loki
+            orgId: 1
         datasources:
           - name: VictoriaMetrics
             uid: victoriametrics
