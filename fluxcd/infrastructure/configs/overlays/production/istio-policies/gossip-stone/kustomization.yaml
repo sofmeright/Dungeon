@@ -13,6 +13,9 @@ resources:
   - allow-nutify-loadbalancer.yaml
   - allow-prom-exporter-eaton-ups-loadbalancer.yaml
   - allow-prom-exporter-pve-loadbalancer.yaml
+  - allow-grafana-postgres-replication.yaml
+  - allow-loki-intra-cluster.yaml
+  - allow-vmstorage-intra-cluster.yaml
   - allow-gateway-ingress-xylem.yaml
   - allow-gateway-ingress-phloem.yaml
   - allow-gateway-ingress-cell-membrane.yaml

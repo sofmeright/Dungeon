@@ -1,0 +1,17 @@
+apiVersion: security.istio.io/v1
+kind: AuthorizationPolicy
+metadata:
+  name: allow-gitlab-postgresql-replication
+spec:
+  selector:
+    matchLabels:
+      cnpg.io/cluster: gitlab-postgresql
+  action: ALLOW
+  rules:
+    - from:
+        - source:
+            principals:
+              - cluster.local/ns/hyrule-castle/sa/gitlab-postgresql
+      to:
+        - operation:
+            ports: ["5432"]

@@ -1,0 +1,17 @@
+apiVersion: security.istio.io/v1
+kind: AuthorizationPolicy
+metadata:
+  name: allow-harbor-postgres-replication
+spec:
+  selector:
+    matchLabels:
+      cnpg.io/cluster: harbor-postgres
+  action: ALLOW
+  rules:
+    - from:
+        - source:
+            principals:
+              - cluster.local/ns/hyrule-castle/sa/harbor-postgres
+      to:
+        - operation:
+            ports: ["5432"]

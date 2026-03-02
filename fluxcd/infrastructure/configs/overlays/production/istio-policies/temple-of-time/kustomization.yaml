@@ -25,6 +25,12 @@ resources:
   - allow-linkwarden-to-linkwarden-postgres.yaml
   - allow-linkwarden-to-linkwarden-meilisearch.yaml
   - allow-open-webui-to-open-webui-sentinel.yaml
+  - allow-appflowy-postgres-replication.yaml
+  - allow-nextcloud-postgres-replication.yaml
+  - allow-open-webui-postgres-replication.yaml
+  - allow-kimai-mariadb-galera.yaml
+  - allow-nextcloud-redis-intra-cluster.yaml
+  - allow-open-webui-redis-intra-cluster.yaml
   - allow-jellyfin-loadbalancer.yaml
   - allow-plex-loadbalancer.yaml
   - allow-gateway-ingress-xylem.yaml

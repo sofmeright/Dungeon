@@ -15,6 +15,10 @@ resources:
   - allow-vault-to-vault.yaml
   - allow-netbird-coturn-loadbalancer.yaml
   - allow-vault-lb-loadbalancer.yaml
+  - allow-netbird-postgres-replication.yaml
+  - allow-vaultwarden-postgres-replication.yaml
+  - allow-zitadel-postgres-replication.yaml
+  - allow-zitadel-redis-intra-cluster.yaml
   - allow-oidc-clients.yaml
   - allow-webhook-external-secrets.yaml
   - allow-webhook-kyverno.yaml

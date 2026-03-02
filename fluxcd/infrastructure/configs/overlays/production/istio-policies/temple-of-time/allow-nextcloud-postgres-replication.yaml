@@ -1,0 +1,17 @@
+apiVersion: security.istio.io/v1
+kind: AuthorizationPolicy
+metadata:
+  name: allow-nextcloud-postgres-replication
+spec:
+  selector:
+    matchLabels:
+      cnpg.io/cluster: nextcloud-postgres
+  action: ALLOW
+  rules:
+    - from:
+        - source:
+            principals:
+              - cluster.local/ns/temple-of-time/sa/nextcloud-postgres
+      to:
+        - operation:
+            ports: ["5432"]

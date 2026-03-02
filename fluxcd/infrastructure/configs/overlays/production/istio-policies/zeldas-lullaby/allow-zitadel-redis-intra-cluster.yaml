@@ -1,0 +1,37 @@
+apiVersion: security.istio.io/v1
+kind: AuthorizationPolicy
+metadata:
+  name: allow-zitadel-redis-intra-cluster
+spec:
+  selector:
+    matchLabels:
+      app: zitadel-redis
+  action: ALLOW
+  rules:
+    - from:
+        - source:
+            principals:
+              - cluster.local/ns/zeldas-lullaby/sa/zitadel-redis
+              - cluster.local/ns/zeldas-lullaby/sa/zitadel-sentinel
+      to:
+        - operation:
+            ports: ["6379"]
+---
+apiVersion: security.istio.io/v1
+kind: AuthorizationPolicy
+metadata:
+  name: allow-zitadel-sentinel-intra-cluster
+spec:
+  selector:
+    matchLabels:
+      app: zitadel-sentinel-sentinel
+  action: ALLOW
+  rules:
+    - from:
+        - source:
+            principals:
+              - cluster.local/ns/zeldas-lullaby/sa/zitadel-sentinel
+              - cluster.local/ns/zeldas-lullaby/sa/zitadel-redis
+      to:
+        - operation:
+            ports: ["26379"]
