@@ -5,6 +5,7 @@ resources:
   - ../../../../base/istio-policies
   - allow-intra-breakglass.yaml
   - allow-zigbee2mqtt-to-mosquitto.yaml
+  - allow-home-assistant-to-mosquitto.yaml
   - allow-frigate-loadbalancer.yaml
   - allow-wazuh-manager-loadbalancer.yaml
   - allow-gateway-ingress-xylem.yaml
