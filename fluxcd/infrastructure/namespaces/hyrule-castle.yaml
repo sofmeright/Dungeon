@@ -10,3 +10,4 @@ metadata:
     pod-security.kubernetes.io/audit: baseline
     pod-security.kubernetes.io/warn: baseline
     istio.io/dataplane-mode: ambient
+    policy.prplanit.com/restrict-default-sa: "suspended"

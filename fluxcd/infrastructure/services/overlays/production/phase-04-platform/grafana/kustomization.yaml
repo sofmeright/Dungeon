@@ -5,6 +5,7 @@ resources:
   - ../../../../base/grafana
   - cephfs-plugins-pv.yaml
   - httproute-xylem.yaml
+  - externalsecret-ntfy.yaml
 
 patches:
   - path: helmrelease-patch.yaml
@@ -64,6 +65,13 @@ patches:
   - target:
       kind: ConfigMap
       name: grafana-dashboards
+    patch: |-
+      - op: add
+        path: /metadata/namespace
+        value: gossip-stone
+  - target:
+      kind: ExternalSecret
+      name: grafana-ntfy-token
     patch: |-
       - op: add
         path: /metadata/namespace

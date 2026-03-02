@@ -3,7 +3,7 @@ kind: ClusterPolicy
 metadata:
   name: restrict-default-sa
 spec:
-  validationFailureAction: Audit
+  validationFailureAction: Enforce
   background: true
   rules:
     - name: restrict-default-sa-pods
@@ -36,6 +36,10 @@ spec:
               selector:
                 matchLabels:
                   app.kubernetes.io/name: kyverno
+          - resources:
+              namespaceSelector:
+                matchLabels:
+                  policy.prplanit.com/restrict-default-sa: "suspended"
       validate:
         message: "Pods must specify a non-default serviceAccountName in ambient mesh namespaces."
         deny:
@@ -77,6 +81,10 @@ spec:
               selector:
                 matchLabels:
                   app.kubernetes.io/name: kyverno
+          - resources:
+              namespaceSelector:
+                matchLabels:
+                  policy.prplanit.com/restrict-default-sa: "suspended"
       validate:
         message: "Controllers must specify a non-default serviceAccountName in ambient mesh namespaces."
         deny:

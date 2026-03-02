@@ -31,6 +31,8 @@ spec:
         host: grafana-postgres-rw.gossip-stone.svc.cluster.local:5432
         name: grafana
         ssl_mode: disable
+      unified_alerting:
+        enabled: true
 
     # Map secret keys to Grafana environment variables
     envValueFrom:
@@ -42,6 +44,10 @@ spec:
         secretKeyRef:
           name: grafana-postgres-credentials
           key: password
+      NTFY_TOKEN:
+        secretKeyRef:
+          name: grafana-ntfy-token
+          key: token
 
     # Datasource provisioning
     datasources:
@@ -49,6 +55,7 @@ spec:
         apiVersion: 1
         datasources:
           - name: VictoriaMetrics
+            uid: victoriametrics
             type: prometheus
             access: proxy
             url: http://vmselect.gossip-stone.svc.cluster.local:8481/select/0/prometheus
@@ -58,6 +65,7 @@ spec:
               timeInterval: 30s
               httpMethod: POST
           - name: Loki
+            uid: loki
             type: loki
             access: proxy
             url: http://loki-gateway.gossip-stone.svc.cluster.local:80
@@ -99,3 +107,301 @@ spec:
     extraVolumeMounts:
       - name: grafana-plugins-shared
         mountPath: /var/lib/grafana/plugins
+
+    # Alerting provisioning — Phase 5 operational security guardrails
+    alerting:
+      contactpoints.yaml:
+        apiVersion: 1
+        contactPoints:
+          - orgId: 1
+            name: ntfy-security
+            receivers:
+              - uid: ntfy-security
+                type: webhook
+                settings:
+                  url: "https://ntfy.pcfae.com/grafana-security-alerts"
+                  httpMethod: POST
+                  httpHeaderName1: "Authorization"
+                  httpHeaderValue1: "Bearer ${NTFY_TOKEN}"
+                disableResolveMessage: false
+      policies.yaml:
+        apiVersion: 1
+        policies:
+          - orgId: 1
+            receiver: ntfy-security
+            group_by: ['grafana_folder', 'alertname']
+            group_wait: 30s
+            group_interval: 5m
+            repeat_interval: 4h
+      rules.yaml:
+        apiVersion: 1
+        groups:
+          - orgId: 1
+            name: Security Guardrails
+            folder: Security
+            interval: 1m
+            rules:
+              - uid: breakglass-cluster-gate
+                title: Breakglass Cluster Gate Active
+                condition: B
+                data:
+                  - refId: A
+                    relativeTimeRange:
+                      from: 600
+                      to: 0
+                    datasourceUid: victoriametrics
+                    model:
+                      refId: A
+                      expr: 'kube_namespace_labels{namespace="kube-system",label_zt_breakglass_active="true"}'
+                      instant: true
+                      intervalMs: 1000
+                      maxDataPoints: 43200
+                  - refId: B
+                    relativeTimeRange:
+                      from: 600
+                      to: 0
+                    datasourceUid: "__expr__"
+                    model:
+                      refId: B
+                      type: threshold
+                      expression: A
+                      conditions:
+                        - evaluator:
+                            type: gt
+                            params:
+                              - 0
+                          operator:
+                            type: and
+                          query:
+                            params:
+                              - B
+                          reducer:
+                            type: last
+                            params: []
+                for: 0s
+                noDataState: OK
+                execErrState: Error
+                labels:
+                  severity: critical
+                annotations:
+                  summary: "Breakglass cluster gate (kube-system zt.breakglass/active=true) is active — emergency mesh bypass enabled cluster-wide"
+              - uid: breakglass-namespace-gate
+                title: Breakglass Namespace Gate Active
+                condition: B
+                data:
+                  - refId: A
+                    relativeTimeRange:
+                      from: 600
+                      to: 0
+                    datasourceUid: victoriametrics
+                    model:
+                      refId: A
+                      expr: 'kube_namespace_labels{label_zt_breakglass_namespace="true"}'
+                      instant: true
+                      intervalMs: 1000
+                      maxDataPoints: 43200
+                  - refId: B
+                    relativeTimeRange:
+                      from: 600
+                      to: 0
+                    datasourceUid: "__expr__"
+                    model:
+                      refId: B
+                      type: threshold
+                      expression: A
+                      conditions:
+                        - evaluator:
+                            type: gt
+                            params:
+                              - 0
+                          operator:
+                            type: and
+                          query:
+                            params:
+                              - B
+                          reducer:
+                            type: last
+                            params: []
+                for: 0s
+                noDataState: OK
+                execErrState: Error
+                labels:
+                  severity: warning
+                annotations:
+                  summary: "Breakglass namespace gate active — a namespace has zt.breakglass/namespace=true for emergency mesh bypass"
+              - uid: kyverno-webhook-missing
+                title: Kyverno Webhook Missing
+                condition: B
+                data:
+                  - refId: A
+                    relativeTimeRange:
+                      from: 600
+                      to: 0
+                    datasourceUid: victoriametrics
+                    model:
+                      refId: A
+                      expr: 'absent(kube_validatingwebhookconfiguration_info{validatingwebhookconfiguration=~"kyverno.*"})'
+                      instant: true
+                      intervalMs: 1000
+                      maxDataPoints: 43200
+                  - refId: B
+                    relativeTimeRange:
+                      from: 600
+                      to: 0
+                    datasourceUid: "__expr__"
+                    model:
+                      refId: B
+                      type: threshold
+                      expression: A
+                      conditions:
+                        - evaluator:
+                            type: gt
+                            params:
+                              - 0
+                          operator:
+                            type: and
+                          query:
+                            params:
+                              - B
+                          reducer:
+                            type: last
+                            params: []
+                for: 2m
+                noDataState: Alerting
+                execErrState: Error
+                labels:
+                  severity: critical
+                annotations:
+                  summary: "Kyverno validating webhook configuration is missing — admission enforcement is down"
+              - uid: kyverno-policy-violations
+                title: Kyverno Policy Violations
+                condition: B
+                data:
+                  - refId: A
+                    relativeTimeRange:
+                      from: 600
+                      to: 0
+                    datasourceUid: victoriametrics
+                    model:
+                      refId: A
+                      expr: 'sum(rate(kyverno_policy_results_total{rule_result="fail"}[5m]))'
+                      instant: true
+                      intervalMs: 1000
+                      maxDataPoints: 43200
+                  - refId: B
+                    relativeTimeRange:
+                      from: 600
+                      to: 0
+                    datasourceUid: "__expr__"
+                    model:
+                      refId: B
+                      type: threshold
+                      expression: A
+                      conditions:
+                        - evaluator:
+                            type: gt
+                            params:
+                              - 0
+                          operator:
+                            type: and
+                          query:
+                            params:
+                              - B
+                          reducer:
+                            type: last
+                            params: []
+                for: 5m
+                noDataState: OK
+                execErrState: Error
+                labels:
+                  severity: warning
+                annotations:
+                  summary: "Kyverno is reporting policy violations — review with kubectl get policyreport -A"
+              - uid: ztunnel-deny-spike
+                title: ztunnel Deny Spike
+                condition: B
+                data:
+                  - refId: A
+                    relativeTimeRange:
+                      from: 600
+                      to: 0
+                    datasourceUid: loki
+                    model:
+                      refId: A
+                      expr: 'sum(count_over_time({app="ztunnel"} |= "denied" |!= "handling RBAC" [5m]))'
+                      queryType: instant
+                      intervalMs: 1000
+                      maxDataPoints: 43200
+                  - refId: B
+                    relativeTimeRange:
+                      from: 600
+                      to: 0
+                    datasourceUid: "__expr__"
+                    model:
+                      refId: B
+                      type: threshold
+                      expression: A
+                      conditions:
+                        - evaluator:
+                            type: gt
+                            params:
+                              - 10
+                          operator:
+                            type: and
+                          query:
+                            params:
+                              - B
+                          reducer:
+                            type: last
+                            params: []
+                for: 5m
+                noDataState: OK
+                execErrState: Error
+                labels:
+                  severity: warning
+                annotations:
+                  summary: "ztunnel is denying traffic at elevated rate (>10 denies in 5m, excluding RBAC handling) — check for policy drift"
+              - uid: default-sa-enforcement-suspended
+                title: Default SA Enforcement Suspended
+                condition: B
+                data:
+                  - refId: A
+                    relativeTimeRange:
+                      from: 600
+                      to: 0
+                    datasourceUid: victoriametrics
+                    model:
+                      refId: A
+                      expr: 'kube_namespace_labels{label_policy_prplanit_com_restrict_default_sa="suspended"}'
+                      instant: true
+                      intervalMs: 1000
+                      maxDataPoints: 43200
+                  - refId: B
+                    relativeTimeRange:
+                      from: 600
+                      to: 0
+                    datasourceUid: "__expr__"
+                    model:
+                      refId: B
+                      type: threshold
+                      expression: A
+                      conditions:
+                        - evaluator:
+                            type: gt
+                            params:
+                              - 0
+                          operator:
+                            type: and
+                          query:
+                            params:
+                              - B
+                          reducer:
+                            type: last
+                            params: []
+                for: 0s
+                noDataState: OK
+                execErrState: Error
+                labels:
+                  severity: warning
+                annotations:
+                  summary: "restrict-default-sa enforcement is suspended for one or more namespaces — burn down SA violations and remove the label"

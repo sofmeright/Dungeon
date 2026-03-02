@@ -1,0 +1,247 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: enforce-image-policy
+spec:
+  validationFailureAction: Audit
+  background: true
+  rules:
+    # ------------------------------------------------------------
+    # Rule 1: require-image-tag
+    # - Deny :latest
+    # - Deny implicit latest (no ":" and no "@sha256:")
+    # - Allow digests (image@sha256:...)
+    # ------------------------------------------------------------
+    - name: require-image-tag
+      match:
+        any:
+          - resources:
+              kinds: ["Pod"]
+              namespaces:
+                - arylls-lookout
+                - compass
+                - delivery-bag
+                - fairy-bottle
+                - gorons-bracelet
+                - gossip-stone
+                - hookshot
+                - hyrule-castle
+                - king-of-red-lions
+                - kokiri-forest
+                - lens-of-truth
+                - lost-woods
+                - pedestal-of-time
+                - shooting-gallery
+                - swift-sail
+                - temple-of-time
+                - tingle-tuner
+                - wallmaster
+                - zeldas-lullaby
+      validate:
+        message: >-
+          Images must be pinned to a non-latest tag or an immutable digest.
+          ':latest' and implicit latest (no tag) are not allowed.
+        foreach:
+          - list: "request.object.spec.containers"
+            deny:
+              conditions:
+                any:
+                  - key: "{{ element.image }}"
+                    operator: EndsWith
+                    value: ":latest"
+                  - key: "{{ contains(element.image, ':') || contains(element.image, '@sha256:') }}"
+                    operator: Equals
+                    value: false
+          - list: "request.object.spec.initContainers"
+            deny:
+              conditions:
+                any:
+                  - key: "{{ element.image }}"
+                    operator: EndsWith
+                    value: ":latest"
+                  - key: "{{ contains(element.image, ':') || contains(element.image, '@sha256:') }}"
+                    operator: Equals
+                    value: false
+          - list: "request.object.spec.ephemeralContainers"
+            deny:
+              conditions:
+                any:
+                  - key: "{{ element.image }}"
+                    operator: EndsWith
+                    value: ":latest"
+                  - key: "{{ contains(element.image, ':') || contains(element.image, '@sha256:') }}"
+                    operator: Equals
+                    value: false
+    # ------------------------------------------------------------
+    # Rule 1b: require-image-tag-controllers
+    # - Same as Rule 1 but for controller pod templates
+    # ------------------------------------------------------------
+    - name: require-image-tag-controllers
+      match:
+        any:
+          - resources:
+              kinds: ["Deployment", "StatefulSet", "DaemonSet", "Job", "CronJob"]
+              namespaces:
+                - arylls-lookout
+                - compass
+                - delivery-bag
+                - fairy-bottle
+                - gorons-bracelet
+                - gossip-stone
+                - hookshot
+                - hyrule-castle
+                - king-of-red-lions
+                - kokiri-forest
+                - lens-of-truth
+                - lost-woods
+                - pedestal-of-time
+                - shooting-gallery
+                - swift-sail
+                - temple-of-time
+                - tingle-tuner
+                - wallmaster
+                - zeldas-lullaby
+      validate:
+        message: >-
+          Images must be pinned to a non-latest tag or an immutable digest.
+          ':latest' and implicit latest (no tag) are not allowed.
+        foreach:
+          - list: "request.object.spec.template.spec.containers"
+            deny:
+              conditions:
+                any:
+                  - key: "{{ element.image }}"
+                    operator: EndsWith
+                    value: ":latest"
+                  - key: "{{ contains(element.image, ':') || contains(element.image, '@sha256:') }}"
+                    operator: Equals
+                    value: false
+          - list: "request.object.spec.template.spec.initContainers"
+            deny:
+              conditions:
+                any:
+                  - key: "{{ element.image }}"
+                    operator: EndsWith
+                    value: ":latest"
+                  - key: "{{ contains(element.image, ':') || contains(element.image, '@sha256:') }}"
+                    operator: Equals
+                    value: false
+    # ------------------------------------------------------------
+    # Rule 2: restrict-image-registries
+    # - Allow explicit allowlisted registries
+    # - Also allow images without registry prefix (implicit docker hub)
+    # ------------------------------------------------------------
+    - name: restrict-image-registries
+      match:
+        any:
+          - resources:
+              kinds: ["Pod"]
+              namespaces:
+                - arylls-lookout
+                - compass
+                - delivery-bag
+                - fairy-bottle
+                - gorons-bracelet
+                - gossip-stone
+                - hookshot
+                - hyrule-castle
+                - king-of-red-lions
+                - kokiri-forest
+                - lens-of-truth
+                - lost-woods
+                - pedestal-of-time
+                - shooting-gallery
+                - swift-sail
+                - temple-of-time
+                - tingle-tuner
+                - wallmaster
+                - zeldas-lullaby
+      validate:
+        message: >-
+          Image registry is not allowlisted. Use an approved registry,
+          or docker hub images with no registry prefix.
+        foreach:
+          - list: "request.object.spec.containers"
+            deny:
+              conditions:
+                all:
+                  - key: "{{ regex_match('^(docker\\.io|ghcr\\.io|quay\\.io|lscr\\.io|registry\\.k8s\\.io|([a-z]+\\.)?jcr\\.pcfae\\.com)/', element.image) }}"
+                    operator: Equals
+                    value: false
+                  - key: "{{ regex_match('^[^/]+(:|@sha256:)', element.image) }}"
+                    operator: Equals
+                    value: false
+          - list: "request.object.spec.initContainers"
+            deny:
+              conditions:
+                all:
+                  - key: "{{ regex_match('^(docker\\.io|ghcr\\.io|quay\\.io|lscr\\.io|registry\\.k8s\\.io|([a-z]+\\.)?jcr\\.pcfae\\.com)/', element.image) }}"
+                    operator: Equals
+                    value: false
+                  - key: "{{ regex_match('^[^/]+(:|@sha256:)', element.image) }}"
+                    operator: Equals
+                    value: false
+          - list: "request.object.spec.ephemeralContainers"
+            deny:
+              conditions:
+                all:
+                  - key: "{{ regex_match('^(docker\\.io|ghcr\\.io|quay\\.io|lscr\\.io|registry\\.k8s\\.io|([a-z]+\\.)?jcr\\.pcfae\\.com)/', element.image) }}"
+                    operator: Equals
+                    value: false
+                  - key: "{{ regex_match('^[^/]+(:|@sha256:)', element.image) }}"
+                    operator: Equals
+                    value: false
+    # ------------------------------------------------------------
+    # Rule 2b: restrict-image-registries-controllers
+    # - Same as Rule 2 but for controller pod templates
+    # ------------------------------------------------------------
+    - name: restrict-image-registries-controllers
+      match:
+        any:
+          - resources:
+              kinds: ["Deployment", "StatefulSet", "DaemonSet", "Job", "CronJob"]
+              namespaces:
+                - arylls-lookout
+                - compass
+                - delivery-bag
+                - fairy-bottle
+                - gorons-bracelet
+                - gossip-stone
+                - hookshot
+                - hyrule-castle
+                - king-of-red-lions
+                - kokiri-forest
+                - lens-of-truth
+                - lost-woods
+                - pedestal-of-time
+                - shooting-gallery
+                - swift-sail
+                - temple-of-time
+                - tingle-tuner
+                - wallmaster
+                - zeldas-lullaby
+      validate:
+        message: >-
+          Image registry is not allowlisted. Use an approved registry,
+          or docker hub images with no registry prefix.
+        foreach:
+          - list: "request.object.spec.template.spec.containers"
+            deny:
+              conditions:
+                all:
+                  - key: "{{ regex_match('^(docker\\.io|ghcr\\.io|quay\\.io|lscr\\.io|registry\\.k8s\\.io|([a-z]+\\.)?jcr\\.pcfae\\.com)/', element.image) }}"
+                    operator: Equals
+                    value: false
+                  - key: "{{ regex_match('^[^/]+(:|@sha256:)', element.image) }}"
+                    operator: Equals
+                    value: false
+          - list: "request.object.spec.template.spec.initContainers"
+            deny:
+              conditions:
+                all:
+                  - key: "{{ regex_match('^(docker\\.io|ghcr\\.io|quay\\.io|lscr\\.io|registry\\.k8s\\.io|([a-z]+\\.)?jcr\\.pcfae\\.com)/', element.image) }}"
+                    operator: Equals
+                    value: false
+                  - key: "{{ regex_match('^[^/]+(:|@sha256:)', element.image) }}"
+                    operator: Equals
+                    value: false

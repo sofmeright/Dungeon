@@ -4,3 +4,4 @@ resources:
   - restrict-default-sa.yaml
   - mutate-redis-sentinel-sa.yaml
   - gate-breakglass-label.yaml
+  - enforce-image-policy.yaml
