@@ -5,7 +5,7 @@ metadata:
 spec:
   selector:
     matchLabels:
-      zt.breakglass/intra: "true"
+      zt.breakglass/pod: "true"
   action: ALLOW
   rules:
     - from:
