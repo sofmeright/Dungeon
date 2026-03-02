@@ -14,6 +14,7 @@ resources:
   - allow-appflowy-to-appflowy-postgres.yaml
   - allow-appflowy-to-appflowy-redis.yaml
   - allow-appflowy-cloud-to-appflowy-gotrue.yaml
+  - allow-mealie-to-mealie-postgres.yaml
   - allow-kimai-to-kimai-mariadb.yaml
   - allow-joplin-app-to-joplin-postgres.yaml
   - allow-shlink-app-to-shlink-db.yaml
