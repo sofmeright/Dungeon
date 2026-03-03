@@ -12,6 +12,7 @@ spec:
         - source:
             principals:
               - cluster.local/ns/temple-of-time/sa/nextcloud
+              - cluster.local/ns/temple-of-time/sa/nextcloud-notify-push
       to:
         - operation:
             ports: ["5432"]

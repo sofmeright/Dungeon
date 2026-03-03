@@ -14,7 +14,8 @@ spec:
               - cluster.local/ns/hyrule-castle/sa/gitlab-webservice
               - cluster.local/ns/hyrule-castle/sa/gitlab-sidekiq
               - cluster.local/ns/hyrule-castle/sa/gitlab-kas
-              - cluster.local/ns/hyrule-castle/sa/gitlab-exporter
+              - cluster.local/ns/hyrule-castle/sa/gitlab-gitlab-exporter
+              - cluster.local/ns/hyrule-castle/sa/gitlab-toolbox
       to:
         - operation:
             ports: ["26379"]
