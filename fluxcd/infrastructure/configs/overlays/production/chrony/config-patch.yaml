@@ -4,12 +4,14 @@ metadata:
   name: chrony-config
 data:
   # Your custom NTP servers from docker-compose
-  NTP_SERVERS: "0.us.pool.ntp.org,1.us.pool.ntp.org,2.us.pool.ntp.org,3.us.pool.ntp.org,2.debian.pool.ntp.org,the-usual-suspect,homing-pigeon,avocado,bamboo,cosmos,dragonfruit,eggplant"
+  NTP_SERVERS: "avocado,bamboo,cosmos,dragonfruit,eggplant"
 
   # Production logging settings
   LOG_LEVEL: "0"
   NOCLIENTLOG: "false"
 
+  # yamllint disable rule:comments-indentation
   # Security features (commented options from your docker-compose)
   # ENABLE_NTS: "true"
   # ENABLE_SYSCLK: "true"
+  # yamllint enable rule:comments-indentation

@@ -1,0 +1,71 @@
+---
+- name: Ad Arbitorium - GitOps - Infrastructure - Chrony NTP (Proxmox)
+  hosts: proxmox
+  become: true
+  handlers:
+    - name: Restart chrony
+      ansible.builtin.service:
+        name: chrony
+        state: restarted
+  tasks:
+    - name: Ensure chrony is installed
+      ansible.builtin.apt:
+        name: chrony
+        state: present
+        update_cache: true
+
+    - name: Write NTP upstream sources
+      ansible.builtin.copy:
+        content: |
+          pool 0.us.pool.ntp.org iburst maxsources 2
+          pool 1.us.pool.ntp.org iburst maxsources 2
+          pool 2.us.pool.ntp.org iburst maxsources 2
+          pool 3.us.pool.ntp.org iburst maxsources 2
+          server time.cloudflare.com iburst
+        dest: /etc/chrony/sources.d/ntp.sources
+        owner: root
+        group: root
+        mode: "0644"
+      notify: Restart chrony
+
+    - name: Write export configuration (allow K8s and DNS subnets)
+      ansible.builtin.copy:
+        content: |
+          allow 172.22.30.0/24
+          allow 10.0.0.1
+          allow 10.0.0.2
+          allow fc00:f1:def0:101::101
+          allow fc00:f1:def0:101::102
+          cmdallow 127.0.0.1
+          cmddeny all
+        dest: /etc/chrony/conf.d/export.conf
+        owner: root
+        group: root
+        mode: "0644"
+      notify: Restart chrony
+
+    - name: Remove local stratum from chrony.conf
+      ansible.builtin.lineinfile:
+        path: /etc/chrony/chrony.conf
+        regexp: '^local\s+stratum'
+        state: absent
+      notify: Restart chrony
+
+    - name: Remove manual directive from chrony.conf
+      ansible.builtin.lineinfile:
+        path: /etc/chrony/chrony.conf
+        regexp: '^manual'
+        state: absent
+      notify: Restart chrony
+
+    - name: Flush handlers to restart chrony before verify
+      ansible.builtin.meta: flush_handlers
+
+    - name: Verify chrony tracking
+      ansible.builtin.command: chronyc tracking
+      register: chrony_tracking
+      changed_when: false
+
+    - name: Show chrony tracking output
+      ansible.builtin.debug:
+        var: chrony_tracking.stdout_lines
