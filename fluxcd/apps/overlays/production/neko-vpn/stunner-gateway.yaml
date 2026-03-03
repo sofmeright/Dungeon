@@ -35,9 +35,6 @@ metadata:
   name: neko-gateway
 spec:
   gatewayClassName: stunner-gatewayclass
-  infrastructure:
-    annotations:
-      lbipam.cilium.io/ips: "172.22.30.120"
   listeners:
     - name: udp-listener
       port: 3478

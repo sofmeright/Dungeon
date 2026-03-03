@@ -1,7 +1,7 @@
 apiVersion: kyverno.io/v1
 kind: ClusterPolicy
 metadata:
-  name: mutate-stunner-gateway-sa
+  name: mutate-stunner-gateway
 spec:
   background: true
   rules:
@@ -25,3 +25,16 @@ spec:
             template:
               spec:
                 serviceAccountName: "{{ request.object.metadata.labels.\"stunner.l7mp.io/related-gateway-name\" }}"
+    - name: set-stunner-lb-ip-on-service
+      match:
+        any:
+          - resources:
+              kinds: [Service]
+              namespaces: ["swift-sail"]
+              annotations:
+                stunner.l7mp.io/related-gateway-name: "swift-sail/neko-gateway"
+      mutate:
+        patchStrategicMerge:
+          metadata:
+            annotations:
+              lbipam.cilium.io/ips: "172.22.30.120"
