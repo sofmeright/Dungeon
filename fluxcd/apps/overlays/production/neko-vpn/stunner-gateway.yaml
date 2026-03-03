@@ -14,7 +14,7 @@ spec:
     group: "stunner.l7mp.io"
     kind: GatewayConfig
     name: stunner-gatewayconfig
-    namespace: tingle-tuner
+    namespace: swift-sail
   description: "STUNner WebRTC gateway for neko-vpn"
 
 ---

@@ -10,7 +10,7 @@ spec:
         any:
           - resources:
               kinds: [Deployment]
-              namespaces: ["tingle-tuner"]
+              namespaces: ["swift-sail"]
               selector:
                 matchLabels:
                   stunner.l7mp.io/owned-by: stunner

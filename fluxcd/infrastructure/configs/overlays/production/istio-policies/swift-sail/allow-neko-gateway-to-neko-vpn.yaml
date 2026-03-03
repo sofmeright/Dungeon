@@ -11,7 +11,7 @@ spec:
     - from:
         - source:
             principals:
-              - cluster.local/ns/tingle-tuner/sa/neko-gateway
+              - cluster.local/ns/swift-sail/sa/neko-gateway
       to:
         - operation:
             ports: ["62001", "62002"]
