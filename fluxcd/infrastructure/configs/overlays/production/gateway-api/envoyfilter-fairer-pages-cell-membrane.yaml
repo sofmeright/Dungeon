@@ -38,9 +38,10 @@ spec:
                     return
                   end
 
-                  -- Skip for JSON API responses
+                  -- Only intercept text/html or missing content-type responses.
+                  -- Skip all structured API responses (json, transit, grpc, xml, etc.)
                   local content_type = response_handle:headers():get("content-type") or ""
-                  if string.match(content_type, "application/json") then
+                  if content_type ~= "" and not string.match(content_type, "text/html") then
                     return
                   end
 
