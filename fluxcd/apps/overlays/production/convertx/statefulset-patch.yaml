@@ -14,11 +14,11 @@ spec:
           image: ghcr.io/c4illin/convertx:main
           resources:
             requests:
-              cpu: "2m"
-              memory: "64Mi"
+              cpu: "50m"
+              memory: "256Mi"
             limits:
-              cpu: "10m"
-              memory: "96Mi"
+              cpu: "2000m"
+              memory: "512Mi"
           env:
             - name: HTTP_ALLOWED
               value: "true"
