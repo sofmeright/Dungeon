@@ -1,0 +1,27 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: mutate-stunner-gateway-sa
+spec:
+  background: true
+  rules:
+    - name: set-stunner-sa-on-deployment
+      match:
+        any:
+          - resources:
+              kinds: [Deployment]
+              namespaces: ["tingle-tuner"]
+              selector:
+                matchLabels:
+                  stunner.l7mp.io/owned-by: stunner
+      preconditions:
+        all:
+          - key: "{{ request.object.metadata.labels.\"stunner.l7mp.io/related-gateway-name\" || '' }}"
+            operator: NotEquals
+            value: ""
+      mutate:
+        patchStrategicMerge:
+          spec:
+            template:
+              spec:
+                serviceAccountName: "{{ request.object.metadata.labels.\"stunner.l7mp.io/related-gateway-name\" }}"

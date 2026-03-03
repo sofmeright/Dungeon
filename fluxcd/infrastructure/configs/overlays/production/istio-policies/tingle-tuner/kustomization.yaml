@@ -9,6 +9,7 @@ resources:
   - allow-searxng-to-searxng-redis.yaml
   - allow-endlessh-go-loadbalancer.yaml
   - allow-neko-loadbalancer.yaml
+  - allow-neko-gateway-to-neko-vpn.yaml
   - allow-gateway-ingress-xylem.yaml
   - allow-gateway-ingress-phloem.yaml
   - allow-gateway-ingress-cell-membrane.yaml

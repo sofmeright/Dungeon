@@ -24,20 +24,3 @@ spec:
             template:
               spec:
                 serviceAccountName: "{{ request.object.metadata.labels.app | regex_replace_all('-sentinel$', '') }}"
-    - name: set-sentinel-sa-on-pod
-      match:
-        any:
-          - resources:
-              kinds: [Pod]
-              selector:
-                matchLabels:
-                  redis_setup_type: sentinel
-      preconditions:
-        all:
-          - key: "{{ request.object.metadata.labels.app || '' }}"
-            operator: NotEquals
-            value: ""
-      mutate:
-        patchStrategicMerge:
-          spec:
-            serviceAccountName: "{{ request.object.metadata.labels.app | regex_replace_all('-sentinel$', '') }}"

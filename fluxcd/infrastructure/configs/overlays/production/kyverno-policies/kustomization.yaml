@@ -3,5 +3,6 @@ kind: Kustomization
 resources:
   - restrict-default-sa.yaml
   - mutate-redis-sentinel-sa.yaml
+  - mutate-stunner-gateway-sa.yaml
   - gate-breakglass-label.yaml
   - enforce-image-policy.yaml
