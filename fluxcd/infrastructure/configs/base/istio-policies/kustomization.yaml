@@ -8,3 +8,4 @@ resources:
   - allow-gatus.yaml
   - allow-cnpg-operator.yaml
   - allow-redis-operator.yaml
+  - allow-mariadb-operator.yaml

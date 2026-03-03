@@ -1,0 +1,17 @@
+apiVersion: security.istio.io/v1
+kind: AuthorizationPolicy
+metadata:
+  name: allow-mariadb-operator
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: mariadb
+  action: ALLOW
+  rules:
+    - from:
+        - source:
+            principals:
+              - cluster.local/ns/gorons-bracelet/sa/mariadb-operator
+      to:
+        - operation:
+            ports: ["3306", "5555"]
