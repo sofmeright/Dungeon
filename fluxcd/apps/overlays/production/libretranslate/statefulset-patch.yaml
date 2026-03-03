@@ -13,6 +13,9 @@ spec:
         runAsGroup: 1032
         fsGroup: 1032
       runtimeClassName: nvidia
+      volumes:
+        - name: config
+          emptyDir: {}
       containers:
         - name: libretranslate
           env:
@@ -23,6 +26,8 @@ spec:
           volumeMounts:
             - name: models
               mountPath: /home/libretranslate/.local
+            - name: config
+              mountPath: /home/libretranslate/.config
   volumeClaimTemplates:
     - metadata:
         name: models
