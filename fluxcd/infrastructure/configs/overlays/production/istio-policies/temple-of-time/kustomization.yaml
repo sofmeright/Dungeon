@@ -10,6 +10,7 @@ resources:
   - allow-open-webui-to-open-webui-redis.yaml
   - allow-penpot-to-penpot-postgres.yaml
   - allow-penpot-to-penpot-redis.yaml
+  - allow-penpot-frontend-to-penpot-backend.yaml
   - allow-penpot-exporter-to-penpot-frontend.yaml
   - allow-appflowy-to-appflowy-postgres.yaml
   - allow-appflowy-to-appflowy-redis.yaml
