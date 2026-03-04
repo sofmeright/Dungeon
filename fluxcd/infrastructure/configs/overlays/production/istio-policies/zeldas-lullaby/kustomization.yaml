@@ -21,6 +21,7 @@ resources:
   - allow-zitadel-redis-intra-cluster.yaml
   - allow-oidc-clients.yaml
   - allow-teleport-loadbalancer.yaml
+  - allow-teleport-proxy-to-auth.yaml
   - allow-teleport-to-teleport-postgres.yaml
   - allow-teleport-postgres-replication.yaml
   - allow-webhook-external-secrets.yaml
