@@ -25,8 +25,9 @@ spec:
           args:
             - |
               set -euo pipefail
-              envsubst '$KMS_WORKER_AUTH_KEY' \
-                < /boundary-template/worker.hcl > /boundary/worker.hcl
+              sed \
+                -e "s|\${KMS_WORKER_AUTH_KEY}|$KMS_WORKER_AUTH_KEY|g" \
+                /boundary-template/worker.hcl > /boundary/worker.hcl
           envFrom:
             - secretRef:
                 name: boundary-kms-keys

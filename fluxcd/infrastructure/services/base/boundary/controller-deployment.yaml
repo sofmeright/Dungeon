@@ -25,8 +25,11 @@ spec:
           args:
             - |
               set -euo pipefail
-              envsubst '$KMS_ROOT_KEY $KMS_WORKER_AUTH_KEY $KMS_RECOVERY_KEY' \
-                < /boundary-template/controller.hcl > /boundary/controller.hcl
+              sed \
+                -e "s|\${KMS_ROOT_KEY}|$KMS_ROOT_KEY|g" \
+                -e "s|\${KMS_WORKER_AUTH_KEY}|$KMS_WORKER_AUTH_KEY|g" \
+                -e "s|\${KMS_RECOVERY_KEY}|$KMS_RECOVERY_KEY|g" \
+                /boundary-template/controller.hcl > /boundary/controller.hcl
           envFrom:
             - secretRef:
                 name: boundary-kms-keys
