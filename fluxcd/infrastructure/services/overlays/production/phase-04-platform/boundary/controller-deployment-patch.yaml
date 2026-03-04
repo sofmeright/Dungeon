@@ -25,9 +25,6 @@ spec:
             matchLabels:
               app.kubernetes.io/name: boundary
               app.kubernetes.io/component: controller
-      initContainers:
-        - name: render-config
-          image: docker.io/hashicorp/boundary:0.21.1
       containers:
         - name: boundary
           image: docker.io/hashicorp/boundary:0.21.1

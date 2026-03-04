@@ -20,7 +20,7 @@ spec:
       serviceAccountName: boundary-worker
       initContainers:
         - name: render-config
-          image: PLACEHOLDER_IMAGE
+          image: docker.io/alpine/k8s:1.34.0
           command: ["/bin/sh", "-c"]
           args:
             - |
