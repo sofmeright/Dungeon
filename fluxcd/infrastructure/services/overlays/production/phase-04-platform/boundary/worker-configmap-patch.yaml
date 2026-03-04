@@ -25,6 +25,6 @@ data:
     kms "aead" {
       purpose   = "worker-auth"
       aead_type = "aes-gcm"
-      key       = "env://KMS_WORKER_AUTH_KEY"
+      key       = "${KMS_WORKER_AUTH_KEY}"
       key_id    = "global_worker-auth"
     }

@@ -38,20 +38,20 @@ data:
     kms "aead" {
       purpose   = "root"
       aead_type = "aes-gcm"
-      key       = "env://KMS_ROOT_KEY"
+      key       = "${KMS_ROOT_KEY}"
       key_id    = "global_root"
     }
 
     kms "aead" {
       purpose   = "worker-auth"
       aead_type = "aes-gcm"
-      key       = "env://KMS_WORKER_AUTH_KEY"
+      key       = "${KMS_WORKER_AUTH_KEY}"
       key_id    = "global_worker-auth"
     }
 
     kms "aead" {
       purpose   = "recovery"
       aead_type = "aes-gcm"
-      key       = "env://KMS_RECOVERY_KEY"
+      key       = "${KMS_RECOVERY_KEY}"
       key_id    = "global_recovery"
     }

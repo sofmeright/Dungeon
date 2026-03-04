@@ -15,20 +15,36 @@ spec:
   template:
     spec:
       restartPolicy: Never
-      containers:
-        - name: boundary-init
+      initContainers:
+        - name: render-config
           image: docker.io/hashicorp/boundary:0.21.1
-          args: ["database", "init", "-config", "/boundary/controller.hcl"]
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              set -euo pipefail
+              envsubst '$KMS_ROOT_KEY $KMS_WORKER_AUTH_KEY $KMS_RECOVERY_KEY' \
+                < /boundary-template/controller.hcl > /boundary/controller.hcl
           envFrom:
-            - secretRef:
-                name: boundary-conn-string
             - secretRef:
                 name: boundary-kms-keys
           volumeMounts:
+            - name: template
+              mountPath: /boundary-template
             - name: config
               mountPath: /boundary
-              readOnly: true
+      containers:
+        - name: boundary-init
+          image: docker.io/hashicorp/boundary:0.21.1
+          command: ["boundary", "database", "init", "-config", "/boundary/controller.hcl"]
+          envFrom:
+            - secretRef:
+                name: boundary-conn-string
+          volumeMounts:
+            - name: config
+              mountPath: /boundary
       volumes:
-        - name: config
+        - name: template
           configMap:
             name: boundary-controller
+        - name: config
+          emptyDir: {}

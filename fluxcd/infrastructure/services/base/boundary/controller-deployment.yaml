@@ -18,10 +18,27 @@ spec:
         app.kubernetes.io/component: controller
     spec:
       serviceAccountName: boundary-controller
+      initContainers:
+        - name: render-config
+          image: PLACEHOLDER_IMAGE
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              set -euo pipefail
+              envsubst '$KMS_ROOT_KEY $KMS_WORKER_AUTH_KEY $KMS_RECOVERY_KEY' \
+                < /boundary-template/controller.hcl > /boundary/controller.hcl
+          envFrom:
+            - secretRef:
+                name: boundary-kms-keys
+          volumeMounts:
+            - name: template
+              mountPath: /boundary-template
+            - name: config
+              mountPath: /boundary
       containers:
         - name: boundary
           image: PLACEHOLDER_IMAGE
-          args: ["server", "-config", "/boundary/controller.hcl"]
+          command: ["boundary", "server", "-config", "/boundary/controller.hcl"]
           ports:
             - name: api
               containerPort: 9200
@@ -35,8 +52,6 @@ spec:
           envFrom:
             - secretRef:
                 name: boundary-conn-string
-            - secretRef:
-                name: boundary-kms-keys
           volumeMounts:
             - name: config
               mountPath: /boundary
@@ -60,6 +75,8 @@ spec:
             limits:
               memory: 512Mi
       volumes:
-        - name: config
+        - name: template
           configMap:
             name: boundary-controller
+        - name: config
+          emptyDir: {}
