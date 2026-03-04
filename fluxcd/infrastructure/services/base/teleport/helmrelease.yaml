@@ -13,8 +13,6 @@ spec:
         name: teleport
         namespace: flux-system
       interval: 12h
-  dependsOn:
-    - name: teleport-postgres
   values:
     fullnameOverride: teleport
     clusterName: PLACEHOLDER_CLUSTER_NAME
