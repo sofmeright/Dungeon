@@ -50,10 +50,11 @@ patches:
       - op: add
         path: /metadata/namespace
         value: zeldas-lullaby
+  # conn-string secret must be in flux-system (valuesFrom reads from HelmRelease namespace)
   - target:
       kind: ExternalSecret
       name: teleport-conn-string
     patch: |-
       - op: add
         path: /metadata/namespace
-        value: zeldas-lullaby
+        value: flux-system
