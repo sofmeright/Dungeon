@@ -21,6 +21,18 @@ spec:
       replicaCount: 2
       certManager:
         issuerName: letsencrypt-production
+    auth:
+      teleportConfig:
+        teleport:
+          storage:
+            audit_sessions_uri: "file:///var/lib/teleport/sessions"
+      extraVolumes:
+        - name: sessions
+          persistentVolumeClaim:
+            claimName: teleport-sessions
+      extraVolumeMounts:
+        - name: sessions
+          mountPath: /var/lib/teleport/sessions
     annotations:
       service:
         lbipam.cilium.io/ips: "172.22.30.88"

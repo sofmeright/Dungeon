@@ -18,3 +18,4 @@ resources:
   - cephfs-init-tacticalrmm.yaml
   - cephfs-init-hasteward.yaml
   - cephfs-init-nextcloud.yaml
+  - cephfs-init-teleport.yaml

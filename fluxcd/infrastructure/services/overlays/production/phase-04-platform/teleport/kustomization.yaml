@@ -4,6 +4,7 @@ kind: Kustomization
 resources:
   - ../../../../base/teleport
   - externalsecret-conn-string.yaml
+  - cephfs-sessions-pv.yaml
 
 patches:
   - path: helmrelease-patch.yaml
@@ -46,6 +47,13 @@ patches:
   - target:
       kind: ExternalSecret
       name: teleport-postgres-credentials
+    patch: |-
+      - op: add
+        path: /metadata/namespace
+        value: zeldas-lullaby
+  - target:
+      kind: PersistentVolumeClaim
+      name: teleport-sessions
     patch: |-
       - op: add
         path: /metadata/namespace
