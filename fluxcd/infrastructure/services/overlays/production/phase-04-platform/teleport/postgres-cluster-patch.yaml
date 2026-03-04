@@ -27,7 +27,7 @@ spec:
       shared_buffers: "128MB"
       max_connections: "200"
       wal_level: "logical"
-      max_replication_slots: "10"
+      max_replication_slots: "32"
       wal_receiver_timeout: "5s"
       wal_keep_size: "128MB"
       max_slot_wal_keep_size: "200MB"

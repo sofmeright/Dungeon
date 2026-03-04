@@ -25,7 +25,7 @@ spec:
       shared_buffers: PLACEHOLDER_SHARED_BUFFERS
       wal_compression: "on"
       wal_level: "logical"
-      max_replication_slots: "10"
+      max_replication_slots: "32"
 
   storage:
     storageClass: PLACEHOLDER_STORAGE_CLASS
