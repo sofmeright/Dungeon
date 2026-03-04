@@ -1,0 +1,39 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: teleport-postgres
+spec:
+  inheritedMetadata:
+    labels:
+      policy.prplanit.com/cnpg: "managed"
+
+  instances: 3
+
+  affinity:
+    podAntiAffinityType: required
+
+  # Fast failover optimizations
+  switchoverDelay: 30
+  startDelay: 10
+  stopDelay: 10
+  livenessProbeTimeout: 5
+
+  postgresql:
+    synchronous:
+      method: any
+      number: 1
+    parameters:
+      shared_buffers: "512MB"
+      max_connections: "200"
+      wal_receiver_timeout: "5s"
+      wal_keep_size: "128MB"
+      max_slot_wal_keep_size: "800MB"
+
+  monitoring:
+    enablePodMonitor: true
+
+  enableSuperuserAccess: true
+
+  storage:
+    storageClass: ceph-rbd-retain
+    size: 10Gi

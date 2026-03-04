@@ -1,0 +1,62 @@
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: teleport
+spec:
+  releaseName: teleport
+  interval: 30m
+  chart:
+    spec:
+      chart: teleport-cluster
+      sourceRef:
+        kind: HelmRepository
+        name: teleport
+        namespace: flux-system
+      interval: 12h
+  dependsOn:
+    - name: teleport-postgres
+  values:
+    fullnameOverride: teleport
+    clusterName: PLACEHOLDER_CLUSTER_NAME
+    proxyListenerMode: multiplex
+    persistence:
+      enabled: false
+    proxy:
+      publicAddr: PLACEHOLDER_PUBLIC_ADDR
+    highAvailability:
+      replicaCount: PLACEHOLDER_REPLICAS
+      requireAntiAffinity: true
+      podDisruptionBudget:
+        enabled: true
+        minAvailable: 1
+      certManager:
+        enabled: true
+        issuerName: PLACEHOLDER_ISSUER
+        issuerKind: ClusterIssuer
+        addPublicAddrs: true
+    auth:
+      teleportConfig:
+        teleport:
+          storage:
+            type: postgresql
+            # conn_string and audit_events_uri injected via valuesFrom in overlay
+        auth_service:
+          session_recording: node
+    authentication:
+      type: local
+      secondFactors:
+        - otp
+        - webauthn
+    service:
+      type: LoadBalancer
+    resources:
+      requests:
+        cpu: 200m
+        memory: 256Mi
+      limits:
+        memory: 1Gi
+    podSecurityContext:
+      runAsNonRoot: true
+      fsGroup: 1000
+    securityContext:
+      allowPrivilegeEscalation: false
