@@ -37,13 +37,6 @@ patches:
 
   # All other resources live in zeldas-lullaby
   - target:
-      kind: ServiceAccount
-      name: teleport
-    patch: |-
-      - op: add
-        path: /metadata/namespace
-        value: zeldas-lullaby
-  - target:
       kind: Cluster
       name: teleport-postgres
     patch: |-
