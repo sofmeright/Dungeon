@@ -39,7 +39,8 @@ spec:
             type: postgresql
             # conn_string and audit_events_uri injected via valuesFrom in overlay
         auth_service:
-          session_recording: node
+          session_recording_config:
+            mode: node
     authentication:
       type: local
       secondFactors:

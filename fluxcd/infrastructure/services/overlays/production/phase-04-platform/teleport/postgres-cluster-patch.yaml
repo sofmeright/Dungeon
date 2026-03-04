@@ -8,6 +8,7 @@ spec:
       policy.prplanit.com/cnpg: "managed"
 
   instances: 3
+  imageName: docker.io/prplanit/cnpg-postgresql:17.9.0
 
   affinity:
     podAntiAffinityType: required
@@ -25,6 +26,8 @@ spec:
     parameters:
       shared_buffers: "128MB"
       max_connections: "200"
+      wal_level: "logical"
+      max_replication_slots: "10"
       wal_receiver_timeout: "5s"
       wal_keep_size: "128MB"
       max_slot_wal_keep_size: "200MB"

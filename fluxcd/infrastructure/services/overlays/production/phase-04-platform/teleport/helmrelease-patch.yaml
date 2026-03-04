@@ -11,7 +11,7 @@ spec:
       targetPath: auth.teleportConfig.teleport.storage.conn_string
     - kind: Secret
       name: teleport-conn-string
-      valuesKey: conn_string
+      valuesKey: audit_events_uri
       targetPath: auth.teleportConfig.teleport.storage.audit_events_uri[0]
   values:
     clusterName: tsh.prplanit.com
@@ -21,10 +21,6 @@ spec:
       replicaCount: 2
       certManager:
         issuerName: letsencrypt-production
-    auth:
-      teleportConfig:
-        audit:
-          retention_period: 720h
     service:
       annotations:
         lbipam.cilium.io/ips: "172.22.30.88"

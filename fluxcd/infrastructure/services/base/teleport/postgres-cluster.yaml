@@ -4,23 +4,28 @@ metadata:
   name: teleport-postgres
 spec:
   instances: PLACEHOLDER_INSTANCES
-  imageName: ghcr.io/cloudnative-pg/postgresql:17
+  imageName: PLACEHOLDER_IMAGE
 
   affinity:
     podAntiAffinityType: required
 
   bootstrap:
     initdb:
-      database: teleport
+      database: teleport_backend
       owner: teleport
       secret:
         name: teleport-postgres-credentials
+      postInitSQL:
+        - CREATE DATABASE teleport_audit OWNER teleport
+        - ALTER ROLE teleport WITH REPLICATION
 
   postgresql:
     parameters:
       max_connections: "200"
       shared_buffers: PLACEHOLDER_SHARED_BUFFERS
       wal_compression: "on"
+      wal_level: "logical"
+      max_replication_slots: "10"
 
   storage:
     storageClass: PLACEHOLDER_STORAGE_CLASS
