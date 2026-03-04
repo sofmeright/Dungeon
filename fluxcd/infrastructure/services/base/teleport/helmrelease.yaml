@@ -55,7 +55,6 @@ spec:
       limits:
         memory: 1Gi
     podSecurityContext:
-      runAsNonRoot: true
       fsGroup: 1000
     securityContext:
       allowPrivilegeEscalation: false
