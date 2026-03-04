@@ -1,0 +1,57 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: boundary-controller
+  labels:
+    app.kubernetes.io/name: boundary
+    app.kubernetes.io/component: controller
+data:
+  controller.hcl: |
+    disable_mlock = true
+
+    listener "tcp" {
+      address     = "0.0.0.0:9200"
+      purpose     = "api"
+      tls_disable = true
+    }
+
+    listener "tcp" {
+      address = "0.0.0.0:9201"
+      purpose = "cluster"
+    }
+
+    listener "tcp" {
+      address     = "0.0.0.0:9203"
+      purpose     = "ops"
+      tls_disable = true
+    }
+
+    controller {
+      name               = "PLACEHOLDER_CONTROLLER_NAME"
+      public_cluster_addr = "PLACEHOLDER_PUBLIC_CLUSTER_ADDR"
+    }
+
+    database {
+      url = "env://BOUNDARY_PG_URL"
+    }
+
+    kms "aead" {
+      purpose   = "root"
+      aead_type = "aes-gcm"
+      key       = "env://KMS_ROOT_KEY"
+      key_id    = "global_root"
+    }
+
+    kms "aead" {
+      purpose   = "worker-auth"
+      aead_type = "aes-gcm"
+      key       = "env://KMS_WORKER_AUTH_KEY"
+      key_id    = "global_worker-auth"
+    }
+
+    kms "aead" {
+      purpose   = "recovery"
+      aead_type = "aes-gcm"
+      key       = "env://KMS_RECOVERY_KEY"
+      key_id    = "global_recovery"
+    }

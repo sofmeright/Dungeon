@@ -1,0 +1,39 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: boundary-postgres
+spec:
+  inheritedMetadata:
+    labels:
+      policy.prplanit.com/cnpg: "managed"
+
+  instances: 3
+
+  imageName: docker.io/prplanit/cnpg-postgresql:17.9.0
+
+  enableSuperuserAccess: true
+
+  # Fast failover optimizations
+  switchoverDelay: 30
+  startDelay: 10
+  stopDelay: 10
+  livenessProbeTimeout: 5
+
+  postgresql:
+    synchronous:
+      method: any
+      number: 1
+
+    parameters:
+      shared_buffers: "128MB"
+      max_connections: "100"
+      wal_receiver_timeout: "5s"
+      wal_keep_size: "128MB"
+      max_slot_wal_keep_size: "200MB"
+
+  monitoring:
+    enablePodMonitor: true
+
+  storage:
+    storageClass: ceph-rbd-retain
+    size: 1Gi

@@ -1,0 +1,65 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: boundary-controller
+  labels:
+    app.kubernetes.io/name: boundary
+    app.kubernetes.io/component: controller
+spec:
+  replicas: PLACEHOLDER_REPLICAS
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: boundary
+      app.kubernetes.io/component: controller
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: boundary
+        app.kubernetes.io/component: controller
+    spec:
+      serviceAccountName: boundary-controller
+      containers:
+        - name: boundary
+          image: PLACEHOLDER_IMAGE
+          args: ["server", "-config", "/boundary/controller.hcl"]
+          ports:
+            - name: api
+              containerPort: 9200
+              protocol: TCP
+            - name: cluster
+              containerPort: 9201
+              protocol: TCP
+            - name: ops
+              containerPort: 9203
+              protocol: TCP
+          envFrom:
+            - secretRef:
+                name: boundary-conn-string
+            - secretRef:
+                name: boundary-kms-keys
+          volumeMounts:
+            - name: config
+              mountPath: /boundary
+              readOnly: true
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: ops
+            initialDelaySeconds: 10
+            periodSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: ops
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          resources:
+            requests:
+              cpu: 200m
+              memory: 256Mi
+            limits:
+              memory: 512Mi
+      volumes:
+        - name: config
+          configMap:
+            name: boundary-controller

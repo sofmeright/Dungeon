@@ -1,0 +1,13 @@
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: boundary-controller
+  labels:
+    app.kubernetes.io/name: boundary
+    app.kubernetes.io/component: controller
+spec:
+  minAvailable: 2
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: boundary
+      app.kubernetes.io/component: controller

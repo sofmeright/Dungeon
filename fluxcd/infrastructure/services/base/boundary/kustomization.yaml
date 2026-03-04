@@ -1,0 +1,13 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - postgres-cluster.yaml
+  - externalsecret.yaml
+  - controller-configmap.yaml
+  - controller-deployment.yaml
+  - controller-service.yaml
+  - worker-configmap.yaml
+  - worker-deployment.yaml
+  - worker-service.yaml
+  - serviceaccount.yaml
+  - pdb.yaml

@@ -1,0 +1,34 @@
+# One-shot job — NOT in kustomization resources.
+# Apply manually after Flux reconcile:
+#   kubectl -n hookshot apply -f init-job.yaml
+#   kubectl -n hookshot logs -f job/boundary-init
+# Save output (contains initial auth method, login, password, token).
+# Delete after success: kubectl -n hookshot delete job boundary-init
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: boundary-init
+  namespace: hookshot
+spec:
+  ttlSecondsAfterFinished: 300
+  backoffLimit: 1
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: boundary-init
+          image: docker.io/hashicorp/boundary:0.21.1
+          args: ["database", "init", "-config", "/boundary/controller.hcl"]
+          envFrom:
+            - secretRef:
+                name: boundary-conn-string
+            - secretRef:
+                name: boundary-kms-keys
+          volumeMounts:
+            - name: config
+              mountPath: /boundary
+              readOnly: true
+      volumes:
+        - name: config
+          configMap:
+            name: boundary-controller

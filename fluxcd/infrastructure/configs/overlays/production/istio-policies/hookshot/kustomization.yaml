@@ -11,5 +11,9 @@ resources:
   - allow-tactical-to-tactical-mongodb.yaml
   - allow-tactical-backend-to-tactical-nats.yaml
   - allow-rustdesk-loadbalancer.yaml
+  - allow-boundary-controller-to-boundary-postgres.yaml
+  - allow-boundary-postgres-replication.yaml
+  - allow-boundary-worker-to-controller.yaml
+  - allow-boundary-worker-loadbalancer.yaml
   - allow-gateway-ingress-xylem.yaml
   - allow-gateway-ingress-cell-membrane.yaml

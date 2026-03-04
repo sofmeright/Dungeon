@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: boundary-controller
+spec:
+  replicas: 3
+  template:
+    metadata:
+      labels:
+        policy.prplanit.com/ingress: "true"
+    spec:
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            - labelSelector:
+                matchLabels:
+                  app.kubernetes.io/name: boundary
+                  app.kubernetes.io/component: controller
+              topologyKey: kubernetes.io/hostname
+      topologySpreadConstraints:
+        - maxSkew: 1
+          topologyKey: kubernetes.io/hostname
+          whenUnsatisfiable: DoNotSchedule
+          labelSelector:
+            matchLabels:
+              app.kubernetes.io/name: boundary
+              app.kubernetes.io/component: controller
+      containers:
+        - name: boundary
+          image: docker.io/hashicorp/boundary:0.21.1

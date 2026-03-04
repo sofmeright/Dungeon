@@ -1,0 +1,30 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: boundary-worker
+data:
+  worker.hcl: |
+    disable_mlock = true
+
+    listener "tcp" {
+      address = "0.0.0.0:9202"
+      purpose = "proxy"
+    }
+
+    listener "tcp" {
+      address     = "0.0.0.0:9203"
+      purpose     = "ops"
+      tls_disable = true
+    }
+
+    worker {
+      initial_upstreams = ["boundary-controller.hookshot.svc.cluster.local:9201"]
+      public_addr       = "172.22.30.88:9202"
+    }
+
+    kms "aead" {
+      purpose   = "worker-auth"
+      aead_type = "aes-gcm"
+      key       = "env://KMS_WORKER_AUTH_KEY"
+      key_id    = "global_worker-auth"
+    }

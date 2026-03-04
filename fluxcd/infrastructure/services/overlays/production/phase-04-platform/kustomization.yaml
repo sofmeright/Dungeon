@@ -21,3 +21,4 @@ resources:
   - ./vaultwarden
   - ./wazuh
   - ./weave-gitops
+  - ./boundary
