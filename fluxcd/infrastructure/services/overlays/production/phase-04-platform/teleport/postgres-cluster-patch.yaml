@@ -23,11 +23,11 @@ spec:
       method: any
       number: 1
     parameters:
-      shared_buffers: "512MB"
+      shared_buffers: "128MB"
       max_connections: "200"
       wal_receiver_timeout: "5s"
       wal_keep_size: "128MB"
-      max_slot_wal_keep_size: "800MB"
+      max_slot_wal_keep_size: "200MB"
 
   monitoring:
     enablePodMonitor: true
@@ -36,4 +36,4 @@ spec:
 
   storage:
     storageClass: ceph-rbd-retain
-    size: 10Gi
+    size: 1Gi
