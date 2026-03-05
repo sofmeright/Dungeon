@@ -37,7 +37,7 @@ spec:
               RESULT=$(boundary auth-methods create oidc \
                 -issuer https://sso.prplanit.com \
                 -client-id "$OIDC_CLIENT_ID" \
-                -client-secret env://OIDC_CLIENT_SECRET \
+                -client-secret "$OIDC_CLIENT_SECRET" \
                 -signing-algorithm RS256 \
                 -api-url-prefix https://boundary.prplanit.com \
                 -name zitadel \
