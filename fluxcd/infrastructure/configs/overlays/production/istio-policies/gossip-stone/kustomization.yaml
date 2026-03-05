@@ -6,6 +6,8 @@ resources:
   - allow-intra-breakglass.yaml
   - allow-gatus-to-gatus-postgres.yaml
   - allow-grafana-to-grafana-postgres.yaml
+  - allow-grafana-to-vmselect.yaml
+  - allow-grafana-to-loki-gateway.yaml
   - allow-umami-to-umami-postgres.yaml
   - allow-speedtest-tracker-to-speedtest-tracker-postgres.yaml
   - allow-vminsert-to-vmstorage.yaml
