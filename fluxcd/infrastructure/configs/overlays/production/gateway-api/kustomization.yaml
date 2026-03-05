@@ -2,9 +2,9 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
   - ../../../base/gateway-api
-  - envoyfilter-fairer-pages.yaml
-  - envoyfilter-fairer-pages-cell-membrane.yaml
   - envoyfilter-fairer-pages-xylem.yaml
+  - envoyfilter-fairer-pages-phloem.yaml
+  - envoyfilter-fairer-pages-cell-membrane.yaml
   - envoyfilter-ntfy-timeout-cell-membrane.yaml
   - envoyfilter-ntfy-timeout-xylem.yaml
   - envoyfilter-meshcentral-websocket-cell-membrane.yaml

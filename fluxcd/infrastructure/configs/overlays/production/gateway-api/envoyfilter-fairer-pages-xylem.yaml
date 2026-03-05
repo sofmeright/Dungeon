@@ -27,27 +27,38 @@ spec:
               inlineString: |
                 function envoy_on_request(request_handle)
                   local path = request_handle:headers():get(":path") or ""
+
+                  -- Skip fairer-pages requests to prevent infinite redirect loops
+                  -- (the iframe src hits /fairer-pages/* which must reach the backend directly)
                   if string.match(path, "^/fairer%-pages/") then
                     request_handle:streamInfo():dynamicMetadata():set("fairer_pages", "skip", "true")
+                    return
+                  end
+
+                  -- Detect browser requests via Accept header.
+                  -- Browsers always send "Accept: text/html,..." — API clients send
+                  -- "Accept: application/json" or similar. This is deterministic: the
+                  -- client declares what it wants, so we don't need to guess from the
+                  -- response content-type (which varies between backends and envoy
+                  -- local replies like text/plain for connection resets).
+                  local accept = request_handle:headers():get("accept") or ""
+                  if string.match(accept, "text/html") then
+                    request_handle:streamInfo():dynamicMetadata():set("fairer_pages", "browser", "true")
                   end
                 end
 
                 function envoy_on_response(response_handle)
-                  local skip = response_handle:streamInfo():dynamicMetadata():get("fairer_pages")
-                  if skip and skip["skip"] == "true" then
-                    return
-                  end
-
-                  -- Only intercept text/html or missing content-type responses.
-                  -- Skip all structured API responses (json, transit, grpc, xml, etc.)
-                  local content_type = response_handle:headers():get("content-type") or ""
-                  if content_type ~= "" and not string.match(content_type, "text/html") then
-                    return
-                  end
+                  -- Only intercept if we flagged this request during envoy_on_request.
+                  -- No metadata = not a browser request or no Accept header → pass through.
+                  local meta = response_handle:streamInfo():dynamicMetadata():get("fairer_pages")
+                  if not meta then return end
+                  if meta["skip"] == "true" then return end
+                  if meta["browser"] ~= "true" then return end
 
                   local status = response_handle:headers():get(":status")
                   local status_num = tonumber(status)
 
+                  -- Error codes to intercept with custom error pages
                   local error_codes = {
                     [400] = true, [401] = true, [403] = true, [404] = true,
                     [405] = true, [408] = true, [410] = true, [429] = true,
@@ -56,6 +67,7 @@ spec:
 
                   if error_codes[status_num] then
                     -- Serve error page in-place via iframe — preserves browser URL
+                    -- while loading the themed error page from fairer-pages service
                     local html = '<!DOCTYPE html><html><head><meta charset="UTF-8">'
                       .. '<title>Error ' .. status .. '</title>'
                       .. '<style>*{margin:0;padding:0}html,body{height:100%;overflow:hidden}'
