@@ -8,12 +8,24 @@ spec:
       app: vminsert
   action: ALLOW
   rules:
-    # Alloy runs with hostNetwork — no mTLS identity in ambient mesh.
-    # Pushes metrics to vminsert on port 8480.
+    # Alloy DaemonSet runs with hostNetwork=true, so it has no mTLS
+    # identity in ambient mesh. Traffic originates from node IPs.
+    # Scoped to cluster node CIDRs rather than blanket non-mesh allow.
     - from:
         - source:
-            notPrincipals:
-              - "cluster.local/ns/*/sa/*"
+            ipBlocks:
+              # dungeon-map-001 through 005
+              - "172.22.144.150/32"
+              - "172.22.144.151/32"
+              - "172.22.144.152/32"
+              - "172.22.144.153/32"
+              - "172.22.144.154/32"
+              # dungeon-chest-001 through 005
+              - "172.22.144.170/32"
+              - "172.22.144.171/32"
+              - "172.22.144.172/32"
+              - "172.22.144.173/32"
+              - "172.22.144.174/32"
       to:
         - operation:
             ports: ["8480"]
