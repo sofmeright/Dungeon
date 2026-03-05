@@ -20,14 +20,12 @@ spec:
       serviceAccountName: boundary-worker
       initContainers:
         - name: render-config
-          image: docker.io/alpine/k8s:1.34.0
+          image: docker.io/prplanit/oh-ci:0.0.1
           command: ["/bin/sh", "-c"]
           args:
             - |
               set -euo pipefail
-              sed \
-                -e "s|\${KMS_WORKER_AUTH_KEY}|$KMS_WORKER_AUTH_KEY|g" \
-                /boundary-template/worker.hcl > /boundary/worker.hcl
+              envsubst < /boundary-template/worker.hcl > /boundary/worker.hcl
           envFrom:
             - secretRef:
                 name: boundary-kms-keys

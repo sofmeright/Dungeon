@@ -29,7 +29,7 @@ data:
     }
 
     database {
-      url = "env://BOUNDARY_PG_URL"
+      url = "${BOUNDARY_PG_URL}"
     }
 
     kms "aead" {

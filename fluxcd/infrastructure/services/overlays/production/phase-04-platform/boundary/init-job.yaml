@@ -17,17 +17,15 @@ spec:
       restartPolicy: Never
       initContainers:
         - name: render-config
-          image: docker.io/alpine/k8s:1.34.0
+          image: docker.io/prplanit/oh-ci:0.0.1
           command: ["/bin/sh", "-c"]
           args:
             - |
               set -euo pipefail
-              sed \
-                -e "s|\${KMS_ROOT_KEY}|$KMS_ROOT_KEY|g" \
-                -e "s|\${KMS_WORKER_AUTH_KEY}|$KMS_WORKER_AUTH_KEY|g" \
-                -e "s|\${KMS_RECOVERY_KEY}|$KMS_RECOVERY_KEY|g" \
-                /boundary-template/controller.hcl > /boundary/controller.hcl
+              envsubst < /boundary-template/controller.hcl > /boundary/controller.hcl
           envFrom:
+            - secretRef:
+                name: boundary-conn-string
             - secretRef:
                 name: boundary-kms-keys
           volumeMounts:
@@ -39,9 +37,6 @@ spec:
         - name: boundary-init
           image: docker.io/hashicorp/boundary:0.21.1
           command: ["boundary", "database", "init", "-config", "/boundary/controller.hcl"]
-          envFrom:
-            - secretRef:
-                name: boundary-conn-string
           volumeMounts:
             - name: config
               mountPath: /boundary
