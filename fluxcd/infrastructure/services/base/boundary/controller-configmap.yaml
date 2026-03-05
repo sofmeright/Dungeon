@@ -29,10 +29,9 @@ data:
     controller {
       name               = "PLACEHOLDER_CONTROLLER_NAME"
       public_cluster_addr = "PLACEHOLDER_PUBLIC_CLUSTER_ADDR"
-    }
-
-    database {
-      url = "${BOUNDARY_PG_URL}"
+      database {
+        url = "${BOUNDARY_PG_URL}"
+      }
     }
 
     kms "aead" {
