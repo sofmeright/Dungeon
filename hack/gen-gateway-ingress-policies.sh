@@ -48,11 +48,14 @@ usage() {
 MODE="$1"
 [[ "$MODE" == "--generate" || "$MODE" == "--check" ]] || usage
 
-# Fetch all HTTPRoutes
+# Fetch all HTTPRoutes and Services (for targetPort resolution)
+# EndpointSlices are lazily fetched only if a named targetPort needs resolution.
 ROUTES_JSON=$(kubectl get httproutes.gateway.networking.k8s.io -A -o json)
+SERVICES_JSON=$(kubectl get services -A -o json)
+ENDPOINTSLICES_JSON=""
 
 # Build mapping: namespace → gateway-class → sorted unique ports
-# jq outputs lines: NAMESPACE GATEWAY_NAME BACKEND_NS BACKEND_PORT
+# jq outputs lines: NAMESPACE GATEWAY_NAME BACKEND_NS BACKEND_SVC BACKEND_PORT
 PARSED=$(echo "$ROUTES_JSON" | jq -r '
   .items[] |
   .metadata.namespace as $routeNs |
@@ -64,9 +67,10 @@ PARSED=$(echo "$ROUTES_JSON" | jq -r '
     routeNs: $routeNs,
     gwName: $parent.name,
     backendNs: (.namespace // $routeNs),
+    backendSvc: .name,
     backendPort: .port
   } |
-  "\(.routeNs)\t\(.gwName)\t\(.backendNs)\t\(.backendPort)"
+  "\(.routeNs)\t\(.gwName)\t\(.backendNs)\t\(.backendSvc)\t\(.backendPort)"
 ')
 
 if [[ -z "$PARSED" ]]; then
@@ -96,18 +100,75 @@ echo "$PARSED" | gawk -F'\t' '{
   }
 }'
 
-# Build: backendNs + gwClass → sorted unique ports
-# Using associative arrays in awk
+# Resolve a service port to its targetPort (what the pod actually listens on).
+# Usage: resolve_target_port NAMESPACE SERVICE_NAME SERVICE_PORT
+# Falls back to SERVICE_PORT if the service or port entry is not found.
+resolve_target_port() {
+  local ns="$1" svcName="$2" svcPort="$3"
+
+  # Look up Service → find port entry → get targetPort
+  local tp
+  tp=$(echo "$SERVICES_JSON" | jq -r \
+    --arg ns "$ns" --arg name "$svcName" --argjson port "$svcPort" '
+    .items[] |
+    select(.metadata.namespace == $ns and .metadata.name == $name) |
+    (.spec.ports // [])[] |
+    select(.port == $port) |
+    .targetPort // .port
+  ' 2>/dev/null | head -1)
+
+  if [[ -z "$tp" ]]; then
+    # Service not found or no matching port — fall back to service port
+    echo "$svcPort"
+    return
+  fi
+
+  # If targetPort is numeric, use it directly
+  if [[ "$tp" =~ ^[0-9]+$ ]]; then
+    echo "$tp"
+  else
+    # targetPort is a named port (e.g. "http") — resolve via EndpointSlice
+    if [[ -z "${ENDPOINTSLICES_JSON:-}" ]]; then
+      ENDPOINTSLICES_JSON=$(kubectl get endpointslices -A -o json)
+    fi
+    local resolved
+    resolved=$(echo "$ENDPOINTSLICES_JSON" | jq -r \
+      --arg ns "$ns" --arg svc "$svcName" --arg pname "$tp" '
+      .items[] |
+      select(.metadata.namespace == $ns) |
+      select(.metadata.labels["kubernetes.io/service-name"] == $svc) |
+      (.ports // [])[] |
+      select(.name == $pname) |
+      .port
+    ' 2>/dev/null | head -1)
+
+    if [[ -n "$resolved" && "$resolved" =~ ^[0-9]+$ ]]; then
+      echo "$resolved"
+    else
+      echo "WARN: could not resolve named port '$tp' for $ns/$svcName:$svcPort — falling back to $svcPort" >&2
+      echo "$svcPort"
+    fi
+  fi
+}
+
+# Build: backendNs + gwClass → sorted unique targetPorts
 declare -A NS_GW_PORTS
-while IFS=$'\t' read -r routeNs gwName backendNs backendPort; do
+while IFS=$'\t' read -r routeNs gwName backendNs backendSvc backendPort; do
   gwClass=$(gateway_class "$gwName")
   [[ -z "$gwClass" ]] && continue
+
+  # Resolve service port → pod targetPort
+  targetPort=$(resolve_target_port "$backendNs" "$backendSvc" "$backendPort")
+  if [[ "$targetPort" != "$backendPort" ]]; then
+    echo "  RESOLVE  ${backendNs}/${backendSvc}:${backendPort} → targetPort ${targetPort}"
+  fi
+
   key="${backendNs}|${gwClass}"
   existing="${NS_GW_PORTS[$key]:-}"
   if [[ -n "$existing" ]]; then
-    NS_GW_PORTS[$key]="${existing} ${backendPort}"
+    NS_GW_PORTS[$key]="${existing} ${targetPort}"
   else
-    NS_GW_PORTS[$key]="$backendPort"
+    NS_GW_PORTS[$key]="$targetPort"
   fi
 done <<< "$PARSED"
 
@@ -141,9 +202,9 @@ for key in $(printf '%s\n' "${!NS_GW_PORTS[@]}" | sort); do
   filePath="${OVERLAY_DIR}/${ns}/allow-gateway-ingress-${gwClass}.yaml"
   GENERATED_FILES+=("$filePath")
 
-  content="# DERIVED: ports from HTTPRoute backendRefs targeting this namespace.
-# Inputs: kubectl get httproutes.gateway.networking.k8s.io -A -o json
-# Key: (gateway parentRef -> {xylem|phloem|cell-membrane}) + backendRef.port
+  content="# DERIVED: pod targetPorts from HTTPRoute backendRefs targeting this namespace.
+# Inputs: HTTPRoutes → Services (targetPort resolution) → EndpointSlices (named port resolution)
+# Key: (gateway parentRef -> {xylem|phloem|cell-membrane}) + resolved targetPort
 # Regenerate; do not hand-edit.
 apiVersion: security.istio.io/v1
 kind: AuthorizationPolicy
