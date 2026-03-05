@@ -1,0 +1,67 @@
+# One-shot job — NOT in kustomization resources.
+# Apply manually after controllers are healthy and DB is initialized:
+#   kubectl -n hookshot apply -f oidc-setup-job.yaml
+#   kubectl -n hookshot logs -f job/boundary-oidc-setup
+# Delete after success: kubectl -n hookshot delete job boundary-oidc-setup
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: boundary-oidc-setup
+  namespace: hookshot
+spec:
+  ttlSecondsAfterFinished: 300
+  backoffLimit: 1
+  template:
+    spec:
+      serviceAccountName: boundary-controller
+      restartPolicy: Never
+      containers:
+        - name: oidc-setup
+          image: docker.io/hashicorp/boundary:0.21.1
+          command: ["sh", "-c"]
+          args:
+            - |
+              set -euo pipefail
+              export BOUNDARY_ADDR=http://boundary-controller.hookshot.svc.cluster.local:9200
+
+              echo "=== Authenticating ==="
+              TOKEN=$(boundary authenticate password \
+                -auth-method-id ampw_wRAPAtb3aw \
+                -login-name admin \
+                -password env://ADMIN_PASSWORD \
+                -keyring-type none \
+                -format json | grep -o '"token":"[^"]*"' | cut -d'"' -f4)
+              export BOUNDARY_TOKEN="$TOKEN"
+
+              echo "=== Creating OIDC auth method ==="
+              RESULT=$(boundary auth-methods create oidc \
+                -issuer https://sso.prplanit.com \
+                -client-id env://OIDC_CLIENT_ID \
+                -client-secret env://OIDC_CLIENT_SECRET \
+                -signing-algs RS256 \
+                -api-url-prefix https://boundary.prplanit.com \
+                -name zitadel \
+                -description "PrecisionPlanIT SSO via Zitadel" \
+                -scope-id global \
+                -keyring-type none \
+                -format json)
+              echo "$RESULT"
+
+              OIDC_AM_ID=$(echo "$RESULT" | grep -o '"id":"[^"]*"' | head -1 | cut -d'"' -f4)
+              echo "=== OIDC Auth Method ID: $OIDC_AM_ID ==="
+
+              echo "=== Setting OIDC as primary auth method ==="
+              boundary scopes update -id global \
+                -primary-auth-method-id "$OIDC_AM_ID" \
+                -keyring-type none \
+                -format json
+
+              echo "=== Done ==="
+              echo "OIDC auth method '$OIDC_AM_ID' is now primary for global scope."
+              echo "Password auth method 'ampw_wRAPAtb3aw' is still available as fallback."
+          env:
+            - name: ADMIN_PASSWORD
+              value: "NA1ZRvx2dHw33OGKIhKq"
+          envFrom:
+            - secretRef:
+                name: boundary-oidc
