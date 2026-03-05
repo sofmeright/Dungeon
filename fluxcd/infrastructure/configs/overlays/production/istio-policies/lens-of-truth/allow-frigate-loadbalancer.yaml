@@ -10,8 +10,12 @@ spec:
   rules:
     - from:
         - source:
-            notPrincipals:
-              - cluster.local/ns/*/sa/*
+            ipBlocks:
+              - "10.0.0.0/8"
+              - "172.16.0.0/12"
+              - "192.168.0.0/16"
+            notIpBlocks:
+              - "192.168.144.0/20"  # exclude pod CIDR
       to:
         - operation:
             ports: ["5000", "8554", "8555"]

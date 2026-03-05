@@ -8,10 +8,8 @@ spec:
       gateway.networking.k8s.io/gateway-name: phloem-gateway
   action: ALLOW
   rules:
-    - from:
-        - source:
-            notPrincipals:
-              - cluster.local/ns/*/sa/*
-      to:
+    # Internet-facing gateway (pfSense forwards port 443)
+    # Source IPs are unpredictable public clients — port-only restriction
+    - to:
         - operation:
             ports: ["80", "443"]

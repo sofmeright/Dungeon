@@ -8,11 +8,8 @@ spec:
       app: neko-vpn
   action: ALLOW
   rules:
-    - from:
-        - source:
-            notPrincipals:
-              - cluster.local/ns/*/sa/*
-      to:
+    # Internet-facing WebRTC — source IPs are unpredictable
+    - to:
         - operation:
             ports: ["5340", "62001", "62002"]
 ---
@@ -26,10 +23,7 @@ spec:
       app: stunner
   action: ALLOW
   rules:
-    - from:
-        - source:
-            notPrincipals:
-              - cluster.local/ns/*/sa/*
-      to:
+    # Internet-facing TURN gateway — source IPs are unpredictable
+    - to:
         - operation:
             ports: ["3478"]

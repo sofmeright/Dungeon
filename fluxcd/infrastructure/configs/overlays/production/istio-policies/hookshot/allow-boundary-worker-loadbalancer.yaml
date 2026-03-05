@@ -9,10 +9,7 @@ spec:
       app.kubernetes.io/component: worker
   action: ALLOW
   rules:
-    - from:
-        - source:
-            notPrincipals:
-              - cluster.local/ns/*/sa/*
-      to:
+    # Internet-facing remote access — source IPs are unpredictable
+    - to:
         - operation:
             ports: ["9202"]
