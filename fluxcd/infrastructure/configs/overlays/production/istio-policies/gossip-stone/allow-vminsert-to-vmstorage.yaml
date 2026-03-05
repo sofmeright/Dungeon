@@ -8,6 +8,7 @@ spec:
       app: vmstorage
   action: ALLOW
   rules:
+    # vminsert writes to vmstorage on port 8400
     - from:
         - source:
             principals:
@@ -15,3 +16,11 @@ spec:
       to:
         - operation:
             ports: ["8400"]
+    # vmselect reads from vmstorage on port 8401
+    - from:
+        - source:
+            principals:
+              - cluster.local/ns/gossip-stone/sa/vmselect
+      to:
+        - operation:
+            ports: ["8401"]
