@@ -21,6 +21,7 @@ data:
     }
 
     worker {
+      name              = "PLACEHOLDER_WORKER_NAME"
       initial_upstreams = PLACEHOLDER_INITIAL_UPSTREAMS
       public_addr       = "PLACEHOLDER_PUBLIC_ADDR"
     }
