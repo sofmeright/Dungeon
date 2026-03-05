@@ -36,9 +36,9 @@ spec:
               echo "=== Creating OIDC auth method ==="
               RESULT=$(boundary auth-methods create oidc \
                 -issuer https://sso.prplanit.com \
-                -client-id env://OIDC_CLIENT_ID \
+                -client-id "$OIDC_CLIENT_ID" \
                 -client-secret env://OIDC_CLIENT_SECRET \
-                -signing-algs RS256 \
+                -signing-algorithm RS256 \
                 -api-url-prefix https://boundary.prplanit.com \
                 -name zitadel \
                 -description "PrecisionPlanIT SSO via Zitadel" \
@@ -49,6 +49,13 @@ spec:
 
               OIDC_AM_ID=$(echo "$RESULT" | grep -o '"id":"[^"]*"' | head -1 | cut -d'"' -f4)
               echo "=== OIDC Auth Method ID: $OIDC_AM_ID ==="
+
+              echo "=== Activating OIDC auth method ==="
+              boundary auth-methods change-state oidc \
+                -id "$OIDC_AM_ID" \
+                -state active-public \
+                -keyring-type none \
+                -format json
 
               echo "=== Setting OIDC as primary auth method ==="
               boundary scopes update -id global \
