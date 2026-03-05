@@ -6,9 +6,20 @@ spec:
   chart:
     spec:
       version: ">=1.0.0"
+  # postRenderers adds labels/annotations that the podinfo chart doesn't
+  # natively support (it has no podLabels value). Kustomize patch runs
+  # after helm template, so it can inject into the rendered Deployment.
+  postRenderers:
+    - kustomize:
+        patches:
+          - target:
+              kind: Deployment
+              name: podinfo
+            patch: |
+              - op: add
+                path: /spec/template/metadata/labels/policy.prplanit.com~1ingress
+                value: "true"
   values:
-    podLabels:
-      policy.prplanit.com/ingress: "true"
     ingress:
       hosts:
         - host: podinfo.production
