@@ -20,3 +20,4 @@ resources:
   - delivery-bag.yaml
   - wallmaster.yaml
   - hookshot.yaml
+  - lakitu.yaml

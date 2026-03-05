@@ -3,7 +3,7 @@ kind: HelmRelease
 metadata:
   name: alloy
 spec:
-  targetNamespace: gossip-stone
+  targetNamespace: lakitu
   postRenderers:
     - kustomize:
         patches:
