@@ -11,6 +11,8 @@ resources:
   - allow-umami-to-umami-postgres.yaml
   - allow-speedtest-tracker-to-speedtest-tracker-postgres.yaml
   - allow-vminsert-to-vmstorage.yaml
+  - allow-alloy-to-loki-gateway.yaml
+  - allow-alloy-to-vminsert.yaml
   - allow-graphite-exporter-loadbalancer.yaml
   - allow-nutify-loadbalancer.yaml
   - allow-prom-exporter-eaton-ups-loadbalancer.yaml

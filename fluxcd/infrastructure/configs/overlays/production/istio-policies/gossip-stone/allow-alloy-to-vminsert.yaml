@@ -1,0 +1,19 @@
+apiVersion: security.istio.io/v1
+kind: AuthorizationPolicy
+metadata:
+  name: allow-alloy-to-vminsert
+spec:
+  selector:
+    matchLabels:
+      app: vminsert
+  action: ALLOW
+  rules:
+    # Alloy runs with hostNetwork — no mTLS identity in ambient mesh.
+    # Pushes metrics to vminsert on port 8480.
+    - from:
+        - source:
+            notPrincipals:
+              - "cluster.local/ns/*/sa/*"
+      to:
+        - operation:
+            ports: ["8480"]

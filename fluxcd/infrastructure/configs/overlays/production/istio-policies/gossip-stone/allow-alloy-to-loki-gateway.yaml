@@ -1,0 +1,20 @@
+apiVersion: security.istio.io/v1
+kind: AuthorizationPolicy
+metadata:
+  name: allow-alloy-to-loki-gateway
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/component: gateway
+      app.kubernetes.io/name: loki
+  action: ALLOW
+  rules:
+    # Alloy runs with hostNetwork — no mTLS identity in ambient mesh.
+    # Pushes logs to loki-gateway on port 8080 (service port 80).
+    - from:
+        - source:
+            notPrincipals:
+              - "cluster.local/ns/*/sa/*"
+      to:
+        - operation:
+            ports: ["8080"]
