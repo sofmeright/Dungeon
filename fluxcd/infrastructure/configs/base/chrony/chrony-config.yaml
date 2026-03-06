@@ -7,6 +7,9 @@ data:
   NTP_SERVERS: "PLACEHOLDER_NTP_SERVERS"
   TZ: "Etc/UTC"
 
+  # Additional chrony directives (e.g., "ratelimit\nrtcsync")
+  NTP_DIRECTIVES: ""
+
   # Logging Configuration
   LOG_LEVEL: "0"
   NOCLIENTLOG: "false"
