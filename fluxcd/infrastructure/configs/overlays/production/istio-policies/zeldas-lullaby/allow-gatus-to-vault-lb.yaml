@@ -1,0 +1,20 @@
+apiVersion: security.istio.io/v1
+kind: AuthorizationPolicy
+metadata:
+  name: allow-gatus-to-vault-lb
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: vault
+  action: ALLOW
+  rules:
+    # Gatus health checks Vault API via LB IP on port 8200.
+    # Vault pods are operator-managed and lack the probe label,
+    # so the base allow-gatus-healthcheck policy doesn't cover them.
+    - from:
+        - source:
+            principals:
+              - cluster.local/ns/gossip-stone/sa/gatus
+      to:
+        - operation:
+            ports: ["8200"]
