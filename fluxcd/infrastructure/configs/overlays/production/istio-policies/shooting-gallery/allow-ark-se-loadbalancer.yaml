@@ -1,0 +1,13 @@
+apiVersion: security.istio.io/v1
+kind: AuthorizationPolicy
+metadata:
+  name: allow-ark-se-tmc-theisland-loadbalancer
+spec:
+  selector:
+    matchLabels:
+      app: ark-se-tmc-theisland
+  action: ALLOW
+  rules:
+    - to:
+        - operation:
+            ports: ["7797", "27057", "27095"]

@@ -1,0 +1,13 @@
+apiVersion: security.istio.io/v1
+kind: AuthorizationPolicy
+metadata:
+  name: allow-minecraft-loadbalancer
+spec:
+  selector:
+    matchLabels:
+      app: minecraft
+  action: ALLOW
+  rules:
+    - to:
+        - operation:
+            ports: ["35566"]

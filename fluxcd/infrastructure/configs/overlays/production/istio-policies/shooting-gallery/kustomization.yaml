@@ -6,3 +6,6 @@ resources:
   - allow-intra-breakglass.yaml
   - allow-romm-to-romm-db.yaml
   - allow-gateway-ingress-xylem.yaml
+  - allow-ark-sa-loadbalancer.yaml
+  - allow-ark-se-loadbalancer.yaml
+  - allow-minecraft-loadbalancer.yaml

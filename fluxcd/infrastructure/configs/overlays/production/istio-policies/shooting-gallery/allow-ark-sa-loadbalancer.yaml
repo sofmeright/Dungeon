@@ -1,0 +1,41 @@
+apiVersion: security.istio.io/v1
+kind: AuthorizationPolicy
+metadata:
+  name: allow-ark-sa-tmc-admin-loadbalancer
+spec:
+  selector:
+    matchLabels:
+      app: ark-sa-tmc-admin-list-server
+  action: ALLOW
+  rules:
+    - to:
+        - operation:
+            ports: ["28019"]
+---
+apiVersion: security.istio.io/v1
+kind: AuthorizationPolicy
+metadata:
+  name: allow-ark-sa-tmc-theisland-loadbalancer
+spec:
+  selector:
+    matchLabels:
+      app: ark-sa-tmc-theisland
+  action: ALLOW
+  rules:
+    - to:
+        - operation:
+            ports: ["8777", "28020", "8778"]
+---
+apiVersion: security.istio.io/v1
+kind: AuthorizationPolicy
+metadata:
+  name: allow-ark-sa-tmc-valguero-loadbalancer
+spec:
+  selector:
+    matchLabels:
+      app: ark-sa-tmc-valguero
+  action: ALLOW
+  rules:
+    - to:
+        - operation:
+            ports: ["8779", "28021", "8780"]
