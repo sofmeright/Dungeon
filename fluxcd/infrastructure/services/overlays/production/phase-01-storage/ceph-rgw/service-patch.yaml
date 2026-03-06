@@ -10,6 +10,6 @@ metadata:
       url: http://172.22.30.101
       interval: 60s
       conditions:
-        - "[STATUS] == 200"
+        - "[STATUS] == any(200, 403)"
 spec:
   type: LoadBalancer
