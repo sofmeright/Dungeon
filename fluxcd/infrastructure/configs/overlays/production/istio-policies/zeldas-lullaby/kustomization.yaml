@@ -14,8 +14,6 @@ resources:
   - allow-bank-vaults-operator-to-vault.yaml
   - allow-vault-to-vault.yaml
   - allow-netbird-coturn-loadbalancer.yaml
-  - allow-vault-lb-loadbalancer.yaml
-  - allow-gatus-to-vault-lb.yaml
   - allow-netbird-postgres-replication.yaml
   - allow-vaultwarden-postgres-replication.yaml
   - allow-zitadel-postgres-replication.yaml
