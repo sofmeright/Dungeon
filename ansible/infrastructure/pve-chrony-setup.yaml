@@ -32,6 +32,7 @@
       ansible.builtin.copy:
         content: |
           allow 172.22.30.0/24
+          allow 172.22.144.0/24
           allow 10.0.0.1
           allow 10.0.0.2
           allow fc00:f1:def0:101::101
