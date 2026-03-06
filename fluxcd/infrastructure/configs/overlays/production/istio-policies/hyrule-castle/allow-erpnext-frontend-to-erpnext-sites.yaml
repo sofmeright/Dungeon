@@ -1,0 +1,17 @@
+apiVersion: security.istio.io/v1
+kind: AuthorizationPolicy
+metadata:
+  name: allow-erpnext-frontend-to-erpnext-sites
+spec:
+  selector:
+    matchLabels:
+      app: erpnext-sites
+  action: ALLOW
+  rules:
+    - from:
+        - source:
+            principals:
+              - cluster.local/ns/hyrule-castle/sa/erpnext-frontend
+      to:
+        - operation:
+            ports: ["8000"]
