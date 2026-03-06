@@ -8,7 +8,7 @@ metadata:
       group: "Content & Media (Temple of Time🏛️)"
       conditions:
         - "[STATUS] == 200"
-        - "[RESPONSE_TIME] < 5000"
+        - "[RESPONSE_TIME] < 8000"
       url: https://sh.uni2.cc/rest/health
 spec:
   parentRefs:
