@@ -10,6 +10,7 @@ resources:
   - allow-dolibarr-web-to-dolibarr-mariadb.yaml
   - allow-invoiceninja-app-to-invoiceninja-mysql.yaml
   - allow-invoiceninja-app-to-invoiceninja-redis.yaml
+  - allow-invoiceninja-nginx-to-invoiceninja-app.yaml
   - allow-bagisto-demo-to-bagisto-demo-db.yaml
   - allow-opnform-to-opnform-postgres.yaml
   - allow-opnform-to-opnform-redis.yaml
