@@ -141,6 +141,11 @@
     - name: Flush handlers to restart chrony before verify
       ansible.builtin.meta: flush_handlers
 
+    - name: Wait for chrony to resolve pools and sync
+      ansible.builtin.pause:
+        seconds: 15
+        prompt: "Waiting for chrony to resolve pool DNS and complete initial poll cycle..."
+
     - name: Verify chrony tracking
       ansible.builtin.command: chronyc tracking
       register: chrony_tracking
