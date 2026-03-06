@@ -2,6 +2,26 @@
 - name: Ad Arbitorium - GitOps - Infrastructure - Chrony NTP (Proxmox)
   hosts: proxmox
   become: true
+  vars:
+    # --- Tunable Configuration ---
+    # Upstream NTP sources (public pools + reliable servers)
+    chrony_pools:
+      - "0.us.pool.ntp.org iburst maxsources 2"
+      - "1.us.pool.ntp.org iburst maxsources 2"
+      - "2.us.pool.ntp.org iburst maxsources 2"
+      - "3.us.pool.ntp.org iburst maxsources 2"
+    chrony_servers:
+      - "time.cloudflare.com iburst"
+
+    # Clients allowed to query NTP from these hosts
+    chrony_allow:
+      - "172.22.30.0/24"     # K8s LoadBalancer range (chrony LB)
+      - "172.22.144.0/24"    # K8s node subnet (Cilium masquerades pod traffic to node IPs)
+      - "10.0.0.1"           # AdGuard DNS Docker host
+      - "10.0.0.2"           # AdGuard DNS Docker host
+      - "fc00:f1:def0:101::101"  # IPv6 DNS host
+      - "fc00:f1:def0:101::102"  # IPv6 DNS host
+
   handlers:
     - name: Restart chrony
       ansible.builtin.service:
@@ -14,35 +34,57 @@
         state: present
         update_cache: true
 
+    # --- Upstream NTP sources ---
+    # sources.d/ntp.sources is the ONLY source file we manage.
+    # All PVE nodes sync directly from public pools (stratum 1-2).
     - name: Write NTP upstream sources
       ansible.builtin.copy:
-        content: |
-          pool 0.us.pool.ntp.org iburst maxsources 2
-          pool 1.us.pool.ntp.org iburst maxsources 2
-          pool 2.us.pool.ntp.org iburst maxsources 2
-          pool 3.us.pool.ntp.org iburst maxsources 2
-          server time.cloudflare.com iburst
+        # yamllint disable rule:line-length
+        content: "{% for pool in chrony_pools %}pool {{ pool }}\n{% endfor %}{% for server in chrony_servers %}server {{ server }}\n{% endfor %}"
+        # yamllint enable rule:line-length
         dest: /etc/chrony/sources.d/ntp.sources
         owner: root
         group: root
         mode: "0644"
       notify: Restart chrony
 
-    - name: Write export configuration (allow K8s and DNS subnets)
+    # --- Export configuration ---
+    # Controls which clients can query NTP from these hosts.
+    - name: Write export configuration
       ansible.builtin.copy:
-        content: |
-          allow 172.22.30.0/24
-          allow 172.22.144.0/24
-          allow 10.0.0.1
-          allow 10.0.0.2
-          allow fc00:f1:def0:101::101
-          allow fc00:f1:def0:101::102
-          cmdallow 127.0.0.1
-          cmddeny all
+        # yamllint disable rule:line-length
+        content: "{% for cidr in chrony_allow %}allow {{ cidr }}\n{% endfor %}cmdallow 127.0.0.1\ncmddeny all\n"
+        # yamllint enable rule:line-length
         dest: /etc/chrony/conf.d/export.conf
         owner: root
         group: root
         mode: "0644"
+      notify: Restart chrony
+
+    # --- Clean stale/default sources from chrony.conf ---
+    # Debian ships default pool lines in chrony.conf. PVE may add peer lines.
+    # Our sources.d/ntp.sources is the single source of truth — remove everything
+    # else that injects upstream servers so we don't get 30+ unmanaged sources.
+
+    - name: Remove default pool directives from chrony.conf
+      ansible.builtin.lineinfile:
+        path: /etc/chrony/chrony.conf
+        regexp: '^pool\s+'
+        state: absent
+      notify: Restart chrony
+
+    - name: Remove default server directives from chrony.conf
+      ansible.builtin.lineinfile:
+        path: /etc/chrony/chrony.conf
+        regexp: '^server\s+'
+        state: absent
+      notify: Restart chrony
+
+    - name: Remove peer directives from chrony.conf
+      ansible.builtin.lineinfile:
+        path: /etc/chrony/chrony.conf
+        regexp: '^peer\s+'
+        state: absent
       notify: Restart chrony
 
     - name: Remove local stratum from chrony.conf
@@ -59,6 +101,43 @@
         state: absent
       notify: Restart chrony
 
+    # --- Clean stale source files from sources.d/ ---
+    # PVE or previous configs may have dropped extra .sources files.
+    # Only our ntp.sources should exist.
+
+    - name: Find all source files in sources.d
+      ansible.builtin.find:
+        paths: /etc/chrony/sources.d
+        patterns: "*.sources"
+      register: chrony_source_files
+
+    - name: Remove unmanaged source files from sources.d
+      ansible.builtin.file:
+        path: "{{ item.path }}"
+        state: absent
+      loop: "{{ chrony_source_files.files }}"
+      when: item.path != '/etc/chrony/sources.d/ntp.sources'
+      notify: Restart chrony
+
+    # --- Clean stale conf files from conf.d/ ---
+    # Only our export.conf should exist.
+
+    - name: Find all conf files in conf.d
+      ansible.builtin.find:
+        paths: /etc/chrony/conf.d
+        patterns: "*.conf"
+      register: chrony_conf_files
+
+    - name: Remove unmanaged conf files from conf.d
+      ansible.builtin.file:
+        path: "{{ item.path }}"
+        state: absent
+      loop: "{{ chrony_conf_files.files }}"
+      when: item.path != '/etc/chrony/conf.d/export.conf'
+      notify: Restart chrony
+
+    # --- Verify ---
+
     - name: Flush handlers to restart chrony before verify
       ansible.builtin.meta: flush_handlers
 
@@ -70,3 +149,12 @@
     - name: Show chrony tracking output
       ansible.builtin.debug:
         var: chrony_tracking.stdout_lines
+
+    - name: Verify chrony sources
+      ansible.builtin.command: chronyc sources
+      register: chrony_sources
+      changed_when: false
+
+    - name: Show chrony sources
+      ansible.builtin.debug:
+        var: chrony_sources.stdout_lines
