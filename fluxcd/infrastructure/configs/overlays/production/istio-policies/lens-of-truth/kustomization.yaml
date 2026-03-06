@@ -8,5 +8,6 @@ resources:
   - allow-home-assistant-to-mosquitto.yaml
   - allow-frigate-loadbalancer.yaml
   - allow-wazuh-manager-loadbalancer.yaml
+  - allow-crowdsec-bouncer-to-crowdsec.yaml
   - allow-gateway-ingress-xylem.yaml
   - allow-gateway-ingress-phloem.yaml
