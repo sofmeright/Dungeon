@@ -33,6 +33,9 @@ metadata:
   annotations:
     gatus.home-operations.com/endpoint: |
       group: "Content & Media (Temple of Time🏛️)"
+      url: https://sh.pcfae.com/rest/health
+      conditions:
+        - "[STATUS] == 200"
 spec:
   parentRefs:
     - name: xylem-gateway
