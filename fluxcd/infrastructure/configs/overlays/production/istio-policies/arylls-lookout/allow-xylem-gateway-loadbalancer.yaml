@@ -15,8 +15,9 @@ spec:
               - "172.16.0.0/12"
               - "192.168.0.0/16"
             notIpBlocks:
-              - "192.168.144.0/20"  # exclude pod CIDR
-              - "172.22.144.0/24"   # exclude node subnet (hairpin SNAT)
+              - "172.22.144.0/24"  # exclude node subnet (hairpin SNAT)
+              # NOTE: pod CIDR NOT excluded — xylem is internal-only (no pfSense NAT)
+              # and Gatus needs to reach it for ingress health checks via pod IP
       to:
         - operation:
             ports: ["80", "443"]
