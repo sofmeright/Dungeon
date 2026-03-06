@@ -11,7 +11,6 @@ resources:
   - deployment-worker.yaml
   - deployment-web.yaml
   - deployment-nginx.yaml
-  - service-postgres.yaml
   - service-redis.yaml
   - service-gotrue.yaml
   - service-appflowy-cloud.yaml
