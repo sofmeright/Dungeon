@@ -5,6 +5,9 @@ metadata:
   annotations:
     gatus.home-operations.com/endpoint: |
       group: "Downloads & Media (Swift Sail⛵)"
+      url: https://pinchflat.pcfae.com/healthcheck
+      conditions:
+        - "[STATUS] == 200"
 spec:
   parentRefs:
     - name: xylem-gateway
