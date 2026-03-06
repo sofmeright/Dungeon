@@ -5,3 +5,4 @@ resources:
   - ../../../../base/istio-policies
   - allow-intra-breakglass.yaml
   - allow-xylem-gateway-loadbalancer.yaml
+  - allow-gatus-to-xylem-gateway.yaml

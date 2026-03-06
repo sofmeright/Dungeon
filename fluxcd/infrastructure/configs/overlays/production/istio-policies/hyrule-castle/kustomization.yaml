@@ -36,6 +36,7 @@ resources:
   - allow-harbor-redis-intra-cluster.yaml
   - allow-gitlab-praefect-to-gitaly.yaml
   - allow-cell-membrane-gateway-loadbalancer.yaml
+  - allow-gatus-to-cell-membrane-gateway.yaml
   - allow-apt-cacher-ng-loadbalancer.yaml
   - allow-jfrog-loadbalancer.yaml
   - allow-webhook-gitlab-certmanager.yaml
