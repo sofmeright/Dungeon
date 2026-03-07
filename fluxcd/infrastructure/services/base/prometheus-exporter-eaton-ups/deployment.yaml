@@ -3,6 +3,7 @@ kind: Deployment
 metadata:
   name: prometheus-exporter-eaton-ups
 spec:
+  revisionHistoryLimit: 5
   replicas: 1
   selector:
     matchLabels:

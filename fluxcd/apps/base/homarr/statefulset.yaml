@@ -3,6 +3,7 @@ kind: StatefulSet
 metadata:
   name: homarr
 spec:
+  revisionHistoryLimit: 5
   serviceName: homarr
   replicas: 1
   selector:

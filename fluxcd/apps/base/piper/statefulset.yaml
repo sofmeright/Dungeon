@@ -3,6 +3,7 @@ kind: StatefulSet
 metadata:
   name: piper
 spec:
+  revisionHistoryLimit: 5
   serviceName: piper
   replicas: 1
   selector:

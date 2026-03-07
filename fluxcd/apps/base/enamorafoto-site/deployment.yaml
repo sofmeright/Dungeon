@@ -5,6 +5,7 @@ metadata:
   labels:
     app: enamorafoto-site
 spec:
+  revisionHistoryLimit: 5
   replicas: 1
   selector:
     matchLabels:

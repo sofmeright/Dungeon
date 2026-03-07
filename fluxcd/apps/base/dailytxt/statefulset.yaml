@@ -3,6 +3,7 @@ kind: StatefulSet
 metadata:
   name: dailytxt
 spec:
+  revisionHistoryLimit: 5
   serviceName: dailytxt
   replicas: PLACEHOLDER_REPLICAS
   selector:

@@ -3,6 +3,7 @@ kind: Deployment
 metadata:
   name: tactical-nginx
 spec:
+  revisionHistoryLimit: 5
   replicas: 1
   selector:
     matchLabels:

@@ -3,6 +3,7 @@ kind: StatefulSet
 metadata:
   name: osticket-app
 spec:
+  revisionHistoryLimit: 5
   serviceName: osticket-app
   replicas: 3
   selector:

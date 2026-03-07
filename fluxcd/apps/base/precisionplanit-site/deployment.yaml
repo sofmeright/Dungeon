@@ -5,6 +5,7 @@ metadata:
   labels:
     app: precisionplanit-site
 spec:
+  revisionHistoryLimit: 5
   replicas: 1
   selector:
     matchLabels:

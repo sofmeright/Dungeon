@@ -5,6 +5,7 @@ metadata:
   labels:
     app.kubernetes.io/name: uptime-kuma
 spec:
+  revisionHistoryLimit: 5
   serviceName: uptime-kuma
   replicas: PLACEHOLDER_REPLICAS
   selector:

@@ -5,6 +5,7 @@ metadata:
   labels:
     app.kubernetes.io/name: ntfy
 spec:
+  revisionHistoryLimit: 5
   serviceName: ntfy
   replicas: PLACEHOLDER_REPLICAS
   selector:

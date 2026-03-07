@@ -3,6 +3,7 @@ kind: Deployment
 metadata:
   name: guacamole
 spec:
+  revisionHistoryLimit: 5
   replicas: 1
   selector:
     matchLabels:

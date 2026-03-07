@@ -3,6 +3,7 @@ kind: StatefulSet
 metadata:
   name: immich
 spec:
+  revisionHistoryLimit: 5
   serviceName: immich
   replicas: 1
   selector:

@@ -3,6 +3,7 @@ kind: StatefulSet
 metadata:
   name: netbird-management
 spec:
+  revisionHistoryLimit: 5
   serviceName: netbird-management
   replicas: 3
   selector:

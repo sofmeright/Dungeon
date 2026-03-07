@@ -3,6 +3,7 @@ kind: StatefulSet
 metadata:
   name: ferdium
 spec:
+  revisionHistoryLimit: 5
   serviceName: ferdium
   replicas: PLACEHOLDER_REPLICAS
   selector:

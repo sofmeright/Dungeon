@@ -3,6 +3,7 @@ kind: StatefulSet
 metadata:
   name: neko-vpn
 spec:
+  revisionHistoryLimit: 5
   serviceName: neko-vpn
   replicas: PLACEHOLDER_REPLICAS
   selector:

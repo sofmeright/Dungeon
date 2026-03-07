@@ -3,6 +3,7 @@ kind: StatefulSet
 metadata:
   name: home-assistant
 spec:
+  revisionHistoryLimit: 5
   serviceName: home-assistant
   replicas: 1
   selector:

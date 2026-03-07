@@ -3,6 +3,7 @@ kind: StatefulSet
 metadata:
   name: netbox-postgres
 spec:
+  revisionHistoryLimit: 5
   serviceName: netbox-postgres
   replicas: 1
   selector:

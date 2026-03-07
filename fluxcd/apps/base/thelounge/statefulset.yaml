@@ -3,6 +3,7 @@ kind: StatefulSet
 metadata:
   name: thelounge
 spec:
+  revisionHistoryLimit: 5
   serviceName: thelounge
   replicas: 1
   selector:

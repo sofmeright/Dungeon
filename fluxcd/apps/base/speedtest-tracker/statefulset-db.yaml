@@ -3,6 +3,7 @@ kind: StatefulSet
 metadata:
   name: speedtest-tracker-postgres
 spec:
+  revisionHistoryLimit: 5
   serviceName: speedtest-tracker-postgres
   replicas: PLACEHOLDER_REPLICAS
   selector:

@@ -3,6 +3,7 @@ kind: StatefulSet
 metadata:
   name: prowlarr
 spec:
+  revisionHistoryLimit: 5
   serviceName: prowlarr
   replicas: 1
   selector:

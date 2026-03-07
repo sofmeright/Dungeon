@@ -3,6 +3,7 @@ kind: StatefulSet
 metadata:
   name: netbird-signal
 spec:
+  revisionHistoryLimit: 5
   serviceName: netbird-signal
   replicas: 3
   selector:

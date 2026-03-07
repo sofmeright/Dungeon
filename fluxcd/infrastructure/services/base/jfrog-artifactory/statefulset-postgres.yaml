@@ -3,6 +3,7 @@ kind: StatefulSet
 metadata:
   name: jfrog-artifactory-postgres
 spec:
+  revisionHistoryLimit: 5
   serviceName: jfrog-artifactory-postgres
   replicas: 1
   selector:

@@ -3,6 +3,7 @@ kind: StatefulSet
 metadata:
   name: openwakeword
 spec:
+  revisionHistoryLimit: 5
   serviceName: openwakeword
   replicas: 1
   selector:

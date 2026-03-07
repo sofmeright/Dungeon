@@ -5,6 +5,7 @@ metadata:
   labels:
     app.kubernetes.io/name: netalertx
 spec:
+  revisionHistoryLimit: 5
   serviceName: netalertx
   replicas: PLACEHOLDER_REPLICAS
   selector:

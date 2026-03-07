@@ -3,6 +3,7 @@ kind: StatefulSet
 metadata:
   name: jfrog-artifactory-jcr
 spec:
+  revisionHistoryLimit: 5
   serviceName: jfrog-artifactory-jcr
   replicas: 1
   selector:

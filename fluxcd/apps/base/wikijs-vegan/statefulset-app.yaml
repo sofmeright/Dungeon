@@ -3,6 +3,7 @@ kind: StatefulSet
 metadata:
   name: wikijs-vegan
 spec:
+  revisionHistoryLimit: 5
   serviceName: wikijs-vegan
   replicas: PLACEHOLDER_REPLICAS
   selector:

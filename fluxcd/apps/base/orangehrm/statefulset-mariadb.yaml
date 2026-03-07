@@ -3,6 +3,7 @@ kind: StatefulSet
 metadata:
   name: orangehrm-mariadb
 spec:
+  revisionHistoryLimit: 5
   serviceName: orangehrm-mariadb
   replicas: 1
   selector:

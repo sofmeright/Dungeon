@@ -3,6 +3,7 @@ kind: Deployment
 metadata:
   name: reactive-resume-chrome
 spec:
+  revisionHistoryLimit: 5
   replicas: PLACEHOLDER_REPLICAS
   selector:
     matchLabels:

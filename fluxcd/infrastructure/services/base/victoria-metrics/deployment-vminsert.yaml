@@ -3,6 +3,7 @@ kind: Deployment
 metadata:
   name: vminsert
 spec:
+  revisionHistoryLimit: 5
   replicas: 2
   selector:
     matchLabels:

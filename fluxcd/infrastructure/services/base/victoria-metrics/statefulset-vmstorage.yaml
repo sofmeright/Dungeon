@@ -3,6 +3,7 @@ kind: StatefulSet
 metadata:
   name: vmstorage
 spec:
+  revisionHistoryLimit: 5
   serviceName: vmstorage
   replicas: 3
   selector:

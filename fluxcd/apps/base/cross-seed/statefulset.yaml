@@ -3,6 +3,7 @@ kind: StatefulSet
 metadata:
   name: cross-seed
 spec:
+  revisionHistoryLimit: 5
   serviceName: cross-seed
   replicas: 1
   selector:

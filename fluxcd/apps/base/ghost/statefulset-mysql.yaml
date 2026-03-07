@@ -3,6 +3,7 @@ kind: StatefulSet
 metadata:
   name: ghost-mysql
 spec:
+  revisionHistoryLimit: 5
   serviceName: ghost-mysql
   replicas: PLACEHOLDER_REPLICAS
   selector:

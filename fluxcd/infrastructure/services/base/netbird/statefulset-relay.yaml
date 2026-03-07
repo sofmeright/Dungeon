@@ -3,6 +3,7 @@ kind: StatefulSet
 metadata:
   name: netbird-relay
 spec:
+  revisionHistoryLimit: 5
   serviceName: netbird-relay
   replicas: 3
   selector:
@@ -14,31 +15,31 @@ spec:
         app: netbird-relay
     spec:
       containers:
-      - name: relay
-        image: docker.io/netbird-relay:latest
-        command:
-        - /bin/sh
-        - -c
-        - |
-          /go/bin/relay run \
-            --listen rels://0.0.0.0:443 \
-            --exposed-address rels://netbird.prplanit.com:443 \
-            --auth-secret $(NETBIRD_RELAY_SECRET) \
-            --log-level info
-        env:
-        - name: NETBIRD_RELAY_SECRET
-          valueFrom:
-            secretKeyRef:
-              name: netbird-secrets
-              key: NETBIRD_RELAY_SECRET
-        ports:
         - name: relay
-          containerPort: 443
-          protocol: TCP
-        resources:
-          requests:
-            memory: "64Mi"
-            cpu: "50m"
-          limits:
-            memory: "256Mi"
-            cpu: "500m"
+          image: docker.io/netbird-relay:latest
+          command:
+            - /bin/sh
+            - -c
+            - |
+              /go/bin/relay run \
+                --listen rels://0.0.0.0:443 \
+                --exposed-address rels://netbird.prplanit.com:443 \
+                --auth-secret $(NETBIRD_RELAY_SECRET) \
+                --log-level info
+          env:
+            - name: NETBIRD_RELAY_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: netbird-secrets
+                  key: NETBIRD_RELAY_SECRET
+          ports:
+            - name: relay
+              containerPort: 443
+              protocol: TCP
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "50m"
+            limits:
+              memory: "256Mi"
+              cpu: "500m"

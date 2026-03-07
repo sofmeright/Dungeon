@@ -3,6 +3,7 @@ kind: Deployment
 metadata:
   name: vmselect
 spec:
+  revisionHistoryLimit: 5
   replicas: 2
   selector:
     matchLabels:

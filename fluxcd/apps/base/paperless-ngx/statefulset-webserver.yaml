@@ -3,6 +3,7 @@ kind: StatefulSet
 metadata:
   name: paperless-webserver
 spec:
+  revisionHistoryLimit: 5
   serviceName: paperless-webserver
   replicas: PLACEHOLDER_REPLICAS
   selector:

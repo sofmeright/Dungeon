@@ -3,6 +3,7 @@ kind: StatefulSet
 metadata:
   name: semaphore
 spec:
+  revisionHistoryLimit: 5
   serviceName: semaphore
   replicas: PLACEHOLDER_REPLICAS
   selector:

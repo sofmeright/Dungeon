@@ -3,6 +3,7 @@ kind: StatefulSet
 metadata:
   name: erpnext-mariadb
 spec:
+  revisionHistoryLimit: 5
   serviceName: erpnext-mariadb
   replicas: 1
   selector:

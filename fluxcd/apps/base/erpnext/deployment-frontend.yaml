@@ -3,6 +3,7 @@ kind: Deployment
 metadata:
   name: erpnext-frontend
 spec:
+  revisionHistoryLimit: 5
   replicas: 1
   selector:
     matchLabels:

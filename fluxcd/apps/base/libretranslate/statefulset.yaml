@@ -3,6 +3,7 @@ kind: StatefulSet
 metadata:
   name: libretranslate
 spec:
+  revisionHistoryLimit: 5
   serviceName: libretranslate
   replicas: 1
   selector:

@@ -3,6 +3,7 @@ kind: StatefulSet
 metadata:
   name: orangehrm
 spec:
+  revisionHistoryLimit: 5
   serviceName: orangehrm
   replicas: 1
   selector:

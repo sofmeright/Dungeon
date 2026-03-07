@@ -3,6 +3,7 @@ kind: StatefulSet
 metadata:
   name: invoiceninja-redis
 spec:
+  revisionHistoryLimit: 5
   serviceName: invoiceninja-redis
   replicas: 1
   selector:

@@ -3,6 +3,7 @@ kind: StatefulSet
 metadata:
   name: homebox
 spec:
+  revisionHistoryLimit: 5
   serviceName: homebox
   replicas: PLACEHOLDER_REPLICAS
   selector:

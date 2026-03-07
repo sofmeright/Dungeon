@@ -3,6 +3,7 @@ kind: StatefulSet
 metadata:
   name: minecraft
 spec:
+  revisionHistoryLimit: 5
   serviceName: minecraft
   replicas: 1
   selector:

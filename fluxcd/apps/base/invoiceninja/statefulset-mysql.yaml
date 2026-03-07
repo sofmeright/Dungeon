@@ -3,6 +3,7 @@ kind: StatefulSet
 metadata:
   name: invoiceninja-mysql
 spec:
+  revisionHistoryLimit: 5
   serviceName: invoiceninja-mysql
   replicas: 1
   selector:

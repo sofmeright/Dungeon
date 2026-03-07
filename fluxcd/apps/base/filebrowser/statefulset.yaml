@@ -3,6 +3,7 @@ kind: StatefulSet
 metadata:
   name: filebrowser
 spec:
+  revisionHistoryLimit: 5
   serviceName: filebrowser
   replicas: 1
   selector:

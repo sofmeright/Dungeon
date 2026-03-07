@@ -3,6 +3,7 @@ kind: StatefulSet
 metadata:
   name: organizr
 spec:
+  revisionHistoryLimit: 5
   serviceName: organizr
   replicas: 1
   selector:

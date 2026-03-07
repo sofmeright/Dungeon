@@ -3,6 +3,7 @@ kind: StatefulSet
 metadata:
   name: ark-se-tmc
 spec:
+  revisionHistoryLimit: 5
   serviceName: ark-se-tmc
   replicas: 1
   selector:

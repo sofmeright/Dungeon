@@ -3,6 +3,7 @@ kind: Deployment
 metadata:
   name: erpnext-redis-cache
 spec:
+  revisionHistoryLimit: 5
   replicas: 1
   selector:
     matchLabels:

@@ -3,6 +3,7 @@ kind: StatefulSet
 metadata:
   name: mealie
 spec:
+  revisionHistoryLimit: 5
   serviceName: mealie
   replicas: PLACEHOLDER_REPLICAS
   selector:

@@ -6,6 +6,7 @@ metadata:
     app: appflowy
     component: gotrue
 spec:
+  revisionHistoryLimit: 5
   replicas: PLACEHOLDER_REPLICAS
   selector:
     matchLabels:

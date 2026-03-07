@@ -3,6 +3,7 @@ kind: StatefulSet
 metadata:
   name: frigate
 spec:
+  revisionHistoryLimit: 5
   serviceName: frigate
   replicas: 1
   selector:

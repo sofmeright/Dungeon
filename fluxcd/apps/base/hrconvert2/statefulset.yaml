@@ -3,6 +3,7 @@ kind: StatefulSet
 metadata:
   name: hrconvert2
 spec:
+  revisionHistoryLimit: 5
   serviceName: hrconvert2
   replicas: PLACEHOLDER_REPLICAS
   selector:

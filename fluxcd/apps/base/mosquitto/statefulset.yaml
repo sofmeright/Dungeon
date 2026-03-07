@@ -3,6 +3,7 @@ kind: StatefulSet
 metadata:
   name: mosquitto
 spec:
+  revisionHistoryLimit: 5
   serviceName: mosquitto
   replicas: 1
   selector:

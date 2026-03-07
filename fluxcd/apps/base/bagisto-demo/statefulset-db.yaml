@@ -3,6 +3,7 @@ kind: StatefulSet
 metadata:
   name: bagisto-demo-db
 spec:
+  revisionHistoryLimit: 5
   serviceName: bagisto-demo-db
   replicas: PLACEHOLDER_REPLICAS
   selector:

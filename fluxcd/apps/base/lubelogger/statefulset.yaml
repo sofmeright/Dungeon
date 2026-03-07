@@ -3,6 +3,7 @@ kind: StatefulSet
 metadata:
   name: lubelogger
 spec:
+  revisionHistoryLimit: 5
   serviceName: lubelogger
   replicas: PLACEHOLDER_REPLICAS
   selector:

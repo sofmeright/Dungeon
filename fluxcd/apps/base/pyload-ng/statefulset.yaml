@@ -3,6 +3,7 @@ kind: StatefulSet
 metadata:
   name: pyload-ng
 spec:
+  revisionHistoryLimit: 5
   serviceName: pyload-ng
   replicas: 1
   selector:

@@ -3,6 +3,7 @@ kind: StatefulSet
 metadata:
   name: nutify
 spec:
+  revisionHistoryLimit: 5
   serviceName: nutify
   replicas: 1
   selector:

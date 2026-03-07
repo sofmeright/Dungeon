@@ -3,6 +3,7 @@ kind: StatefulSet
 metadata:
   name: netbird-dashboard
 spec:
+  revisionHistoryLimit: 5
   serviceName: netbird-dashboard
   replicas: 3
   selector:

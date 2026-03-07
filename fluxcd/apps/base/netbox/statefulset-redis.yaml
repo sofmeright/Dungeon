@@ -3,6 +3,7 @@ kind: StatefulSet
 metadata:
   name: netbox-redis
 spec:
+  revisionHistoryLimit: 5
   serviceName: netbox-redis
   replicas: 1
   selector:

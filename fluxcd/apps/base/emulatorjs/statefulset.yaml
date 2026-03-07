@@ -3,6 +3,7 @@ kind: StatefulSet
 metadata:
   name: emulatorjs
 spec:
+  revisionHistoryLimit: 5
   serviceName: emulatorjs
   replicas: PLACEHOLDER_REPLICAS
   selector:

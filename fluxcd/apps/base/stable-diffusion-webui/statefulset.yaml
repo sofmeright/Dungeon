@@ -3,6 +3,7 @@ kind: StatefulSet
 metadata:
   name: stable-diffusion-webui
 spec:
+  revisionHistoryLimit: 5
   serviceName: stable-diffusion-webui
   replicas: 1
   selector:

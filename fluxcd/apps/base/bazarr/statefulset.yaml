@@ -3,6 +3,7 @@ kind: StatefulSet
 metadata:
   name: bazarr
 spec:
+  revisionHistoryLimit: 5
   serviceName: bazarr
   replicas: 1
   selector:

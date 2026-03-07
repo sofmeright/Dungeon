@@ -3,6 +3,7 @@ kind: StatefulSet
 metadata:
   name: draw-io
 spec:
+  revisionHistoryLimit: 5
   serviceName: draw-io
   replicas: PLACEHOLDER_REPLICAS
   selector:

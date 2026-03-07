@@ -3,6 +3,7 @@ kind: StatefulSet
 metadata:
   name: erpnext-redis-queue
 spec:
+  revisionHistoryLimit: 5
   serviceName: erpnext-redis-queue
   replicas: 1
   selector:

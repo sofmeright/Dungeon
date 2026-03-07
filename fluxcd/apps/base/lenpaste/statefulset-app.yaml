@@ -3,6 +3,7 @@ kind: StatefulSet
 metadata:
   name: lenpaste-app
 spec:
+  revisionHistoryLimit: 5
   serviceName: lenpaste-app
   replicas: PLACEHOLDER_REPLICAS
   selector:

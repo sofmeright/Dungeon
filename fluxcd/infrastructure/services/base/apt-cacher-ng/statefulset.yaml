@@ -3,6 +3,7 @@ kind: StatefulSet
 metadata:
   name: apt-cacher-ng
 spec:
+  revisionHistoryLimit: 5
   serviceName: apt-cacher-ng
   replicas: PLACEHOLDER_REPLICAS
   selector:

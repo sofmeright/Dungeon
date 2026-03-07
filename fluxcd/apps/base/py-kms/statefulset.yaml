@@ -3,6 +3,7 @@ kind: StatefulSet
 metadata:
   name: py-kms
 spec:
+  revisionHistoryLimit: 5
   serviceName: py-kms
   replicas: PLACEHOLDER_REPLICAS
   selector:

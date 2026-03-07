@@ -3,6 +3,7 @@ kind: StatefulSet
 metadata:
   name: adguard
 spec:
+  revisionHistoryLimit: 5
   replicas: PLACEHOLDER_REPLICAS
   serviceName: adguard
   selector:

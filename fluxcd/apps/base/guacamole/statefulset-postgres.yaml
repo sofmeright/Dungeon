@@ -3,6 +3,7 @@ kind: StatefulSet
 metadata:
   name: guacamole-postgres
 spec:
+  revisionHistoryLimit: 5
   serviceName: guacamole-postgres
   replicas: 1
   selector:

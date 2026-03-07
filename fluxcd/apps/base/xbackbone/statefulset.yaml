@@ -3,6 +3,7 @@ kind: StatefulSet
 metadata:
   name: xbackbone
 spec:
+  revisionHistoryLimit: 5
   serviceName: xbackbone
   replicas: PLACEHOLDER_REPLICAS
   selector:
@@ -14,38 +15,38 @@ spec:
         app: xbackbone
     spec:
       containers:
-      - name: xbackbone
-        image: PLACEHOLDER_IMAGE
-        ports:
-        - containerPort: 80
-          name: http
-          protocol: TCP
-        - containerPort: 443
-          name: https
-          protocol: TCP
-        env:
-        - name: TZ
-          value: PLACEHOLDER_TZ
-        - name: PUID
-          value: "1000"
-        - name: PGID
-          value: "1000"
-        volumeMounts:
-        - name: tingle-tuner-xbackbone-config
-          mountPath: /config
+        - name: xbackbone
+          image: PLACEHOLDER_IMAGE
+          ports:
+            - containerPort: 80
+              name: http
+              protocol: TCP
+            - containerPort: 443
+              name: https
+              protocol: TCP
+          env:
+            - name: TZ
+              value: PLACEHOLDER_TZ
+            - name: PUID
+              value: "1000"
+            - name: PGID
+              value: "1000"
+          volumeMounts:
+            - name: tingle-tuner-xbackbone-config
+              mountPath: /config
+          resources:
+            requests:
+              cpu: 100m
+              memory: 256Mi
+            limits:
+              cpu: 1000m
+              memory: 1Gi
+  volumeClaimTemplates:
+    - metadata:
+        name: tingle-tuner-xbackbone-config
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        storageClassName: PLACEHOLDER_STORAGE_CLASS
         resources:
           requests:
-            cpu: 100m
-            memory: 256Mi
-          limits:
-            cpu: 1000m
-            memory: 1Gi
-  volumeClaimTemplates:
-  - metadata:
-      name: tingle-tuner-xbackbone-config
-    spec:
-      accessModes: ["ReadWriteOnce"]
-      storageClassName: PLACEHOLDER_STORAGE_CLASS
-      resources:
-        requests:
-          storage: 10Gi
+            storage: 10Gi

@@ -3,6 +3,7 @@ kind: StatefulSet
 metadata:
   name: shlink-db
 spec:
+  revisionHistoryLimit: 5
   serviceName: shlink-db
   replicas: PLACEHOLDER_REPLICAS
   selector:

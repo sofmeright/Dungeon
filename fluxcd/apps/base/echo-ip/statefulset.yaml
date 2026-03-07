@@ -5,6 +5,7 @@ metadata:
   labels:
     app: echo-ip
 spec:
+  revisionHistoryLimit: 5
   serviceName: echo-ip
   replicas: 1
   selector:

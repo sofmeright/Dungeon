@@ -3,6 +3,7 @@ kind: StatefulSet
 metadata:
   name: actualbudget
 spec:
+  revisionHistoryLimit: 5
   serviceName: actualbudget
   replicas: PLACEHOLDER_REPLICAS
   selector:

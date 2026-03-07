@@ -3,6 +3,7 @@ kind: StatefulSet
 metadata:
   name: zigbee2mqtt
 spec:
+  revisionHistoryLimit: 5
   serviceName: zigbee2mqtt
   replicas: 1
   selector:

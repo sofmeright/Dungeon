@@ -3,6 +3,7 @@ kind: StatefulSet
 metadata:
   name: photoprism-x
 spec:
+  revisionHistoryLimit: 5
   serviceName: photoprism-x
   replicas: 1
   selector:

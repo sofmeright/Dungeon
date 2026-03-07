@@ -3,6 +3,7 @@ kind: StatefulSet
 metadata:
   name: google-webfonts-helper
 spec:
+  revisionHistoryLimit: 5
   serviceName: google-webfonts-helper
   replicas: PLACEHOLDER_REPLICAS
   selector:

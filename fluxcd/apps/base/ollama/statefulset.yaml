@@ -3,6 +3,7 @@ kind: StatefulSet
 metadata:
   name: ollama
 spec:
+  revisionHistoryLimit: 5
   serviceName: ollama
   replicas: 1
   selector:

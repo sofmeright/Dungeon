@@ -3,6 +3,7 @@ kind: StatefulSet
 metadata:
   name: netbootxyz
 spec:
+  revisionHistoryLimit: 5
   serviceName: netbootxyz
   replicas: 1
   selector:

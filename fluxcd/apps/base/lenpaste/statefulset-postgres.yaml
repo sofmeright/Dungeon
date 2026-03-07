@@ -3,6 +3,7 @@ kind: StatefulSet
 metadata:
   name: lenpaste-postgres
 spec:
+  revisionHistoryLimit: 5
   serviceName: lenpaste-postgres
   replicas: PLACEHOLDER_REPLICAS
   selector:

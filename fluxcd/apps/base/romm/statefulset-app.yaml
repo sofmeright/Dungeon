@@ -3,6 +3,7 @@ kind: StatefulSet
 metadata:
   name: romm
 spec:
+  revisionHistoryLimit: 5
   serviceName: romm
   replicas: PLACEHOLDER_REPLICAS
   selector:

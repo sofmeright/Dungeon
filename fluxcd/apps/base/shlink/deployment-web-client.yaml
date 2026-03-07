@@ -3,6 +3,7 @@ kind: Deployment
 metadata:
   name: shlink-web-client
 spec:
+  revisionHistoryLimit: 5
   replicas: PLACEHOLDER_REPLICAS
   selector:
     matchLabels:

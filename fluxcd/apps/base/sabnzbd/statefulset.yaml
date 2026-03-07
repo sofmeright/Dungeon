@@ -3,6 +3,7 @@ kind: StatefulSet
 metadata:
   name: sabnzbd
 spec:
+  revisionHistoryLimit: 5
   serviceName: sabnzbd
   replicas: 1
   selector:

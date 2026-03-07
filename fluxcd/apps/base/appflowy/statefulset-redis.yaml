@@ -3,6 +3,7 @@ kind: StatefulSet
 metadata:
   name: appflowy-redis
 spec:
+  revisionHistoryLimit: 5
   serviceName: appflowy-redis
   replicas: PLACEHOLDER_REPLICAS
   selector:

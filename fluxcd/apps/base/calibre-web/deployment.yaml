@@ -5,6 +5,7 @@ metadata:
   labels:
     app: calibre-web
 spec:
+  revisionHistoryLimit: 5
   replicas: PLACEHOLDER_REPLICAS
   selector:
     matchLabels:

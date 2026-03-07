@@ -6,6 +6,7 @@ metadata:
     app: crowdsec-cloudflare-bouncer
     component: bouncer
 spec:
+  revisionHistoryLimit: 5
   serviceName: crowdsec-cloudflare-bouncer
   replicas: PLACEHOLDER_REPLICAS
   selector:

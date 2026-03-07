@@ -3,6 +3,7 @@ kind: StatefulSet
 metadata:
   name: bookstack-db
 spec:
+  revisionHistoryLimit: 5
   serviceName: bookstack-db
   replicas: 1
   selector:

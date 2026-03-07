@@ -3,6 +3,7 @@ kind: StatefulSet
 metadata:
   name: tactical-mongodb
 spec:
+  revisionHistoryLimit: 5
   serviceName: tactical-mongodb
   replicas: 1
   selector:

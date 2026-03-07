@@ -3,6 +3,7 @@ kind: StatefulSet
 metadata:
   name: ghost
 spec:
+  revisionHistoryLimit: 5
   serviceName: ghost
   replicas: PLACEHOLDER_REPLICAS
   selector:

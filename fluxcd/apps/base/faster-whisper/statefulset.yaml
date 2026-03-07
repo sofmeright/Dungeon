@@ -3,6 +3,7 @@ kind: StatefulSet
 metadata:
   name: faster-whisper
 spec:
+  revisionHistoryLimit: 5
   serviceName: faster-whisper
   replicas: 1
   selector:

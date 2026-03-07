@@ -3,6 +3,7 @@ kind: StatefulSet
 metadata:
   name: endlessh-go
 spec:
+  revisionHistoryLimit: 5
   serviceName: endlessh-go
   replicas: PLACEHOLDER_REPLICAS
   selector:

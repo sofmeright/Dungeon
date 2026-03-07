@@ -3,6 +3,7 @@ kind: StatefulSet
 metadata:
   name: dolibarr-web
 spec:
+  revisionHistoryLimit: 5
   serviceName: dolibarr-web
   replicas: 1
   selector:

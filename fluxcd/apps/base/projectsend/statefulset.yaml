@@ -3,6 +3,7 @@ kind: StatefulSet
 metadata:
   name: projectsend
 spec:
+  revisionHistoryLimit: 5
   serviceName: projectsend
   replicas: PLACEHOLDER_REPLICAS
   selector:

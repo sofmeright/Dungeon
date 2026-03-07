@@ -3,6 +3,7 @@ kind: StatefulSet
 metadata:
   name: dolibarr-mariadb
 spec:
+  revisionHistoryLimit: 5
   serviceName: dolibarr-mariadb
   replicas: 1
   selector:

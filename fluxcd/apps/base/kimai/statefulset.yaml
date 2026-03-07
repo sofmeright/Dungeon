@@ -5,6 +5,7 @@ metadata:
   labels:
     app: kimai
 spec:
+  revisionHistoryLimit: 5
   serviceName: kimai
   replicas: 1
   selector:

@@ -3,6 +3,7 @@ kind: StatefulSet
 metadata:
   name: monica
 spec:
+  revisionHistoryLimit: 5
   serviceName: monica
   replicas: PLACEHOLDER_REPLICAS
   selector:

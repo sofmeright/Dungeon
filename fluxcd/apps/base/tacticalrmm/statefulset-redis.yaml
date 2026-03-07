@@ -3,6 +3,7 @@ kind: StatefulSet
 metadata:
   name: tactical-redis
 spec:
+  revisionHistoryLimit: 5
   serviceName: tactical-redis
   replicas: 1
   selector:

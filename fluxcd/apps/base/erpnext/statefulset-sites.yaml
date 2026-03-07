@@ -3,6 +3,7 @@ kind: StatefulSet
 metadata:
   name: erpnext-sites
 spec:
+  revisionHistoryLimit: 5
   serviceName: erpnext-sites
   replicas: 1
   selector:

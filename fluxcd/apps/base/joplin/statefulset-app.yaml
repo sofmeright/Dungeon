@@ -6,6 +6,7 @@ metadata:
     app: joplin
     component: app
 spec:
+  revisionHistoryLimit: 5
   serviceName: joplin-app
   replicas: 1
   selector:

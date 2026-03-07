@@ -3,6 +3,7 @@ kind: StatefulSet
 metadata:
   name: rustdesk
 spec:
+  revisionHistoryLimit: 5
   serviceName: rustdesk
   replicas: PLACEHOLDER_REPLICAS
   selector:

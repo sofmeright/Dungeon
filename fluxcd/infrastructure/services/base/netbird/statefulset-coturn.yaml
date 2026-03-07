@@ -3,6 +3,7 @@ kind: StatefulSet
 metadata:
   name: netbird-coturn
 spec:
+  revisionHistoryLimit: 5
   serviceName: netbird-coturn
   replicas: 3
   selector:

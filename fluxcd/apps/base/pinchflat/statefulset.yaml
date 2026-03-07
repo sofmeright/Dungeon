@@ -3,6 +3,7 @@ kind: StatefulSet
 metadata:
   name: pinchflat
 spec:
+  revisionHistoryLimit: 5
   serviceName: pinchflat
   replicas: 1
   selector:

@@ -3,6 +3,7 @@ kind: StatefulSet
 metadata:
   name: reactive-resume-postgres
 spec:
+  revisionHistoryLimit: 5
   serviceName: reactive-resume-postgres
   replicas: PLACEHOLDER_REPLICAS
   selector:

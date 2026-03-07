@@ -5,6 +5,7 @@ metadata:
   labels:
     app.kubernetes.io/name: anirra
 spec:
+  revisionHistoryLimit: 5
   serviceName: anirra
   replicas: 1
   selector:

@@ -3,6 +3,7 @@ kind: StatefulSet
 metadata:
   name: reactive-resume-minio
 spec:
+  revisionHistoryLimit: 5
   serviceName: reactive-resume-minio
   replicas: PLACEHOLDER_REPLICAS
   selector:

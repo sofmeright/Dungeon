@@ -3,6 +3,7 @@ kind: StatefulSet
 metadata:
   name: linkstack
 spec:
+  revisionHistoryLimit: 5
   serviceName: linkstack
   replicas: PLACEHOLDER_REPLICAS
   selector:

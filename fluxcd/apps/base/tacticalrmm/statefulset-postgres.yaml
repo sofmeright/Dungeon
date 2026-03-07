@@ -3,6 +3,7 @@ kind: StatefulSet
 metadata:
   name: tactical-postgres
 spec:
+  revisionHistoryLimit: 5
   serviceName: tactical-postgres
   replicas: 1
   selector:

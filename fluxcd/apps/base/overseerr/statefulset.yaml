@@ -3,6 +3,7 @@ kind: StatefulSet
 metadata:
   name: overseerr
 spec:
+  revisionHistoryLimit: 5
   serviceName: overseerr
   replicas: 1
   selector:

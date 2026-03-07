@@ -3,6 +3,7 @@ kind: StatefulSet
 metadata:
   name: ceph-rgw
 spec:
+  revisionHistoryLimit: 5
   serviceName: ceph-rgw
   replicas: PLACEHOLDER_REPLICAS
   selector:

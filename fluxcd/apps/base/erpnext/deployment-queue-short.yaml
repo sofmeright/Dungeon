@@ -3,6 +3,7 @@ kind: Deployment
 metadata:
   name: erpnext-queue-short
 spec:
+  revisionHistoryLimit: 5
   replicas: 1
   selector:
     matchLabels:

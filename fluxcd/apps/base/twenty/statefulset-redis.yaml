@@ -3,6 +3,7 @@ kind: StatefulSet
 metadata:
   name: twenty-redis
 spec:
+  revisionHistoryLimit: 5
   serviceName: twenty-redis
   replicas: PLACEHOLDER_REPLICAS
   selector:
@@ -14,28 +15,28 @@ spec:
         app: twenty-redis
     spec:
       containers:
-      - name: redis
-        image: PLACEHOLDER_IMAGE
-        ports:
-        - containerPort: 6379
-          name: redis
-          protocol: TCP
-        volumeMounts:
-        - name: hyrule-castle-twenty-redis
-          mountPath: /data
+        - name: redis
+          image: PLACEHOLDER_IMAGE
+          ports:
+            - containerPort: 6379
+              name: redis
+              protocol: TCP
+          volumeMounts:
+            - name: hyrule-castle-twenty-redis
+              mountPath: /data
+          resources:
+            requests:
+              cpu: 50m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
+  volumeClaimTemplates:
+    - metadata:
+        name: hyrule-castle-twenty-redis
+      spec:
+        accessModes: ["ReadWriteOnce"]
+        storageClassName: PLACEHOLDER_STORAGE_CLASS
         resources:
           requests:
-            cpu: 50m
-            memory: 128Mi
-          limits:
-            cpu: 500m
-            memory: 512Mi
-  volumeClaimTemplates:
-  - metadata:
-      name: hyrule-castle-twenty-redis
-    spec:
-      accessModes: ["ReadWriteOnce"]
-      storageClassName: PLACEHOLDER_STORAGE_CLASS
-      resources:
-        requests:
-          storage: 5Gi
+            storage: 5Gi

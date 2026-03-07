@@ -3,6 +3,7 @@ kind: Deployment
 metadata:
   name: calcom
 spec:
+  revisionHistoryLimit: 5
   replicas: PLACEHOLDER_REPLICAS
   selector:
     matchLabels:

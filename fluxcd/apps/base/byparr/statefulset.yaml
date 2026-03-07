@@ -3,6 +3,7 @@ kind: StatefulSet
 metadata:
   name: byparr
 spec:
+  revisionHistoryLimit: 5
   serviceName: byparr
   replicas: 1
   selector:

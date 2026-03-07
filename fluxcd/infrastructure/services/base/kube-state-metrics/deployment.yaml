@@ -6,6 +6,7 @@ metadata:
     app.kubernetes.io/name: kube-state-metrics
     app.kubernetes.io/component: exporter
 spec:
+  revisionHistoryLimit: 5
   replicas: 1
   selector:
     matchLabels:

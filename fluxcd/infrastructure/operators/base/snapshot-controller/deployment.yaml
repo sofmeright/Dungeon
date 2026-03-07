@@ -3,6 +3,7 @@ kind: Deployment
 metadata:
   name: snapshot-controller
 spec:
+  revisionHistoryLimit: 5
   replicas: PLACEHOLDER_REPLICAS
   selector:
     matchLabels:
@@ -16,8 +17,8 @@ spec:
     spec:
       serviceAccountName: snapshot-controller
       containers:
-      - name: snapshot-controller
-        image: registry.k8s.io/sig-storage/snapshot-controller:PLACEHOLDER_VERSION
-        args:
-          - "--leader-election=PLACEHOLDER_LEADER_ELECTION"
-          - "--leader-election-namespace=PLACEHOLDER_NAMESPACE"
+        - name: snapshot-controller
+          image: registry.k8s.io/sig-storage/snapshot-controller:PLACEHOLDER_VERSION
+          args:
+            - "--leader-election=PLACEHOLDER_LEADER_ELECTION"
+            - "--leader-election-namespace=PLACEHOLDER_NAMESPACE"

@@ -3,6 +3,7 @@ kind: StatefulSet
 metadata:
   name: code-server
 spec:
+  revisionHistoryLimit: 5
   serviceName: code-server
   replicas: 1
   selector:
