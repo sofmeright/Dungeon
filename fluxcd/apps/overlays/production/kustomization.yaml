@@ -54,7 +54,6 @@ resources:
   - linkstack
   - mealie
   - penpot
-  - projectsend
   - wikijs-vegan
   # Games
   - ark-sa
@@ -98,7 +97,6 @@ resources:
   # Utilities
   - code-server
   - endlessh-go
-  - lenpaste
   - shlink
   - filebrowser
   - google-webfonts-helper
@@ -106,7 +104,6 @@ resources:
   - hrconvert2
   - it-tools
   - mazanoke
-  - podinfo
   - renovate
   # External Services
   - fusionpbx-external

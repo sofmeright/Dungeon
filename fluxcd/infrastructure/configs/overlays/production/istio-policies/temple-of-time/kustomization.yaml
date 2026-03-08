@@ -18,7 +18,6 @@ resources:
   - allow-mealie-to-mealie-postgres.yaml
   - allow-photoprism-to-photoprism-mariadb.yaml
   - allow-ghost-to-ghost-mysql.yaml
-  - allow-projectsend-to-projectsend-db.yaml
   - allow-kimai-to-kimai-mariadb.yaml
   - allow-joplin-app-to-joplin-postgres.yaml
   - allow-shlink-app-to-shlink-db.yaml
