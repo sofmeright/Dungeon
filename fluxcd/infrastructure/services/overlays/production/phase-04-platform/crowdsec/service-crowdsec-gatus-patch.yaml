@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: crowdsec
+  annotations:
+    gatus.home-operations.com/endpoint: |
+      group: "Security & IoT (Lens of Truth🔍)"
+      url: http://crowdsec.lens-of-truth.svc.cluster.local:8080/health
+      interval: 60s
+      conditions:
+        - "[STATUS] == 200"

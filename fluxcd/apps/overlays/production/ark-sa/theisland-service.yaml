@@ -8,7 +8,7 @@ metadata:
     lbipam.cilium.io/sharing-cross-namespace: "*"
     gatus.home-operations.com/endpoint: |
       group: "Game Servers (Shooting Gallery🎯)"
-      url: tcp://172.22.30.231:8777
+      url: tcp://172.22.30.231:28020
       interval: 60s
       conditions:
         - "[CONNECTED] == true"
