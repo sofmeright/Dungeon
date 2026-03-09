@@ -3,6 +3,7 @@ kind: Kustomization
 resources:
   - externalsecret.yaml
   - serviceaccounts.yaml
+  - configmap-health-proxy.yaml
   - theisland-statefulset.yaml
   - theisland-service.yaml
   - valguero-statefulset.yaml

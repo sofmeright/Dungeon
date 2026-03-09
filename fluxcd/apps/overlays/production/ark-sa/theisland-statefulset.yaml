@@ -46,6 +46,11 @@ spec:
       containers:
         - name: theisland
           image: docker.io/acekorneya/asa_server:2_1_latest
+          command: ["/bin/bash", "-c"]
+          args:
+            - |
+              python3 /health/health-server.py &
+              exec /home/pok/scripts/init.sh
           ports:
             - containerPort: 8777
               protocol: UDP
@@ -59,6 +64,9 @@ spec:
             - containerPort: 8778
               protocol: UDP
               name: query
+            - containerPort: 8088
+              protocol: TCP
+              name: health
           env:
             - name: PUID
               value: "1001"
@@ -123,7 +131,13 @@ spec:
               mountPath: /home/pok/arkserver/ShooterGame/Saved/clusters
             - name: steamapps
               mountPath: /home/pok/.steam/steam/steamapps
+            - name: health-proxy
+              mountPath: /health
       volumes:
+        - name: health-proxy
+          configMap:
+            name: ark-health-proxy
+            defaultMode: 0755
         - name: serverfiles
           persistentVolumeClaim:
             claimName: ark-sa-serverfiles-pvc
