@@ -25,6 +25,8 @@ spec:
           command: ["/bin/bash", "-c"]
           args:
             - |
+              # Nuke corrupted Proton prefix so proton rebuilds it properly with WINED3D
+              rm -rf /home/pok/.steam/steam/steamapps/compatdata/2430930
               python3 /health/health-server.py &
               exec /home/pok/scripts/init.sh
           ports:
