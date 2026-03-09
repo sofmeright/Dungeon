@@ -95,8 +95,6 @@ spec:
               value: ":0"
             - name: PROTON_USE_WINED3D
               value: "1"
-            - name: BATTLEEYE
-              value: "FALSE"
             - name: CUSTOM_SERVER_ARGS
               value: "-ServerPlatform=ALL -PublicIPForEpic=71.24.190.218 -ServerIP=71.24.190.218"
           resources:
