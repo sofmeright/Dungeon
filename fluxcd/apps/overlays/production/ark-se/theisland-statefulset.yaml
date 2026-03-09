@@ -12,6 +12,7 @@ spec:
     metadata:
       labels:
         app: ark-se-tmc-theisland
+        policy.prplanit.com/probe: "true"
     spec:
       serviceAccountName: ark-se-tmc-theisland
       enableServiceLinks: false
@@ -21,7 +22,7 @@ spec:
         fsGroup: 1001
       containers:
         - name: theisland
-          image: docker.io/drpsychick/arkserver@sha256:fb64ced23349c87e20e7ae9e8a2113c8bae635828494df1aabd30c5c98e97049
+          image: docker.io/prplanit/ark-se-oci@sha256:20dd3199d0f438858674d947c2e4cd792a6589b5c1273785587e707e1bf857d0
           ports:
             - containerPort: 7797
               protocol: UDP
@@ -38,6 +39,9 @@ spec:
             - containerPort: 27095
               protocol: TCP
               name: rcon
+            - containerPort: 8080
+              protocol: TCP
+              name: health
           env:
             - name: am_ark_SessionName
               value: "MasterChiefers-TheIsland"
@@ -80,6 +84,8 @@ spec:
               value: "true"
             - name: ARKSERVER_SHARED
               value: "/arkserver"
+            - name: HEALTH_SERVER
+              value: "true"
           resources:
             limits:
               memory: 16Gi
