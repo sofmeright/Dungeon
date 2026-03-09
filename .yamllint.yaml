@@ -41,4 +41,4 @@ ignore: |
   docs/
   **/templates/
   **/*.enc.yaml
-  fluxcd/zz-graveyard/
+  **/zz-graveyard/
