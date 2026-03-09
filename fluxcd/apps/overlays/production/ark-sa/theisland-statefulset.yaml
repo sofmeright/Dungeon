@@ -68,6 +68,8 @@ spec:
               protocol: TCP
               name: health
           env:
+            - name: WINEDLLOVERRIDES
+              value: "xaudio2_9=b"
             - name: PUID
               value: "1001"
             - name: PGID
