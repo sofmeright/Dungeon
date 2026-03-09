@@ -50,12 +50,6 @@ spec:
           args:
             - |
               python3 /health/health-server.py &
-              # Patch all scripts to append xaudio2_9=b to WINEDLLOVERRIDES
-              # The image hardcodes WINEDLLOVERRIDES="version=n,b" which clobbers env vars
-              for f in /home/pok/scripts/init.sh /home/pok/scripts/common.sh /home/pok/scripts/restart_server.sh; do
-                sed -i 's/export WINEDLLOVERRIDES="version=n,b"/export WINEDLLOVERRIDES="version=n,b;xaudio2_9=b"/g' "$f"
-                sed -i 's/export WINEDLLOVERRIDES="\*version=n,b;vcrun2022=n,b"/export WINEDLLOVERRIDES="*version=n,b;vcrun2022=n,b;xaudio2_9=b"/g' "$f"
-              done
               exec /home/pok/scripts/init.sh
           ports:
             - containerPort: 8779
@@ -74,8 +68,6 @@ spec:
               protocol: TCP
               name: health
           env:
-            - name: WINEDLLOVERRIDES
-              value: "xaudio2_9=b"
             - name: PUID
               value: "1001"
             - name: PGID
