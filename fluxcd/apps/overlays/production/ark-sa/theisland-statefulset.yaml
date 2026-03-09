@@ -50,6 +50,10 @@ spec:
           args:
             - |
               python3 /health/health-server.py &
+              # Patch init.sh to append xaudio2_9=b to WINEDLLOVERRIDES
+              # The image hardcodes WINEDLLOVERRIDES="version=n,b" which clobbers env vars
+              sed -i 's/export WINEDLLOVERRIDES="version=n,b"/export WINEDLLOVERRIDES="version=n,b;xaudio2_9=b"/g' /home/pok/scripts/init.sh
+              sed -i 's/export WINEDLLOVERRIDES="\*version=n,b;vcrun2022=n,b"/export WINEDLLOVERRIDES="*version=n,b;vcrun2022=n,b;xaudio2_9=b"/g' /home/pok/scripts/init.sh
               exec /home/pok/scripts/init.sh
           ports:
             - containerPort: 8777
