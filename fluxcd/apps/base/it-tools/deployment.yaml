@@ -14,8 +14,6 @@ spec:
         app: it-tools
     spec:
       serviceAccountName: it-tools
-      imagePullSecrets:
-        - name: PLACEHOLDER_IMAGE_PULL_SECRET
       containers:
         - name: it-tools
           image: PLACEHOLDER_IMAGE

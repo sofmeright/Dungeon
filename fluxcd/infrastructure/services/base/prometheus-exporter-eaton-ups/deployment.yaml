@@ -16,8 +16,6 @@ spec:
         prometheus.io/scrape: "true"
         prometheus.io/port: "9795"
     spec:
-      imagePullSecrets:
-        - name: PLACEHOLDER_IMAGE_PULL_SECRET
       securityContext:
         runAsUser: 1000
         runAsGroup: 1000

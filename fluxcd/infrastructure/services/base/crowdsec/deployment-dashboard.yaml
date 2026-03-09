@@ -19,8 +19,6 @@ spec:
         component: dashboard
     spec:
       serviceAccountName: crowdsec-dashboard
-      imagePullSecrets:
-        - name: PLACEHOLDER_IMAGE_PULL_SECRET
       containers:
         - name: dashboard
           image: PLACEHOLDER_DASHBOARD_IMAGE

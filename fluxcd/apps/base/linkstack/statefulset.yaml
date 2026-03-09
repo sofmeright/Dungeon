@@ -15,8 +15,6 @@ spec:
         app: linkstack
     spec:
       serviceAccountName: linkstack
-      imagePullSecrets:
-        - name: PLACEHOLDER_IMAGE_PULL_SECRET
       containers:
         - name: linkstack
           image: PLACEHOLDER_IMAGE
