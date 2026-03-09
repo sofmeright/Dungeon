@@ -4,3 +4,25 @@ metadata:
   name: kyverno
 spec:
   targetNamespace: zeldas-lullaby
+  values:
+    admissionController:
+      container:
+        image:
+          registry: ghcr.io
+          repository: kyverno/kyverno
+      initContainer:
+        image:
+          registry: ghcr.io
+          repository: kyverno/kyvernopre
+    backgroundController:
+      image:
+        registry: ghcr.io
+        repository: kyverno/background-controller
+    cleanupController:
+      image:
+        registry: ghcr.io
+        repository: kyverno/cleanup-controller
+    reportsController:
+      image:
+        registry: ghcr.io
+        repository: kyverno/reports-controller
