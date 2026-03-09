@@ -12,6 +12,7 @@ spec:
     metadata:
       labels:
         app: ark-sa-tmc-theisland
+        policy.prplanit.com/probe: "true"
     spec:
       serviceAccountName: ark-sa-tmc-theisland
       enableServiceLinks: false
@@ -42,7 +43,7 @@ spec:
             - containerPort: 8778
               protocol: UDP
               name: query
-            - containerPort: 8088
+            - containerPort: 8080
               protocol: TCP
               name: health
           env:

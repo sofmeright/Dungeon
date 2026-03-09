@@ -12,6 +12,7 @@ spec:
     metadata:
       labels:
         app: ark-sa-tmc-valguero
+        policy.prplanit.com/probe: "true"
     spec:
       serviceAccountName: ark-sa-tmc-valguero
       enableServiceLinks: false
@@ -42,7 +43,7 @@ spec:
             - containerPort: 8780
               protocol: UDP
               name: query
-            - containerPort: 8088
+            - containerPort: 8080
               protocol: TCP
               name: health
           env:
