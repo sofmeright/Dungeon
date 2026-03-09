@@ -113,6 +113,10 @@ spec:
                 secretKeyRef:
                   name: ark-asa-admin
                   key: public-ip
+            - name: SDL_VIDEODRIVER
+              value: x11
+            - name: DISPLAY
+              value: ":0"
             - name: CUSTOM_SERVER_ARGS
               value: "-ServerPlatform=ALL -PublicIPForEpic=71.24.190.218 -ServerIP=71.24.190.218 -OverrideOfficialDifficulty=5.0"
           resources:
