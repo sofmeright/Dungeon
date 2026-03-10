@@ -23,7 +23,7 @@ spec:
 
   storage:
     storageClass: ceph-rbd
-    size: 5Gi
+    size: 8Gi
 
   backup:
     barmanObjectStore:
