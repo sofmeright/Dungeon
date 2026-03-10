@@ -22,7 +22,7 @@ spec:
         fsGroup: 1001
       containers:
         - name: theisland
-          image: docker.io/prplanit/ark-se-oci@sha256:20dd3199d0f438858674d947c2e4cd792a6589b5c1273785587e707e1bf857d0
+          image: docker.io/drpsychick/arkserver:latest-v1.6.62
           ports:
             - containerPort: 7797
               protocol: UDP
