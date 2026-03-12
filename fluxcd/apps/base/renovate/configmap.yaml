@@ -11,7 +11,7 @@ data:
       "gitAuthor": "Renovate Bot <renovate@precisionplanit.com>",
       "onboarding": false,
       "requireConfig": "ignored",
-      "repositories": ["precisionplanit/dungeon"],
+      "repositories": ["SoFMeRight/dungeon"],
 
       "ignorePaths": ["docker-compose/**"],
 

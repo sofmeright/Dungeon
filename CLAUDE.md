@@ -1,5 +1,5 @@
 - Repository Information:
-  - Git repository: ssh://git@10.30.1.123:2424/precisionplanit/dungeon
+  - Git repository: ssh://git@10.30.1.123:2424/SoFMeRight/dungeon
   - Repository name: dungeon (formerly ant_parade-public)
   - **Git Commits**: Only sign commits as sofmeright@gmail.com / SoFMeRight. No anthropic attribution comments in commits.
 
