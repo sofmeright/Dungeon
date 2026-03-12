@@ -30,6 +30,8 @@ resources:
   - allow-harbor-core-to-harbor-jobservice.yaml
   - allow-harbor-to-harbor-portal.yaml
   - allow-opnform-ingress-to-opnform-client.yaml
+  - allow-opnform-ingress-to-opnform-api.yaml
+  - allow-opnform-client-to-opnform-ingress.yaml
   - allow-calcom-postgres-replication.yaml
   - allow-gitlab-postgresql-replication.yaml
   - allow-harbor-postgres-replication.yaml
