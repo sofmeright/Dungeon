@@ -12,7 +12,6 @@ spec:
         - name: mongo
           image: docker.io/library/mongo:7.0.30
           securityContext:
-            allowPrivilegeEscalation: false
             capabilities:
               drop:
                 - ALL
@@ -21,6 +20,7 @@ spec:
                 - SETGID
                 - CHOWN
                 - DAC_OVERRIDE
+                - FOWNER
   volumeClaimTemplates:
     - metadata:
         name: zeldas-lullaby-unifi-mongodb

@@ -16,7 +16,6 @@ spec:
             - name: TZ
               value: "America/Los_Angeles"
           securityContext:
-            allowPrivilegeEscalation: false
             capabilities:
               drop:
                 - ALL
@@ -25,6 +24,7 @@ spec:
                 - SETGID
                 - CHOWN
                 - DAC_OVERRIDE
+                - FOWNER
   volumeClaimTemplates:
     - metadata:
         name: zeldas-lullaby-unifi-config
