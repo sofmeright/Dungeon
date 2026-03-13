@@ -15,4 +15,8 @@ spec:
     - metadata:
         name: zeldas-lullaby-unifi-mongodb
       spec:
+        accessModes: ["ReadWriteOnce"]
         storageClassName: ceph-rbd-retain
+        resources:
+          requests:
+            storage: 1Gi

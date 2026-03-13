@@ -19,4 +19,8 @@ spec:
     - metadata:
         name: zeldas-lullaby-unifi-config
       spec:
+        accessModes: ["ReadWriteOnce"]
         storageClassName: ceph-rbd-retain
+        resources:
+          requests:
+            storage: 256Mi
