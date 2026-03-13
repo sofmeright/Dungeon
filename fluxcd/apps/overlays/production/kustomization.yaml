@@ -8,7 +8,6 @@ resources:
   - netbox
   - oauth2-proxy
   - semaphore
-  - unifi
   # Monitoring, Analytics, Diagnostics
   - beszel
   - echo-ip

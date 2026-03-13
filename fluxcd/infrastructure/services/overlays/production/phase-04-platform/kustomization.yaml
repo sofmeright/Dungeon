@@ -22,3 +22,4 @@ resources:
   - ./wazuh
   - ./weave-gitops
   - ./boundary
+  - ./unifi
