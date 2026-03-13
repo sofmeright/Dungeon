@@ -15,6 +15,11 @@ spec:
           env:
             - name: TZ
               value: "America/Los_Angeles"
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
   volumeClaimTemplates:
     - metadata:
         name: zeldas-lullaby-unifi-config

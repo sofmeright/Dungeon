@@ -1,0 +1,17 @@
+apiVersion: security.istio.io/v1
+kind: AuthorizationPolicy
+metadata:
+  name: allow-unifi-app-to-unifi-db
+spec:
+  selector:
+    matchLabels:
+      app: unifi-db
+  action: ALLOW
+  rules:
+    - from:
+        - source:
+            principals:
+              - cluster.local/ns/zeldas-lullaby/sa/default
+      to:
+        - operation:
+            ports: ["27017"]
