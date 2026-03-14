@@ -13,12 +13,12 @@ spec:
         runAsGroup: 1001
       initContainers:
         - name: generate-initdb
-          image: docker.io/guacamole/guacamole@sha256:1b5be676d1fa0b4af21818312d4f9bcfae57c2359927ab3a186c79a941cf276e
+          image: docker.io/guacamole/guacamole@sha256:4af77d4a7235537a68caa42f5af90940414fa7c6e191a3968705f486f7b0b46c
         - name: init-db
           image: docker.io/postgres:15-alpine
       containers:
         - name: guacamole
-          image: docker.io/guacamole/guacamole@sha256:1b5be676d1fa0b4af21818312d4f9bcfae57c2359927ab3a186c79a941cf276e
+          image: docker.io/guacamole/guacamole@sha256:4af77d4a7235537a68caa42f5af90940414fa7c6e191a3968705f486f7b0b46c
           resources:
             requests:
               cpu: "250m"
