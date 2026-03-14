@@ -11,7 +11,7 @@ spec:
     - from:
         - source:
             principals:
-              - cluster.local/ns/zeldas-lullaby/sa/default
+              - cluster.local/ns/zeldas-lullaby/sa/unifi-app
       to:
         - operation:
             ports: ["27017"]
