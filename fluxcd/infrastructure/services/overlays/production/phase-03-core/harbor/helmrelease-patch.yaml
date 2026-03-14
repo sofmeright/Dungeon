@@ -21,7 +21,7 @@ spec:
       targetPath: persistence.imageChartStorage.s3.secretkey
   values:
     # External URL
-    externalURL: https://172.22.30.71:9483
+    externalURL: https://cr.pcfae.com
 
     # Harbor components - 3 replicas for HA with fully qualified images
     portal:
@@ -48,14 +48,11 @@ spec:
         image:
           repository: docker.io/goharbor/harbor-registryctl
 
-    # Expose settings for TLS with nodePort
+    # Expose via ClusterIP - TLS terminated at xylem gateway
     expose:
-      type: nodePort
+      type: clusterIP
       tls:
-        enabled: true
-        certSource: auto
-        auto:
-          commonName: "172.22.30.71"
+        enabled: false
 
     nginx:
       podLabels:
