@@ -20,7 +20,7 @@ spec:
               memory: 64Mi
       containers:
         - name: zigbee2mqtt
-          image: ghcr.io/koenkk/zigbee2mqtt:2.8.0
+          image: ghcr.io/koenkk/zigbee2mqtt:2.9.1
           resources:
             requests:
               cpu: 50m
