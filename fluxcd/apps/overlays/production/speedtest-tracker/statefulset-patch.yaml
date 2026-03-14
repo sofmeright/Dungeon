@@ -31,7 +31,7 @@ spec:
               mountPath: /storage
       containers:
         - name: speedtest-tracker
-          image: docker.io/linuxserver/speedtest-tracker:1.13.10
+          image: docker.io/linuxserver/speedtest-tracker:1.13.11
           env:
             - name: PUID
               value: "1000"
