@@ -10,3 +10,4 @@ spec:
           number: 8443
         tls:
           mode: SIMPLE
+          sni: unifi.pcfae.com

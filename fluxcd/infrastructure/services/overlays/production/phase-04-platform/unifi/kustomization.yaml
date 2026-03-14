@@ -8,6 +8,7 @@ resources:
   - externalsecret.yaml
   - httproute-xylem.yaml
   - destinationrule.yaml
+  - certificate.yaml
 
 patches:
   - path: statefulset-app-patch.yaml
