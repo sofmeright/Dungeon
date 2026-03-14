@@ -9,6 +9,10 @@ spec:
       labels:
         policy.prplanit.com/ingress: "true"
     spec:
+      dnsConfig:
+        options:
+          - name: ndots
+            value: "2"
       initContainers:
         - name: seed-config
           image: docker.io/alpine/k8s:1.35.1
