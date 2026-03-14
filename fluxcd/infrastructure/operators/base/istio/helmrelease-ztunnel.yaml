@@ -34,7 +34,7 @@ spec:
         memory: 128Mi
       limits:
         cpu: 1000m
-        memory: 512Mi
+        memory: 768Mi
 
     # Enable debug logging initially for troubleshooting
     logLevel: info
