@@ -8,8 +8,6 @@ spec:
     metadata:
       labels:
         policy.prplanit.com/ingress: "true"
-      annotations:
-        istio.io/dataplane-mode: none
     spec:
       containers:
         - name: unifi-app
