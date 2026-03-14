@@ -11,7 +11,7 @@ spec:
     spec:
       initContainers:
         - name: import-cert
-          image: docker.io/alpine/k8s:1.34.0
+          image: docker.io/alpine/k8s:1.35.2
           command: ["/bin/sh", "-c"]
           args:
             - |
