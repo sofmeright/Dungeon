@@ -36,3 +36,8 @@ spec:
       port: 5514
       targetPort: 5514
       protocol: UDP
+    - name: https-ui
+      port: 8443
+      targetPort: 8443
+      protocol: TCP
+      appProtocol: https
