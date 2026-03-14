@@ -15,7 +15,7 @@ spec:
         fsGroup: 1001
       initContainers:
         - name: fix-yarn-perms
-          image: docker.io/calcom/cal.com:v6.1.16
+          image: docker.io/calcom/cal.com:v6.2.0
           securityContext:
             runAsUser: 0
           command:
@@ -29,7 +29,7 @@ spec:
               mountPath: /yarn-writable
       containers:
         - name: calcom
-          image: docker.io/calcom/cal.com:v6.1.16
+          image: docker.io/calcom/cal.com:v6.2.0
           env:
             - name: NEXT_PUBLIC_WEBAPP_URL
               value: https://cal.prplanit.com
