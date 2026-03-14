@@ -3,7 +3,7 @@ kind: Vault
 metadata:
   name: vault
 spec:
-  image: docker.io/hashicorp/vault:1.21.3
+  image: docker.io/hashicorp/vault:1.21.4
   envsConfig:
     - name: VAULT_OIDC_CLIENT_SECRET
       valueFrom:
