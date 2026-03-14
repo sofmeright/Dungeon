@@ -7,6 +7,7 @@ resources:
   - allow-zigbee2mqtt-to-mosquitto.yaml
   - allow-home-assistant-to-mosquitto.yaml
   - allow-frigate-loadbalancer.yaml
+  - allow-home-assistant-to-frigate.yaml
   - allow-wazuh-manager-loadbalancer.yaml
   - allow-crowdsec-bouncer-to-crowdsec.yaml
   - allow-gateway-ingress-xylem.yaml
