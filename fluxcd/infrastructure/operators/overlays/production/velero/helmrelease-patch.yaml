@@ -41,6 +41,7 @@ spec:
     nodeAgent:
       podVolumePath: /var/lib/kubelet/pods
       privileged: false
+      keepLatestMaintenanceJobs: 3
       resources:
         requests:
           memory: 200Mi
