@@ -11,3 +11,7 @@ spec:
       port: 8123
       targetPort: http
       protocol: TCP
+    - name: http-ws
+      port: 8080
+      targetPort: http-ws
+      protocol: TCP

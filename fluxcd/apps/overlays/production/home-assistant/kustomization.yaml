@@ -6,6 +6,7 @@ resources:
   - httproute.yaml
   - httproute-xylem.yaml
   - destinationrule.yaml
+  - configmap-nginx.yaml
 patches:
   - path: statefulset-patch.yaml
     target:
