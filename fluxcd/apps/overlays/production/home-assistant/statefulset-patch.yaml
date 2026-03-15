@@ -55,7 +55,7 @@ spec:
               value: America/Los_Angeles
           readinessProbe:
             httpGet:
-              path: /api/
+              path: /manifest.json
               port: 8123
             initialDelaySeconds: 30
             periodSeconds: 10
