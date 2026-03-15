@@ -5,5 +5,4 @@ resources:
   - ./apt-cacher-ng
   - ./gitlab
   - ./harbor
-  - ./jfrog-artifactory
   - ./zitadel
