@@ -26,22 +26,51 @@ spec:
             "@type": type.googleapis.com/envoy.extensions.filters.http.lua.v3.Lua
             defaultSourceCode:
               inlineString: |
+                -- fairer-pages error handler
+                -- Intercepts error responses for browser HTML document navigations only.
+                -- Does NOT rewrite API, WebSocket, upgrade, or non-document traffic.
+
                 function envoy_on_request(request_handle)
                   local path = request_handle:headers():get(":path") or ""
+                  local method = request_handle:headers():get(":method") or ""
 
                   -- Skip fairer-pages requests to prevent infinite redirect loops
-                  -- (the iframe src hits /fairer-pages/* which must reach the backend directly)
                   if string.match(path, "^/fairer%-pages/") then
                     request_handle:streamInfo():dynamicMetadata():set("fairer_pages", "skip", "true")
                     return
                   end
 
-                  -- Detect browser requests via Accept header.
-                  -- Browsers always send "Accept: text/html,..." — API clients send
-                  -- "Accept: application/json" or similar. This is deterministic: the
-                  -- client declares what it wants, so we don't need to guess from the
-                  -- response content-type (which varies between backends and envoy
-                  -- local replies like text/plain for connection resets).
+                  -- Only intercept safe/idempotent methods (GET, HEAD)
+                  if method ~= "GET" and method ~= "HEAD" then
+                    return
+                  end
+
+                  -- Never intercept API paths — apps expect raw status codes
+                  if string.match(path, "^/api/") then
+                    return
+                  end
+
+                  -- Never intercept auth paths
+                  if string.match(path, "^/auth/") then
+                    return
+                  end
+
+                  -- Never intercept WebSocket/upgrade requests
+                  local upgrade = request_handle:headers():get("upgrade") or ""
+                  if string.lower(upgrade) == "websocket" then
+                    return
+                  end
+
+                  local connection = request_handle:headers():get("connection") or ""
+                  if string.match(string.lower(connection), "upgrade") then
+                    return
+                  end
+
+                  if request_handle:headers():get("sec-websocket-key") then
+                    return
+                  end
+
+                  -- Only intercept browser HTML document requests
                   local accept = request_handle:headers():get("accept") or ""
                   if string.match(accept, "text/html") then
                     request_handle:streamInfo():dynamicMetadata():set("fairer_pages", "browser", "true")
@@ -49,8 +78,6 @@ spec:
                 end
 
                 function envoy_on_response(response_handle)
-                  -- Only intercept if we flagged this request during envoy_on_request.
-                  -- No metadata = not a browser request or no Accept header → pass through.
                   local meta = response_handle:streamInfo():dynamicMetadata():get("fairer_pages")
                   if not meta then return end
                   if meta["skip"] == "true" then return end
@@ -67,8 +94,6 @@ spec:
                   }
 
                   if error_codes[status_num] then
-                    -- Serve error page in-place via iframe — preserves browser URL
-                    -- while loading the themed error page from fairer-pages service
                     local html = '<!DOCTYPE html><html><head><meta charset="UTF-8">'
                       .. '<title>Error ' .. status .. '</title>'
                       .. '<style>*{margin:0;padding:0}html,body{height:100%;overflow:hidden}'
