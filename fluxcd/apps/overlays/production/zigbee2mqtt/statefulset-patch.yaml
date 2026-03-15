@@ -21,6 +21,16 @@ spec:
       containers:
         - name: zigbee2mqtt
           image: ghcr.io/koenkk/zigbee2mqtt:2.9.1
+          # Restarts z2m when adapter disconnects — the process stays
+          # alive but stops publishing, so liveness checks the MQTT
+          # bridge state via the health endpoint
+          livenessProbe:
+            httpGet:
+              path: /api/health
+              port: 8080
+            initialDelaySeconds: 30
+            periodSeconds: 30
+            failureThreshold: 3
           resources:
             requests:
               cpu: 50m
