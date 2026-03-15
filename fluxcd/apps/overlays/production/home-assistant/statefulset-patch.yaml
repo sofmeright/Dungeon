@@ -53,6 +53,13 @@ spec:
           env:
             - name: TZ
               value: America/Los_Angeles
+          readinessProbe:
+            httpGet:
+              path: /api/
+              port: 8123
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            failureThreshold: 6
           resources:
             requests:
               cpu: 100m
