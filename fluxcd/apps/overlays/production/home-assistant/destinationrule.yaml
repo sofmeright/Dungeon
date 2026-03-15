@@ -5,5 +5,6 @@ metadata:
 spec:
   host: home-assistant.lens-of-truth.svc.cluster.local
   trafficPolicy:
-    tls:
-      mode: DISABLE
+    connectionPool:
+      http:
+        h2UpgradePolicy: DO_NOT_UPGRADE
