@@ -1,0 +1,21 @@
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: allow-romm-to-romm-db
+spec:
+  description: >-
+    Allow romm app to access romm-db MariaDB on 3306/TCP.
+  enableDefaultDeny:
+    ingress: false
+    egress: false
+  endpointSelector:
+    matchLabels:
+      app: romm-db
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            app: romm
+      toPorts:
+        - ports:
+            - port: "3306"
+              protocol: TCP

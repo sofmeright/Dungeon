@@ -1,0 +1,18 @@
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: default-deny-ingress
+spec:
+  description: >-
+    Default-deny ingress for pedestal-of-time namespace.
+    Paperless DB access covered by contract CCNPs (has labels).
+    CCNPs cover kubelet-probes, istio-ambient, prometheus-scrape,
+    and ingress-gateway traffic for labeled pods.
+  enableDefaultDeny:
+    ingress: true
+    egress: false
+  endpointSelector: {}
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            policy.prplanit.com/reserved: default-deny-anchor
