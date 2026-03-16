@@ -4,10 +4,12 @@ metadata:
   name: allow-istiod-xds
 spec:
   description: >-
-    Allow all cluster pods to reach istiod for xDS (config discovery).
+    Allow all cluster pods to reach istiod for xDS and webhook validation.
     ztunnel DaemonSet and gateway pods connect on 15012 for certificate
     and workload configuration. Port 15010 is plaintext xDS (legacy).
-    Port 15014 is istiod debug/monitoring.
+    Port 15014 is istiod debug/monitoring. Port 443 is the Istio
+    validating webhook called by kube-apiserver on every Istio resource
+    mutation.
   enableDefaultDeny:
     ingress: false
     egress: false
@@ -24,4 +26,6 @@ spec:
             - port: "15012"
               protocol: TCP
             - port: "15014"
+              protocol: TCP
+            - port: "443"
               protocol: TCP
