@@ -32,6 +32,14 @@ data:
     ffmpeg:
       hwaccel_args: preset-nvidia-h264
 
+    # Global object tracking
+    objects:
+      track:
+        - person
+        - car
+        - dog
+        - cat
+
     # Global detect defaults
     detect:
       enabled: true
@@ -42,9 +50,8 @@ data:
     # Global record defaults
     record:
       enabled: true
-      retain:
+      motion:
         days: 7
-        mode: motion
       alerts:
         retain:
           days: 14
@@ -90,12 +97,18 @@ data:
             loitering_time: 30
         review:
           alerts:
+            labels:
+              - person
+              - car
             required_zones:
               - side_yard
               - driveway
               - sidewalk
               - driveway_fence
           detections:
+            labels:
+              - person
+              - car
             required_zones:
               - side_yard
               - driveway
@@ -103,6 +116,5 @@ data:
               - driveway_fence
         record:
           enabled: true
-          retain:
+          motion:
             days: 45
-            mode: motion

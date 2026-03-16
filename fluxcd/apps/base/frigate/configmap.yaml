@@ -43,9 +43,8 @@ data:
     # Global record defaults
     record:
       enabled: true
-      retain:
+      motion:
         days: 7
-        mode: motion
       alerts:
         retain:
           days: 14
