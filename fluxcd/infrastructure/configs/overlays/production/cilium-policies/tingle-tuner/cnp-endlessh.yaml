@@ -19,3 +19,10 @@ spec:
         - ports:
             - port: "2222"
               protocol: TCP
+    - fromEntities:
+        - host
+        - remote-node
+      toPorts:
+        - ports:
+            - port: "2112"
+              protocol: TCP

@@ -28,4 +28,5 @@ spec:
               metadata:
                 labels:
                   policy.prplanit.com/access-class: redis
+                  policy.prplanit.com/metrics: "true"
                   policy.prplanit.com/service-scope: "{{ request.object.metadata.namespace }}.{{ request.object.metadata.labels.app | regex_replace_all('-redis$', '') }}.redis"

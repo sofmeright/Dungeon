@@ -28,3 +28,13 @@ spec:
               protocol: TCP
             - port: "443"
               protocol: TCP
+    # Node health checks and DSR return path
+    - fromEntities:
+        - host
+        - remote-node
+      toPorts:
+        - ports:
+            - port: "80"
+              protocol: TCP
+            - port: "443"
+              protocol: TCP

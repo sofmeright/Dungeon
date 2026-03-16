@@ -31,7 +31,7 @@ metadata:
   name: allow-rustdesk-relay-lan
 spec:
   description: >-
-    LAN-only ingress to rustdesk-relay (172.22.30.8) on 41117,41119/TCP.
+    LAN-only ingress to rustdesk-relay (172.22.30.8) on 21117,21119/TCP.
   enableDefaultDeny:
     ingress: false
     egress: false
@@ -49,9 +49,9 @@ spec:
             - "192.168.144.0/20"
       toPorts:
         - ports:
-            - port: "41117"
+            - port: "21117"
               protocol: TCP
-            - port: "41119"
+            - port: "21119"
               protocol: TCP
 ---
 apiVersion: cilium.io/v2
@@ -61,7 +61,7 @@ metadata:
 spec:
   description: >-
     LAN-only ingress to rustdesk-server (172.22.30.8) on
-    41114,41115,41116/TCP, 41116/UDP, 41118/TCP.
+    21114,21115,21116/TCP, 21116/UDP, 21118/TCP.
   enableDefaultDeny:
     ingress: false
     egress: false
@@ -79,13 +79,13 @@ spec:
             - "192.168.144.0/20"
       toPorts:
         - ports:
-            - port: "41114"
+            - port: "21114"
               protocol: TCP
-            - port: "41115"
+            - port: "21115"
               protocol: TCP
-            - port: "41116"
+            - port: "21116"
               protocol: TCP
-            - port: "41116"
+            - port: "21116"
               protocol: UDP
-            - port: "41118"
+            - port: "21118"
               protocol: TCP

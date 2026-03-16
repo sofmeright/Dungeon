@@ -3,4 +3,5 @@ kind: Kustomization
 namespace: swift-sail
 resources:
   - cnp-default-deny-ingress.yaml
+  - cnp-gatus-probes.yaml
   - cnp-loadbalancers.yaml
