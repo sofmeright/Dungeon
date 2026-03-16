@@ -10,9 +10,13 @@ spec:
     - allow-prometheus-scrape (host → anubis:9090)
     - allow-kubelet-probes (health checks)
     - allow-istio-ambient (HBONE + probe SNAT)
+    The fromEndpoints selector matches no real pods — it exists only
+    to satisfy the Cilium CRD schema requirement for an ingress field.
   enableDefaultDeny:
     ingress: true
     egress: false
   endpointSelector: {}
   ingress:
-    - {}
+    - fromEndpoints:
+        - matchLabels:
+            policy.prplanit.com/reserved: default-deny-anchor

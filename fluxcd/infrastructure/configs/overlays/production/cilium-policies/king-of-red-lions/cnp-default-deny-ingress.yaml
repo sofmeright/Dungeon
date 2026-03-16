@@ -7,9 +7,14 @@ spec:
     Default-deny ingress for king-of-red-lions namespace.
     Baseline allows from CCNPs: kubelet-probes, istio-ambient,
     dns-egress, kube-apiserver-webhooks (cert-manager-webhook, istiod).
+    Per-service allows from namespace CNPs: istiod xDS, stunner.
+    The fromEndpoints selector matches no real pods — it exists only
+    to satisfy the Cilium CRD schema requirement for an ingress field.
   enableDefaultDeny:
     ingress: true
     egress: false
   endpointSelector: {}
   ingress:
-    - {}
+    - fromEndpoints:
+        - matchLabels:
+            policy.prplanit.com/reserved: default-deny-anchor
