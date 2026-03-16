@@ -1,0 +1,36 @@
+apiVersion: "cilium.io/v2"
+kind: CiliumClusterwideNetworkPolicy
+metadata:
+  name: allow-gatus-healthcheck
+spec:
+  description: >-
+    Allows Gatus health checker to reach probe-labelled endpoints.
+    Gatus runs in gossip-stone namespace and probes service health
+    across the cluster on common application ports.
+  enableDefaultDeny:
+    egress: false
+    ingress: false
+  endpointSelector:
+    matchLabels:
+      policy.prplanit.com/probe: "true"
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: gossip-stone
+            app.kubernetes.io/name: gatus
+      toPorts:
+        - ports:
+            - port: "80"
+              protocol: TCP
+            - port: "443"
+              protocol: TCP
+            - port: "3000"
+              protocol: TCP
+            - port: "5000"
+              protocol: TCP
+            - port: "8080"
+              protocol: TCP
+            - port: "8443"
+              protocol: TCP
+            - port: "9000"
+              protocol: TCP

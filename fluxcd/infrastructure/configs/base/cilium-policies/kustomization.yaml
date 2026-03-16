@@ -1,0 +1,20 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  # Infrastructure CCNPs — universal cluster plumbing
+  - ccnp-allow-istio-ambient.yaml
+  - ccnp-allow-dns-egress.yaml
+  - ccnp-allow-prometheus-scrape.yaml
+  - ccnp-allow-gatus-healthcheck.yaml
+  - ccnp-allow-cnpg-operator.yaml
+  - ccnp-allow-mariadb-operator.yaml
+  - ccnp-allow-redis-operator.yaml
+  - ccnp-allow-redis-sentinel-operator.yaml
+  - ccnp-allow-kubelet-probes.yaml
+  - ccnp-allow-kube-apiserver-webhooks.yaml
+  # Contract CCNPs — role-based traffic class contracts
+  - ccnp-contract-postgres.yaml
+  - ccnp-contract-mariadb.yaml
+  - ccnp-contract-redis.yaml
+  - ccnp-contract-ingress-backend.yaml
+  - ccnp-contract-replication-cnpg.yaml

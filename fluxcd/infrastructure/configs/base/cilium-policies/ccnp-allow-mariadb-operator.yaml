@@ -1,0 +1,26 @@
+apiVersion: "cilium.io/v2"
+kind: CiliumClusterwideNetworkPolicy
+metadata:
+  name: allow-mariadb-operator
+spec:
+  description: >-
+    Allows MariaDB operator to manage MariaDB/Galera instances.
+    The operator in gorons-bracelet needs to reach MariaDB pods
+    on port 3306 (mysql) and 5555 (Galera agent).
+  enableDefaultDeny:
+    egress: false
+    ingress: false
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: mariadb
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: gorons-bracelet
+            app.kubernetes.io/name: mariadb-operator
+      toPorts:
+        - ports:
+            - port: "3306"
+              protocol: TCP
+            - port: "5555"
+              protocol: TCP

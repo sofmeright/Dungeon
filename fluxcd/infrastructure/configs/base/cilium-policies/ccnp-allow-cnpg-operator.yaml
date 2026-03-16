@@ -1,0 +1,26 @@
+apiVersion: "cilium.io/v2"
+kind: CiliumClusterwideNetworkPolicy
+metadata:
+  name: allow-cnpg-operator
+spec:
+  description: >-
+    Allows CloudNativePG operator to manage PostgreSQL instances.
+    The operator in gorons-bracelet needs to reach CNPG-managed pods
+    on port 5432 (postgres) and 8000 (instance manager HTTP).
+  enableDefaultDeny:
+    egress: false
+    ingress: false
+  endpointSelector:
+    matchLabels:
+      policy.prplanit.com/cnpg: "managed"
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: gorons-bracelet
+            app.kubernetes.io/name: cloudnative-pg
+      toPorts:
+        - ports:
+            - port: "5432"
+              protocol: TCP
+            - port: "8000"
+              protocol: TCP

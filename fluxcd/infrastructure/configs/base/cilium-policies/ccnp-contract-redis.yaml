@@ -1,0 +1,31 @@
+apiVersion: "cilium.io/v2"
+kind: CiliumClusterwideNetworkPolicy
+metadata:
+  name: contract-redis
+spec:
+  description: >-
+    Contract: redis-client pods may reach redis pods on port 6379.
+    Two-dimensional: access-class + service-scope (taxonomy enforcement).
+    Destination pods must carry access-class: redis AND service-scope.
+    Source pods must carry client-class: redis-client AND access-scope.
+    Exact scope value matching is enforced in Phase 3 per-service CNPs.
+  enableDefaultDeny:
+    egress: false
+    ingress: false
+  endpointSelector:
+    matchLabels:
+      policy.prplanit.com/access-class: redis
+    matchExpressions:
+      - key: policy.prplanit.com/service-scope
+        operator: Exists
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            policy.prplanit.com/client-class: redis-client
+          matchExpressions:
+            - key: policy.prplanit.com/access-scope
+              operator: Exists
+      toPorts:
+        - ports:
+            - port: "6379"
+              protocol: TCP

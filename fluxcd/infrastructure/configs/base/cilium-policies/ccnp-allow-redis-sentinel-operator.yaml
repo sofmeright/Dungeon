@@ -1,0 +1,24 @@
+apiVersion: "cilium.io/v2"
+kind: CiliumClusterwideNetworkPolicy
+metadata:
+  name: allow-redis-sentinel-operator
+spec:
+  description: >-
+    Allows Redis operator to manage Redis Sentinel instances.
+    The operator in gorons-bracelet needs to reach Sentinel pods
+    on port 26379 for health checks and failover orchestration.
+  enableDefaultDeny:
+    egress: false
+    ingress: false
+  endpointSelector:
+    matchLabels:
+      redis_setup_type: sentinel
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: gorons-bracelet
+            app.kubernetes.io/name: redis-operator
+      toPorts:
+        - ports:
+            - port: "26379"
+              protocol: TCP

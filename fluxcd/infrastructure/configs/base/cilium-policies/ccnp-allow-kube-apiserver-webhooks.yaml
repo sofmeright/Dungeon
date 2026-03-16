@@ -1,0 +1,25 @@
+apiVersion: "cilium.io/v2"
+kind: CiliumClusterwideNetworkPolicy
+metadata:
+  name: allow-kube-apiserver-webhooks
+spec:
+  description: >-
+    Allows kube-apiserver to reach admission webhook endpoints.
+    When default-deny is enabled, the apiserver must be explicitly
+    allowed to call validating/mutating webhooks or all API mutations
+    will fail. Covers common webhook ports (443, 9443).
+  enableDefaultDeny:
+    egress: false
+    ingress: false
+  endpointSelector:
+    matchLabels:
+      policy.prplanit.com/webhook: "true"
+  ingress:
+    - fromEntities:
+        - kube-apiserver
+      toPorts:
+        - ports:
+            - port: "443"
+              protocol: TCP
+            - port: "9443"
+              protocol: TCP

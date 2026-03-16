@@ -1,0 +1,31 @@
+apiVersion: "cilium.io/v2"
+kind: CiliumClusterwideNetworkPolicy
+metadata:
+  name: contract-mariadb
+spec:
+  description: >-
+    Contract: mariadb-client pods may reach mariadb pods on port 3306.
+    Two-dimensional: access-class + service-scope (taxonomy enforcement).
+    Destination pods must carry access-class: mariadb AND service-scope.
+    Source pods must carry client-class: mariadb-client AND access-scope.
+    Exact scope value matching is enforced in Phase 3 per-service CNPs.
+  enableDefaultDeny:
+    egress: false
+    ingress: false
+  endpointSelector:
+    matchLabels:
+      policy.prplanit.com/access-class: mariadb
+    matchExpressions:
+      - key: policy.prplanit.com/service-scope
+        operator: Exists
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            policy.prplanit.com/client-class: mariadb-client
+          matchExpressions:
+            - key: policy.prplanit.com/access-scope
+              operator: Exists
+      toPorts:
+        - ports:
+            - port: "3306"
+              protocol: TCP

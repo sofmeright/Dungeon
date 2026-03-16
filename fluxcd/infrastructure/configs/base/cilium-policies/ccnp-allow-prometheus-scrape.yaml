@@ -1,0 +1,33 @@
+apiVersion: "cilium.io/v2"
+kind: CiliumClusterwideNetworkPolicy
+metadata:
+  name: allow-prometheus-scrape
+spec:
+  description: >-
+    Allows Prometheus/Alloy metrics scraping from host and remote-node
+    entities to pods labelled for metrics collection. Alloy runs as a
+    hostNetwork DaemonSet so it appears as the host entity. Covers
+    standard exporter ports (9090-9216), app metrics (8080), and
+    Istio telemetry (15020).
+  enableDefaultDeny:
+    egress: false
+    ingress: false
+  endpointSelector:
+    matchLabels:
+      policy.prplanit.com/metrics: "true"
+  ingress:
+    - fromEntities:
+        - host
+        - remote-node
+      toPorts:
+        - ports:
+            # Standard Prometheus exporter port range
+            - port: "9090"
+              endPort: 9216
+              protocol: TCP
+            # Common app metrics port (mariadb-operator, various apps)
+            - port: "8080"
+              protocol: TCP
+            # Istio telemetry merged metrics
+            - port: "15020"
+              protocol: TCP

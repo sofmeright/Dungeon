@@ -3,4 +3,4 @@ kind: Kustomization
 resources:
   - bgp.yaml
   - ippool.yaml
-  - ccnp-istio-ambient.yaml
+  # ccnp-istio-ambient.yaml relocated to cilium-policies/base

@@ -3,6 +3,7 @@ kind: Kustomization
 resources:
   - storage  # Production storage classes (Ceph RBD + CephFS)
   - cilium
+  - cilium-policies  # CiliumClusterwideNetworkPolicies for L3/L4 defense-in-depth
   # - metallb  # Disabled - replaced by Cilium LoadBalancer IPAM
   - weave-gitops
   - ceph-rbd  # Ceph RBD connection config and secrets

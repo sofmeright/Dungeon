@@ -1,0 +1,8 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  # Phase 1: Cluster-wide CCNPs (additive, no default-deny)
+  # 10 infrastructure + 5 contract CCNPs from base
+  - ../../../base/cilium-policies
+  # Phase 3: Per-namespace contract CNPs will be added here
+  # as subdirectories during incremental rollout

@@ -1,0 +1,19 @@
+apiVersion: "cilium.io/v2"
+kind: CiliumClusterwideNetworkPolicy
+metadata:
+  name: allow-kubelet-probes
+spec:
+  description: >-
+    Allows kubelet health/readiness/startup probes to reach all pods.
+    The 'health' entity represents Cilium's health check identity.
+    The 'host' entity represents the kubelet on the local node which
+    executes HTTP/TCP/gRPC probes. Both must be allowed for pods to
+    pass health checks when default-deny is enabled.
+  enableDefaultDeny:
+    egress: false
+    ingress: false
+  endpointSelector: {}
+  ingress:
+    - fromEntities:
+        - health
+        - host
