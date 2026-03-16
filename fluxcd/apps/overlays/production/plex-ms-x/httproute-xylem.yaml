@@ -29,4 +29,4 @@ spec:
             value: /
       backendRefs:
         - name: plex-ms-x
-          port: 32419
+          port: 32400
