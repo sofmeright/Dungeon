@@ -12,3 +12,5 @@ spec:
     ingress: true
     egress: false
   endpointSelector: {}
+  ingress:
+    - {}
