@@ -1,0 +1,19 @@
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: default-deny-ingress
+spec:
+  description: >-
+    Default-deny ingress for gossip-stone namespace.
+    Monitoring infrastructure: VictoriaMetrics, Loki, Grafana, Gatus,
+    kube-state-metrics, exporters, and various monitoring apps.
+    CCNPs cover kubelet-probes, istio-ambient, prometheus-scrape,
+    postgres/redis contracts, and ingress-gateway traffic for labeled pods.
+  enableDefaultDeny:
+    ingress: true
+    egress: false
+  endpointSelector: {}
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            policy.prplanit.com/reserved: default-deny-anchor

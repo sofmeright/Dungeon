@@ -1,0 +1,18 @@
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: default-deny-ingress
+spec:
+  description: >-
+    Default-deny ingress for hookshot namespace.
+    Remote access services: boundary, guacamole, rustdesk, tactical-rmm.
+    CCNPs cover kubelet-probes, istio-ambient, prometheus-scrape,
+    postgres/redis contracts, and ingress-gateway traffic for labeled pods.
+  enableDefaultDeny:
+    ingress: true
+    egress: false
+  endpointSelector: {}
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            policy.prplanit.com/reserved: default-deny-anchor

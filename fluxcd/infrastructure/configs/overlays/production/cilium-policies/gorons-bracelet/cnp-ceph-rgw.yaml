@@ -1,0 +1,48 @@
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: allow-ceph-rgw-lan
+spec:
+  description: >-
+    LAN-only S3 ingress to ceph-rgw (172.22.30.101) on port 80/TCP.
+  enableDefaultDeny:
+    ingress: false
+    egress: false
+  endpointSelector:
+    matchLabels:
+      app: ceph-rgw
+  ingress:
+    - fromCIDRSet:
+        - cidr: "10.0.0.0/8"
+        - cidr: "172.16.0.0/12"
+          except:
+            - "172.22.144.0/24"
+        - cidr: "192.168.0.0/16"
+          except:
+            - "192.168.144.0/20"
+      toPorts:
+        - ports:
+            - port: "80"
+              protocol: TCP
+---
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: allow-ceph-rgw-cluster
+spec:
+  description: >-
+    Allow all cluster pods to reach ceph-rgw S3 on port 80/TCP.
+    Internal services like CNPG barman backups connect to it.
+  enableDefaultDeny:
+    ingress: false
+    egress: false
+  endpointSelector:
+    matchLabels:
+      app: ceph-rgw
+  ingress:
+    - fromEndpoints:
+        - {}
+      toPorts:
+        - ports:
+            - port: "80"
+              protocol: TCP

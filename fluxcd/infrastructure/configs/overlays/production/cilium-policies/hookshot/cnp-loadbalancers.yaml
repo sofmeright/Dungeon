@@ -1,0 +1,91 @@
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: allow-boundary-worker-lan
+spec:
+  description: >-
+    LAN-only ingress to boundary-worker (172.22.30.88) on 9202/TCP.
+  enableDefaultDeny:
+    ingress: false
+    egress: false
+  endpointSelector:
+    matchLabels:
+      app: boundary-worker
+  ingress:
+    - fromCIDRSet:
+        - cidr: "10.0.0.0/8"
+        - cidr: "172.16.0.0/12"
+          except:
+            - "172.22.144.0/24"
+        - cidr: "192.168.0.0/16"
+          except:
+            - "192.168.144.0/20"
+      toPorts:
+        - ports:
+            - port: "9202"
+              protocol: TCP
+---
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: allow-rustdesk-relay-lan
+spec:
+  description: >-
+    LAN-only ingress to rustdesk-relay (172.22.30.8) on 41117,41119/TCP.
+  enableDefaultDeny:
+    ingress: false
+    egress: false
+  endpointSelector:
+    matchLabels:
+      app: rustdesk-relay
+  ingress:
+    - fromCIDRSet:
+        - cidr: "10.0.0.0/8"
+        - cidr: "172.16.0.0/12"
+          except:
+            - "172.22.144.0/24"
+        - cidr: "192.168.0.0/16"
+          except:
+            - "192.168.144.0/20"
+      toPorts:
+        - ports:
+            - port: "41117"
+              protocol: TCP
+            - port: "41119"
+              protocol: TCP
+---
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: allow-rustdesk-server-lan
+spec:
+  description: >-
+    LAN-only ingress to rustdesk-server (172.22.30.8) on
+    41114,41115,41116/TCP, 41116/UDP, 41118/TCP.
+  enableDefaultDeny:
+    ingress: false
+    egress: false
+  endpointSelector:
+    matchLabels:
+      app: rustdesk-server
+  ingress:
+    - fromCIDRSet:
+        - cidr: "10.0.0.0/8"
+        - cidr: "172.16.0.0/12"
+          except:
+            - "172.22.144.0/24"
+        - cidr: "192.168.0.0/16"
+          except:
+            - "192.168.144.0/20"
+      toPorts:
+        - ports:
+            - port: "41114"
+              protocol: TCP
+            - port: "41115"
+              protocol: TCP
+            - port: "41116"
+              protocol: TCP
+            - port: "41116"
+              protocol: UDP
+            - port: "41118"
+              protocol: TCP

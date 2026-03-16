@@ -1,0 +1,20 @@
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: default-deny-ingress
+spec:
+  description: >-
+    Default-deny ingress for gorons-bracelet namespace.
+    Storage infrastructure: ceph-rgw S3, operators (CNPG, MariaDB, Redis),
+    CSI provisioners. Many DaemonSets are hostNetwork (Cilium-unmanaged).
+    CCNPs cover kubelet-probes, istio-ambient, prometheus-scrape,
+    cnpg-operator, mariadb-operator, redis-operator, and ingress-gateway
+    traffic for labeled pods.
+  enableDefaultDeny:
+    ingress: true
+    egress: false
+  endpointSelector: {}
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            policy.prplanit.com/reserved: default-deny-anchor

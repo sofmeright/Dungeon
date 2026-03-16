@@ -1,0 +1,10 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: gossip-stone
+resources:
+  - cnp-default-deny-ingress.yaml
+  - cnp-monitoring-lb.yaml
+  - cnp-victoria-metrics.yaml
+  - cnp-loki.yaml
+  - cnp-kube-state-metrics.yaml
+  - cnp-umami-db.yaml

@@ -1,0 +1,41 @@
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: allow-vault-internal
+spec:
+  description: >-
+    Allow external-secrets pods and Alloy (host/remote-node) to reach
+    vault on 8200/TCP. Also LAN-only for vault UI access.
+  enableDefaultDeny:
+    ingress: false
+    egress: false
+  endpointSelector:
+    matchLabels:
+      app: vault
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            app.kubernetes.io/name: external-secrets
+      toPorts:
+        - ports:
+            - port: "8200"
+              protocol: TCP
+    - fromEntities:
+        - host
+        - remote-node
+      toPorts:
+        - ports:
+            - port: "8200"
+              protocol: TCP
+    - fromCIDRSet:
+        - cidr: "10.0.0.0/8"
+        - cidr: "172.16.0.0/12"
+          except:
+            - "172.22.144.0/24"
+        - cidr: "192.168.0.0/16"
+          except:
+            - "192.168.144.0/20"
+      toPorts:
+        - ports:
+            - port: "8200"
+              protocol: TCP

@@ -1,0 +1,21 @@
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: allow-zitadel-login-v2-to-zitadel
+spec:
+  description: >-
+    Allow zitadel-login-v2 to reach zitadel API on 8080/TCP.
+  enableDefaultDeny:
+    ingress: false
+    egress: false
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: zitadel
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            app: zitadel-login-v2
+      toPorts:
+        - ports:
+            - port: "8080"
+              protocol: TCP
