@@ -1,0 +1,18 @@
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: default-deny-ingress
+spec:
+  description: >-
+    Default-deny ingress for compass namespace non-adguard pods.
+    AdGuard has its own comprehensive CNP deployed via phase-02-critical.
+    Other services get ingress from ingress-backend CCNP.
+    Chrony and netbootxyz get LAN-only LB rules.
+  enableDefaultDeny:
+    ingress: true
+    egress: false
+  endpointSelector: {}
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            policy.prplanit.com/reserved: default-deny-anchor
