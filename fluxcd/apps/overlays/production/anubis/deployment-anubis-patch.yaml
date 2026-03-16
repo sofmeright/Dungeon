@@ -8,6 +8,7 @@ spec:
     metadata:
       labels:
         policy.prplanit.com/ingress: "true"
+        policy.prplanit.com/metrics: "true"
       annotations:
         prometheus.io/scrape: "true"
         prometheus.io/port: "9090"

@@ -1,0 +1,16 @@
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: default-deny-ingress
+spec:
+  description: >-
+    Default-deny ingress for wallmaster namespace.
+    All ingress allows provided by CCNPs:
+    - contract-ingress-backend (gateway → anubis:8080)
+    - allow-prometheus-scrape (host → anubis:9090)
+    - allow-kubelet-probes (health checks)
+    - allow-istio-ambient (HBONE + probe SNAT)
+  enableDefaultDeny:
+    ingress: true
+    egress: false
+  endpointSelector: {}

@@ -10,3 +10,17 @@ patches:
         value: flux-system
     target:
       kind: HelmRelease
+  # Add webhook label to istiod pods for ccnp-allow-kube-apiserver-webhooks
+  - patch: |-
+      apiVersion: helm.toolkit.fluxcd.io/v2
+      kind: HelmRelease
+      metadata:
+        name: istiod
+      spec:
+        values:
+          pilot:
+            podLabels:
+              policy.prplanit.com/webhook: "true"
+    target:
+      kind: HelmRelease
+      name: istiod

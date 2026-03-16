@@ -4,5 +4,8 @@ resources:
   # Phase 1: Cluster-wide CCNPs (additive, no default-deny)
   # 10 infrastructure + 5 contract CCNPs from base
   - ../../../base/cilium-policies
-  # Phase 3: Per-namespace contract CNPs will be added here
-  # as subdirectories during incremental rollout
+  # Phase 3: Per-namespace contract CNPs (incremental rollout)
+  # Batch 1 — Minimal
+  - wallmaster
+  - fairy-bottle
+  - king-of-red-lions

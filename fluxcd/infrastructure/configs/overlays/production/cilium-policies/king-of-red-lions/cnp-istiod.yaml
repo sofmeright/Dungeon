@@ -1,0 +1,27 @@
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: allow-istiod-xds
+spec:
+  description: >-
+    Allow all cluster pods to reach istiod for xDS (config discovery).
+    ztunnel DaemonSet and gateway pods connect on 15012 for certificate
+    and workload configuration. Port 15010 is plaintext xDS (legacy).
+    Port 15014 is istiod debug/monitoring.
+  enableDefaultDeny:
+    ingress: false
+    egress: false
+  endpointSelector:
+    matchLabels:
+      app: istiod
+  ingress:
+    - fromEndpoints:
+        - {}
+      toPorts:
+        - ports:
+            - port: "15010"
+              protocol: TCP
+            - port: "15012"
+              protocol: TCP
+            - port: "15014"
+              protocol: TCP

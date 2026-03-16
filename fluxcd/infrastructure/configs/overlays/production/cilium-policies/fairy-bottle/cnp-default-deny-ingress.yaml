@@ -1,0 +1,14 @@
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: default-deny-ingress
+spec:
+  description: >-
+    Default-deny ingress for fairy-bottle namespace.
+    Velero, node-agent, snapshot-controller, and kopia jobs are
+    primarily egress consumers (kube-apiserver, S3). Ingress allows
+    from CCNPs: kubelet-probes, istio-ambient, prometheus-scrape.
+  enableDefaultDeny:
+    ingress: true
+    egress: false
+  endpointSelector: {}
