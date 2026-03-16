@@ -8,7 +8,8 @@ spec:
     Source is restricted to the 3 gateway namespaces (arylls-lookout,
     kokiri-forest, hyrule-castle) AND must carry the ingress-gateway
     client-class label. Destination pods must carry
-    policy.prplanit.com/ingress: "true". Covers standard backend ports.
+    policy.prplanit.com/ingress: "true".
+    Port ranges derived from actual HTTPRoute backend targetPorts.
   enableDefaultDeny:
     egress: false
     ingress: false
@@ -31,15 +32,29 @@ spec:
             policy.prplanit.com/client-class: ingress-gateway
       toPorts:
         - ports:
+            # Standard web ports
             - port: "80"
+              endPort: 443
               protocol: TCP
-            - port: "443"
+            # Application serving ports (2283-9999 covers 95% of backends)
+            # Derived from: kubectl get httproutes -A -o json | jq backend ports
+            - port: "2000"
+              endPort: 9999
               protocol: TCP
-            - port: "3000"
+            # High ports for specific services
+            - port: "11434"
               protocol: TCP
-            - port: "5055"
+            - port: "13031"
               protocol: TCP
-            - port: "8080"
+            - port: "20211"
               protocol: TCP
-            - port: "8443"
+            - port: "22300"
+              protocol: TCP
+            - port: "32400"
+              protocol: TCP
+            - port: "33080"
+              protocol: TCP
+            - port: "40118"
+              protocol: TCP
+            - port: "40323"
               protocol: TCP
