@@ -30,3 +30,23 @@ spec:
                   policy.prplanit.com/access-class: redis
                   policy.prplanit.com/metrics: "true"
                   policy.prplanit.com/service-scope: "{{ request.object.metadata.namespace }}.{{ request.object.metadata.labels.app | regex_replace_all('-redis$', '') }}.redis"
+    - name: set-redis-sentinel-metrics-label
+      match:
+        any:
+          - resources:
+              kinds: [StatefulSet]
+              selector:
+                matchLabels:
+                  redis_setup_type: sentinel
+      preconditions:
+        all:
+          - key: "{{ request.object.metadata.labels.app || '' }}"
+            operator: NotEquals
+            value: ""
+      mutate:
+        patchStrategicMerge:
+          spec:
+            template:
+              metadata:
+                labels:
+                  policy.prplanit.com/metrics: "true"

@@ -53,6 +53,14 @@ spec:
               protocol: TCP
             - port: "21119"
               protocol: TCP
+    - fromEntities:
+        - world
+      toPorts:
+        - ports:
+            - port: "21117"
+              protocol: TCP
+            - port: "21119"
+              protocol: TCP
 ---
 apiVersion: cilium.io/v2
 kind: CiliumNetworkPolicy
@@ -77,6 +85,20 @@ spec:
         - cidr: "192.168.0.0/16"
           except:
             - "192.168.144.0/20"
+      toPorts:
+        - ports:
+            - port: "21114"
+              protocol: TCP
+            - port: "21115"
+              protocol: TCP
+            - port: "21116"
+              protocol: TCP
+            - port: "21116"
+              protocol: UDP
+            - port: "21118"
+              protocol: TCP
+    - fromEntities:
+        - world
       toPorts:
         - ports:
             - port: "21114"

@@ -28,6 +28,18 @@ spec:
               protocol: TCP
             - port: "443"
               protocol: TCP
+    # Cross-namespace monitoring probes
+    - fromEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: gossip-stone
+            app.kubernetes.io/name: gatus
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: gossip-stone
+            app: uptime-kuma
+      toPorts:
+        - ports:
+            - port: "443"
+              protocol: TCP
     # Node health checks and DSR return path
     - fromEntities:
         - host
