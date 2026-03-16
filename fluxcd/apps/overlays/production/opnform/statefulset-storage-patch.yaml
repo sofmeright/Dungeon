@@ -3,6 +3,11 @@ kind: StatefulSet
 metadata:
   name: opnform-postgres
 spec:
+  template:
+    metadata:
+      labels:
+        policy.prplanit.com/access-class: postgres
+        policy.prplanit.com/service-scope: hyrule-castle.opnform.postgres
   volumeClaimTemplates:
     - metadata:
         name: postgres-data
@@ -19,6 +24,11 @@ kind: StatefulSet
 metadata:
   name: opnform-redis
 spec:
+  template:
+    metadata:
+      labels:
+        policy.prplanit.com/access-class: redis
+        policy.prplanit.com/service-scope: hyrule-castle.opnform.redis
   volumeClaimTemplates:
     - metadata:
         name: redis-data

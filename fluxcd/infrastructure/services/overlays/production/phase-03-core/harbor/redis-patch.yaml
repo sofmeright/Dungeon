@@ -5,17 +5,21 @@ metadata:
 spec:
   replicas: 3
   template:
+    metadata:
+      labels:
+        policy.prplanit.com/access-class: redis
+        policy.prplanit.com/service-scope: hyrule-castle.harbor.redis
     spec:
       containers:
-      - name: redis
-        image: docker.io/library/redis:7.4-alpine
+        - name: redis
+          image: docker.io/library/redis:7.4-alpine
   volumeClaimTemplates:
-  - metadata:
-      name: data
-    spec:
-      accessModes:
-      - ReadWriteOnce
-      storageClassName: ceph-rbd-retain
-      resources:
-        requests:
-          storage: 10Gi
+    - metadata:
+        name: data
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        storageClassName: ceph-rbd-retain
+        resources:
+          requests:
+            storage: 10Gi

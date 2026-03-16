@@ -5,6 +5,10 @@ metadata:
 spec:
   replicas: 1
   template:
+    metadata:
+      labels:
+        policy.prplanit.com/access-class: postgres
+        policy.prplanit.com/service-scope: pedestal-of-time.paperless.postgres
     spec:
       securityContext:
         runAsUser: 70

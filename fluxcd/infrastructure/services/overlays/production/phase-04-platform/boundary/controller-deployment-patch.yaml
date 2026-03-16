@@ -8,6 +8,8 @@ spec:
     metadata:
       labels:
         policy.prplanit.com/ingress: "true"
+        policy.prplanit.com/client-postgres: "true"
+        policy.prplanit.com/access-scope-postgres: hookshot.boundary.postgres
     spec:
       affinity:
         podAntiAffinity:

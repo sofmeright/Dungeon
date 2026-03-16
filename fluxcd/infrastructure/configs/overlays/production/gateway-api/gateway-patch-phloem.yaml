@@ -11,6 +11,7 @@ spec:
   infrastructure:
     labels:
       policy.prplanit.com/metrics: "true"
+      policy.prplanit.com/client-class: ingress-gateway
   listeners:
     - name: http
       protocol: HTTP

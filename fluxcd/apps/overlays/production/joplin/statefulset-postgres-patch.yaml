@@ -4,20 +4,24 @@ metadata:
   name: joplin-postgres
 spec:
   template:
+    metadata:
+      labels:
+        policy.prplanit.com/access-class: postgres
+        policy.prplanit.com/service-scope: temple-of-time.joplin.postgres
     spec:
       containers:
-      - name: postgres
-        image: docker.io/postgres:15
-        volumeMounts:
-        - name: temple-of-time-joplin-postgres-data
-          mountPath: /var/lib/postgresql/data
+        - name: postgres
+          image: docker.io/postgres:15
+          volumeMounts:
+            - name: temple-of-time-joplin-postgres-data
+              mountPath: /var/lib/postgresql/data
   volumeClaimTemplates:
-  - metadata:
-      name: temple-of-time-joplin-postgres-data
-    spec:
-      accessModes:
-      - ReadWriteOnce
-      storageClassName: ceph-rbd
-      resources:
-        requests:
-          storage: 10Gi
+    - metadata:
+        name: temple-of-time-joplin-postgres-data
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        storageClassName: ceph-rbd
+        resources:
+          requests:
+            storage: 10Gi

@@ -4,10 +4,10 @@ metadata:
   name: contract-redis
 spec:
   description: >-
-    Contract: redis-client pods may reach redis pods on port 6379.
-    Two-dimensional: access-class + service-scope (taxonomy enforcement).
-    Destination pods must carry access-class: redis AND service-scope.
-    Source pods must carry client-class: redis-client AND access-scope.
+    Contract: redis client pods may reach redis server pods on port 6379.
+    Two-dimensional: server uses access-class + service-scope, client uses
+    client-redis + access-scope-redis. Per-protocol client labels avoid
+    single-value collisions on multi-backend pods.
     Exact scope value matching is enforced in Phase 3 per-service CNPs.
   enableDefaultDeny:
     egress: false
@@ -21,9 +21,9 @@ spec:
   ingress:
     - fromEndpoints:
         - matchLabels:
-            policy.prplanit.com/client-class: redis-client
+            policy.prplanit.com/client-redis: "true"
           matchExpressions:
-            - key: policy.prplanit.com/access-scope
+            - key: policy.prplanit.com/access-scope-redis
               operator: Exists
       toPorts:
         - ports:

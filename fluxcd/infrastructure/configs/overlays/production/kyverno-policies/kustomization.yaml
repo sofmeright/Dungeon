@@ -6,3 +6,4 @@ resources:
   - mutate-stunner-gateway-sa.yaml
   - gate-breakglass-label.yaml
   - enforce-image-policy.yaml
+  - mutate-redis-contract-labels.yaml

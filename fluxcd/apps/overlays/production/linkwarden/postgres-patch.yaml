@@ -5,6 +5,10 @@ metadata:
 spec:
   replicas: 1
   template:
+    metadata:
+      labels:
+        policy.prplanit.com/access-class: postgres
+        policy.prplanit.com/service-scope: temple-of-time.linkwarden.postgres
     spec:
       securityContext:
         runAsUser: 70

@@ -4,6 +4,10 @@ metadata:
   name: penpot-redis
 spec:
   template:
+    metadata:
+      labels:
+        policy.prplanit.com/access-class: redis
+        policy.prplanit.com/service-scope: temple-of-time.penpot.redis
     spec:
       securityContext:
         runAsUser: 999

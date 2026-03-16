@@ -6,6 +6,8 @@ spec:
   inheritedMetadata:
     labels:
       policy.prplanit.com/cnpg: "managed"
+      policy.prplanit.com/access-class: postgres
+      policy.prplanit.com/service-scope: lost-woods.homarr.postgres
 
   instances: 3
 

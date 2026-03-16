@@ -17,6 +17,8 @@ patches:
         value:
           labels:
             policy.prplanit.com/cnpg: "managed"
+            policy.prplanit.com/access-class: postgres
+            policy.prplanit.com/service-scope: zeldas-lullaby.netbird.postgres
     target:
       kind: Cluster
       name: netbird-postgres

@@ -32,3 +32,17 @@ patches:
     target:
       kind: Service
       name: searxng
+  - patch: |-
+      apiVersion: apps/v1
+      kind: Deployment
+      metadata:
+        name: searxng-redis
+      spec:
+        template:
+          metadata:
+            labels:
+              policy.prplanit.com/access-class: redis
+              policy.prplanit.com/service-scope: tingle-tuner.searxng.redis
+    target:
+      kind: Deployment
+      name: searxng-redis

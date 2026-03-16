@@ -1,0 +1,31 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: mutate-redis-contract-labels
+spec:
+  background: true
+  rules:
+    # Inject contract labels on Redis replication StatefulSets.
+    # The Redis operator CRD does not support custom pod labels,
+    # so Kyverno is the only mechanism to add contract taxonomy labels.
+    - name: set-redis-replication-contract-labels
+      match:
+        any:
+          - resources:
+              kinds: [StatefulSet]
+              selector:
+                matchLabels:
+                  redis_setup_type: replication
+      preconditions:
+        all:
+          - key: "{{ request.object.metadata.labels.app || '' }}"
+            operator: NotEquals
+            value: ""
+      mutate:
+        patchStrategicMerge:
+          spec:
+            template:
+              metadata:
+                labels:
+                  policy.prplanit.com/access-class: redis
+                  policy.prplanit.com/service-scope: "{{ request.object.metadata.namespace }}.{{ request.object.metadata.labels.app | regex_replace_all('-redis$', '') }}.redis"

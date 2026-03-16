@@ -5,6 +5,10 @@ metadata:
 spec:
   replicas: 3
   template:
+    metadata:
+      labels:
+        policy.prplanit.com/access-class: redis
+        policy.prplanit.com/service-scope: temple-of-time.open-webui.redis
     spec:
       securityContext:
         runAsUser: 999

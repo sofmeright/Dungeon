@@ -4,6 +4,10 @@ metadata:
   name: erpnext-mariadb
 spec:
   template:
+    metadata:
+      labels:
+        policy.prplanit.com/access-class: mariadb
+        policy.prplanit.com/service-scope: hyrule-castle.erpnext.mariadb
     spec:
       containers:
         - name: mariadb

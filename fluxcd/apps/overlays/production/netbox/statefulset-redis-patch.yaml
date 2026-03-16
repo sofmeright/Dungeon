@@ -4,6 +4,10 @@ metadata:
   name: netbox-redis
 spec:
   template:
+    metadata:
+      labels:
+        policy.prplanit.com/access-class: redis
+        policy.prplanit.com/service-scope: zeldas-lullaby.netbox.redis
     spec:
       securityContext:
         runAsUser: 999

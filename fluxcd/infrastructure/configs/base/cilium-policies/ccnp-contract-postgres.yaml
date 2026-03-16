@@ -4,10 +4,10 @@ metadata:
   name: contract-postgres
 spec:
   description: >-
-    Contract: postgres-client pods may reach postgres pods on port 5432.
-    Two-dimensional: access-class + service-scope (taxonomy enforcement).
-    Destination pods must carry access-class: postgres AND service-scope.
-    Source pods must carry client-class: postgres-client AND access-scope.
+    Contract: postgres client pods may reach postgres server pods on port 5432.
+    Two-dimensional: server uses access-class + service-scope, client uses
+    client-postgres + access-scope-postgres. Per-protocol client labels avoid
+    single-value collisions on multi-backend pods (e.g. postgres + redis).
     Exact scope value matching is enforced in Phase 3 per-service CNPs.
   enableDefaultDeny:
     egress: false
@@ -21,9 +21,9 @@ spec:
   ingress:
     - fromEndpoints:
         - matchLabels:
-            policy.prplanit.com/client-class: postgres-client
+            policy.prplanit.com/client-postgres: "true"
           matchExpressions:
-            - key: policy.prplanit.com/access-scope
+            - key: policy.prplanit.com/access-scope-postgres
               operator: Exists
       toPorts:
         - ports:

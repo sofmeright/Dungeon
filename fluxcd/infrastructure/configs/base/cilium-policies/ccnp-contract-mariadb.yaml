@@ -4,10 +4,10 @@ metadata:
   name: contract-mariadb
 spec:
   description: >-
-    Contract: mariadb-client pods may reach mariadb pods on port 3306.
-    Two-dimensional: access-class + service-scope (taxonomy enforcement).
-    Destination pods must carry access-class: mariadb AND service-scope.
-    Source pods must carry client-class: mariadb-client AND access-scope.
+    Contract: mariadb client pods may reach mariadb server pods on port 3306.
+    Two-dimensional: server uses access-class + service-scope, client uses
+    client-mariadb + access-scope-mariadb. Per-protocol client labels avoid
+    single-value collisions on multi-backend pods.
     Exact scope value matching is enforced in Phase 3 per-service CNPs.
   enableDefaultDeny:
     egress: false
@@ -21,9 +21,9 @@ spec:
   ingress:
     - fromEndpoints:
         - matchLabels:
-            policy.prplanit.com/client-class: mariadb-client
+            policy.prplanit.com/client-mariadb: "true"
           matchExpressions:
-            - key: policy.prplanit.com/access-scope
+            - key: policy.prplanit.com/access-scope-mariadb
               operator: Exists
       toPorts:
         - ports:

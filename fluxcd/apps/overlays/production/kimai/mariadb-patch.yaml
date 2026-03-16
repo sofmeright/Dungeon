@@ -3,6 +3,10 @@ kind: MariaDB
 metadata:
   name: kimai-mariadb
 spec:
+  podMetadata:
+    labels:
+      policy.prplanit.com/access-class: mariadb
+      policy.prplanit.com/service-scope: temple-of-time.kimai.mariadb
   # Ensure pods are on separate nodes for HA
   affinity:
     antiAffinityEnabled: true

@@ -9,6 +9,10 @@ spec:
   values:
     podLabels:
       policy.prplanit.com/ingress: "true"
+      policy.prplanit.com/client-postgres: "true"
+      policy.prplanit.com/access-scope-postgres: temple-of-time.nextcloud.postgres
+      policy.prplanit.com/client-redis: "true"
+      policy.prplanit.com/access-scope-redis: temple-of-time.nextcloud.redis
 
     image:
       tag: "31.0.10"

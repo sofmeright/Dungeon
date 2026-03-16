@@ -7,6 +7,10 @@ spec:
     metadata:
       labels:
         policy.prplanit.com/ingress: "true"
+        policy.prplanit.com/client-mariadb: "true"
+        policy.prplanit.com/access-scope-mariadb: hyrule-castle.erpnext.mariadb
+        policy.prplanit.com/client-redis: "true"
+        policy.prplanit.com/access-scope-redis: hyrule-castle.erpnext.redis
     spec:
       containers:
         - name: frontend

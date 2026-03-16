@@ -4,6 +4,10 @@ metadata:
   name: tactical-postgres
 spec:
   template:
+    metadata:
+      labels:
+        policy.prplanit.com/access-class: postgres
+        policy.prplanit.com/service-scope: hookshot.tacticalrmm.postgres
     spec:
       automountServiceAccountToken: false
       securityContext:
