@@ -23,4 +23,4 @@ spec:
     admissionController:
       replicas: 2
     config:
-      excludeKyvernoNamespace: true
+      excludeKyvernoNamespace: false
