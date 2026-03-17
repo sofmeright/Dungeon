@@ -3,6 +3,8 @@ all:
 # ------- Automations ------- #
     ant-parade:
       ansible_host: 10.30.1.111
+    freightyard:
+      ansible_host: freightyard.prplanit.internal
     leaf-cutter:
       ansible_host: 10.13.37.141
 # ------- Docker ------- #
@@ -202,7 +204,10 @@ docker:
     docker_gpu:
 docker_reg:
   hosts:
+    anchorage:
     cell-membrane:
+    dock:
+    freightyard:
     harbormaster:
     homing-pigeon:
     jabu-jabu:
@@ -214,10 +219,8 @@ docker_reg:
     the-lost-woods:
     the-usual-suspect:
     xylem:
-docker_gpu:
-  hosts:
-    anchorage:
-    dock:
+# docker_gpu:
+#   hosts:
 nginx:
   hosts:
     cell-membrane:
@@ -244,5 +247,5 @@ proxmox_vms:
 #      ansible_host: 172.22.22.54
 #    jalapeno:
 #      ansible_host: 10.13.37.25
-    # vineyard:
-      # ansible_host: 10.30.1.102
+#    vineyard:
+#      ansible_host: 10.30.1.102
