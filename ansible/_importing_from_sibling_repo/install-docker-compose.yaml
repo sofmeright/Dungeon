@@ -1,7 +1,7 @@
 ---
 
 - name: Playbook to install docker compose.
-  hosts: linux
+  hosts: docker_reg
   become: true
   tasks: 
     - name: update apt cache
