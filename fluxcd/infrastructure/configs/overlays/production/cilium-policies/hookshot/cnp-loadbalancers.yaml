@@ -28,54 +28,18 @@ spec:
 apiVersion: cilium.io/v2
 kind: CiliumNetworkPolicy
 metadata:
-  name: allow-rustdesk-relay-lan
+  name: allow-rustdesk-lan
 spec:
   description: >-
-    LAN-only ingress to rustdesk-relay (172.22.30.8) on 21117,21119/TCP.
+    LAN + internet ingress to rustdesk (172.22.30.8). Single StatefulSet
+    with hbbs (server) and hbbr (relay) containers. Ports: 21114-21116
+    (server TCP + UDP), 21117-21119 (relay TCP), 21118 (server TCP).
   enableDefaultDeny:
     ingress: false
     egress: false
   endpointSelector:
     matchLabels:
-      app: rustdesk-relay
-  ingress:
-    - fromCIDRSet:
-        - cidr: "10.0.0.0/8"
-        - cidr: "172.16.0.0/12"
-          except:
-            - "172.22.144.0/24"
-        - cidr: "192.168.0.0/16"
-          except:
-            - "192.168.144.0/20"
-      toPorts:
-        - ports:
-            - port: "21117"
-              protocol: TCP
-            - port: "21119"
-              protocol: TCP
-    - fromEntities:
-        - world
-      toPorts:
-        - ports:
-            - port: "21117"
-              protocol: TCP
-            - port: "21119"
-              protocol: TCP
----
-apiVersion: cilium.io/v2
-kind: CiliumNetworkPolicy
-metadata:
-  name: allow-rustdesk-server-lan
-spec:
-  description: >-
-    LAN-only ingress to rustdesk-server (172.22.30.8) on
-    21114,21115,21116/TCP, 21116/UDP, 21118/TCP.
-  enableDefaultDeny:
-    ingress: false
-    egress: false
-  endpointSelector:
-    matchLabels:
-      app: rustdesk-server
+      app: rustdesk
   ingress:
     - fromCIDRSet:
         - cidr: "10.0.0.0/8"
@@ -95,7 +59,11 @@ spec:
               protocol: TCP
             - port: "21116"
               protocol: UDP
+            - port: "21117"
+              protocol: TCP
             - port: "21118"
+              protocol: TCP
+            - port: "21119"
               protocol: TCP
     - fromEntities:
         - world
@@ -109,5 +77,9 @@ spec:
               protocol: TCP
             - port: "21116"
               protocol: UDP
+            - port: "21117"
+              protocol: TCP
             - port: "21118"
+              protocol: TCP
+            - port: "21119"
               protocol: TCP
