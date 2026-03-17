@@ -4,7 +4,7 @@ all:
     ant-parade:
       ansible_host: 10.30.1.111
     freightyard:
-      ansible_host: freightyard.prplanit.internal
+      ansible_host: 10.30.8.101
     leaf-cutter:
       ansible_host: 10.13.37.141
 # ------- Docker ------- #
