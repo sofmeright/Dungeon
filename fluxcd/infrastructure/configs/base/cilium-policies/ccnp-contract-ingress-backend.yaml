@@ -115,6 +115,7 @@ spec:
               protocol: TCP
             - port: "8787"
               protocol: TCP
+        - ports:
             - port: "8945"
               protocol: TCP
             - port: "8989"

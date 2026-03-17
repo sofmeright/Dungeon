@@ -165,12 +165,41 @@ resolve_gatus_probe_ports() {
 }
 
 # --- Build YAML port stanza from sorted port list ---
+# Cilium enforces max 40 ports per toPorts entry. This function chunks
+# the port list and emits multiple toPorts entries if needed.
+# Args: indent prefix_indent
+#   indent       = indentation for port items (e.g., "            ")
+#   prefix_indent = indentation for "- ports:" lines (e.g., "        ")
+# When only one chunk exists, emits a flat port list (no toPorts wrapper).
+# When multiple chunks exist, emits multiple "- ports:" blocks.
+MAX_PORTS_PER_TOPORTS=40
+
 build_port_yaml() {
   local indent="$1"
+  local prefix_indent="$2"
+  local ports=()
   while read -r port; do
     [[ -z "$port" ]] && continue
-    printf '%s- port: "%s"\n' "$indent" "$port"
-    printf '%s  protocol: TCP\n' "$indent"
+    ports+=("$port")
+  done
+
+  local total=${#ports[@]}
+  local chunk_start=0
+  local chunk_idx=0
+
+  while [[ $chunk_start -lt $total ]]; do
+    if [[ $chunk_idx -gt 0 ]]; then
+      # Additional toPorts entry — need the "- ports:" wrapper
+      printf '%s- ports:\n' "$prefix_indent"
+    fi
+    local chunk_end=$((chunk_start + MAX_PORTS_PER_TOPORTS))
+    [[ $chunk_end -gt $total ]] && chunk_end=$total
+    for ((i=chunk_start; i<chunk_end; i++)); do
+      printf '%s- port: "%s"\n' "$indent" "${ports[$i]}"
+      printf '%s  protocol: TCP\n' "$indent"
+    done
+    chunk_start=$chunk_end
+    chunk_idx=$((chunk_idx + 1))
   done
 }
 
@@ -204,7 +233,7 @@ emit_file() {
 # --- File 1: ccnp-contract-ingress-backend.yaml ---
 echo "Resolving ingress-backend targetPorts..." >&2
 INGRESS_PORTS=$(resolve_ingress_backend_ports)
-INGRESS_PORT_YAML=$(echo "$INGRESS_PORTS" | build_port_yaml "            ")
+INGRESS_PORT_YAML=$(echo "$INGRESS_PORTS" | build_port_yaml "            " "        ")
 
 emit_file "${BASE_DIR}/ccnp-contract-ingress-backend.yaml" \
 "# DERIVED: resolved pod targetPorts from HTTPRoute backendRefs.
@@ -250,7 +279,7 @@ ${INGRESS_PORT_YAML}
 # --- File 2: ccnp-allow-gatus-healthcheck.yaml ---
 echo "Resolving gatus probe targetPorts..." >&2
 GATUS_PORTS=$(resolve_gatus_probe_ports)
-GATUS_PORT_YAML=$(echo "$GATUS_PORTS" | build_port_yaml "            ")
+GATUS_PORT_YAML=$(echo "$GATUS_PORTS" | build_port_yaml "            " "        ")
 
 emit_file "${BASE_DIR}/ccnp-allow-gatus-healthcheck.yaml" \
 "# DERIVED: resolved pod targetPorts from Gatus-annotated services and probe-labelled pods.
