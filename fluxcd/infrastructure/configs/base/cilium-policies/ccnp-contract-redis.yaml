@@ -21,13 +21,6 @@ spec:
         operator: Exists
   ingress:
     - fromEndpoints:
-        # Legacy client-role label — remove after capability migration
-        - matchLabels:
-            policy.prplanit.com/client-redis: "true"
-          matchExpressions:
-            - key: policy.prplanit.com/access-scope-redis
-              operator: Exists
-        # Capability label model
         - matchLabels:
             policy.prplanit.com/cap.redis: "true"
           matchExpressions:

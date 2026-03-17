@@ -21,13 +21,6 @@ spec:
         operator: Exists
   ingress:
     - fromEndpoints:
-        # Legacy client-role label — remove after capability migration
-        - matchLabels:
-            policy.prplanit.com/client-postgres: "true"
-          matchExpressions:
-            - key: policy.prplanit.com/access-scope-postgres
-              operator: Exists
-        # Capability label model
         - matchLabels:
             policy.prplanit.com/cap.postgres: "true"
           matchExpressions:

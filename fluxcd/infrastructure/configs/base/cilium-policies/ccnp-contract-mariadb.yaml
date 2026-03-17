@@ -21,13 +21,6 @@ spec:
         operator: Exists
   ingress:
     - fromEndpoints:
-        # Legacy client-role label — remove after capability migration
-        - matchLabels:
-            policy.prplanit.com/client-mariadb: "true"
-          matchExpressions:
-            - key: policy.prplanit.com/access-scope-mariadb
-              operator: Exists
-        # Capability label model
         - matchLabels:
             policy.prplanit.com/cap.mariadb: "true"
           matchExpressions:
