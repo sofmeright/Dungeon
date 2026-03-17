@@ -112,6 +112,23 @@
   - Never deploy directly from base - always use overlays for actual deployments.
 - Cluster initialization is handled by bash\_importing_from_sibling_repo\bootstrap-k8s-install-dependencies.sh bootstrap-k8s-initialize-control-plane.sh and a reset script. No other manipulation should be needed for initial cluster setup.
 
+- Policy Contract Standard (Universal Capability Model):
+  - **ONE STANDARD for all network policy contracts. No per-protocol conventions. No exceptions.**
+  - Every backend type (postgres, redis, mariadb, kafka, s3, etc.) uses the exact same label pattern:
+  - **Client capability** (what a workload may use):
+    - `policy.prplanit.com/cap.<service>: "true"` — e.g., `cap.postgres`, `cap.redis`, `cap.s3`
+    - Capabilities compose: a multi-backend pod declares all capabilities it holds
+  - **Authorization scope** (which instance it may access):
+    - `policy.prplanit.com/access-scope-<service>: <namespace>.<app>.<service>` — per-protocol key required (K8s labels are single-value)
+  - **Server identity** (what a service provides):
+    - `policy.prplanit.com/access-class: <service>` — e.g., `access-class: postgres`
+  - **Instance identity** (the specific backend):
+    - `policy.prplanit.com/service-scope: <namespace>.<app>.<service>` — globally unique
+  - **Policy evaluation**: `client capability AND scope annotation exists AND server class match`
+  - **CCNP contracts are backend-class admission gates**, NOT instance-scoped. Instance-level authorization (scope value matching) requires per-service CNPs.
+  - **Infrastructure labels** (unchanged): `ingress`, `metrics`, `probe`, `webhook`, `cnpg` — boolean flags for infrastructure contract CCNPs
+  - **Never use**: `client-postgres`, `client-redis`, `client-mariadb`, or any per-protocol client-role label. Use `cap.*` only.
+
 - Helm Release Naming Standard:
   - HelmRelease metadata name should be the application name ONLY, without namespace prefix (e.g., `name: external-secrets` NOT `name: zeldas-lullaby-external-secrets`)
   - Always set `spec.releaseName` to match the application name for consistency
