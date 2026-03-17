@@ -5,14 +5,13 @@ metadata:
 spec:
   description: >-
     HBONE guardrail: meshed workloads accept HBONE traffic (15008/TCP)
-    from any ambient-namespace pod + infrastructure. In ambient mode,
-    ztunnel transparently intercepts traffic via iptables BEFORE Cilium
-    BPF processes it, so Cilium sees the original source pod identity
-    on HBONE connections, not ztunnel. The guardrail therefore allows
-    port 15008 from all ambient-namespace endpoints — Istio owns the
-    identity authorization via SPIFFE/mTLS inside the HBONE tunnel.
-    Non-mesh paths (LB ingress, monitoring, DNS) are handled by other
-    CCNPs and per-namespace CNPs.
+    only from pods in ambient-labelled namespaces + ztunnel explicitly.
+    In ambient mode, ztunnel intercepts via iptables before Cilium BPF,
+    so Cilium sees original source pod identity on HBONE, not ztunnel.
+    Source restriction to ambient namespaces blocks non-ambient pods
+    (flux-system, kube-system, etc.) from reaching the HBONE listener.
+    Istio owns identity authorization inside the tunnel via SPIFFE/mTLS.
+    Non-mesh paths (LB ingress, monitoring, DNS) handled by other CCNPs.
   enableDefaultDeny:
     egress: false
     ingress: false
@@ -20,11 +19,25 @@ spec:
     matchLabels:
       k8s:io.cilium.k8s.namespace.labels.istio.io/dataplane-mode: ambient
   ingress:
-    # HBONE mesh traffic — all ambient-namespace pods.
+    # HBONE from pods in ambient-labelled namespaces.
     # Cilium sees original source pod identity (not ztunnel) because
-    # ztunnel intercepts via iptables before Cilium BPF. The HBONE
-    # tunnel itself provides mTLS + SPIFFE identity enforcement.
-    - toPorts:
+    # ztunnel intercepts via iptables before Cilium BPF. Restricting
+    # to ambient namespaces blocks non-mesh pods from reaching 15008.
+    - fromEndpoints:
+        - matchLabels:
+            k8s:io.cilium.k8s.namespace.labels.istio.io/dataplane-mode: ambient
+      toPorts:
+        - ports:
+            - port: "15008"
+              protocol: TCP
+    # HBONE from ztunnel (king-of-red-lions — not ambient-labelled).
+    # Needed for cross-node HBONE where Cilium may see ztunnel as
+    # the source identity on the destination node's ingress path.
+    - fromEndpoints:
+        - matchLabels:
+            k8s:io.kubernetes.pod.namespace: king-of-red-lions
+            app: ztunnel
+      toPorts:
         - ports:
             - port: "15008"
               protocol: TCP
