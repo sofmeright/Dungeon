@@ -8,9 +8,7 @@ resources:
   # Batch 1 — Minimal
   - wallmaster
   - fairy-bottle
-  # king-of-red-lions deferred — istiod/stunner traffic patterns need
-  # full characterization before default-deny (gateway xDS, stunner
-  # operator internal, cert-manager probes)
+  - king-of-red-lions
   # Batch 2 — Simple
   - arylls-lookout
   - kokiri-forest
