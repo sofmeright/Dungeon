@@ -1,0 +1,25 @@
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: allow-gitlab-certmanager-webhook
+spec:
+  description: >-
+    Allow kube-apiserver to reach GitLab's bundled cert-manager webhook
+    on 443/TCP and 9402/TCP. This is separate from the cluster-wide
+    cert-manager in gorons-bracelet — GitLab ships its own.
+  enableDefaultDeny:
+    ingress: false
+    egress: false
+  endpointSelector:
+    matchLabels:
+      app.kubernetes.io/name: webhook
+      app.kubernetes.io/instance: gitlab-certmanager
+  ingress:
+    - fromEntities:
+        - kube-apiserver
+      toPorts:
+        - ports:
+            - port: "443"
+              protocol: TCP
+            - port: "9402"
+              protocol: TCP

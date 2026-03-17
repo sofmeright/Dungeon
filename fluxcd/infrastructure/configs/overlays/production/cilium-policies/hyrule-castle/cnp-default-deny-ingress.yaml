@@ -1,0 +1,11 @@
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: default-deny-ingress
+spec:
+  description: >-
+    Default deny all ingress for hyrule-castle. Allows are additive
+    from CCNPs (HBONE guardrail, DNS, probes, metrics, contracts) and
+    namespace-specific CNPs below.
+  endpointSelector: {}
+  ingress: []

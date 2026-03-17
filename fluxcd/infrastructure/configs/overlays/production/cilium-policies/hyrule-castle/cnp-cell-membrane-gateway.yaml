@@ -1,0 +1,26 @@
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: allow-cell-membrane-gateway
+spec:
+  description: >-
+    Allow internet and LAN traffic to cell-membrane-gateway (business
+    services). External traffic enters before the mesh, so needs explicit
+    CIDR/world rules. LB IP 172.22.30.71.
+  enableDefaultDeny:
+    ingress: false
+    egress: false
+  endpointSelector:
+    matchLabels:
+      gateway.networking.k8s.io/gateway-name: cell-membrane-gateway
+  ingress:
+    - fromEntities:
+        - world
+      toPorts:
+        - ports:
+            - port: "80"
+              protocol: TCP
+            - port: "443"
+              protocol: TCP
+            - port: "15021"
+              protocol: TCP
