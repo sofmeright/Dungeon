@@ -7,9 +7,9 @@ spec:
     metadata:
       labels:
         policy.prplanit.com/ingress: "true"
-        policy.prplanit.com/client-mariadb: "true"
+        policy.prplanit.com/cap.mariadb: "true"
         policy.prplanit.com/access-scope-mariadb: hyrule-castle.invoiceninja.mariadb
-        policy.prplanit.com/client-redis: "true"
+        policy.prplanit.com/cap.redis: "true"
         policy.prplanit.com/access-scope-redis: hyrule-castle.invoiceninja.redis
     spec:
       securityContext:

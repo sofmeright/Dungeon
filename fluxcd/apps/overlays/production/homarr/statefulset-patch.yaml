@@ -8,9 +8,9 @@ spec:
     metadata:
       labels:
         policy.prplanit.com/ingress: "true"
-        policy.prplanit.com/client-postgres: "true"
+        policy.prplanit.com/cap.postgres: "true"
         policy.prplanit.com/access-scope-postgres: lost-woods.homarr.postgres
-        policy.prplanit.com/client-redis: "true"
+        policy.prplanit.com/cap.redis: "true"
         policy.prplanit.com/access-scope-redis: lost-woods.homarr.redis
       annotations:
         prometheus.io/scrape: "true"

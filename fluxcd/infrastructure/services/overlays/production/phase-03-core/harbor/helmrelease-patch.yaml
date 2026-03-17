@@ -32,9 +32,9 @@ spec:
     core:
       replicas: 3
       podLabels:
-        policy.prplanit.com/client-postgres: "true"
+        policy.prplanit.com/cap.postgres: "true"
         policy.prplanit.com/access-scope-postgres: hyrule-castle.harbor.postgres
-        policy.prplanit.com/client-redis: "true"
+        policy.prplanit.com/cap.redis: "true"
         policy.prplanit.com/access-scope-redis: hyrule-castle.harbor.redis
       image:
         repository: docker.io/goharbor/harbor-core
@@ -42,7 +42,7 @@ spec:
     jobservice:
       replicas: 3
       podLabels:
-        policy.prplanit.com/client-redis: "true"
+        policy.prplanit.com/cap.redis: "true"
         policy.prplanit.com/access-scope-redis: hyrule-castle.harbor.redis
       image:
         repository: docker.io/goharbor/harbor-jobservice

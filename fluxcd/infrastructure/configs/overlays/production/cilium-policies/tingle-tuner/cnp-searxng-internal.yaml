@@ -5,7 +5,7 @@ metadata:
 spec:
   description: >-
     Allow searxng app to access searxng-redis on 6379/TCP.
-    searxng app pods lack client-redis contract labels, so this
+    searxng app pods lack cap.redis contract labels, so this
     explicit CNP is needed instead of the redis contract CCNP.
   enableDefaultDeny:
     ingress: false
