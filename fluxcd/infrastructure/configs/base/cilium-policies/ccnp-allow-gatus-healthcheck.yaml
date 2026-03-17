@@ -1,3 +1,7 @@
+# DERIVED: resolved pod targetPorts from Gatus-annotated services and probe-labelled pods.
+# Inputs: Gatus annotations → Services (targetPort resolution) → probe-labelled pod containerPorts
+# Source of truth: hack/gen-cilium-backend-ports.sh
+# Regenerate; do not hand-edit.
 apiVersion: "cilium.io/v2"
 kind: CiliumClusterwideNetworkPolicy
 metadata:
@@ -6,9 +10,7 @@ spec:
   description: >-
     Allows Gatus health checker to reach probe-labelled endpoints.
     Gatus runs in gossip-stone namespace and probes service health
-    across the cluster on application serving ports.
-    Port ranges match the ingress-backend contract since Gatus probes
-    the same services that gateways route to.
+    across the cluster on application and infrastructure ports.
   enableDefaultDeny:
     egress: false
     ingress: false
@@ -22,33 +24,65 @@ spec:
             app.kubernetes.io/name: gatus
       toPorts:
         - ports:
-            # Standard web ports
-            - port: "80"
-              endPort: 443
+            - port: "25"
               protocol: TCP
-            # Application serving ports
-            - port: "2000"
-              endPort: 9999
+            - port: "53"
               protocol: TCP
-            # High ports for specific services
-            - port: "11434"
+            - port: "123"
               protocol: TCP
-            - port: "13031"
+            - port: "514"
               protocol: TCP
-            - port: "20211"
+            - port: "853"
+              protocol: TCP
+            - port: "1514"
+              protocol: TCP
+            - port: "1515"
+              protocol: TCP
+            - port: "2112"
+              protocol: TCP
+            - port: "2222"
+              protocol: TCP
+            - port: "3478"
+              protocol: TCP
+            - port: "5349"
+              protocol: TCP
+            - port: "6060"
+              protocol: TCP
+            - port: "7797"
+              protocol: TCP
+            - port: "8080"
+              protocol: TCP
+            - port: "8777"
+              protocol: TCP
+            - port: "8778"
+              protocol: TCP
+            - port: "8779"
+              protocol: TCP
+            - port: "8780"
+              protocol: TCP
+            - port: "9795"
               protocol: TCP
             - port: "21114"
-              endPort: 21119
               protocol: TCP
-            - port: "22300"
+            - port: "21115"
               protocol: TCP
-            - port: "32400"
+            - port: "21116"
               protocol: TCP
-            - port: "33080"
+            - port: "21117"
+              protocol: TCP
+            - port: "21118"
+              protocol: TCP
+            - port: "21119"
+              protocol: TCP
+            - port: "27057"
+              protocol: TCP
+            - port: "27095"
+              protocol: TCP
+            - port: "28020"
+              protocol: TCP
+            - port: "28021"
               protocol: TCP
             - port: "35566"
               protocol: TCP
-            - port: "40118"
-              protocol: TCP
-            - port: "40323"
+            - port: "55000"
               protocol: TCP

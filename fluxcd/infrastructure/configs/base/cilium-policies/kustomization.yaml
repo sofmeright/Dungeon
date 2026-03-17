@@ -2,6 +2,7 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
   # Infrastructure CCNPs — universal cluster plumbing
+  - ccnp-ambient-mesh-guardrail.yaml
   - ccnp-allow-istio-ambient.yaml
   - ccnp-allow-dns-egress.yaml
   - ccnp-allow-prometheus-scrape.yaml

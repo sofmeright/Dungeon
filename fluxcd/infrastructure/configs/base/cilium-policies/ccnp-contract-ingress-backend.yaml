@@ -1,3 +1,7 @@
+# DERIVED: resolved pod targetPorts from HTTPRoute backendRefs.
+# Inputs: HTTPRoutes → Services (targetPort resolution) → EndpointSlices (named port resolution)
+# Source of truth: hack/gen-cilium-backend-ports.sh
+# Regenerate; do not hand-edit.
 apiVersion: "cilium.io/v2"
 kind: CiliumClusterwideNetworkPolicy
 metadata:
@@ -9,7 +13,6 @@ spec:
     kokiri-forest, hyrule-castle) AND must carry the ingress-gateway
     client-class label. Destination pods must carry
     policy.prplanit.com/ingress: "true".
-    Port ranges derived from actual HTTPRoute backend targetPorts.
   enableDefaultDeny:
     egress: false
     ingress: false
@@ -32,19 +35,101 @@ spec:
             policy.prplanit.com/client-class: ingress-gateway
       toPorts:
         - ports:
-            # Standard web ports
             - port: "80"
-              endPort: 443
               protocol: TCP
-            # Application serving ports (2283-9999 covers 95% of backends)
-            # Derived from: kubectl get httproutes -A -o json | jq backend ports
-            - port: "2000"
-              endPort: 9999
+            - port: "443"
               protocol: TCP
-            # High ports for specific services
+            - port: "2283"
+              protocol: TCP
+            - port: "2342"
+              protocol: TCP
+            - port: "2368"
+              protocol: TCP
+            - port: "3000"
+              protocol: TCP
+            - port: "3001"
+              protocol: TCP
+            - port: "3002"
+              protocol: TCP
+            - port: "3142"
+              protocol: TCP
+            - port: "4180"
+              protocol: TCP
+            - port: "5000"
+              protocol: TCP
+            - port: "5006"
+              protocol: TCP
+            - port: "5050"
+              protocol: TCP
+            - port: "5055"
+              protocol: TCP
+            - port: "5056"
+              protocol: TCP
+            - port: "5340"
+              protocol: TCP
+            - port: "5601"
+              protocol: TCP
+            - port: "6767"
+              protocol: TCP
+            - port: "6887"
+              protocol: TCP
+            - port: "7007"
+              protocol: TCP
+            - port: "7443"
+              protocol: TCP
+            - port: "7575"
+              protocol: TCP
+            - port: "7745"
+              protocol: TCP
+            - port: "7860"
+              protocol: TCP
+            - port: "7867"
+              protocol: TCP
+            - port: "7878"
+              protocol: TCP
+            - port: "8000"
+              protocol: TCP
+            - port: "8001"
+              protocol: TCP
+            - port: "8080"
+              protocol: TCP
+            - port: "8081"
+              protocol: TCP
+            - port: "8083"
+              protocol: TCP
+            - port: "8096"
+              protocol: TCP
+            - port: "8123"
+              protocol: TCP
+            - port: "8181"
+              protocol: TCP
+            - port: "8200"
+              protocol: TCP
+            - port: "8227"
+              protocol: TCP
+            - port: "8443"
+              protocol: TCP
+            - port: "8686"
+              protocol: TCP
+            - port: "8754"
+              protocol: TCP
+            - port: "8787"
+              protocol: TCP
+            - port: "8945"
+              protocol: TCP
+            - port: "8989"
+              protocol: TCP
+            - port: "9000"
+              protocol: TCP
+            - port: "9001"
+              protocol: TCP
+            - port: "9200"
+              protocol: TCP
+            - port: "9696"
+              protocol: TCP
+            - port: "9980"
+              protocol: TCP
             - port: "11434"
-              protocol: TCP
-            - port: "13031"
               protocol: TCP
             - port: "20211"
               protocol: TCP
@@ -53,8 +138,4 @@ spec:
             - port: "32400"
               protocol: TCP
             - port: "33080"
-              protocol: TCP
-            - port: "40118"
-              protocol: TCP
-            - port: "40323"
               protocol: TCP
