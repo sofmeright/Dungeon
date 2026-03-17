@@ -4,11 +4,12 @@ metadata:
   name: contract-postgres
 spec:
   description: >-
-    Contract: postgres client pods may reach postgres server pods on port 5432.
-    Two-dimensional: server uses access-class + service-scope, client uses
-    client-postgres + access-scope-postgres. Per-protocol client labels avoid
-    single-value collisions on multi-backend pods (e.g. postgres + redis).
-    Exact scope value matching is enforced in Phase 3 per-service CNPs.
+    Backend-class admission gate for postgres. Allows postgres-capable pods
+    to reach postgres servers on 5432. This CCNP enforces class membership
+    (cap + scope annotation exists), NOT instance binding. Instance-level
+    authorization (client scope value == server scope value) requires
+    per-service CNPs. Without those, any scoped postgres-capable client
+    can reach any postgres server.
   enableDefaultDeny:
     egress: false
     ingress: false
@@ -20,8 +21,15 @@ spec:
         operator: Exists
   ingress:
     - fromEndpoints:
+        # Legacy client-role label — remove after capability migration
         - matchLabels:
             policy.prplanit.com/client-postgres: "true"
+          matchExpressions:
+            - key: policy.prplanit.com/access-scope-postgres
+              operator: Exists
+        # Capability label model
+        - matchLabels:
+            policy.prplanit.com/cap.postgres: "true"
           matchExpressions:
             - key: policy.prplanit.com/access-scope-postgres
               operator: Exists

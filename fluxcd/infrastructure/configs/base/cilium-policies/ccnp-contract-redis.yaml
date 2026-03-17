@@ -4,11 +4,12 @@ metadata:
   name: contract-redis
 spec:
   description: >-
-    Contract: redis client pods may reach redis server pods on port 6379.
-    Two-dimensional: server uses access-class + service-scope, client uses
-    client-redis + access-scope-redis. Per-protocol client labels avoid
-    single-value collisions on multi-backend pods.
-    Exact scope value matching is enforced in Phase 3 per-service CNPs.
+    Backend-class admission gate for redis. Allows redis-capable pods
+    to reach redis servers on 6379. This CCNP enforces class membership
+    (cap + scope annotation exists), NOT instance binding. Instance-level
+    authorization (client scope value == server scope value) requires
+    per-service CNPs. Without those, any scoped redis-capable client
+    can reach any redis server.
   enableDefaultDeny:
     egress: false
     ingress: false
@@ -20,8 +21,15 @@ spec:
         operator: Exists
   ingress:
     - fromEndpoints:
+        # Legacy client-role label — remove after capability migration
         - matchLabels:
             policy.prplanit.com/client-redis: "true"
+          matchExpressions:
+            - key: policy.prplanit.com/access-scope-redis
+              operator: Exists
+        # Capability label model
+        - matchLabels:
+            policy.prplanit.com/cap.redis: "true"
           matchExpressions:
             - key: policy.prplanit.com/access-scope-redis
               operator: Exists

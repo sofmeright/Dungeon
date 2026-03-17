@@ -4,11 +4,12 @@ metadata:
   name: contract-mariadb
 spec:
   description: >-
-    Contract: mariadb client pods may reach mariadb server pods on port 3306.
-    Two-dimensional: server uses access-class + service-scope, client uses
-    client-mariadb + access-scope-mariadb. Per-protocol client labels avoid
-    single-value collisions on multi-backend pods.
-    Exact scope value matching is enforced in Phase 3 per-service CNPs.
+    Backend-class admission gate for mariadb. Allows mariadb-capable pods
+    to reach mariadb servers on 3306. This CCNP enforces class membership
+    (cap + scope annotation exists), NOT instance binding. Instance-level
+    authorization (client scope value == server scope value) requires
+    per-service CNPs. Without those, any scoped mariadb-capable client
+    can reach any mariadb server.
   enableDefaultDeny:
     egress: false
     ingress: false
@@ -20,8 +21,15 @@ spec:
         operator: Exists
   ingress:
     - fromEndpoints:
+        # Legacy client-role label — remove after capability migration
         - matchLabels:
             policy.prplanit.com/client-mariadb: "true"
+          matchExpressions:
+            - key: policy.prplanit.com/access-scope-mariadb
+              operator: Exists
+        # Capability label model
+        - matchLabels:
+            policy.prplanit.com/cap.mariadb: "true"
           matchExpressions:
             - key: policy.prplanit.com/access-scope-mariadb
               operator: Exists
