@@ -23,4 +23,4 @@ spec:
           spec:
             template:
               spec:
-                serviceAccountName: "{{ request.object.metadata.labels.app | regex_replace_all('-sentinel$', '') }}"
+                serviceAccountName: "{{ regex_replace_all('-sentinel$', request.object.metadata.labels.app, '') }}"

@@ -37,8 +37,9 @@ metadata:
   name: allow-loki-gateway-internal
 spec:
   description: >-
-    Allow Alloy (host/remote-node) and Grafana to reach loki-gateway
-    on 80/TCP for log push and query.
+    Allow Alloy (host/remote-node), Grafana, and kube-apiserver to reach
+    loki-gateway on 8080/TCP (containerPort). Service port 80 maps to
+    targetPort 8080 via named port http-metrics.
   enableDefaultDeny:
     ingress: false
     egress: false
@@ -50,21 +51,14 @@ spec:
     - fromEntities:
         - host
         - remote-node
+        - kube-apiserver
       toPorts:
         - ports:
-            - port: "80"
+            - port: "8080"
               protocol: TCP
     - fromEndpoints:
         - matchLabels:
             app: grafana
-      toPorts:
-        - ports:
-            - port: "80"
-              protocol: TCP
-    - fromEntities:
-        - host
-        - remote-node
-        - kube-apiserver
       toPorts:
         - ports:
             - port: "8080"

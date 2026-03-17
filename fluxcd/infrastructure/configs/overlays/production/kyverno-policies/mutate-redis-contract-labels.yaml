@@ -29,7 +29,7 @@ spec:
                 labels:
                   policy.prplanit.com/access-class: redis
                   policy.prplanit.com/metrics: "true"
-                  policy.prplanit.com/service-scope: "{{ request.object.metadata.namespace }}.{{ request.object.metadata.labels.app | regex_replace_all('-redis$', '') }}.redis"
+                  policy.prplanit.com/service-scope: "{{ request.object.metadata.namespace }}.{{ regex_replace_all('-redis$', request.object.metadata.labels.app, '') }}.redis"
     - name: set-redis-sentinel-metrics-label
       match:
         any:
