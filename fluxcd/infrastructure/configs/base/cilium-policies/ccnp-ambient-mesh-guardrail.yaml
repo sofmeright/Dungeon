@@ -4,11 +4,13 @@ metadata:
   name: ambient-mesh-guardrail
 spec:
   description: >-
-    HBONE guardrail: meshed workloads only accept traffic from ztunnel
-    (15008/TCP) + infrastructure. Direct pod-to-pod bypassing the mesh
-    is blocked once per-namespace default-deny is active. This forces
-    all service-to-service traffic through the ambient mesh where Istio
-    applies SPIFFE identity authorization via AuthorizationPolicies.
+    HBONE guardrail: meshed workloads accept HBONE traffic (15008/TCP)
+    from any ambient-namespace pod + infrastructure. In ambient mode,
+    ztunnel transparently intercepts traffic via iptables BEFORE Cilium
+    BPF processes it, so Cilium sees the original source pod identity
+    on HBONE connections, not ztunnel. The guardrail therefore allows
+    port 15008 from all ambient-namespace endpoints — Istio owns the
+    identity authorization via SPIFFE/mTLS inside the HBONE tunnel.
     Non-mesh paths (LB ingress, monitoring, DNS) are handled by other
     CCNPs and per-namespace CNPs.
   enableDefaultDeny:
@@ -18,14 +20,11 @@ spec:
     matchLabels:
       k8s:io.cilium.k8s.namespace.labels.istio.io/dataplane-mode: ambient
   ingress:
-    # HBONE mesh traffic — restricted to ztunnel identity only.
-    # ztunnel is the ambient L4 proxy; all meshed service-to-service
-    # traffic enters destination pods via HBONE on port 15008.
-    - fromEndpoints:
-        - matchLabels:
-            k8s:io.kubernetes.pod.namespace: king-of-red-lions
-            app: ztunnel
-      toPorts:
+    # HBONE mesh traffic — all ambient-namespace pods.
+    # Cilium sees original source pod identity (not ztunnel) because
+    # ztunnel intercepts via iptables before Cilium BPF. The HBONE
+    # tunnel itself provides mTLS + SPIFFE identity enforcement.
+    - toPorts:
         - ports:
             - port: "15008"
               protocol: TCP
