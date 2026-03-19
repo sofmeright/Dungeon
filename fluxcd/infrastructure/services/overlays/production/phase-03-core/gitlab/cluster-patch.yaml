@@ -8,6 +8,8 @@ spec:
       policy.prplanit.com/cnpg: "managed"
       policy.prplanit.com/access-class: postgres
       policy.prplanit.com/service-scope: hyrule-castle.gitlab.postgres
+      policy.prplanit.com/cap.s3: "true"
+      policy.prplanit.com/access-scope-s3: gorons-bracelet.rgw
 
   storage:
     storageClass: ceph-rbd-retain
@@ -20,4 +22,7 @@ spec:
       max_slot_wal_keep_size: "1600MB"
   backup:
     barmanObjectStore:
-      endpointURL: http://ceph-rgw.gorons-bracelet.svc.cluster.local
+      endpointURL: https://ceph-rgw-gateway.gorons-bracelet.svc.cluster.local
+      endpointCA:
+        name: platform-trust-bundle
+        key: ca.crt
