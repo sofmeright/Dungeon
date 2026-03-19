@@ -28,6 +28,15 @@ spec:
               protocol: TCP
             - port: "443"
               protocol: TCP
+    # S3 consumer pods reaching s3.pcfae.com via xylem-gateway
+    - fromEndpoints:
+        - matchLabels:
+            policy.prplanit.com/cap.s3: "true"
+            policy.prplanit.com/access-scope-s3: "gorons-bracelet.rgw"
+      toPorts:
+        - ports:
+            - port: "443"
+              protocol: TCP
     # Cross-namespace monitoring probes
     - fromEndpoints:
         - matchLabels:
