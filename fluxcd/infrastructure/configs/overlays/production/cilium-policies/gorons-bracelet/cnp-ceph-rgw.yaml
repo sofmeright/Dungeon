@@ -60,7 +60,7 @@ metadata:
 spec:
   description: >-
     Allow cap.s3 pods (scoped to gorons-bracelet.rgw) to reach
-    ceph-rgw-gateway on port 8080. Cilium gates on capability +
+    ceph-rgw-gateway on port 8443 (TLS). Cilium gates on capability +
     instance scope, Istio gates on SPIFFE identity.
   enableDefaultDeny:
     ingress: false
@@ -75,5 +75,5 @@ spec:
             policy.prplanit.com/access-scope-s3: "gorons-bracelet.rgw"
       toPorts:
         - ports:
-            - port: "8080"
+            - port: "8443"
               protocol: TCP

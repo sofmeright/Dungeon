@@ -7,7 +7,7 @@ spec:
   selector:
     app: ceph-rgw-gateway
   ports:
-    - name: http
-      port: 80
-      targetPort: 8080
+    - name: https
+      port: 443
+      targetPort: 8443
       protocol: TCP

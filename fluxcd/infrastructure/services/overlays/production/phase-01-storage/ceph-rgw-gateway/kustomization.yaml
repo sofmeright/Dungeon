@@ -3,6 +3,8 @@ kind: Kustomization
 namespace: gorons-bracelet
 resources:
   - ../../../../base/ceph-rgw-gateway
+  - issuer.yaml
+  - ca-bundle.yaml
 patches:
   - path: deployment-patch.yaml
   - path: configmap-patch.yaml

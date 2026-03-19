@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: platform-trust-bundle
+  annotations:
+    reflector.v1.k8s.emberstack.com/reflection-allowed: "true"
+    reflector.v1.k8s.emberstack.com/reflection-allowed-namespaces: "hyrule-castle,gossip-stone,temple-of-time"
+    reflector.v1.k8s.emberstack.com/reflection-auto-enabled: "true"
+    reflector.v1.k8s.emberstack.com/reflection-auto-namespaces: "hyrule-castle,gossip-stone,temple-of-time"
+data:
+  ca.crt: |
+    PLACEHOLDER — deploy issuer.yaml first, then extract ca.crt:
+      kubectl -n gorons-bracelet get secret ceph-rgw-gateway-ca-key \
+        -o jsonpath='{.data.ca\.crt}' | base64 -d
+    Commit the extracted PEM here. Git stays source of truth.
+  bundle.crt: |
+    PLACEHOLDER — same as ca.crt. Future-proofed for multi-CA bundle
+    when Vault PKI is added.

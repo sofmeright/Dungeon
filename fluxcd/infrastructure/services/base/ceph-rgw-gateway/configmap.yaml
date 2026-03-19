@@ -5,8 +5,20 @@ metadata:
 data:
   default.conf: |
     server {
-        listen 8080;
+        listen 8443 ssl;
+        ssl_certificate /etc/nginx/tls/tls.crt;
+        ssl_certificate_key /etc/nginx/tls/tls.key;
+        ssl_protocols TLSv1.2 TLSv1.3;
+        ssl_prefer_server_ciphers on;
+        ssl_ciphers HIGH:!aNULL:!MD5;
+        ssl_session_cache shared:SSL:10m;
+        ssl_session_timeout 10m;
         client_max_body_size 0;
+
+        location = /healthz {
+            return 200 "ok\n";
+            add_header Content-Type text/plain;
+        }
 
         location / {
             proxy_pass http://PLACEHOLDER_BACKEND;
@@ -14,7 +26,7 @@ data:
             chunked_transfer_encoding off;
             proxy_buffering off;
             proxy_request_buffering off;
-            proxy_set_header Host $http_host;
+            proxy_set_header Host $host;
             proxy_set_header Authorization $http_authorization;
             proxy_set_header X-Real-IP $remote_addr;
             proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
