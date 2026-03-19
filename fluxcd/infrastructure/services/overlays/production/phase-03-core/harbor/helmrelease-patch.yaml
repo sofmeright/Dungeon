@@ -110,7 +110,7 @@ spec:
         type: s3
         s3:
           region: us-east-1
-          bucket: harbor
+          bucket: harbor-registry
           regionendpoint: https://s3.pcfae.com
     # Admin password from existing secret
     existingSecretAdminPassword: harbor-secrets
@@ -146,7 +146,7 @@ spec:
                   storage:
                     s3:
                       region: us-east-1
-                      bucket: harbor
+                      bucket: harbor-registry
                       regionendpoint: https://s3.pcfae.com
                     cache:
                       layerinfo: redis
