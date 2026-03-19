@@ -111,8 +111,6 @@ spec:
         s3:
           region: us-east-1
           bucket: harbor
-          accesskey: ""  # Injected by valuesFrom
-          secretkey: ""  # Injected by valuesFrom
           regionendpoint: http://ceph-rgw-gateway.gorons-bracelet.svc.cluster.local
           secure: false
 
