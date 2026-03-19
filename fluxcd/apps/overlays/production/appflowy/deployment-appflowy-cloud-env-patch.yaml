@@ -43,7 +43,9 @@ spec:
             - name: APPFLOWY_S3_USE_MINIO
               value: "true"
             - name: APPFLOWY_S3_MINIO_URL
-              value: "http://ceph-rgw.gorons-bracelet.svc.cluster.local"
+              value: "https://ceph-rgw-gateway.gorons-bracelet.svc.cluster.local"
+            - name: AWS_CA_BUNDLE
+              value: "/etc/ssl/certs/s3-ca.crt"
             - name: APPFLOWY_S3_BUCKET
               value: "appflowy-files"
             - name: APPFLOWY_S3_REGION
@@ -108,3 +110,12 @@ spec:
               value: "appflowy-ai"
             - name: AI_SERVER_PORT
               value: "5001"
+          volumeMounts:
+            - name: s3-ca
+              mountPath: /etc/ssl/certs/s3-ca.crt
+              subPath: ca.crt
+              readOnly: true
+      volumes:
+        - name: s3-ca
+          configMap:
+            name: platform-trust-bundle
