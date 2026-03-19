@@ -4,7 +4,7 @@ metadata:
   name: allow-ceph-rgw-lan
 spec:
   description: >-
-    LAN-only S3 ingress to ceph-rgw (172.22.30.101) on port 80/TCP.
+    LAN-only S3 ingress to ceph-rgw (172.22.30.101) on port 8080/TCP.
   enableDefaultDeny:
     ingress: false
     egress: false
@@ -22,7 +22,7 @@ spec:
             - "192.168.144.0/20"
       toPorts:
         - ports:
-            - port: "80"
+            - port: "8080"
               protocol: TCP
 ---
 apiVersion: cilium.io/v2
@@ -31,8 +31,9 @@ metadata:
   name: allow-ceph-rgw-cluster
 spec:
   description: >-
-    Allow all cluster pods to reach ceph-rgw S3 on port 80/TCP.
-    Internal services like CNPG barman backups connect to it.
+    Allow gateway pods (scoped to gorons-bracelet.rgw) and cap.ceph jobs
+    to reach raw RGW on port 8080. Mesh clients go through
+    ceph-rgw-gateway where Istio enforces SPIFFE identity.
   enableDefaultDeny:
     ingress: false
     egress: false
@@ -41,8 +42,38 @@ spec:
       app: ceph-rgw
   ingress:
     - fromEndpoints:
-        - {}
+        - matchLabels:
+            app: ceph-rgw-gateway
+            policy.prplanit.com/access-scope-s3: "gorons-bracelet.rgw"
+        - matchLabels:
+            policy.prplanit.com/cap.ceph: "true"
+            policy.prplanit.com/access-scope-ceph: "gorons-bracelet.rgw"
       toPorts:
         - ports:
-            - port: "80"
+            - port: "8080"
+              protocol: TCP
+---
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: allow-ceph-rgw-gateway
+spec:
+  description: >-
+    Allow cap.s3 pods (scoped to gorons-bracelet.rgw) to reach
+    ceph-rgw-gateway on port 8080. Cilium gates on capability +
+    instance scope, Istio gates on SPIFFE identity.
+  enableDefaultDeny:
+    ingress: false
+    egress: false
+  endpointSelector:
+    matchLabels:
+      app: ceph-rgw-gateway
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            policy.prplanit.com/cap.s3: "true"
+            policy.prplanit.com/access-scope-s3: "gorons-bracelet.rgw"
+      toPorts:
+        - ports:
+            - port: "8080"
               protocol: TCP

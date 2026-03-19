@@ -5,6 +5,11 @@ metadata:
 spec:
   ttlSecondsAfterFinished: 86400
   template:
+    metadata:
+      labels:
+        policy.prplanit.com/cap.ceph: "true"
+        policy.prplanit.com/access-scope-ceph: "gorons-bracelet.rgw"
+        istio.io/dataplane-mode: none
     spec:
       restartPolicy: OnFailure
       containers:

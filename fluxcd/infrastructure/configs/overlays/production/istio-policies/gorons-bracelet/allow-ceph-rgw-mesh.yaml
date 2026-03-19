@@ -5,7 +5,7 @@ metadata:
 spec:
   selector:
     matchLabels:
-      app: ceph-rgw
+      app: ceph-rgw-gateway
   action: ALLOW
   rules:
     - from:

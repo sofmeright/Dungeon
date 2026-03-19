@@ -8,6 +8,9 @@ spec:
     metadata:
       labels:
         policy.prplanit.com/probe: "true"
+        policy.prplanit.com/cap.ceph: "true"
+        policy.prplanit.com/access-scope-ceph: "gorons-bracelet.rgw"
+        istio.io/dataplane-mode: none
     spec:
       containers:
         - name: rgw
