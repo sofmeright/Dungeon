@@ -36,6 +36,8 @@ spec:
         policy.prplanit.com/access-scope-postgres: hyrule-castle.harbor.postgres
         policy.prplanit.com/cap.redis: "true"
         policy.prplanit.com/access-scope-redis: hyrule-castle.harbor.redis
+        policy.prplanit.com/cap.s3: "true"
+        policy.prplanit.com/access-scope-s3: gorons-bracelet.rgw
       image:
         repository: docker.io/goharbor/harbor-core
 
@@ -44,11 +46,16 @@ spec:
       podLabels:
         policy.prplanit.com/cap.redis: "true"
         policy.prplanit.com/access-scope-redis: hyrule-castle.harbor.redis
+        policy.prplanit.com/cap.s3: "true"
+        policy.prplanit.com/access-scope-s3: gorons-bracelet.rgw
       image:
         repository: docker.io/goharbor/harbor-jobservice
 
     registry:
       replicas: 3
+      podLabels:
+        policy.prplanit.com/cap.s3: "true"
+        policy.prplanit.com/access-scope-s3: gorons-bracelet.rgw
       registry:
         image:
           repository: docker.io/goharbor/registry-photon
@@ -106,7 +113,7 @@ spec:
           bucket: harbor
           accesskey: ""  # Injected by valuesFrom
           secretkey: ""  # Injected by valuesFrom
-          regionendpoint: http://ceph-rgw.gorons-bracelet.svc.cluster.local
+          regionendpoint: http://ceph-rgw-gateway.gorons-bracelet.svc.cluster.local
           secure: false
 
     # Admin password from existing secret
