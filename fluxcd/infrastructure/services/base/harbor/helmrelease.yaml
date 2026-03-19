@@ -81,8 +81,6 @@ spec:
         s3:
           region: PLACEHOLDER_S3_REGION
           bucket: PLACEHOLDER_S3_BUCKET
-          accesskey: PLACEHOLDER_S3_ACCESS_KEY
-          secretkey: PLACEHOLDER_S3_SECRET_KEY
           regionendpoint: PLACEHOLDER_S3_ENDPOINT
           secure: false
 
