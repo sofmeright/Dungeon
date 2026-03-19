@@ -112,6 +112,7 @@ spec:
           region: us-east-1
           bucket: harbor
           regionendpoint: https://s3.pcfae.com
+          forcepathstyle: true
 
     # Admin password from existing secret
     existingSecretAdminPassword: harbor-secrets
