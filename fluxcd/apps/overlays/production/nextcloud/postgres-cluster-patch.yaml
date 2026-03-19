@@ -8,6 +8,8 @@ spec:
       policy.prplanit.com/cnpg: "managed"
       policy.prplanit.com/access-class: postgres
       policy.prplanit.com/service-scope: temple-of-time.nextcloud.postgres
+      policy.prplanit.com/cap.s3: "true"
+      policy.prplanit.com/access-scope-s3: gorons-bracelet.rgw
 
   instances: 3
 
@@ -30,4 +32,7 @@ spec:
   backup:
     barmanObjectStore:
       destinationPath: s3://nextcloud-backups/postgresql
-      endpointURL: http://ceph-rgw.gorons-bracelet.svc.cluster.local
+      endpointURL: https://ceph-rgw-gateway.gorons-bracelet.svc.cluster.local
+      endpointCA:
+        name: platform-trust-bundle
+        key: ca.crt
