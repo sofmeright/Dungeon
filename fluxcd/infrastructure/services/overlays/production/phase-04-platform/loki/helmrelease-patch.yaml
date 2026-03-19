@@ -24,11 +24,14 @@ spec:
         prometheus.io/port: "3100"
       storage:
         s3:
-          endpoint: ceph-rgw.gorons-bracelet.svc.cluster.local:80
+          endpoint: ceph-rgw-gateway.gorons-bracelet.svc.cluster.local
           region: default
           s3ForcePathStyle: true
-          insecure: true
+          insecure: false
           signatureVersion: v4
+          http_config:
+            tls_config:
+              ca_file: /etc/ssl/certs/s3-ca.crt
     # Global imagePullSecrets for all Loki pods
     global:
       imagePullSecrets:
@@ -94,8 +97,16 @@ spec:
                   metadata:
                     labels:
                       policy.prplanit.com/metrics: "true"
+                      policy.prplanit.com/cap.s3: "true"
+                      policy.prplanit.com/access-scope-s3: gorons-bracelet.rgw
                   spec:
                     containers:
+                      - name: loki
+                        volumeMounts:
+                          - name: s3-ca
+                            mountPath: /etc/ssl/certs/s3-ca.crt
+                            subPath: ca.crt
+                            readOnly: true
                       - name: loki-sc-rules
                         volumeMounts:
                           - name: sidecar-tmp
@@ -104,3 +115,6 @@ spec:
                       - name: sidecar-tmp
                         emptyDir:
                           sizeLimit: 64Mi
+                      - name: s3-ca
+                        configMap:
+                          name: platform-trust-bundle
