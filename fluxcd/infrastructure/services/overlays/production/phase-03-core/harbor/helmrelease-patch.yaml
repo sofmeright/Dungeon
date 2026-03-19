@@ -86,14 +86,14 @@ spec:
         extraEnvVars:
           - name: AWS_CA_BUNDLE
             value: /etc/ssl/certs/s3-ca.crt
+        extraVolumeMounts:
+          - name: s3-ca
+            mountPath: /etc/ssl/certs/s3-ca.crt
+            subPath: ca.crt
+            readOnly: true
       controller:
         image:
           repository: docker.io/goharbor/harbor-registryctl
-      extraVolumeMounts:
-        - name: s3-ca
-          mountPath: /etc/ssl/certs/s3-ca.crt
-          subPath: ca.crt
-          readOnly: true
       extraVolumes:
         - name: s3-ca
           configMap:
