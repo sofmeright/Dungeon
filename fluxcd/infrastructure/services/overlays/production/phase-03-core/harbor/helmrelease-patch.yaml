@@ -40,6 +40,18 @@ spec:
         policy.prplanit.com/access-scope-s3: gorons-bracelet.rgw
       image:
         repository: docker.io/goharbor/harbor-core
+      extraEnvVars:
+        - name: AWS_CA_BUNDLE
+          value: /etc/ssl/certs/s3-ca.crt
+      extraVolumeMounts:
+        - name: s3-ca
+          mountPath: /etc/ssl/certs/s3-ca.crt
+          subPath: ca.crt
+          readOnly: true
+      extraVolumes:
+        - name: s3-ca
+          configMap:
+            name: platform-trust-bundle
 
     jobservice:
       replicas: 3
@@ -50,6 +62,18 @@ spec:
         policy.prplanit.com/access-scope-s3: gorons-bracelet.rgw
       image:
         repository: docker.io/goharbor/harbor-jobservice
+      extraEnvVars:
+        - name: AWS_CA_BUNDLE
+          value: /etc/ssl/certs/s3-ca.crt
+      extraVolumeMounts:
+        - name: s3-ca
+          mountPath: /etc/ssl/certs/s3-ca.crt
+          subPath: ca.crt
+          readOnly: true
+      extraVolumes:
+        - name: s3-ca
+          configMap:
+            name: platform-trust-bundle
 
     registry:
       replicas: 3
@@ -59,9 +83,21 @@ spec:
       registry:
         image:
           repository: docker.io/goharbor/registry-photon
+        extraEnvVars:
+          - name: AWS_CA_BUNDLE
+            value: /etc/ssl/certs/s3-ca.crt
       controller:
         image:
           repository: docker.io/goharbor/harbor-registryctl
+      extraVolumeMounts:
+        - name: s3-ca
+          mountPath: /etc/ssl/certs/s3-ca.crt
+          subPath: ca.crt
+          readOnly: true
+      extraVolumes:
+        - name: s3-ca
+          configMap:
+            name: platform-trust-bundle
 
     # Expose via ClusterIP - TLS terminated at xylem gateway
     expose:
@@ -111,8 +147,7 @@ spec:
         s3:
           region: us-east-1
           bucket: harbor
-          regionendpoint: http://ceph-rgw-gateway.gorons-bracelet.svc.cluster.local
-          secure: false
+          regionendpoint: https://ceph-rgw-gateway.gorons-bracelet.svc.cluster.local
 
     # Admin password from existing secret
     existingSecretAdminPassword: harbor-secrets
