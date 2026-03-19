@@ -4,4 +4,3 @@ kind: Kustomization
 resources:
   - ./ceph-external-cluster
   - ./ceph-rgw
-  - ./ceph-rgw-gateway

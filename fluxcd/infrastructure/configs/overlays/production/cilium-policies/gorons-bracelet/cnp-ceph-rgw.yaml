@@ -31,9 +31,8 @@ metadata:
   name: allow-ceph-rgw-cluster
 spec:
   description: >-
-    Allow gateway pods (scoped to gorons-bracelet.rgw) and cap.ceph jobs
-    to reach raw RGW on port 8080. Mesh clients go through
-    ceph-rgw-gateway where Istio enforces SPIFFE identity.
+    Allow xylem-gateway (TLS termination for s3.pcfae.com) and cap.ceph
+    admin jobs to reach raw RGW on port 8080.
   enableDefaultDeny:
     ingress: false
     egress: false
@@ -43,37 +42,12 @@ spec:
   ingress:
     - fromEndpoints:
         - matchLabels:
-            app: ceph-rgw-gateway
-            policy.prplanit.com/access-scope-s3: "gorons-bracelet.rgw"
+            k8s:io.kubernetes.pod.namespace: arylls-lookout
+            gateway.networking.k8s.io/gateway-name: xylem-gateway
         - matchLabels:
             policy.prplanit.com/cap.ceph: "true"
             policy.prplanit.com/access-scope-ceph: "gorons-bracelet.rgw"
       toPorts:
         - ports:
             - port: "8080"
-              protocol: TCP
----
-apiVersion: cilium.io/v2
-kind: CiliumNetworkPolicy
-metadata:
-  name: allow-ceph-rgw-gateway
-spec:
-  description: >-
-    Allow cap.s3 pods (scoped to gorons-bracelet.rgw) to reach
-    ceph-rgw-gateway on port 8443 (TLS). Cilium gates on capability +
-    instance scope, Istio gates on SPIFFE identity.
-  enableDefaultDeny:
-    ingress: false
-    egress: false
-  endpointSelector:
-    matchLabels:
-      app: ceph-rgw-gateway
-  ingress:
-    - fromEndpoints:
-        - matchLabels:
-            policy.prplanit.com/cap.s3: "true"
-            policy.prplanit.com/access-scope-s3: "gorons-bracelet.rgw"
-      toPorts:
-        - ports:
-            - port: "8443"
               protocol: TCP

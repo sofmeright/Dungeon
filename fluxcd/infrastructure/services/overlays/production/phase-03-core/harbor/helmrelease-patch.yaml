@@ -19,87 +19,6 @@ spec:
       name: harbor-secrets
       valuesKey: s3_secretkey
       targetPath: persistence.imageChartStorage.s3.secretkey
-  postRenderers:
-    - kustomize:
-        patches:
-          # Inject S3 CA trust bundle into core
-          - target:
-              kind: Deployment
-              name: harbor-core
-            patch: |
-              apiVersion: apps/v1
-              kind: Deployment
-              metadata:
-                name: harbor-core
-              spec:
-                template:
-                  spec:
-                    volumes:
-                      - name: s3-ca
-                        configMap:
-                          name: platform-trust-bundle
-                    containers:
-                      - name: core
-                        volumeMounts:
-                          - name: s3-ca
-                            mountPath: /etc/ssl/certs/s3-ca.crt
-                            subPath: ca.crt
-                            readOnly: true
-                        env:
-                          - name: AWS_CA_BUNDLE
-                            value: /etc/ssl/certs/s3-ca.crt
-          # Inject S3 CA trust bundle into jobservice
-          - target:
-              kind: Deployment
-              name: harbor-jobservice
-            patch: |
-              apiVersion: apps/v1
-              kind: Deployment
-              metadata:
-                name: harbor-jobservice
-              spec:
-                template:
-                  spec:
-                    volumes:
-                      - name: s3-ca
-                        configMap:
-                          name: platform-trust-bundle
-                    containers:
-                      - name: jobservice
-                        volumeMounts:
-                          - name: s3-ca
-                            mountPath: /etc/ssl/certs/s3-ca.crt
-                            subPath: ca.crt
-                            readOnly: true
-                        env:
-                          - name: AWS_CA_BUNDLE
-                            value: /etc/ssl/certs/s3-ca.crt
-          # Inject S3 CA trust bundle into registry
-          - target:
-              kind: Deployment
-              name: harbor-registry
-            patch: |
-              apiVersion: apps/v1
-              kind: Deployment
-              metadata:
-                name: harbor-registry
-              spec:
-                template:
-                  spec:
-                    volumes:
-                      - name: s3-ca
-                        configMap:
-                          name: platform-trust-bundle
-                    containers:
-                      - name: registry
-                        volumeMounts:
-                          - name: s3-ca
-                            mountPath: /etc/ssl/certs/s3-ca.crt
-                            subPath: ca.crt
-                            readOnly: true
-                        env:
-                          - name: AWS_CA_BUNDLE
-                            value: /etc/ssl/certs/s3-ca.crt
   values:
     # External URL
     externalURL: https://cr.pcfae.com
@@ -192,7 +111,7 @@ spec:
         s3:
           region: us-east-1
           bucket: harbor
-          regionendpoint: https://ceph-rgw-gateway.gorons-bracelet.svc.cluster.local
+          regionendpoint: https://s3.pcfae.com
 
     # Admin password from existing secret
     existingSecretAdminPassword: harbor-secrets

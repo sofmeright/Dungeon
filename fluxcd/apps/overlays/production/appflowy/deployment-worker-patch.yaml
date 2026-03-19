@@ -25,13 +25,6 @@ spec:
                 secretKeyRef:
                   name: appflowy-s3-secrets
                   key: APPFLOWY_S3_SECRET_KEY
-            - name: AWS_CA_BUNDLE
-              value: "/etc/ssl/certs/s3-ca.crt"
-          volumeMounts:
-            - name: s3-ca
-              mountPath: /etc/ssl/certs/s3-ca.crt
-              subPath: ca.crt
-              readOnly: true
           resources:
             requests:
               memory: "512Mi"
@@ -39,7 +32,3 @@ spec:
             limits:
               memory: "1Gi"
               cpu: "500m"
-      volumes:
-        - name: s3-ca
-          configMap:
-            name: platform-trust-bundle

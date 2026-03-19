@@ -22,7 +22,4 @@ spec:
       max_slot_wal_keep_size: "1600MB"
   backup:
     barmanObjectStore:
-      endpointURL: https://ceph-rgw-gateway.gorons-bracelet.svc.cluster.local
-      endpointCA:
-        name: platform-trust-bundle
-        key: ca.crt
+      endpointURL: https://s3.pcfae.com

@@ -186,10 +186,14 @@
     - `client.dungeon-rgw` - RADOS Gateway user (caps: mon 'allow rw', osd 'allow rwx', mgr 'allow rw')
   - **RGW (S3) Configuration**:
     - Deployed in `gorons-bracelet` namespace as StatefulSet
-    - LoadBalancer IP: 172.22.30.101 (shared with storage services)
-    - Endpoint: `http://ceph-rgw.gorons-bracelet.svc.cluster.local` (internal) or `http://172.22.30.101` (external)
+    - **Canonical S3 endpoint**: `https://s3.pcfae.com` (all clients, internal and external)
+    - TLS terminated at xylem-gateway (172.22.30.69) using `*.pcfae.com` Let's Encrypt wildcard cert — publicly trusted, no custom CA plumbing needed
+    - HTTPRoute `ceph-rgw-s3` in gorons-bracelet routes `s3.pcfae.com` → ceph-rgw service (port 80)
+    - All S3 clients MUST use path-style addressing (`s3ForcePathStyle: true`)
+    - LoadBalancer IP: 172.22.30.101 (direct RGW access, admin/monitoring only)
     - Uses Ceph RBD for local cache/WAL (ReadWriteOnce PVCs)
     - Object data stored in `dungeon-rgw-data` pool via RADOS
+    - **Principle**: Internal services use publicly trusted TLS identities. No split identity (`.svc.cluster.local` vs public). No `AWS_CA_BUNDLE`, no CA mounts, no reflector for trust.
   - **Setting up RGW pools on Proxmox Ceph cluster**:
     ```bash
     # Enable RGW on main dungeon pool (allows sharing with RBD)

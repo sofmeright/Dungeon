@@ -21,9 +21,6 @@ spec:
           policy.prplanit.com/access-scope-redis: hyrule-castle.gitlab.redis
           policy.prplanit.com/cap.s3: "true"
           policy.prplanit.com/access-scope-s3: gorons-bracelet.rgw
-      certificates:
-        customCAs:
-          - configMap: platform-trust-bundle
       hosts:
         domain: prplanit.com
         gitlab:

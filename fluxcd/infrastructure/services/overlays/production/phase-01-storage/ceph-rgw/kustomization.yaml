@@ -3,6 +3,7 @@ kind: Kustomization
 namespace: gorons-bracelet
 resources:
   - ../../../../base/ceph-rgw
+  - httproute-s3.yaml
 patches:
   - path: configmap-patch.yaml
   - path: statefulset-patch.yaml

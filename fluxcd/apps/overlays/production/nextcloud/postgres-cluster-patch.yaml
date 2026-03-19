@@ -32,7 +32,4 @@ spec:
   backup:
     barmanObjectStore:
       destinationPath: s3://nextcloud-backups/postgresql
-      endpointURL: https://ceph-rgw-gateway.gorons-bracelet.svc.cluster.local
-      endpointCA:
-        name: platform-trust-bundle
-        key: ca.crt
+      endpointURL: https://s3.pcfae.com
