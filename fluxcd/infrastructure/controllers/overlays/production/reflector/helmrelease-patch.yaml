@@ -5,6 +5,8 @@ metadata:
 spec:
   values:
     fullnameOverride: reflector
+    image:
+      repository: docker.io/emberstack/kubernetes-reflector
     resources:
       requests:
         cpu: 50m
