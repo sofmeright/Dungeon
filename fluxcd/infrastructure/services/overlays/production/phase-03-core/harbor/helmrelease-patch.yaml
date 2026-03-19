@@ -19,6 +19,78 @@ spec:
       name: harbor-secrets
       valuesKey: s3_secretkey
       targetPath: persistence.imageChartStorage.s3.secretkey
+  postRenderers:
+    - kustomize:
+        patches:
+          # Inject S3 CA trust bundle into core
+          - target:
+              kind: Deployment
+              name: harbor-core
+            patch: |
+              - op: add
+                path: /spec/template/spec/volumes/-
+                value:
+                  name: s3-ca
+                  configMap:
+                    name: platform-trust-bundle
+              - op: add
+                path: /spec/template/spec/containers/0/volumeMounts/-
+                value:
+                  name: s3-ca
+                  mountPath: /etc/ssl/certs/s3-ca.crt
+                  subPath: ca.crt
+                  readOnly: true
+              - op: add
+                path: /spec/template/spec/containers/0/env/-
+                value:
+                  name: AWS_CA_BUNDLE
+                  value: /etc/ssl/certs/s3-ca.crt
+          # Inject S3 CA trust bundle into jobservice
+          - target:
+              kind: Deployment
+              name: harbor-jobservice
+            patch: |
+              - op: add
+                path: /spec/template/spec/volumes/-
+                value:
+                  name: s3-ca
+                  configMap:
+                    name: platform-trust-bundle
+              - op: add
+                path: /spec/template/spec/containers/0/volumeMounts/-
+                value:
+                  name: s3-ca
+                  mountPath: /etc/ssl/certs/s3-ca.crt
+                  subPath: ca.crt
+                  readOnly: true
+              - op: add
+                path: /spec/template/spec/containers/0/env/-
+                value:
+                  name: AWS_CA_BUNDLE
+                  value: /etc/ssl/certs/s3-ca.crt
+          # Inject S3 CA trust bundle into registry (both containers)
+          - target:
+              kind: Deployment
+              name: harbor-registry
+            patch: |
+              - op: add
+                path: /spec/template/spec/volumes/-
+                value:
+                  name: s3-ca
+                  configMap:
+                    name: platform-trust-bundle
+              - op: add
+                path: /spec/template/spec/containers/0/volumeMounts/-
+                value:
+                  name: s3-ca
+                  mountPath: /etc/ssl/certs/s3-ca.crt
+                  subPath: ca.crt
+                  readOnly: true
+              - op: add
+                path: /spec/template/spec/containers/0/env/-
+                value:
+                  name: AWS_CA_BUNDLE
+                  value: /etc/ssl/certs/s3-ca.crt
   values:
     # External URL
     externalURL: https://cr.pcfae.com
@@ -40,18 +112,6 @@ spec:
         policy.prplanit.com/access-scope-s3: gorons-bracelet.rgw
       image:
         repository: docker.io/goharbor/harbor-core
-      extraEnvVars:
-        - name: AWS_CA_BUNDLE
-          value: /etc/ssl/certs/s3-ca.crt
-      extraVolumeMounts:
-        - name: s3-ca
-          mountPath: /etc/ssl/certs/s3-ca.crt
-          subPath: ca.crt
-          readOnly: true
-      extraVolumes:
-        - name: s3-ca
-          configMap:
-            name: platform-trust-bundle
 
     jobservice:
       replicas: 3
@@ -62,18 +122,6 @@ spec:
         policy.prplanit.com/access-scope-s3: gorons-bracelet.rgw
       image:
         repository: docker.io/goharbor/harbor-jobservice
-      extraEnvVars:
-        - name: AWS_CA_BUNDLE
-          value: /etc/ssl/certs/s3-ca.crt
-      extraVolumeMounts:
-        - name: s3-ca
-          mountPath: /etc/ssl/certs/s3-ca.crt
-          subPath: ca.crt
-          readOnly: true
-      extraVolumes:
-        - name: s3-ca
-          configMap:
-            name: platform-trust-bundle
 
     registry:
       replicas: 3
@@ -83,21 +131,9 @@ spec:
       registry:
         image:
           repository: docker.io/goharbor/registry-photon
-        extraEnvVars:
-          - name: AWS_CA_BUNDLE
-            value: /etc/ssl/certs/s3-ca.crt
-        extraVolumeMounts:
-          - name: s3-ca
-            mountPath: /etc/ssl/certs/s3-ca.crt
-            subPath: ca.crt
-            readOnly: true
       controller:
         image:
           repository: docker.io/goharbor/harbor-registryctl
-      extraVolumes:
-        - name: s3-ca
-          configMap:
-            name: platform-trust-bundle
 
     # Expose via ClusterIP - TLS terminated at xylem gateway
     expose:
