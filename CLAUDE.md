@@ -59,6 +59,7 @@
       - pedestal-of-time: Restricted/privileged services (only link can pull the master sword)
       - delivery-bag: Mail services (mailcow - postman's delivery bag)
       - wallmaster: Bot protection & security services (anubis - the hand that grabs intruders)
+      - gerudo-crest: Controlled access & internal trust wiring (reflector - sealed fortress, guards the gate)
   - Base should NEVER contain deployment-ready configs - only generic templates that overlays patch with real values. Base should document application defaults from upstream/vendor documentation, not production-specific configurations.
   - Always use overlays/production for actual deployment to the production cluster, never deploy from base
 
@@ -248,23 +249,27 @@
   - BGP LOAD BALANCERS:
     - General CIDR: 172.22.30.0/24.
     - Shared IPs (Ocarina of Time naming theme):
-      - Administrative (e.g. vault,weave,zitadel): 172.22.30.86 (sharing-key: zeldas-lullaby)
-      - Mail services (mailcow SMTP/IMAP/POP3): 172.22.30.102 (sharing-key: delivery-bag)
+      - Administrative (vault, zitadel, netbird): 172.22.30.86 (sharing-key: zeldas-lullaby)
+      - Network infrastructure (unifi): 172.22.30.20 (sharing-key: kaepora-gaebora)
+      - Mail services (ntfy-smtp): 172.22.30.102 (sharing-key: delivery-bag)
       - Bot protection services (anubis): 172.22.30.187 (sharing-key: wallmaster)
-      - General MediaServers: 172.22.30.123 (sharing-key: song-of-storms)
-      - DNS & NTP, similar publicly needed core services: 172.22.30.122 (sharing-key: compass)
-      - Monitoring: 172.22.30.137 (sharing-key: gossip-stone)
+      - General MediaServers (jellyfin, plex): 172.22.30.123 (sharing-key: song-of-storms)
+      - Media secondary (plex-ms-x, paperless): 172.22.30.124 (sharing-key: song-of-storms)
+      - DNS & NTP, core services (chrony, adguard, netbootxyz, apt-cacher-ng): 172.22.30.122 (sharing-key: compass)
+      - Monitoring (pve-exporter, truenas-exporter, eaton-ups, nutify): 172.22.30.137 (sharing-key: gossip-stone)
       - Alerting: 172.22.30.138 (sharing-key: navi)
       - Discovery & Dashboards: 172.22.30.223 (sharing-key: lost-woods)
-      - Tools w/o userdata (it-tools, podinfo, searxng): 172.22.30.107 (sharing-key: tingle-tuner)
+      - Tools w/o userdata (xbackbone, neko-vpn, vlmcsd, endlessh-go, searxng): 172.22.30.107 (sharing-key: tingle-tuner)
       - Archival/Content Management (linkwarden, calibre-web, mealie): 172.22.30.222 (sharing-key: song-of-time)
-      - Backup services (velero, urbackup): 172.22.30.117 (sharing-key: fairy-bottle)
-      - Storage services (minio, longhorn, rook-ceph): 172.22.30.101 (sharing-key: gorons-bracelet)
-      - Game servers (minecraft, etc): 172.22.30.231 (sharing-key: shooting-gallery)
-      - VPN-routed *arr apps (qbittorrent, prowlarr, radarr, sonarr) in swift-sail namespace: 172.22.30.33 (sharing-key: great-sea)
-      - SIEM/IDS/IPS managers (wazuh-manager, crowdsec-lapi): 172.22.30.119 (sharing-key: lens-of-truth-managers)
-      - SIEM/IDS/IPS dashboards (wazuh-dashboard, crowdsec-dashboard): 172.22.30.118 (sharing-key: lens-of-truth-dashboards)
-      - RDP/remote control services (tacticalrmm, meshcentral): 172.22.30.8 (sharing-key: hookshot)
+      - Backup services (urbackup): 172.22.30.117 (sharing-key: fairy-bottle)
+      - Storage services (ceph-rgw): 172.22.30.101 (sharing-key: gorons-bracelet)
+      - Game servers (ark-sa, ark-se, minecraft): 172.22.30.231 (sharing-key: shooting-gallery)
+      - VPN-routed *arr apps & tools (prowlarr, radarr, sonarr, py-kms): 172.22.30.33 (sharing-key: great-sea)
+      - SIEM/IDS/IPS & cameras (wazuh-manager, frigate): 172.22.30.119 (sharing-key: lens-of-truth)
+        > Drift: originally planned as split — lens-of-truth-managers (.119) + lens-of-truth-dashboards (.118). Only .119 deployed, uses key `lens-of-truth` (no `-managers` suffix). .118 is unallocated.
+      - RDP/remote control services (tacticalrmm, meshcentral, rustdesk): 172.22.30.8 (sharing-key: hookshot)
+      - Zero-trust access (boundary workers): 172.22.30.88 (sharing-key: farores-wind)
+      - STUNner TURN/STUN gateway (neko-vpn WebRTC): 172.22.30.120 (no sharing-key — kyverno-mutated)
 
 - Traefik & Gateway API Routing Strategy:
   - **IP-based Domain Isolation**: Use separate Gateway resources with unique LoadBalancer IPs to enable firewall-based internet exposure control (pfSense NAT rules per IP)

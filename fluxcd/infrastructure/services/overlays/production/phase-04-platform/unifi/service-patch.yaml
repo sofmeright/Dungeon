@@ -4,7 +4,7 @@ metadata:
   name: unifi-app
   annotations:
     lbipam.cilium.io/ips: "172.22.30.20"
-    lbipam.cilium.io/sharing-key: "gerudo-crest"
+    lbipam.cilium.io/sharing-key: "kaepora-gaebora"
 spec:
   type: LoadBalancer
   ports:
