@@ -27,7 +27,7 @@ services:
       - alloy-secret.env
     command: run /etc/alloy/config.alloy
     healthcheck:
-      test: ['CMD-SHELL', 'wget --spider -q http://localhost:12345/-/healthy']
+      test: ['CMD-SHELL', 'bash -c "echo > /dev/tcp/localhost/12345"']
       interval: 30s
       timeout: 5s
       retries: 3
@@ -44,7 +44,7 @@ services:
     environment:
       - PORT=45876
     healthcheck:
-      test: ['CMD-SHELL', 'wget --spider -q http://localhost:45876/']
+      test: ['CMD', '/agent', 'health']
       interval: 30s
       timeout: 5s
       retries: 3
