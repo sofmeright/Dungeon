@@ -20,12 +20,12 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: loki-rgw-credentials
-                  key: s3_access_key
+                  key: S3_ACCESS_KEY
             - name: SECRET_KEY
               valueFrom:
                 secretKeyRef:
                   name: loki-rgw-credentials
-                  key: s3_secret_key
+                  key: S3_SECRET_KEY
           command:
             - /bin/bash
             - /scripts/setup.sh

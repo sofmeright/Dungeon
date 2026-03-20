@@ -62,6 +62,9 @@ spec:
             name: loki-s3
     gateway:
       replicas: 3
+      basicAuth:
+        enabled: true
+        existingSecret: loki-gateway-basic-auth
       resources:
         requests:
           cpu: 10m
@@ -106,3 +109,16 @@ spec:
                       - name: sidecar-tmp
                         emptyDir:
                           sizeLimit: 64Mi
+          - target:
+              kind: Deployment
+              name: loki-gateway
+            patch: |
+              apiVersion: apps/v1
+              kind: Deployment
+              metadata:
+                name: loki-gateway
+              spec:
+                template:
+                  metadata:
+                    labels:
+                      policy.prplanit.com/ingress: "true"

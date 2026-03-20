@@ -4,8 +4,9 @@ metadata:
   name: allow-loki-internal
 spec:
   description: >-
-    Allow loki-gateway to reach loki on 3100/TCP, and loki pods to
-    communicate on 7946/TCP (memberlist) and 9095/TCP (gRPC).
+    Allow loki-gateway and Alloy (host/remote-node) to reach loki on
+    3100/TCP, and loki pods to communicate on 7946/TCP (memberlist)
+    and 9095/TCP (gRPC).
   enableDefaultDeny:
     ingress: false
     egress: false
@@ -17,6 +18,13 @@ spec:
         - matchLabels:
             app.kubernetes.io/name: loki
             app.kubernetes.io/component: gateway
+      toPorts:
+        - ports:
+            - port: "3100"
+              protocol: TCP
+    - fromEntities:
+        - host
+        - remote-node
       toPorts:
         - ports:
             - port: "3100"

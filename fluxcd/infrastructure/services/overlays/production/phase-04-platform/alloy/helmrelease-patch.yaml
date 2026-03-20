@@ -30,6 +30,17 @@ spec:
         name: "alloy-config"
       clustering:
         enabled: true
+      extraEnv:
+        - name: VM_AUTH_USERNAME
+          valueFrom:
+            secretKeyRef:
+              name: alloy-ingest-auth
+              key: username
+      mounts:
+        extra:
+          - name: vm-auth
+            mountPath: /run/secrets
+            readOnly: true
       resources:
         requests:
           cpu: 100m
@@ -44,3 +55,11 @@ spec:
         - key: node-role.kubernetes.io/control-plane
           operator: Exists
           effect: NoSchedule
+      volumes:
+        extra:
+          - name: vm-auth
+            secret:
+              secretName: alloy-ingest-auth
+              items:
+                - key: password
+                  path: vm_password

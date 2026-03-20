@@ -7,3 +7,4 @@ resources:
   - allow-cnpg-instance-callback.yaml
   - allow-webhook-cnpg.yaml
   - allow-webhook-mariadb-operator.yaml
+  - allow-gateway-ingress-xylem.yaml

@@ -51,6 +51,11 @@ data:
       endpoint {
         url = "http://vminsert.gossip-stone.svc.cluster.local:8480/insert/0/prometheus/api/v1/write"
 
+        basic_auth {
+          username      = sys.env("VM_AUTH_USERNAME")
+          password_file = "/run/secrets/vm_password"
+        }
+
         queue_config {
           capacity             = 2500
           max_shards           = 4
@@ -712,7 +717,7 @@ data:
 
     loki.write "default" {
       endpoint {
-        url = "http://loki-gateway.gossip-stone.svc.cluster.local/loki/api/v1/push"
+        url = "http://loki.gossip-stone.svc.cluster.local:3100/loki/api/v1/push"
       }
     }
 

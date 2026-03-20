@@ -1,0 +1,86 @@
+services:
+
+  alloy:
+    container_name: alloy
+    image: docker.io/grafana/alloy:v1.14.0
+    restart: unless-stopped
+    network_mode: host
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+      - ./alloy-config.alloy:/etc/alloy/config.alloy:ro
+      - ./secrets/loki_password:/run/secrets/loki_password:ro
+      - ./secrets/vm_password:/run/secrets/vm_password:ro
+    env_file:
+      - _hostname.env
+      - alloy-loki_secret.env
+      - alloy-vm_secret.env
+    command: run /etc/alloy/config.alloy
+    logging: &logging
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  beszel-agent:
+    container_name: beszel-agent
+    env_file:
+      - beszel-agent.env
+      - beszel-agent_secret.env
+    image: docker.io/henrygd/beszel-agent:0.18.2
+    logging: *logging
+    network_mode: host
+    restart: unless-stopped
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      # This is where you add a extra disk:
+      # - /opt/docker/beszel/agent/data/:/extra-filesystems/data:ro
+
+  cadvisor:
+    logging: *logging
+    command: ['-port=8098']
+    container_name: cadvisor
+    devices: [/dev/kmsg]
+    env_file: cadvisor.env
+    image: gcr.io/cadvisor/cadvisor:v0.55.1
+    ports: ['8098:8098']
+    privileged: true
+    restart: always
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:ro
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
+      - /dev/disk/:/dev/disk:ro
+
+  node_exporter:
+    logging: *logging
+    command: '--path.rootfs=/host'
+    container_name: node_exporter
+    image: quay.io/prometheus/node-exporter:v1.10.2
+    pid: host
+    ports: ['9100:9100']
+    restart: always
+    volumes:
+      - /:/host:ro,rslave
+
+  watchtower:
+    logging: *logging
+    container_name: watchtower
+    env_file:
+      - _hostname.env
+      - watchtower.env
+      - watchtower-secret.env
+    environment:
+      - TZ=Etc/UTC
+      - NO_COLOR=true
+      # Notifies Us Daily @ 7:30 AM PST
+      - WATCHTOWER_SCHEDULE=0 30 14 * * *
+      - WATCHTOWER_INCLUDE_STOPPED=true
+      - WATCHTOWER_INCLUDE_RESTARTING=true
+      - WATCHTOWER_MONITOR_ONLY=true
+    # hostname: <host>
+    image: docker.io/nickfedor/watchtower:latest
+    restart: always
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock

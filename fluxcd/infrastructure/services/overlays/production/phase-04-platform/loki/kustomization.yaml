@@ -5,6 +5,7 @@ namespace: gossip-stone
 
 resources:
   - ../../../../base/loki
+  - httproute-ingest.yaml
 
 patches:
   - path: helmrelease-patch.yaml

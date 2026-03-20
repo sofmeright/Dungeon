@@ -3,6 +3,7 @@ kind: Kustomization
 namespace: gossip-stone
 resources:
   - ../../../../base/victoria-metrics
+  - httproute-ingest.yaml
 patches:
   - target:
       kind: StatefulSet
@@ -48,6 +49,28 @@ patches:
       - op: replace
         path: /spec/template/spec/containers/0/resources/limits/memory
         value: "2Gi"
+      - op: add
+        path: /spec/template/metadata/labels/policy.prplanit.com~1ingress
+        value: "true"
+      - op: add
+        path: /spec/template/spec/containers/0/args/-
+        value: "-httpAuth.username=$(VM_AUTH_USERNAME)"
+      - op: add
+        path: /spec/template/spec/containers/0/args/-
+        value: "-httpAuth.password=$(VM_AUTH_PASSWORD)"
+      - op: add
+        path: /spec/template/spec/containers/0/env
+        value:
+          - name: VM_AUTH_USERNAME
+            valueFrom:
+              secretKeyRef:
+                name: vminsert-basic-auth
+                key: username
+          - name: VM_AUTH_PASSWORD
+            valueFrom:
+              secretKeyRef:
+                name: vminsert-basic-auth
+                key: password
   - target:
       kind: Deployment
       name: vmselect

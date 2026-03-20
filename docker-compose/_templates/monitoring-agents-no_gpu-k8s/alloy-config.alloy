@@ -1,0 +1,91 @@
+// ==========================================================================
+// Docker container discovery
+// ==========================================================================
+discovery.docker "containers" {
+  host = "unix:///var/run/docker.sock"
+}
+
+// ==========================================================================
+// Log collection from Docker containers
+// ==========================================================================
+loki.source.docker "containers" {
+  host       = "unix:///var/run/docker.sock"
+  targets    = discovery.docker.containers.targets
+  forward_to = [loki.write.k8s.receiver]
+}
+
+// Push logs to K8s Loki gateway (basic auth over HTTPS)
+loki.write "k8s" {
+  endpoint {
+    url        = "https://logging.pcfae.com/loki/api/v1/push"
+    batch_size = "1MiB"
+    batch_wait = "5s"
+    timeout    = "10s"
+    basic_auth {
+      username      = sys.env("LOKI_AUTH_USERNAME")
+      password_file = "/run/secrets/loki_password"
+    }
+  }
+  external_labels = {
+    host = sys.env("HOSTNAME"),
+    role = "docker-host",
+    env  = "prod",
+  }
+}
+
+// ==========================================================================
+// Metrics collection - local exporters
+// ==========================================================================
+
+// Scrape local node_exporter
+prometheus.scrape "node" {
+  targets = [{
+    __address__ = "localhost:9100",
+    job         = "node_exporter",
+  }]
+  scrape_interval = "30s"
+  scrape_timeout  = "10s"
+  forward_to      = [prometheus.relabel.instance.receiver]
+}
+
+// Scrape local cadvisor
+prometheus.scrape "cadvisor" {
+  targets = [{
+    __address__ = "localhost:8098",
+    job         = "cadvisor",
+  }]
+  scrape_interval = "30s"
+  scrape_timeout  = "10s"
+  forward_to      = [prometheus.relabel.instance.receiver]
+}
+
+// Set instance label to hostname (not localhost:port)
+prometheus.relabel "instance" {
+  rule {
+    target_label = "instance"
+    replacement  = sys.env("HOSTNAME")
+  }
+  forward_to = [prometheus.remote_write.vm.receiver]
+}
+
+// Push metrics to K8s VictoriaMetrics vminsert (basic auth over HTTPS)
+prometheus.remote_write "vm" {
+  endpoint {
+    url            = "https://metrics.pcfae.com/insert/0/prometheus/api/v1/write"
+    remote_timeout = "10s"
+    basic_auth {
+      username      = sys.env("VM_AUTH_USERNAME")
+      password_file = "/run/secrets/vm_password"
+    }
+  }
+  queue_config {
+    capacity             = 10000
+    max_shards           = 10
+    max_samples_per_send = 2000
+  }
+  external_labels = {
+    host = sys.env("HOSTNAME"),
+    role = "docker-host",
+    env  = "prod",
+  }
+}
