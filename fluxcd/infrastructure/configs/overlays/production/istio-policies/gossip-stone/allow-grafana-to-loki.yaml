@@ -1,11 +1,11 @@
 apiVersion: security.istio.io/v1
 kind: AuthorizationPolicy
 metadata:
-  name: allow-grafana-to-loki-gateway
+  name: allow-grafana-to-loki
 spec:
   selector:
     matchLabels:
-      app.kubernetes.io/component: gateway
+      app.kubernetes.io/component: single-binary
       app.kubernetes.io/name: loki
   action: ALLOW
   rules:
@@ -15,4 +15,4 @@ spec:
               - cluster.local/ns/gossip-stone/sa/grafana
       to:
         - operation:
-            ports: ["8080"]
+            ports: ["3100"]
