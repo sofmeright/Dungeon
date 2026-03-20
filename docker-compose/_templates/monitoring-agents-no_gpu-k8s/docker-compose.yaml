@@ -5,17 +5,32 @@ services:
     image: docker.io/grafana/alloy:v1.14.0
     restart: unless-stopped
     network_mode: host
+    configs:
+      - source: alloy-config
+        target: /etc/alloy/config.alloy
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       - /var/lib/docker/containers:/var/lib/docker/containers:ro
-      - ./alloy-config.alloy:/etc/alloy/config.alloy:ro
-      - ./secrets/loki_password:/run/secrets/loki_password:ro
-      - ./secrets/vm_password:/run/secrets/vm_password:ro
+      - /opt/docker/alloy/secrets/loki-password:/run/secrets/loki_password:ro
+      - /opt/docker/alloy/secrets/victoria-metrics-password:/run/secrets/victoria-metrics-password:ro
+    environment:
+      - ALLOY_ROLE=docker-host
+      - ALLOY_ENV=prod
+      - CADVISOR_ADDR=localhost:8098
+      - NODE_EXPORTER_ADDR=localhost:9100
+      - LOKI_URL=https://logging.pcfae.com/loki/api/v1/push
+      - VM_URL=https://metrics.pcfae.com/insert/0/prometheus/api/v1/write
+      - LOKI_AUTH_PASSWORD_FILE=/run/secrets/loki_password
+      - VM_AUTH_PASSWORD_FILE=/run/secrets/victoria-metrics-password
     env_file:
       - _hostname.env
-      - alloy-loki_secret.env
-      - alloy-vm_secret.env
+      - alloy-secret.env
     command: run /etc/alloy/config.alloy
+    healthcheck:
+      test: ['CMD-SHELL', 'wget --spider -q http://localhost:12345/-/healthy']
+      interval: 30s
+      timeout: 5s
+      retries: 3
     logging: &logging
       driver: "json-file"
       options:
@@ -25,8 +40,14 @@ services:
   beszel-agent:
     container_name: beszel-agent
     env_file:
-      - beszel-agent.env
-      - beszel-agent_secret.env
+      - beszel-agent-secret.env
+    environment:
+      - PORT=45876
+    healthcheck:
+      test: ['CMD-SHELL', 'wget --spider -q http://localhost:45876/']
+      interval: 30s
+      timeout: 5s
+      retries: 3
     image: docker.io/henrygd/beszel-agent:0.18.2
     logging: *logging
     network_mode: host
@@ -41,7 +62,8 @@ services:
     command: ['-port=8098']
     container_name: cadvisor
     devices: [/dev/kmsg]
-    env_file: cadvisor.env
+    environment:
+      - CADVISOR_HEALTHCHECK_URL=http://localhost:8098/healthz
     image: gcr.io/cadvisor/cadvisor:v0.55.1
     ports: ['8098:8098']
     privileged: true
@@ -57,6 +79,11 @@ services:
     logging: *logging
     command: '--path.rootfs=/host'
     container_name: node_exporter
+    healthcheck:
+      test: ['CMD-SHELL', 'wget --spider -q http://localhost:9100/metrics']
+      interval: 30s
+      timeout: 5s
+      retries: 3
     image: quay.io/prometheus/node-exporter:v1.10.2
     pid: host
     ports: ['9100:9100']
@@ -69,18 +96,100 @@ services:
     container_name: watchtower
     env_file:
       - _hostname.env
-      - watchtower.env
       - watchtower-secret.env
     environment:
       - TZ=Etc/UTC
       - NO_COLOR=true
-      # Notifies Us Daily @ 7:30 AM PST
-      - WATCHTOWER_SCHEDULE=0 30 14 * * *
+      - NTFY_SUBJECT=Ad_Arbitorium-Updates
+      - NTFY_TITLE=WatchtowerUpdates-$HOSTNAME
       - WATCHTOWER_INCLUDE_STOPPED=true
       - WATCHTOWER_INCLUDE_RESTARTING=true
       - WATCHTOWER_MONITOR_ONLY=true
+      - WATCHTOWER_NOTIFICATION_SKIP_TITLE=True
+      # Notifies Us Daily @ 7:30 AM PST
+      - WATCHTOWER_SCHEDULE=0 30 14 * * *
     # hostname: <host>
     image: docker.io/nickfedor/watchtower:latest
     restart: always
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
+
+configs:
+  alloy-config:
+    content: |
+      discovery.docker "containers" {
+        host = "unix:///var/run/docker.sock"
+      }
+
+      loki.source.docker "containers" {
+        host       = "unix:///var/run/docker.sock"
+        targets    = discovery.docker.containers.targets
+        forward_to = [loki.write.k8s.receiver]
+      }
+
+      loki.write "k8s" {
+        endpoint {
+          url        = sys.env("LOKI_URL")
+          batch_size = "1MiB"
+          batch_wait = "5s"
+          remote_timeout = "10s"
+          basic_auth {
+            username      = sys.env("LOKI_AUTH_USERNAME")
+            password_file = sys.env("LOKI_AUTH_PASSWORD_FILE")
+          }
+        }
+        external_labels = {
+          host = sys.env("HOSTNAME"),
+          role = sys.env("ALLOY_ROLE"),
+          env  = sys.env("ALLOY_ENV"),
+        }
+      }
+
+      prometheus.scrape "node" {
+        targets = [{
+          __address__ = sys.env("NODE_EXPORTER_ADDR"),
+          job         = "node_exporter",
+        }]
+        scrape_interval = "30s"
+        scrape_timeout  = "10s"
+        forward_to      = [prometheus.relabel.instance.receiver]
+      }
+
+      prometheus.scrape "cadvisor" {
+        targets = [{
+          __address__ = sys.env("CADVISOR_ADDR"),
+          job         = "cadvisor",
+        }]
+        scrape_interval = "30s"
+        scrape_timeout  = "10s"
+        forward_to      = [prometheus.relabel.instance.receiver]
+      }
+
+      prometheus.relabel "instance" {
+        rule {
+          target_label = "instance"
+          replacement  = sys.env("HOSTNAME")
+        }
+        forward_to = [prometheus.remote_write.vm.receiver]
+      }
+
+      prometheus.remote_write "vm" {
+        endpoint {
+          url            = sys.env("VM_URL")
+          remote_timeout = "10s"
+          basic_auth {
+            username      = sys.env("VM_AUTH_USERNAME")
+            password_file = sys.env("VM_AUTH_PASSWORD_FILE")
+          }
+          queue_config {
+            capacity             = 10000
+            max_shards           = 10
+            max_samples_per_send = 2000
+          }
+        }
+        external_labels = {
+          host = sys.env("HOSTNAME"),
+          role = sys.env("ALLOY_ROLE"),
+          env  = sys.env("ALLOY_ENV"),
+        }
+      }

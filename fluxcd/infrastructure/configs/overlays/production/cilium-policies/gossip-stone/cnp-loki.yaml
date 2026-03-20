@@ -45,9 +45,9 @@ metadata:
   name: allow-loki-gateway-internal
 spec:
   description: >-
-    Allow Alloy (host/remote-node), Grafana, and kube-apiserver to reach
-    loki-gateway on 8080/TCP (containerPort). Service port 80 maps to
-    targetPort 8080 via named port http-metrics.
+    Allow Alloy (host/remote-node), Grafana, kube-apiserver, and
+    ingress gateways to reach loki-gateway on 8080/TCP (containerPort).
+    Service port 80 maps to targetPort 8080 via named port http-metrics.
   enableDefaultDeny:
     ingress: false
     egress: false
@@ -60,6 +60,14 @@ spec:
         - host
         - remote-node
         - kube-apiserver
+      toPorts:
+        - ports:
+            - port: "8080"
+              protocol: TCP
+    - fromEndpoints:
+        - matchLabels:
+            policy.prplanit.com/client-class: ingress-gateway
+            policy.prplanit.com/ingress-instance: xylem
       toPorts:
         - ports:
             - port: "8080"

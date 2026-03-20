@@ -33,7 +33,8 @@ metadata:
   name: allow-vminsert-internal
 spec:
   description: >-
-    Allow Alloy (host/remote-node) to push metrics to vminsert on 8480/TCP.
+    Allow Alloy (host/remote-node) and ingress gateways to push
+    metrics to vminsert on 8480/TCP.
   enableDefaultDeny:
     ingress: false
     egress: false
@@ -44,6 +45,14 @@ spec:
     - fromEntities:
         - host
         - remote-node
+      toPorts:
+        - ports:
+            - port: "8480"
+              protocol: TCP
+    - fromEndpoints:
+        - matchLabels:
+            policy.prplanit.com/client-class: ingress-gateway
+            policy.prplanit.com/ingress-instance: xylem
       toPorts:
         - ports:
             - port: "8480"

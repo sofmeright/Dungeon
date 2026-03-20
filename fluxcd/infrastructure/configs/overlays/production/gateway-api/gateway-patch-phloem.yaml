@@ -12,6 +12,7 @@ spec:
     labels:
       policy.prplanit.com/metrics: "true"
       policy.prplanit.com/client-class: ingress-gateway
+      policy.prplanit.com/ingress-instance: phloem
   listeners:
     - name: http
       protocol: HTTP

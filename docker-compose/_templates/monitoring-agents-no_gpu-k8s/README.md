@@ -8,19 +8,15 @@ from the Docker socket and pushes to K8s over HTTPS with basic auth.
 
 ## Files to create at deploy time
 
-Copy `docker-compose.yaml` and `alloy-config.alloy` to the host, then create:
+Deploy `docker-compose.yaml` (Alloy config is embedded inline), then create:
 
 ```
-_hostname.env            # HOSTNAME=<this-host>
-alloy-loki_secret.env    # LOKI_AUTH_USERNAME=<BASIC_AUTH_USER from Vault apps/loki>
-alloy-vm_secret.env      # VM_AUTH_USERNAME=<BASIC_AUTH_USER from Vault apps/victoria-metrics>
-beszel-agent.env         # PORT=45876
-beszel-agent_secret.env  # KEY=ssh-ed25519 <public-key-from-beszel-hub>
-cadvisor.env             # (empty or CADVISOR_HEALTHCHECK_URL=http://localhost:8098/healthz)
-watchtower.env           # WATCHTOWER_NOTIFICATION_URL=https://ntfy.pcfae.com/watchtower
-watchtower-secret.env    # WATCHTOWER_NOTIFICATION_TOKEN=tk_...
-secrets/loki_password    # plaintext BASIC_AUTH_PASS from Vault apps/loki
-secrets/vm_password      # plaintext BASIC_AUTH_PASS from Vault apps/victoria-metrics
+_hostname.env              # HOSTNAME=<this-host>
+alloy-secret.env           # LOKI_AUTH_USERNAME=... VM_AUTH_USERNAME=...
+beszel-agent-secret.env    # KEY=ssh-ed25519 <public-key-from-beszel-hub> PORT=45876
+watchtower-secret.env      # WATCHTOWER_NOTIFICATION_URL=... WATCHTOWER_NOTIFICATION_TOKEN=...
+secrets/loki-password                # plaintext BASIC_AUTH_PASS from Vault apps/loki
+secrets/victoria-metrics-password    # plaintext BASIC_AUTH_PASS from Vault apps/victoria-metrics
 ```
 
 ## Vault secrets
