@@ -85,7 +85,7 @@ spec:
             uid: loki
             type: loki
             access: proxy
-            url: http://loki-gateway.gossip-stone.svc.cluster.local:80
+            url: http://loki.gossip-stone.svc.cluster.local:3100
             editable: false
             jsonData:
               maxLines: 1000
