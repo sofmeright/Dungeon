@@ -121,8 +121,15 @@ configs:
         host = "unix:///var/run/docker.sock"
       }
 
+      loki.source.docker "containers" {
+        host       = "unix:///var/run/docker.sock"
+        targets    = discovery.docker.containers.targets
+        forward_to = [loki.write.k8s.receiver]
+        relabel_rules = discovery.relabel.docker_labels.rules
+      }
+
       discovery.relabel "docker_labels" {
-        targets = discovery.docker.containers.targets
+        targets = []
 
         rule {
           source_labels = ["__meta_docker_container_name"]
@@ -141,12 +148,6 @@ configs:
           source_labels = ["__meta_docker_container_label_org_opencontainers_image_title"]
           target_label  = "image_name"
         }
-      }
-
-      loki.source.docker "containers" {
-        host       = "unix:///var/run/docker.sock"
-        targets    = discovery.relabel.docker_labels.output
-        forward_to = [loki.write.k8s.receiver]
       }
 
       loki.write "k8s" {
