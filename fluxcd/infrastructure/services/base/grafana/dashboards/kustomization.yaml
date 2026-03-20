@@ -14,8 +14,8 @@ configMapGenerator:
       - kubernetes-views-nodes.json
       - kubernetes-views-pods.json
       - prometheus.json
-      - trivy-operator-vulnerabilities.json
-      - truenas-scale-temperature-overview.json
+      - trivy-operator_vulnerabilities.json
+      - truenas-scale-temperature_overview.json
 
 generatorOptions:
   disableNameSuffixHash: true

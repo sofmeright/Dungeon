@@ -121,9 +121,31 @@ configs:
         host = "unix:///var/run/docker.sock"
       }
 
+      discovery.relabel "docker_labels" {
+        targets = discovery.docker.containers.targets
+
+        rule {
+          source_labels = ["__meta_docker_container_name"]
+          regex         = "/(.*)"
+          target_label  = "container"
+        }
+        rule {
+          source_labels = ["__meta_docker_container_label_com_docker_compose_service"]
+          target_label  = "compose_service"
+        }
+        rule {
+          source_labels = ["__meta_docker_container_label_com_docker_compose_project"]
+          target_label  = "compose_project"
+        }
+        rule {
+          source_labels = ["__meta_docker_container_label_org_opencontainers_image_title"]
+          target_label  = "image_name"
+        }
+      }
+
       loki.source.docker "containers" {
         host       = "unix:///var/run/docker.sock"
-        targets    = discovery.docker.containers.targets
+        targets    = discovery.relabel.docker_labels.output
         forward_to = [loki.write.k8s.receiver]
       }
 
