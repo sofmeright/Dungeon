@@ -1,0 +1,1983 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "target": {
+          "limit": 100,
+          "matchAny": false,
+          "tags": [],
+          "type": "dashboard"
+        },
+        "type": "dashboard"
+      }
+    ]
+  },
+  "description": "Basic docker dashboard for InfluxDB 2.x and telegraf collector.",
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": 35,
+  "links": [],
+  "panels": [
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 13,
+      "panels": [],
+      "repeat": "engine_host",
+      "title": "Host Details $engine_host",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "xxxxxxxxx"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              }
+            ]
+          },
+          "unit": "none"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 3,
+        "x": 0,
+        "y": 1
+      },
+      "id": 8,
+      "options": {
+        "colorMode": "none",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": true
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "12.0.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "xxxxxxxxx"
+          },
+          "query": "from(bucket: \"${bucket}\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"docker\")\n  |> filter(fn: (r) => r[\"_field\"] == \"n_cpus\")\n  |> filter(fn: (r) => r[\"engine_host\"] =~ /${engine_host:regex}/)\n  |> last()\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"mean\")",
+          "refId": "A"
+        }
+      ],
+      "title": "Total Cpus",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "xxxxxxxxx"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              }
+            ]
+          },
+          "unit": "decbytes"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 3,
+        "x": 3,
+        "y": 1
+      },
+      "id": 7,
+      "options": {
+        "colorMode": "none",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": true
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "12.0.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "xxxxxxxxx"
+          },
+          "query": "from(bucket: \"${bucket}\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"docker\")\n  |> filter(fn: (r) => r[\"_field\"] == \"memory_total\")\n  |> filter(fn: (r) => r[\"engine_host\"] =~ /${engine_host:regex}/)\n  |> last()\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"mean\")",
+          "refId": "A"
+        }
+      ],
+      "title": "Total Memory",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "xxxxxxxxx"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 3,
+        "x": 6,
+        "y": 1
+      },
+      "id": 4,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": true
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "12.0.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "xxxxxxxxx"
+          },
+          "query": "from(bucket: \"${bucket}\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"docker\")\n  |> filter(fn: (r) => r[\"_field\"] == \"n_containers_running\")\n  |> filter(fn: (r) => r[\"engine_host\"] =~ /${engine_host:regex}/)\n  |> last()\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"mean\")",
+          "refId": "A"
+        }
+      ],
+      "title": "Running Containers",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "xxxxxxxxx"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "orange"
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 3,
+        "x": 9,
+        "y": 1
+      },
+      "id": 5,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": true
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "12.0.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "xxxxxxxxx"
+          },
+          "query": "from(bucket: \"${bucket}\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"docker\")\n  |> filter(fn: (r) => r[\"_field\"] == \"n_containers_paused\")\n  |> filter(fn: (r) => r[\"engine_host\"] =~ /${engine_host:regex}/)\n  |> last()\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"mean\")",
+          "refId": "A"
+        }
+      ],
+      "title": "Paused Containers",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "xxxxxxxxx"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red"
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 3,
+        "x": 12,
+        "y": 1
+      },
+      "id": 6,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": true
+        },
+        "showPercentChange": false,
+        "text": {},
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "12.0.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "xxxxxxxxx"
+          },
+          "query": "from(bucket: \"${bucket}\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"docker\")\n  |> filter(fn: (r) => r[\"_field\"] == \"n_containers_stopped\")\n  |> filter(fn: (r) => r[\"engine_host\"] =~ /${engine_host:regex}/)\n  |> last()\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"mean\")",
+          "refId": "A"
+        }
+      ],
+      "title": "Stopped Containers",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "xxxxxxxxx"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              }
+            ]
+          },
+          "unit": "none"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 3,
+        "x": 15,
+        "y": 1
+      },
+      "id": 11,
+      "options": {
+        "colorMode": "none",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": true
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "12.0.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "xxxxxxxxx"
+          },
+          "query": "from(bucket: \"${bucket}\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"docker\")\n  |> filter(fn: (r) => r[\"_field\"] == \"n_images\")\n  |> filter(fn: (r) => r[\"engine_host\"] =~ /${engine_host:regex}/)\n  |> last()\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"mean\")",
+          "refId": "A"
+        }
+      ],
+      "title": "Images",
+      "type": "stat"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 6
+      },
+      "id": 25,
+      "panels": [],
+      "title": "Container Details",
+      "type": "row"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "xxxxxxxxx"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "displayName": "${__field.labels.engine_host} ${__field.labels.container_name}",
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "percent"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 12,
+        "x": 0,
+        "y": 7
+      },
+      "id": 2,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": false
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "pluginVersion": "12.0.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "xxxxxxxxx"
+          },
+          "query": "from(bucket: \"${bucket}\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"docker_container_cpu\")\n  |> filter(fn: (r) => r[\"_field\"] == \"usage_percent\")\n  |> filter(fn: (r) => r[\"container_name\"] =~ /${container:regex}/)\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"mean\")",
+          "refId": "A"
+        }
+      ],
+      "title": "Cpu Usage",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "xxxxxxxxx"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "normal"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "displayName": "${__field.labels.engine_host} ${__field.labels.container_name}",
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "bytes"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 12,
+        "x": 12,
+        "y": 7
+      },
+      "id": 10,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": false
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "pluginVersion": "12.0.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "xxxxxxxxx"
+          },
+          "query": "from(bucket: \"${bucket}\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"docker_container_mem\")\n  |> filter(fn: (r) => r[\"_field\"] == \"usage\")\n  |> filter(fn: (r) => r[\"container_name\"] =~ /${container:regex}/)\n  |> truncateTimeColumn(unit: 10s)\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"mean\")",
+          "refId": "A"
+        }
+      ],
+      "title": "Memory Usage",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "xxxxxxxxx"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "displayName": "${__field.labels.engine_host} ${__field.labels.container_name}:${__field.name}",
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "bytes"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 12,
+        "x": 0,
+        "y": 17
+      },
+      "id": 9,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": false
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "pluginVersion": "12.0.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "xxxxxxxxx"
+          },
+          "query": "from(bucket: \"${bucket}\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"docker_container_blkio\")\n  |> filter(fn: (r) => r[\"_field\"] == \"io_service_bytes_recursive_read\")\n  |> filter(fn: (r) => r[\"container_name\"] =~ /${container:regex}/)\n  |> map(fn: (r) => ({ r with _value: r._value * -1 }))\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> truncateTimeColumn(unit: 10s)\n  |> derivative(unit: 10s)\n  |> yield(name: \"derivative\")\n",
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "xxxxxxxxx"
+          },
+          "hide": false,
+          "query": "from(bucket: \"${bucket}\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"docker_container_blkio\")\n  |> filter(fn: (r) => r[\"_field\"] == \"io_service_bytes_recursive_write\")\n  |> filter(fn: (r) => r[\"container_name\"] =~ /${container:regex}/)\n  |> filter(fn: (r) => r[\"engine_host\"] == \"${engine_host}\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> truncateTimeColumn(unit: 10s)\n  |> derivative(unit: 10s)\n  |> yield(name: \"derivative\")\n",
+          "refId": "B"
+        }
+      ],
+      "title": "Disk Usage",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "xxxxxxxxx"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "displayName": "${__field.labels.engine_host} ${__field.labels.container_name}:${__field.name}",
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "bytes"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 12,
+        "x": 12,
+        "y": 17
+      },
+      "id": 12,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "right",
+          "showLegend": false
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "multi",
+          "sort": "desc"
+        }
+      },
+      "pluginVersion": "12.0.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "xxxxxxxxx"
+          },
+          "query": "from(bucket: \"${bucket}\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"docker_container_net\")\n  |> filter(fn: (r) => r[\"_field\"] == \"tx_bytes\")\n  |> filter(fn: (r) => r[\"container_name\"] =~ /${container:regex}/)\n  |> map(fn: (r) => ({ r with _value: r._value * -1 }))\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> truncateTimeColumn(unit: 10s)\n  |> derivative(unit: 10s)\n  |> yield(name: \"mean\")\n",
+          "refId": "A"
+        },
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "xxxxxxxxx"
+          },
+          "hide": false,
+          "query": "from(bucket: \"${bucket}\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"docker_container_net\")\n  |> filter(fn: (r) => r[\"_field\"] == \"rx_bytes\")\n  |> filter(fn: (r) => r[\"container_name\"] =~ /${container:regex}/)\n  |> filter(fn: (r) => r[\"engine_host\"] == \"${engine_host}\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> truncateTimeColumn(unit: 10s)\n  |> derivative(unit: 10s)\n  |> yield(name: \"mean\")\n",
+          "refId": "B"
+        }
+      ],
+      "title": "Network Usage",
+      "type": "timeseries"
+    }
+  ],
+  "preload": false,
+  "refresh": "",
+  "schemaVersion": 41,
+  "tags": [
+    "docker",
+    "influxdb2.0",
+    "relevant"
+  ],
+  "templating": {
+    "list": [
+      {
+        "current": {
+          "text": "docker",
+          "value": "docker"
+        },
+        "datasource": {
+          "type": "influxdb",
+          "uid": "xxxxxxxxx"
+        },
+        "definition": "buckets()",
+        "includeAll": false,
+        "name": "bucket",
+        "options": [],
+        "query": "buckets()",
+        "refresh": 1,
+        "regex": "",
+        "type": "query"
+      },
+      {
+        "current": {
+          "text": "All",
+          "value": "$__all"
+        },
+        "datasource": {
+          "type": "influxdb",
+          "uid": "xxxxxxxxx"
+        },
+        "definition": "import \"influxdata/influxdb/schema\"\nschema.tagValues(\n  bucket: \"docker\",\n  tag: \"engine_host\",\n  start: v.timeRangeStart\n)",
+        "description": "engine_host",
+        "includeAll": true,
+        "label": "host",
+        "name": "engine_host",
+        "options": [],
+        "query": {
+          "0": " ",
+          "1": "f",
+          "2": "r",
+          "3": "o",
+          "4": "m",
+          "5": "(",
+          "6": "b",
+          "7": "u",
+          "8": "c",
+          "9": "k",
+          "10": "e",
+          "11": "t",
+          "12": ":",
+          "13": " ",
+          "14": "\"",
+          "15": "d",
+          "16": "o",
+          "17": "c",
+          "18": "k",
+          "19": "e",
+          "20": "r",
+          "21": "\"",
+          "22": ")",
+          "23": "\n",
+          "24": "|",
+          "25": ">",
+          "26": " ",
+          "27": "r",
+          "28": "a",
+          "29": "n",
+          "30": "g",
+          "31": "e",
+          "32": "(",
+          "33": "s",
+          "34": "t",
+          "35": "a",
+          "36": "r",
+          "37": "t",
+          "38": ":",
+          "39": " ",
+          "40": "v",
+          "41": ".",
+          "42": "t",
+          "43": "i",
+          "44": "m",
+          "45": "e",
+          "46": "R",
+          "47": "a",
+          "48": "n",
+          "49": "g",
+          "50": "e",
+          "51": "S",
+          "52": "t",
+          "53": "a",
+          "54": "r",
+          "55": "t",
+          "56": ",",
+          "57": " ",
+          "58": "s",
+          "59": "t",
+          "60": "o",
+          "61": "p",
+          "62": ":",
+          "63": " ",
+          "64": "v",
+          "65": ".",
+          "66": "t",
+          "67": "i",
+          "68": "m",
+          "69": "e",
+          "70": "R",
+          "71": "a",
+          "72": "n",
+          "73": "g",
+          "74": "e",
+          "75": "S",
+          "76": "t",
+          "77": "o",
+          "78": "p",
+          "79": ")",
+          "80": "\n",
+          "81": "|",
+          "82": ">",
+          "83": " ",
+          "84": "f",
+          "85": "i",
+          "86": "l",
+          "87": "t",
+          "88": "e",
+          "89": "r",
+          "90": "(",
+          "91": "f",
+          "92": "n",
+          "93": ":",
+          "94": " ",
+          "95": "(",
+          "96": "r",
+          "97": ")",
+          "98": " ",
+          "99": "=",
+          "100": ">",
+          "101": " ",
+          "102": "e",
+          "103": "x",
+          "104": "i",
+          "105": "s",
+          "106": "t",
+          "107": "s",
+          "108": " ",
+          "109": "r",
+          "110": ".",
+          "111": "e",
+          "112": "n",
+          "113": "g",
+          "114": "i",
+          "115": "n",
+          "116": "e",
+          "117": "_",
+          "118": "h",
+          "119": "o",
+          "120": "s",
+          "121": "t",
+          "122": ")",
+          "123": "\n",
+          "124": "|",
+          "125": ">",
+          "126": " ",
+          "127": "k",
+          "128": "e",
+          "129": "y",
+          "130": "V",
+          "131": "a",
+          "132": "l",
+          "133": "u",
+          "134": "e",
+          "135": "s",
+          "136": "(",
+          "137": "k",
+          "138": "e",
+          "139": "y",
+          "140": "C",
+          "141": "o",
+          "142": "l",
+          "143": "u",
+          "144": "m",
+          "145": "n",
+          "146": "s",
+          "147": ":",
+          "148": " ",
+          "149": "[",
+          "150": "\"",
+          "151": "_",
+          "152": "f",
+          "153": "i",
+          "154": "e",
+          "155": "l",
+          "156": "d",
+          "157": "\"",
+          "158": ",",
+          "159": " ",
+          "160": "\"",
+          "161": "e",
+          "162": "n",
+          "163": "g",
+          "164": "i",
+          "165": "n",
+          "166": "e",
+          "167": "_",
+          "168": "h",
+          "169": "o",
+          "170": "s",
+          "171": "t",
+          "172": "\"",
+          "173": "]",
+          "174": ")",
+          "175": "\n",
+          "176": "|",
+          "177": ">",
+          "178": " ",
+          "179": "g",
+          "180": "r",
+          "181": "o",
+          "182": "u",
+          "183": "p",
+          "184": "(",
+          "185": ")",
+          "186": "\n",
+          "187": "|",
+          "188": ">",
+          "189": " ",
+          "190": "k",
+          "191": "e",
+          "192": "e",
+          "193": "p",
+          "194": "(",
+          "195": "c",
+          "196": "o",
+          "197": "l",
+          "198": "u",
+          "199": "m",
+          "200": "n",
+          "201": "s",
+          "202": ":",
+          "203": " ",
+          "204": "[",
+          "205": "\"",
+          "206": "e",
+          "207": "n",
+          "208": "g",
+          "209": "i",
+          "210": "n",
+          "211": "e",
+          "212": "_",
+          "213": "h",
+          "214": "o",
+          "215": "s",
+          "216": "t",
+          "217": "\"",
+          "218": "]",
+          "219": ")",
+          "220": "\n",
+          "221": "|",
+          "222": ">",
+          "223": " ",
+          "224": "d",
+          "225": "i",
+          "226": "s",
+          "227": "t",
+          "228": "i",
+          "229": "n",
+          "230": "c",
+          "231": "t",
+          "232": "(",
+          "233": "c",
+          "234": "o",
+          "235": "l",
+          "236": "u",
+          "237": "m",
+          "238": "n",
+          "239": ":",
+          "240": " ",
+          "241": "\"",
+          "242": "e",
+          "243": "n",
+          "244": "g",
+          "245": "i",
+          "246": "n",
+          "247": "e",
+          "248": "_",
+          "249": "h",
+          "250": "o",
+          "251": "s",
+          "252": "t",
+          "253": "\"",
+          "254": ")",
+          "query": "import \"influxdata/influxdb/schema\"\nschema.tagValues(\n  bucket: \"docker\",\n  tag: \"engine_host\",\n  start: v.timeRangeStart\n)"
+        },
+        "refresh": 1,
+        "regex": "",
+        "type": "query"
+      },
+      {
+        "current": {
+          "text": "/^$/ or r[\"com.docker.compose.project\"] =~ /()/",
+          "value": "/^$/ or r[\"com.docker.compose.project\"] =~ /()/"
+        },
+        "includeAll": false,
+        "name": "IncludeNonStack",
+        "options": [
+          {
+            "selected": false,
+            "text": "Stack",
+            "value": "/()/"
+          },
+          {
+            "selected": false,
+            "text": "NonStack",
+            "value": "/^$/"
+          },
+          {
+            "selected": true,
+            "text": "All",
+            "value": "/^$/ or r[\"com.docker.compose.project\"] =~ /()/"
+          }
+        ],
+        "query": "Stack : /${project_stack:regex}/ , NonStack :  /^$/ , All :   /^$/ or r[\"com.docker.compose.project\"] =~ /${project_stack:regex}/",
+        "type": "custom"
+      },
+      {
+        "current": {
+          "text": [
+            "All"
+          ],
+          "value": [
+            "$__all"
+          ]
+        },
+        "datasource": {
+          "type": "influxdb",
+          "uid": "xxxxxxxxx"
+        },
+        "definition": "import \"influxdata/influxdb/schema\"\nschema.tagValues(\n\tbucket: \"${bucket}\",\n\ttag: \"com.docker.compose.project\",\n  predicate: (r) => r[\"engine_host\"] =~ /${engine_host:regex}/,\n  start: v.timeRangeStart\n)",
+        "description": "com.docker.compose.project",
+        "includeAll": true,
+        "label": "stack",
+        "multi": true,
+        "name": "project_stack",
+        "options": [],
+        "query": {
+          "0": " ",
+          "1": "f",
+          "2": "r",
+          "3": "o",
+          "4": "m",
+          "5": "(",
+          "6": "b",
+          "7": "u",
+          "8": "c",
+          "9": "k",
+          "10": "e",
+          "11": "t",
+          "12": ":",
+          "13": " ",
+          "14": "\"",
+          "15": "d",
+          "16": "o",
+          "17": "c",
+          "18": "k",
+          "19": "e",
+          "20": "r",
+          "21": "\"",
+          "22": ")",
+          "23": "\n",
+          "24": "|",
+          "25": ">",
+          "26": " ",
+          "27": "r",
+          "28": "a",
+          "29": "n",
+          "30": "g",
+          "31": "e",
+          "32": "(",
+          "33": "s",
+          "34": "t",
+          "35": "a",
+          "36": "r",
+          "37": "t",
+          "38": ":",
+          "39": " ",
+          "40": "v",
+          "41": ".",
+          "42": "t",
+          "43": "i",
+          "44": "m",
+          "45": "e",
+          "46": "R",
+          "47": "a",
+          "48": "n",
+          "49": "g",
+          "50": "e",
+          "51": "S",
+          "52": "t",
+          "53": "a",
+          "54": "r",
+          "55": "t",
+          "56": ",",
+          "57": " ",
+          "58": "s",
+          "59": "t",
+          "60": "o",
+          "61": "p",
+          "62": ":",
+          "63": " ",
+          "64": "v",
+          "65": ".",
+          "66": "t",
+          "67": "i",
+          "68": "m",
+          "69": "e",
+          "70": "R",
+          "71": "a",
+          "72": "n",
+          "73": "g",
+          "74": "e",
+          "75": "S",
+          "76": "t",
+          "77": "o",
+          "78": "p",
+          "79": ")",
+          "80": "\n",
+          "81": "|",
+          "82": ">",
+          "83": " ",
+          "84": "f",
+          "85": "i",
+          "86": "l",
+          "87": "t",
+          "88": "e",
+          "89": "r",
+          "90": "(",
+          "91": "f",
+          "92": "n",
+          "93": ":",
+          "94": " ",
+          "95": "(",
+          "96": "r",
+          "97": ")",
+          "98": " ",
+          "99": "=",
+          "100": ">",
+          "101": " ",
+          "102": "r",
+          "103": "[",
+          "104": "\"",
+          "105": "e",
+          "106": "n",
+          "107": "g",
+          "108": "i",
+          "109": "n",
+          "110": "e",
+          "111": "_",
+          "112": "h",
+          "113": "o",
+          "114": "s",
+          "115": "t",
+          "116": "\"",
+          "117": "]",
+          "118": " ",
+          "119": "=",
+          "120": "~",
+          "121": " ",
+          "122": "/",
+          "123": "$",
+          "124": "{",
+          "125": "e",
+          "126": "n",
+          "127": "g",
+          "128": "i",
+          "129": "n",
+          "130": "e",
+          "131": "_",
+          "132": "h",
+          "133": "o",
+          "134": "s",
+          "135": "t",
+          "136": ":",
+          "137": "r",
+          "138": "e",
+          "139": "g",
+          "140": "e",
+          "141": "x",
+          "142": "}",
+          "143": "/",
+          "144": ")",
+          "145": "\n",
+          "146": "|",
+          "147": ">",
+          "148": " ",
+          "149": "f",
+          "150": "i",
+          "151": "l",
+          "152": "t",
+          "153": "e",
+          "154": "r",
+          "155": "(",
+          "156": "f",
+          "157": "n",
+          "158": ":",
+          "159": " ",
+          "160": "(",
+          "161": "r",
+          "162": ")",
+          "163": " ",
+          "164": "=",
+          "165": ">",
+          "166": " ",
+          "167": "r",
+          "168": "[",
+          "169": "\"",
+          "170": "e",
+          "171": "n",
+          "172": "c",
+          "173": "o",
+          "174": "m",
+          "175": ".",
+          "176": "d",
+          "177": "o",
+          "178": "c",
+          "179": "k",
+          "180": "e",
+          "181": "r",
+          "182": ".",
+          "183": "c",
+          "184": "o",
+          "185": "m",
+          "186": "p",
+          "187": "o",
+          "188": "s",
+          "189": "e",
+          "190": ".",
+          "191": "p",
+          "192": "r",
+          "193": "o",
+          "194": "j",
+          "195": "e",
+          "196": "c",
+          "197": "t",
+          "198": "g",
+          "199": "i",
+          "200": "n",
+          "201": "e",
+          "202": "_",
+          "203": "h",
+          "204": "o",
+          "205": "s",
+          "206": "t",
+          "207": "\"",
+          "208": "]",
+          "209": " ",
+          "210": "=",
+          "211": "~",
+          "212": " ",
+          "213": "/",
+          "214": "\\",
+          "215": "w",
+          "216": "*",
+          "217": "/",
+          "218": ")",
+          "219": "\n",
+          "220": "|",
+          "221": ">",
+          "222": " ",
+          "223": "k",
+          "224": "e",
+          "225": "y",
+          "226": "V",
+          "227": "a",
+          "228": "l",
+          "229": "u",
+          "230": "e",
+          "231": "s",
+          "232": "(",
+          "233": "k",
+          "234": "e",
+          "235": "y",
+          "236": "C",
+          "237": "o",
+          "238": "l",
+          "239": "u",
+          "240": "m",
+          "241": "n",
+          "242": "s",
+          "243": ":",
+          "244": " ",
+          "245": "[",
+          "246": "\"",
+          "247": "_",
+          "248": "f",
+          "249": "i",
+          "250": "e",
+          "251": "l",
+          "252": "d",
+          "253": "\"",
+          "254": ",",
+          "255": " ",
+          "256": "\"",
+          "257": "c",
+          "258": "o",
+          "259": "m",
+          "260": ".",
+          "261": "d",
+          "262": "o",
+          "263": "c",
+          "264": "k",
+          "265": "e",
+          "266": "r",
+          "267": ".",
+          "268": "c",
+          "269": "o",
+          "270": "m",
+          "271": "p",
+          "272": "o",
+          "273": "s",
+          "274": "e",
+          "275": ".",
+          "276": "p",
+          "277": "r",
+          "278": "o",
+          "279": "j",
+          "280": "e",
+          "281": "c",
+          "282": "t",
+          "283": "\"",
+          "284": "]",
+          "285": ")",
+          "286": "\n",
+          "287": "|",
+          "288": ">",
+          "289": " ",
+          "290": "g",
+          "291": "r",
+          "292": "o",
+          "293": "u",
+          "294": "p",
+          "295": "(",
+          "296": ")",
+          "297": "\n",
+          "298": "|",
+          "299": ">",
+          "300": " ",
+          "301": "k",
+          "302": "e",
+          "303": "e",
+          "304": "p",
+          "305": "(",
+          "306": "c",
+          "307": "o",
+          "308": "l",
+          "309": "u",
+          "310": "m",
+          "311": "n",
+          "312": "s",
+          "313": ":",
+          "314": " ",
+          "315": "[",
+          "316": "\"",
+          "317": "c",
+          "318": "o",
+          "319": "m",
+          "320": ".",
+          "321": "d",
+          "322": "o",
+          "323": "c",
+          "324": "k",
+          "325": "e",
+          "326": "r",
+          "327": ".",
+          "328": "c",
+          "329": "o",
+          "330": "m",
+          "331": "p",
+          "332": "o",
+          "333": "s",
+          "334": "e",
+          "335": ".",
+          "336": "p",
+          "337": "r",
+          "338": "o",
+          "339": "j",
+          "340": "e",
+          "341": "c",
+          "342": "t",
+          "343": "\"",
+          "344": "]",
+          "345": ")",
+          "346": "\n",
+          "347": "|",
+          "348": ">",
+          "349": " ",
+          "350": "d",
+          "351": "i",
+          "352": "s",
+          "353": "t",
+          "354": "i",
+          "355": "n",
+          "356": "c",
+          "357": "t",
+          "358": "(",
+          "359": "c",
+          "360": "o",
+          "361": "l",
+          "362": "u",
+          "363": "m",
+          "364": "n",
+          "365": ":",
+          "366": " ",
+          "367": "\"",
+          "368": "c",
+          "369": "o",
+          "370": "m",
+          "371": ".",
+          "372": "d",
+          "373": "o",
+          "374": "c",
+          "375": "k",
+          "376": "e",
+          "377": "r",
+          "378": ".",
+          "379": "c",
+          "380": "o",
+          "381": "m",
+          "382": "p",
+          "383": "o",
+          "384": "s",
+          "385": "e",
+          "386": ".",
+          "387": "p",
+          "388": "r",
+          "389": "o",
+          "390": "j",
+          "391": "e",
+          "392": "c",
+          "393": "t",
+          "394": "\"",
+          "395": ")",
+          "query": "import \"influxdata/influxdb/schema\"\nschema.tagValues(\n\tbucket: \"${bucket}\",\n\ttag: \"com.docker.compose.project\",\n  predicate: (r) => r[\"engine_host\"] =~ /${engine_host:regex}/,\n  start: v.timeRangeStart\n)"
+        },
+        "refresh": 2,
+        "regex": "",
+        "sort": 3,
+        "type": "query"
+      },
+      {
+        "current": {
+          "text": [
+            "All"
+          ],
+          "value": [
+            "$__all"
+          ]
+        },
+        "datasource": {
+          "type": "influxdb",
+          "uid": "xxxxxxxxx"
+        },
+        "definition": "import \"influxdata/influxdb/schema\"\nschema.tagValues(\n\tbucket: \"${bucket}\",\n\ttag: \"container_name\",\n  predicate: (r) => r[\"engine_host\"] =~ /${engine_host:regex}/ and r[\"com.docker.compose.project\"] =~ ${IncludeNonStack},\n  start: v.timeRangeStart\n\t)\n\t",
+        "includeAll": true,
+        "multi": true,
+        "name": "container",
+        "options": [],
+        "query": {
+          "0": " ",
+          "1": "f",
+          "2": "r",
+          "3": "o",
+          "4": "m",
+          "5": "(",
+          "6": "b",
+          "7": "u",
+          "8": "c",
+          "9": "k",
+          "10": "e",
+          "11": "t",
+          "12": ":",
+          "13": " ",
+          "14": "\"",
+          "15": "$",
+          "16": "{",
+          "17": "b",
+          "18": "u",
+          "19": "c",
+          "20": "k",
+          "21": "e",
+          "22": "t",
+          "23": "}",
+          "24": "\"",
+          "25": ")",
+          "26": "\n",
+          "27": "|",
+          "28": ">",
+          "29": " ",
+          "30": "r",
+          "31": "a",
+          "32": "n",
+          "33": "g",
+          "34": "e",
+          "35": "(",
+          "36": "s",
+          "37": "t",
+          "38": "a",
+          "39": "r",
+          "40": "t",
+          "41": ":",
+          "42": " ",
+          "43": "v",
+          "44": ".",
+          "45": "t",
+          "46": "i",
+          "47": "m",
+          "48": "e",
+          "49": "R",
+          "50": "a",
+          "51": "n",
+          "52": "g",
+          "53": "e",
+          "54": "S",
+          "55": "t",
+          "56": "a",
+          "57": "r",
+          "58": "t",
+          "59": ",",
+          "60": " ",
+          "61": "s",
+          "62": "t",
+          "63": "o",
+          "64": "p",
+          "65": ":",
+          "66": " ",
+          "67": "v",
+          "68": ".",
+          "69": "t",
+          "70": "i",
+          "71": "m",
+          "72": "e",
+          "73": "R",
+          "74": "a",
+          "75": "n",
+          "76": "g",
+          "77": "e",
+          "78": "S",
+          "79": "t",
+          "80": "o",
+          "81": "p",
+          "82": ")",
+          "83": "\n",
+          "84": "|",
+          "85": ">",
+          "86": " ",
+          "87": "f",
+          "88": "i",
+          "89": "l",
+          "90": "t",
+          "91": "e",
+          "92": "r",
+          "93": "(",
+          "94": "f",
+          "95": "n",
+          "96": ":",
+          "97": " ",
+          "98": "(",
+          "99": "r",
+          "100": ")",
+          "101": " ",
+          "102": "=",
+          "103": ">",
+          "104": " ",
+          "105": "r",
+          "106": "[",
+          "107": "\"",
+          "108": "c",
+          "109": "o",
+          "110": "m",
+          "111": ".",
+          "112": "d",
+          "113": "o",
+          "114": "c",
+          "115": "k",
+          "116": "e",
+          "117": "r",
+          "118": ".",
+          "119": "c",
+          "120": "o",
+          "121": "m",
+          "122": "p",
+          "123": "o",
+          "124": "s",
+          "125": "e",
+          "126": ".",
+          "127": "p",
+          "128": "r",
+          "129": "o",
+          "130": "j",
+          "131": "e",
+          "132": "c",
+          "133": "t",
+          "134": "\"",
+          "135": "]",
+          "136": " ",
+          "137": "=",
+          "138": "~",
+          "139": " ",
+          "140": "$",
+          "141": "{",
+          "142": "I",
+          "143": "n",
+          "144": "c",
+          "145": "l",
+          "146": "u",
+          "147": "d",
+          "148": "e",
+          "149": "N",
+          "150": "o",
+          "151": "n",
+          "152": "S",
+          "153": "t",
+          "154": "a",
+          "155": "c",
+          "156": "k",
+          "157": "}",
+          "158": ")",
+          "159": "\n",
+          "160": "|",
+          "161": ">",
+          "162": " ",
+          "163": "f",
+          "164": "i",
+          "165": "l",
+          "166": "t",
+          "167": "e",
+          "168": "r",
+          "169": "(",
+          "170": "f",
+          "171": "n",
+          "172": ":",
+          "173": " ",
+          "174": "(",
+          "175": "r",
+          "176": ")",
+          "177": " ",
+          "178": "=",
+          "179": ">",
+          "180": " ",
+          "181": "r",
+          "182": "[",
+          "183": "\"",
+          "184": "e",
+          "185": "n",
+          "186": "g",
+          "187": "i",
+          "188": "n",
+          "189": "e",
+          "190": "_",
+          "191": "h",
+          "192": "o",
+          "193": "s",
+          "194": "t",
+          "195": "\"",
+          "196": "]",
+          "197": " ",
+          "198": "=",
+          "199": "~",
+          "200": " ",
+          "201": "/",
+          "202": "$",
+          "203": "{",
+          "204": "e",
+          "205": "n",
+          "206": "g",
+          "207": "i",
+          "208": "n",
+          "209": "e",
+          "210": "_",
+          "211": "h",
+          "212": "o",
+          "213": "s",
+          "214": "t",
+          "215": ":",
+          "216": "r",
+          "217": "e",
+          "218": "g",
+          "219": "e",
+          "220": "x",
+          "221": "}",
+          "222": "/",
+          "223": ")",
+          "224": "\n",
+          "225": "|",
+          "226": ">",
+          "227": " ",
+          "228": "k",
+          "229": "e",
+          "230": "y",
+          "231": "V",
+          "232": "a",
+          "233": "l",
+          "234": "u",
+          "235": "e",
+          "236": "s",
+          "237": "(",
+          "238": "k",
+          "239": "e",
+          "240": "y",
+          "241": "C",
+          "242": "o",
+          "243": "l",
+          "244": "u",
+          "245": "m",
+          "246": "n",
+          "247": "s",
+          "248": ":",
+          "249": " ",
+          "250": "[",
+          "251": "\"",
+          "252": "_",
+          "253": "f",
+          "254": "i",
+          "255": "e",
+          "256": "l",
+          "257": "d",
+          "258": "\"",
+          "259": ",",
+          "260": " ",
+          "261": "\"",
+          "262": "c",
+          "263": "o",
+          "264": "n",
+          "265": "t",
+          "266": "a",
+          "267": "i",
+          "268": "n",
+          "269": "e",
+          "270": "r",
+          "271": "_",
+          "272": "n",
+          "273": "a",
+          "274": "m",
+          "275": "e",
+          "276": "\"",
+          "277": "]",
+          "278": ")",
+          "279": "\n",
+          "280": "|",
+          "281": ">",
+          "282": " ",
+          "283": "g",
+          "284": "r",
+          "285": "o",
+          "286": "u",
+          "287": "p",
+          "288": "(",
+          "289": ")",
+          "290": "\n",
+          "291": "|",
+          "292": ">",
+          "293": " ",
+          "294": "k",
+          "295": "e",
+          "296": "e",
+          "297": "p",
+          "298": "(",
+          "299": "c",
+          "300": "o",
+          "301": "l",
+          "302": "u",
+          "303": "m",
+          "304": "n",
+          "305": "s",
+          "306": ":",
+          "307": " ",
+          "308": "[",
+          "309": "\"",
+          "310": "c",
+          "311": "o",
+          "312": "n",
+          "313": "t",
+          "314": "a",
+          "315": "i",
+          "316": "n",
+          "317": "e",
+          "318": "r",
+          "319": "_",
+          "320": "n",
+          "321": "a",
+          "322": "m",
+          "323": "e",
+          "324": "\"",
+          "325": "]",
+          "326": ")",
+          "327": "\n",
+          "328": "|",
+          "329": ">",
+          "330": " ",
+          "331": "d",
+          "332": "i",
+          "333": "s",
+          "334": "t",
+          "335": "i",
+          "336": "n",
+          "337": "c",
+          "338": "t",
+          "339": "(",
+          "340": "c",
+          "341": "o",
+          "342": "l",
+          "343": "u",
+          "344": "m",
+          "345": "n",
+          "346": ":",
+          "347": " ",
+          "348": "\"",
+          "349": "c",
+          "350": "o",
+          "351": "n",
+          "352": "t",
+          "353": "a",
+          "354": "i",
+          "355": "n",
+          "356": "e",
+          "357": "r",
+          "358": "_",
+          "359": "n",
+          "360": "a",
+          "361": "m",
+          "362": "e",
+          "363": "\"",
+          "364": ")",
+          "query": "import \"influxdata/influxdb/schema\"\nschema.tagValues(\n\tbucket: \"${bucket}\",\n\ttag: \"container_name\",\n  predicate: (r) => r[\"engine_host\"] =~ /${engine_host:regex}/ and r[\"com.docker.compose.project\"] =~ ${IncludeNonStack},\n  start: v.timeRangeStart\n\t)\n\t"
+        },
+        "refresh": 1,
+        "regex": "",
+        "sort": 1,
+        "type": "query"
+      }
+    ]
+  },
+  "time": {
+    "from": "now-3h",
+    "to": "now"
+  },
+  "timepicker": {},
+  "timezone": "",
+  "title": "Docker v2",
+  "uid": "YIIzB274z",
+  "version": 2
+}

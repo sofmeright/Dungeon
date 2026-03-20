@@ -1,0 +1,1062 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": 51,
+  "links": [],
+  "panels": [
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "ae7j6yhrko1z4c"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "light-blue"
+              },
+              {
+                "color": "green",
+                "value": 0.25
+              },
+              {
+                "color": "#EAB839",
+                "value": 0.75
+              },
+              {
+                "color": "red",
+                "value": 0.9
+              }
+            ]
+          },
+          "unit": "percentunit"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 6,
+        "x": 0,
+        "y": 0
+      },
+      "id": 11,
+      "options": {
+        "minVizHeight": 75,
+        "minVizWidth": 75,
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true,
+        "sizing": "auto"
+      },
+      "pluginVersion": "12.0.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "ae7j6yhrko1z4c"
+          },
+          "query": "from(bucket: \"cluster\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"cpustat\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"cpu\")\r\n  |> keep(columns: [\"_time\", \"_value\", \"host\"])\r\n  |> last()\r\n  |> yield(name: \"last\")",
+          "refId": "A"
+        }
+      ],
+      "title": "CPU % Usage",
+      "transparent": true,
+      "type": "gauge"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "ae7j6yhrko1z4c"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "decimals": 2,
+          "displayName": "${__field.labels.nodename} ${__field.labels.host} (${__field.labels.type})",
+          "mappings": [],
+          "max": 100,
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "percent"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 12,
+        "x": 6,
+        "y": 0
+      },
+      "id": 8,
+      "options": {
+        "displayMode": "lcd",
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": false
+        },
+        "maxVizHeight": 300,
+        "minVizHeight": 16,
+        "minVizWidth": 8,
+        "namePlacement": "auto",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showUnfilled": true,
+        "sizing": "auto",
+        "tooltip": {
+          "mode": "single"
+        },
+        "valueMode": "color",
+        "valueOptions": {
+          "showValue": true,
+          "valueLabel": "Usage %"
+        }
+      },
+      "pluginVersion": "12.0.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "ae7j6yhrko1z4c"
+          },
+          "query": "from(bucket: \"cluster\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"system\")\n  |> filter(fn: (r) => r[\"_field\"] == \"avail\" or r[\"_field\"] == \"used\")\n  |> filter(fn: (r) => r[\"type\"] != \"pbs\" and r[\"type\"] != \"dir\" and r[\"type\"] != \"nfs\")\n  |> last()\n  |> pivot(rowKey: [\"_time\"], columnKey: [\"_field\"], valueColumn: \"_value\")\n  |> map(fn: (r) => ({\n      r with\n      _time: r._time,\n      _measurement: r._measurement,\n      _field: \"used_perc\",\n      _value: float(v: 100) * float(v: r.used) / (float(v: r.avail) + float(v: r.used))\n  }))\n  |> drop(columns: [\"avail\", \"used\"])",
+          "refId": "A"
+        }
+      ],
+      "title": "Storage Pools",
+      "transparent": true,
+      "type": "bargauge"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "ae7j6yhrko1z4c"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "decimals": 2,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 6,
+        "x": 18,
+        "y": 0
+      },
+      "id": 6,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "tooltip": {
+          "mode": "single"
+        },
+        "wideLayout": true
+      },
+      "pluginVersion": "12.0.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "ae7j6yhrko1z4c"
+          },
+          "query": "from(bucket: \"cluster\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"cpustat\")\n  |> filter(fn: (r) => r[\"_field\"] == \"avg5\")\n  |> keep(columns: [\"_time\", \"_value\", \"host\"])\n  |> last()\n  |> yield(name: \"last\")",
+          "refId": "A"
+        }
+      ],
+      "title": "Load Avg (5m)",
+      "transparent": true,
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "ae7j6yhrko1z4c"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "percentage",
+            "steps": [
+              {
+                "color": "green"
+              }
+            ]
+          },
+          "unit": "bits"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 7,
+        "x": 0,
+        "y": 5
+      },
+      "id": 12,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "12.0.2",
+      "targets": [
+        {
+          "query": "from(bucket: \"cluster\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"memory\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"memused\")\r\n  |> keep(columns: [\"_time\", \"_value\", \"host\"])\r\n  |> last()\r\n  |> yield(name: \"last\")",
+          "refId": "A"
+        }
+      ],
+      "title": "RAM Usage",
+      "transparent": true,
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "ae7j6yhrko1z4c"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "decimals": 2,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "percentunit"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 6,
+        "x": 7,
+        "y": 5
+      },
+      "id": 7,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "tooltip": {
+          "mode": "single"
+        },
+        "wideLayout": true
+      },
+      "pluginVersion": "12.0.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "ae7j6yhrko1z4c"
+          },
+          "query": "from(bucket: \"cluster\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"cpustat\")\n  |> filter(fn: (r) => r[\"_field\"] == \"wait\")\n  |> keep(columns: [\"_time\", \"_value\", \"host\"])\n  |> last()\n  |> yield(name: \"last\")",
+          "refId": "A"
+        }
+      ],
+      "title": "I/O Wait",
+      "transparent": true,
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "ae7j6yhrko1z4c"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "decimals": 2,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 6,
+        "x": 18,
+        "y": 5
+      },
+      "id": 10,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "tooltip": {
+          "mode": "single"
+        },
+        "wideLayout": true
+      },
+      "pluginVersion": "12.0.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "ae7j6yhrko1z4c"
+          },
+          "query": "from(bucket: \"cluster\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"cpustat\")\n  |> filter(fn: (r) => r[\"_field\"] == \"avg15\")\n  |> keep(columns: [\"_time\", \"_value\", \"host\"])\n  |> last()\n  |> yield(name: \"last\")",
+          "refId": "A"
+        }
+      ],
+      "title": "Load Avg (15m)",
+      "transparent": true,
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "ae7j6yhrko1z4c"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "none"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "cpus"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 60
+              },
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "mode": "basic",
+                  "type": "color-background"
+                }
+              },
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "super-light-blue",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "cpu"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 70
+              },
+              {
+                "id": "unit",
+                "value": "percentunit"
+              },
+              {
+                "id": "decimals",
+                "value": 2
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "diskread"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "binbps"
+              },
+              {
+                "id": "custom.width",
+                "value": 90
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "diskwrite"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "binbps"
+              },
+              {
+                "id": "custom.width",
+                "value": 90
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "networkin"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "bps"
+              },
+              {
+                "id": "custom.width",
+                "value": 100
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "networkout"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "bps"
+              },
+              {
+                "id": "custom.width",
+                "value": 100
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "uptime"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "s"
+              },
+              {
+                "id": "custom.width",
+                "value": 109
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "ram_usage_percent"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "percentunit"
+              },
+              {
+                "id": "custom.width",
+                "value": 88
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "status"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 72
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "host"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 162
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "maxmem"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 146
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "mem"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 134
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "nodename"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 130
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 23,
+        "w": 12,
+        "x": 0,
+        "y": 10
+      },
+      "id": 1,
+      "options": {
+        "cellHeight": "sm",
+        "fieldOptions": {
+          "calcs": [
+            "last"
+          ],
+          "defaults": {},
+          "overrides": []
+        },
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "highlight": {
+          "active": true,
+          "rules": [
+            {
+              "color": "rgba(255,0,0,0.3)",
+              "field": "ram_usage_percent",
+              "operator": "gt",
+              "value": 80
+            }
+          ]
+        },
+        "pagination": {
+          "enabled": true,
+          "pageSize": 20
+        },
+        "showHeader": true,
+        "showPagination": true,
+        "sortBy": [
+          {
+            "desc": true,
+            "displayName": "ram_usage_percent"
+          }
+        ]
+      },
+      "pluginVersion": "12.0.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "ae7j6yhrko1z4c"
+          },
+          "query": "// First part: without derivatives\nbaseQuery = from(bucket: \"cluster\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"cpustat\" or r[\"_measurement\"] == \"system\")\n  |> filter(fn: (r) => \n      r[\"_field\"] == \"cpus\" or \n      r[\"_field\"] == \"cpu\" or \n      r[\"_field\"] == \"status\" or \n      r[\"_field\"] == \"uptime\" or \n      r[\"_field\"] == \"maxmem\" or \n      r[\"_field\"] == \"mem\" or \n      r[\"_field\"] == \"maxdisk\" or \n      r[\"_field\"] == \"diskread\" or \n      r[\"_field\"] == \"diskwrite\" or \n      r[\"_field\"] == \"netin\" or \n      r[\"_field\"] == \"netout\"\n    )\n  |> filter(fn: (r) => r[\"object\"] == \"qemu\")  // <-- only VMs here\n\n// Derivative part\nderivativeQuery = baseQuery\n  |> filter(fn: (r) => \n      r[\"_field\"] == \"diskread\" or \n      r[\"_field\"] == \"diskwrite\" or \n      r[\"_field\"] == \"netin\" or \n      r[\"_field\"] == \"netout\"\n    )\n  |> derivative(unit: 1s, nonNegative: true)\n\n// Non-derivative part\nnonDerivativeQuery = baseQuery\n  |> filter(fn: (r) => \n      r[\"_field\"] != \"diskread\" and \n      r[\"_field\"] != \"diskwrite\" and \n      r[\"_field\"] != \"netin\" and \n      r[\"_field\"] != \"netout\"\n    )\n  |> last()\n\n// Combine queries\ncombinedQuery = union(tables: [derivativeQuery, nonDerivativeQuery])\n  |> pivot(rowKey: [\"vmid\"], columnKey: [\"_field\"], valueColumn: \"_value\")\n  |> group(columns: [\"_measurement\"])\n\n// Add ram_usage_percent field separately\nramUsageQuery = combinedQuery\n  |> map(fn: (r) => {\n    r_mem = if exists r.mem then r.mem else 0.0\n    r_maxmem = if exists r.maxmem then r.maxmem else 1.0\n    r_usage = (float(v: r_mem) / float(v: r_maxmem)) * 100.0\n    return { r with ram_usage_percent: r_usage }\n  })\n\n// Final query with yield\nfinalQuery = ramUsageQuery\n  |> keep(columns: [\"host\", \"vmid\", \"nodename\", \"status\", \"uptime\", \"cpus\", \"cpu\", \"maxmem\", \"mem\", \"diskread\", \"diskwrite\", \"ram_usage_percent\"])\n  |> sort(columns: [\"!mem\"])\n  |> yield(name: \"result\")\n",
+          "refId": "A"
+        }
+      ],
+      "title": "VM List",
+      "transparent": true,
+      "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "ae7j6yhrko1z4c"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "none"
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "cpus"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 60
+              },
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "mode": "basic",
+                  "type": "color-background"
+                }
+              },
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "super-light-blue",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "cpu"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 70
+              },
+              {
+                "id": "unit",
+                "value": "percentunit"
+              },
+              {
+                "id": "decimals",
+                "value": 2
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "diskread"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "binbps"
+              },
+              {
+                "id": "custom.width",
+                "value": 90
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "diskwrite"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "binbps"
+              },
+              {
+                "id": "custom.width",
+                "value": 90
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "networkin"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "bps"
+              },
+              {
+                "id": "custom.width",
+                "value": 100
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "networkout"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "bps"
+              },
+              {
+                "id": "custom.width",
+                "value": 100
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "uptime"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "s"
+              },
+              {
+                "id": "custom.width",
+                "value": 106
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "ram_usage_percent"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "percentunit"
+              },
+              {
+                "id": "custom.width",
+                "value": 71
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "status"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 71
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "nodename"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 144
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "mem"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 122
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "maxmem"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 117
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "host"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 246
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 23,
+        "w": 12,
+        "x": 12,
+        "y": 10
+      },
+      "id": 9,
+      "options": {
+        "cellHeight": "sm",
+        "fieldOptions": {
+          "calcs": [
+            "last"
+          ],
+          "defaults": {},
+          "overrides": []
+        },
+        "footer": {
+          "countRows": false,
+          "fields": "",
+          "reducer": [
+            "sum"
+          ],
+          "show": false
+        },
+        "highlight": {
+          "active": true,
+          "rules": [
+            {
+              "color": "rgba(255,0,0,0.3)",
+              "field": "ram_usage_percent",
+              "operator": "gt",
+              "value": 80
+            }
+          ]
+        },
+        "pagination": {
+          "enabled": true,
+          "pageSize": 20
+        },
+        "showHeader": true,
+        "showPagination": true,
+        "sortBy": [
+          {
+            "desc": true,
+            "displayName": "mem"
+          }
+        ]
+      },
+      "pluginVersion": "12.0.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "ae7j6yhrko1z4c"
+          },
+          "query": "// First part: without derivatives\nbaseQuery = from(bucket: \"cluster\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"cpustat\" or r[\"_measurement\"] == \"system\")\n  |> filter(fn: (r) => \n      r[\"_field\"] == \"cpus\" or \n      r[\"_field\"] == \"cpu\" or \n      r[\"_field\"] == \"status\" or \n      r[\"_field\"] == \"uptime\" or \n      r[\"_field\"] == \"maxmem\" or \n      r[\"_field\"] == \"mem\" or \n      r[\"_field\"] == \"maxdisk\" or \n      r[\"_field\"] == \"diskread\" or \n      r[\"_field\"] == \"diskwrite\" or \n      r[\"_field\"] == \"netin\" or \n      r[\"_field\"] == \"netout\"\n    )\n  |> filter(fn: (r) => r[\"object\"] == \"lxc\")  // <-- only VMs here\n\n// Derivative part\nderivativeQuery = baseQuery\n  |> filter(fn: (r) => \n      r[\"_field\"] == \"diskread\" or \n      r[\"_field\"] == \"diskwrite\" or \n      r[\"_field\"] == \"netin\" or \n      r[\"_field\"] == \"netout\"\n    )\n  |> derivative(unit: 1s, nonNegative: true)\n\n// Non-derivative part\nnonDerivativeQuery = baseQuery\n  |> filter(fn: (r) => \n      r[\"_field\"] != \"diskread\" and \n      r[\"_field\"] != \"diskwrite\" and \n      r[\"_field\"] != \"netin\" and \n      r[\"_field\"] != \"netout\"\n    )\n  |> last()\n\n// Combine queries\ncombinedQuery = union(tables: [derivativeQuery, nonDerivativeQuery])\n  |> pivot(rowKey: [\"vmid\"], columnKey: [\"_field\"], valueColumn: \"_value\")\n  |> group(columns: [\"_measurement\"])\n\n// Add ram_usage_percent field separately\nramUsageQuery = combinedQuery\n  |> map(fn: (r) => {\n    r_mem = if exists r.mem then r.mem else 0.0\n    r_maxmem = if exists r.maxmem then r.maxmem else 1.0\n    r_usage = (float(v: r_mem) / float(v: r_maxmem)) * 100.0\n    return { r with ram_usage_percent: r_usage }\n  })\n\n// Final query with yield\nfinalQuery = ramUsageQuery\n  |> keep(columns: [\"host\", \"vmid\", \"nodename\", \"status\", \"uptime\", \"cpus\", \"cpu\", \"maxmem\", \"mem\", \"diskread\", \"diskwrite\", \"ram_usage_percent\"])\n  |> sort(columns: [\"!mem\"])\n  |> yield(name: \"result\")\n",
+          "refId": "A"
+        }
+      ],
+      "title": "LXC List",
+      "transparent": true,
+      "type": "table"
+    }
+  ],
+  "preload": false,
+  "schemaVersion": 41,
+  "tags": [],
+  "templating": {
+    "list": []
+  },
+  "time": {
+    "from": "now-6h",
+    "to": "now"
+  },
+  "timepicker": {},
+  "timezone": "",
+  "title": "Cluster dashboard",
+  "uid": "bemz2g065dz40f",
+  "version": 1
+}
