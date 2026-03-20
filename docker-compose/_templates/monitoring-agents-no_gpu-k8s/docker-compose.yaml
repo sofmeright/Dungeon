@@ -174,7 +174,7 @@ configs:
           job         = "node_exporter",
         }]
         scrape_interval = "30s"
-        scrape_timeout  = "10s"
+        scrape_timeout  = "20s"
         forward_to      = [prometheus.relabel.instance.receiver]
       }
 
