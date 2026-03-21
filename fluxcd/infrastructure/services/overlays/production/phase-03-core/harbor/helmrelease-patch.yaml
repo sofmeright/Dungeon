@@ -104,7 +104,8 @@ spec:
         s3:
           region: us-east-1
           bucket: harbor-registry
-          regionendpoint: https://s3.pcfae.com
+          regionendpoint: http://ceph-rgw.gorons-bracelet.svc.cluster.local
+          forcepathstyle: true
     # Admin password from existing secret
     existingSecretAdminPassword: harbor-secrets
     existingSecretAdminPasswordKey: admin_password
