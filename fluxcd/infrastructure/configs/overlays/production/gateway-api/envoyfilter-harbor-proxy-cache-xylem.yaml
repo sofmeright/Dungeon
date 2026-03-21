@@ -1,0 +1,107 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: EnvoyFilter
+metadata:
+  name: harbor-proxy-cache-xylem
+  namespace: arylls-lookout
+spec:
+  workloadSelector:
+    labels:
+      gateway.networking.k8s.io/gateway-name: xylem-gateway
+  configPatches:
+    - applyTo: HTTP_FILTER
+      match:
+        context: GATEWAY
+        listener:
+          portNumber: 443
+          filterChain:
+            filter:
+              name: envoy.filters.network.http_connection_manager
+              subFilter:
+                name: envoy.filters.http.router
+      patch:
+        operation: INSERT_BEFORE
+        value:
+          name: envoy.filters.http.lua.harbor_proxy_cache
+          typed_config:
+            "@type": type.googleapis.com/envoy.extensions.filters.http.lua.v3.Lua
+            defaultSourceCode:
+              inlineString: |
+                -- Harbor proxy cache transparent registry v2 fixup.
+                --
+                -- Problem: Docker registry v2 auth flow embeds the repository
+                -- path in the token scope. Our HTTPRoute rewrites /v2/<image>
+                -- to /v2/<project>/<image>, but the token was issued for
+                -- <image> not <project>/<image> — scope mismatch.
+                --
+                -- Fix:
+                --   1. On /v2/ ping response: rewrite WWW-Authenticate realm
+                --      to use the proxy-cache subdomain (so token requests
+                --      come back through this filter).
+                --   2. On /service/token request: inject the project prefix
+                --      into the scope query parameter.
+
+                local PROJECT_MAP = {
+                  ["docker.cr.pcfae.com"] = "docker-cache",
+                  ["ghcr.cr.pcfae.com"]   = "ghcr-cache",
+                  ["quay.cr.pcfae.com"]   = "quay-cache",
+                  ["lscr.cr.pcfae.com"]   = "lscr-cache",
+                }
+
+                function envoy_on_request(request_handle)
+                  local host = request_handle:headers():get(":authority")
+                  if not host then return end
+
+                  -- Strip port if present
+                  local hostname = host:match("^([^:]+)")
+                  local project = PROJECT_MAP[hostname]
+                  if not project then return end
+
+                  -- Store hostname in dynamic metadata for response phase
+                  request_handle:streamInfo():dynamicMetadata():set(
+                    "harbor_proxy_cache", "hostname", hostname
+                  )
+
+                  local path = request_handle:headers():get(":path")
+                  if not path then return end
+
+                  -- Rewrite scope in token requests:
+                  -- /service/token?...scope=repository:X:action...
+                  -- becomes
+                  -- /service/token?...scope=repository:<project>/X:action...
+                  if path:find("^/service/token") then
+                    -- Only inject prefix if not already present (avoid double-prefix)
+                    local prefix_pattern = "scope=repository:" .. project .. "/"
+                    if not path:find(prefix_pattern, 1, true) then
+                      local new_path = path:gsub(
+                        "scope=repository:",
+                        "scope=repository:" .. project .. "/"
+                      )
+                      if new_path ~= path then
+                        request_handle:headers():replace(":path", new_path)
+                      end
+                    end
+                  end
+                end
+
+                function envoy_on_response(response_handle)
+                  local meta = response_handle:streamInfo():dynamicMetadata():get(
+                    "harbor_proxy_cache", "hostname"
+                  )
+                  if not meta then return end
+
+                  local hostname = meta
+                  if not PROJECT_MAP[hostname] then return end
+
+                  -- Rewrite WWW-Authenticate realm to use the proxy-cache
+                  -- subdomain so Docker sends token requests back here.
+                  local www_auth = response_handle:headers():get("www-authenticate")
+                  if www_auth then
+                    local new_auth = www_auth:gsub(
+                      'realm="https://cr%.pcfae%.com/',
+                      'realm="https://' .. hostname .. '/'
+                    )
+                    if new_auth ~= www_auth then
+                      response_handle:headers():replace("www-authenticate", new_auth)
+                    end
+                  end
+                end

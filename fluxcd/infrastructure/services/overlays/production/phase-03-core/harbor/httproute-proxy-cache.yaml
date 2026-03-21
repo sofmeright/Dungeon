@@ -1,5 +1,5 @@
 ---
-# Docker Hub proxy cache — all routing handled by nginx proxy
+# Docker Hub proxy cache routes
 apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
 metadata:
@@ -11,11 +11,46 @@ spec:
   hostnames:
     - "docker.cr.pcfae.com"
   rules:
-    - backendRefs:
-        - name: harbor-proxy-cache-proxy
-          port: 8080
+    # Rule 1: Token auth passthrough (must match before /v2/ rewrite)
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /service/
+      backendRefs:
+        - name: harbor
+          port: 80
+    # Rule 2: Registry v2 ping — must NOT be rewritten (Docker auth handshake)
+    - matches:
+        - path:
+            type: Exact
+            value: /v2/
+      backendRefs:
+        - name: harbor
+          port: 80
+    # Rule 3: Catalog passthrough for debugging/tooling
+    - matches:
+        - path:
+            type: Exact
+            value: /v2/_catalog
+      backendRefs:
+        - name: harbor
+          port: 80
+    # Rule 4: Registry API — rewrite /v2/<path> to /v2/docker-cache/<path>
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /v2/
+      filters:
+        - type: URLRewrite
+          urlRewrite:
+            path:
+              type: ReplacePrefixMatch
+              replacePrefixMatch: /v2/docker-cache/
+      backendRefs:
+        - name: harbor
+          port: 80
 ---
-# GitHub Container Registry proxy cache
+# GitHub Container Registry proxy cache routes
 apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
 metadata:
@@ -27,11 +62,42 @@ spec:
   hostnames:
     - "ghcr.cr.pcfae.com"
   rules:
-    - backendRefs:
-        - name: harbor-proxy-cache-proxy
-          port: 8080
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /service/
+      backendRefs:
+        - name: harbor
+          port: 80
+    - matches:
+        - path:
+            type: Exact
+            value: /v2/
+      backendRefs:
+        - name: harbor
+          port: 80
+    - matches:
+        - path:
+            type: Exact
+            value: /v2/_catalog
+      backendRefs:
+        - name: harbor
+          port: 80
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /v2/
+      filters:
+        - type: URLRewrite
+          urlRewrite:
+            path:
+              type: ReplacePrefixMatch
+              replacePrefixMatch: /v2/ghcr-cache/
+      backendRefs:
+        - name: harbor
+          port: 80
 ---
-# Quay.io proxy cache
+# Quay.io proxy cache routes
 apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
 metadata:
@@ -43,11 +109,42 @@ spec:
   hostnames:
     - "quay.cr.pcfae.com"
   rules:
-    - backendRefs:
-        - name: harbor-proxy-cache-proxy
-          port: 8080
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /service/
+      backendRefs:
+        - name: harbor
+          port: 80
+    - matches:
+        - path:
+            type: Exact
+            value: /v2/
+      backendRefs:
+        - name: harbor
+          port: 80
+    - matches:
+        - path:
+            type: Exact
+            value: /v2/_catalog
+      backendRefs:
+        - name: harbor
+          port: 80
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /v2/
+      filters:
+        - type: URLRewrite
+          urlRewrite:
+            path:
+              type: ReplacePrefixMatch
+              replacePrefixMatch: /v2/quay-cache/
+      backendRefs:
+        - name: harbor
+          port: 80
 ---
-# LinuxServer.io proxy cache
+# LinuxServer.io proxy cache routes
 apiVersion: gateway.networking.k8s.io/v1
 kind: HTTPRoute
 metadata:
@@ -59,6 +156,37 @@ spec:
   hostnames:
     - "lscr.cr.pcfae.com"
   rules:
-    - backendRefs:
-        - name: harbor-proxy-cache-proxy
-          port: 8080
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /service/
+      backendRefs:
+        - name: harbor
+          port: 80
+    - matches:
+        - path:
+            type: Exact
+            value: /v2/
+      backendRefs:
+        - name: harbor
+          port: 80
+    - matches:
+        - path:
+            type: Exact
+            value: /v2/_catalog
+      backendRefs:
+        - name: harbor
+          port: 80
+    - matches:
+        - path:
+            type: PathPrefix
+            value: /v2/
+      filters:
+        - type: URLRewrite
+          urlRewrite:
+            path:
+              type: ReplacePrefixMatch
+              replacePrefixMatch: /v2/lscr-cache/
+      backendRefs:
+        - name: harbor
+          port: 80
