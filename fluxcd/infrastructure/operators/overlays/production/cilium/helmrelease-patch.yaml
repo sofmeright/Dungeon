@@ -59,8 +59,8 @@ spec:
     # Also configure routing mode explicitly
     routingMode: native
 
-    # Enable geneve tunnel protocol (required for geneve DSR dispatch)
-    tunnelProtocol: "geneve"
+    # Tunnel protocol disabled - using opt-based DSR dispatch (no encapsulation)
+    tunnelProtocol: ""
 
     # L2 announcements disabled - using BGP instead
     l2announcements:
