@@ -80,6 +80,19 @@ spec:
 apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
+  name: cr-pcfae-com-tls
+spec:
+  secretName: cr-pcfae-com-tls
+  issuerRef:
+    name: letsencrypt-production
+    kind: ClusterIssuer
+  dnsNames:
+    - "*.cr.pcfae.com"
+    - "cr.pcfae.com"
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
   name: sofmeright-com-tls
 spec:
   secretName: sofmeright-com-tls
