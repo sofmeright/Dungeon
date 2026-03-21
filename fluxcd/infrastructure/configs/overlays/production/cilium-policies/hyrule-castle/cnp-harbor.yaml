@@ -1,0 +1,174 @@
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: allow-harbor-nginx-to-core
+spec:
+  description: >-
+    Allow harbor-nginx to reach harbor-core on 8080/TCP.
+  enableDefaultDeny:
+    ingress: false
+    egress: false
+  endpointSelector:
+    matchLabels:
+      app: harbor
+      component: core
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            app: harbor
+            component: nginx
+      toPorts:
+        - ports:
+            - port: "8080"
+              protocol: TCP
+---
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: allow-harbor-nginx-to-registry
+spec:
+  description: >-
+    Allow harbor-nginx to reach harbor-registry on 5000/TCP and 8080/TCP.
+  enableDefaultDeny:
+    ingress: false
+    egress: false
+  endpointSelector:
+    matchLabels:
+      app: harbor
+      component: registry
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            app: harbor
+            component: nginx
+      toPorts:
+        - ports:
+            - port: "5000"
+              protocol: TCP
+            - port: "8080"
+              protocol: TCP
+---
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: allow-harbor-core-to-registry
+spec:
+  description: >-
+    Allow harbor-core to reach harbor-registry on 5000/TCP and 8080/TCP.
+  enableDefaultDeny:
+    ingress: false
+    egress: false
+  endpointSelector:
+    matchLabels:
+      app: harbor
+      component: registry
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            app: harbor
+            component: core
+      toPorts:
+        - ports:
+            - port: "5000"
+              protocol: TCP
+            - port: "8080"
+              protocol: TCP
+---
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: allow-harbor-core-to-jobservice
+spec:
+  description: >-
+    Allow harbor-core to reach harbor-jobservice on 8080/TCP.
+  enableDefaultDeny:
+    ingress: false
+    egress: false
+  endpointSelector:
+    matchLabels:
+      app: harbor
+      component: jobservice
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            app: harbor
+            component: core
+      toPorts:
+        - ports:
+            - port: "8080"
+              protocol: TCP
+---
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: allow-harbor-jobservice-to-core
+spec:
+  description: >-
+    Allow harbor-jobservice to reach harbor-core on 8080/TCP.
+  enableDefaultDeny:
+    ingress: false
+    egress: false
+  endpointSelector:
+    matchLabels:
+      app: harbor
+      component: core
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            app: harbor
+            component: jobservice
+      toPorts:
+        - ports:
+            - port: "8080"
+              protocol: TCP
+---
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: allow-harbor-to-portal
+spec:
+  description: >-
+    Allow harbor-core and harbor-nginx to reach harbor-portal on 8080/TCP.
+  enableDefaultDeny:
+    ingress: false
+    egress: false
+  endpointSelector:
+    matchLabels:
+      app: harbor
+      component: portal
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            app: harbor
+            component: core
+        - matchLabels:
+            app: harbor
+            component: nginx
+      toPorts:
+        - ports:
+            - port: "8080"
+              protocol: TCP
+---
+apiVersion: cilium.io/v2
+kind: CiliumNetworkPolicy
+metadata:
+  name: allow-harbor-portal-to-core
+spec:
+  description: >-
+    Allow harbor-portal to reach harbor-core on 8080/TCP (UI to API).
+  enableDefaultDeny:
+    ingress: false
+    egress: false
+  endpointSelector:
+    matchLabels:
+      app: harbor
+      component: core
+  ingress:
+    - fromEndpoints:
+        - matchLabels:
+            app: harbor
+            component: portal
+      toPorts:
+        - ports:
+            - port: "8080"
+              protocol: TCP

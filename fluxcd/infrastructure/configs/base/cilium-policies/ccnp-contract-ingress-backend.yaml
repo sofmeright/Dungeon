@@ -109,13 +109,15 @@ spec:
               protocol: TCP
             - port: "8443"
               protocol: TCP
+            - port: "8480"
+              protocol: TCP
             - port: "8686"
               protocol: TCP
             - port: "8754"
               protocol: TCP
+        - ports:
             - port: "8787"
               protocol: TCP
-        - ports:
             - port: "8945"
               protocol: TCP
             - port: "8989"
