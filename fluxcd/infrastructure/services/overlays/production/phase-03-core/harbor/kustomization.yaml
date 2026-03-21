@@ -7,6 +7,9 @@ resources:
   - ../../../../base/harbor
   - httproute.yaml
   - httproute-proxy-cache.yaml
+  - proxy-cache-nginx-configmap.yaml
+  - proxy-cache-nginx-deployment.yaml
+  - proxy-cache-nginx-service.yaml
   - externalsecret.yaml
   - postgres-credentials-externalsecret.yaml
   - cephfs-pvs.yaml
