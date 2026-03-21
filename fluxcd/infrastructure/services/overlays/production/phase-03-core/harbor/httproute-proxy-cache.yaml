@@ -19,7 +19,15 @@ spec:
       backendRefs:
         - name: harbor
           port: 80
-    # Rule 2: Catalog passthrough for debugging/tooling
+    # Rule 2: Registry v2 ping — must NOT be rewritten (Docker auth handshake)
+    - matches:
+        - path:
+            type: Exact
+            value: /v2/
+      backendRefs:
+        - name: harbor
+          port: 80
+    # Rule 3: Catalog passthrough for debugging/tooling
     - matches:
         - path:
             type: Exact
@@ -27,7 +35,7 @@ spec:
       backendRefs:
         - name: harbor
           port: 80
-    # Rule 3: Registry API — rewrite /v2/ to /v2/docker-cache/
+    # Rule 4: Registry API — rewrite /v2/<path> to /v2/docker-cache/<path>
     - matches:
         - path:
             type: PathPrefix
@@ -58,6 +66,13 @@ spec:
         - path:
             type: PathPrefix
             value: /service/
+      backendRefs:
+        - name: harbor
+          port: 80
+    - matches:
+        - path:
+            type: Exact
+            value: /v2/
       backendRefs:
         - name: harbor
           port: 80
@@ -104,6 +119,13 @@ spec:
     - matches:
         - path:
             type: Exact
+            value: /v2/
+      backendRefs:
+        - name: harbor
+          port: 80
+    - matches:
+        - path:
+            type: Exact
             value: /v2/_catalog
       backendRefs:
         - name: harbor
@@ -138,6 +160,13 @@ spec:
         - path:
             type: PathPrefix
             value: /service/
+      backendRefs:
+        - name: harbor
+          port: 80
+    - matches:
+        - path:
+            type: Exact
+            value: /v2/
       backendRefs:
         - name: harbor
           port: 80
