@@ -14,6 +14,8 @@ spec:
       labels:
         app: harbor-proxy-cache-proxy
         policy.prplanit.com/ingress: "true"
+      annotations:
+        istio.io/dataplane-mode: none
     spec:
       containers:
         - name: openresty
