@@ -61,23 +61,42 @@ data:
             if args then
               local project = ngx.var.proxy_cache_project
               if project and project ~= "" then
-                -- Handle both plain and URL-encoded scope formats:
-                --   scope=repository:X:action  (curl)
-                --   scope=repository%3AX%3Aaction  (CRI-O, Docker)
-                local prefixed_plain = "scope=repository:" .. project .. "/"
-                local prefixed_encoded = "scope=repository%%3A" .. project .. "%%2F"
+                -- Inject project prefix and library/ for official images.
+                -- Official images have no slash in the name (e.g. "docker", "alpine").
+                -- Namespaced images have a slash (e.g. "prplanit/stagefreight").
+                --
+                -- Plain format:   scope=repository:<image>:<action>
+                -- Encoded format: scope=repository%3A<image>%3A<action>
+
+                local function inject_prefix(s, sep_colon, sep_slash)
+                  local pat = "scope=repository" .. sep_colon
+                  local prefix = project .. sep_slash
+                  -- Skip if already prefixed
+                  if s:find(pat .. prefix, 1, true) then return s end
+                  -- Check if image name is single-component (no slash)
+                  -- e.g. scope=repository:docker:pull → needs library/
+                  -- e.g. scope=repository:prplanit/stagefreight:pull → no library/
+                  local img = s:match(pat .. "([^&]+)")
+                  if img then
+                    -- Count slashes/encoded-slashes in the image+action part
+                    local has_ns = img:find(sep_slash, 1, true)
+                    if has_ns then
+                      -- Namespaced image, just add project prefix
+                      s = s:gsub(pat, pat .. prefix, 1)
+                    else
+                      -- Official image, add project + library/
+                      s = s:gsub(pat, pat .. prefix .. "library" .. sep_slash, 1)
+                    end
+                  end
+                  return s
+                end
+
                 if args:find("scope=repository%%3A") then
-                  -- URL-encoded format
-                  if not args:find(prefixed_encoded, 1, true) then
-                    args = args:gsub("scope=repository%%3A", "scope=repository%%3A" .. project .. "%%2F")
-                    ngx.req.set_uri_args(args)
-                  end
+                  args = inject_prefix(args, "%%3A", "%%2F")
+                  ngx.req.set_uri_args(args)
                 elseif args:find("scope=repository:") then
-                  -- Plain format
-                  if not args:find(prefixed_plain, 1, true) then
-                    args = args:gsub("scope=repository:", "scope=repository:" .. project .. "/")
-                    ngx.req.set_uri_args(args)
-                  end
+                  args = inject_prefix(args, ":", "/")
+                  ngx.req.set_uri_args(args)
                 end
               end
             end
@@ -100,9 +119,32 @@ data:
         }
 
         # Registry API — rewrite /v2/<path> to /v2/<project>/<path>.
+        # Inject library/ prefix for official Docker Hub images (single-name).
         # Fix www-authenticate realm on 401 responses.
         location /v2/ {
-          rewrite ^/v2/(.*)$ /v2/$proxy_cache_project/$1 break;
+          rewrite_by_lua_block {
+            local uri = ngx.var.uri
+            local project = ngx.var.proxy_cache_project
+            if project and project ~= "" then
+              -- Match /v2/<image>/<action> where <image> has no slash
+              -- e.g. /v2/docker/manifests/... → /v2/docker-cache/library/docker/manifests/...
+              -- vs   /v2/prplanit/stagefreight/manifests/... → /v2/docker-cache/prplanit/stagefreight/manifests/...
+              local image, rest = uri:match("^/v2/([^/]+)/(manifests/.+)$")
+              if not image then
+                image, rest = uri:match("^/v2/([^/]+)/(blobs/.+)$")
+              end
+              if image and rest then
+                -- Single-name image (no slash) = official, needs library/ prefix
+                ngx.req.set_uri("/v2/" .. project .. "/library/" .. image .. "/" .. rest)
+              else
+                -- Multi-component path, just prepend project
+                local path = uri:match("^/v2/(.+)$")
+                if path then
+                  ngx.req.set_uri("/v2/" .. project .. "/" .. path)
+                end
+              end
+            end
+          }
 
           proxy_pass $harbor_upstream;
           proxy_set_header Host cr.pcfae.com;
