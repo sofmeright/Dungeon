@@ -16,8 +16,7 @@ spec:
               - "172.16.0.0/12"
               - "192.168.0.0/16"
             notIpBlocks:
-              - "192.168.144.0/20"  # exclude pod CIDR
-              - "172.22.144.0/24"   # exclude node subnet (hairpin SNAT)
+              - "192.168.144.0/20"   # exclude node subnet (hairpin SNAT)
       to:
         - operation:
             ports: ["3478", "10001", "8080", "1900", "8843", "8880", "5514"]
