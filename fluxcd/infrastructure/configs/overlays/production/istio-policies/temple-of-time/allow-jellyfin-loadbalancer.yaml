@@ -19,3 +19,10 @@ spec:
       to:
         - operation:
             ports: ["8096", "8920", "7359", "1900"]
+    - from:
+        - source:
+            principals:
+              - "cluster.local/ns/gossip-stone/sa/gatus"
+      to:
+        - operation:
+            ports: ["8096", "8920", "7359", "1900"]

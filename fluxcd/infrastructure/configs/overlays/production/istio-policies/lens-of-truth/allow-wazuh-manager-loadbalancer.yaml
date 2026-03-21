@@ -19,3 +19,10 @@ spec:
       to:
         - operation:
             ports: ["1514", "1515", "514", "55000"]
+    - from:
+        - source:
+            principals:
+              - "cluster.local/ns/gossip-stone/sa/gatus"
+      to:
+        - operation:
+            ports: ["1514", "1515", "514", "55000"]

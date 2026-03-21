@@ -19,3 +19,10 @@ spec:
       to:
         - operation:
             ports: ["9795"]
+    - from:
+        - source:
+            principals:
+              - "cluster.local/ns/gossip-stone/sa/gatus"
+      to:
+        - operation:
+            ports: ["9795"]
