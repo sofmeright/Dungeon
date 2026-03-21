@@ -69,12 +69,16 @@ spec:
                   -- becomes
                   -- /service/token?...scope=repository:<project>/X:action...
                   if path:find("^/service/token") then
-                    local new_path = path:gsub(
-                      "scope=repository:",
-                      "scope=repository:" .. project .. "/"
-                    )
-                    if new_path ~= path then
-                      request_handle:headers():replace(":path", new_path)
+                    -- Only inject prefix if not already present (avoid double-prefix)
+                    local prefix_pattern = "scope=repository:" .. project .. "/"
+                    if not path:find(prefix_pattern, 1, true) then
+                      local new_path = path:gsub(
+                        "scope=repository:",
+                        "scope=repository:" .. project .. "/"
+                      )
+                      if new_path ~= path then
+                        request_handle:headers():replace(":path", new_path)
+                      end
                     end
                   end
                 end
