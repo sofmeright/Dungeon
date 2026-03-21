@@ -64,21 +64,54 @@ spec:
                   local path = request_handle:headers():get(":path")
                   if not path then return end
 
-                  -- Rewrite scope in token requests:
-                  -- /service/token?...scope=repository:X:action...
-                  -- becomes
-                  -- /service/token?...scope=repository:<project>/X:action...
-                  if path:find("^/service/token") then
-                    -- Only inject prefix if not already present (avoid double-prefix)
-                    local prefix_pattern = "scope=repository:" .. project .. "/"
-                    if not path:find(prefix_pattern, 1, true) then
-                      local new_path = path:gsub(
-                        "scope=repository:",
-                        "scope=repository:" .. project .. "/"
-                      )
-                      if new_path ~= path then
-                        request_handle:headers():replace(":path", new_path)
+                  -- Inject library/ for official Docker Hub images (single-name).
+                  -- /v2/docker/manifests/... → /v2/library/docker/manifests/...
+                  -- /v2/prplanit/stagefreight/manifests/... → unchanged
+                  -- Must run before HTTPRoute adds the project prefix.
+                  if path:match("^/v2/[^/]+/(manifests|blobs|tags)/") then
+                    local image, rest = path:match("^/v2/([^/]+)/(.+)$")
+                    if image and rest then
+                      -- Single-name = no slash in remaining path before action
+                      -- i.e. /v2/docker/manifests/... has image="docker"
+                      -- vs  /v2/prplanit/stagefreight/manifests/... has image="prplanit"
+                      -- Check: does the rest start with an action keyword?
+                      if rest:match("^manifests/") or rest:match("^blobs/") or rest:match("^tags/") then
+                        request_handle:headers():replace(":path", "/v2/library/" .. image .. "/" .. rest)
+                        path = "/v2/library/" .. image .. "/" .. rest
                       end
+                    end
+                  end
+
+                  -- Rewrite scope in token requests:
+                  -- Inject project prefix and library/ for official images.
+                  -- Handles both plain (scope=repository:X:action) and
+                  -- URL-encoded (scope=repository%3AX%3Aaction) formats.
+                  -- Single-name images (no slash) are Docker Hub official
+                  -- and need library/ prefix (e.g. docker → library/docker).
+                  if path:find("^/service/token") then
+                    local function inject(s, colon, slash)
+                      local pat = "scope=repository" .. colon
+                      local pfx = project .. slash
+                      -- Skip if already prefixed
+                      if s:find(pat .. pfx, 1, true) then return s end
+                      -- Extract image+action after scope=repository:
+                      local img = s:match(pat .. "([^&]+)")
+                      if not img then return s end
+                      -- Single-name image (no slash) = official, needs library/
+                      if img:find(slash, 1, true) then
+                        return s:gsub(pat, pat .. pfx, 1)
+                      else
+                        return s:gsub(pat, pat .. pfx .. "library" .. slash, 1)
+                      end
+                    end
+                    local new_path = path
+                    if path:find("scope=repository%%3A") then
+                      new_path = inject(path, "%%3A", "%%2F")
+                    elseif path:find("scope=repository:") then
+                      new_path = inject(path, ":", "/")
+                    end
+                    if new_path ~= path then
+                      request_handle:headers():replace(":path", new_path)
                     end
                   end
                 end
