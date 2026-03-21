@@ -4,9 +4,9 @@ metadata:
   name: allow-xylem-gateway-lan
 spec:
   description: >-
-    LAN-only ingress to xylem-gateway (172.22.30.69). Internal services
-    only — no pfSense port forward. RFC1918 minus pod CIDR and node subnet
-    to prevent hairpin SNAT bypass.
+    LAN ingress to xylem-gateway (172.22.30.69). Internal services only —
+    no pfSense port forward. RFC1918 allowed minus pod CIDR to prevent
+    identity bypass via LB IP. pfSense owns LAN segment access control.
   enableDefaultDeny:
     ingress: false
     egress: false
@@ -17,8 +17,6 @@ spec:
     - fromCIDRSet:
         - cidr: "10.0.0.0/8"
         - cidr: "172.16.0.0/12"
-          except:
-            - "172.22.144.0/24"
         - cidr: "192.168.0.0/16"
           except:
             - "192.168.144.0/20"
