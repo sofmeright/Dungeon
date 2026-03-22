@@ -17,11 +17,11 @@ spec:
               cpu: 100m
               memory: 512Mi
           volumeMounts:
-            - name: meilisearch-data
+            - name: temple-of-time-linkwarden-meilisearch-data
               mountPath: /meili_data
   volumeClaimTemplates:
     - metadata:
-        name: meilisearch-data
+        name: temple-of-time-linkwarden-meilisearch-data
       spec:
         storageClassName: ceph-rbd-delete
         accessModes: ["ReadWriteOnce"]
