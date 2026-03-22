@@ -36,6 +36,8 @@ spec:
         policy.prplanit.com/access-scope-postgres: hyrule-castle.harbor.postgres
         policy.prplanit.com/cap.redis: "true"
         policy.prplanit.com/access-scope-redis: hyrule-castle.harbor.redis
+        policy.prplanit.com/cap.ceph: "true"
+        policy.prplanit.com/access-scope-ceph: "gorons-bracelet.rgw"
       image:
         repository: docker.io/goharbor/harbor-core
 
@@ -44,11 +46,16 @@ spec:
       podLabels:
         policy.prplanit.com/cap.redis: "true"
         policy.prplanit.com/access-scope-redis: hyrule-castle.harbor.redis
+        policy.prplanit.com/cap.ceph: "true"
+        policy.prplanit.com/access-scope-ceph: "gorons-bracelet.rgw"
       image:
         repository: docker.io/goharbor/harbor-jobservice
 
     registry:
       replicas: 3
+      podLabels:
+        policy.prplanit.com/cap.ceph: "true"
+        policy.prplanit.com/access-scope-ceph: "gorons-bracelet.rgw"
       registry:
         image:
           repository: docker.io/goharbor/registry-photon
