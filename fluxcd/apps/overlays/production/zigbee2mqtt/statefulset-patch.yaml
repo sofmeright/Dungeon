@@ -21,16 +21,23 @@ spec:
       containers:
         - name: zigbee2mqtt
           image: ghcr.io/koenkk/zigbee2mqtt:2.9.1
-          # Restarts z2m when adapter disconnects — the process stays
-          # alive but stops publishing, so liveness checks the MQTT
-          # bridge state via the health endpoint
+          # z2m has no built-in health endpoint (gh#1310). The only
+          # real health signal is MQTT bridge state. Probe checks
+          # mosquitto for zigbee2mqtt/bridge/state = online.
           livenessProbe:
-            httpGet:
-              path: /api/health
-              port: 8080
-            initialDelaySeconds: 30
-            periodSeconds: 30
+            exec:
+              command:
+                - sh
+                - -c
+                - >-
+                  timeout 5 mosquitto_sub -h mosquitto -p 1883
+                  -u "$ZIGBEE2MQTT_CONFIG_MQTT_USER"
+                  -P "$ZIGBEE2MQTT_CONFIG_MQTT_PASSWORD"
+                  -t zigbee2mqtt/bridge/state -C 1 | grep -q online
+            initialDelaySeconds: 60
+            periodSeconds: 60
             failureThreshold: 3
+            timeoutSeconds: 10
           resources:
             requests:
               cpu: 50m
