@@ -14,15 +14,6 @@ spec:
               - "10.0.0.0/8"
               - "172.16.0.0/12"
               - "192.168.0.0/16"
-            notIpBlocks:
-              - "192.168.144.0/20"   # exclude node subnet (hairpin SNAT)
-      to:
-        - operation:
-            ports: ["1514", "1515", "514", "55000"]
-    - from:
-        - source:
-            principals:
-              - "cluster.local/ns/gossip-stone/sa/gatus"
       to:
         - operation:
             ports: ["1514", "1515", "514", "55000"]

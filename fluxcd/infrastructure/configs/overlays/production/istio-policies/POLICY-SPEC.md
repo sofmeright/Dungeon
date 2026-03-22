@@ -62,9 +62,15 @@ The gateway-ingress policy authorizes **who may enter** the gateway. It does NOT
 **Ownership:** manual
 
 - Selector: app-specific (e.g., `app: adguard`)
-- Rule 1: RFC1918 `ipBlocks` with `notIpBlocks: 192.168.144.0/20` (pod CIDR anti-bypass)
-- Rule 2: monitoring principals (`gossip-stone/gatus`)
-- pfSense owns LAN segment access control — Istio does not duplicate it
+- Single rule: RFC1918 `ipBlocks` — no `notIpBlocks`, no principal rules
+- Cilium owns anti-hairpin (pod CIDR exclusion at L3/L4)
+- pfSense owns LAN segment access control
+
+**Why no `notIpBlocks` or principal rules on LB policies:**
+Pod→LB traffic is ztunnel passthrough (no SPIFFE identity visible to the destination).
+Principal-based rules do not apply because there is no identity to match against.
+`notIpBlocks` would block legitimate in-cluster monitoring (Gatus) with no alternative
+enforcement path. Cilium handles pod CIDR exclusion at L3/L4 where it is effective.
 
 ### Layer 4 — Service-to-Service (hand-written, per relationship)
 
