@@ -6,7 +6,6 @@ resources:
   - allow-dns.yaml
   - allow-prometheus.yaml
   - allow-gatus.yaml
-  - allow-gatus-ingress.yaml
   - allow-cnpg-operator.yaml
   - allow-redis-operator.yaml
   - allow-mariadb-operator.yaml

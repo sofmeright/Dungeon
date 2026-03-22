@@ -1,0 +1,57 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: mutate-probe-on-ingress
+spec:
+  rules:
+    - name: add-probe-to-deployments
+      match:
+        any:
+          - resources:
+              kinds: ["Deployment"]
+      preconditions:
+        all:
+          - key: "{{ request.object.spec.template.metadata.labels.\"policy.prplanit.com/ingress\" || '' }}"
+            operator: Equals
+            value: "true"
+      mutate:
+        patchStrategicMerge:
+          spec:
+            template:
+              metadata:
+                labels:
+                  policy.prplanit.com/probe: "true"
+    - name: add-probe-to-statefulsets
+      match:
+        any:
+          - resources:
+              kinds: ["StatefulSet"]
+      preconditions:
+        all:
+          - key: "{{ request.object.spec.template.metadata.labels.\"policy.prplanit.com/ingress\" || '' }}"
+            operator: Equals
+            value: "true"
+      mutate:
+        patchStrategicMerge:
+          spec:
+            template:
+              metadata:
+                labels:
+                  policy.prplanit.com/probe: "true"
+    - name: add-probe-to-daemonsets
+      match:
+        any:
+          - resources:
+              kinds: ["DaemonSet"]
+      preconditions:
+        all:
+          - key: "{{ request.object.spec.template.metadata.labels.\"policy.prplanit.com/ingress\" || '' }}"
+            operator: Equals
+            value: "true"
+      mutate:
+        patchStrategicMerge:
+          spec:
+            template:
+              metadata:
+                labels:
+                  policy.prplanit.com/probe: "true"
