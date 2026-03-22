@@ -113,6 +113,7 @@ spec:
           bucket: harbor-registry
           regionendpoint: http://ceph-rgw.gorons-bracelet.svc.cluster.local
           forcepathstyle: true
+        disableredirect: true
     # Admin password from existing secret
     existingSecretAdminPassword: harbor-secrets
     existingSecretAdminPasswordKey: admin_password
