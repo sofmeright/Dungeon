@@ -36,12 +36,6 @@ patches:
     patch: |-
       - op: remove
         path: /spec/volumeClaimTemplates
-  - target:
-      kind: StatefulSet
-      name: linkwarden-meilisearch
-    patch: |-
-      - op: remove
-        path: /spec/volumeClaimTemplates
   - path: service-linkwarden-ingress-patch.yaml
     target:
       kind: Service
