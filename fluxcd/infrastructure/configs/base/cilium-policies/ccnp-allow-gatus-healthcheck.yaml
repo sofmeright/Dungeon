@@ -28,7 +28,11 @@ spec:
               protocol: TCP
             - port: "53"
               protocol: TCP
+            - port: "80"
+              protocol: TCP
             - port: "123"
+              protocol: TCP
+            - port: "443"
               protocol: TCP
             - port: "514"
               protocol: TCP
@@ -38,19 +42,106 @@ spec:
               protocol: TCP
             - port: "1515"
               protocol: TCP
+            - port: "1688"
+              protocol: TCP
+            - port: "1935"
+              protocol: TCP
+            - port: "1984"
+              protocol: TCP
             - port: "2112"
               protocol: TCP
             - port: "2222"
               protocol: TCP
+            - port: "2283"
+              protocol: TCP
+            - port: "2342"
+              protocol: TCP
+            - port: "2368"
+              protocol: TCP
+            - port: "2468"
+              protocol: TCP
+            - port: "3000"
+              protocol: TCP
+            - port: "3001"
+              protocol: TCP
+            - port: "3002"
+              protocol: TCP
+            - port: "3012"
+              protocol: TCP
+            - port: "3142"
+              protocol: TCP
             - port: "3478"
+              protocol: TCP
+            - port: "3493"
+              protocol: TCP
+            - port: "4001"
+              protocol: TCP
+            - port: "4180"
+              protocol: TCP
+            - port: "5000"
+              protocol: TCP
+            - port: "5006"
+              protocol: TCP
+            - port: "5050"
+              protocol: TCP
+            - port: "5340"
               protocol: TCP
             - port: "5349"
               protocol: TCP
+            - port: "5432"
+              protocol: TCP
+            - port: "5443"
+              protocol: TCP
+            - port: "5601"
+              protocol: TCP
             - port: "6060"
+              protocol: TCP
+            - port: "6379"
+              protocol: TCP
+            - port: "6789"
+              protocol: TCP
+            - port: "6887"
+              protocol: TCP
+            - port: "7007"
+              protocol: TCP
+        - ports:
+            - port: "7575"
+              protocol: TCP
+            - port: "7745"
               protocol: TCP
             - port: "7797"
               protocol: TCP
+            - port: "7860"
+              protocol: TCP
+            - port: "7867"
+              protocol: TCP
+            - port: "7878"
+              protocol: TCP
+            - port: "8000"
+              protocol: TCP
+            - port: "8001"
+              protocol: TCP
             - port: "8080"
+              protocol: TCP
+            - port: "8083"
+              protocol: TCP
+            - port: "8090"
+              protocol: TCP
+            - port: "8096"
+              protocol: TCP
+            - port: "8123"
+              protocol: TCP
+            - port: "8324"
+              protocol: TCP
+            - port: "8443"
+              protocol: TCP
+            - port: "8480"
+              protocol: TCP
+            - port: "8554"
+              protocol: TCP
+            - port: "8555"
+              protocol: TCP
+            - port: "8686"
               protocol: TCP
             - port: "8777"
               protocol: TCP
@@ -60,7 +151,33 @@ spec:
               protocol: TCP
             - port: "8780"
               protocol: TCP
+            - port: "8787"
+              protocol: TCP
+            - port: "8843"
+              protocol: TCP
+            - port: "8880"
+              protocol: TCP
+            - port: "8888"
+              protocol: TCP
+            - port: "8920"
+              protocol: TCP
+            - port: "8971"
+              protocol: TCP
+            - port: "8989"
+              protocol: TCP
+            - port: "9000"
+              protocol: TCP
+            - port: "9090"
+              protocol: TCP
+            - port: "9200"
+              protocol: TCP
+            - port: "9201"
+              protocol: TCP
+            - port: "9203"
+              protocol: TCP
             - port: "9795"
+              protocol: TCP
+            - port: "11434"
               protocol: TCP
             - port: "21114"
               protocol: TCP
@@ -68,11 +185,14 @@ spec:
               protocol: TCP
             - port: "21116"
               protocol: TCP
+        - ports:
             - port: "21117"
               protocol: TCP
             - port: "21118"
               protocol: TCP
             - port: "21119"
+              protocol: TCP
+            - port: "22300"
               protocol: TCP
             - port: "27057"
               protocol: TCP
@@ -81,6 +201,12 @@ spec:
             - port: "28020"
               protocol: TCP
             - port: "28021"
+              protocol: TCP
+            - port: "32400"
+              protocol: TCP
+            - port: "32469"
+              protocol: TCP
+            - port: "33080"
               protocol: TCP
             - port: "35566"
               protocol: TCP
