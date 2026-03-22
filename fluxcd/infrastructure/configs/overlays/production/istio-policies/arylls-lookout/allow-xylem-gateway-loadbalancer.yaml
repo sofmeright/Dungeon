@@ -8,23 +8,17 @@ spec:
       gateway.networking.k8s.io/gateway-name: xylem-gateway
   action: ALLOW
   rules:
-    # External LAN clients
+    # All RFC1918 clients — Cilium CNP owns anti-hairpin (pod CIDR exclusion).
+    # Istio does not duplicate it here because pod→LB traffic arrives without
+    # SPIFFE identity (ztunnel passthrough, not HBONE), making principal-based
+    # rules ineffective and notIpBlocks the only lever — which conflicts with
+    # legitimate in-cluster monitoring.
     - from:
         - source:
             ipBlocks:
               - "10.0.0.0/8"
               - "172.16.0.0/12"
               - "192.168.0.0/16"
-            notIpBlocks:
-              - "192.168.144.0/20"
-      to:
-        - operation:
-            ports: ["80", "443"]
-    # In-cluster clients allowed to traverse xylem (identity toggle)
-    - from:
-        - source:
-            principals:
-              - "cluster.local/ns/gossip-stone/sa/gatus"
       to:
         - operation:
             ports: ["80", "443"]
