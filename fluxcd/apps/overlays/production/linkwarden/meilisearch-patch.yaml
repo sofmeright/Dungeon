@@ -17,9 +17,14 @@ spec:
               cpu: 100m
               memory: 512Mi
           volumeMounts:
-            - name: meilisearch
+            - name: meilisearch-data
               mountPath: /meili_data
-      volumes:
-        - name: meilisearch
-          persistentVolumeClaim:
-            claimName: optcp-linkwarden-meilisearch
+  volumeClaimTemplates:
+    - metadata:
+        name: meilisearch-data
+      spec:
+        storageClassName: ceph-rbd-delete
+        accessModes: ["ReadWriteOnce"]
+        resources:
+          requests:
+            storage: 2Gi

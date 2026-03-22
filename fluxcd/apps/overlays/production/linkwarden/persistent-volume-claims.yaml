@@ -16,19 +16,6 @@ spec:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: optcp-linkwarden-meilisearch
-spec:
-  accessModes:
-    - ReadWriteOnce
-  storageClassName: ceph-rbd-static
-  volumeName: optcp-linkwarden-meilisearch-0
-  resources:
-    requests:
-      storage: 2Gi
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
   name: optcp-linkwarden-postgres
 spec:
   accessModes:
