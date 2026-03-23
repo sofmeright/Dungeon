@@ -179,13 +179,15 @@ spec:
               protocol: TCP
             - port: "11434"
               protocol: TCP
+            - port: "20211"
+              protocol: TCP
             - port: "21114"
               protocol: TCP
             - port: "21115"
               protocol: TCP
+        - ports:
             - port: "21116"
               protocol: TCP
-        - ports:
             - port: "21117"
               protocol: TCP
             - port: "21118"

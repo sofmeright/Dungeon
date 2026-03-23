@@ -59,6 +59,7 @@ metadata:
 spec:
   description: >-
     LAN-only ingress to prometheus-exporter-eaton-ups (172.22.30.137) on 9795/TCP.
+    Egress to Eaton UPS management card (10.24.7.30) on 443/TCP.
   enableDefaultDeny:
     ingress: false
     egress: false
@@ -75,6 +76,13 @@ spec:
       toPorts:
         - ports:
             - port: "9795"
+              protocol: TCP
+  egress:
+    - toCIDRSet:
+        - cidr: "10.24.7.30/32"
+      toPorts:
+        - ports:
+            - port: "443"
               protocol: TCP
 ---
 apiVersion: cilium.io/v2

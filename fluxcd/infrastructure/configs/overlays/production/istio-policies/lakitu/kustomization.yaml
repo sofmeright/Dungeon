@@ -3,4 +3,5 @@ kind: Kustomization
 namespace: lakitu
 resources:
   - ../../../../base/istio-policies
+  - allow-gateway-ingress-xylem.yaml
   - allow-intra-breakglass.yaml
