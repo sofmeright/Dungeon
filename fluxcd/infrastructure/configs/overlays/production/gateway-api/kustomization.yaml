@@ -9,6 +9,7 @@ resources:
   - envoyfilter-ntfy-timeout-xylem.yaml
   - envoyfilter-meshcentral-websocket-cell-membrane.yaml
   - envoyfilter-hsts-xylem.yaml
+  - envoyfilter-https-location-xylem.yaml
   - envoyfilter-hsts-phloem.yaml
   - envoyfilter-hsts-cell-membrane.yaml
   - httproute-http-redirect-xylem.yaml
