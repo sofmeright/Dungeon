@@ -775,7 +775,7 @@
         "options": [],
         "query": "label_values(container_cpu_user_seconds_total{job=~\"$job\"}, instance)",
         "refresh": 1,
-        "regex": "/([^:]+):.*/",
+        "regex": "/([^:]+)/",
         "sort": 1,
         "type": "query"
       },

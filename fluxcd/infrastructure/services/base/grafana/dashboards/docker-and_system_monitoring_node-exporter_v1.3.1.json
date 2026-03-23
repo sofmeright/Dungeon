@@ -2008,7 +2008,7 @@
           "refId": "StandardVariableQuery"
         },
         "refresh": 1,
-        "regex": "/([^:]+):.*/",
+        "regex": "/([^:]+)/",
         "type": "query"
       }
     ]
