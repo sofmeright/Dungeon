@@ -25,7 +25,7 @@
     {
       "datasource": {
         "type": "loki",
-        "uid": "cehao8d96lptsc"
+        "uid": "${loki}"
       },
       "fieldConfig": {
         "defaults": {
@@ -108,7 +108,7 @@
         {
           "datasource": {
             "type": "loki",
-            "uid": "cehao8d96lptsc"
+            "uid": "${loki}"
           },
           "expr": "sum(count_over_time({namespace=\"$namespace\", app=\"$workload\", instance=~\"$pod\"} |~ \"$search\"[$__interval]))",
           "refId": "A"
@@ -120,7 +120,7 @@
     {
       "datasource": {
         "type": "loki",
-        "uid": "cehao8d96lptsc"
+        "uid": "${loki}"
       },
       "fieldConfig": {
         "defaults": {},
@@ -150,7 +150,7 @@
         {
           "datasource": {
             "type": "loki",
-            "uid": "cehao8d96lptsc"
+            "uid": "${loki}"
           },
           "expr": "{namespace=\"$namespace\", app=\"$workload\", instance=~\"$pod\"} |~ \"$search\"",
           "refId": "A"
@@ -166,6 +166,16 @@
   "tags": [],
   "templating": {
     "list": [
+      {
+        "current": {},
+        "includeAll": false,
+        "name": "loki",
+        "options": [],
+        "query": "loki",
+        "refresh": 1,
+        "regex": "",
+        "type": "datasource"
+      },
       {
         "current": {
           "text": "",

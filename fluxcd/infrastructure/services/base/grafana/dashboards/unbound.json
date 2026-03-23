@@ -1431,7 +1431,7 @@
     {
       "datasource": {
         "type": "loki",
-        "uid": "cehao8d96lptsc"
+        "uid": "${loki}"
       },
       "description": "",
       "fieldConfig": {
@@ -1523,7 +1523,7 @@
         {
           "datasource": {
             "type": "loki",
-            "uid": "cehao8d96lptsc"
+            "uid": "${loki}"
           },
           "editorMode": "builder",
           "expr": "count by(client) (rate({dns=\"reply\"} | pattern `<_> <_> <_> <client> <_> <_> <_> <_> <_> <_> <_>` [$__interval]))",
@@ -2167,7 +2167,7 @@
     {
       "datasource": {
         "type": "loki",
-        "uid": "cehao8d96lptsc"
+        "uid": "${loki}"
       },
       "fieldConfig": {
         "defaults": {
@@ -2255,7 +2255,7 @@
         {
           "datasource": {
             "type": "loki",
-            "uid": "cehao8d96lptsc"
+            "uid": "${loki}"
           },
           "editorMode": "builder",
           "expr": "sum by(dns) (count_over_time({dns=\"reply\"} [$__range]))",
@@ -2266,7 +2266,7 @@
         {
           "datasource": {
             "type": "loki",
-            "uid": "cehao8d96lptsc"
+            "uid": "${loki}"
           },
           "editorMode": "builder",
           "expr": "sum by(dns) (count_over_time({dns=\"block\"} [$__range]))",
@@ -2323,7 +2323,7 @@
     {
       "datasource": {
         "type": "loki",
-        "uid": "cehao8d96lptsc"
+        "uid": "${loki}"
       },
       "description": "",
       "fieldConfig": {
@@ -2435,7 +2435,7 @@
         {
           "datasource": {
             "type": "loki",
-            "uid": "cehao8d96lptsc"
+            "uid": "${loki}"
           },
           "editorMode": "builder",
           "expr": "count_over_time({dns=\"reply\"} [$__interval])",
@@ -2447,7 +2447,7 @@
         {
           "datasource": {
             "type": "loki",
-            "uid": "cehao8d96lptsc"
+            "uid": "${loki}"
           },
           "editorMode": "builder",
           "expr": "count_over_time({dns=\"block\"} [$__interval])",
@@ -2527,7 +2527,7 @@
     {
       "datasource": {
         "type": "loki",
-        "uid": "cehao8d96lptsc"
+        "uid": "${loki}"
       },
       "description": "",
       "fieldConfig": {
@@ -2608,7 +2608,7 @@
         {
           "datasource": {
             "type": "loki",
-            "uid": "cehao8d96lptsc"
+            "uid": "${loki}"
           },
           "editorMode": "builder",
           "expr": "count_over_time({dns=\"reply\"} | pattern `<_> <_> <_> <client> <_> <_> <_> <_> <_> <_> <_>` [$__interval])",
@@ -2634,7 +2634,7 @@
     {
       "datasource": {
         "type": "loki",
-        "uid": "cehao8d96lptsc"
+        "uid": "${loki}"
       },
       "description": "",
       "fieldConfig": {
@@ -2782,7 +2782,7 @@
         {
           "datasource": {
             "type": "loki",
-            "uid": "cehao8d96lptsc"
+            "uid": "${loki}"
           },
           "editorMode": "builder",
           "expr": "sum by(domain, client) (count_over_time({dns=\"reply\"} | pattern `<_> <_> <_> <client> <domain> <_> <_> <_> <_> <_> <_>` [$__range]))",
@@ -2818,7 +2818,7 @@
     {
       "datasource": {
         "type": "loki",
-        "uid": "cehao8d96lptsc"
+        "uid": "${loki}"
       },
       "description": "",
       "fieldConfig": {
@@ -2933,7 +2933,7 @@
         {
           "datasource": {
             "type": "loki",
-            "uid": "cehao8d96lptsc"
+            "uid": "${loki}"
           },
           "editorMode": "builder",
           "expr": "sum by(domain) (count_over_time({dns=\"block\"} | pattern `<_> <_> <_> <domain> <_> <_> <_> <_> <_>` [$__range]))",
@@ -2968,7 +2968,7 @@
     {
       "datasource": {
         "type": "loki",
-        "uid": "cehao8d96lptsc"
+        "uid": "${loki}"
       },
       "description": "",
       "fieldConfig": {
@@ -3147,7 +3147,7 @@
         {
           "datasource": {
             "type": "loki",
-            "uid": "cehao8d96lptsc"
+            "uid": "${loki}"
           },
           "editorMode": "builder",
           "expr": "{dns=\"reply\"} | pattern `<_> <_> <_> <client> <domain> <type> <_> <_> <lookup_time> <cache> <_>`",
@@ -3213,7 +3213,7 @@
     {
       "datasource": {
         "type": "loki",
-        "uid": "cehao8d96lptsc"
+        "uid": "${loki}"
       },
       "fieldConfig": {
         "defaults": {
@@ -3326,7 +3326,7 @@
         {
           "datasource": {
             "type": "loki",
-            "uid": "cehao8d96lptsc"
+            "uid": "${loki}"
           },
           "editorMode": "builder",
           "expr": "{dns=\"block\"} | pattern `<_> <_> <_> <domain> <_> <client>@<_> <_> <_> <_>`",
@@ -3389,7 +3389,18 @@
     "loki"
   ],
   "templating": {
-    "list": []
+    "list": [
+      {
+        "current": {},
+        "includeAll": false,
+        "name": "loki",
+        "options": [],
+        "query": "loki",
+        "refresh": 1,
+        "regex": "",
+        "type": "datasource"
+      }
+    ]
   },
   "time": {
     "from": "now-6h",

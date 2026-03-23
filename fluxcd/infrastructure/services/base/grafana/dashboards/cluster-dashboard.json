@@ -24,7 +24,7 @@
     {
       "datasource": {
         "type": "influxdb",
-        "uid": "ae7j6yhrko1z4c"
+        "uid": "${datasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -83,7 +83,7 @@
         {
           "datasource": {
             "type": "influxdb",
-            "uid": "ae7j6yhrko1z4c"
+            "uid": "${datasource}"
           },
           "query": "from(bucket: \"cluster\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"cpustat\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"cpu\")\r\n  |> keep(columns: [\"_time\", \"_value\", \"host\"])\r\n  |> last()\r\n  |> yield(name: \"last\")",
           "refId": "A"
@@ -96,7 +96,7 @@
     {
       "datasource": {
         "type": "influxdb",
-        "uid": "ae7j6yhrko1z4c"
+        "uid": "${datasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -167,7 +167,7 @@
         {
           "datasource": {
             "type": "influxdb",
-            "uid": "ae7j6yhrko1z4c"
+            "uid": "${datasource}"
           },
           "query": "from(bucket: \"cluster\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"system\")\n  |> filter(fn: (r) => r[\"_field\"] == \"avail\" or r[\"_field\"] == \"used\")\n  |> filter(fn: (r) => r[\"type\"] != \"pbs\" and r[\"type\"] != \"dir\" and r[\"type\"] != \"nfs\")\n  |> last()\n  |> pivot(rowKey: [\"_time\"], columnKey: [\"_field\"], valueColumn: \"_value\")\n  |> map(fn: (r) => ({\n      r with\n      _time: r._time,\n      _measurement: r._measurement,\n      _field: \"used_perc\",\n      _value: float(v: 100) * float(v: r.used) / (float(v: r.avail) + float(v: r.used))\n  }))\n  |> drop(columns: [\"avail\", \"used\"])",
           "refId": "A"
@@ -180,7 +180,7 @@
     {
       "datasource": {
         "type": "influxdb",
-        "uid": "ae7j6yhrko1z4c"
+        "uid": "${datasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -236,7 +236,7 @@
         {
           "datasource": {
             "type": "influxdb",
-            "uid": "ae7j6yhrko1z4c"
+            "uid": "${datasource}"
           },
           "query": "from(bucket: \"cluster\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"cpustat\")\n  |> filter(fn: (r) => r[\"_field\"] == \"avg5\")\n  |> keep(columns: [\"_time\", \"_value\", \"host\"])\n  |> last()\n  |> yield(name: \"last\")",
           "refId": "A"
@@ -249,7 +249,7 @@
     {
       "datasource": {
         "type": "influxdb",
-        "uid": "ae7j6yhrko1z4c"
+        "uid": "${datasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -307,7 +307,7 @@
     {
       "datasource": {
         "type": "influxdb",
-        "uid": "ae7j6yhrko1z4c"
+        "uid": "${datasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -364,7 +364,7 @@
         {
           "datasource": {
             "type": "influxdb",
-            "uid": "ae7j6yhrko1z4c"
+            "uid": "${datasource}"
           },
           "query": "from(bucket: \"cluster\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"cpustat\")\n  |> filter(fn: (r) => r[\"_field\"] == \"wait\")\n  |> keep(columns: [\"_time\", \"_value\", \"host\"])\n  |> last()\n  |> yield(name: \"last\")",
           "refId": "A"
@@ -377,7 +377,7 @@
     {
       "datasource": {
         "type": "influxdb",
-        "uid": "ae7j6yhrko1z4c"
+        "uid": "${datasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -433,7 +433,7 @@
         {
           "datasource": {
             "type": "influxdb",
-            "uid": "ae7j6yhrko1z4c"
+            "uid": "${datasource}"
           },
           "query": "from(bucket: \"cluster\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"cpustat\")\n  |> filter(fn: (r) => r[\"_field\"] == \"avg15\")\n  |> keep(columns: [\"_time\", \"_value\", \"host\"])\n  |> last()\n  |> yield(name: \"last\")",
           "refId": "A"
@@ -446,7 +446,7 @@
     {
       "datasource": {
         "type": "influxdb",
-        "uid": "ae7j6yhrko1z4c"
+        "uid": "${datasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -733,7 +733,7 @@
         {
           "datasource": {
             "type": "influxdb",
-            "uid": "ae7j6yhrko1z4c"
+            "uid": "${datasource}"
           },
           "query": "// First part: without derivatives\nbaseQuery = from(bucket: \"cluster\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"cpustat\" or r[\"_measurement\"] == \"system\")\n  |> filter(fn: (r) => \n      r[\"_field\"] == \"cpus\" or \n      r[\"_field\"] == \"cpu\" or \n      r[\"_field\"] == \"status\" or \n      r[\"_field\"] == \"uptime\" or \n      r[\"_field\"] == \"maxmem\" or \n      r[\"_field\"] == \"mem\" or \n      r[\"_field\"] == \"maxdisk\" or \n      r[\"_field\"] == \"diskread\" or \n      r[\"_field\"] == \"diskwrite\" or \n      r[\"_field\"] == \"netin\" or \n      r[\"_field\"] == \"netout\"\n    )\n  |> filter(fn: (r) => r[\"object\"] == \"qemu\")  // <-- only VMs here\n\n// Derivative part\nderivativeQuery = baseQuery\n  |> filter(fn: (r) => \n      r[\"_field\"] == \"diskread\" or \n      r[\"_field\"] == \"diskwrite\" or \n      r[\"_field\"] == \"netin\" or \n      r[\"_field\"] == \"netout\"\n    )\n  |> derivative(unit: 1s, nonNegative: true)\n\n// Non-derivative part\nnonDerivativeQuery = baseQuery\n  |> filter(fn: (r) => \n      r[\"_field\"] != \"diskread\" and \n      r[\"_field\"] != \"diskwrite\" and \n      r[\"_field\"] != \"netin\" and \n      r[\"_field\"] != \"netout\"\n    )\n  |> last()\n\n// Combine queries\ncombinedQuery = union(tables: [derivativeQuery, nonDerivativeQuery])\n  |> pivot(rowKey: [\"vmid\"], columnKey: [\"_field\"], valueColumn: \"_value\")\n  |> group(columns: [\"_measurement\"])\n\n// Add ram_usage_percent field separately\nramUsageQuery = combinedQuery\n  |> map(fn: (r) => {\n    r_mem = if exists r.mem then r.mem else 0.0\n    r_maxmem = if exists r.maxmem then r.maxmem else 1.0\n    r_usage = (float(v: r_mem) / float(v: r_maxmem)) * 100.0\n    return { r with ram_usage_percent: r_usage }\n  })\n\n// Final query with yield\nfinalQuery = ramUsageQuery\n  |> keep(columns: [\"host\", \"vmid\", \"nodename\", \"status\", \"uptime\", \"cpus\", \"cpu\", \"maxmem\", \"mem\", \"diskread\", \"diskwrite\", \"ram_usage_percent\"])\n  |> sort(columns: [\"!mem\"])\n  |> yield(name: \"result\")\n",
           "refId": "A"
@@ -746,7 +746,7 @@
     {
       "datasource": {
         "type": "influxdb",
-        "uid": "ae7j6yhrko1z4c"
+        "uid": "${datasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -1033,7 +1033,7 @@
         {
           "datasource": {
             "type": "influxdb",
-            "uid": "ae7j6yhrko1z4c"
+            "uid": "${datasource}"
           },
           "query": "// First part: without derivatives\nbaseQuery = from(bucket: \"cluster\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"cpustat\" or r[\"_measurement\"] == \"system\")\n  |> filter(fn: (r) => \n      r[\"_field\"] == \"cpus\" or \n      r[\"_field\"] == \"cpu\" or \n      r[\"_field\"] == \"status\" or \n      r[\"_field\"] == \"uptime\" or \n      r[\"_field\"] == \"maxmem\" or \n      r[\"_field\"] == \"mem\" or \n      r[\"_field\"] == \"maxdisk\" or \n      r[\"_field\"] == \"diskread\" or \n      r[\"_field\"] == \"diskwrite\" or \n      r[\"_field\"] == \"netin\" or \n      r[\"_field\"] == \"netout\"\n    )\n  |> filter(fn: (r) => r[\"object\"] == \"lxc\")  // <-- only VMs here\n\n// Derivative part\nderivativeQuery = baseQuery\n  |> filter(fn: (r) => \n      r[\"_field\"] == \"diskread\" or \n      r[\"_field\"] == \"diskwrite\" or \n      r[\"_field\"] == \"netin\" or \n      r[\"_field\"] == \"netout\"\n    )\n  |> derivative(unit: 1s, nonNegative: true)\n\n// Non-derivative part\nnonDerivativeQuery = baseQuery\n  |> filter(fn: (r) => \n      r[\"_field\"] != \"diskread\" and \n      r[\"_field\"] != \"diskwrite\" and \n      r[\"_field\"] != \"netin\" and \n      r[\"_field\"] != \"netout\"\n    )\n  |> last()\n\n// Combine queries\ncombinedQuery = union(tables: [derivativeQuery, nonDerivativeQuery])\n  |> pivot(rowKey: [\"vmid\"], columnKey: [\"_field\"], valueColumn: \"_value\")\n  |> group(columns: [\"_measurement\"])\n\n// Add ram_usage_percent field separately\nramUsageQuery = combinedQuery\n  |> map(fn: (r) => {\n    r_mem = if exists r.mem then r.mem else 0.0\n    r_maxmem = if exists r.maxmem then r.maxmem else 1.0\n    r_usage = (float(v: r_mem) / float(v: r_maxmem)) * 100.0\n    return { r with ram_usage_percent: r_usage }\n  })\n\n// Final query with yield\nfinalQuery = ramUsageQuery\n  |> keep(columns: [\"host\", \"vmid\", \"nodename\", \"status\", \"uptime\", \"cpus\", \"cpu\", \"maxmem\", \"mem\", \"diskread\", \"diskwrite\", \"ram_usage_percent\"])\n  |> sort(columns: [\"!mem\"])\n  |> yield(name: \"result\")\n",
           "refId": "A"
@@ -1048,7 +1048,18 @@
   "schemaVersion": 41,
   "tags": [],
   "templating": {
-    "list": []
+    "list": [
+      {
+        "current": {},
+        "includeAll": false,
+        "name": "datasource",
+        "options": [],
+        "query": "prometheus",
+        "refresh": 1,
+        "regex": "",
+        "type": "datasource"
+      }
+    ]
   },
   "time": {
     "from": "now-6h",

@@ -31,7 +31,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "febxvwimvemf4b"
+        "uid": "${datasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -96,7 +96,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "febxvwimvemf4b"
+            "uid": "${datasource}"
           },
           "expr": "time() - node_boot_time_seconds{instance=~\"$server:.*\"}",
           "hide": false,
@@ -112,7 +112,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "febxvwimvemf4b"
+        "uid": "${datasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -187,7 +187,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "febxvwimvemf4b"
+        "uid": "${datasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -257,7 +257,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "febxvwimvemf4b"
+            "uid": "${datasource}"
           },
           "expr": "node_load1{instance=~\"$server:.*\"} / count by(job, instance)(count by(job, instance, cpu)(node_cpu_seconds_total{instance=~\"$server:.*\"}))",
           "intervalFactor": 2,
@@ -271,7 +271,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "febxvwimvemf4b"
+        "uid": "${datasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -340,7 +340,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "febxvwimvemf4b"
+            "uid": "${datasource}"
           },
           "expr": "min((node_filesystem_size_bytes{fstype=~\"xfs|ext4\",instance=~\"$server:.*\"} - node_filesystem_free_bytes{fstype=~\"xfs|ext4\",instance=~\"$server:.*\"} )/ node_filesystem_size_bytes{fstype=~\"xfs|ext4\",instance=~\"$server:.*\"})",
           "hide": false,
@@ -355,7 +355,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "febxvwimvemf4b"
+        "uid": "${datasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -424,7 +424,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "febxvwimvemf4b"
+            "uid": "${datasource}"
           },
           "expr": "((node_memory_MemTotal_bytes{instance=~\"$server:.*\"} - node_memory_MemAvailable_bytes{instance=~\"$server:.*\"}) / node_memory_MemTotal_bytes{instance=~\"$server:.*\"}) * 100",
           "intervalFactor": 2,
@@ -438,7 +438,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "febxvwimvemf4b"
+        "uid": "${datasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -506,7 +506,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "febxvwimvemf4b"
+            "uid": "${datasource}"
           },
           "expr": "(node_memory_SwapTotal_bytes{instance=~'$server:.*'} - node_memory_SwapFree_bytes{instance=~'$server:.*'})",
           "intervalFactor": 2,
@@ -521,7 +521,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "febxvwimvemf4b"
+        "uid": "${datasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -653,7 +653,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "febxvwimvemf4b"
+        "uid": "${datasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -818,7 +818,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "febxvwimvemf4b"
+        "uid": "${datasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -918,7 +918,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "febxvwimvemf4b"
+            "uid": "${datasource}"
           },
           "expr": "node_load1{instance=~\"$server:.*\"} / count by(job, instance)(count by(job, instance, cpu)(node_cpu_seconds_total{instance=~\"$server:.*\"}))",
           "intervalFactor": 2,
@@ -932,7 +932,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "febxvwimvemf4b"
+        "uid": "${datasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -1080,7 +1080,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "febxvwimvemf4b"
+            "uid": "${datasource}"
           },
           "expr": "node_filesystem_size_bytes{fstype=~\"ext4|xfs\"} - node_filesystem_free_bytes{fstype=~\"xfs|ext4\"}",
           "hide": false,
@@ -1096,7 +1096,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "febxvwimvemf4b"
+        "uid": "${datasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -1222,7 +1222,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "febxvwimvemf4b"
+            "uid": "${datasource}"
           },
           "expr": "-sum(rate(node_disk_read_bytes_total[$interval])) by (device)",
           "hide": false,
@@ -1235,7 +1235,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "febxvwimvemf4b"
+            "uid": "${datasource}"
           },
           "expr": "sum(rate(node_disk_written_bytes_total[$interval])) by (device)",
           "intervalFactor": 2,
@@ -1251,7 +1251,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "febxvwimvemf4b"
+        "uid": "${datasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -1355,7 +1355,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "febxvwimvemf4b"
+        "uid": "${datasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -1459,7 +1459,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "febxvwimvemf4b"
+        "uid": "${datasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -1557,7 +1557,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "febxvwimvemf4b"
+        "uid": "${datasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -1662,7 +1662,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "febxvwimvemf4b"
+        "uid": "${datasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -1767,7 +1767,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "febxvwimvemf4b"
+        "uid": "${datasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -1860,6 +1860,16 @@
   "templating": {
     "list": [
       {
+        "current": {},
+        "includeAll": false,
+        "name": "datasource",
+        "options": [],
+        "query": "prometheus",
+        "refresh": 1,
+        "regex": "",
+        "type": "datasource"
+      },
+      {
         "allValue": ".+",
         "current": {
           "text": "All",
@@ -1867,7 +1877,7 @@
         },
         "datasource": {
           "type": "prometheus",
-          "uid": "febxvwimvemf4b"
+          "uid": "${datasource}"
         },
         "definition": "",
         "includeAll": true,
@@ -1985,7 +1995,7 @@
         },
         "datasource": {
           "type": "prometheus",
-          "uid": "febxvwimvemf4b"
+          "uid": "${datasource}"
         },
         "definition": "label_values(node_boot_time_seconds, instance)",
         "includeAll": false,

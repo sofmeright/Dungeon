@@ -24,7 +24,7 @@
       {
         "datasource": {
           "type": "loki",
-          "uid": "cehao8d96lptsc"
+          "uid": "${loki}"
         },
         "enable": false,
         "expr": "{container=\"loki\",app=\"loki\"} |logfmt | level=\"error\"",
@@ -63,7 +63,7 @@
     {
       "datasource": {
         "type": "loki",
-        "uid": "cehao8d96lptsc"
+        "uid": "${loki}"
       },
       "description": "anything except \"ppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp\"",
       "fieldConfig": {
@@ -93,7 +93,7 @@
         {
           "datasource": {
             "type": "loki",
-            "uid": "cehao8d96lptsc"
+            "uid": "${loki}"
           },
           "expr": "{app=\"loki\",container=\"loki\"} !=\"ppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppppp\" !~ \"info\"",
           "refId": "A"
@@ -1207,7 +1207,18 @@
     "managed"
   ],
   "templating": {
-    "list": []
+    "list": [
+      {
+        "current": {},
+        "includeAll": false,
+        "name": "loki",
+        "options": [],
+        "query": "loki",
+        "refresh": 1,
+        "regex": "",
+        "type": "datasource"
+      }
+    ]
   },
   "time": {
     "from": "now-3h",

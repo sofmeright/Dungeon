@@ -24,7 +24,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "febxvwimvemf4b"
+        "uid": "${datasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -108,7 +108,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "febxvwimvemf4b"
+            "uid": "${datasource}"
           },
           "editorMode": "code",
           "exemplar": false,
@@ -125,7 +125,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "febxvwimvemf4b"
+        "uid": "${datasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -180,7 +180,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "febxvwimvemf4b"
+            "uid": "${datasource}"
           },
           "editorMode": "code",
           "expr": "k3s_pod_mem{instance=~\"$instance\"}",
@@ -196,7 +196,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "febxvwimvemf4b"
+        "uid": "${datasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -299,7 +299,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "febxvwimvemf4b"
+            "uid": "${datasource}"
           },
           "editorMode": "code",
           "expr": "sum(increase(k3s_pod_net{instance=~\"$instance\"}[$__rate_interval])) by (instance,direction)",
@@ -329,7 +329,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "febxvwimvemf4b"
+        "uid": "${datasource}"
       },
       "description": "",
       "fieldConfig": {
@@ -385,7 +385,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "febxvwimvemf4b"
+            "uid": "${datasource}"
           },
           "editorMode": "code",
           "expr": "k3s_pod_cpu{instance=~\"$instance\", pod=~\"$pod\"} / 1000000000",
@@ -401,7 +401,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "febxvwimvemf4b"
+        "uid": "${datasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -482,7 +482,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "febxvwimvemf4b"
+            "uid": "${datasource}"
           },
           "editorMode": "code",
           "expr": "k3s_pod_cpu{instance=~\"$instance\", pod=~\"$pod\"} / 1000000000",
@@ -498,7 +498,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "febxvwimvemf4b"
+        "uid": "${datasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -580,7 +580,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "febxvwimvemf4b"
+            "uid": "${datasource}"
           },
           "editorMode": "code",
           "expr": "k3s_pod_mem{instance=~\"$instance\", pod=~\"$pod\"}",
@@ -596,7 +596,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "febxvwimvemf4b"
+        "uid": "${datasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -695,7 +695,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "febxvwimvemf4b"
+            "uid": "${datasource}"
           },
           "editorMode": "code",
           "expr": "sum(increase(k3s_pod_net{instance=~\"$instance\", pod=~\"$pod\"}[$__rate_interval])) by (direction)",
@@ -711,7 +711,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "febxvwimvemf4b"
+        "uid": "${datasource}"
       },
       "description": "",
       "fieldConfig": {
@@ -759,7 +759,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "febxvwimvemf4b"
+            "uid": "${datasource}"
           },
           "editorMode": "code",
           "expr": "rate(k3s_pod_net{instance=~\"$instance\", pod=~\"$pod\", direction=\"incoming\"}[$__rate_interval])",
@@ -775,7 +775,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "febxvwimvemf4b"
+        "uid": "${datasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -824,7 +824,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "febxvwimvemf4b"
+            "uid": "${datasource}"
           },
           "editorMode": "code",
           "expr": "k3s_pod_mem{instance=~\"$instance\", pod=~\"$pod\"}",
@@ -840,7 +840,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "febxvwimvemf4b"
+        "uid": "${datasource}"
       },
       "description": "",
       "fieldConfig": {
@@ -888,7 +888,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "febxvwimvemf4b"
+            "uid": "${datasource}"
           },
           "editorMode": "code",
           "expr": "rate(k3s_pod_net{instance=~\"$instance\", pod=~\"$pod\", direction=\"outgoing\"}[$__rate_interval])",
@@ -911,13 +911,23 @@
   "templating": {
     "list": [
       {
+        "current": {},
+        "includeAll": false,
+        "name": "datasource",
+        "options": [],
+        "query": "prometheus",
+        "refresh": 1,
+        "regex": "",
+        "type": "datasource"
+      },
+      {
         "current": {
           "text": "",
           "value": ""
         },
         "datasource": {
           "type": "prometheus",
-          "uid": "febxvwimvemf4b"
+          "uid": "${datasource}"
         },
         "definition": "label_values(uptime,job)",
         "includeAll": false,
@@ -939,7 +949,7 @@
         },
         "datasource": {
           "type": "prometheus",
-          "uid": "febxvwimvemf4b"
+          "uid": "${datasource}"
         },
         "definition": "label_values(uptime{job=\"$job\"},instance)",
         "includeAll": false,
@@ -961,7 +971,7 @@
         },
         "datasource": {
           "type": "prometheus",
-          "uid": "febxvwimvemf4b"
+          "uid": "${datasource}"
         },
         "definition": "label_values(k3s_pod_cpu{instance=\"$instance\"},pod)",
         "includeAll": true,

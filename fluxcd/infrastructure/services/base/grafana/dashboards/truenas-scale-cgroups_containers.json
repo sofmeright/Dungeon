@@ -24,7 +24,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "febxvwimvemf4b"
+        "uid": "${datasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -79,7 +79,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "febxvwimvemf4b"
+            "uid": "${datasource}"
           },
           "editorMode": "code",
           "expr": "sum(cgroup_cpu_limit{job=\"$job\", instance=\"$instance\", cgroup=~\"$cgroup\"})",
@@ -94,7 +94,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "febxvwimvemf4b"
+        "uid": "${datasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -149,7 +149,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "febxvwimvemf4b"
+            "uid": "${datasource}"
           },
           "editorMode": "code",
           "expr": "sum(cgroup_cpu_throttled{job=\"$job\", instance=\"$instance\", cgroup=~\"$cgroup\"})",
@@ -164,7 +164,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "febxvwimvemf4b"
+        "uid": "${datasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -219,7 +219,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "febxvwimvemf4b"
+            "uid": "${datasource}"
           },
           "editorMode": "code",
           "expr": "sum(cgroup_mem_utilization{job=\"$job\", instance=\"$instance\", cgroup=~\"$cgroup\"})",
@@ -234,7 +234,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "febxvwimvemf4b"
+        "uid": "${datasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -289,7 +289,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "febxvwimvemf4b"
+            "uid": "${datasource}"
           },
           "editorMode": "code",
           "expr": "cgroup_pgfaults{job=\"$job\", instance=\"$instance\", cgroup=~\"$cgroup\"}",
@@ -386,7 +386,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "febxvwimvemf4b"
+            "uid": "${datasource}"
           },
           "editorMode": "code",
           "expr": "cgroup_cpu_usage{job=\"$job\", instance=\"$instance\", cgroup=~\"$cgroup\"}",
@@ -403,7 +403,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "febxvwimvemf4b"
+        "uid": "${datasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -485,7 +485,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "febxvwimvemf4b"
+            "uid": "${datasource}"
           },
           "editorMode": "code",
           "expr": "cgroup_mem_usage{job=\"$job\", instance=\"$instance\", cgroup=~\"$cgroup\"}",
@@ -500,7 +500,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "febxvwimvemf4b"
+        "uid": "${datasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -582,7 +582,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "febxvwimvemf4b"
+            "uid": "${datasource}"
           },
           "editorMode": "code",
           "expr": "cgroup_cpu_full_pressure{job=\"$job\", instance=\"$instance\", cgroup=~\"$cgroup\"}",
@@ -593,7 +593,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "febxvwimvemf4b"
+            "uid": "${datasource}"
           },
           "editorMode": "code",
           "expr": "cgroup_cpu_some_pressure{job=\"$job\", instance=\"$instance\", cgroup=~\"$cgroup\"}",
@@ -610,7 +610,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "febxvwimvemf4b"
+        "uid": "${datasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -692,7 +692,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "febxvwimvemf4b"
+            "uid": "${datasource}"
           },
           "editorMode": "code",
           "expr": "cgroup_cpu_full_pressure_stall_time{job=\"$job\", instance=\"$instance\", cgroup=~\"$cgroup\"}",
@@ -703,7 +703,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "febxvwimvemf4b"
+            "uid": "${datasource}"
           },
           "editorMode": "code",
           "expr": "cgroup_cpu_some_pressure_stall_time{job=\"$job\", instance=\"$instance\", cgroup=~\"$cgroup\"}",
@@ -720,7 +720,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "febxvwimvemf4b"
+        "uid": "${datasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -802,7 +802,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "febxvwimvemf4b"
+            "uid": "${datasource}"
           },
           "editorMode": "code",
           "expr": "cgroup_mem_full_pressure{job=\"$job\", instance=\"$instance\", cgroup=~\"$cgroup\"}",
@@ -813,7 +813,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "febxvwimvemf4b"
+            "uid": "${datasource}"
           },
           "editorMode": "code",
           "expr": "cgroup_mem_some_pressure{job=\"$job\", instance=\"$instance\", cgroup=~\"$cgroup\"}",
@@ -830,7 +830,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "febxvwimvemf4b"
+        "uid": "${datasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -912,7 +912,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "febxvwimvemf4b"
+            "uid": "${datasource}"
           },
           "editorMode": "code",
           "expr": "cgroup_mem_full_pressure_stall_time{job=\"$job\", instance=\"$instance\", cgroup=~\"$cgroup\"}",
@@ -923,7 +923,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "febxvwimvemf4b"
+            "uid": "${datasource}"
           },
           "editorMode": "code",
           "expr": "cgroup_mem_some_pressure_stall_time{job=\"$job\", instance=\"$instance\", cgroup=~\"$cgroup\"}",
@@ -940,7 +940,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "febxvwimvemf4b"
+        "uid": "${datasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -1021,7 +1021,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "febxvwimvemf4b"
+            "uid": "${datasource}"
           },
           "editorMode": "code",
           "expr": "cgroup_io_full_pressure{job=\"$job\", instance=\"$instance\", cgroup=~\"$cgroup\"}",
@@ -1032,7 +1032,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "febxvwimvemf4b"
+            "uid": "${datasource}"
           },
           "editorMode": "code",
           "expr": "cgroup_io_some_pressure{job=\"$job\", instance=\"$instance\", cgroup=~\"$cgroup\"}",
@@ -1049,7 +1049,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "febxvwimvemf4b"
+        "uid": "${datasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -1130,7 +1130,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "febxvwimvemf4b"
+            "uid": "${datasource}"
           },
           "editorMode": "code",
           "expr": "cgroup_io_full_pressure_stall_time{job=\"$job\", instance=\"$instance\", cgroup=~\"$cgroup\"}",
@@ -1141,7 +1141,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "febxvwimvemf4b"
+            "uid": "${datasource}"
           },
           "editorMode": "code",
           "expr": "cgroup_io_some_pressure_stall_time{job=\"$job\", instance=\"$instance\", cgroup=~\"$cgroup\"}",
@@ -1183,7 +1183,7 @@
         },
         "datasource": {
           "type": "prometheus",
-          "uid": "$datasource"
+          "uid": "${datasource}"
         },
         "definition": "label_values(uptime,job)",
         "includeAll": false,
@@ -1205,7 +1205,7 @@
         },
         "datasource": {
           "type": "prometheus",
-          "uid": "febxvwimvemf4b"
+          "uid": "${datasource}"
         },
         "definition": "label_values(uptime{job=\"$job\"},instance)",
         "includeAll": false,
@@ -1228,7 +1228,7 @@
         },
         "datasource": {
           "type": "prometheus",
-          "uid": "$datasource"
+          "uid": "${datasource}"
         },
         "definition": "label_values(cgroup_cpu_usage{instance=\"$instance\", job=\"$job\"},cgroup)",
         "includeAll": true,

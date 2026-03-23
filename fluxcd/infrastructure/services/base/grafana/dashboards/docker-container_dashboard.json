@@ -31,7 +31,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "febxvwimvemf4b"
+        "uid": "${datasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -96,7 +96,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "febxvwimvemf4b"
+            "uid": "${datasource}"
           },
           "exemplar": true,
           "expr": "count(rate(container_last_seen{id=~\"/docker/.*\",instance=~\"$node\"}[5m]))",
@@ -115,7 +115,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "febxvwimvemf4b"
+        "uid": "${datasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -226,7 +226,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "febxvwimvemf4b"
+            "uid": "${datasource}"
           },
           "exemplar": true,
           "expr": "sum(rate(container_network_receive_bytes_total{id=\"/\",instance=~\"$node\"}[$interval])) by (id)",
@@ -241,7 +241,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "febxvwimvemf4b"
+            "uid": "${datasource}"
           },
           "exemplar": true,
           "expr": "- sum(rate(container_network_transmit_bytes_total{id=\"/\",instance=~\"$node\"}[$interval])) by (id)",
@@ -260,7 +260,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "febxvwimvemf4b"
+        "uid": "${datasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -343,7 +343,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "febxvwimvemf4b"
+            "uid": "${datasource}"
           },
           "exemplar": true,
           "expr": "sum(rate(container_network_transmit_bytes_total{name=~\"$containers\",instance=~\"$node\"}[$interval])) by (name)",
@@ -357,7 +357,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "febxvwimvemf4b"
+            "uid": "${datasource}"
           },
           "expr": "rate(container_network_transmit_bytes_total{id=\"/\"}[$interval])",
           "format": "time_series",
@@ -374,7 +374,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "febxvwimvemf4b"
+        "uid": "${datasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -457,7 +457,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "febxvwimvemf4b"
+            "uid": "${datasource}"
           },
           "exemplar": true,
           "expr": "rate(container_network_receive_bytes_total{name=~\"$containers\",instance=~\"$node\"}[$interval])",
@@ -472,7 +472,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "febxvwimvemf4b"
+            "uid": "${datasource}"
           },
           "exemplar": true,
           "expr": "sum(rate(container_network_transmit_bytes_total{instance=~\"$node\",name=~\"$containers\"}[$interval])) by (name)",
@@ -491,7 +491,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "febxvwimvemf4b"
+        "uid": "${datasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -574,7 +574,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "febxvwimvemf4b"
+            "uid": "${datasource}"
           },
           "exemplar": true,
           "expr": "sum(container_memory_rss{name=~\"$containers\",instance=~\"$node\"}) by (name)",
@@ -589,7 +589,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "febxvwimvemf4b"
+            "uid": "${datasource}"
           },
           "exemplar": true,
           "expr": "container_memory_usage_bytes{name=~\"$containers\"}",
@@ -608,7 +608,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "febxvwimvemf4b"
+        "uid": "${datasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -691,7 +691,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "febxvwimvemf4b"
+            "uid": "${datasource}"
           },
           "exemplar": true,
           "expr": "sum(rate(container_cpu_usage_seconds_total{name=~\"$containers\",instance=~\"$node\"}[$interval])) by (name) * 100",
@@ -711,7 +711,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "febxvwimvemf4b"
+        "uid": "${datasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -795,7 +795,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "febxvwimvemf4b"
+            "uid": "${datasource}"
           },
           "exemplar": true,
           "expr": "container_memory_usage_bytes{name=~\"$containers\",instance=~\"$node\"}",
@@ -810,7 +810,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "febxvwimvemf4b"
+            "uid": "${datasource}"
           },
           "exemplar": true,
           "expr": "container_spec_memory_limit_bytes{name=~\"$containers\",instance=~\"$node\"}",
@@ -827,7 +827,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "febxvwimvemf4b"
+        "uid": "${datasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -911,7 +911,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "febxvwimvemf4b"
+            "uid": "${datasource}"
           },
           "exemplar": true,
           "expr": "container_memory_usage_bytes{name=~\"$containers\",instance=~\"$node\"}",
@@ -926,7 +926,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "febxvwimvemf4b"
+            "uid": "${datasource}"
           },
           "exemplar": true,
           "expr": "container_spec_memory_limit_bytes{name=~\"$containers\",instance=~\"$node\"}",
@@ -944,7 +944,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "febxvwimvemf4b"
+        "uid": "${datasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -1028,7 +1028,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "febxvwimvemf4b"
+            "uid": "${datasource}"
           },
           "exemplar": true,
           "expr": "container_memory_usage_bytes{name=~\"$containers\",instance=~\"$node\"}",
@@ -1043,7 +1043,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "febxvwimvemf4b"
+            "uid": "${datasource}"
           },
           "exemplar": true,
           "expr": "container_spec_memory_limit_bytes{name=~\"$containers\",instance=~\"$node\"}-container_memory_usage_bytes{name!=\"\",instance=~\"$node\"}",
@@ -1061,7 +1061,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "febxvwimvemf4b"
+        "uid": "${datasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -1229,7 +1229,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "febxvwimvemf4b"
+            "uid": "${datasource}"
           },
           "exemplar": true,
           "expr": "max(container_memory_usage_bytes{name!=\"\",instance=~\"$node\"}) by (name, id)",
@@ -1244,7 +1244,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "febxvwimvemf4b"
+            "uid": "${datasource}"
           },
           "exemplar": true,
           "expr": "max(container_memory_max_usage_bytes{name!=\"\",instance=~\"$node\"}-container_memory_usage_bytes{name!=\"\",instance=~\"$node\"})by (name, id)",
@@ -1259,7 +1259,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "febxvwimvemf4b"
+            "uid": "${datasource}"
           },
           "exemplar": true,
           "expr": "max(container_spec_memory_limit_bytes{name!=\"\",instance=~\"$node\"}) by (name, id)",
@@ -1289,6 +1289,16 @@
   "tags": [],
   "templating": {
     "list": [
+      {
+        "current": {},
+        "includeAll": false,
+        "name": "datasource",
+        "options": [],
+        "query": "prometheus",
+        "refresh": 1,
+        "regex": "",
+        "type": "datasource"
+      },
       {
         "current": {
           "text": "${VAR_DATACENTER}",

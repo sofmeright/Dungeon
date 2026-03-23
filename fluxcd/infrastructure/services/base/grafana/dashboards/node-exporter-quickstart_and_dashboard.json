@@ -24,7 +24,7 @@
   "panels": [
     {
       "datasource": {
-        "uid": "$datasource"
+        "uid": "${datasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -107,7 +107,7 @@
       "targets": [
         {
           "datasource": {
-            "uid": "$datasource"
+            "uid": "${datasource}"
           },
           "expr": "(\n  (1 - rate(node_cpu_seconds_total{job=\"node\", mode=\"idle\", instance=\"$instance\"}[$__interval]))\n/ ignoring(cpu) group_left\n  count without (cpu)( node_cpu_seconds_total{job=\"node\", mode=\"idle\", instance=\"$instance\"})\n)\n",
           "format": "time_series",
@@ -122,7 +122,7 @@
     },
     {
       "datasource": {
-        "uid": "$datasource"
+        "uid": "${datasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -204,7 +204,7 @@
       "targets": [
         {
           "datasource": {
-            "uid": "$datasource"
+            "uid": "${datasource}"
           },
           "expr": "node_load1{job=\"node\", instance=\"$instance\"}",
           "format": "time_series",
@@ -214,7 +214,7 @@
         },
         {
           "datasource": {
-            "uid": "$datasource"
+            "uid": "${datasource}"
           },
           "expr": "node_load5{job=\"node\", instance=\"$instance\"}",
           "format": "time_series",
@@ -224,7 +224,7 @@
         },
         {
           "datasource": {
-            "uid": "$datasource"
+            "uid": "${datasource}"
           },
           "expr": "node_load15{job=\"node\", instance=\"$instance\"}",
           "format": "time_series",
@@ -234,7 +234,7 @@
         },
         {
           "datasource": {
-            "uid": "$datasource"
+            "uid": "${datasource}"
           },
           "expr": "count(node_cpu_seconds_total{job=\"node\", instance=\"$instance\", mode=\"idle\"})",
           "format": "time_series",
@@ -248,7 +248,7 @@
     },
     {
       "datasource": {
-        "uid": "$datasource"
+        "uid": "${datasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -330,7 +330,7 @@
       "targets": [
         {
           "datasource": {
-            "uid": "$datasource"
+            "uid": "${datasource}"
           },
           "expr": "(\n  node_memory_MemTotal_bytes{job=\"node\", instance=\"$instance\"}\n-\n  node_memory_MemFree_bytes{job=\"node\", instance=\"$instance\"}\n-\n  node_memory_Buffers_bytes{job=\"node\", instance=\"$instance\"}\n-\n  node_memory_Cached_bytes{job=\"node\", instance=\"$instance\"}\n)\n",
           "format": "time_series",
@@ -340,7 +340,7 @@
         },
         {
           "datasource": {
-            "uid": "$datasource"
+            "uid": "${datasource}"
           },
           "expr": "node_memory_Buffers_bytes{job=\"node\", instance=\"$instance\"}",
           "format": "time_series",
@@ -350,7 +350,7 @@
         },
         {
           "datasource": {
-            "uid": "$datasource"
+            "uid": "${datasource}"
           },
           "expr": "node_memory_Cached_bytes{job=\"node\", instance=\"$instance\"}",
           "format": "time_series",
@@ -360,7 +360,7 @@
         },
         {
           "datasource": {
-            "uid": "$datasource"
+            "uid": "${datasource}"
           },
           "expr": "node_memory_MemFree_bytes{job=\"node\", instance=\"$instance\"}",
           "format": "time_series",
@@ -374,7 +374,7 @@
     },
     {
       "datasource": {
-        "uid": "$datasource"
+        "uid": "${datasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -440,7 +440,7 @@
       "targets": [
         {
           "datasource": {
-            "uid": "$datasource"
+            "uid": "${datasource}"
           },
           "expr": "100 -\n(\n  avg(node_memory_MemAvailable_bytes{job=\"node\", instance=\"$instance\"})\n/\n  avg(node_memory_MemTotal_bytes{job=\"node\", instance=\"$instance\"})\n* 100\n)\n",
           "format": "time_series",
@@ -454,7 +454,7 @@
     },
     {
       "datasource": {
-        "uid": "$datasource"
+        "uid": "${datasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -552,7 +552,7 @@
       "targets": [
         {
           "datasource": {
-            "uid": "$datasource"
+            "uid": "${datasource}"
           },
           "expr": "rate(node_disk_read_bytes_total{job=\"node\", instance=\"$instance\", device!=\"\"}[$__interval])",
           "format": "time_series",
@@ -563,7 +563,7 @@
         },
         {
           "datasource": {
-            "uid": "$datasource"
+            "uid": "${datasource}"
           },
           "expr": "rate(node_disk_written_bytes_total{job=\"node\", instance=\"$instance\", device!=\"\"}[$__interval])",
           "format": "time_series",
@@ -574,7 +574,7 @@
         },
         {
           "datasource": {
-            "uid": "$datasource"
+            "uid": "${datasource}"
           },
           "expr": "rate(node_disk_io_time_seconds_total{job=\"node\", instance=\"$instance\", device!=\"\"}[$__interval])",
           "format": "time_series",
@@ -589,7 +589,7 @@
     },
     {
       "datasource": {
-        "uid": "$datasource"
+        "uid": "${datasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -702,7 +702,7 @@
       "targets": [
         {
           "datasource": {
-            "uid": "$datasource"
+            "uid": "${datasource}"
           },
           "expr": "sum(\n  max by (device) (\n    node_filesystem_size_bytes{job=\"node\", instance=\"$instance\", fstype!=\"\"}\n  -\n    node_filesystem_avail_bytes{job=\"node\", instance=\"$instance\", fstype!=\"\"}\n  )\n)\n",
           "format": "time_series",
@@ -712,7 +712,7 @@
         },
         {
           "datasource": {
-            "uid": "$datasource"
+            "uid": "${datasource}"
           },
           "expr": "sum(\n  max by (device) (\n    node_filesystem_avail_bytes{job=\"node\", instance=\"$instance\", fstype!=\"\"}\n  )\n)\n",
           "format": "time_series",
@@ -726,7 +726,7 @@
     },
     {
       "datasource": {
-        "uid": "$datasource"
+        "uid": "${datasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -808,7 +808,7 @@
       "targets": [
         {
           "datasource": {
-            "uid": "$datasource"
+            "uid": "${datasource}"
           },
           "expr": "rate(node_network_receive_bytes_total{job=\"node\", instance=\"$instance\", device!=\"lo\"}[$__interval])",
           "format": "time_series",
@@ -823,7 +823,7 @@
     },
     {
       "datasource": {
-        "uid": "$datasource"
+        "uid": "${datasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -905,7 +905,7 @@
       "targets": [
         {
           "datasource": {
-            "uid": "$datasource"
+            "uid": "${datasource}"
           },
           "expr": "rate(node_network_transmit_bytes_total{job=\"node\", instance=\"$instance\", device!=\"lo\"}[$__interval])",
           "format": "time_series",

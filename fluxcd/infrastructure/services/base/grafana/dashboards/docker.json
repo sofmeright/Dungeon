@@ -38,7 +38,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "febxvwimvemf4b"
+        "uid": "${datasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -247,7 +247,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "febxvwimvemf4b"
+            "uid": "${datasource}"
           },
           "expr": "count(container_last_seen{job=~\"$job\",image!=\"\"})by (instance)",
           "format": "table",
@@ -259,7 +259,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "febxvwimvemf4b"
+            "uid": "${datasource}"
           },
           "expr": "sum(rate(container_cpu_user_seconds_total{job=~\"$job\",image!=\"\"}[5m]) * 100)by (instance)",
           "format": "table",
@@ -271,7 +271,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "febxvwimvemf4b"
+            "uid": "${datasource}"
           },
           "expr": "sum(container_memory_usage_bytes{job=~\"$job\",image!=\"\"})by (instance)",
           "format": "table",
@@ -283,7 +283,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "febxvwimvemf4b"
+            "uid": "${datasource}"
           },
           "expr": "sum(rate(container_fs_reads_bytes_total{job=~\"$job\",image!=\"\"}[5m]))by (instance)",
           "format": "table",
@@ -295,7 +295,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "febxvwimvemf4b"
+            "uid": "${datasource}"
           },
           "expr": "sum(rate(container_fs_writes_bytes_total{job=~\"$job\",image!=\"\"}[5m]))by (instance)",
           "format": "table",
@@ -307,7 +307,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "febxvwimvemf4b"
+            "uid": "${datasource}"
           },
           "expr": "sum(rate(container_network_receive_bytes_total{job=~\"$job\",image!=\"\"}[5m]))by (instance)",
           "format": "table",
@@ -319,7 +319,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "febxvwimvemf4b"
+            "uid": "${datasource}"
           },
           "expr": "sum(rate(container_network_transmit_bytes_total{job=~\"$job\",image!=\"\"}[5m]))by (instance)",
           "format": "table",
@@ -373,7 +373,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "febxvwimvemf4b"
+        "uid": "${datasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -459,7 +459,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "febxvwimvemf4b"
+            "uid": "${datasource}"
           },
           "expr": "rate(container_cpu_user_seconds_total{instance=~\"$node:$port\",job=~\"$job\",image!=\"\"}[5m]) * 100",
           "interval": "",
@@ -474,7 +474,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "febxvwimvemf4b"
+        "uid": "${datasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -560,7 +560,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "febxvwimvemf4b"
+            "uid": "${datasource}"
           },
           "expr": "container_memory_usage_bytes{instance=~\"$node:$port\",job=~\"$job\",image!=\"\"}",
           "interval": "",
@@ -575,7 +575,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "febxvwimvemf4b"
+        "uid": "${datasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -598,7 +598,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "febxvwimvemf4b"
+            "uid": "${datasource}"
           },
           "expr": "irate(container_network_receive_bytes_total{instance=~\"$node:$port\",job=~\"$job\",image!=\"\"}[5m])",
           "instant": false,
@@ -614,7 +614,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "febxvwimvemf4b"
+        "uid": "${datasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -637,7 +637,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "febxvwimvemf4b"
+            "uid": "${datasource}"
           },
           "expr": "irate(container_network_transmit_bytes_total{instance=~\"$node:$port\",job=~\"$job\",image!=\"\"}[5m])",
           "interval": "",
@@ -652,7 +652,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "febxvwimvemf4b"
+        "uid": "${datasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -675,7 +675,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "febxvwimvemf4b"
+            "uid": "${datasource}"
           },
           "expr": "irate(container_fs_reads_bytes_total{instance=~\"$node:$port\",job=~\"$job\",image!=\"\"}[5m])",
           "interval": "",
@@ -690,7 +690,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "febxvwimvemf4b"
+        "uid": "${datasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -713,7 +713,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "febxvwimvemf4b"
+            "uid": "${datasource}"
           },
           "expr": "irate(container_fs_writes_bytes_total{instance=~\"$node:$port\",job=~\"$job\",image!=\"\"}[5m])",
           "interval": "",
@@ -735,6 +735,16 @@
   ],
   "templating": {
     "list": [
+      {
+        "current": {},
+        "includeAll": false,
+        "name": "datasource",
+        "options": [],
+        "query": "prometheus",
+        "refresh": 1,
+        "regex": "",
+        "type": "datasource"
+      },
       {
         "current": {
           "text": "cadvisor-lighthouse",

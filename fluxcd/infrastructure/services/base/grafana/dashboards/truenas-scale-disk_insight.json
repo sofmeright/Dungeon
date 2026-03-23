@@ -24,7 +24,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "febxvwimvemf4b"
+        "uid": "${datasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -78,7 +78,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "febxvwimvemf4b"
+            "uid": "${datasource}"
           },
           "editorMode": "code",
           "expr": "uptime{instance=~\"$instance\"}",
@@ -94,7 +94,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "febxvwimvemf4b"
+        "uid": "${datasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -148,7 +148,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "febxvwimvemf4b"
+            "uid": "${datasource}"
           },
           "editorMode": "code",
           "expr": "uptime{instance=~\"$instance\"}",
@@ -177,7 +177,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "febxvwimvemf4b"
+        "uid": "${datasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -233,7 +233,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "febxvwimvemf4b"
+            "uid": "${datasource}"
           },
           "editorMode": "code",
           "expr": "disk_utilization{instance=~\"$instance\"}",
@@ -249,7 +249,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "febxvwimvemf4b"
+        "uid": "${datasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -336,7 +336,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "febxvwimvemf4b"
+            "uid": "${datasource}"
           },
           "editorMode": "code",
           "expr": "disk_utilization{instance=~\"$instance\"}",
@@ -365,7 +365,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "febxvwimvemf4b"
+        "uid": "${datasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -452,7 +452,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "febxvwimvemf4b"
+            "uid": "${datasource}"
           },
           "editorMode": "code",
           "expr": "disk_io{instance=~\"$instance\", disk=~\"$disk\"}",
@@ -468,7 +468,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "febxvwimvemf4b"
+        "uid": "${datasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -555,7 +555,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "febxvwimvemf4b"
+            "uid": "${datasource}"
           },
           "editorMode": "code",
           "expr": "abs(disk_iotime{instance=~\"$instance\", disk=~\"$disk\"})",
@@ -571,7 +571,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "febxvwimvemf4b"
+        "uid": "${datasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -658,7 +658,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "febxvwimvemf4b"
+            "uid": "${datasource}"
           },
           "editorMode": "code",
           "expr": "abs(disk_io_ops{instance=~\"$instance\", disk=~\"$disk\"})",
@@ -687,7 +687,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "febxvwimvemf4b"
+        "uid": "${datasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -774,7 +774,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "febxvwimvemf4b"
+            "uid": "${datasource}"
           },
           "editorMode": "code",
           "expr": "abs(disk_await{instance=~\"$instance\", disk=~\"$disk\"})",
@@ -790,7 +790,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "febxvwimvemf4b"
+        "uid": "${datasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -877,7 +877,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "febxvwimvemf4b"
+            "uid": "${datasource}"
           },
           "editorMode": "code",
           "expr": "disk_io_backlog{instance=~\"$instance\", disk=~\"$disk\"}",
@@ -889,7 +889,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "febxvwimvemf4b"
+            "uid": "${datasource}"
           },
           "editorMode": "code",
           "expr": "disk_busy{instance=~\"$instance\", disk=~\"$disk\"}",
@@ -906,7 +906,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "febxvwimvemf4b"
+        "uid": "${datasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -993,7 +993,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "febxvwimvemf4b"
+            "uid": "${datasource}"
           },
           "editorMode": "code",
           "expr": "disk_qops{instance=~\"$instance\", disk=~\"$disk\"}",
@@ -1009,7 +1009,7 @@
     {
       "datasource": {
         "type": "prometheus",
-        "uid": "febxvwimvemf4b"
+        "uid": "${datasource}"
       },
       "fieldConfig": {
         "defaults": {
@@ -1096,7 +1096,7 @@
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "febxvwimvemf4b"
+            "uid": "${datasource}"
           },
           "editorMode": "code",
           "expr": "abs(disk_io_size{instance=~\"$instance\", disk=~\"$disk\"})",
@@ -1119,13 +1119,23 @@
   "templating": {
     "list": [
       {
+        "current": {},
+        "includeAll": false,
+        "name": "datasource",
+        "options": [],
+        "query": "prometheus",
+        "refresh": 1,
+        "regex": "",
+        "type": "datasource"
+      },
+      {
         "current": {
           "text": "",
           "value": ""
         },
         "datasource": {
           "type": "prometheus",
-          "uid": "febxvwimvemf4b"
+          "uid": "${datasource}"
         },
         "definition": "label_values(uptime,job)",
         "includeAll": false,
@@ -1147,7 +1157,7 @@
         },
         "datasource": {
           "type": "prometheus",
-          "uid": "febxvwimvemf4b"
+          "uid": "${datasource}"
         },
         "definition": "label_values(uptime{job=\"$job\"},instance)",
         "includeAll": false,
@@ -1170,7 +1180,7 @@
         },
         "datasource": {
           "type": "prometheus",
-          "uid": "febxvwimvemf4b"
+          "uid": "${datasource}"
         },
         "definition": "label_values(disk_io{instance=\"$instance\", job=\"$job\"},disk)",
         "includeAll": true,
