@@ -709,11 +709,7 @@ data:
     // each Proxmox host as ?target= param, exporter reaches out to PVE API.
     discovery.relabel "pve_targets" {
       targets = [
-        { __address__ = "avocado:8006",    instance = "avocado" },
-        { __address__ = "bamboo:8006",     instance = "bamboo" },
-        { __address__ = "cosmos:8006",     instance = "cosmos" },
-        { __address__ = "dragonfruit:8006", instance = "dragonfruit" },
-        { __address__ = "eggplant:8006",   instance = "eggplant" },
+        { __address__ = "pve-cluster.arylls-lookout.svc.cluster.local:8006", instance = "proxmox-cluster" },
       ]
 
       rule {
@@ -750,7 +746,7 @@ data:
     // Proxmox Backup Server exporter
     discovery.relabel "pbs_targets" {
       targets = [
-        { __address__ = "priscilla:8007", instance = "priscilla" },
+        { __address__ = "pbs-cluster.arylls-lookout.svc.cluster.local:8007", instance = "priscilla" },
       ]
 
       rule {

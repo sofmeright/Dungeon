@@ -1,0 +1,33 @@
+# Proxy accepts plaintext from gateway, handles TLS to PVE upstream itself
+apiVersion: networking.istio.io/v1
+kind: DestinationRule
+metadata:
+  name: pve-cluster-proxy
+spec:
+  host: pve-cluster-proxy.arylls-lookout.svc.cluster.local
+  trafficPolicy:
+    tls:
+      mode: DISABLE
+---
+# Raw endpoints for exporter path — exporter connects directly via HTTPS
+apiVersion: networking.istio.io/v1
+kind: DestinationRule
+metadata:
+  name: pve-cluster
+spec:
+  host: pve-cluster.arylls-lookout.svc.cluster.local
+  trafficPolicy:
+    tls:
+      mode: SIMPLE
+      insecureSkipVerify: true
+---
+apiVersion: networking.istio.io/v1
+kind: DestinationRule
+metadata:
+  name: pbs-cluster
+spec:
+  host: pbs-cluster.arylls-lookout.svc.cluster.local
+  trafficPolicy:
+    tls:
+      mode: SIMPLE
+      insecureSkipVerify: true

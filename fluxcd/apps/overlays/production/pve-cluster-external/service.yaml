@@ -1,0 +1,63 @@
+# Raw Service + Endpoints for exporter path (kube-proxy LB, no health check)
+apiVersion: v1
+kind: Service
+metadata:
+  name: pve-cluster
+spec:
+  ports:
+    - port: 8006
+      targetPort: 8006
+      protocol: TCP
+      name: https
+---
+apiVersion: v1
+kind: Endpoints
+metadata:
+  name: pve-cluster
+subsets:
+  - addresses:
+      - ip: 172.22.22.3
+      - ip: 172.22.22.4
+      - ip: 172.22.22.5
+      - ip: 172.22.22.6
+      - ip: 172.22.22.7
+    ports:
+      - port: 8006
+        name: https
+---
+# PBS single-host Service + Endpoints
+apiVersion: v1
+kind: Service
+metadata:
+  name: pbs-cluster
+spec:
+  ports:
+    - port: 8007
+      targetPort: 8007
+      protocol: TCP
+      name: https
+---
+apiVersion: v1
+kind: Endpoints
+metadata:
+  name: pbs-cluster
+subsets:
+  - addresses:
+      - ip: 172.22.181.51
+    ports:
+      - port: 8007
+        name: https
+---
+# Health-checked proxy Service (browser path)
+apiVersion: v1
+kind: Service
+metadata:
+  name: pve-cluster-proxy
+spec:
+  selector:
+    app: pve-cluster-proxy
+  ports:
+    - port: 8006
+      targetPort: 8006
+      protocol: TCP
+      name: https
