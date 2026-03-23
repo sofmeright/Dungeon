@@ -9,13 +9,16 @@ patches:
       kind: Deployment
       name: prometheus-exporter-eaton-ups
     patch: |-
+      - op: add
+        path: /spec/template/metadata/labels/policy.prplanit.com~1metrics
+        value: "true"
       - op: replace
         path: /spec/template/spec/imagePullSecrets
         value:
           - name: cr-pcfae-admin-pull-secret
       - op: replace
         path: /spec/template/spec/containers/0/image
-        value: cr.pcfae.com/sofmeright/prometheus-eaton-ups-exporter@sha256:7dcb97b01ad41c77ff5cae3899ffb5bf0ed5a78ef4a4682905e6e8936497cca1
+        value: cr.pcfae.com/hlhd/prometheus-eaton-ups-exporter:latest-dev
       - op: replace
         path: /spec/template/spec/containers/0/resources
         value:
