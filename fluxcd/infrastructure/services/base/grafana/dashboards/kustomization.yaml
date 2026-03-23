@@ -14,6 +14,8 @@ configMapGenerator:
       - kubernetes-views-nodes.json
       - kubernetes-views-pods.json
       - prometheus.json
+      - proxmox-prometheus.json
+      - proxmox-via_prometheus.json
       - trivy-operator_vulnerabilities.json
       - truenas-scale-temperature_overview.json
 
