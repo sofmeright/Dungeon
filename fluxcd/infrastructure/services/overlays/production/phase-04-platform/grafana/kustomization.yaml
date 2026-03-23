@@ -64,7 +64,7 @@ patches:
         value: gossip-stone
   - target:
       kind: ConfigMap
-      name: grafana-dashboards
+      name: grafana-dashboards-.*
     patch: |-
       - op: add
         path: /metadata/namespace
