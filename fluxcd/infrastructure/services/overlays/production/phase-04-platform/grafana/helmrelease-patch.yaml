@@ -95,18 +95,63 @@ spec:
       dashboardproviders.yaml:
         apiVersion: 1
         providers:
-          - name: 'default'
+          - name: 'kubernetes'
             orgId: 1
-            folder: ''
+            folder: 'Kubernetes'
             type: file
             disableDeletion: false
             editable: true
             options:
-              path: /var/lib/grafana/dashboards/default
+              path: /var/lib/grafana/dashboards/kubernetes
+          - name: 'system'
+            orgId: 1
+            folder: 'System'
+            type: file
+            disableDeletion: false
+            editable: true
+            options:
+              path: /var/lib/grafana/dashboards/system
+          - name: 'monitoring'
+            orgId: 1
+            folder: 'Monitoring'
+            type: file
+            disableDeletion: false
+            editable: true
+            options:
+              path: /var/lib/grafana/dashboards/monitoring
+          - name: 'infrastructure'
+            orgId: 1
+            folder: 'Infrastructure'
+            type: file
+            disableDeletion: false
+            editable: true
+            options:
+              path: /var/lib/grafana/dashboards/infrastructure
+          - name: 'docker'
+            orgId: 1
+            folder: 'Docker'
+            type: file
+            disableDeletion: false
+            editable: true
+            options:
+              path: /var/lib/grafana/dashboards/docker
+          - name: 'logs'
+            orgId: 1
+            folder: 'Logs'
+            type: file
+            disableDeletion: false
+            editable: true
+            options:
+              path: /var/lib/grafana/dashboards/logs
 
-    # Mount dashboards from ConfigMap
+    # Mount dashboards from ConfigMaps (split to stay under 1MB limit)
     dashboardsConfigMaps:
-      default: grafana-dashboards
+      kubernetes: grafana-dashboards-kubernetes
+      system: grafana-dashboards-system
+      monitoring: grafana-dashboards-monitoring
+      infrastructure: grafana-dashboards-infrastructure
+      docker: grafana-dashboards-docker
+      logs: grafana-dashboards-logs
 
     # Override default plugins volume with RWX PVC
     # sidecar is used to override the default emptyDir plugins volume
