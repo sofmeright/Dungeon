@@ -9,6 +9,9 @@ patches:
       kind: Deployment
       name: prometheus-exporter-pve
     patch: |-
+      - op: add
+        path: /spec/template/metadata/labels/policy.prplanit.com~1metrics
+        value: "true"
       - op: replace
         path: /spec/template/spec/containers/0/image
         value: docker.io/prompve/prometheus-pve-exporter:3
