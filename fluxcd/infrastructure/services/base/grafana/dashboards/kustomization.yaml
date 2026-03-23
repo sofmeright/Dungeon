@@ -2,20 +2,10 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
 configMapGenerator:
-  - name: grafana-dashboards
+  # Kubernetes dashboards (~350KB)
+  - name: grafana-dashboards-kubernetes
     files:
       - cluster-dashboard.json
-      - container-log-dashboard.json
-      - container-log-quick_search.json
-      - docker-and_system_monitoring_node-exporter_v1.3.1.json
-      - docker-container-and-system-monitoring.json
-      - docker-container_dashboard.json
-      - docker.json
-      - docker-monitoring_with_node_selection.json
-      - docker-overview_with_CAdvisor_docker_state_exporter_node_exporter.json
-      - eaton-ups-overview.json
-      - grafana-dashboard-exporter-importer.json
-      - grafana-metrics.json
       - k8s-dashboard.json
       - kubernetes-system-api-server.json
       - kubernetes-system-coredns.json
@@ -23,24 +13,55 @@ configMapGenerator:
       - kubernetes-views-namespaces.json
       - kubernetes-views-nodes.json
       - kubernetes-views-pods.json
-      - loki-canary.json
-      - loki-dashboard.json
-      - loki-logging_dashboard.json
+
+  # Node & system dashboards (~780KB — node-exporter-full is 676KB alone)
+  - name: grafana-dashboards-system
+    files:
       - node-exporter-full_dashboard.json
       - node-exporter-quickstart_and_dashboard.json
+
+  # Monitoring stack dashboards (~340KB)
+  - name: grafana-dashboards-monitoring
+    files:
+      - eaton-ups-overview.json
+      - grafana-dashboard-exporter-importer.json
+      - grafana-metrics.json
       - prometheus.json
       - prometheus-2.0_stats.json
       - prometheus-stats.json
+      - trivy-operator_vulnerabilities.json
+
+  # Infrastructure dashboards (~350KB)
+  - name: grafana-dashboards-infrastructure
+    files:
       - proxmox-prometheus.json
       - proxmox-via_prometheus.json
-      - trivy-operator_vulnerabilities.json
       - truenas-scale-cgroups_containers.json
       - truenas-scale-disk_insight.json
       - truenas-scale-k3s_applications.json
       - truenas-scale-overview.json
       - truenas-scale-temperature_overview.json
-      - unbound.json
       - windows-exporter_dashboard.json
+
+  # Docker dashboards (~380KB)
+  - name: grafana-dashboards-docker
+    files:
+      - docker-and_system_monitoring_node-exporter_v1.3.1.json
+      - docker-container-and-system-monitoring.json
+      - docker-container_dashboard.json
+      - docker.json
+      - docker-monitoring_with_node_selection.json
+      - docker-overview_with_CAdvisor_docker_state_exporter_node_exporter.json
+
+  # Logs & DNS dashboards (~120KB)
+  - name: grafana-dashboards-logs
+    files:
+      - container-log-dashboard.json
+      - container-log-quick_search.json
+      - loki-canary.json
+      - loki-dashboard.json
+      - loki-logging_dashboard.json
+      - unbound.json
 
 generatorOptions:
   disableNameSuffixHash: true
