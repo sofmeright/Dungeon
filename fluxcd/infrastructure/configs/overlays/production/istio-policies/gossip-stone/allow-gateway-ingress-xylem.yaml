@@ -18,4 +18,4 @@ spec:
               - cluster.local/ns/arylls-lookout/sa/xylem-gateway-istio
       to:
         - operation:
-            ports: ["80", "3000", "3001", "5050", "8080", "8480", "9001", "20211"]
+            ports: ["3000", "3001", "5050", "8080", "8090", "8480", "9001", "20211"]
