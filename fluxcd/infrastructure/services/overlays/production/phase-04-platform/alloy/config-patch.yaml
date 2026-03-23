@@ -689,11 +689,6 @@ data:
           job         = "eaton-ups-exporter",
           instance    = "lighthouse",
         },
-        {
-          __address__ = "10.55.6.137:9221",
-          job         = "proxmox-pve-exporter",
-          instance    = "lighthouse",
-        },
       ]
     }
 
@@ -707,6 +702,86 @@ data:
 
       scrape_interval = "30s"
       scrape_timeout  = "10s"
+    }
+
+    // Proxmox VE exporter (multi-target pattern)
+    // The in-cluster PVE exporter is a multi-target exporter: Alloy passes
+    // each Proxmox host as ?target= param, exporter reaches out to PVE API.
+    discovery.relabel "pve_targets" {
+      targets = [
+        { __address__ = "avocado:8006",    instance = "avocado" },
+        { __address__ = "bamboo:8006",     instance = "bamboo" },
+        { __address__ = "cosmos:8006",     instance = "cosmos" },
+        { __address__ = "dragonfruit:8006", instance = "dragonfruit" },
+        { __address__ = "eggplant:8006",   instance = "eggplant" },
+      ]
+
+      rule {
+        source_labels = ["__address__"]
+        target_label  = "__param_target"
+      }
+      rule {
+        source_labels = ["instance"]
+        target_label  = "instance"
+      }
+      rule {
+        target_label = "__address__"
+        replacement  = "prometheus-exporter-pve.gossip-stone.svc.cluster.local:9221"
+      }
+      rule {
+        target_label = "job"
+        replacement  = "proxmox-pve-exporter"
+      }
+    }
+
+    prometheus.scrape "pve_exporter" {
+      targets      = discovery.relabel.pve_targets.output
+      forward_to   = [prometheus.relabel.drop_high_cardinality.receiver]
+      metrics_path = "/pve"
+
+      clustering {
+        enabled = true
+      }
+
+      scrape_interval = "60s"
+      scrape_timeout  = "30s"
+    }
+
+    // Proxmox Backup Server exporter
+    discovery.relabel "pbs_targets" {
+      targets = [
+        { __address__ = "priscilla:8007", instance = "priscilla" },
+      ]
+
+      rule {
+        source_labels = ["__address__"]
+        target_label  = "__param_target"
+      }
+      rule {
+        source_labels = ["instance"]
+        target_label  = "instance"
+      }
+      rule {
+        target_label = "__address__"
+        replacement  = "prometheus-exporter-pve.gossip-stone.svc.cluster.local:9221"
+      }
+      rule {
+        target_label = "job"
+        replacement  = "proxmox-pbs-exporter"
+      }
+    }
+
+    prometheus.scrape "pbs_exporter" {
+      targets      = discovery.relabel.pbs_targets.output
+      forward_to   = [prometheus.relabel.drop_high_cardinality.receiver]
+      metrics_path = "/pbs"
+
+      clustering {
+        enabled = true
+      }
+
+      scrape_interval = "60s"
+      scrape_timeout  = "30s"
     }
 
     // ==========================================================================
