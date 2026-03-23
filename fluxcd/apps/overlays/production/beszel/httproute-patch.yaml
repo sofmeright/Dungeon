@@ -11,3 +11,7 @@ spec:
       namespace: arylls-lookout
   hostnames:
     - beszel.pcfae.com
+  rules:
+    - backendRefs:
+        - name: beszel
+          port: 8353
