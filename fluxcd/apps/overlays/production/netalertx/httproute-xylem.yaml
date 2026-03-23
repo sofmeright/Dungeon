@@ -4,7 +4,7 @@ metadata:
   name: netalertx-xylem
   annotations:
     gatus.home-operations.com/endpoint: |
-      group: "Monitoring (Gossip Stone💬)"
+      group: "Privileged Telemetry (Lakitu☁️)"
 spec:
   parentRefs:
     - name: xylem-gateway

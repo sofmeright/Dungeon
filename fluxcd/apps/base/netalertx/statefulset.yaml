@@ -36,9 +36,9 @@ spec:
             - name: TZ
               value: "PLACEHOLDER_TZ"
           volumeMounts:
-            - name: gossip-stone-netalertx-config
+            - name: lakitu-netalertx-config
               mountPath: /app/config
-            - name: gossip-stone-netalertx-sqlite
+            - name: lakitu-netalertx-sqlite
               mountPath: /app/db
             - name: api-tmpfs
               mountPath: /app/api
@@ -55,7 +55,7 @@ spec:
             medium: Memory
   volumeClaimTemplates:
     - metadata:
-        name: gossip-stone-netalertx-config
+        name: lakitu-netalertx-config
       spec:
         accessModes: ["ReadWriteOnce"]
         storageClassName: PLACEHOLDER_STORAGE_CLASS
@@ -63,7 +63,7 @@ spec:
           requests:
             storage: PLACEHOLDER_CONFIG_STORAGE_SIZE
     - metadata:
-        name: gossip-stone-netalertx-sqlite
+        name: lakitu-netalertx-sqlite
       spec:
         accessModes: ["ReadWriteOnce"]
         storageClassName: PLACEHOLDER_STORAGE_CLASS
