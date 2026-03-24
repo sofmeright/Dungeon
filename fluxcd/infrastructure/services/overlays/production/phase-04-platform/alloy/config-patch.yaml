@@ -657,6 +657,12 @@ data:
         source_labels = ["__meta_kubernetes_service_label_app_kubernetes_io_name"]
         target_label  = "app"
       }
+      // Override instance label from service annotation if present
+      rule {
+        source_labels = ["__meta_kubernetes_service_annotation_monitoring_prplanit_com_instance"]
+        regex         = "(.+)"
+        target_label  = "instance"
+      }
     }
 
     prometheus.scrape "kubernetes_services" {
@@ -694,34 +700,6 @@ data:
 
     prometheus.scrape "lighthouse_exporters" {
       targets    = discovery.relabel.lighthouse_exporters.output
-      forward_to = [prometheus.relabel.drop_high_cardinality.receiver]
-
-      clustering {
-        enabled = true
-      }
-
-      scrape_interval = "30s"
-      scrape_timeout  = "10s"
-    }
-
-    // TrueNAS graphite exporter (fixed instance label)
-    discovery.relabel "truenas_graphite" {
-      targets = [
-        { __address__ = "graphite-exporter-truenas.gossip-stone.svc.cluster.local:9108", instance = "gringotts" },
-      ]
-
-      rule {
-        source_labels = ["instance"]
-        target_label  = "instance"
-      }
-      rule {
-        target_label = "job"
-        replacement  = "truenas-graphite"
-      }
-    }
-
-    prometheus.scrape "truenas_graphite" {
-      targets    = discovery.relabel.truenas_graphite.output
       forward_to = [prometheus.relabel.drop_high_cardinality.receiver]
 
       clustering {
