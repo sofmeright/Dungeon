@@ -704,6 +704,34 @@ data:
       scrape_timeout  = "10s"
     }
 
+    // TrueNAS graphite exporter (fixed instance label)
+    discovery.relabel "truenas_graphite" {
+      targets = [
+        { __address__ = "graphite-exporter-truenas.gossip-stone.svc.cluster.local:9108", instance = "gringotts" },
+      ]
+
+      rule {
+        source_labels = ["instance"]
+        target_label  = "instance"
+      }
+      rule {
+        target_label = "job"
+        replacement  = "truenas-graphite"
+      }
+    }
+
+    prometheus.scrape "truenas_graphite" {
+      targets    = discovery.relabel.truenas_graphite.output
+      forward_to = [prometheus.relabel.drop_high_cardinality.receiver]
+
+      clustering {
+        enabled = true
+      }
+
+      scrape_interval = "30s"
+      scrape_timeout  = "10s"
+    }
+
     // Proxmox VE exporter (multi-target pattern)
     // The in-cluster PVE exporter is a multi-target exporter: Alloy passes
     // each Proxmox host as ?target= param, exporter reaches out to PVE API.
