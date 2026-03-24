@@ -4,7 +4,7 @@ set -euo pipefail
 # ===================================================================
 # CRI-O REGISTRY MIRROR CONFIGURATION
 # ===================================================================
-# This script configures CRI-O to use JFrog Artifactory pull-through
+# This script configures CRI-O to use Harbor pull-through
 # caches for docker.io, ghcr.io, lscr.io, and quay.io, reducing
 # bandwidth and avoiding rate limits.
 #
@@ -57,11 +57,14 @@ set -euo pipefail
 # Create registries.conf.d directory if it doesn't exist
 sudo mkdir -p /etc/containers/registries.conf.d
 
-# Configure all JCR pull-through cache mirrors
-cat <<EOF | sudo tee /etc/containers/registries.conf.d/jcr-mirrors.conf >/dev/null
-# JFrog Artifactory pull-through caches
+# Remove old JFrog mirror config if present
+sudo rm -f /etc/containers/registries.conf.d/jcr-mirrors.conf
+
+# Configure all Harbor pull-through cache mirrors
+cat <<EOF | sudo tee /etc/containers/registries.conf.d/harbor-mirrors.conf >/dev/null
+# Harbor pull-through caches
 # This reduces bandwidth usage and avoids registry rate limits
-# Falls back to upstream registry if JCR is unavailable
+# Falls back to upstream registry if Harbor is unavailable
 
 # Docker Hub mirror
 [[registry]]
@@ -69,7 +72,7 @@ prefix = "docker.io"
 location = "docker.io"
 
 [[registry.mirror]]
-location = "docker.jcr.pcfae.com"
+location = "docker.cr.pcfae.com"
 
 # GitHub Container Registry mirror
 [[registry]]
@@ -77,7 +80,7 @@ prefix = "ghcr.io"
 location = "ghcr.io"
 
 [[registry.mirror]]
-location = "ghcr.jcr.pcfae.com"
+location = "ghcr.cr.pcfae.com"
 
 # LinuxServer.io mirror
 [[registry]]
@@ -85,7 +88,7 @@ prefix = "lscr.io"
 location = "lscr.io"
 
 [[registry.mirror]]
-location = "lscr.jcr.pcfae.com"
+location = "lscr.cr.pcfae.com"
 
 # Quay.io mirror
 [[registry]]
@@ -93,7 +96,7 @@ prefix = "quay.io"
 location = "quay.io"
 
 [[registry.mirror]]
-location = "quay.jcr.pcfae.com"
+location = "quay.cr.pcfae.com"
 EOF
 
 echo "✓ Registry mirror configuration created"
@@ -137,14 +140,14 @@ if [ $FAIL_COUNT -eq 0 ]; then
   echo "✓ All nodes configured successfully!"
   echo ""
   echo "Registry mirror configuration:"
-  echo "  docker.io → docker.jcr.pcfae.com"
-  echo "  ghcr.io   → ghcr.jcr.pcfae.com"
-  echo "  lscr.io   → lscr.jcr.pcfae.com"
-  echo "  quay.io   → quay.jcr.pcfae.com"
+  echo "  docker.io → docker.cr.pcfae.com"
+  echo "  ghcr.io   → ghcr.cr.pcfae.com"
+  echo "  lscr.io   → lscr.cr.pcfae.com"
+  echo "  quay.io   → quay.cr.pcfae.com"
   echo ""
-  echo "Images will now be pulled through JCR pull-through caches."
+  echo "Images will now be pulled through Harbor pull-through caches."
   echo "This reduces bandwidth and avoids rate limiting."
-  echo "Automatically falls back to upstream if JCR is unavailable."
+  echo "Automatically falls back to upstream if Harbor is unavailable."
   echo "==================================="
   exit 0
 else
