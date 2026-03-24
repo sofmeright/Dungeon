@@ -17,6 +17,10 @@ patches:
             port: 2003
             protocol: TCP
             targetPort: 2003
+          - name: metrics
+            port: 9108
+            protocol: TCP
+            targetPort: 9108
       - op: add
         path: /spec/type
         value: LoadBalancer
