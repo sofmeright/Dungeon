@@ -16,10 +16,6 @@ spec:
       containers:
         - name: graphite-exporter
           image: docker.io/prom/graphite-exporter:v0.16.0
-          args:
-            - '--graphite.mapping-config=/etc/graphite_mappings.yaml'
-            - '--graphite.listen-address=:2003'
-            - '--log.level=debug'
           resources:
             requests:
               cpu: 50m
