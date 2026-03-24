@@ -98,7 +98,7 @@
             "type": "prometheus",
             "uid": "${datasource}"
           },
-          "expr": "time() - node_boot_time_seconds{instance=~\"$server:.*\"}",
+          "expr": "time() - node_boot_time_seconds{instance=~\"$server.*\"}",
           "hide": false,
           "intervalFactor": 2,
           "legendFormat": "",
@@ -259,7 +259,7 @@
             "type": "prometheus",
             "uid": "${datasource}"
           },
-          "expr": "node_load1{instance=~\"$server:.*\"} / count by(job, instance)(count by(job, instance, cpu)(node_cpu_seconds_total{instance=~\"$server:.*\"}))",
+          "expr": "node_load1{instance=~\"$server.*\"} / count by(job, instance)(count by(job, instance, cpu)(node_cpu_seconds_total{instance=~\"$server.*\"}))",
           "intervalFactor": 2,
           "refId": "A",
           "step": 1800
@@ -342,7 +342,7 @@
             "type": "prometheus",
             "uid": "${datasource}"
           },
-          "expr": "min((node_filesystem_size_bytes{fstype=~\"xfs|ext4\",instance=~\"$server:.*\"} - node_filesystem_free_bytes{fstype=~\"xfs|ext4\",instance=~\"$server:.*\"} )/ node_filesystem_size_bytes{fstype=~\"xfs|ext4\",instance=~\"$server:.*\"})",
+          "expr": "min((node_filesystem_size_bytes{fstype=~\"xfs|ext4\",instance=~\"$server.*\"} - node_filesystem_free_bytes{fstype=~\"xfs|ext4\",instance=~\"$server.*\"} )/ node_filesystem_size_bytes{fstype=~\"xfs|ext4\",instance=~\"$server.*\"})",
           "hide": false,
           "intervalFactor": 2,
           "refId": "A",
@@ -426,7 +426,7 @@
             "type": "prometheus",
             "uid": "${datasource}"
           },
-          "expr": "((node_memory_MemTotal_bytes{instance=~\"$server:.*\"} - node_memory_MemAvailable_bytes{instance=~\"$server:.*\"}) / node_memory_MemTotal_bytes{instance=~\"$server:.*\"}) * 100",
+          "expr": "((node_memory_MemTotal_bytes{instance=~\"$server.*\"} - node_memory_MemAvailable_bytes{instance=~\"$server.*\"}) / node_memory_MemTotal_bytes{instance=~\"$server.*\"}) * 100",
           "intervalFactor": 2,
           "refId": "A",
           "step": 1800
@@ -508,7 +508,7 @@
             "type": "prometheus",
             "uid": "${datasource}"
           },
-          "expr": "(node_memory_SwapTotal_bytes{instance=~'$server:.*'} - node_memory_SwapFree_bytes{instance=~'$server:.*'})",
+          "expr": "(node_memory_SwapTotal_bytes{instance=~'$server.*'} - node_memory_SwapFree_bytes{instance=~'$server.*'})",
           "intervalFactor": 2,
           "legendFormat": "",
           "refId": "A",
@@ -920,7 +920,7 @@
             "type": "prometheus",
             "uid": "${datasource}"
           },
-          "expr": "node_load1{instance=~\"$server:.*\"} / count by(job, instance)(count by(job, instance, cpu)(node_cpu_seconds_total{instance=~\"$server:.*\"}))",
+          "expr": "node_load1{instance=~\"$server.*\"} / count by(job, instance)(count by(job, instance, cpu)(node_cpu_seconds_total{instance=~\"$server.*\"}))",
           "intervalFactor": 2,
           "refId": "A",
           "step": 600
