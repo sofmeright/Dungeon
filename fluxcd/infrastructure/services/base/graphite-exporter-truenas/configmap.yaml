@@ -120,7 +120,7 @@ data:
     # Paths: truenas.<host>.truenas_disk_stats_<type>._serial_<S>._serial_<S>.<dim>
     ################################################
 
-    - match: 'truenas\.([^.]+)\.truenas_disk_stats\.busy\._serial_([^.]+)\._serial_[^.]+\.busy'
+    - match: 'truenas\.([^.]+)\.truenas_disk_stats\.busy\._+serial_([^.]+)\._+serial_[^.]+\.busy'
       match_type: "regex"
       name: "disk_busy"
       labels:
@@ -128,7 +128,7 @@ data:
         instance: "${1}"
         disk: "${2}"
 
-    - match: 'truenas\.([^.]+)\.truenas_disk_stats\.io\._serial_([^.]+)\._serial_[^.]+\.(.*)'
+    - match: 'truenas\.([^.]+)\.truenas_disk_stats\.io\._+serial_([^.]+)\._+serial_[^.]+\.(.*)'
       match_type: "regex"
       name: "disk_io"
       labels:
@@ -137,7 +137,7 @@ data:
         disk: "${2}"
         op: "${3}"
 
-    - match: 'truenas\.([^.]+)\.truenas_disk_stats\.ops\._serial_([^.]+)\._serial_[^.]+\.(.*)'
+    - match: 'truenas\.([^.]+)\.truenas_disk_stats\.ops\._+serial_([^.]+)\._+serial_[^.]+\.(.*)'
       match_type: "regex"
       name: "disk_io_ops"
       labels:
