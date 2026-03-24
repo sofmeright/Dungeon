@@ -4,16 +4,22 @@ metadata:
   name: graphite-exporter-truenas
 spec:
   template:
+    metadata:
+      labels:
+        policy.prplanit.com/metrics: "true"
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "9108"
     spec:
       imagePullSecrets:
-      - name: jcr-pcfae-dungeon-pull-secret
+        - name: jcr-pcfae-dungeon-pull-secret
       containers:
-      - name: graphite-exporter
-        image: docker.io/prom/graphite-exporter:v0.16.0
-        resources:
-          requests:
-            cpu: 50m
-            memory: 64Mi
-          limits:
-            cpu: 200m
-            memory: 128Mi
+        - name: graphite-exporter
+          image: docker.io/prom/graphite-exporter:v0.16.0
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              cpu: 200m
+              memory: 128Mi
