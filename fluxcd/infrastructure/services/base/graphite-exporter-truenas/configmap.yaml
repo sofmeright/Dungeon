@@ -120,7 +120,7 @@ data:
     # Paths: truenas.<host>.truenas_disk_stats_<type>._serial_<S>._serial_<S>.<dim>
     ################################################
 
-    - match: 'truenas\.(.*)\.truenas_disk_stats_busy\._serial_(.+)\._serial_[^.]+\.busy'
+    - match: 'truenas\.([^.]+)\.truenas_disk_stats_busy\.\.serial_([^.]+)\.\.serial_[^.]+\.busy'
       match_type: "regex"
       name: "disk_busy"
       labels:
@@ -128,7 +128,7 @@ data:
         instance: "${1}"
         disk: "${2}"
 
-    - match: 'truenas\.(.*)\.truenas_disk_stats_io\._serial_(.+)\._serial_[^.]+\.(.*)'
+    - match: 'truenas\.([^.]+)\.truenas_disk_stats_io\.\.serial_([^.]+)\.\.serial_[^.]+\.(.*)'
       match_type: "regex"
       name: "disk_io"
       labels:
@@ -137,7 +137,7 @@ data:
         disk: "${2}"
         op: "${3}"
 
-    - match: 'truenas\.(.*)\.truenas_disk_stats_ops\._serial_(.+)\._serial_[^.]+\.(.*)'
+    - match: 'truenas\.([^.]+)\.truenas_disk_stats_ops\.\.serial_([^.]+)\.\.serial_[^.]+\.(.*)'
       match_type: "regex"
       name: "disk_io_ops"
       labels:
@@ -151,7 +151,7 @@ data:
     # Paths: truenas.<host>.truenas_arcstats_<stat>_<value>
     ################################################
 
-    - match: 'truenas\.(.*)\.truenas_arcstats_size_size'
+    - match: 'truenas\.([^.]+)\.truenas_arcstats_size\.size'
       match_type: "regex"
       name: "zfs_arc_size"
       labels:
@@ -159,7 +159,7 @@ data:
         instance: "${1}"
         kind: "size"
 
-    - match: 'truenas\.(.*)\.truenas_arcstats_free_free'
+    - match: 'truenas\.([^.]+)\.truenas_arcstats_free\.free'
       match_type: "regex"
       name: "zfs_arc_size"
       labels:
@@ -167,7 +167,7 @@ data:
         instance: "${1}"
         kind: "free"
 
-    - match: 'truenas\.(.*)\.truenas_arcstats_avail_avail'
+    - match: 'truenas\.([^.]+)\.truenas_arcstats_avail\.avail'
       match_type: "regex"
       name: "zfs_arc_size"
       labels:
@@ -175,14 +175,7 @@ data:
         instance: "${1}"
         kind: "avail"
 
-    - match: 'truenas\.(.*)\.truenas_arcstats_l2size_l2size'
-      match_type: "regex"
-      name: "zfs_l2_size"
-      labels:
-        job: "truenas"
-        instance: "${1}"
-
-    - match: 'truenas\.(.*)\.truenas_arcstats_l2hits_l2hits'
+    - match: 'truenas\.([^.]+)\.truenas_arcstats_l2hits\.l2hits'
       match_type: "regex"
       name: "zfs_hits"
       labels:
@@ -190,7 +183,7 @@ data:
         instance: "${1}"
         kind: "l2_hits"
 
-    - match: 'truenas\.(.*)\.truenas_arcstats_l2miss_l2miss'
+    - match: 'truenas\.([^.]+)\.truenas_arcstats_l2miss\.l2miss'
       match_type: "regex"
       name: "zfs_hits"
       labels:
@@ -198,7 +191,7 @@ data:
         instance: "${1}"
         kind: "l2_miss"
 
-    - match: 'truenas\.(.*)\.truenas_arcstats_l2read_l2read'
+    - match: 'truenas\.([^.]+)\.truenas_arcstats_l2read\.l2read'
       match_type: "regex"
       name: "zfs_reads"
       labels:
@@ -206,7 +199,7 @@ data:
         instance: "${1}"
         kind: "l2"
 
-    - match: 'truenas\.(.*)\.truenas_arcstats_dread_dread'
+    - match: 'truenas\.([^.]+)\.truenas_arcstats_dread\.dread'
       match_type: "regex"
       name: "zfs_reads"
       labels:
@@ -214,7 +207,7 @@ data:
         instance: "${1}"
         kind: "demand"
 
-    - match: 'truenas\.(.*)\.truenas_arcstats_dmhit_dmhit'
+    - match: 'truenas\.([^.]+)\.truenas_arcstats_dmhit\.dmhit'
       match_type: "regex"
       name: "zfs_hits"
       labels:
@@ -222,7 +215,7 @@ data:
         instance: "${1}"
         kind: "demand_metadata_hit"
 
-    - match: 'truenas\.(.*)\.truenas_arcstats_dmmis_dmmis'
+    - match: 'truenas\.([^.]+)\.truenas_arcstats_dmmis\.dmmis'
       match_type: "regex"
       name: "zfs_hits"
       labels:
@@ -230,7 +223,7 @@ data:
         instance: "${1}"
         kind: "demand_metadata_miss"
 
-    - match: 'truenas\.(.*)\.truenas_arcstats_ddhit_ddhit'
+    - match: 'truenas\.([^.]+)\.truenas_arcstats_ddhit\.ddhit'
       match_type: "regex"
       name: "zfs_hits"
       labels:
@@ -238,7 +231,7 @@ data:
         instance: "${1}"
         kind: "demand_data_hit"
 
-    - match: 'truenas\.(.*)\.truenas_arcstats_ddmis_ddmis'
+    - match: 'truenas\.([^.]+)\.truenas_arcstats_ddmis\.ddmis'
       match_type: "regex"
       name: "zfs_hits"
       labels:
@@ -246,7 +239,7 @@ data:
         instance: "${1}"
         kind: "demand_data_miss"
 
-    - match: 'truenas\.(.*)\.truenas_arcstats_([^.]+)_[^.]+'
+    - match: 'truenas\.([^.]+)\.truenas_arcstats_([^.]+)\.([^.]+)'
       match_type: "regex"
       name: "zfs_arcstats"
       labels:
@@ -259,7 +252,7 @@ data:
     # Paths: truenas.<host>.truenas_meminfo_<type>_<type>
     ################################################
 
-    - match: 'truenas\.(.*)\.truenas_meminfo_total_total'
+    - match: 'truenas\.([^.]+)\.truenas_meminfo_total\.total'
       match_type: "regex"
       name: "physical_memory"
       labels:
@@ -267,7 +260,7 @@ data:
         instance: "${1}"
         kind: "total"
 
-    - match: 'truenas\.(.*)\.truenas_meminfo_available_available'
+    - match: 'truenas\.([^.]+)\.truenas_meminfo_available\.available'
       match_type: "regex"
       name: "physical_memory"
       labels:
