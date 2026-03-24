@@ -116,7 +116,167 @@ data:
         serial: "${2}"
 
     ################################################
-    # disk operation mappings
+    # TrueNAS SCALE new-format disk stats (serial-based)
+    # Paths: truenas.<host>.truenas_disk_stats_<type>._serial_<S>._serial_<S>.<dim>
+    ################################################
+
+    - match: 'truenas\.(.*)\.truenas_disk_stats_busy\._serial_(.+)\._serial_.*\.busy'
+      match_type: "regex"
+      name: "disk_busy"
+      labels:
+        job: "truenas"
+        instance: "${1}"
+        disk: "${2}"
+
+    - match: 'truenas\.(.*)\.truenas_disk_stats_io\._serial_(.+)\._serial_.*\.(.*)'
+      match_type: "regex"
+      name: "disk_io"
+      labels:
+        job: "truenas"
+        instance: "${1}"
+        disk: "${2}"
+        op: "${3}"
+
+    - match: 'truenas\.(.*)\.truenas_disk_stats_ops\._serial_(.+)\._serial_.*\.(.*)'
+      match_type: "regex"
+      name: "disk_io_ops"
+      labels:
+        job: "truenas"
+        instance: "${1}"
+        disk: "${2}"
+        op: "${3}"
+
+    ################################################
+    # TrueNAS SCALE new-format ARC stats
+    # Paths: truenas.<host>.truenas_arcstats_<stat>_<value>
+    ################################################
+
+    - match: 'truenas\.(.*)\.truenas_arcstats_size_size'
+      match_type: "regex"
+      name: "zfs_arc_size"
+      labels:
+        job: "truenas"
+        instance: "${1}"
+        kind: "size"
+
+    - match: 'truenas\.(.*)\.truenas_arcstats_free_free'
+      match_type: "regex"
+      name: "zfs_arc_size"
+      labels:
+        job: "truenas"
+        instance: "${1}"
+        kind: "free"
+
+    - match: 'truenas\.(.*)\.truenas_arcstats_avail_avail'
+      match_type: "regex"
+      name: "zfs_arc_size"
+      labels:
+        job: "truenas"
+        instance: "${1}"
+        kind: "avail"
+
+    - match: 'truenas\.(.*)\.truenas_arcstats_l2size_l2size'
+      match_type: "regex"
+      name: "zfs_l2_size"
+      labels:
+        job: "truenas"
+        instance: "${1}"
+
+    - match: 'truenas\.(.*)\.truenas_arcstats_l2hits_l2hits'
+      match_type: "regex"
+      name: "zfs_hits"
+      labels:
+        job: "truenas"
+        instance: "${1}"
+        kind: "l2_hits"
+
+    - match: 'truenas\.(.*)\.truenas_arcstats_l2miss_l2miss'
+      match_type: "regex"
+      name: "zfs_hits"
+      labels:
+        job: "truenas"
+        instance: "${1}"
+        kind: "l2_miss"
+
+    - match: 'truenas\.(.*)\.truenas_arcstats_l2read_l2read'
+      match_type: "regex"
+      name: "zfs_reads"
+      labels:
+        job: "truenas"
+        instance: "${1}"
+        kind: "l2"
+
+    - match: 'truenas\.(.*)\.truenas_arcstats_dread_dread'
+      match_type: "regex"
+      name: "zfs_reads"
+      labels:
+        job: "truenas"
+        instance: "${1}"
+        kind: "demand"
+
+    - match: 'truenas\.(.*)\.truenas_arcstats_dmhit_dmhit'
+      match_type: "regex"
+      name: "zfs_hits"
+      labels:
+        job: "truenas"
+        instance: "${1}"
+        kind: "demand_metadata_hit"
+
+    - match: 'truenas\.(.*)\.truenas_arcstats_dmmis_dmmis'
+      match_type: "regex"
+      name: "zfs_hits"
+      labels:
+        job: "truenas"
+        instance: "${1}"
+        kind: "demand_metadata_miss"
+
+    - match: 'truenas\.(.*)\.truenas_arcstats_ddhit_ddhit'
+      match_type: "regex"
+      name: "zfs_hits"
+      labels:
+        job: "truenas"
+        instance: "${1}"
+        kind: "demand_data_hit"
+
+    - match: 'truenas\.(.*)\.truenas_arcstats_ddmis_ddmis'
+      match_type: "regex"
+      name: "zfs_hits"
+      labels:
+        job: "truenas"
+        instance: "${1}"
+        kind: "demand_data_miss"
+
+    - match: 'truenas\.(.*)\.truenas_arcstats_(.*?)_(.*)'
+      match_type: "regex"
+      name: "zfs_arcstats"
+      labels:
+        job: "truenas"
+        instance: "${1}"
+        stat: "${2}"
+
+    ################################################
+    # TrueNAS SCALE new-format memory info
+    # Paths: truenas.<host>.truenas_meminfo_<type>_<type>
+    ################################################
+
+    - match: 'truenas\.(.*)\.truenas_meminfo_total_total'
+      match_type: "regex"
+      name: "physical_memory"
+      labels:
+        job: "truenas"
+        instance: "${1}"
+        kind: "total"
+
+    - match: 'truenas\.(.*)\.truenas_meminfo_available_available'
+      match_type: "regex"
+      name: "physical_memory"
+      labels:
+        job: "truenas"
+        instance: "${1}"
+        kind: "available"
+
+    ################################################
+    # disk operation mappings (legacy Netdata format)
     ################################################
 
     - match: 'truenas\.(.*)\.disk\.(.*)\.(.*)'
