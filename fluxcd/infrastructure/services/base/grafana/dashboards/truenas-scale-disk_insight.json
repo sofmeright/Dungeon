@@ -996,7 +996,7 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "expr": "disk_qops{instance=~\"$instance\", disk=~\"$disk\"}",
+          "expr": "sum by (disk) (rate(disk_io_ops{instance=~\"$instance\", disk=~\"$disk\"}[5m]))",
           "instant": false,
           "legendFormat": "value",
           "range": true,
@@ -1099,7 +1099,7 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "expr": "abs(disk_io_size{instance=~\"$instance\", disk=~\"$disk\"})",
+          "expr": "rate(disk_io{instance=~\"$instance\", disk=~\"$disk\"}[5m]) / (rate(disk_io_ops{instance=~\"$instance\", disk=~\"$disk\"}[5m]) > 0)",
           "instant": false,
           "legendFormat": "{{op}}",
           "range": true,

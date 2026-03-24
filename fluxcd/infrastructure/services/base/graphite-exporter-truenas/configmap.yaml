@@ -851,7 +851,7 @@ data:
         cgroup: "${2}"
         unit: "percent"
 
-    - match: 'truenas\.(.*)\.(.*)\.mem_full_pressure_stall_time\.time'
+    - match: 'truenas\.(.*)\.(.*)\.mem(?:ory)?_full_pressure_stall_time\.time'
       match_type: "regex"
       name: "cgroup_mem_full_pressure_stall_time"
       labels:
@@ -871,7 +871,7 @@ data:
         cgroup: "${2}"
         unit: "percent"
 
-    - match: 'truenas\.(.*)\.(.*)\.mem_some_pressure_stall_time\.time'
+    - match: 'truenas\.(.*)\.(.*)\.mem(?:ory)?_some_pressure_stall_time\.time'
       match_type: "regex"
       name: "cgroup_mem_some_pressure_stall_time"
       labels:

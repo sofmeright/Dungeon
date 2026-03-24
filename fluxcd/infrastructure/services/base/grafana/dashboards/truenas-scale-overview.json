@@ -333,7 +333,7 @@
             }
           },
           "mappings": [],
-          "unit": "mbytes"
+          "unit": "bytes"
         },
         "overrides": []
       },
@@ -1406,7 +1406,7 @@
                 }
               },
               "mappings": [],
-              "unit": "mbytes"
+              "unit": "bytes"
             },
             "overrides": []
           },
@@ -1613,7 +1613,7 @@
                 "uid": "${datasource}"
               },
               "editorMode": "code",
-              "expr": "memory_available{instance=~\"$instance\"}",
+              "expr": "physical_memory{instance=~\"$instance\", kind=\"available\"}",
               "instant": false,
               "legendFormat": "{{kind}}",
               "range": true,
@@ -4400,7 +4400,7 @@
                 "uid": "${datasource}"
               },
               "editorMode": "code",
-              "expr": "zfs_arc_size{instance=~\"$instance\", op=~\"arcsz|target\"}",
+              "expr": "zfs_arc_size{instance=~\"$instance\"}",
               "instant": false,
               "legendFormat": "{{op}}",
               "range": true,
@@ -5071,7 +5071,7 @@
                 "uid": "${datasource}"
               },
               "editorMode": "code",
-              "expr": "zfs_hits_rate{instance=~\"$instance\"}",
+              "expr": "rate(zfs_hits{instance=~\"$instance\", kind=\"demand_data_hit\"}[5m]) / (rate(zfs_hits{instance=~\"$instance\", kind=\"demand_data_hit\"}[5m]) + rate(zfs_hits{instance=~\"$instance\", kind=\"demand_data_miss\"}[5m]))",
               "instant": false,
               "legendFormat": "{{op}}",
               "range": true,
@@ -5482,7 +5482,7 @@
                 "uid": "${datasource}"
               },
               "editorMode": "code",
-              "expr": "disk_utilization{instance=~\"$instance\", disk=~\"$disk\"}",
+              "expr": "disk_busy{instance=~\"$instance\", disk=~\"$disk\"}",
               "instant": false,
               "legendFormat": "utilization",
               "range": true,
@@ -5770,7 +5770,7 @@
                 "uid": "${datasource}"
               },
               "editorMode": "code",
-              "expr": "abs(disk_io_size{instance=~\"$instance\", disk=~\"$disk\"})",
+              "expr": "rate(disk_io{instance=~\"$instance\", disk=~\"$disk\"}[5m]) / (rate(disk_io_ops{instance=~\"$instance\", disk=~\"$disk\"}[5m]) > 0)",
               "instant": false,
               "legendFormat": "{{op}}",
               "range": true,
@@ -5866,7 +5866,7 @@
                 "uid": "${datasource}"
               },
               "editorMode": "code",
-              "expr": "disk_qops{instance=~\"$instance\", disk=~\"$disk\"}",
+              "expr": "sum by (disk) (rate(disk_io_ops{instance=~\"$instance\", disk=~\"$disk\"}[5m]))",
               "instant": false,
               "legendFormat": "value",
               "range": true,
