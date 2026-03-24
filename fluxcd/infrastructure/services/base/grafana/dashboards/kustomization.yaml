@@ -26,6 +26,7 @@ configMapGenerator:
       - eaton-ups-overview.json
       - grafana-dashboard-exporter-importer.json
       - grafana-metrics.json
+      - nvidia-dcgm-exporter.json
       - prometheus.json
       - prometheus-2.0_stats.json
       - prometheus-stats.json
