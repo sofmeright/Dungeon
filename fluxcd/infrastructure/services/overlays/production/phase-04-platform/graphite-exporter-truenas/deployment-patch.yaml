@@ -7,7 +7,10 @@ spec:
     metadata:
       labels:
         policy.prplanit.com/metrics: "true"
-      annotations: {}
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "9108"
+        monitoring.prplanit.com/instance: "gringotts"
     spec:
       imagePullSecrets:
         - name: jcr-pcfae-dungeon-pull-secret

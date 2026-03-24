@@ -429,6 +429,12 @@ data:
         regex         = "(.+)"
         target_label  = "app"
       }
+      // Override instance label from pod annotation if present
+      rule {
+        source_labels = ["__meta_kubernetes_pod_annotation_monitoring_prplanit_com_instance"]
+        regex         = "(.+)"
+        target_label  = "instance"
+      }
     }
 
     prometheus.scrape "kubernetes_pods" {
@@ -656,12 +662,6 @@ data:
       rule {
         source_labels = ["__meta_kubernetes_service_label_app_kubernetes_io_name"]
         target_label  = "app"
-      }
-      // Override instance label from service annotation if present
-      rule {
-        source_labels = ["__meta_kubernetes_service_annotation_monitoring_prplanit_com_instance"]
-        regex         = "(.+)"
-        target_label  = "instance"
       }
     }
 
