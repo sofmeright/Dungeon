@@ -12,6 +12,7 @@ spec:
         - source:
             principals:
               - cluster.local/ns/hookshot/sa/tactical-nginx
+              - cluster.local/ns/hookshot/sa/tactical-backend
       to:
         - operation:
             ports: ["4443"]
