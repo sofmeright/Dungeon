@@ -1,0 +1,38 @@
+version: 1
+
+lifecycle:
+  mode: gitops
+
+commit:
+  conventional: true
+  backend: forge
+
+glossary:
+  types:
+    feat:
+      aliases: [f, feature]
+      priority: 90
+      release_visible: true
+    fix:
+      aliases: [fx, bugfix]
+      priority: 80
+      release_visible: true
+    refactor:
+      aliases: [rf]
+      priority: 50
+      release_visible: true
+    chore:
+      aliases: [c]
+      priority: 20
+      release_visible: false
+    docs:
+      aliases: [d]
+      priority: 10
+      release_visible: false
+
+policies:
+  git_tags:
+    stable: "^v\\d+\\.\\d+\\.\\d+$"
+
+lint:
+  level: full

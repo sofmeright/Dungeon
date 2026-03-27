@@ -1,115 +1,71 @@
+# StageFreight GitLab CI skeleton
+# Behavior is configured in .stagefreight.yml, not here.
+# This file translates GitLab CI context into StageFreight's normalized contract.
+
 stages:
-  - test
-  - deploy
-  - build
-  - ntfy
-  # - ollama
+  - prepare
+  - lint
+  - security
+  - deps
+  - docs
+  - publish
+  - release
 
-#job_build:
-  #stage: build
-  #script:
-    #- echo "Building the project" 
+workflow:
+  auto_cancel:
+    on_new_commit: none
 
-# job_test:
-  # stage: test
-  # script:
-    # - echo "Running tests"
-    # We need a test to evaluate if the user can sudo on each inventory item w/o pwd (visudo)!
+.stagefreight-context: &sf-context
+  - export SF_CI_PROVIDER=gitlab
+  - export SF_CI_EVENT="${CI_PIPELINE_SOURCE}"
+  - export SF_CI_BRANCH="${CI_COMMIT_BRANCH}"
+  - export SF_CI_TAG="${CI_COMMIT_TAG}"
+  - export SF_CI_SHA="${CI_COMMIT_SHA}"
+  - export SF_CI_DEFAULT_BRANCH="${CI_DEFAULT_BRANCH}"
+  - export SF_CI_REPO_URL="${CI_PROJECT_URL}"
+  - export SF_CI_WORKSPACE="$PWD"
+  - export SF_CI_PIPELINE_ID="${CI_PIPELINE_ID}"
 
-sync-fs:
-  before_script: |
-    echo "---------------------------------------------------------------------------"
-    echo "Ad Arbitorium 🔐 - gitops - pre-Build - Preparing an ubuntu base image for build phase..."
-    echo "---------------------------------------------------------------------------"
-    echo "Install ssh-agent if not already installed, it is required by Docker."
-    ## (change apt-get to yum if you use an RPM-based image)
-    echo "Installing the ssh-agent, openssh-client, and rsync..."
-    command -v ssh-agent >/dev/null || ( apt-get update -y >/dev/null && apt-get install openssh-client rsync -y >/dev/null )
-    echo "---------------------------------------------------------------------------"
-    echo "Starting ssh-agent..." # (inside the build environment)
-    eval $(ssh-agent -s) >/dev/null
-    echo "---------------------------------------------------------------------------"
-    ## Give the right permissions, otherwise ssh-add will refuse to add files
-    ## Add the SSH key stored in SSH_PRIVATE_KEY file type CI/CD variable to the agent store
-    echo "Loading SSH_PRIVATE_KEY from Gitlab CI/CD Variables into the agent store..."
-    chmod 400 "$SSH_PRIVATE_KEY"  >/dev/null
-    ssh-add   "$SSH_PRIVATE_KEY"  >/dev/null
-    echo "---------------------------------------------------------------------------"
-    echo "Creating SSH directory & confirming the private key permissions are valid..."
-    mkdir -p  ~/.ssh          >/dev/null
-    chmod 700 ~/.ssh          >/dev/null
-    touch ~/.ssh/known_hosts  >/dev/null
-    echo "${SSH_PRIVATE_KEY}" > ~/.ssh/id_rsa
-    chmod 0400 ~/.ssh/id_rsa  >/dev/null
-    echo "---------------------------------------------------------------------------"
-    echo "Adding playbook hosts to the known hosts file..."
-    ssh-keyscan -t rsa ant-parade     >> ~/.ssh/known_hosts
-    ssh-keyscan -t rsa avocado        >> ~/.ssh/known_hosts
-    ssh-keyscan -t rsa bamboo         >> ~/.ssh/known_hosts
-    ssh-keyscan -t rsa cosmos         >> ~/.ssh/known_hosts
-    ssh-keyscan -t rsa dragonfruit    >> ~/.ssh/known_hosts
-    ssh-keyscan -t rsa eggplant       >> ~/.ssh/known_hosts
-    ssh-keyscan -t rsa cell-membrane  >> ~/.ssh/known_hosts
-    ssh-keyscan -t rsa leaf-cutter    >> ~/.ssh/known_hosts
-    ssh-keyscan -t rsa phloem         >> ~/.ssh/known_hosts
-    ssh-keyscan -t rsa xylem          >> ~/.ssh/known_hosts
-    echo "---------------------------------------------------------------------------"
-    ## Optionally, if you will be using any Git commands, set the user name and and email.
-    # - git config --global user.email "user@example.com"
-    # - git config --global user.name "User name"
-    echo "Successfully configured a base ubuntu image for git/rsync/ssh."
-  environment: production
-  image: ubuntu
-  script: |
-    echo "---------------------------------------------------------------------------"
-    echo "Ad Arbitorium 🔐 - gitops - Starting build phase of the CI/CD pipeline"
-    echo "---------------------------------------------------------------------------"
-    echo "Ensuring a project folder with user r/w permission exists on the ansible control node..."
-    ssh kai@ant-parade "sudo mkdir -p /srv/gitops/ad-arbitorium-private/ && sudo chown kai /srv/gitops/ad-arbitorium-private/" >/dev/null
-    ssh kai@leaf-cutter "sudo mkdir -p /srv/gitops/ad-arbitorium-private/ && sudo chown kai /srv/gitops/ad-arbitorium-private/" >/dev/null
-    echo "---------------------------------------------------------------------------"
-    echo "Syncing the current state of the repository to the ansible control node."
-    rsync -avz --delete-during $CI_PROJECT_DIR/ kai@ant-parade:/srv/gitops/ad-arbitorium-private/ >/dev/null
-    rsync -avz --delete-during $CI_PROJECT_DIR/ kai@leaf-cutter:/srv/gitops/ad-arbitorium-private/ >/dev/null
+default:
+  image: docker.cr.pcfae.com/prplanit/stagefreight:latest-dev
+  interruptible: true
+  tags:
+    - dungeon-pedestal
 
-    # - rsync -avz --delete-during $CI_PROJECT_DIR/nginx-extras/cell-membrane/conf.d/ kai@cell-membrane:/etc/nginx/conf.d/
-    # - rsync -avz --delete-during $CI_PROJECT_DIR/nginx-extras/phloem/conf.d/ kai@phloem:/etc/nginx/conf.d/
-    # - rsync -avz --delete-during $CI_PROJECT_DIR/nginx-extras/xylem/conf.d/ kai@xylem:/etc/nginx/conf.d/
-    echo "---------------------------------------------------------------------------"
-    echo "Ad Arbitorium 🔐 - gitops - Completed build phase of the CI/CD pipeline ✅"
-    echo "---------------------------------------------------------------------------"
-  stage: build
+lint:
+  stage: lint
+  before_script:
+    - *sf-context
+  script:
+    - stagefreight ci run lint
+  rules:
+    - if: '$CI_COMMIT_TAG'
+    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
 
-include:
+docs:
+  stage: docs
+  variables:
+    GIT_DEPTH: 0
+  before_script:
+    - *sf-context
+  script:
+    - stagefreight ci run docs
+  rules:
+    - if: '$CI_COMMIT_TAG'
+      when: on_success
+    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
+      when: on_success
+  allow_failure: true
 
-  # - component: $CI_SERVER_FQDN/components/ansible/test@1.0.0
-    # inputs:
-      # as: ansible-test
-      # root_dir: '$CI_PROJECT_DIR'
-      # stage: test
-      # project_file: 'ansible/init.yaml'
-
-  # - component: $CI_SERVER_FQDN/components/ollama/generate@~latest
-    # Defaulted for testing...
-    # inputs:
-      # stage: deploy 
-      # ollama_prompt: 'tell me something about ci/cd'
-      # ollama_url: 'http://10.13.37.143:11434'
-  
-  - component: $CI_SERVER_FQDN/components/ansible/run@~latest
-    needs: sync-fs
-    inputs:
-      as: ansible-deploy
-      remote_ssh: ${ANSIBLE_PRIVATE_KEY}
-      root_dir: '$CI_PROJECT_DIR'
-      stage: deploy
-      project_file: 'ansible/init.yaml'
-
-  - component: $CI_SERVER_FQDN/components/ntfy/web-push@~latest
-    ## needs: ansible-deploy
-    inputs:
-      as: ntfy
-      # stage: deploy
-      ntfy_token: '${NTFY_TOKEN}'
-      msg_body: '${CI_PROJECT_NAME}: Gitlab CI/CD Pipeline Completed (ref ${CI_COMMIT_REF_NAME})' #  ($CI_JOB_STATUS) only ever shows running. 🙄
-    # needs: ansible-deploy
+release:
+  stage: release
+  variables:
+    GIT_DEPTH: 0
+  before_script:
+    - *sf-context
+  script:
+    - stagefreight ci run release
+  rules:
+    - if: '$CI_COMMIT_TAG =~ /^v\d+\.\d+\.\d+/'
+      when: on_success
+  allow_failure: true
