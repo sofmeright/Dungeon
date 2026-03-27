@@ -30,7 +30,7 @@ default:
   image: docker.cr.pcfae.com/prplanit/stagefreight:latest-dev
   interruptible: true
   tags:
-    - dungeon-pedestal
+    - production
 
 lint:
   stage: lint

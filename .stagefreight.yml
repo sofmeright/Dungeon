@@ -5,7 +5,7 @@ lifecycle:
 
 commit:
   conventional: true
-  backend: forge
+  backend: git
 
 glossary:
   types:
