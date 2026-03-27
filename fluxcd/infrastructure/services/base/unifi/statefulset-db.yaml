@@ -14,6 +14,7 @@ spec:
       labels:
         app: unifi-db
     spec:
+      serviceAccountName: unifi-db
       containers:
         - name: mongo
           image: PLACEHOLDER_IMAGE

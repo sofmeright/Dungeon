@@ -3,6 +3,7 @@ kind: Kustomization
 
 resources:
   - serviceaccount.yaml
+  - serviceaccount-db.yaml
   - statefulset-app.yaml
   - statefulset-db.yaml
   - configmap-init-mongo.yaml
