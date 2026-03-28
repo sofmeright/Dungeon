@@ -18,12 +18,18 @@ data:
       certSANs:
       - 172.22.144.105
       extraArgs:
-        oidc-issuer-url: https://gitlab.prplanit.com
-        oidc-client-id: stagefreight
-        oidc-username-claim: sub
-        oidc-username-prefix: "gitlab:"
-        oidc-groups-claim: groups
-        oidc-groups-prefix: "gitlab:"
+      - name: oidc-issuer-url
+        value: https://gitlab.prplanit.com
+      - name: oidc-client-id
+        value: stagefreight
+      - name: oidc-username-claim
+        value: sub
+      - name: oidc-username-prefix
+        value: "gitlab:"
+      - name: oidc-groups-claim
+        value: groups
+      - name: oidc-groups-prefix
+        value: "gitlab:"
     apiVersion: kubeadm.k8s.io/v1beta4
     caCertificateValidityPeriod: 87600h0m0s
     certificateValidityPeriod: 8760h0m0s
