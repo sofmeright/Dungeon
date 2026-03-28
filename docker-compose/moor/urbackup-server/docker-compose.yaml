@@ -26,4 +26,3 @@ services:
     # Uncomment the following two lines if you're using ZFS support
     #devices:
     #  - /dev/zfs:/dev/zfs
-  

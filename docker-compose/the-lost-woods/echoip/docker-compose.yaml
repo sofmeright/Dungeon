@@ -20,12 +20,12 @@ services:
         loki-retries: "2"
         loki-max-backoff: "800ms"
         loki-timeout: "1s"
-  
+
   # this container needs to runs only once or whan you want to update Geo databases
   maxmind:
     logging: *logging
     image: maxmindinc/geoipupdate
-    env_file: 
+    env_file:
       - echoip.env
       - echoip_secret.env
     volumes:

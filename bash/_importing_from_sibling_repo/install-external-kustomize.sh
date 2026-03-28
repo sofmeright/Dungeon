@@ -7,7 +7,7 @@
 # kustomize binary to your current working directory.
 # (e.g. 'install_kustomize.sh')
 #
-# If one argument is given -> 
+# If one argument is given ->
 # If that argument is in the format of #.#.#, downloads the specified
 # version of the kustomize binary to your current working directory.
 # If that argument is something else, downloads the most recently released
@@ -144,7 +144,7 @@ fi
 if [[ $releases == *"Bad credentials"* ]]; then
   echo "Authentication failed: Invalid GITHUB_TOKEN. Please check or remove your token."
   exit 1
-fi  
+fi
 if [[ $releases == *"API rate limit exceeded"* ]]; then
   echo "Github rate-limiter failed the request. Either authenticate or wait a couple of minutes."
   exit 1

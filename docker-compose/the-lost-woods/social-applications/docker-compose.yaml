@@ -105,6 +105,6 @@ services:
     volumes:
       #- /opt/docker/linkstack/backups:/docker-entrypoint-initdb.d
       - /opt/docker/linkstack/mysql:/var/lib/mysql
-  
+
 #volumes:
 #  linkstack:

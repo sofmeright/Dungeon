@@ -16,7 +16,7 @@ services:
         #loki-url:"http://localhost:3100/loki/api/v1/push"
         #max-size:"10m"
         #max-file:"3"
-  
+
   # this container needs to runs only once or whan you want to update Geo databases
   maxmind:
     #labels: *logging

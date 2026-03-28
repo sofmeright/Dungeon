@@ -88,7 +88,7 @@ volumes:
   app_public:
     driver: local
   app_storage:
-    driver: local  
+    driver: local
   mysql_data:
     driver: local
   redis_data:

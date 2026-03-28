@@ -226,7 +226,7 @@ services:
       - tactical-postgres
       - tactical-redis
 
-      
+
 # networks
 networks:
   proxy:

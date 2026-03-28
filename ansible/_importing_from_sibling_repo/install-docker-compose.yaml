@@ -3,7 +3,7 @@
 - name: Playbook to install docker compose.
   hosts: docker_reg
   become: true
-  tasks: 
+  tasks:
     - name: update apt cache
       ansible.builtin.apt:
         update_cache: yes
@@ -14,28 +14,28 @@
           - ca-certificates
           - curl
         state: present
-   
+
     - name: make sure keyrings directory exists
       ansible.builtin.file:
         path: /etc/apt/keyrings
         state: directory
         mode: '0775'
-  
+
     - name: download docker gpg key
       ansible.builtin.get_url:
         url: https://download.docker.com/linux/ubuntu/gpg
         dest: /etc/apt/keyrings/docker.asc
-  
+
     - name: set permissions on downloaded gpg key
       ansible.builtin.file:
         path: /etc/apt/keyrings/docker.asc
         mode: '0644'
-   
+
     - name: add docker repository into sources list
       ansible.builtin.apt_repository:
         repo: deb [arch=amd64 signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable
         filename: docker.list
-   
+
     - name: update apt cache
       ansible.builtin.apt:
         update_cache: yes
@@ -72,4 +72,3 @@
         name: "{{ ansible_user_id }}"
         groups: docker
         append: yes
-

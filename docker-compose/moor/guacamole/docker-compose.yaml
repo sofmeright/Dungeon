@@ -34,7 +34,7 @@
 #
 #  !!!!! MAKE SURE your folder './init' is executable (chmod +x ./init)
 #  !!!!! or 'initdb.sql' will be ignored!
-#  
+#
 #  './data' will hold all data after first start!
 #
 # (2)
@@ -91,7 +91,7 @@
 networks:
   guacnetwork_compose:
     driver: bridge
-      
+
 services:
 
   guacd:
@@ -107,7 +107,7 @@ services:
     volumes:
     - /mnt/app_data/Server/_docker_stack/guacamole/guacd/drive:/drive:rw
     - /mnt/app_data/Server/_docker_stack/guacamole/guacd/record:/record:rw
-    
+
   postgres:
     container_name: guacamole_postgres
     environment:

@@ -13,7 +13,7 @@ services:
       #- ZFS_IMAGE=tank/images
       #- ZFS_FILES=tank/files
     ports:
-      - 35623:35623/udp 
+      - 35623:35623/udp
       - 55413-55415:55413-55415
     volumes:
       - /mnt/Flashy_Fuchsia/PrecisionPlanIT/Servers/Gringotts/docker/urbackup/data:/var/urbackup
@@ -27,4 +27,3 @@ services:
     # Uncomment the following two lines if you're using ZFS support
     #devices:
     #  - /dev/zfs:/dev/zfs
-  

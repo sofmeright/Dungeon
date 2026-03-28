@@ -20,7 +20,7 @@
     - name: Transfer fullchain.pem from master to moor
       copy: src=~/fullchain.pem dest=/mnt/app_data/Server/_docker_stack/tactical-rmm/certs/
       when: inventory_hostname == "moor"
-        
+
     - name: Transfer privkey.pem from from cell-membrane to master
       run_once: yes
       fetch: src=/etc/letsencrypt/live/prplanit.com/privkey.pem dest=~/ flat=yes

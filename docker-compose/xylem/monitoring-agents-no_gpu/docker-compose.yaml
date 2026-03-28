@@ -2,7 +2,7 @@ services:
 
   beszel-agent:
     container_name: beszel-agent
-    env_file: 
+    env_file:
       - beszel-agent.env
       - beszel-agent_secret.env
     image: henrygd/beszel-agent:0.11.1 #customgpu  #latest
@@ -23,7 +23,7 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock:ro
       # This is where you add a extra disk:
       # - /opt/docker/beszel/agent/data/:/extra-filesystems/data:ro
-      
+
   cadvisor:
     logging: *logging
     command:
@@ -43,7 +43,7 @@ services:
       - /sys:/sys:ro
       - /var/lib/docker/:/var/lib/docker:ro
       - /dev/disk/:/dev/disk:ro
-    
+
   node_exporter:
     logging: *logging
     command: '--path.rootfs=/host'
@@ -59,7 +59,7 @@ services:
   watchtower:
     logging: *logging
     container_name: watchtower
-    env_file: 
+    env_file:
       - _hostname.env
       - watchtower.env
       - watchtower-secret.env

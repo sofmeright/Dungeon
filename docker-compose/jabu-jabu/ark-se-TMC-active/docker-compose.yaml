@@ -158,7 +158,7 @@ services:
       - /mnt/app_data/Server/_docker_stack/ark-se/arkclusters:/arkserver/ShooterGame/Saved/clusters
       - /mnt/app_data/Server/_docker_stack/ark-se/arkserver:/arkserver
       #- /ark/config/GameUserSettings.ini /ark/config/Game.ini
-  
+
   ark-se-tmc-thevolcano:
     logging: *logging
     container_name: ark-se-tmc-thevolcano

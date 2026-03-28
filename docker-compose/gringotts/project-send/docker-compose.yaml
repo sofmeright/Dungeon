@@ -35,4 +35,3 @@ services:
     volumes:
       - /mnt/Flashy_Fuchsia/PrecisionPlanIT/Servers/Gringotts/docker/projectsend/db_data:/config
     restart: always
-    

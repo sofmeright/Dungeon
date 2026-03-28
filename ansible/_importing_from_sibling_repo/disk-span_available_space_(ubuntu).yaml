@@ -2,7 +2,7 @@
 - name: Preparing to extend {{ sfmr_target_host }}'s disk to span available space.
   hosts: "{{ sfmr_target_host }}"
   become: true
-  tasks: 
+  tasks:
 
     - name: Extend the partition to span the entire disk.
       command: growpart /dev/sda 3

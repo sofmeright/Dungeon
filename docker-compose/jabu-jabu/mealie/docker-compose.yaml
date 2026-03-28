@@ -7,7 +7,7 @@ services:
     deploy:
       resources:
         limits:
-          memory: 1000M # 
+          memory: 1000M #
     depends_on:
       - mealie-db
     volumes:

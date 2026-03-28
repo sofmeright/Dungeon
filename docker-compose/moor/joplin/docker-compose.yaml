@@ -15,7 +15,7 @@ services:
             #loki-url:"http://localhost:3100/loki/api/v1/push"
             #max-size:"10m"
             #max-file:"3"
-        
+
     app:
         #labels: *logging
         image: joplin/server:latest

@@ -3,7 +3,7 @@
 - name: Playbook to update portainer.
   hosts: linux
   become: true
-  tasks: 
+  tasks:
     - name: deploy Docker Compose stack
       community.docker.docker_compose_v2:
         project_name: portainer

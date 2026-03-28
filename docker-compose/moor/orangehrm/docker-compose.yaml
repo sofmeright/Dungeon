@@ -1,7 +1,7 @@
 #version: "3.3"
 
 services:
-      
+
   orangehrm:
     image: orangehrm/orangehrm:latest
     restart: unless-stopped
@@ -41,6 +41,6 @@ services:
     environment:
       - MYSQL_ROOT_PASSWORD=$MYSQL_ROOT_PASSWORD
       - MYSQL_ROOT_USER=root
-      - MYSQL_DATABASE=orangehrm      
+      - MYSQL_DATABASE=orangehrm
       - MYSQL_USER=orangehrm
       - MYSQL_PASS=$MYSQL_PASS

@@ -9,8 +9,8 @@ services:
       - '8580:8080'
       - '443:443'
     volumes:
-      - nas_nginx_html:/media/timecapsule/Server/Web-App/NGINX:ro  
-      - /home/kai/app_data/_docker/nginx_with_extras/conf:/etc/nginx/conf.d:ro  
+      - nas_nginx_html:/media/timecapsule/Server/Web-App/NGINX:ro
+      - /home/kai/app_data/_docker/nginx_with_extras/conf:/etc/nginx/conf.d:ro
   certbot:
     image: certbot/certbot:latest
     volumes:

@@ -1,5 +1,5 @@
 #version: "3.7"
-      
+
 # networks
 networks:
   proxy:
@@ -268,5 +268,3 @@ services:
     depends_on:
       - tactical-postgres
       - tactical-redis
-
-

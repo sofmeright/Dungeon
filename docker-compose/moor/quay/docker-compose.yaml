@@ -90,4 +90,3 @@ services:
     restart: always
     volumes:
      - /opt/docker/quay/redis/data:/data
-    

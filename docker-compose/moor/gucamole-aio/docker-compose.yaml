@@ -2,7 +2,7 @@
 services:
   guacamole:
     image: oznu/guacamole:latest
-    environment: 
+    environment:
       - TZ=Etc/UTC
       - EXTENSIONS=auth-openid
     ports:

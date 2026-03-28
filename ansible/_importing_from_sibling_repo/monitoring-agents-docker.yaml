@@ -6,7 +6,7 @@
   ignore_errors: true
   become: true
   tasks:
-    
+
     - name: Detecting if loki-docker-driver is installed and storing the version number when found...
       ansible.builtin.shell: "docker plugin inspect -f '{{ '{{' }}.PluginReference {{ '}}' }}' loki | awk -F 'loki-docker-driver:' '{print $2}' | sed 's/-amd64//'"
       register: loki_plugin_version

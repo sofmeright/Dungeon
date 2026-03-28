@@ -43,6 +43,6 @@ services:
       #- /mnt/app_data/Server/Web-App/_docker-stack/linkstack/backups:/docker-entrypoint-initdb.d
       - /mnt/app_data/Server/_docker_stack/linkstack/mysql:/var/lib/mysql
     restart: unless-stopped
-  
+
 #volumes:
 #  linkstack:

@@ -2,12 +2,12 @@
 - name: Installing oh my zsh shell and powerlevel10k.
   hosts: proxmox,proxmox_bs
   become: true
-  tasks: 
+  tasks:
   - name: Stage 1/5 - Installing zsh and dependencies - git-core, curl, fonts-powerline.
     apt:
       name:
-      - git-core 
-      - curl 
+      - git-core
+      - curl
       - fonts-powerline
       - zsh
       state: present

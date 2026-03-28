@@ -36,7 +36,7 @@ services:
         #loki-url:"http://localhost:3100/loki/api/v1/push"
         #max-size:"500m"
         #max-file:"2"
-        
+
   # Signal
   signal:
     #labels: *logging
@@ -49,7 +49,7 @@ services:
   #      # port and command for Let's Encrypt validation
   #      - 443:443
   #    command: ["--letsencrypt-domain", "", "--log-file", "console"]
-  
+
   # Relay
   relay:
     #labels: *logging
@@ -91,7 +91,7 @@ services:
     environment:
       - NETBIRD_STORE_ENGINE_POSTGRES_DSN=
       - NETBIRD_STORE_ENGINE_MYSQL_DSN=
-      
+
   # Coturn
   coturn:
     #labels: *logging
@@ -105,7 +105,7 @@ services:
     network_mode: host
     command:
       - -c /etc/turnserver.conf
-      
+
 volumes:
   netbird-mgmt:
   netbird-signal:

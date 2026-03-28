@@ -206,5 +206,5 @@
     "ai:model": "wizardlm2:latest",
     "ai:apitoken": "ollama"
   }
- 
+
 }

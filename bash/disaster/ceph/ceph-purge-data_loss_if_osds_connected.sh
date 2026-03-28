@@ -1,6 +1,6 @@
 #!/bin/bash
 # -----------------------------------------------------------------------------------
-# Notes: This may work for other OS than PVE; it is configured for such, yet you are welcome to tweak it to you needs. 
+# Notes: This may work for other OS than PVE; it is configured for such, yet you are welcome to tweak it to you needs.
 # --------------------- Variables you might change ? --------------------------------
 # Set the script to populate the list of hosts dynamically? You can set this to 0 or 1 ~ true/false.
 hosts_auto_populate=true

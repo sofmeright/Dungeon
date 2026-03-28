@@ -38,7 +38,7 @@ services:
       - OAUTH2_PROXY_REDIRECT_URL=https://oa2p.pcfae.com/oauth2/callback
       - OAUTH2_PROXY_CLIENT_ID=$OAUTH2_PROXY_CLIENT_ID
       - OAUTH2_PROXY_CLIENT_SECRET=$OAUTH2_PROXY_CLIENT_SECRET
-    
+
       # Theming
       - OAUTH2_PROXY_BANNER=The requested application is secured by PrecisionPlanIT's authorization proxy.
       - OAUTH2_PROXY_CUSTOM_SIGN_IN_LOGO=https://support.pcfae.com/logo.php

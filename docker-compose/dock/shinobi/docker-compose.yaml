@@ -40,7 +40,7 @@ services:
         loki-retries: "2"
         loki-max-backoff: "800ms"
         loki-timeout: "1s"
-    
+
   shinobi-sql:
     logging: *logging
     image: mysql:5.7

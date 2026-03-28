@@ -65,7 +65,7 @@ args:
 **Init Command Options** (from values.yaml):
 - `""` (empty) = Full initialization (create database, create user, create schemas)
 - `"database"` = Only create database
-- `"grant"` = Only set grants  
+- `"grant"` = Only set grants
 - `"user"` = Only create user
 - `"zitadel"` = **Skip database/user creation, only create Zitadel internals**
 

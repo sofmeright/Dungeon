@@ -115,7 +115,7 @@ I provide more in-depth Hardware information [HERE](./docs/Hardware.md) if you a
 
 Some Dashboards and UIs I frequently use to manage / observe Containerized Environments:
 - Weave-Gitops
-- FreeLens 
+- FreeLens
 - Portainer
 
 ## 🌐 Networking

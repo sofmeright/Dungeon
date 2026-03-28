@@ -7,7 +7,7 @@ services:
     deploy:
       resources:
         limits:
-          memory: 1000M # 
+          memory: 1000M #
     env_file: mealie-app-secret.env
     environment:
       # ----- Set Backend ENV Variables Here -----
@@ -108,7 +108,7 @@ services:
       # - DB_USER=$POSTGRES_DB_USER
       # - DB_PASS=$POSTGRES_DB_PASS
     image: ghcr.io/requarks/wiki:2
-    ports: 
+    ports:
       - 3364:3000
     restart: always
 

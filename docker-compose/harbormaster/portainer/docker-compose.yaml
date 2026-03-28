@@ -1,6 +1,6 @@
 services:
   portainer:
-    env_file: 
+    env_file:
       - portainer_secret.env
     image: portainer/portainer-ce:latest
     ports:

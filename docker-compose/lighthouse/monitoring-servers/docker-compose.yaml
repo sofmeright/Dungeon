@@ -1,7 +1,7 @@
 networks:
   monitoring:
     driver: bridge
-    
+
 services:
 
   beszel:
@@ -26,7 +26,7 @@ services:
         loki-retries: "2"
         loki-max-backoff: "800ms"
         loki-timeout: "1s"
-      
+
   grafana:
     logging: *logging
     container_name: grafana
@@ -53,7 +53,7 @@ services:
     restart: always
     volumes:
       - /opt/docker/graphite-exporter/config/pgraphite_mappings.yaml:/etc/graphite_mappings.yaml:ro
-        
+
   loki:
     logging: *logging
     command: -config.file=/mnt/config/loki-config.yaml
@@ -90,13 +90,13 @@ services:
     volumes:
       - /opt/docker/netalertx/config:/app/config
       - /opt/docker/netalertx/db:/app/db
-  
+
 
   ntfy:
     logging: *logging
     container_name: ntfy
     command: serve
-    env_file: 
+    env_file:
       - ntfy.env
       - ntfy_secret.env
     healthcheck: # optional: remember to adapt the host:port to your environment
@@ -133,7 +133,7 @@ services:
     logging: *logging
     container_name: prometheus_eaton_ups_exporter
     env_file: prometheus_eaton_ups_exporter.env
-    image: cr.pcfae.com/sofmeright/prometheus-eaton-ups-exporter:latest	
+    image: cr.pcfae.com/sofmeright/prometheus-eaton-ups-exporter:latest
     ports:
       - 9795:9795
     restart: always
@@ -143,10 +143,10 @@ services:
 
   prometheus-pve-exporter:
     logging: *logging
-    container_name: prometheus-pve-exporter 
+    container_name: prometheus-pve-exporter
     image: prompve/prometheus-pve-exporter:3
     ports:
-      - 9221:9221 
+      - 9221:9221
     restart: always
     volumes:
     - /opt/docker/prometheus-pve-exporter/pve.yml:/etc/prometheus/pve.yml
@@ -168,7 +168,7 @@ services:
       - /var/log:/var/log
       - /var/lib/docker/containers:/var/lib/docker/containers:ro
       - /var/run/docker.sock:/var/run/docker.sock
-      
+
   uptime-kuma:
     logging: *logging
     container_name: uptime-kuma
@@ -189,11 +189,11 @@ services:
          #loki-url:"http://localhost:3100/loki/api/v1/push"
          #max-size:"10m"
          #max-file:"3"
-         
+
   wazuh.manager:
     logging: *logging
     container_name: wazuh-manager
-    env_file: 
+    env_file:
       - wazuh-manager.env
       - wazuh-manager_secret.env
     hostname: wazuh.manager
@@ -294,5 +294,3 @@ volumes:
     #command: >
       #bash -c "
       #mkdir -p /var/lib/loki/chunks && mkdir -p /var/lib/loki/rules && chown -R 10001:10001 /var/lib/loki"
-
-      

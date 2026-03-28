@@ -35,7 +35,7 @@ services:
     #    loki-retries: "2"
     #    loki-max-backoff: "800ms"
     #    loki-timeout: "1s"
-      
+
   cadvisor:
     #logging: *logging
     image: gcr.io/cadvisor/cadvisor:v0.52.1
@@ -56,7 +56,7 @@ services:
     restart: always
     environment:
       - 'CADVISOR_HEALTHCHECK_URL=http://localhost:8098/healthz'
-    
+
   node_exporter:
     #logging: *logging
     image: quay.io/prometheus/node-exporter:v1.5.0

@@ -35,7 +35,7 @@ services:
     depends_on:
       speedtest-tracker-db:
         condition: service_healthy
-    env_file: 
+    env_file:
       - speedtest-tracker-db_secret.env
       - speedtest-tracker_secret.env
       - speedtest-tracker.env
@@ -47,7 +47,7 @@ services:
     volumes:
       - /opt/docker/speedtest_tracker/config:/config
       - /opt/docker/speedtest_tracker/keys:/config/keys
-      
+
   speedtest-tracker-db:
     logging: *logging
     container_name: speedtest-tracker-db

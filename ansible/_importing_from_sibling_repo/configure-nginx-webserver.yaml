@@ -7,7 +7,7 @@
     username: "kai253"
     password: ""
     mountpoint: "/mnt/timecapsule"
-  tasks: 
+  tasks:
   - name: Ansible apt install nginx
     apt:
       name: nginx

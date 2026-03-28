@@ -15,7 +15,7 @@
       user:
         name: "{{ ansible_user_id }}"
         generate_ssh_key: yes
-        
+
 - name: Prepare localhost for Ansible usage 2/3 - Add hosts fingerprints
   hosts: linux,!localhost
   tasks:
@@ -25,7 +25,7 @@
       become_method: sudo
       become_user: root
       shell:
-        cmd: 
+        cmd:
           "ssh-keyscan -t rsa {{ ansible_ssh_host }} >> /root/.ssh/known_hosts"
 
 

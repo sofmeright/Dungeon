@@ -11,14 +11,14 @@ data:
       donation_url: false
       contact_url: false
       enable_metrics: true
-    
+
     brand:
       new_issue_url: ""
       docs_url: ""
       public_instances: ""
       wiki_url: ""
       issue_url: ""
-    
+
     search:
       safe_search: 0
       autocomplete: "duckduckgo"
@@ -37,7 +37,7 @@ data:
       formats:
         - html
         - json
-    
+
     server:
       port: 8080
       bind_address: "0.0.0.0"
@@ -47,10 +47,10 @@ data:
       image_proxy: true
       http_protocol_version: "1.1"
       method: "GET"
-    
+
     redis:
       url: redis://searxng-redis:6379/0
-    
+
     ui:
       static_use_hash: true
       default_locale: "en"
@@ -61,7 +61,7 @@ data:
       default_theme: simple
       theme_args:
         simple_style: auto
-    
+
     outgoing:
       request_timeout: 3.0
       max_request_timeout: 10.0
@@ -69,58 +69,58 @@ data:
       pool_connections: 100
       pool_maxsize: 20
       enable_http2: true
-    
+
     enabled_plugins:
       - 'Hash plugin'
       - 'Self Information'
       - 'Tracker URL remover'
       - 'Hostname replace'
-    
+
     hostname_replace:
       '(.*\.)?youtube\.com$': 'invidious.io'
       '(.*\.)?reddit\.com$': 'libredd.it'
-    
+
     engines:
       - name: google
         engine: google
         shortcut: go
         use_mobile_ui: false
-      
+
       - name: duckduckgo
         engine: duckduckgo
         shortcut: ddg
-      
+
       - name: bing
         engine: bing
         shortcut: bi
         disabled: false
-      
+
       - name: qwant
         engine: qwant
         shortcut: qw
         categories: [general, web]
         disabled: false
-      
+
       - name: startpage
         engine: startpage
         shortcut: sp
         disabled: false
-      
+
       - name: wikipedia
         engine: wikipedia
         shortcut: wp
         base_url: 'https://{language}.wikipedia.org/'
-      
+
       - name: wikidata
         engine: wikidata
         shortcut: wd
         timeout: 3.0
         weight: 2
-      
+
       - name: github
         engine: github
         shortcut: gh
-      
+
       - name: codeberg
         engine: json_engine
         search_url: https://codeberg.org/api/v1/repos/search?q={query}&limit=10
@@ -137,21 +137,21 @@ data:
           use_official_api: true
           require_api_key: false
           results: JSON
-      
+
       - name: dockerhub
         engine: docker_hub
         shortcut: dh
-      
+
       - name: ddg definitions
         engine: duckduckgo_definitions
         shortcut: ddd
         weight: 2
-      
+
       - name: brave
         engine: brave
         shortcut: br
         disabled: false
-      
+
       - name: wolframalpha
         engine: wolframalpha_noapi
         shortcut: wa

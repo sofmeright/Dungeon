@@ -1,6 +1,6 @@
 #!/bin/bash
 # -----------------------------------------------------------------------------------
-# Notes: This may work for other OS than PVE; it is configured for such, yet you are welcome to tweak it to you needs. 
+# Notes: This may work for other OS than PVE; it is configured for such, yet you are welcome to tweak it to you needs.
 # --------------------- Variables you might change ? --------------------------------
 monmap_exe=/root/_Server/__SysAdmin_Scripts/Ceph/Disaster-Recovery/extract_monmap_from_osds-scanner.sh
 # Set the script to populate the list of hosts dynamically? You can set this to 0 or 1 ~ true/false.
@@ -23,13 +23,13 @@ function mgr_get_key() {
     # Temporarily store a copy of the mgr keyring from the remote node to gain a copy of the key.
     scp root@$1:/var/lib/ceph/mgr/ceph-$1/keyring /root/mgr-ceph-$1-keyring
     local file="/root/mgr-ceph-$1-keyring"
-    
+
     # Use grep to find the line with the key and then extract the key using awk
     local key=$(grep -oP 'key\s*=\s*\K[A-Za-z0-9+/=]+' "$file")
-    
+
     # Remove the temporary keyring file
     rm "$file"
-    
+
     # Return the extracted key
     echo "$key"
 }
@@ -121,7 +121,7 @@ ceph-authtool "$KEYRING" --gen-key -n client.admin --cap mon 'allow *' --cap osd
 # deployed
 for host in "${hosts[@]}"; do
     # Get the key using the mgr_get_key function and assign it to a variable
-    key=$(mgr_get_key $host) 
+    key=$(mgr_get_key $host)
     # Execute ceph-authtool with the key for the remote host
     ceph-authtool "$KEYRING" --add-key "$key" -n mgr.$host --cap mon 'allow profile mgr' --cap osd 'allow *' --cap mds 'allow *'
     done
@@ -141,7 +141,7 @@ for host in "${hosts[@]}"; do
     # if there is not an original backup db in the folder back it up. (On all hosts)
     if ssh "root"@"$host" "[ ! -e /var/lib/ceph/mon/ceph-$host/store.db.original ]"; then
             ssh root@$host "mv /var/lib/ceph/mon/ceph-$host/store.db /var/lib/ceph/mon/ceph-$host/store.db.original"
-        else 
+        else
             # create a 2nd backup on every run thereafter just for giggles. (On all hosts)
             ssh root@$host "rm -r /var/lib/ceph/mon/ceph-$host/store.db.bak || true"
             ssh root@$host "mv /var/lib/ceph/mon/ceph-$host/store.db /var/lib/ceph/mon/ceph-$host/store.db.bak"

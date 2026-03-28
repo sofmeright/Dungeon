@@ -65,5 +65,5 @@ for host in "${hosts[@]}"; do
     rsync -avz -mkpath root@$host:/etc/ceph* $backup_path/$host/etc/
     rsync -avz -mkpath root@$host:/etc/pve/ceph* $backup_path/$host/etc/pve/
     rsync -avz -mkpath root@$host:/etc/pve/priv/ceph* $backup_path/$host/etc/pve/priv/
-        
+
     done

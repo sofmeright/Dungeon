@@ -58,7 +58,7 @@ services:
         loki-retries: "2"
         loki-max-backoff: "800ms"
         loki-timeout: "1s"
-  
+
   ark-se-tmc-antartika:
     logging: *logging
     container_name: ark-se-tmc-antartika
@@ -116,7 +116,7 @@ services:
         loki-batch-size: "400"
         loki-url: "http://monitoring:3100/loki/api/v1/push"
         max-size: "10m"
-        
+
   ark-se-tmc-crystalisles:
     logging: *logging
     container_name: ark-se-tmc-crystalisles
@@ -124,7 +124,7 @@ services:
     environment:
       # Map Names: TheIsland, TheCenter, ScorchedEarth_P, Ragnarok, Aberration_P, Extinction, Valguero_P, Genesis, CrystalIsles, Gen2, LostIsland, Fjordur
       - am_ark_SessionName=MasterChiefers-CrystalIsles
-      - am_serverMap=CrystalIsles      
+      - am_serverMap=CrystalIsles
       - am_ark_GameModIds=1213429840,1232362083,1565015734,1609138312,1840761213,506506101,731604991,751991809,793605978,806480270,821530042,895711211,902616446,924933745
       - am_ark_ServerAdminPassword=$ARK_ADMIN_PASS
       - am_ark_ServerPassword=$ARK_USER_PASS
@@ -171,7 +171,7 @@ services:
         loki-batch-size: "400"
         loki-url: "http://moor:3100/loki/api/v1/push"
         max-size: "10m"
-  
+
   ark-se-tmc-ebenus_astrum:
     logging: *logging
     container_name: ark-se-tmc-ebenus_astrum
@@ -278,7 +278,7 @@ services:
         loki-batch-size: "400"
         loki-url: "http://moor:3100/loki/api/v1/push"
         max-size: "10m"
-  
+
   ark-se-tmc-halo:
     logging: *logging
     container_name: ark-se-tmc-halo
@@ -336,7 +336,7 @@ services:
         loki-batch-size: "400"
         loki-url: "http://monitoring:3100/loki/api/v1/push"
         max-size: "10m"
-  
+
   ark-se-tmc-hope:
     logging: *logging
     container_name: ark-se-tmc-hope

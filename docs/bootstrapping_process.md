@@ -4,7 +4,7 @@
 
 `sudo nano /opt/docker/gitlab-runner/config/config.toml`
 
-within the file after the `[runners.docker]` section 
+within the file after the `[runners.docker]` section
 
 add a line: `dns = ["10.0.0.1","10.0.0.2","1.1.1.1","8.8.8.8"]`
 

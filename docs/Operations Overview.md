@@ -53,7 +53,7 @@ and service account keys on each node and then running the following as root:
 
   kubeadm join dungeon-map-001:6443 --token kxgj2w.ucvyopdyulxzdnw4 \
         --discovery-token-ca-cert-hash sha256:6a85476457676767657676677676767677466776547567447d \
-        --control-plane 
+        --control-plane
 
 Then you can join any number of worker nodes by running the following on each as root:
 

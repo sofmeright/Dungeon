@@ -11,7 +11,7 @@ services:
     restart: unless-stopped
     volumes:
       - /opt/docker/convertx/data:/app/data
-      
+
   drawio:
     container_name: drawio
     environment:
@@ -51,7 +51,7 @@ services:
     logging: *logging
     container_name: google-webfonts-helper
     env_file: google-webfonts-helper-secret.env
-    # environment: 
+    # environment:
       # - GOOGLE_FONTS_API_KEY=$API_KEY
     image: ghcr.io/majodev/google-webfonts-helper:${RELEASE:-latest}
     ports:
@@ -238,5 +238,3 @@ volumes:
   minio_data:
   postgres_data:
   valkey-data2:
-
-  

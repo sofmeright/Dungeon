@@ -2,7 +2,7 @@ services:
 
   beszel-agent:
     container_name: beszel-agent
-    env_file: 
+    env_file:
       - beszel-agent.env
       - beszel-agent_secret.env
     image: henrygd/beszel-agent:0.11.1 #customgpu  #latest
@@ -27,7 +27,7 @@ services:
       # - /mnt/Flashy_Fuchsia:/extra-filesystems/Flashy_Fuchsia:ro
       # - /mnt/JunkerBunker:/extra-filesystems/JunkerBunker:ro
       # - /mnt/operation/timecapsule:/extra-filesystems/operation-timecapsule:ro
-      
+
   cadvisor:
     # logging: *logging
     command:
@@ -47,7 +47,7 @@ services:
       - /sys:/sys:ro
       - /var/lib/docker/:/var/lib/docker:ro
       - /dev/disk/:/dev/disk:ro
-    
+
   node_exporter:
     # logging: *logging
     command: '--path.rootfs=/host'
@@ -63,7 +63,7 @@ services:
   watchtower:
     # logging: *logging
     container_name: watchtower
-    env_file: 
+    env_file:
       - _hostname.env
       - watchtower.env
       - watchtower-secret.env

@@ -9,7 +9,7 @@ services:
       test: ["CMD", "pg_isready", "-q", "-d", "netbox", "-U", "netbox"]
       timeout: 45s
       interval: 10s
-      retries: 10   
+      retries: 10
     volumes:
       - /mnt/app_data/Server/_docker_stack/netbox/postgres:/var/lib/postgresql/data
     env_file: stack.env
@@ -24,7 +24,7 @@ services:
         #loki-url:"http://localhost:3100/loki/api/v1/push"
         #max-size:"10m"
         #max-file:"3"
-     
+
   netbox-redis:
     #labels: *logging
     image: redis:7-alpine
@@ -37,7 +37,7 @@ services:
     restart: always
     volumes:
       - /mnt/app_data/Server/_docker_stack/netbox/redis:/data
-      
+
   netbox-server:
     #labels: *logging
     image: lscr.io/linuxserver/netbox:latest
@@ -64,4 +64,4 @@ services:
     depends_on:
       - netbox-postgres
       - netbox-redis
-    restart: unless-stopped   
+    restart: unless-stopped

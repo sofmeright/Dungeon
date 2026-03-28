@@ -108,7 +108,7 @@ cp -r $ms/store.db /var/lib/ceph/mon/ceph-Bamboo/store.db
 chown -R ceph:ceph /var/lib/ceph/mon/ceph-Bamboo/store.db
 # Now, rsync the files to other hosts as well. Keep in mind that "pve" in "ceph-pve" is the
 # hostname and this needs to be adjusted for every host. This is also a good moment pause
-#and make sure that the backup exists. Personally, I prefer copying the backup to every host 
+#and make sure that the backup exists. Personally, I prefer copying the backup to every host
 # first and then applying it manually to be absolutely sure, but this can be automated
 # Also, make sure that /root/$ms is empty on the target node
 for host in "${mons[@]}"; do

@@ -2,7 +2,7 @@
 - name: Playbook to ensure base software is installed.
   hosts: linux
   become: true
-  tasks: 
+  tasks:
   - name: Ansible apt install neofetch
     apt:
       name:

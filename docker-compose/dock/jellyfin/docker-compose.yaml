@@ -11,14 +11,14 @@ services:
     #volumes:
       #- /opt/docker/jellyfin/config:/config
       #- /opt/docker/jellyfin/cache:/cache
-      
+
   jellyfin:
     container_name: jellyfin
     # depends_on:
       # change-vol-ownership:
         # condition: service_completed_successfully
     # Optional - alternative address used for autodiscovery
-    env_file: 
+    env_file:
       - jellyfin.env
     # Optional - may be necessary for docker healthcheck to pass if running in host network mode
     extra_hosts:
@@ -55,7 +55,7 @@ services:
         loki-max-backoff: "800ms"
         loki-timeout: "1s"
 
-volumes:    
+volumes:
   movies:
     driver: local
     driver_opts:

@@ -30,5 +30,5 @@
 | xylem | git-sync<br>monitoring-agents-no_gpu<br>portainer<br>portainer-agent |
 <!-- END_DEPLOYMENTS_MAP -->
 
-> A full table should be populated with deployments when the pipeline runs and it will be linked to this segment in the near, near future. 
+> A full table should be populated with deployments when the pipeline runs and it will be linked to this segment in the near, near future.
 > In the meantime all deployments can be reviewed within the repository in the case this list is inaccurate.

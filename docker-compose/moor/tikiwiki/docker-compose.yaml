@@ -19,7 +19,7 @@ services:
         #loki-url:"http://localhost:3100/loki/api/v1/push"
         #max-size:"10m"
         #max-file:"3"
-    
+
   db:
     #labels: *logging
     image: mariadb

@@ -9,7 +9,7 @@
 #    working_dir: /temp
 #    command: >
 #      bash -c "
-#        find /temp -mindepth 1 -delete && 
+#        find /temp -mindepth 1 -delete &&
 #        find /files -mindepth 1 -delete &&
 #        git clone https://$GITLAB_NGINX_TOKEN@gitlab.prplanit.com/SoFMeRight/ad-arbitorium-private.git &&
 #       cp -R ./ad-arbitorium-private/-/tree/main/nginx-extras/xylem/conf.d/. /conf.d
@@ -22,12 +22,12 @@
     # image: <image>
     # volumes:
       # - service_files:/etc/nginx/conf.d:ro
-   
+
 #volumes:
 #  service_files:
 
 services:
-  
+
   git-sync-nginx:
     container_name: git-sync-nginx
     env_file: git-sync-nginx-secret.env

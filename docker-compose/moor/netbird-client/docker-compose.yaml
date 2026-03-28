@@ -28,6 +28,6 @@ services:
         #loki-batch-size: "400"
         #loki-url: "http://moor:3100/loki/api/v1/push"
         #max-size: "10m"
-      
+
 volumes:
   netbird-client:

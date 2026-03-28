@@ -2,7 +2,7 @@
 - name: Playbook to prepare Proxmox VMs.
   hosts: proxmox_vms
   become: true
-  tasks: 
+  tasks:
   - name: Ansible apt install qemu-guest-agent
     apt:
       name: qemu-guest-agent
