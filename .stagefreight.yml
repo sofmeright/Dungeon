@@ -34,6 +34,9 @@ policies:
   git_tags:
     stable: "^v\\d+\\.\\d+\\.\\d+$"
 
+docs:
+  enabled: false
+
 lint:
   level: full
   exclude:
