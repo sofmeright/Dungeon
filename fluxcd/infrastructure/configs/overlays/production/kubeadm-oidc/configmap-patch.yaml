@@ -1,0 +1,48 @@
+# kubeadm ClusterConfiguration with OIDC for GitLab CI identity.
+#
+# FluxCD reconciles this ConfigMap. After changes, regenerate the
+# apiserver static pod on EACH control plane node (dungeon-map-001..005):
+#
+#   sudo kubeadm init phase control-plane apiserver
+#
+# kubelet detects the manifest change and restarts the apiserver pod.
+# Roll one node at a time — verify API availability between each.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kubeadm-config
+  namespace: kube-system
+data:
+  ClusterConfiguration: |
+    apiServer:
+      certSANs:
+      - 172.22.144.105
+      extraArgs:
+        oidc-issuer-url: https://gitlab.prplanit.com
+        oidc-client-id: stagefreight
+        oidc-username-claim: sub
+        oidc-username-prefix: "gitlab:"
+        oidc-groups-claim: groups
+        oidc-groups-prefix: "gitlab:"
+    apiVersion: kubeadm.k8s.io/v1beta4
+    caCertificateValidityPeriod: 87600h0m0s
+    certificateValidityPeriod: 8760h0m0s
+    certificatesDir: /etc/kubernetes/pki
+    clusterName: kubernetes
+    controlPlaneEndpoint: 172.22.144.105:6443
+    controllerManager: {}
+    dns: {}
+    encryptionAlgorithm: RSA-2048
+    etcd:
+      local:
+        dataDir: /var/lib/etcd
+    imageRepository: registry.k8s.io
+    kind: ClusterConfiguration
+    kubernetesVersion: v1.34.1
+    networking:
+      dnsDomain: cluster.local
+      podSubnet: 192.168.144.0/20,fc00:f1:0ca4:15a0::/56
+      serviceSubnet: 10.144.0.0/12,fc00:f1:5e1d:a007::/112
+    proxy:
+      disabled: true
+    scheduler: {}

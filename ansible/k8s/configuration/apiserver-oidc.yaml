@@ -1,0 +1,42 @@
+---
+# kube-apiserver OIDC Configuration Rollout
+#
+# Regenerates the kube-apiserver static pod manifest from the kubeadm-config
+# ConfigMap. Run after FluxCD reconciles OIDC changes to the ConfigMap.
+#
+# Idempotent: kubeadm always regenerates from ConfigMap state. Safe to re-run.
+# Rolling: runs one node at a time with health checks between each.
+#
+# Usage:
+#   ansible-playbook -i inventory k8s/configuration/apiserver-oidc.yaml
+
+- name: kube-apiserver - Regenerate static pod with OIDC configuration
+  hosts: k8s_master
+  become: yes
+  serial: 1
+  vars:
+    apiserver_health_url: "https://127.0.0.1:6443/healthz"
+    health_check_retries: 30
+    health_check_delay: 5
+
+  tasks:
+    - name: Regenerate apiserver static pod from kubeadm-config
+      ansible.builtin.command:
+        cmd: kubeadm init phase control-plane apiserver
+      register: kubeadm_result
+      changed_when: "'Static pod manifest generated' in kubeadm_result.stdout or kubeadm_result.rc == 0"
+
+    - name: Wait for apiserver to become healthy
+      ansible.builtin.uri:
+        url: "{{ apiserver_health_url }}"
+        method: GET
+        validate_certs: no
+        status_code: 200
+      register: health
+      until: health.status == 200
+      retries: "{{ health_check_retries }}"
+      delay: "{{ health_check_delay }}"
+
+    - name: Report status
+      ansible.builtin.debug:
+        msg: "{{ inventory_hostname }}: apiserver regenerated and healthy"

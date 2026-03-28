@@ -3,6 +3,14 @@ version: 1
 lifecycle:
   mode: gitops
 
+gitops:
+  backend: flux
+  cluster:
+    name: dungeon
+    server: https://172.22.144.105:6443
+  oidc:
+    audience: stagefreight
+
 commit:
   conventional: true
   backend: git

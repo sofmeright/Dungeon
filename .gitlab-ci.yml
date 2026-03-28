@@ -57,6 +57,21 @@ docs:
       when: on_success
   allow_failure: true
 
+reconcile:
+  stage: publish
+  variables:
+    GIT_DEPTH: 0
+  id_tokens:
+    STAGEFREIGHT_OIDC:
+      aud: stagefreight
+  before_script:
+    - *sf-context
+  script:
+    - stagefreight gitops reconcile
+  rules:
+    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
+      when: on_success
+
 release:
   stage: release
   variables:

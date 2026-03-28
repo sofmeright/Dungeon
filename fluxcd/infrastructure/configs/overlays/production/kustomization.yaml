@@ -33,3 +33,5 @@ resources:
   - coredns  # Cluster DNS forward config
   - istio-policies  # Istio AuthorizationPolicies for all meshed namespaces
   - kyverno-policies  # Kyverno ClusterPolicies for SA enforcement and sentinel SA mutation
+  - stagefreight-reconciler  # RBAC for CI OIDC-bound Flux reconciliation
+  - kubeadm-oidc  # kube-apiserver OIDC config for GitLab CI identity
