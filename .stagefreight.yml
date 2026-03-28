@@ -36,3 +36,6 @@ policies:
 
 lint:
   level: full
+  exclude:
+    - "docs/assets/595775375_10215519096368048_5029737080243258222_n.jpg"
+    - "docs/assets/dungeon-banner.png"
