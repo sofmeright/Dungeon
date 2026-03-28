@@ -2,16 +2,16 @@ server {
     listen                      80 default_server;
     listen                      443 ssl http2;
     listen                      [::]:443 ssl http2;
-    server_name _; 
+    server_name _;
 
-    #...default server configuration   
+    #...default server configuration
     location / {
         return 404;
     }
     location /_error_pages {
         alias /mnt/timecapsule/Server/Web-App/NGINX/_error_pages/;
         try_files $uri $uri/ =404;
-    } 
+    }
     error_page 400 /403.html;
     error_page 401 /403.html;
     error_page 402 /403.html;

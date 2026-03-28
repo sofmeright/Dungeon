@@ -29,7 +29,7 @@ server {
 
     add_header 'Access-Control-Allow-Origin' 'https://apps.pcfae.com/';
     more_set_headers X-Frame-Options "ALLOW-FROM https://apps.pcfae.com/";
-    more_set_headers "Content-Security-Policy: frame-ancestors 'self' https://apps.pcfae.com/;"; 
+    more_set_headers "Content-Security-Policy: frame-ancestors 'self' https://apps.pcfae.com/;";
 
     location / {
         add_header       X-Served-By $host;

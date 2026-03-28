@@ -12,7 +12,7 @@ http {
 	client_body_timeout 300s;
 
 	proxy_http_version 1.1;
-	
+
 	# Required for Lenpaste to work correctly.
 	proxy_set_header Host $host;
 	proxy_set_header X-Real-IP $remote_addr;
@@ -48,7 +48,7 @@ server {
 	ssl_certificate_key /etc/letsencrypt/live/YOUR_DOMAIN/privkey.pem;
 
 	access_log /var/log/nginx/YOUR_DOMAIN.access.log combined;
-	
+
 	location / {
 		proxy_pass http://localhost:8000/;
 	}

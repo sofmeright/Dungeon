@@ -110,12 +110,7 @@ services:
       - /mnt/app_data/Server/_docker_stack/ark-se/arkclusters:/arkserver/ShooterGame/Saved/clusters
       - /mnt/app_data/Server/_docker_stack/ark-se/arkserver:/arkserver
       #- /ark/config/GameUserSettings.ini /ark/config/Game.ini
-    logging: &logging
-      driver: loki
-      options:
-        loki-batch-size: "400"
-        loki-url: "http://monitoring:3100/loki/api/v1/push"
-        max-size: "10m"
+    logging: *logging
 
   ark-se-tmc-crystalisles:
     logging: *logging
@@ -165,12 +160,7 @@ services:
       - /mnt/app_data/Server/_docker_stack/ark-se/arkclusters:/arkserver/ShooterGame/Saved/clusters
       - /mnt/app_data/Server/_docker_stack/ark-se/arkserver:/arkserver
       #- /ark/config/GameUserSettings.ini /ark/config/Game.ini
-    logging: &logging
-      driver: loki
-      options:
-        loki-batch-size: "400"
-        loki-url: "http://moor:3100/loki/api/v1/push"
-        max-size: "10m"
+    logging: *logging
 
   ark-se-tmc-ebenus_astrum:
     logging: *logging
@@ -272,12 +262,7 @@ services:
       - /mnt/app_data/Server/_docker_stack/ark-se/arkclusters:/arkserver/ShooterGame/Saved/clusters
       - /mnt/app_data/Server/_docker_stack/ark-se/arkserver:/arkserver
       #- /ark/config/GameUserSettings.ini /ark/config/Game.ini
-    logging: &logging
-      driver: loki
-      options:
-        loki-batch-size: "400"
-        loki-url: "http://moor:3100/loki/api/v1/push"
-        max-size: "10m"
+    logging: *logging
 
   ark-se-tmc-halo:
     logging: *logging
@@ -330,12 +315,7 @@ services:
       #nofile:
         #soft: 1000000
         #hard: 1000000
-    logging: &logging
-      driver: loki
-      options:
-        loki-batch-size: "400"
-        loki-url: "http://monitoring:3100/loki/api/v1/push"
-        max-size: "10m"
+    logging: *logging
 
   ark-se-tmc-hope:
     logging: *logging
@@ -388,12 +368,7 @@ services:
       - /mnt/app_data/Server/_docker_stack/ark-se/arkclusters:/arkserver/ShooterGame/Saved/clusters
       - /mnt/app_data/Server/_docker_stack/ark-se/arkserver:/arkserver
       #- /ark/config/GameUserSettings.ini /ark/config/Game.ini
-    logging: &logging
-      driver: loki
-      options:
-        loki-batch-size: "400"
-        loki-url: "http://monitoring:3100/loki/api/v1/push"
-        max-size: "10m"
+    logging: *logging
 
   ark-se-tmc-lostisland:
     logging: *logging
@@ -443,12 +418,7 @@ services:
       - /mnt/app_data/Server/_docker_stack/ark-se/arkclusters:/arkserver/ShooterGame/Saved/clusters
       - /mnt/app_data/Server/_docker_stack/ark-se/arkserver:/arkserver
       #- /ark/config/GameUserSettings.ini /ark/config/Game.ini
-    logging: &logging
-      driver: loki
-      options:
-        loki-batch-size: "400"
-        loki-url: "http://moor:3100/loki/api/v1/push"
-        max-size: "10m"
+    logging: *logging
 
   ark-se-tmc-ragnarok:
     logging: *logging
@@ -498,12 +468,7 @@ services:
       #nofile:
         #soft: 1000000
         #hard: 1000000
-    logging: &logging
-      driver: loki
-      options:
-        loki-batch-size: "400"
-        loki-url: "http://moor:3100/loki/api/v1/push"
-        max-size: "10m"
+    logging: *logging
 
   ark-se-tmc-scorchedearth:
     logging: *logging
@@ -553,12 +518,7 @@ services:
       - /mnt/app_data/Server/_docker_stack/ark-se/arkclusters:/arkserver/ShooterGame/Saved/clusters
       - /mnt/app_data/Server/_docker_stack/ark-se/arkserver:/arkserver
       #- /ark/config/GameUserSettings.ini /ark/config/Game.ini
-    logging: &logging
-      driver: loki
-      options:
-        loki-batch-size: "400"
-        loki-url: "http://moor:3100/loki/api/v1/push"
-        max-size: "10m"
+    logging: *logging
 
   ark-se-tmc-thecenter:
     logging: *logging
@@ -608,12 +568,7 @@ services:
       - /mnt/app_data/Server/_docker_stack/ark-se/arkclusters:/arkserver/ShooterGame/Saved/clusters
       - /mnt/app_data/Server/_docker_stack/ark-se/arkserver:/arkserver
       #- /ark/config/GameUserSettings.ini /ark/config/Game.ini
-    logging: &logging
-      driver: loki
-      options:
-        loki-batch-size: "400"
-        loki-url: "http://moor:3100/loki/api/v1/push"
-        max-size: "10m"
+    logging: *logging
 
   ark_server-tmc-og_island:
     logging: *logging
