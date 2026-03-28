@@ -17,36 +17,36 @@ services:
       - am_ark_RCONPort=27085
       - am_arkNoPortDecrement=true
       - am_ark_MaxPlayers=10
-      #am_arkwarnminutes=15
+      # am_arkwarnminutes=15
       - am_arkAutoUpdateOnStart=false # only do it on the first one?
       - ARKCLUSTER=true
-      #- am_arkflag_NoTransferFromFiltering=
+      # - am_arkflag_NoTransferFromFiltering=
       - am_arkflag_ForceAllowCaveFlyers=true
       - am_arkflag_crossplay=true
       - ARKSERVER_SHARED=/arkserver
-      #- VALIDATE_SAVE_EXISTS=false
-      #- BACKUP_ONSTART=false
-      #- LOG_RCONCHAT=0
+      # - VALIDATE_SAVE_EXISTS=false
+      # - BACKUP_ONSTART=false
+      # - LOG_RCONCHAT=0
     image: drpsychick/arkserver:latest
     ports:
-     - 7777:7777/udp
-     - 7777:7777
-     - 27015:27015/udp
-     - 27015:27015
-     - 27085:27085
+      - 7777:7777/udp
+      - 7777:7777
+      - 27015:27015/udp
+      - 27015:27015
+      - 27085:27085
     restart: unless-stopped
     stdin_open: true
     tty: true
-    #ulimits:
-      #nofile:
-        #soft: 1000000
-        #hard: 1000000
+    # ulimits:
+    #   nofile:
+    #     soft: 1000000
+    #     hard: 1000000
     volumes:
       - /mnt/app_data/Server/_docker_stack/ark-se/TMC/aberration:/ark
       - /mnt/app_data/Server/_docker_stack/ark-se/TMC/aberration/saved:/arkserver/ShooterGame/Saved
       - /mnt/app_data/Server/_docker_stack/ark-se/arkclusters:/arkserver/ShooterGame/Saved/clusters
       - /mnt/app_data/Server/_docker_stack/ark-se/arkserver:/arkserver
-      #- /ark/config/GameUserSettings.ini /ark/config/Game.ini
+      # - /ark/config/GameUserSettings.ini /ark/config/Game.ini
     logging: &logging
       driver: "loki"
       options:
@@ -80,37 +80,36 @@ services:
       - am_ark_RCONPort=27097
       - am_arkNoPortDecrement=true
       - am_ark_MaxPlayers=10
-      #am_arkwarnminutes=15
+      # am_arkwarnminutes=15
       - am_arkAutoUpdateOnStart=false # only do it on the first one?
       - ARKCLUSTER=true
-      #- am_arkflag_NoTransferFromFiltering=
+      # - am_arkflag_NoTransferFromFiltering=
       - am_arkflag_ForceAllowCaveFlyers=true
       - am_arkflag_crossplay=true
       - ARKSERVER_SHARED=/arkserver
-      #- VALIDATE_SAVE_EXISTS=false
-      #- BACKUP_ONSTART=false
-      #- LOG_RCONCHAT=0
+      # - VALIDATE_SAVE_EXISTS=false
+      # - BACKUP_ONSTART=false
+      # - LOG_RCONCHAT=0
     image: drpsychick/arkserver:latest
     ports:
-     - 7778:7778/udp
-     - 7778:7778
-     - 27059:27059/udp
-     - 27059:27059
-     - 27097:27097
+      - 7778:7778/udp
+      - 7778:7778
+      - 27059:27059/udp
+      - 27059:27059
+      - 27097:27097
     restart: unless-stopped
     stdin_open: true
     tty: true
-    #ulimits:
-      #nofile:
-        #soft: 1000000
-        #hard: 1000000
+    # ulimits:
+    #   nofile:
+    #     soft: 1000000
+    #     hard: 1000000
     volumes:
       - /mnt/app_data/Server/_docker_stack/ark-se/TMC/antartika:/ark
       - /mnt/app_data/Server/_docker_stack/ark-se/TMC/antartika/saved:/arkserver/ShooterGame/Saved
       - /mnt/app_data/Server/_docker_stack/ark-se/arkclusters:/arkserver/ShooterGame/Saved/clusters
       - /mnt/app_data/Server/_docker_stack/ark-se/arkserver:/arkserver
-      #- /ark/config/GameUserSettings.ini /ark/config/Game.ini
-    logging: *logging
+      # - /ark/config/GameUserSettings.ini /ark/config/Game.ini
 
   ark-se-tmc-crystalisles:
     logging: *logging
@@ -130,37 +129,36 @@ services:
       - am_ark_RCONPort=27086
       - am_arkNoPortDecrement=true
       - am_ark_MaxPlayers=10
-      #am_arkwarnminutes=15
+      # am_arkwarnminutes=15
       - am_arkAutoUpdateOnStart=false # only do it on the first one?
       - ARKCLUSTER=true
-      #- am_arkflag_NoTransferFromFiltering=
+      # - am_arkflag_NoTransferFromFiltering=
       - am_arkflag_ForceAllowCaveFlyers=true
       - am_arkflag_crossplay=true
       - ARKSERVER_SHARED=/arkserver
-      #- VALIDATE_SAVE_EXISTS=false
-      #- BACKUP_ONSTART=false
-      #- LOG_RCONCHAT=0
+      # - VALIDATE_SAVE_EXISTS=false
+      # - BACKUP_ONSTART=false
+      # - LOG_RCONCHAT=0
     image: drpsychick/arkserver:latest
     ports:
-     - 7779:7779/udp
-     - 7779:7779
-     - 27016:27016/udp
-     - 27016:27016
-     - 27086:27086
+      - 7779:7779/udp
+      - 7779:7779
+      - 27016:27016/udp
+      - 27016:27016
+      - 27086:27086
     restart: unless-stopped
     stdin_open: true
     tty: true
-    #ulimits:
-      #nofile:
-        #soft: 1000000
-        #hard: 1000000
+    # ulimits:
+    #   nofile:
+    #     soft: 1000000
+    #     hard: 1000000
     volumes:
       - /mnt/app_data/Server/_docker_stack/ark-se/TMC/crystalisles:/ark
       - /mnt/app_data/Server/_docker_stack/ark-se/TMC/crystalisles/saved:/arkserver/ShooterGame/Saved
       - /mnt/app_data/Server/_docker_stack/ark-se/arkclusters:/arkserver/ShooterGame/Saved/clusters
       - /mnt/app_data/Server/_docker_stack/ark-se/arkserver:/arkserver
-      #- /ark/config/GameUserSettings.ini /ark/config/Game.ini
-    logging: *logging
+      # - /ark/config/GameUserSettings.ini /ark/config/Game.ini
 
   ark-se-tmc-ebenus_astrum:
     logging: *logging
@@ -183,36 +181,36 @@ services:
       - am_ark_RCONPort=27098
       - am_arkNoPortDecrement=true
       - am_ark_MaxPlayers=10
-      #am_arkwarnminutes=15
+      # am_arkwarnminutes=15
       - am_arkAutoUpdateOnStart=false # only do it on the first one?
       - ARKCLUSTER=true
-      #- am_arkflag_NoTransferFromFiltering=
+      # - am_arkflag_NoTransferFromFiltering=
       - am_arkflag_ForceAllowCaveFlyers=true
       - am_arkflag_crossplay=true
       - ARKSERVER_SHARED=/arkserver
-      #- VALIDATE_SAVE_EXISTS=false
-      #- BACKUP_ONSTART=false
-      #- LOG_RCONCHAT=0
+      # - VALIDATE_SAVE_EXISTS=false
+      # - BACKUP_ONSTART=false
+      # - LOG_RCONCHAT=0
     image: drpsychick/arkserver:latest
     ports:
-     - 7780:7780/udp
-     - 7780:7780
-     - 27060:27060/udp
-     - 27060:27060
-     - 27098:27098
+      - 7780:7780/udp
+      - 7780:7780
+      - 27060:27060/udp
+      - 27060:27060
+      - 27098:27098
     restart: unless-stopped
     stdin_open: true
     tty: true
-    #ulimits:
-      #nofile:
-        #soft: 1000000
-        #hard: 1000000
+    # ulimits:
+    #   nofile:
+    #     soft: 1000000
+    #     hard: 1000000
     volumes:
       - /mnt/app_data/Server/_docker_stack/ark-se/TMC/ebenus_astrum:/ark
       - /mnt/app_data/Server/_docker_stack/ark-se/TMC/ebenus_astrum/saved:/arkserver/ShooterGame/Saved
       - /mnt/app_data/Server/_docker_stack/ark-se/arkclusters:/arkserver/ShooterGame/Saved/clusters
       - /mnt/app_data/Server/_docker_stack/ark-se/arkserver:/arkserver
-      #- /ark/config/GameUserSettings.ini /ark/config/Game.ini
+      # - /ark/config/GameUserSettings.ini /ark/config/Game.ini
 
   ark-se-tmc-extinction:
     logging: *logging
@@ -229,40 +227,39 @@ services:
       - am_ark_QueryPort=27017
       - am_ark_Port=7781
       - am_ark_RCONPort=27087
-      #am_arkwarnminutes=15
+      # am_arkwarnminutes=15
       - am_arkAutoUpdateOnStart=false # only do it on the first one?
       - am_ark_GameModIds=1213429840,1232362083,1565015734,1609138312,1840761213,506506101,731604991,751991809,793605978,806480270,821530042,895711211,902616446,924933745
       - ARKCLUSTER=true
       # this must be unique across all clusters on steam!
       - am_arkopt_clusterid=$ARK_CLUSTER_ID
-      #- am_arkflag_NoTransferFromFiltering=
+      # - am_arkflag_NoTransferFromFiltering=
       - am_arkflag_ForceAllowCaveFlyers=true
       - am_arkflag_crossplay=true
       - ARKSERVER_SHARED=/arkserver
-      #- VALIDATE_SAVE_EXISTS=false
-      #- BACKUP_ONSTART=false
-      #- LOG_RCONCHAT=0
+      # - VALIDATE_SAVE_EXISTS=false
+      # - BACKUP_ONSTART=false
+      # - LOG_RCONCHAT=0
     image: drpsychick/arkserver:latest
     ports:
-     - 7781:7781/udp
-     - 7781:7781
-     - 27017:27017/udp
-     - 27017:27017
-     - 27087:27087
+      - 7781:7781/udp
+      - 7781:7781
+      - 27017:27017/udp
+      - 27017:27017
+      - 27087:27087
     restart: unless-stopped
     stdin_open: true
     tty: true
-    #ulimits:
-      #nofile:
-        #soft: 1000000
-        #hard: 1000000
+    # ulimits:
+    #   nofile:
+    #     soft: 1000000
+    #     hard: 1000000
     volumes:
       - /mnt/app_data/Server/_docker_stack/ark-se/TMC/extinction:/ark
       - /mnt/app_data/Server/_docker_stack/ark-se/TMC/extinction/saved:/arkserver/ShooterGame/Saved
       - /mnt/app_data/Server/_docker_stack/ark-se/arkclusters:/arkserver/ShooterGame/Saved/clusters
       - /mnt/app_data/Server/_docker_stack/ark-se/arkserver:/arkserver
-      #- /ark/config/GameUserSettings.ini /ark/config/Game.ini
-    logging: *logging
+      # - /ark/config/GameUserSettings.ini /ark/config/Game.ini
 
   ark-se-tmc-halo:
     logging: *logging
@@ -285,37 +282,36 @@ services:
       - am_ark_RCONPort=27103
       - am_arkNoPortDecrement=true
       - am_ark_MaxPlayers=10
-      #am_arkwarnminutes=15
+      # am_arkwarnminutes=15
       - am_arkAutoUpdateOnStart=false # only do it on the first one?
       - ARKCLUSTER=true
-      #- am_arkflag_NoTransferFromFiltering=
+      # - am_arkflag_NoTransferFromFiltering=
       - am_arkflag_ForceAllowCaveFlyers=true
       - am_arkflag_crossplay=true
       - ARKSERVER_SHARED=/arkserver
-      #- VALIDATE_SAVE_EXISTS=false
-      #- BACKUP_ONSTART=false
-      #- LOG_RCONCHAT=0
+      # - VALIDATE_SAVE_EXISTS=false
+      # - BACKUP_ONSTART=false
+      # - LOG_RCONCHAT=0
     image: drpsychick/arkserver:latest
     volumes:
       - /mnt/app_data/Server/_docker_stack/ark-se/TMC/halo:/ark
       - /mnt/app_data/Server/_docker_stack/ark-se/TMC/halo/saved:/arkserver/ShooterGame/Saved
       - /mnt/app_data/Server/_docker_stack/ark-se/arkclusters:/arkserver/ShooterGame/Saved/clusters
       - /mnt/app_data/Server/_docker_stack/ark-se/arkserver:/arkserver
-      #- /ark/config/GameUserSettings.ini /ark/config/Game.ini
+      # - /ark/config/GameUserSettings.ini /ark/config/Game.ini
     ports:
-     - 7790:7790/udp
-     - 7790:7790
-     - 27065:27065/udp
-     - 27065:27065
-     - 27103:27103
+      - 7790:7790/udp
+      - 7790:7790
+      - 27065:27065/udp
+      - 27065:27065
+      - 27103:27103
     restart: unless-stopped
     stdin_open: true
     tty: true
-    #ulimits:
-      #nofile:
-        #soft: 1000000
-        #hard: 1000000
-    logging: *logging
+    # ulimits:
+    #   nofile:
+    #     soft: 1000000
+    #     hard: 1000000
 
   ark-se-tmc-hope:
     logging: *logging
@@ -335,40 +331,39 @@ services:
       - am_ark_QueryPort=27061
       - am_ark_Port=7782
       - am_ark_RCONPort=27099
-      #am_arkwarnminutes=15
+      # am_arkwarnminutes=15
       - am_arkAutoUpdateOnStart=false # only do it on the first one?
       - am_ark_GameModIds=1213429840,1232362083,1565015734,1609138312,1840761213,506506101,731604991,751991809,793605978,806480270,821530042,895711211,902616446,924933745,2594067220,869946022
       - ARKCLUSTER=true
       # this must be unique across all clusters on steam!
       - am_arkopt_clusterid=$ARK_CLUSTER_ID
-      #- am_arkflag_NoTransferFromFiltering=
+      # - am_arkflag_NoTransferFromFiltering=
       - am_arkflag_ForceAllowCaveFlyers=true
       - am_arkflag_crossplay=true
       - ARKSERVER_SHARED=/arkserver
-      #- VALIDATE_SAVE_EXISTS=false
-      #- BACKUP_ONSTART=false
-      #- LOG_RCONCHAT=0
+      # - VALIDATE_SAVE_EXISTS=false
+      # - BACKUP_ONSTART=false
+      # - LOG_RCONCHAT=0
     image: drpsychick/arkserver:latest
     ports:
-     - 7782:7782/udp
-     - 7782:7782
-     - 27061:27061/udp
-     - 27061:27061
-     - 27099:27099
+      - 7782:7782/udp
+      - 7782:7782
+      - 27061:27061/udp
+      - 27061:27061
+      - 27099:27099
     restart: unless-stopped
     stdin_open: true
     tty: true
-    #ulimits:
-      #nofile:
-        #soft: 1000000
-        #hard: 1000000
+    # ulimits:
+    #   nofile:
+    #     soft: 1000000
+    #     hard: 1000000
     volumes:
       - /mnt/app_data/Server/_docker_stack/ark-se/TMC/hope:/ark
       - /mnt/app_data/Server/_docker_stack/ark-se/TMC/hope/saved:/arkserver/ShooterGame/Saved
       - /mnt/app_data/Server/_docker_stack/ark-se/arkclusters:/arkserver/ShooterGame/Saved/clusters
       - /mnt/app_data/Server/_docker_stack/ark-se/arkserver:/arkserver
-      #- /ark/config/GameUserSettings.ini /ark/config/Game.ini
-    logging: *logging
+      # - /ark/config/GameUserSettings.ini /ark/config/Game.ini
 
   ark-se-tmc-lostisland:
     logging: *logging
@@ -388,37 +383,36 @@ services:
       - am_arkopt_clusterid=$ARK_CLUSTER_ID
       - am_ark_MaxPlayers=10
       - am_arkNoPortDecrement=true
-      #am_arkwarnminutes=15
+      # am_arkwarnminutes=15
       - am_arkAutoUpdateOnStart=false # only do it on the first one?
       - ARKCLUSTER=true
-      #- am_arkflag_NoTransferFromFiltering=
+      # - am_arkflag_NoTransferFromFiltering=
       - am_arkflag_ForceAllowCaveFlyers=true
       - am_arkflag_crossplay=true
       - ARKSERVER_SHARED=/arkserver
-      #- VALIDATE_SAVE_EXISTS=false
-      #- BACKUP_ONSTART=false
-      #- LOG_RCONCHAT=0
+      # - VALIDATE_SAVE_EXISTS=false
+      # - BACKUP_ONSTART=false
+      # - LOG_RCONCHAT=0
     image: drpsychick/arkserver:latest
     ports:
-     - 7789:7789/udp
-     - 7789:7789
-     - 27052:27052/udp
-     - 27052:27052
-     - 27091:27091
+      - 7789:7789/udp
+      - 7789:7789
+      - 27052:27052/udp
+      - 27052:27052
+      - 27091:27091
     restart: unless-stopped
     stdin_open: true
     tty: true
-    #ulimits:
-      #nofile:
-        #soft: 1000000
-        #hard: 1000000
+    # ulimits:
+    #   nofile:
+    #     soft: 1000000
+    #     hard: 1000000
     volumes:
       - /mnt/app_data/Server/_docker_stack/ark-se/TMC/lostisland:/ark
       - /mnt/app_data/Server/_docker_stack/ark-se/TMC/lostisland/saved:/arkserver/ShooterGame/Saved
       - /mnt/app_data/Server/_docker_stack/ark-se/arkclusters:/arkserver/ShooterGame/Saved/clusters
       - /mnt/app_data/Server/_docker_stack/ark-se/arkserver:/arkserver
-      #- /ark/config/GameUserSettings.ini /ark/config/Game.ini
-    logging: *logging
+      # - /ark/config/GameUserSettings.ini /ark/config/Game.ini
 
   ark-se-tmc-ragnarok:
     logging: *logging
@@ -442,33 +436,34 @@ services:
       - am_ark_Port=7791
       - am_ark_RCONPort=27092
       - am_arkNoPortDecrement=true
-      #am_arkwarnminutes=15
+      # am_arkwarnminutes=15
       - am_arkAutoUpdateOnStart=false # only do it on the first one?
       - ARKCLUSTER=true
-      #- am_arkflag_NoTransferFromFiltering=
+      # - am_arkflag_NoTransferFromFiltering=
       - am_arkflag_ForceAllowCaveFlyers=true
       - am_arkflag_crossplay=true
       - ARKSERVER_SHARED=/arkserver
-      #- VALIDATE_SAVE_EXISTS=false
-      #- BACKUP_ONSTART=false
-      #- LOG_RCONCHAT=0
+      # - VALIDATE_SAVE_EXISTS=false
+      # - BACKUP_ONSTART=false
+      # - LOG_RCONCHAT=0
     volumes:
       - /mnt/app_data/Server/_docker_stack/ark-se/TMC/ragnarok:/ark
       - /mnt/app_data/Server/_docker_stack/ark-se/TMC/ragnarok/saved:/arkserver/ShooterGame/Saved
       - /mnt/app_data/Server/_docker_stack/ark-se/arkclusters:/arkserver/ShooterGame/Saved/clusters
       - /mnt/app_data/Server/_docker_stack/ark-se/arkserver:/arkserver
-      #- /ark/config/GameUserSettings.ini /ark/config/Game.ini
+      # - /ark/config/GameUserSettings.ini /ark/config/Game.ini
     ports:
-     - 7791:7791/udp
-     - 7791:7791
-     - 27053:27053/udp
-     - 27053:27053
-     - 27092:27092
-    #ulimits:
-      #nofile:
-        #soft: 1000000
-        #hard: 1000000
-    logging: *logging
+      - 7791:7791/udp
+      - 7791:7791
+      - 27053:27053/udp
+      - 27053:27053
+      - 27092:27092
+    # yamllint disable rule:comments-indentation
+    # ulimits:
+    #   nofile:
+    #     soft: 1000000
+    #     hard: 1000000
+    # yamllint enable rule:comments-indentation
 
   ark-se-tmc-scorchedearth:
     logging: *logging
@@ -488,37 +483,36 @@ services:
       - am_arkopt_clusterid=$ARK_CLUSTER_ID
       - am_arkNoPortDecrement=true
       - am_ark_MaxPlayers=10
-      #am_arkwarnminutes=15
+      # am_arkwarnminutes=15
       - am_arkAutoUpdateOnStart=false # only do it on the first one?
       - ARKCLUSTER=true
-      #- am_arkflag_NoTransferFromFiltering=
+      # - am_arkflag_NoTransferFromFiltering=
       - am_arkflag_ForceAllowCaveFlyers=true
       - am_arkflag_crossplay=true
       - ARKSERVER_SHARED=/arkserver
-      #- VALIDATE_SAVE_EXISTS=false
-      #- BACKUP_ONSTART=false
-      #- LOG_RCONCHAT=0
+      # - VALIDATE_SAVE_EXISTS=false
+      # - BACKUP_ONSTART=false
+      # - LOG_RCONCHAT=0
     image: drpsychick/arkserver:latest
     ports:
-     - 7793:7793/udp
-     - 7793:7793
-     - 27054:27054/udp
-     - 27054:27054
-     - 27093:27093
+      - 7793:7793/udp
+      - 7793:7793
+      - 27054:27054/udp
+      - 27054:27054
+      - 27093:27093
     restart: unless-stopped
     stdin_open: true
     tty: true
-    #ulimits:
-      #nofile:
-        #soft: 1000000
-        #hard: 1000000
+    # ulimits:
+    #   nofile:
+    #     soft: 1000000
+    #     hard: 1000000
     volumes:
       - /mnt/app_data/Server/_docker_stack/ark-se/TMC/scorchedearth:/ark
       - /mnt/app_data/Server/_docker_stack/ark-se/TMC/scorchedearth/saved:/arkserver/ShooterGame/Saved
       - /mnt/app_data/Server/_docker_stack/ark-se/arkclusters:/arkserver/ShooterGame/Saved/clusters
       - /mnt/app_data/Server/_docker_stack/ark-se/arkserver:/arkserver
-      #- /ark/config/GameUserSettings.ini /ark/config/Game.ini
-    logging: *logging
+      # - /ark/config/GameUserSettings.ini /ark/config/Game.ini
 
   ark-se-tmc-thecenter:
     logging: *logging
@@ -538,37 +532,36 @@ services:
       - am_arkopt_clusterid=$ARK_CLUSTER_ID
       - am_arkNoPortDecrement=true
       - am_ark_MaxPlayers=10
-      #am_arkwarnminutes=15
+      # am_arkwarnminutes=15
       - am_arkAutoUpdateOnStart=false # only do it on the first one?
       - ARKCLUSTER=true
-      #- am_arkflag_NoTransferFromFiltering=
+      # - am_arkflag_NoTransferFromFiltering=
       - am_arkflag_ForceAllowCaveFlyers=true
       - am_arkflag_crossplay=true
       - ARKSERVER_SHARED=/arkserver
-      #- VALIDATE_SAVE_EXISTS=false
-      #- BACKUP_ONSTART=false
-      #- LOG_RCONCHAT=0
+      # - VALIDATE_SAVE_EXISTS=false
+      # - BACKUP_ONSTART=false
+      # - LOG_RCONCHAT=0
     image: drpsychick/arkserver:latest
     ports:
-     - 7795:7795/udp
-     - 7795:7795
-     - 27056:27056/udp
-     - 27056:27056
-     - 27094:27094
+      - 7795:7795/udp
+      - 7795:7795
+      - 27056:27056/udp
+      - 27056:27056
+      - 27094:27094
     restart: unless-stopped
     stdin_open: true
     tty: true
-    #ulimits:
-      #nofile:
-        #soft: 1000000
-        #hard: 1000000
+    # ulimits:
+    #   nofile:
+    #     soft: 1000000
+    #     hard: 1000000
     volumes:
       - /mnt/app_data/Server/_docker_stack/ark-se/TMC/thecenter:/ark
       - /mnt/app_data/Server/_docker_stack/ark-se/TMC/thecenter/saved:/arkserver/ShooterGame/Saved
       - /mnt/app_data/Server/_docker_stack/ark-se/arkclusters:/arkserver/ShooterGame/Saved/clusters
       - /mnt/app_data/Server/_docker_stack/ark-se/arkserver:/arkserver
-      #- /ark/config/GameUserSettings.ini /ark/config/Game.ini
-    logging: *logging
+      # - /ark/config/GameUserSettings.ini /ark/config/Game.ini
 
   ark_server-tmc-og_island:
     logging: *logging
