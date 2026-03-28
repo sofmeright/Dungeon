@@ -16,7 +16,7 @@ services:
     network_mode: "container:gluetun"
     cap_add:
       - NET_ADMIN
-    depends_on: 
+    depends_on:
       - gluetun
     logging: &logging
       driver: loki
@@ -38,7 +38,7 @@ services:
     network_mode: "container:gluetun"
     cap_add:
       - NET_ADMIN
-    depends_on: 
+    depends_on:
       - gluetun
 
    # A tool that automates cross-seeding within qBittorrent
@@ -74,7 +74,7 @@ services:
     #network_mode: "container:gluetun"
     #cap_add:
       #- NET_ADMIN
-    #depends_on: 
+    #depends_on:
       #- gluetun
 
   gluetun:
@@ -127,7 +127,7 @@ services:
       - VPN_PORT_FORWARDING_STATUS_FILE=/tmp/gluetun/forwarded_port
       - FIREWALL_OUTBOUND_SUBNETS=10.55.6.136/32
       # Wireguard:
-      # - WIREGUARD_PRIVATE_KEY=wOEI9rqqbDwnN8/Bpp22sVz48T71vJ4fYmFWujulwUU=
+      # - WIREGUARD_PRIVATE_KEY=<REDACTED>
       # - WIREGUARD_ADDRESSES=10.64.222.21/32
       # Timezone for accurate log times
       - TZ=Etc/UTC
@@ -151,7 +151,7 @@ services:
     network_mode: "container:gluetun"
     cap_add:
       - NET_ADMIN
-    depends_on: 
+    depends_on:
       - gluetun
     volumes:
       - /mnt/app_data/Server/_docker_stack/gluetun/config:/tmp/gluetun #Set "yourfolder" to the same directory you used for Gluetun
@@ -168,7 +168,7 @@ services:
     network_mode: "container:gluetun"
     cap_add:
       - NET_ADMIN
-    depends_on: 
+    depends_on:
       - gluetun
     volumes:
       - /mnt/app_data/Server/_docker_stack/jellyseer/config:/app/config
@@ -186,7 +186,7 @@ services:
     network_mode: "container:gluetun"
     cap_add:
       - NET_ADMIN
-    depends_on: 
+    depends_on:
       - gluetun
     volumes:
       - /mnt/app_data/Server/_docker_stack/lidarr/config:/config
@@ -216,11 +216,11 @@ services:
     network_mode: "container:gluetun"
     cap_add:
       - NET_ADMIN
-    depends_on: 
+    depends_on:
       - gluetun
     volumes:
       - /mnt/app_data/Server/_docker_stack/overseerr/config:/app/config
-      
+
   pinchflat:
     logging: *logging
     image: ghcr.io/kieraneglin/pinchflat:latest
@@ -236,7 +236,7 @@ services:
     network_mode: "container:gluetun"
     cap_add:
       - NET_ADMIN
-    depends_on: 
+    depends_on:
       - gluetun
     volumes:
       - /mnt/app_data/Server/_docker_stack/pinchflat/config:/config
@@ -255,7 +255,7 @@ services:
     network_mode: "container:gluetun"
     cap_add:
       - NET_ADMIN
-    depends_on: 
+    depends_on:
       - gluetun
     volumes:
       - /mnt/app_data/Server/_docker_stack/prowlarr/config:/config
@@ -267,7 +267,7 @@ services:
     network_mode: "container:gluetun"
     cap_add:
       - NET_ADMIN
-    depends_on: 
+    depends_on:
       - gluetun
     environment:
       - TZ=Etc/UTC
@@ -293,7 +293,7 @@ services:
     network_mode: "container:gluetun"
     cap_add:
       - NET_ADMIN
-    depends_on: 
+    depends_on:
       - gluetun
     volumes:
       - /mnt/app_data/Server/_docker_stack/qbittorrent/config:/config
@@ -312,7 +312,7 @@ services:
     network_mode: "container:gluetun"
     cap_add:
       - NET_ADMIN
-    depends_on: 
+    depends_on:
       - gluetun
     volumes:
       - /etc/localtime:/etc/localtime:ro
@@ -344,14 +344,14 @@ services:
     network_mode: "container:gluetun"
     cap_add:
       - NET_ADMIN
-    depends_on: 
+    depends_on:
       - gluetun
     #volumes:
       #- "/mnt/media_stack/configs/sabnzbd:/config"
       #- "/mnt/torrent_temp/nzb:/incomplete"
       #- "/mnt/media_stack/media/downloads:/media/downloads"
     privileged: true
-    
+
   sonarr:
     logging: *logging
     image: ghcr.io/hotio/sonarr:latest
@@ -365,7 +365,7 @@ services:
     network_mode: "container:gluetun"
     cap_add:
       - NET_ADMIN
-    depends_on: 
+    depends_on:
       - gluetun
     volumes:
       - /mnt/app_data/Server/_docker_stack/sonarr/config:/config

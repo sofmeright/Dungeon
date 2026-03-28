@@ -73,7 +73,7 @@ services:
     #cap_add:
       #- NET_ADMIN
     #container_name: flaresolverr
-    #depends_on: 
+    #depends_on:
       #- gluetun
     #environment:
       #- LOG_LEVEL=${LOG_LEVEL:-info}
@@ -111,7 +111,7 @@ services:
       - VPN_PORT_FORWARDING_STATUS_FILE=/tmp/gluetun/forwarded_port
       - FIREWALL_OUTBOUND_SUBNETS=10.0.0.0/8
       # Wireguard:
-      # - WIREGUARD_PRIVATE_KEY=wOEI9rqqbDwnN8/Bpp22sVz48T71vJ4fYmFWujulwUU=
+      # - WIREGUARD_PRIVATE_KEY=<REDACTED>
       # - WIREGUARD_ADDRESSES=10.64.222.21/32
       # Timezone for accurate log times
       - TZ=Etc/UTC
@@ -272,7 +272,7 @@ services:
     restart: always
     volumes:
       - /opt/docker/overseerr/config:/app/config
-      
+
   pinchflat:
     logging: *logging
     cap_add:
@@ -407,7 +407,7 @@ services:
     cap_add:
       - NET_ADMIN
     container_name: "sabnzbd"
-    depends_on: 
+    depends_on:
       gluetun:
         condition: service_healthy
     image: "lscr.io/linuxserver/sabnzbd:latest"
@@ -418,7 +418,7 @@ services:
       - /opt/docker/sabnzbd/incomplete:/config/Downloads/incomplete
       - /opt/docker/sabnzbd/downloads:/config/Downloads/complete
     privileged: true
-    
+
   sonarr:
     logging: *logging
     cap_add:
