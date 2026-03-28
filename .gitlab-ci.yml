@@ -59,6 +59,8 @@ docs:
 
 reconcile:
   stage: publish
+  needs:
+    - job: lint
   variables:
     GIT_DEPTH: 0
   id_tokens:
