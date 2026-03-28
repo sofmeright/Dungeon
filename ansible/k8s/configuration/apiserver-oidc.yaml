@@ -20,11 +20,26 @@
     health_check_delay: 5
 
   tasks:
+    - name: Export ClusterConfiguration from kubeadm-config ConfigMap
+      ansible.builtin.shell:
+        cmd: >
+          kubectl --kubeconfig /etc/kubernetes/admin.conf
+          -n kube-system get configmap kubeadm-config
+          -o jsonpath='{.data.ClusterConfiguration}'
+          > /tmp/kubeadm-cluster.yaml
+      changed_when: false
+
     - name: Regenerate apiserver static pod from kubeadm-config
       ansible.builtin.command:
-        cmd: kubeadm init phase control-plane apiserver
+        cmd: kubeadm init phase control-plane apiserver --config /tmp/kubeadm-cluster.yaml
       register: kubeadm_result
-      changed_when: "'Static pod manifest generated' in kubeadm_result.stdout or kubeadm_result.rc == 0"
+      changed_when: kubeadm_result.rc == 0
+
+    - name: Clean up temporary config
+      ansible.builtin.file:
+        path: /tmp/kubeadm-cluster.yaml
+        state: absent
+      changed_when: false
 
     - name: Wait for apiserver to become healthy
       ansible.builtin.uri:
