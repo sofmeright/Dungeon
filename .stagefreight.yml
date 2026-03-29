@@ -45,6 +45,15 @@ policies:
 docs:
   enabled: false
 
+narrator:
+  - file: "docs/Apps_&_Services-Overview.md"
+    items:
+      - id: cluster-inventory
+        kind: k8s-inventory
+        placement:
+          between: ["<!-- sf:k8s-inventory:start -->", "<!-- sf:k8s-inventory:end -->"]
+          mode: replace
+
 lint:
   level: full
   exclude:
