@@ -46,6 +46,9 @@ docs:
   stage: docs
   variables:
     GIT_DEPTH: 0
+  id_tokens:
+    STAGEFREIGHT_OIDC:
+      aud: stagefreight
   before_script:
     - *sf-context
   script:
