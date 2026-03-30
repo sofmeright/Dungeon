@@ -90,6 +90,7 @@ badges:
 
 narrator:
   - file: "README.md"
+    link_base: "https://gitlab.prplanit.com/SoFMeRight/dungeon/-/blob/main"
     items:
       - id: badge.build
         kind: badge_ref
