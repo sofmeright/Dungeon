@@ -1,0 +1,5252 @@
+{
+  "schema_version": 1,
+  "cluster": "dungeon",
+  "generated_at": "2026-03-30T08:30:12.845138781Z",
+  "discovery_status": {
+    "complete": true,
+    "source": "live_cluster"
+  },
+  "apps": {
+    "arylls-lookout/pve-cluster-proxy": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "arylls-lookout",
+        "name": "pve-cluster-proxy",
+        "images": [
+          "docker.io/library/nginx:1-alpine"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "arylls-lookout/xylem-gateway-istio": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "arylls-lookout",
+        "name": "xylem-gateway-istio",
+        "images": [
+          "docker.io/istio/proxyv2:1.29.1-distroless"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "compass/adguard": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "compass",
+        "name": "adguard",
+        "images": [
+          "docker.io/adguard/adguardhome:v0.107.73"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "compass/adguardhome-sync": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "compass",
+        "name": "adguardhome-sync",
+        "images": [
+          "docker.io/linuxserver/adguardhome-sync:0.9.0"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "compass/chrony": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "compass",
+        "name": "chrony",
+        "images": [
+          "docker.io/simonrupf/chronyd:0.7.1"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "compass/echo-ip": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "compass",
+        "name": "echo-ip",
+        "images": [
+          "docker.io/mpolden/echoip:latest"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "compass/librespeed-speedtest": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "compass",
+        "name": "librespeed-speedtest",
+        "images": [
+          "ghcr.io/librespeed/speedtest:5.5.1"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "compass/netbootxyz": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "compass",
+        "name": "netbootxyz",
+        "images": [
+          "ghcr.io/netbootxyz/netbootxyz:0.7.6-nbxyz10"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "compass/openspeedtest": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "compass",
+        "name": "openspeedtest",
+        "images": [
+          "docker.io/openspeedtest/latest:v2.0.6"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "delivery-bag/ntfy": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "delivery-bag",
+        "name": "ntfy",
+        "images": [
+          "docker.io/binwiederhier/ntfy:v2.18.0"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "fairy-bottle/snapshot-controller": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "fairy-bottle",
+        "name": "snapshot-controller",
+        "images": [
+          "registry.k8s.io/sig-storage/snapshot-controller:v8.5.0"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "fairy-bottle/velero": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "fairy-bottle",
+        "name": "velero",
+        "images": [
+          "docker.io/velero/velero:v1.18.0"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "flux-system/flux-system": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "flux-system",
+        "name": "flux-system",
+        "images": [
+          "ghcr.io/fluxcd/helm-controller:v1.5.2",
+          "ghcr.io/fluxcd/kustomize-controller:v1.8.2",
+          "ghcr.io/fluxcd/notification-controller:v1.8.2",
+          "ghcr.io/fluxcd/source-controller:v1.8.1"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "gerudo-crest/reflector": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "gerudo-crest",
+        "name": "reflector",
+        "images": [
+          "docker.io/emberstack/kubernetes-reflector:7.1.288"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "gorons-bracelet/ceph-csi-rbd-nodeplugin": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "gorons-bracelet",
+        "name": "ceph-csi-rbd-nodeplugin",
+        "images": [
+          "quay.io/cephcsi/cephcsi:v3.15.0",
+          "registry.k8s.io/sig-storage/csi-node-driver-registrar:v2.13.0"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "gorons-bracelet/ceph-csi-rbd-provisioner": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "gorons-bracelet",
+        "name": "ceph-csi-rbd-provisioner",
+        "images": [
+          "quay.io/cephcsi/cephcsi:v3.15.0",
+          "docker.io/prplanit/external-provisioner:v6.1.0-r1",
+          "registry.k8s.io/sig-storage/csi-resizer:v1.13.1",
+          "registry.k8s.io/sig-storage/csi-snapshotter:v8.2.0",
+          "registry.k8s.io/sig-storage/csi-attacher:v4.8.0"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "gorons-bracelet/ceph-rgw": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "gorons-bracelet",
+        "name": "ceph-rgw",
+        "images": [
+          "quay.io/ceph/ceph:v19"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "gorons-bracelet/cifs-csi-driver": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "gorons-bracelet",
+        "name": "cifs-csi-driver",
+        "images": [
+          "registry.k8s.io/sig-storage/csi-provisioner:v5.0.2",
+          "registry.k8s.io/sig-storage/livenessprobe:v2.13.1",
+          "registry.k8s.io/sig-storage/smbplugin:v1.15.0",
+          "registry.k8s.io/sig-storage/csi-node-driver-registrar:v2.11.1"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "gorons-bracelet/cloudnative-pg": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "gorons-bracelet",
+        "name": "cloudnative-pg",
+        "images": [
+          "ghcr.io/cloudnative-pg/cloudnative-pg:1.24.1"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "gorons-bracelet/gorons-bracelet.cephfs.csi.ceph.com": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "gorons-bracelet",
+        "name": "gorons-bracelet.cephfs.csi.ceph.com",
+        "images": [
+          "quay.io/cephcsi/cephcsi:v3.15.0",
+          "registry.k8s.io/sig-storage/csi-provisioner:v5.2.0",
+          "registry.k8s.io/sig-storage/csi-resizer:v1.13.2",
+          "registry.k8s.io/sig-storage/csi-attacher:v4.8.1",
+          "registry.k8s.io/sig-storage/csi-snapshotter:v8.2.1",
+          "registry.k8s.io/sig-storage/csi-node-driver-registrar:v2.13.0"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "gorons-bracelet/gorons-bracelet.rbd.csi.ceph.com": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "gorons-bracelet",
+        "name": "gorons-bracelet.rbd.csi.ceph.com",
+        "images": [
+          "quay.io/cephcsi/cephcsi:v3.15.0",
+          "registry.k8s.io/sig-storage/csi-provisioner:v5.2.0",
+          "registry.k8s.io/sig-storage/csi-resizer:v1.13.2",
+          "registry.k8s.io/sig-storage/csi-attacher:v4.8.1",
+          "registry.k8s.io/sig-storage/csi-snapshotter:v8.2.1",
+          "registry.k8s.io/sig-storage/csi-node-driver-registrar:v2.13.0"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "gorons-bracelet/gpu-operator": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "gorons-bracelet",
+        "name": "gpu-operator",
+        "images": [
+          "nvcr.io/nvidia/gpu-operator:v25.10.1",
+          "registry.k8s.io/nfd/node-feature-discovery:v0.18.2",
+          "nvcr.io/nvidia/k8s-device-plugin:v0.18.1",
+          "nvcr.io/nvidia/k8s/container-toolkit:v1.18.1",
+          "nvcr.io/nvidia/k8s/dcgm-exporter:4.4.2-4.7.0-distroless"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "gorons-bracelet/mariadb-operator": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "gorons-bracelet",
+        "name": "mariadb-operator",
+        "images": [
+          "ghcr.io/mariadb-operator/mariadb-operator:v0.0.33",
+          "docker-registry3.mariadb.com/mariadb-operator/mariadb-operator:v0.0.33"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "gorons-bracelet/rbd-toolbox": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "gorons-bracelet",
+        "name": "rbd-toolbox",
+        "images": [
+          "quay.io/ceph/ceph:v18"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "gorons-bracelet/redis-operator": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "gorons-bracelet",
+        "name": "redis-operator",
+        "images": [
+          "quay.io/opstree/redis-operator:v0.22.2"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "gorons-bracelet/rook-ceph": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "gorons-bracelet",
+        "name": "rook-ceph",
+        "images": [
+          "docker.io/rook/ceph:v1.18.2"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "gorons-bracelet/rook-ceph-operator": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "gorons-bracelet",
+        "name": "rook-ceph-operator",
+        "images": [
+          "quay.io/cephcsi/ceph-csi-operator:v0.4.0"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "gorons-bracelet/strimzi-cluster-operator": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "gorons-bracelet",
+        "name": "strimzi-cluster-operator",
+        "images": [
+          "quay.io/strimzi/operator:0.48.0"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "gossip-stone/beszel": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "gossip-stone",
+        "name": "beszel",
+        "images": [
+          "docker.io/henrygd/beszel:0.18.4"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "gossip-stone/gatus": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "gossip-stone",
+        "name": "gatus",
+        "images": [
+          "ghcr.io/twin/gatus:v5.35.0",
+          "ghcr.io/home-operations/gatus-sidecar:0.0.13"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "gossip-stone/grafana": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "gossip-stone",
+        "name": "grafana",
+        "images": [
+          "docker.io/grafana/grafana:12.4.1"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "gossip-stone/graphite-exporter-truenas": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "gossip-stone",
+        "name": "graphite-exporter-truenas",
+        "images": [
+          "docker.io/prom/graphite-exporter:v0.16.0"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "gossip-stone/kube-state-metrics": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "gossip-stone",
+        "name": "kube-state-metrics",
+        "images": [
+          "registry.k8s.io/kube-state-metrics/kube-state-metrics:v2.18.0"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "gossip-stone/loki": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "gossip-stone",
+        "name": "loki",
+        "images": [
+          "docker.io/nginxinc/nginx-unprivileged:1.29-alpine",
+          "docker.io/kiwigrid/k8s-sidecar:1.30.11",
+          "docker.io/grafana/loki:3.6.7",
+          "docker.io/grafana/loki-canary:3.6.7"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "gossip-stone/nutify": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "gossip-stone",
+        "name": "nutify",
+        "images": [
+          "cr.pcfae.com/prplanit/nutify-ssh:latest"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "gossip-stone/prometheus-exporter-eaton-ups": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "gossip-stone",
+        "name": "prometheus-exporter-eaton-ups",
+        "images": [
+          "cr.pcfae.com/hlhd/prometheus-eaton-ups-exporter:v0.9.3"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "gossip-stone/prometheus-exporter-pve": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "gossip-stone",
+        "name": "prometheus-exporter-pve",
+        "images": [
+          "docker.io/prompve/prometheus-pve-exporter:3"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "gossip-stone/speedtest-tracker": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "gossip-stone",
+        "name": "speedtest-tracker",
+        "images": [
+          "docker.io/linuxserver/speedtest-tracker:1.13.11"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "gossip-stone/speedtest-tracker-postgres": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "gossip-stone",
+        "name": "speedtest-tracker-postgres",
+        "images": [
+          "docker.io/postgres:17"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "gossip-stone/umami": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "gossip-stone",
+        "name": "umami",
+        "images": [
+          "ghcr.io/umami-software/umami:postgresql-latest"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "gossip-stone/umami-postgres": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "gossip-stone",
+        "name": "umami-postgres",
+        "images": [
+          "docker.io/library/postgres:15-alpine"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "gossip-stone/uptime-kuma": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "gossip-stone",
+        "name": "uptime-kuma",
+        "images": [
+          "docker.io/louislam/uptime-kuma:2.2.1"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "gossip-stone/vminsert": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "gossip-stone",
+        "name": "vminsert",
+        "images": [
+          "docker.io/victoriametrics/vminsert:v1.97.1-cluster"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "gossip-stone/vmselect": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "gossip-stone",
+        "name": "vmselect",
+        "images": [
+          "docker.io/victoriametrics/vmselect:v1.97.1-cluster"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "gossip-stone/vmstorage": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "gossip-stone",
+        "name": "vmstorage",
+        "images": [
+          "docker.io/victoriametrics/vmstorage:v1.97.1-cluster"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "gossip-stone/weave-gitops": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "gossip-stone",
+        "name": "weave-gitops",
+        "images": [
+          "ghcr.io/weaveworks/wego-app:v0.38.0"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "hookshot/boundary": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "hookshot",
+        "name": "boundary",
+        "images": [
+          "docker.io/hashicorp/boundary:0.21.1"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "hookshot/guacamole": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "hookshot",
+        "name": "guacamole",
+        "images": [
+          "docker.io/guacamole/guacamole:latest"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "hookshot/guacamole-guacd": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "hookshot",
+        "name": "guacamole-guacd",
+        "images": [
+          "docker.io/guacamole/guacd:latest"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "hookshot/guacamole-postgres": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "hookshot",
+        "name": "guacamole-postgres",
+        "images": [
+          "docker.io/postgres:15-alpine"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "hookshot/rustdesk": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "hookshot",
+        "name": "rustdesk",
+        "images": [
+          "docker.io/rustdesk/rustdesk-server:1.1.15"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "hookshot/tactical-backend": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "hookshot",
+        "name": "tactical-backend",
+        "images": [
+          "docker.io/tacticalrmm/tactical:1.4.0"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "hookshot/tactical-celery": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "hookshot",
+        "name": "tactical-celery",
+        "images": [
+          "docker.io/tacticalrmm/tactical:1.4.0"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "hookshot/tactical-celerybeat": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "hookshot",
+        "name": "tactical-celerybeat",
+        "images": [
+          "docker.io/tacticalrmm/tactical:1.4.0"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "hookshot/tactical-frontend": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "hookshot",
+        "name": "tactical-frontend",
+        "images": [
+          "docker.io/tacticalrmm/tactical-frontend:1.4.0"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "hookshot/tactical-meshcentral": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "hookshot",
+        "name": "tactical-meshcentral",
+        "images": [
+          "docker.io/tacticalrmm/tactical-meshcentral:1.4.0"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "hookshot/tactical-mongodb": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "hookshot",
+        "name": "tactical-mongodb",
+        "images": [
+          "docker.io/mongo:4.4"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "hookshot/tactical-nats": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "hookshot",
+        "name": "tactical-nats",
+        "images": [
+          "docker.io/tacticalrmm/tactical-nats:1.4.0"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "hookshot/tactical-nginx": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "hookshot",
+        "name": "tactical-nginx",
+        "images": [
+          "docker.io/tacticalrmm/tactical-nginx:1.4.0"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "hookshot/tactical-postgres": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "hookshot",
+        "name": "tactical-postgres",
+        "images": [
+          "docker.io/postgres:15-alpine"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "hookshot/tactical-redis": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "hookshot",
+        "name": "tactical-redis",
+        "images": [
+          "docker.io/redis:7-alpine"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "hookshot/tactical-websockets": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "hookshot",
+        "name": "tactical-websockets",
+        "images": [
+          "docker.io/tacticalrmm/tactical:1.4.0"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "hyrule-castle/apt-cacher-ng": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "hyrule-castle",
+        "name": "apt-cacher-ng",
+        "images": [
+          "docker.io/prplanit/apt-cacher-ng-oci:3.7.4-v0.1"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "hyrule-castle/bagisto-demo": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "hyrule-castle",
+        "name": "bagisto-demo",
+        "images": [
+          "docker.io/webkul/bagisto:2.3.15"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "hyrule-castle/bagisto-demo-db": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "hyrule-castle",
+        "name": "bagisto-demo-db",
+        "images": [
+          "docker.io/mysql:8"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "hyrule-castle/bookstack": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "hyrule-castle",
+        "name": "bookstack",
+        "images": [
+          "docker.io/linuxserver/bookstack:25.12.20251224"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "hyrule-castle/bookstack-db": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "hyrule-castle",
+        "name": "bookstack-db",
+        "images": [
+          "docker.io/linuxserver/mariadb:11.4.9"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "hyrule-castle/calcom": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "hyrule-castle",
+        "name": "calcom",
+        "images": [
+          "docker.io/calcom/cal.com:v6.2.0"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "hyrule-castle/cell-membrane-gateway-istio": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "hyrule-castle",
+        "name": "cell-membrane-gateway-istio",
+        "images": [
+          "docker.io/istio/proxyv2:1.29.1-distroless"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "hyrule-castle/dolibarr-mariadb": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "hyrule-castle",
+        "name": "dolibarr-mariadb",
+        "images": [
+          "docker.io/linuxserver/mariadb:11.4.9"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "hyrule-castle/dolibarr-web": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "hyrule-castle",
+        "name": "dolibarr-web",
+        "images": [
+          "docker.io/dolibarr/dolibarr:22.0.4"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "hyrule-castle/erpnext-frontend": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "hyrule-castle",
+        "name": "erpnext-frontend",
+        "images": [
+          "docker.io/frappe/erpnext:v15.101.0"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "hyrule-castle/erpnext-mariadb": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "hyrule-castle",
+        "name": "erpnext-mariadb",
+        "images": [
+          "docker.io/mariadb:10.11"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "hyrule-castle/erpnext-queue-long": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "hyrule-castle",
+        "name": "erpnext-queue-long",
+        "images": [
+          "docker.io/frappe/erpnext:v15.101.0"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "hyrule-castle/erpnext-queue-short": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "hyrule-castle",
+        "name": "erpnext-queue-short",
+        "images": [
+          "docker.io/frappe/erpnext:v15.101.0"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "hyrule-castle/erpnext-redis-cache": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "hyrule-castle",
+        "name": "erpnext-redis-cache",
+        "images": [
+          "docker.io/redis:6.2-alpine"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "hyrule-castle/erpnext-redis-queue": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "hyrule-castle",
+        "name": "erpnext-redis-queue",
+        "images": [
+          "docker.io/redis:6.2-alpine"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "hyrule-castle/erpnext-scheduler": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "hyrule-castle",
+        "name": "erpnext-scheduler",
+        "images": [
+          "docker.io/frappe/erpnext:v15.101.0"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "hyrule-castle/erpnext-sites": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "hyrule-castle",
+        "name": "erpnext-sites",
+        "images": [
+          "docker.io/frappe/erpnext:v15.101.0"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "hyrule-castle/erpnext-websocket": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "hyrule-castle",
+        "name": "erpnext-websocket",
+        "images": [
+          "docker.io/frappe/erpnext:v15.101.0"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "hyrule-castle/gitlab": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "hyrule-castle",
+        "name": "gitlab",
+        "images": [
+          "quay.io/jetstack/cert-manager-controller:v1.17.4",
+          "quay.io/jetstack/cert-manager-cainjector:v1.17.4",
+          "quay.io/jetstack/cert-manager-webhook:v1.17.4",
+          "registry.gitlab.com/gitlab-org/build/cng/gitlab-exporter:16.2.0",
+          "registry.gitlab.com/gitlab-org/build/cng/gitlab-shell:v14.45.6",
+          "registry.gitlab.com/gitlab-org/build/cng/gitlab-kas:v18.9.2",
+          "registry.gitlab.com/gitlab-org/build/cng/gitlab-container-registry:v4.36.0-gitlab",
+          "registry.gitlab.com/gitlab-org/build/cng/gitlab-sidekiq-ce:v18.9.2",
+          "registry.gitlab.com/gitlab-org/build/cng/gitlab-toolbox-ce:v18.9.2",
+          "registry.gitlab.com/gitlab-org/build/cng/gitlab-webservice-ce:v18.9.2",
+          "registry.gitlab.com/gitlab-org/build/cng/gitlab-workhorse-ce:v18.9.2",
+          "registry.gitlab.com/gitlab-org/build/cng/gitaly:v18.9.2"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "hyrule-castle/gitlab-gitlab-runner": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "hyrule-castle",
+        "name": "gitlab-gitlab-runner",
+        "images": [
+          "registry.gitlab.com/gitlab-org/gitlab-runner:alpine-v18.9.0"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "hyrule-castle/gitlab-redis": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "hyrule-castle",
+        "name": "gitlab-redis",
+        "images": [
+          "quay.io/opstree/redis:v7.4.8"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "hyrule-castle/gitlab-sentinel": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "hyrule-castle",
+        "name": "gitlab-sentinel",
+        "images": [
+          "quay.io/opstree/redis-sentinel:v7.4.8"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "hyrule-castle/harbor": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "hyrule-castle",
+        "name": "harbor",
+        "images": [
+          "docker.io/goharbor/harbor-core:v2.14.2",
+          "docker.io/goharbor/harbor-jobservice:v2.14.2",
+          "docker.io/goharbor/nginx-photon:v2.14.2",
+          "docker.io/goharbor/harbor-portal:v2.14.2",
+          "docker.io/goharbor/registry-photon:v2.14.2",
+          "docker.io/goharbor/harbor-registryctl:v2.14.2"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "hyrule-castle/harbor-proxy-cache-proxy": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "hyrule-castle",
+        "name": "harbor-proxy-cache-proxy",
+        "images": [
+          "docker.io/openresty/openresty:1.27.1.2-alpine"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "hyrule-castle/harbor-redis": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "hyrule-castle",
+        "name": "harbor-redis",
+        "images": [
+          "docker.io/library/redis:7.4-alpine"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "hyrule-castle/invoiceninja-app": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "hyrule-castle",
+        "name": "invoiceninja-app",
+        "images": [
+          "docker.io/invoiceninja/invoiceninja-debian:5.13.1",
+          "docker.io/nginx:alpine"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "hyrule-castle/invoiceninja-mysql": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "hyrule-castle",
+        "name": "invoiceninja-mysql",
+        "images": [
+          "docker.io/mysql:8"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "hyrule-castle/invoiceninja-redis": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "hyrule-castle",
+        "name": "invoiceninja-redis",
+        "images": [
+          "docker.io/redis:alpine"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "hyrule-castle/opnform-api": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "hyrule-castle",
+        "name": "opnform-api",
+        "images": [
+          "docker.io/jhumanj/opnform-api:1.13.1"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "hyrule-castle/opnform-api-scheduler": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "hyrule-castle",
+        "name": "opnform-api-scheduler",
+        "images": [
+          "docker.io/jhumanj/opnform-api:1.13.1"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "hyrule-castle/opnform-api-worker": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "hyrule-castle",
+        "name": "opnform-api-worker",
+        "images": [
+          "docker.io/jhumanj/opnform-api:1.13.1"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "hyrule-castle/opnform-client": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "hyrule-castle",
+        "name": "opnform-client",
+        "images": [
+          "docker.io/jhumanj/opnform-client:1.13.1"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "hyrule-castle/opnform-ingress": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "hyrule-castle",
+        "name": "opnform-ingress",
+        "images": [
+          "docker.io/nginx:1"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "hyrule-castle/opnform-postgres": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "hyrule-castle",
+        "name": "opnform-postgres",
+        "images": [
+          "docker.io/postgres:16"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "hyrule-castle/opnform-redis": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "hyrule-castle",
+        "name": "opnform-redis",
+        "images": [
+          "docker.io/redis:7"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "hyrule-castle/orangehrm": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "hyrule-castle",
+        "name": "orangehrm",
+        "images": [
+          "docker.io/orangehrm/orangehrm:5.8"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "hyrule-castle/orangehrm-mariadb": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "hyrule-castle",
+        "name": "orangehrm-mariadb",
+        "images": [
+          "docker.io/mariadb:10.11"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "hyrule-castle/osticket-app": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "hyrule-castle",
+        "name": "osticket-app",
+        "images": [
+          "docker.io/tiredofit/osticket:3.6.2"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "hyrule-castle/osticket-mariadb": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "hyrule-castle",
+        "name": "osticket-mariadb",
+        "images": [
+          "docker.io/mariadb:12.2.2",
+          "docker-registry3.mariadb.com/mariadb-operator/mariadb-operator:v0.0.33"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "king-of-red-lions/cert-manager": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "king-of-red-lions",
+        "name": "cert-manager",
+        "images": [
+          "quay.io/jetstack/cert-manager-controller:v1.20.0",
+          "quay.io/jetstack/cert-manager-cainjector:v1.20.0",
+          "quay.io/jetstack/cert-manager-webhook:v1.20.0"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "king-of-red-lions/istio-cni": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "king-of-red-lions",
+        "name": "istio-cni",
+        "images": [
+          "docker.io/istio/install-cni:1.29.1"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "king-of-red-lions/istiod": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "king-of-red-lions",
+        "name": "istiod",
+        "images": [
+          "docker.io/istio/pilot:1.29.1-distroless"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "king-of-red-lions/stunner-auth": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "king-of-red-lions",
+        "name": "stunner-auth",
+        "images": [
+          "docker.io/l7mp/stunner-auth-server:1.1.0"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "king-of-red-lions/stunner-gateway-operator-controller-manager": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "king-of-red-lions",
+        "name": "stunner-gateway-operator-controller-manager",
+        "images": [
+          "docker.io/l7mp/stunner-gateway-operator:1.1.0"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "king-of-red-lions/ztunnel": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "king-of-red-lions",
+        "name": "ztunnel",
+        "images": [
+          "docker.io/istio/ztunnel:1.29.1"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "kokiri-forest/linkstack": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "kokiri-forest",
+        "name": "linkstack",
+        "images": [
+          "docker.io/linkstackorg/linkstack:latest"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "kokiri-forest/linkstack-db": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "kokiri-forest",
+        "name": "linkstack-db",
+        "images": [
+          "docker.io/mariadb:11.8.6"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "kokiri-forest/phloem-gateway-istio": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "kokiri-forest",
+        "name": "phloem-gateway-istio",
+        "images": [
+          "docker.io/istio/proxyv2:1.29.1-distroless"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "kube-system/cilium-agent": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "kube-system",
+        "name": "cilium-agent",
+        "images": null,
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "kube-system/cilium-envoy": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "kube-system",
+        "name": "cilium-envoy",
+        "images": null,
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "kube-system/cilium-operator": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "kube-system",
+        "name": "cilium-operator",
+        "images": null,
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "kube-system/coredns": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "kube-system",
+        "name": "coredns",
+        "images": [
+          "registry.k8s.io/coredns/coredns:v1.12.1"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "kube-system/hubble-relay": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "kube-system",
+        "name": "hubble-relay",
+        "images": null,
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "kube-system/hubble-ui": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "kube-system",
+        "name": "hubble-ui",
+        "images": null,
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "kube-system/kube-vip": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "kube-system",
+        "name": "kube-vip",
+        "images": [
+          "ghcr.io/kube-vip/kube-vip:v0.9.2"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "kube-system/metrics-server": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "kube-system",
+        "name": "metrics-server",
+        "images": [
+          "registry.k8s.io/metrics-server/metrics-server:v0.8.0"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "lakitu/alloy": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "lakitu",
+        "name": "alloy",
+        "images": [
+          "docker.io/grafana/alloy:v1.14.0",
+          "quay.io/prometheus-operator/prometheus-config-reloader:v0.81.0"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "lakitu/netalertx": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "lakitu",
+        "name": "netalertx",
+        "images": [
+          "ghcr.io/jokob-sk/netalertx:25.11.29"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "lens-of-truth/crowdsec": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "lens-of-truth",
+        "name": "crowdsec",
+        "images": [
+          "ghcr.io/crowdsecurity/crowdsec:v1.7.6"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "lens-of-truth/crowdsec-cloudflare-bouncer": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "lens-of-truth",
+        "name": "crowdsec-cloudflare-bouncer",
+        "images": [
+          "ghcr.io/crowdsecurity/cloudflare-bouncer:v0.3.0"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "lens-of-truth/crowdsec-dashboard": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "lens-of-truth",
+        "name": "crowdsec-dashboard",
+        "images": [
+          "cr.pcfae.com/prplanit/crowdsec-dashboard:latest"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "lens-of-truth/frigate": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "lens-of-truth",
+        "name": "frigate",
+        "images": [
+          "ghcr.io/blakeblackshear/frigate:0.17.0-tensorrt",
+          "ghcr.io/0x2142/frigate-notify:v0.5.4"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "lens-of-truth/home-assistant": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "lens-of-truth",
+        "name": "home-assistant",
+        "images": [
+          "ghcr.io/home-assistant/home-assistant:2026.3.1"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "lens-of-truth/mosquitto": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "lens-of-truth",
+        "name": "mosquitto",
+        "images": [
+          "docker.io/eclipse-mosquitto:2.1.2-alpine"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "lens-of-truth/wazuh-dashboard": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "lens-of-truth",
+        "name": "wazuh-dashboard",
+        "images": [
+          "docker.io/wazuh/wazuh-dashboard:4.14.3"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "lens-of-truth/wazuh-indexer": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "lens-of-truth",
+        "name": "wazuh-indexer",
+        "images": [
+          "docker.io/wazuh/wazuh-indexer:4.14.3"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "lens-of-truth/wazuh-manager": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "lens-of-truth",
+        "name": "wazuh-manager",
+        "images": [
+          "docker.io/wazuh/wazuh-manager:4.14.3"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "lens-of-truth/zigbee2mqtt": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "lens-of-truth",
+        "name": "zigbee2mqtt",
+        "images": [
+          "ghcr.io/koenkk/zigbee2mqtt:2.9.1"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "lost-woods/astralfocal-site": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "lost-woods",
+        "name": "astralfocal-site",
+        "images": [
+          "cr.pcfae.com/prplanit/astralfocal.com:v0.0.2"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "lost-woods/enamorafoto-site": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "lost-woods",
+        "name": "enamorafoto-site",
+        "images": [
+          "cr.pcfae.com/prplanit/enamorafoto.com:v0.0.2"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "lost-woods/etherealclique-site": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "lost-woods",
+        "name": "etherealclique-site",
+        "images": [
+          "cr.pcfae.com/prplanit/etherealclique.com:v0.0.2"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "lost-woods/ferdium": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "lost-woods",
+        "name": "ferdium",
+        "images": [
+          "docker.io/linuxserver/ferdium:7.1.1"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "lost-woods/homarr": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "lost-woods",
+        "name": "homarr",
+        "images": [
+          "ghcr.io/homarr-labs/homarr:v1.56.0"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "lost-woods/homarr-redis": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "lost-woods",
+        "name": "homarr-redis",
+        "images": [
+          "quay.io/opstree/redis:v7.4.8"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "lost-woods/homarr-sentinel": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "lost-woods",
+        "name": "homarr-sentinel",
+        "images": [
+          "quay.io/opstree/redis-sentinel:v7.4.8"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "lost-woods/homelabhelpdesk-site": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "lost-woods",
+        "name": "homelabhelpdesk-site",
+        "images": [
+          "cr.pcfae.com/prplanit/homelabhelpdesk.com:v0.0.2"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "lost-woods/kai-hamilton-site": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "lost-woods",
+        "name": "kai-hamilton-site",
+        "images": [
+          "cr.pcfae.com/prplanit/kai-hamilton.com:v0.0.2"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "lost-woods/organizr": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "lost-woods",
+        "name": "organizr",
+        "images": [
+          "ghcr.io/organizr/organizr:latest"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "lost-woods/precisionplanit-site": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "lost-woods",
+        "name": "precisionplanit-site",
+        "images": [
+          "cr.pcfae.com/prplanit/precisionplanit.com:v0.0.2"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "lost-woods/sofmeright-site": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "lost-woods",
+        "name": "sofmeright-site",
+        "images": [
+          "cr.pcfae.com/prplanit/sofmeright.com:v0.0.5"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "lost-woods/yesimvegan-site": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "lost-woods",
+        "name": "yesimvegan-site",
+        "images": [
+          "cr.pcfae.com/prplanit/yesimvegan.com:v0.0.2"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "pedestal-of-time/actualbudget": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "pedestal-of-time",
+        "name": "actualbudget",
+        "images": [
+          "docker.io/actualbudget/actual-server:sha-37e807f-alpine"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "pedestal-of-time/dailytxt": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "pedestal-of-time",
+        "name": "dailytxt",
+        "images": [
+          "docker.io/phitux/dailytxt:2.4.4"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "pedestal-of-time/homebox": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "pedestal-of-time",
+        "name": "homebox",
+        "images": [
+          "ghcr.io/sysadminsmedia/homebox:0.24.2"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "pedestal-of-time/lubelogger": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "pedestal-of-time",
+        "name": "lubelogger",
+        "images": [
+          "ghcr.io/hargata/lubelogger:v1.6.1"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "pedestal-of-time/monica": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "pedestal-of-time",
+        "name": "monica",
+        "images": [
+          "docker.io/nginx:1.29.6-alpine",
+          "docker.io/monica:4.1.2-fpm-alpine"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "pedestal-of-time/monica-db": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "pedestal-of-time",
+        "name": "monica-db",
+        "images": [
+          "docker.io/mariadb:11"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "pedestal-of-time/paperless-db": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "pedestal-of-time",
+        "name": "paperless-db",
+        "images": [
+          "docker.io/postgres:18.3-alpine3.23"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "pedestal-of-time/paperless-redis": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "pedestal-of-time",
+        "name": "paperless-redis",
+        "images": [
+          "docker.io/library/redis:7"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "pedestal-of-time/paperless-webserver": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "pedestal-of-time",
+        "name": "paperless-webserver",
+        "images": [
+          "ghcr.io/paperless-ngx/paperless-ngx:2.20.10"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "pedestal-of-time/photoprism-x": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "pedestal-of-time",
+        "name": "photoprism-x",
+        "images": [
+          "docker.io/photoprism/photoprism:251130"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "pedestal-of-time/photoprism-x-mariadb": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "pedestal-of-time",
+        "name": "photoprism-x-mariadb",
+        "images": [
+          "docker.io/mariadb:11"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "pedestal-of-time/plex-ms-x": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "pedestal-of-time",
+        "name": "plex-ms-x",
+        "images": [
+          "docker.io/plexinc/pms-docker:1.40.2.8395-c67dce28e"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "pedestal-of-time/roundcube-primary-gmail": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "pedestal-of-time",
+        "name": "roundcube-primary-gmail",
+        "images": [
+          "docker.io/roundcube/roundcubemail:1.6.13-fpm-alpine-nonroot",
+          "docker.io/nginxinc/nginx-unprivileged:1.29-alpine"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "pedestal-of-time/roundcube-primary-gmail-db": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "pedestal-of-time",
+        "name": "roundcube-primary-gmail-db",
+        "images": [
+          "docker.io/library/mysql:5.7"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "shooting-gallery/ark-sa-tmc-admin-list-server": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "shooting-gallery",
+        "name": "ark-sa-tmc-admin-list-server",
+        "images": [
+          "docker.io/library/nginx:alpine"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "shooting-gallery/ark-sa-tmc-theisland": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "shooting-gallery",
+        "name": "ark-sa-tmc-theisland",
+        "images": [
+          "docker.io/acekorneya/asa_server:2_1_latest"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "shooting-gallery/ark-sa-tmc-valguero": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "shooting-gallery",
+        "name": "ark-sa-tmc-valguero",
+        "images": [
+          "docker.io/acekorneya/asa_server:2_1_latest"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "shooting-gallery/ark-se-tmc-theisland": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "shooting-gallery",
+        "name": "ark-se-tmc-theisland",
+        "images": [
+          "docker.io/drpsychick/arkserver:latest-v1.6.62"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "shooting-gallery/emulatorjs": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "shooting-gallery",
+        "name": "emulatorjs",
+        "images": [
+          "docker.io/linuxserver/emulatorjs:1.9.2"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "shooting-gallery/minecraft": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "shooting-gallery",
+        "name": "minecraft",
+        "images": [
+          "docker.io/itzg/minecraft-server:java25"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "shooting-gallery/romm": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "shooting-gallery",
+        "name": "romm",
+        "images": [
+          "docker.io/rommapp/romm:4.7.0"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "shooting-gallery/romm-db": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "shooting-gallery",
+        "name": "romm-db",
+        "images": [
+          "docker.io/linuxserver/mariadb:11.4.9"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "swift-sail/anirra": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "swift-sail",
+        "name": "anirra",
+        "images": [
+          "docker.io/jpyles0524/anirra:xiFwhijN"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "swift-sail/bazarr": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "swift-sail",
+        "name": "bazarr",
+        "images": [
+          "docker.io/linuxserver/bazarr:1.5.6",
+          "docker.io/qmcgaw/gluetun:v3.41.1"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "swift-sail/byparr": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "swift-sail",
+        "name": "byparr",
+        "images": [
+          "ghcr.io/thephaseless/byparr:2.1.0",
+          "docker.io/qmcgaw/gluetun:v3.41.1"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "swift-sail/downloadarrs": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "swift-sail",
+        "name": "downloadarrs",
+        "images": [
+          "docker.io/qmcgaw/gluetun:v3.41.1",
+          "docker.io/linuxserver/qbittorrent:5.1.4",
+          "docker.io/linuxserver/radarr:6.0.4",
+          "docker.io/linuxserver/sonarr:4.0.16",
+          "docker.io/linuxserver/lidarr:3.1.0",
+          "docker.io/linuxserver/readarr:0.4.19-nightly",
+          "docker.io/crossseed/cross-seed:6.13.6",
+          "docker.io/prplanit/qbittorrent-port-manager:1.3"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "swift-sail/jellyseerr": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "swift-sail",
+        "name": "jellyseerr",
+        "images": [
+          "docker.io/fallenbagel/jellyseerr:2.7.3",
+          "docker.io/qmcgaw/gluetun:v3.41.1"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "swift-sail/neko-gateway": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "swift-sail",
+        "name": "neko-gateway",
+        "images": [
+          "docker.io/l7mp/stunnerd:1.1.0"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "swift-sail/neko-vpn": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "swift-sail",
+        "name": "neko-vpn",
+        "images": [
+          "docker.io/qmcgaw/gluetun:v3.41.1",
+          "ghcr.io/m1k1o/neko/vivaldi:3.0.7"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "swift-sail/overseerr": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "swift-sail",
+        "name": "overseerr",
+        "images": [
+          "docker.io/sctx/overseerr:1.35.0",
+          "docker.io/qmcgaw/gluetun:v3.41.1"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "swift-sail/pinchflat": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "swift-sail",
+        "name": "pinchflat",
+        "images": [
+          "ghcr.io/kieraneglin/pinchflat:latest",
+          "docker.io/qmcgaw/gluetun:v3.41.1"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "swift-sail/prowlarr": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "swift-sail",
+        "name": "prowlarr",
+        "images": [
+          "docker.io/linuxserver/prowlarr:2.3.0",
+          "docker.io/qmcgaw/gluetun:v3.41.1"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "swift-sail/py-kms": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "swift-sail",
+        "name": "py-kms",
+        "images": [
+          "ghcr.io/py-kms-organization/py-kms:python3-next"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "swift-sail/pyload-ng": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "swift-sail",
+        "name": "pyload-ng",
+        "images": [
+          "docker.io/linuxserver/pyload-ng:0.5.0",
+          "docker.io/qmcgaw/gluetun:v3.41.1"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "swift-sail/sabnzbd": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "swift-sail",
+        "name": "sabnzbd",
+        "images": [
+          "docker.io/linuxserver/sabnzbd:4.5.5",
+          "docker.io/qmcgaw/gluetun:v3.41.1"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "swift-sail/supermicro-license-generator": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "swift-sail",
+        "name": "supermicro-license-generator",
+        "images": [
+          "docker.io/prplanit/sm-lickitung-oci:v0.0.5"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "swift-sail/thelounge": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "swift-sail",
+        "name": "thelounge",
+        "images": [
+          "docker.io/linuxserver/thelounge:4.4.3",
+          "docker.io/qmcgaw/gluetun:v3.41.1"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "temple-of-time/appflowy-admin-frontend": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "temple-of-time",
+        "name": "appflowy-admin-frontend",
+        "images": [
+          "docker.io/appflowyinc/admin_frontend:0.13.5"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "temple-of-time/appflowy-ai": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "temple-of-time",
+        "name": "appflowy-ai",
+        "images": [
+          "docker.io/appflowyinc/appflowy_ai:0.13.5"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "temple-of-time/appflowy-cloud": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "temple-of-time",
+        "name": "appflowy-cloud",
+        "images": [
+          "docker.io/appflowyinc/appflowy_cloud:0.13.4"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "temple-of-time/appflowy-gotrue": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "temple-of-time",
+        "name": "appflowy-gotrue",
+        "images": [
+          "docker.io/appflowyinc/gotrue:0.13.4"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "temple-of-time/appflowy-nginx": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "temple-of-time",
+        "name": "appflowy-nginx",
+        "images": [
+          "docker.io/nginx:1.29.6-alpine"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "temple-of-time/appflowy-redis": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "temple-of-time",
+        "name": "appflowy-redis",
+        "images": [
+          "docker.io/redis:8.6.1-alpine"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "temple-of-time/appflowy-web": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "temple-of-time",
+        "name": "appflowy-web",
+        "images": [
+          "docker.io/appflowyinc/appflowy_web:0.11.2"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "temple-of-time/appflowy-worker": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "temple-of-time",
+        "name": "appflowy-worker",
+        "images": [
+          "docker.io/appflowyinc/appflowy_worker:0.13.4"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "temple-of-time/calibre-web": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "temple-of-time",
+        "name": "calibre-web",
+        "images": [
+          "docker.io/linuxserver/calibre-web:0.6.26"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "temple-of-time/ghost": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "temple-of-time",
+        "name": "ghost",
+        "images": [
+          "docker.io/library/ghost:5-alpine"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "temple-of-time/ghost-mysql": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "temple-of-time",
+        "name": "ghost-mysql",
+        "images": [
+          "docker.io/library/mysql:8.4"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "temple-of-time/immich": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "temple-of-time",
+        "name": "immich",
+        "images": [
+          "ghcr.io/immich-app/immich-server:v2.5.6",
+          "ghcr.io/immich-app/immich-machine-learning:v2.5.0-cuda",
+          "docker.io/tensorchord/pgvecto-rs:pg14-v0.2.0",
+          "docker.io/library/redis:6.2-alpine"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "temple-of-time/jellyfin": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "temple-of-time",
+        "name": "jellyfin",
+        "images": [
+          "docker.io/jellyfin/jellyfin:10.11.6"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "temple-of-time/joplin-app": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "temple-of-time",
+        "name": "joplin-app",
+        "images": [
+          "docker.io/joplin/server:3.5.2"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "temple-of-time/joplin-postgres": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "temple-of-time",
+        "name": "joplin-postgres",
+        "images": [
+          "docker.io/postgres:15"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "temple-of-time/kimai": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "temple-of-time",
+        "name": "kimai",
+        "images": [
+          "docker.io/kimai/kimai2:apache"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "temple-of-time/kimai-mariadb": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "temple-of-time",
+        "name": "kimai-mariadb",
+        "images": [
+          "docker.io/mariadb:11.8.6",
+          "docker-registry3.mariadb.com/mariadb-operator/mariadb-operator:v0.0.33"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "temple-of-time/linkwarden": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "temple-of-time",
+        "name": "linkwarden",
+        "images": [
+          "ghcr.io/linkwarden/linkwarden:v2.13.5"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "temple-of-time/linkwarden-meilisearch": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "temple-of-time",
+        "name": "linkwarden-meilisearch",
+        "images": [
+          "docker.io/getmeili/meilisearch:v1.38.2"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "temple-of-time/linkwarden-postgres": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "temple-of-time",
+        "name": "linkwarden-postgres",
+        "images": [
+          "docker.io/library/postgres:16-alpine"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "temple-of-time/mealie": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "temple-of-time",
+        "name": "mealie",
+        "images": [
+          "ghcr.io/mealie-recipes/mealie:nightly"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "temple-of-time/mealie-postgres": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "temple-of-time",
+        "name": "mealie-postgres",
+        "images": [
+          "docker.io/library/postgres:15"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "temple-of-time/nextcloud": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "temple-of-time",
+        "name": "nextcloud",
+        "images": [
+          "docker.io/library/nextcloud:31.0.10",
+          "docker.io/collabora/code:25.04.9.2.1",
+          "docker.io/h2non/imaginary:1.2.4"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "temple-of-time/nextcloud-clamav": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "temple-of-time",
+        "name": "nextcloud-clamav",
+        "images": [
+          "docker.io/clamav/clamav:1.5.2"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "temple-of-time/nextcloud-elasticsearch": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "temple-of-time",
+        "name": "nextcloud-elasticsearch",
+        "images": [
+          "docker.io/library/elasticsearch:9.3.1"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "temple-of-time/nextcloud-notify-push": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "temple-of-time",
+        "name": "nextcloud-notify-push",
+        "images": [
+          "docker.io/icewind1991/notify_push:1.3.1"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "temple-of-time/nextcloud-redis": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "temple-of-time",
+        "name": "nextcloud-redis",
+        "images": [
+          "quay.io/opstree/redis:v7.4.8"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "temple-of-time/nextcloud-sentinel": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "temple-of-time",
+        "name": "nextcloud-sentinel",
+        "images": [
+          "quay.io/opstree/redis-sentinel:v7.4.8"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "temple-of-time/nextcloud-talk-hpb": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "temple-of-time",
+        "name": "nextcloud-talk-hpb",
+        "images": [
+          "docker.io/strukturag/nextcloud-spreed-signaling:e78e914"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "temple-of-time/nextcloud-whiteboard": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "temple-of-time",
+        "name": "nextcloud-whiteboard",
+        "images": [
+          "ghcr.io/nextcloud-releases/whiteboard:v1.5.7"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "temple-of-time/open-webui": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "temple-of-time",
+        "name": "open-webui",
+        "images": [
+          "ghcr.io/open-webui/open-webui:v0.7.2"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "temple-of-time/open-webui-redis": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "temple-of-time",
+        "name": "open-webui-redis",
+        "images": [
+          "docker.io/redis:7.4-alpine"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "temple-of-time/open-webui-sentinel": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "temple-of-time",
+        "name": "open-webui-sentinel",
+        "images": [
+          "docker.io/redis:7.4-alpine"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "temple-of-time/penpot-backend": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "temple-of-time",
+        "name": "penpot-backend",
+        "images": [
+          "docker.io/penpotapp/backend:2.13.3"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "temple-of-time/penpot-exporter": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "temple-of-time",
+        "name": "penpot-exporter",
+        "images": [
+          "docker.io/penpotapp/exporter:2.13.3"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "temple-of-time/penpot-frontend": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "temple-of-time",
+        "name": "penpot-frontend",
+        "images": [
+          "docker.io/penpotapp/frontend:2.13.3"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "temple-of-time/penpot-postgres": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "temple-of-time",
+        "name": "penpot-postgres",
+        "images": [
+          "docker.io/postgres:15"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "temple-of-time/penpot-redis": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "temple-of-time",
+        "name": "penpot-redis",
+        "images": [
+          "docker.io/redis:7"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "temple-of-time/photoprism": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "temple-of-time",
+        "name": "photoprism",
+        "images": [
+          "docker.io/photoprism/photoprism:251130"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "temple-of-time/photoprism-mariadb": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "temple-of-time",
+        "name": "photoprism-mariadb",
+        "images": [
+          "docker.io/mariadb:11"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "temple-of-time/plex": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "temple-of-time",
+        "name": "plex",
+        "images": [
+          "docker.io/plexinc/pms-docker:1.43.0.10492-121068a07"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "temple-of-time/reactive-resume-app": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "temple-of-time",
+        "name": "reactive-resume-app",
+        "images": [
+          "docker.io/amruthpillai/reactive-resume:v5.0.11"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "temple-of-time/reactive-resume-chrome": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "temple-of-time",
+        "name": "reactive-resume-chrome",
+        "images": [
+          "ghcr.io/browserless/chromium:v2.43.0"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "temple-of-time/reactive-resume-minio": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "temple-of-time",
+        "name": "reactive-resume-minio",
+        "images": [
+          "docker.io/minio/minio:RELEASE.2025-09-07T16-13-09Z"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "temple-of-time/reactive-resume-postgres": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "temple-of-time",
+        "name": "reactive-resume-postgres",
+        "images": [
+          "docker.io/library/postgres:16-alpine"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "temple-of-time/shlink-app": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "temple-of-time",
+        "name": "shlink-app",
+        "images": [
+          "docker.io/shlinkio/shlink:5.0.1"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "temple-of-time/shlink-db": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "temple-of-time",
+        "name": "shlink-db",
+        "images": [
+          "docker.io/linuxserver/mariadb:11.4.9"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "temple-of-time/shlink-web-client": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "temple-of-time",
+        "name": "shlink-web-client",
+        "images": [
+          "docker.io/shlinkio/shlink-web-client:4.7.0"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "temple-of-time/wikijs-vegan": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "temple-of-time",
+        "name": "wikijs-vegan",
+        "images": [
+          "ghcr.io/requarks/wiki:2"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "temple-of-time/wikijs-vegan-db": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "temple-of-time",
+        "name": "wikijs-vegan-db",
+        "images": [
+          "docker.io/library/postgres:15-alpine"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "tingle-tuner/code-server": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "tingle-tuner",
+        "name": "code-server",
+        "images": [
+          "docker.io/linuxserver/code-server:4.111.0"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "tingle-tuner/convertx": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "tingle-tuner",
+        "name": "convertx",
+        "images": [
+          "ghcr.io/c4illin/convertx:v0.17.0"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "tingle-tuner/draw-io": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "tingle-tuner",
+        "name": "draw-io",
+        "images": [
+          "docker.io/jgraph/drawio:29.6.1"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "tingle-tuner/endlessh-go": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "tingle-tuner",
+        "name": "endlessh-go",
+        "images": [
+          "docker.io/shizunge/endlessh-go:2025.0914.0"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "tingle-tuner/fairer-pages": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "tingle-tuner",
+        "name": "fairer-pages",
+        "images": [
+          "docker.io/prplanit/fairer-pages:v0.0.14"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "tingle-tuner/faster-whisper": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "tingle-tuner",
+        "name": "faster-whisper",
+        "images": [
+          "docker.io/linuxserver/faster-whisper:gpu"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "tingle-tuner/filebrowser": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "tingle-tuner",
+        "name": "filebrowser",
+        "images": [
+          "docker.io/filebrowser/filebrowser:v2.62.1"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "tingle-tuner/google-webfonts-helper": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "tingle-tuner",
+        "name": "google-webfonts-helper",
+        "images": [
+          "ghcr.io/majodev/google-webfonts-helper:v1.7.1"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "tingle-tuner/hrconvert2": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "tingle-tuner",
+        "name": "hrconvert2",
+        "images": [
+          "docker.io/zelon88/hrconvert2:v3.3.7"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "tingle-tuner/it-tools": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "tingle-tuner",
+        "name": "it-tools",
+        "images": [
+          "docker.io/corentinth/it-tools:2024.10.22-7ca5933"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "tingle-tuner/libretranslate": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "tingle-tuner",
+        "name": "libretranslate",
+        "images": [
+          "docker.io/libretranslate/libretranslate:v1.9.5-cuda"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "tingle-tuner/mazanoke": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "tingle-tuner",
+        "name": "mazanoke",
+        "images": [
+          "ghcr.io/civilblur/mazanoke:v1.1.5"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "tingle-tuner/ollama": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "tingle-tuner",
+        "name": "ollama",
+        "images": [
+          "docker.io/ollama/ollama:0.18.0"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "tingle-tuner/openwakeword": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "tingle-tuner",
+        "name": "openwakeword",
+        "images": [
+          "docker.io/rhasspy/wyoming-openwakeword:2.1.0"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "tingle-tuner/piper": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "tingle-tuner",
+        "name": "piper",
+        "images": [
+          "docker.io/rhasspy/wyoming-piper:2.2.2"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "tingle-tuner/searxng": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "tingle-tuner",
+        "name": "searxng",
+        "images": [
+          "docker.io/searxng/searxng:2026.1.30-ad42b553b"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "tingle-tuner/searxng-redis": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "tingle-tuner",
+        "name": "searxng-redis",
+        "images": [
+          "docker.io/valkey/valkey:7-alpine"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "tingle-tuner/stable-diffusion-webui": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "tingle-tuner",
+        "name": "stable-diffusion-webui",
+        "images": [
+          "ghcr.io/ai-dock/stable-diffusion-webui:v2-cuda-12.1.1-base-22.04-v1.10.1"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "wallmaster/anubis": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "wallmaster",
+        "name": "anubis",
+        "images": [
+          "ghcr.io/techarohq/anubis:v1.25.0"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "zeldas-lullaby/bank-vaults-operator": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "zeldas-lullaby",
+        "name": "bank-vaults-operator",
+        "images": [
+          "ghcr.io/bank-vaults/vault-operator:v1.23.0"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "zeldas-lullaby/external-secrets": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "zeldas-lullaby",
+        "name": "external-secrets",
+        "images": [
+          "ghcr.io/external-secrets/external-secrets:v0.10.2"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "zeldas-lullaby/kyverno": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "zeldas-lullaby",
+        "name": "kyverno",
+        "images": [
+          "ghcr.io/kyverno/kyverno:v1.17.1",
+          "ghcr.io/kyverno/background-controller:v1.17.1",
+          "ghcr.io/kyverno/cleanup-controller:v1.17.1",
+          "ghcr.io/kyverno/reports-controller:v1.17.1"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "zeldas-lullaby/netbird-coturn": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "zeldas-lullaby",
+        "name": "netbird-coturn",
+        "images": [
+          "docker.io/coturn/coturn:4.8.0"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "zeldas-lullaby/netbird-dashboard": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "zeldas-lullaby",
+        "name": "netbird-dashboard",
+        "images": [
+          "docker.io/netbirdio/dashboard:v2.30.1"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "zeldas-lullaby/netbird-management": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "zeldas-lullaby",
+        "name": "netbird-management",
+        "images": [
+          "docker.io/netbirdio/management:0.64.4"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "zeldas-lullaby/netbird-relay": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "zeldas-lullaby",
+        "name": "netbird-relay",
+        "images": [
+          "docker.io/netbirdio/relay:0.64.4"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "zeldas-lullaby/netbird-signal": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "zeldas-lullaby",
+        "name": "netbird-signal",
+        "images": [
+          "docker.io/netbirdio/signal:0.64.4"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "zeldas-lullaby/netbox-postgres": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "zeldas-lullaby",
+        "name": "netbox-postgres",
+        "images": [
+          "docker.io/postgres:15-alpine"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "zeldas-lullaby/netbox-redis": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "zeldas-lullaby",
+        "name": "netbox-redis",
+        "images": [
+          "docker.io/redis:7-alpine"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "zeldas-lullaby/netbox-server": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "zeldas-lullaby",
+        "name": "netbox-server",
+        "images": [
+          "docker.io/linuxserver/netbox:4.5.4"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "zeldas-lullaby/oauth2-proxy": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "zeldas-lullaby",
+        "name": "oauth2-proxy",
+        "images": [
+          "quay.io/oauth2-proxy/oauth2-proxy:v7.14.3"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "zeldas-lullaby/semaphore": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "zeldas-lullaby",
+        "name": "semaphore",
+        "images": [
+          "docker.io/postgres:14",
+          "docker.io/semaphoreui/semaphore:v2.17.24"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "zeldas-lullaby/twofauth": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "zeldas-lullaby",
+        "name": "twofauth",
+        "images": [
+          "docker.io/2fauth/2fauth:6.1.1"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "zeldas-lullaby/unifi-app": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "zeldas-lullaby",
+        "name": "unifi-app",
+        "images": [
+          "docker.io/linuxserver/unifi-network-application:9.5.21"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "zeldas-lullaby/unifi-db": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "zeldas-lullaby",
+        "name": "unifi-db",
+        "images": [
+          "docker.io/library/mongo:7.0.30"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "zeldas-lullaby/vault": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "zeldas-lullaby",
+        "name": "vault",
+        "images": [
+          "docker.io/hashicorp/vault:1.21.4",
+          "ghcr.io/bank-vaults/bank-vaults:v1.32.1",
+          "docker.io/prom/statsd-exporter:v0.29.0"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "zeldas-lullaby/vault-configurator": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "zeldas-lullaby",
+        "name": "vault-configurator",
+        "images": [
+          "ghcr.io/bank-vaults/bank-vaults:v1.32.1"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "zeldas-lullaby/vaultwarden": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "zeldas-lullaby",
+        "name": "vaultwarden",
+        "images": [
+          "docker.io/vaultwarden/server:1.35.4"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "zeldas-lullaby/zitadel": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "zeldas-lullaby",
+        "name": "zitadel",
+        "images": [
+          "ghcr.io/zitadel/zitadel:v4.12.2"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "zeldas-lullaby/zitadel-login-v2": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "zeldas-lullaby",
+        "name": "zitadel-login-v2",
+        "images": [
+          "ghcr.io/zitadel/zitadel-login:v4.12.2"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "zeldas-lullaby/zitadel-redis": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "zeldas-lullaby",
+        "name": "zitadel-redis",
+        "images": [
+          "quay.io/opstree/redis:v7.4.8"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    },
+    "zeldas-lullaby/zitadel-sentinel": {
+      "lifecycle": {
+        "state": "active",
+        "last_seen": "2026-03-30T08:30:12.845138781Z"
+      },
+      "observed": {
+        "namespace": "zeldas-lullaby",
+        "name": "zitadel-sentinel",
+        "images": [
+          "quay.io/opstree/redis-sentinel:v7.4.8"
+        ],
+        "image_digests": null
+      },
+      "identity_cache": {},
+      "identity_cache_status": {
+        "state": "stale",
+        "reason": "new_app"
+      }
+    }
+  }
+}
