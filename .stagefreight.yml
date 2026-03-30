@@ -53,9 +53,60 @@ policies:
     stable: "^v\\d+\\.\\d+\\.\\d+$"
 
 docs:
-  enabled: false
+  enabled: true
+  generators:
+    badges: true
+    narrator: true
+  commit:
+    enabled: true
+    type: docs
+    message: "refresh generated docs and badges"
+    add:
+      - "README.md"
+      - "docs/Apps_&_Services-Overview.md"
+      - ".stagefreight/badges"
+      - ".stagefreight/manifests"
+    push: true
+    skip_ci: false
 
 narrator:
+  - file: "README.md"
+    items:
+      - id: badge.build
+        kind: badge
+        placement:
+          between: ["<!-- sf:badges:start -->", "<!-- sf:badges:end -->"]
+          mode: replace
+          inline: true
+        text: build
+        value: "{env:BUILD_STATUS}"
+        color: auto
+        output: ".stagefreight/badges/build.svg"
+        link: "https://gitlab.prplanit.com/SoFMeRight/dungeon/-/pipelines"
+
+      - id: badge.license
+        kind: badge
+        placement:
+          between: ["<!-- sf:badges:start -->", "<!-- sf:badges:end -->"]
+          mode: replace
+          inline: true
+        text: license
+        value: "AGPL-3.0"
+        color: "#310937"
+        output: ".stagefreight/badges/license.svg"
+        link: LICENSE
+
+      - id: badge.updated
+        kind: badge
+        placement:
+          between: ["<!-- sf:badges:start -->", "<!-- sf:badges:end -->"]
+          mode: replace
+          inline: true
+        text: updated
+        value: "{env:BUILD_DATE}"
+        color: "#236144"
+        output: ".stagefreight/badges/updated.svg"
+
   - file: "docs/Apps_&_Services-Overview.md"
     items:
       - id: cluster-inventory

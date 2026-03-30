@@ -1,5 +1,8 @@
 ![Banner](./docs/assets/dungeon-banner.png)
 
+<!-- sf:badges:start -->
+<!-- sf:badges:end -->
+
 > _"When the cluster's down, and the world is on fire, at least you can still run Ansible."_ 🔥
 
 This repository seeks to be the source of truth regarding the active state of my Kubernetes cluster "Dungeon" and my Proxmox Cluster "Ad_Arbitorium". All system state, automation routines, and backup strategies should be declared within this repository. This Dungeon must be cleared, so we can advance to the next one!
