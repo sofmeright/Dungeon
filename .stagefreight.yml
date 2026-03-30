@@ -8,6 +8,16 @@ gitops:
   cluster:
     name: dungeon
     server: https://172.22.144.105:6443
+    exposure:
+      rules:
+        - level: internet
+          gateways: [phloem-gateway, cell-membrane-gateway]
+        - level: intranet
+          gateways: [xylem-gateway]
+        - level: cluster
+          service_types: [ClusterIP]
+        - level: intranet
+          service_types: [NodePort]
   oidc:
     audience: stagefreight
 
