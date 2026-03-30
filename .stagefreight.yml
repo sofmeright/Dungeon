@@ -69,43 +69,49 @@ docs:
     push: true
     skip_ci: false
 
+badges:
+  - id: build
+    text: build
+    value: "{env:BUILD_STATUS}"
+    color: auto
+    output: ".stagefreight/badges/build.svg"
+    link: "https://gitlab.prplanit.com/SoFMeRight/dungeon/-/pipelines"
+  - id: license
+    text: license
+    value: "AGPL-3.0"
+    color: "#310937"
+    output: ".stagefreight/badges/license.svg"
+    link: LICENSE
+  - id: updated
+    text: updated
+    value: "{env:BUILD_DATE}"
+    color: "#236144"
+    output: ".stagefreight/badges/updated.svg"
+
 narrator:
   - file: "README.md"
     items:
       - id: badge.build
-        kind: badge
+        kind: badge_ref
+        ref: build
         placement:
           between: ["<!-- sf:badges:start -->", "<!-- sf:badges:end -->"]
           mode: replace
           inline: true
-        text: build
-        value: "{env:BUILD_STATUS}"
-        color: auto
-        output: ".stagefreight/badges/build.svg"
-        link: "https://gitlab.prplanit.com/SoFMeRight/dungeon/-/pipelines"
-
       - id: badge.license
-        kind: badge
+        kind: badge_ref
+        ref: license
         placement:
           between: ["<!-- sf:badges:start -->", "<!-- sf:badges:end -->"]
           mode: replace
           inline: true
-        text: license
-        value: "AGPL-3.0"
-        color: "#310937"
-        output: ".stagefreight/badges/license.svg"
-        link: LICENSE
-
       - id: badge.updated
-        kind: badge
+        kind: badge_ref
+        ref: updated
         placement:
           between: ["<!-- sf:badges:start -->", "<!-- sf:badges:end -->"]
           mode: replace
           inline: true
-        text: updated
-        value: "{env:BUILD_DATE}"
-        color: "#236144"
-        output: ".stagefreight/badges/updated.svg"
 
   - file: "docs/Apps_&_Services-Overview.md"
     items:
