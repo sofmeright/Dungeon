@@ -23,7 +23,7 @@ gitops:
 
 commit:
   conventional: true
-  backend: git
+  backend: forge
 
 glossary:
   types:
