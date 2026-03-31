@@ -1,5 +1,14 @@
 version: 1
 
+sources:
+  primary:
+    kind: git
+    worktree: "."
+    url: "https://gitlab.prplanit.com/SoFMeRight/dungeon"
+    default_branch: "main"
+  publish_origin:
+    kind: primary
+
 lifecycle:
   mode: gitops
 
@@ -70,27 +79,27 @@ docs:
     skip_ci: false
 
 badges:
-  - id: build
-    text: build
-    value: "{env:BUILD_STATUS}"
-    color: auto
-    output: ".stagefreight/badges/build.svg"
-    link: "https://gitlab.prplanit.com/SoFMeRight/dungeon/-/pipelines"
-  - id: license
-    text: license
-    value: "AGPL-3.0"
-    color: "#310937"
-    output: ".stagefreight/badges/license.svg"
-    link: LICENSE
-  - id: updated
-    text: updated
-    value: "{env:BUILD_DATE}"
-    color: "#236144"
-    output: ".stagefreight/badges/updated.svg"
+  items:
+    - id: build
+      text: build
+      value: "{env:BUILD_STATUS}"
+      color: auto
+      output: ".stagefreight/badges/build.svg"
+      link: "https://gitlab.prplanit.com/SoFMeRight/dungeon/-/pipelines"
+    - id: license
+      text: license
+      value: "AGPL-3.0"
+      color: "#310937"
+      output: ".stagefreight/badges/license.svg"
+      link: LICENSE
+    - id: updated
+      text: updated
+      value: "{env:BUILD_DATE}"
+      color: "#236144"
+      output: ".stagefreight/badges/updated.svg"
 
 narrator:
   - file: "README.md"
-    link_base: "https://gitlab.prplanit.com/SoFMeRight/dungeon/-/blob/main"
     items:
       - id: badge.build
         kind: badge_ref
