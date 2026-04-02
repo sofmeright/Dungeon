@@ -1,6 +1,6 @@
 # Name: prometheus-eaton-ups-exporter-sfmr:latest
 
-FROM python:3.13.2-alpine3.21
+FROM python:3.14.3-alpine3.23
 
 RUN apk add --no-cache git
 RUN apk add --no-cache openssh
