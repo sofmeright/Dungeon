@@ -41,8 +41,6 @@ default:
   services:
     - name: docker.cr.pcfae.com/docker:27-dind
       alias: docker
-  variables:
-    <<: *dind-variables
 
 dependency-update:
   stage: deps
@@ -61,6 +59,8 @@ dependency-update:
 
 build:
   stage: build
+  variables:
+    <<: *dind-variables
   before_script:
     - *sf-context
     - *dind-setup
@@ -75,6 +75,8 @@ build:
 security-scan:
   stage: security
   needs: [build]
+  variables:
+    <<: *dind-variables
   before_script:
     - *sf-context
     - *dind-setup
