@@ -1,15 +1,14 @@
 # StageFreight GitLab CI skeleton
 # Behavior is configured in .stagefreight.yml, not here.
 # This file translates GitLab CI context into StageFreight's normalized contract.
+# ALL jobs always exist. StageFreight decides if they do work at runtime.
 
 stages:
-  - prepare
-  - lint
-  - security
   - deps
-  - publish
-  - docs
+  - build
+  - security
   - release
+  - docs
 
 workflow:
   auto_cancel:
@@ -26,64 +25,91 @@ workflow:
   - export SF_CI_WORKSPACE="$PWD"
   - export SF_CI_PIPELINE_ID="${CI_PIPELINE_ID}"
 
+.dind-setup: &dind-setup
+  - docker context create tls-context --docker "host=$DOCKER_HOST,ca=$DOCKER_CERT_PATH/ca.pem,cert=$DOCKER_CERT_PATH/cert.pem,key=$DOCKER_CERT_PATH/key.pem"
+  - docker buildx create --name sf-builder --use tls-context
+
+.dind-variables: &dind-variables
+  DOCKER_HOST: "tcp://docker:2376"
+  DOCKER_TLS_VERIFY: "1"
+  DOCKER_CERT_PATH: "/certs/client"
+  DOCKER_TLS_CERTDIR: "/certs"
+
 default:
   image: docker.cr.pcfae.com/prplanit/stagefreight:latest-dev
   interruptible: true
-  tags:
-    - production
+  services:
+    - name: docker.cr.pcfae.com/docker:27-dind
+      alias: docker
+  variables:
+    <<: *dind-variables
 
-lint:
-  stage: lint
-  before_script:
-    - *sf-context
-  script:
-    - stagefreight lint
-  rules:
-    - if: '$CI_COMMIT_TAG'
-    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
-
-docs:
-  stage: docs
+dependency-update:
+  stage: deps
   variables:
     GIT_DEPTH: 0
-  id_tokens:
-    STAGEFREIGHT_OIDC:
-      aud: stagefreight
+    <<: *dind-variables
   before_script:
     - *sf-context
+    - *dind-setup
   script:
-    - stagefreight ci run docs
-  rules:
-    - if: '$CI_COMMIT_TAG'
-      when: on_success
-    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
-      when: on_success
+    - stagefreight ci run deps
+  artifacts:
+    paths: [.stagefreight/deps/]
+    expire_in: 1 week
   allow_failure: true
 
-reconcile:
-  stage: publish
-  variables:
-    GIT_DEPTH: 0
-  id_tokens:
-    STAGEFREIGHT_OIDC:
-      aud: stagefreight
+build:
+  stage: build
   before_script:
     - *sf-context
+    - *dind-setup
   script:
-    - stagefreight gitops reconcile
-  rules:
-    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
-      when: on_success
+    - stagefreight ci run build
+  artifacts:
+    paths: [.stagefreight/]
+    reports:
+      junit: .stagefreight/reports/lint.xml
+    expire_in: 2 hours
 
-release:
+security-scan:
+  stage: security
+  needs: [build]
+  before_script:
+    - *sf-context
+    - *dind-setup
+  script:
+    - stagefreight ci run security
+  artifacts:
+    paths: [.stagefreight/security/]
+    expire_in: 1 week
+  allow_failure: true
+
+create-release:
   stage: release
+  needs:
+    - build
+    - security-scan
   variables:
     GIT_DEPTH: 0
   before_script:
     - *sf-context
   script:
     - stagefreight ci run release
-  rules:
-    - if: '$CI_COMMIT_TAG =~ /^v\d+\.\d+\.\d+/'
-      when: on_success
+  allow_failure: true
+
+generate-docs:
+  stage: docs
+  needs:
+    - build
+    - create-release
+  variables:
+    GIT_DEPTH: 0
+    BUILD_STATUS: "passing"
+    BUILD_DATE: "$CI_COMMIT_TIMESTAMP"
+  before_script:
+    - *sf-context
+  script:
+    - stagefreight ci run docs
+  when: always
   allow_failure: true
