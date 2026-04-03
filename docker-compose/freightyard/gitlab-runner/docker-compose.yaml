@@ -1,0 +1,75 @@
+services:
+  dind:
+    image: docker:dind
+    privileged: true
+    restart: always
+    environment:
+      DOCKER_TLS_CERTDIR: /certs
+      DOCKER_TLS_SAN: DNS:dind
+    volumes:
+      - dind-storage:/var/lib/docker
+      - /opt/docker/gitlab-runner/certs:/certs
+      - /opt/docker/gitlab-runner/stagefreight:/stagefreight
+    healthcheck:
+      test: ["CMD", "docker", "info"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
+
+  register-runner:
+    image: gitlab/gitlab-runner:latest
+    restart: "no"
+    depends_on:
+      dind:
+        condition: service_healthy
+    entrypoint: ["/bin/sh", "-c"]
+    command:
+      - |
+        if [ ! -f /etc/gitlab-runner/config.toml ]; then
+          echo "Config does not exist, registering runner..."
+          gitlab-runner register \
+            --docker-dns=10.0.0.1 \
+            --docker-dns=10.0.0.2 \
+            --docker-dns=1.1.1.1 \
+            --docker-dns=8.8.8.8 \
+            --docker-dns=127.0.0.1 \
+            --docker-dns=172.22.30.122 \
+            --docker-host=tcp://dind:2376 \
+            --docker-image=alpine:latest \
+            --docker-privileged=true \
+            --docker-volumes=/certs/client:/certs/client:ro \
+            --docker-volumes=/stagefreight:/stagefreight \
+            --executor=docker \
+            --name=$${RUNNER_NAME:-"Freightyard"} \
+            --non-interactive \
+            --token=$${RUNNER_TOKEN} \
+            --url=$${CI_SERVER_URL}
+        else
+          echo "Runner config already exists, skipping registration"
+        fi
+    environment:
+      - CI_SERVER_URL=${CI_SERVER_URL}
+      - RUNNER_TOKEN=${RUNNER_TOKEN}
+      - DOCKER_TLS_VERIFY=1
+      - DOCKER_CERT_PATH=/certs/client
+    volumes:
+      - /opt/docker/gitlab-runner/certs:/certs:ro
+      - /opt/docker/gitlab-runner/config:/etc/gitlab-runner:z
+
+  runner:
+    image: gitlab/gitlab-runner:latest
+    restart: always
+    depends_on:
+      dind:
+        condition: service_healthy
+    environment:
+      - DOCKER_HOST=tcp://dind:2376
+      - DOCKER_TLS_VERIFY=1
+      - DOCKER_CERT_PATH=/certs/client
+    volumes:
+      - /opt/docker/gitlab-runner/certs:/certs:ro
+      - /opt/docker/gitlab-runner/config:/etc/gitlab-runner:z
+
+volumes:
+  dind-storage:
