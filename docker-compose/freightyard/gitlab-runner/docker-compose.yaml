@@ -37,8 +37,9 @@ services:
             --docker-dns=172.22.30.122 \
             --docker-host=tcp://dind:2376 \
             --docker-image=alpine:latest \
+            --docker-network-mode=stagefreight \
             --docker-privileged=true \
-            --docker-volumes=/certs/client \
+            --docker-volumes=/certs/client:/certs/client:ro \
             --docker-volumes=/stagefreight:/stagefreight \
             --docker-volumes=/stagefreight/buildx:/root/.docker/buildx \
             --executor=docker \
@@ -71,6 +72,10 @@ services:
     volumes:
       - /opt/docker/gitlab-runner/certs:/certs:ro
       - /opt/docker/gitlab-runner/config:/etc/gitlab-runner:z
+
+networks:
+  default:
+    name: stagefreight
 
 volumes:
   dind-storage:
