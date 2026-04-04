@@ -1,18 +1,19 @@
-# StageFreight GitLab CI skeleton
-# Behavior is configured in .stagefreight.yml, not here.
-# This file translates GitLab CI context into StageFreight's normalized contract.
-# ALL jobs always exist. StageFreight decides if they do work at runtime.
+# stagefreight-skeleton: lightweight
+# provider: gitlab
+# supports: validate, reconcile, docs
+#
+# Lightweight non-build transport. No DinD. For repos that don't build artifacts.
+# Used by GitOps IaC repos, governance/policy repos, and docs-only repos.
+# StageFreight decides what actually runs based on .stagefreight.yml config.
 
 stages:
-  - deps
-  - build
-  - security
-  - release
+  - validate
+  - reconcile
   - docs
 
 workflow:
   auto_cancel:
-    on_new_commit: none
+    on_new_commit: interruptible
 
 .stagefreight-context: &sf-context
   - export SF_CI_PROVIDER=gitlab
@@ -25,86 +26,31 @@ workflow:
   - export SF_CI_WORKSPACE="$PWD"
   - export SF_CI_PIPELINE_ID="${CI_PIPELINE_ID}"
 
-.dind-setup: &dind-setup
-  - docker context create tls-context --docker "host=$DOCKER_HOST,ca=$DOCKER_CERT_PATH/ca.pem,cert=$DOCKER_CERT_PATH/cert.pem,key=$DOCKER_CERT_PATH/key.pem"
-  - docker buildx create --name sf-builder --use tls-context
-
-.dind-variables: &dind-variables
-  DOCKER_HOST: "tcp://docker:2376"
-  DOCKER_TLS_VERIFY: "1"
-  DOCKER_CERT_PATH: "/certs/client"
-  DOCKER_TLS_CERTDIR: "/certs"
-
 default:
   image: docker.cr.pcfae.com/prplanit/stagefreight:latest-dev
   interruptible: true
-  services:
-    - name: docker.cr.pcfae.com/docker:27-dind
-      alias: docker
 
-dependency-update:
-  stage: deps
-  variables:
-    GIT_DEPTH: 0
-    <<: *dind-variables
+validate:
+  stage: validate
   before_script:
     - *sf-context
-    - *dind-setup
   script:
-    - stagefreight ci run deps
-  artifacts:
-    paths: [.stagefreight/deps/]
-    expire_in: 1 week
+    - stagefreight ci run validate
   allow_failure: true
 
-build:
-  stage: build
-  variables:
-    <<: *dind-variables
-  before_script:
-    - *sf-context
-    - *dind-setup
-  script:
-    - stagefreight ci run build
-  artifacts:
-    paths: [.stagefreight/]
-    reports:
-      junit: .stagefreight/reports/lint.xml
-    expire_in: 2 hours
-
-security-scan:
-  stage: security
-  needs: [build]
-  variables:
-    <<: *dind-variables
-  before_script:
-    - *sf-context
-    - *dind-setup
-  script:
-    - stagefreight ci run security
-  artifacts:
-    paths: [.stagefreight/security/]
-    expire_in: 1 week
-  allow_failure: true
-
-create-release:
-  stage: release
-  needs:
-    - build
-    - security-scan
+reconcile:
+  stage: reconcile
   variables:
     GIT_DEPTH: 0
   before_script:
     - *sf-context
   script:
-    - stagefreight ci run release
+    - stagefreight ci run reconcile
   allow_failure: true
 
 generate-docs:
   stage: docs
-  needs:
-    - build
-    - create-release
+  needs: [reconcile]
   variables:
     GIT_DEPTH: 0
     BUILD_STATUS: "passing"
