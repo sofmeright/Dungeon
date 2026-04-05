@@ -5,6 +5,8 @@ metadata:
 spec:
   image: docker.io/openbao/openbao:2.5.2
   envsConfig:
+    - name: BAO_CONFIG_DIR
+      value: /vault/config
     - name: VAULT_OIDC_CLIENT_SECRET
       valueFrom:
         secretKeyRef:
