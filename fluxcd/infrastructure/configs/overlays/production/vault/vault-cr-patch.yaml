@@ -31,6 +31,10 @@ spec:
           - ALL
     volumeMounts:
       - name: vault-config
+        mountPath: /vault/config
+      - name: vault-data
+        mountPath: /vault/data
+      - name: vault-config
         mountPath: /openbao/config
   unsealConfig:
     kubernetes:
