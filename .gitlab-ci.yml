@@ -40,6 +40,9 @@ validate:
 
 reconcile:
   stage: reconcile
+  id_tokens:
+    STAGEFREIGHT_OIDC:
+      aud: stagefreight
   variables:
     GIT_DEPTH: 0
   before_script:
