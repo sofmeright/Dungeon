@@ -21,6 +21,12 @@ spec:
   vaultContainerSpec:
     securityContext:
       capabilities:
+        add:
+          - CHOWN
+          - FOWNER
+          - SETFCAP
+          - SETGID
+          - SETUID
         drop:
           - ALL
   unsealConfig:
