@@ -40,6 +40,7 @@ validate:
 
 reconcile:
   stage: reconcile
+  tags: [k8s-dungeon-production]
   id_tokens:
     STAGEFREIGHT_OIDC:
       aud: stagefreight
