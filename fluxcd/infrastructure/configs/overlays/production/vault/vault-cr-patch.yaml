@@ -21,9 +21,8 @@ spec:
   vaultContainerSpec:
     securityContext:
       capabilities:
-        add:
-          - IPC_LOCK
-          - SETFCAP
+        drop:
+          - ALL
   unsealConfig:
     kubernetes:
       secretNamespace: zeldas-lullaby
