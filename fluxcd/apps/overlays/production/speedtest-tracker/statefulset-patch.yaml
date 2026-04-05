@@ -39,6 +39,8 @@ spec:
               value: "1000"
             - name: PGID
               value: "1000"
+            - name: APP_URL
+              value: "https://isptest.pcfae.com"
             - name: LOG_CHANNEL
               value: "stderr"
             - name: SPEEDTEST_SCHEDULE

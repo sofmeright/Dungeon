@@ -133,6 +133,10 @@ spec:
               protocol: TCP
             - port: "8123"
               protocol: TCP
+            - port: "8200"
+              protocol: TCP
+            - port: "8201"
+              protocol: TCP
             - port: "8324"
               protocol: TCP
             - port: "8443"
@@ -171,12 +175,17 @@ spec:
               protocol: TCP
             - port: "9090"
               protocol: TCP
+            - port: "9091"
+              protocol: TCP
             - port: "9094"
+              protocol: TCP
+            - port: "9102"
               protocol: TCP
             - port: "9200"
               protocol: TCP
             - port: "9201"
               protocol: TCP
+        - ports:
             - port: "9203"
               protocol: TCP
             - port: "9795"
@@ -185,7 +194,6 @@ spec:
               protocol: TCP
             - port: "20211"
               protocol: TCP
-        - ports:
             - port: "21114"
               protocol: TCP
             - port: "21115"
