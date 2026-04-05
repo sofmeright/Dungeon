@@ -29,9 +29,9 @@ spec:
           - SETUID
         drop:
           - ALL
-    env:
-      - name: BAO_CONFIG_DIR
-        value: /vault/config
+    volumeMounts:
+      - name: vault-config
+        mountPath: /openbao/config
   unsealConfig:
     kubernetes:
       secretNamespace: zeldas-lullaby
