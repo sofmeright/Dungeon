@@ -48,6 +48,14 @@ spec:
     - name: vault-data
       mountPath: /vault/data
 
+  # Container security context — no IPC_LOCK/SETFCAP needed since disable_mlock is true.
+  # Required for baseline PodSecurity namespace compliance.
+  vaultContainerSpec:
+    securityContext:
+      capabilities:
+        drop:
+          - ALL
+
   # Resources
   resources:
     vault:
