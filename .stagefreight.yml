@@ -9,6 +9,12 @@ sources:
   publish_origin:
     kind: primary
 
+ci:
+  image: docker.io/prplanit/stagefreight:latest-dev
+  routing:
+    perform:
+      labels: [k8s-dungeon-production]
+
 lifecycle:
   mode: gitops
 
