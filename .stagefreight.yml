@@ -10,7 +10,7 @@ sources:
     kind: primary
 
 ci:
-  image: docker.io/prplanit/stagefreight:latest-dev
+  image: docker.cr.pcfae.com/prplanit/stagefreight:latest-dev
   routing:
     perform:
       labels: [k8s-dungeon-production]
