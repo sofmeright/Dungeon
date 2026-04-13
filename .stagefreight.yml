@@ -1,13 +1,18 @@
 version: 1
 
-sources:
-  primary:
-    kind: git
+forges:
+  - id: gitlab
+    provider: gitlab
+    url: "https://gitlab.prplanit.com"
+
+repos:
+  - id: primary
+    forge: gitlab
+    project: "SoFMeRight/dungeon"
+    roles: [primary, publish-origin]
+    branches:
+      default: main
     worktree: "."
-    url: "https://gitlab.prplanit.com/SoFMeRight/dungeon"
-    default_branch: "main"
-  publish_origin:
-    kind: primary
 
 ci:
   image: docker.cr.pcfae.com/prplanit/stagefreight:latest-dev
@@ -63,9 +68,10 @@ glossary:
       priority: 10
       release_visible: false
 
-policies:
-  git_tags:
-    stable: "^v\\d+\\.\\d+\\.\\d+$"
+versioning:
+  tag_sources:
+    - id: stable
+      pattern: "^v\\d+\\.\\d+\\.\\d+$"
 
 docs:
   enabled: true
@@ -147,3 +153,20 @@ lint:
       enabled: true
       exclude:
         - "fluxcd/infrastructure/services/base/vaultwarden/externalsecret.yaml"
+
+toolchains:
+  desired:
+    trivy:
+      version: "0.69.3"
+    syft:
+      version: "1.42.3"
+    grype:
+      version: "0.110.0"
+    osv-scanner:
+      version: "2.3.5"
+    cosign:
+      version: "3.0.6"
+    flux:
+      version: "2.8.3"
+    kubectl:
+      version: "1.34.2"
