@@ -139,8 +139,8 @@ git commit -m "<An optimistic note about something that we promise to be better 
 ```
 On the first run it may ask you to provide info regarding your identity (then retry the previous command):
 ```
-git config --global user.email "kai.hamil@gmail.com"
-git config --global user.name "kai"
+git config --global user.email "sofmeright@gmail.com"
+git config --global user.name "SoFMeRight"
 ```
 # Push to the source repo
 ```
